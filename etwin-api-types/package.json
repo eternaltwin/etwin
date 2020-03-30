@@ -1,0 +1,48 @@
+{
+  "name": "@eternal-twin/etwin-api-types",
+  "version": "0.0.0",
+  "homepage": "https://gitlab.com/eternal-twin/etwin-api",
+  "description": "TypeScript definitions for the Node.js client API of the Eternal-Twin",
+  "repository": {
+    "type": "git",
+    "url": "git://gitlab.com:eternal-twin/etwin-api.git"
+  },
+  "private": true,
+  "scripts": {
+    "lib:build": "tsc -p src/lib/tsconfig.json",
+    "lib:run": "yarn run lib:build && node ./build/lib/haxe/serializer.js",
+    "test:build": "tsc -p src/test/tsconfig.json",
+    "pretest": "yarn run test:build",
+    "test": "mocha \"build/test/test/**/*.spec.js\""
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "pre-commit": {
+    "run": [
+      "lint"
+    ]
+  },
+  "keywords": [],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.9.5",
+    "mocha": "^7.1.1",
+    "typescript": "^3.8.3"
+  },
+  "type": "module",
+  "exports": {
+    "./user/user.js": "./build/lib/user/user.js",
+    "./user/user-display-name.js": "./build/lib/user/user-display-name.js",
+    "./user/user-id.js": "./build/lib/user/user-id.js",
+    "./api.js": "./build/lib/api.js",
+    "./auth-token.js": "./build/lib/auth-token.js",
+    "./client-id.js": "./build/lib/client-id.js",
+    "./client-secret.js": "./build/lib/client-secret.js"
+  },
+  "files": [
+    "./build/lib"
+  ]
+}

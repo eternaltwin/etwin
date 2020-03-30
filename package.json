@@ -1,0 +1,8 @@
+{
+  "name": "@eternal-twin/core-monorepo",
+  "private": true,
+  "workspaces": [
+    "./etwin-api-types",
+    "./etwin-api-in-memory"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "@eternal-twin/etwin-api-in-memory",
+  "version": "0.0.0",
+  "homepage": "https://gitlab.com/eternal-twin/etwin-api",
+  "description": "Node.js in-memory client for the Eternal-Twin API",
+  "repository": {
+    "type": "git",
+    "url": "git://gitlab.com:eternal-twin/etwin-api.git"
+  },
+  "private": true,
+  "scripts": {
+    "deps:build": "yarn --cwd ../etwin-api-types run lib:build",
+    "lib:build": "tsc -p src/lib/tsconfig.json",
+    "lib:run": "yarn run lib:build && node ./build/lib/haxe/serializer.js",
+    "test:build": "yarn run deps:build && tsc -p src/test/tsconfig.json",
+    "pretest": "yarn run test:build",
+    "test": "mocha \"build/test/test/**/*.spec.js\""
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "pre-commit": {
+    "run": [
+      "lint"
+    ]
+  },
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "@eternal-twin/etwin-api-types": "*"
+  },
+  "devDependencies": {
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.9.5",
+    "mocha": "^7.1.1",
+    "typescript": "^3.8.3"
+  },
+  "type": "module",
+  "exports": {
+    "./api.js": "./build/lib/api.js"
+  },
+  "files": [
+    "./build/lib"
+  ]
+}
