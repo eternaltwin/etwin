@@ -1,8 +1,16 @@
 {
-  "name": "@eternal-twin/core-monorepo",
+  "name": "@eternal-twin/etwin-monorepo",
   "private": true,
-  "workspaces": [
-    "./etwin-api-types",
-    "./etwin-api-in-memory"
-  ]
+  "workspaces": {
+    "packages": [
+      "./etwin",
+      "./etwin-api-in-memory",
+      "./etwin-api-types",
+      "./etwin-rest"
+    ],
+    "nohoist": [
+      "**/@angular/**",
+      "**/@angular-devkit/**"
+    ]
+  }
 }

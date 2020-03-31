@@ -1,0 +1,31 @@
+<div class="body">
+  <div id="tid-bar"></div>
+  <header>
+    <h1>Eternal-Twin</h1>
+  </header>
+  <div class="content">
+    <p>
+      Eternal-Twin is a project aiming to archive all the games by Motion-Twin.
+    </p>
+    <div>
+      <h1>Announcements</h1>
+      <ng-container *ngIf="announcements$ | async as announcments; else loadingAnnouncements">
+        Announcement service
+        <div *ngFor="let announcement of announcments">
+          {{announcement.title}}
+        </div>
+      </ng-container>
+      <ng-template #loadingAnnouncements>
+        <p>Loading announcements...</p>
+      </ng-template>
+    </div>
+  </div>
+  <footer>
+    <div class="languages">
+      <a lang="de-DE" href="/?l=de">Deutsch</a> -
+      <a lang="en-US" href="/?l=en">English</a> -
+      <a lang="es-SP" href="/?l=es">Español</a> -
+      <a lang="fr-FR" href="/?l=fr">Français</a>
+    </div>
+  </footer>
+</div>

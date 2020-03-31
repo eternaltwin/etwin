@@ -7,7 +7,7 @@
     "alwaysStrict": true,
     "charset": "utf8",
     "checkJs": false,
-    "declaration": false,
+    "declaration": true,
     "disableSizeLimit": false,
     "downlevelIteration": false,
     "emitBOM": false,
@@ -20,14 +20,13 @@
     "inlineSources": false,
     "isolatedModules": false,
     "lib": [
-      "es2017",
-      "esnext.asynciterable"
+      "es2017"
     ],
     "locale": "en-us",
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
     "newLine": "lf",
-    "noEmit": false,
+    "noEmit": true,
     "noEmitHelpers": false,
     "noEmitOnError": true,
     "noErrorTruncation": true,
@@ -51,16 +50,15 @@
     "suppressImplicitAnyIndexErrors": false,
     "target": "es2017",
     "traceResolution": false,
-    "rootDir": "",
-    "outDir": "../build/test",
-    "typeRoots": [
-      "../node_modules/@types",
-      "./custom-typings"
-    ]
-  },
-  "include": [
-    "./test/**/*.ts",
-    "./lib/**/*.ts"
-  ],
-  "exclude": []
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@eternal-twin/etwin-api-types/*.js": [
+        "./etwin-api-types/build/lib/*.d.ts"
+      ],
+      "@eternal-twin/etwin-api-in-memory/*.js": [
+        "./etwin-api-in-memory/build/lib/*.d.ts"
+      ]
+    }
+  }
 }

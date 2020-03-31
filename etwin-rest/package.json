@@ -1,18 +1,21 @@
 {
-  "name": "@eternal-twin/etwin-api-in-memory",
+  "name": "@eternal-twin/etwin-rest",
   "version": "0.0.1",
-  "homepage": "https://gitlab.com/eternal-twin/etwin-api",
+  "homepage": "https://gitlab.com/eternal-twin/etwin",
   "description": "Node.js in-memory client for the Eternal-Twin API",
   "repository": {
     "type": "git",
-    "url": "git://gitlab.com:eternal-twin/etwin-api.git"
+    "url": "git://gitlab.com:eternal-twin/etwin.git"
   },
   "private": false,
   "scripts": {
     "lib:build": "tsc --build src/lib/tsconfig.json",
+    "main:build": "tsc --build src/main/tsconfig.json",
     "test:build": "tsc --build src/test/tsconfig.json",
     "pretest": "yarn run test:build",
-    "test": "mocha \"build/test/**/*.spec.js\""
+    "test": "mocha \"build/test/**/*.spec.js\"",
+    "prestart": "yarn run main:build",
+    "start": "node build/main/main.js"
   },
   "publishConfig": {
     "access": "public",
@@ -26,14 +29,22 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@eternal-twin/etwin-api-types": "^0.0.1",
-    "@types/commonmark": "^0.27.4",
-    "commonmark": "^0.29.1",
-    "uuidjs": "^4.2.5"
+    "@eternal-twin/etwin-api-types": "*",
+    "@types/koa": "^2.11.0",
+    "@types/koa-mount": "^4.0.0",
+    "@types/koa-route": "^3.2.4",
+    "koa": "^2.11.0",
+    "koa-mount": "^4.0.0",
+    "koa-route": "^3.2.0"
   },
   "devDependencies": {
+    "@eternal-twin/etwin-api-in-memory": "*",
+    "@koa/cors": "^3.0.0",
+    "@types/koa__cors": "^3.0.1",
+    "@types/koa-logger": "^3.1.1",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.9.5",
+    "koa-logger": "^3.2.1",
     "mocha": "^7.1.1",
     "typescript": "^3.8.3"
   },

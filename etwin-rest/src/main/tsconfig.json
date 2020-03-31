@@ -3,7 +3,7 @@
   "compilerOptions": {
     "noEmit": false,
     "rootDir": ".",
-    "outDir": "../../build/test"
+    "outDir": "../../build/main"
   },
   "include": [
     "**/*.ts"
@@ -12,6 +12,9 @@
   "references": [
     {
       "path": "../lib"
+    },
+    {
+      "path": "../../../etwin-api-in-memory/src/lib"
     }
   ]
 }

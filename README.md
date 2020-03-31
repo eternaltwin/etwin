@@ -1,1 +1,1 @@
-# Eternal-Twin API for Node.js
+# Eternal-Twin main repository
