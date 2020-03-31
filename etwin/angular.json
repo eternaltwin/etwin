@@ -19,7 +19,7 @@
           "options": {
             "outputPath": "dist/etwin",
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "main": "src/main.app.browser.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
