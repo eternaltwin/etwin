@@ -13,6 +13,18 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": {
+          "code": "en-US",
+          "baseHref": "/"
+        },
+        "locales": {
+          "fr-FR": {
+            "translation": "./src/locales/messages.fr-FR.xlf",
+            "baseHref": "/"
+          }
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -35,6 +47,7 @@
           },
           "configurations": {
             "production": {
+              "outputPath": "app/prod/browser",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -78,7 +91,9 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "etwin:build"
+            "browserTarget": "etwin:build",
+            "format": "xlf",
+            "outFile": "../locales/messages.xlf"
           }
         },
         "test": {
@@ -132,6 +147,7 @@
           },
           "configurations": {
             "production": {
+              "outputPath": "app/prod/server",
               "outputHashing": "media",
               "fileReplacements": [
                 {
