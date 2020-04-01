@@ -3,20 +3,19 @@
   "version": "0.0.0",
   "scripts": {
     "app:serve": "ng serve",
+    "app:dev:build": "yarn run app:dev:build:browser && yarn run app:dev:build:server",
     "app:dev:build:browser": "ng build",
     "app:dev:build:server": "ng run etwin:server",
+    "app:dev:ssr": "ng run etwin:serve-ssr",
+    "app:prod:build": "ng build --prod && ng run etwin:server:production",
+    "main:build": "tsc --build ./src/main/tsconfig.json",
+    "main:run": "node main/main.js",
+    "prestart": "yarn run main:build",
+    "start": "yarn run main:run",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "dev:ssr": "ng run etwin:serve-ssr",
-    "serve:ssr": "node app/dev/server/main.js",
-    "build:ssr": "ng build --prod && ng run etwin:server:production",
-    "ng:server:build": "ng build && yarn run app:dev:build:server",
-    "main:build": "tsc --build ./src/main/tsconfig.json",
-    "main:run": "node main/main.js",
-    "prerender": "ng run etwin:prerender",
-    "prestart": "yarn run main:build",
-    "start": "yarn run main:run"
+    "prerender": "ng run etwin:prerender"
   },
   "private": true,
   "dependencies": {
