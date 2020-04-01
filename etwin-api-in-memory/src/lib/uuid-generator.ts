@@ -1,4 +1,4 @@
-import { UuidHex } from "@eternal-twin/etwin-api-types/core/uuid-hex.js";
+import { UuidHex } from "@eternal-twin/etwin-api-types/lib/core/uuid-hex.js";
 import uuidjs from "uuidjs";
 
 export interface UuidGenerator {

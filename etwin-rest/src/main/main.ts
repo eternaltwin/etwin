@@ -3,8 +3,8 @@ import koaLogger from "koa-logger";
 import koaCors from "@koa/cors";
 import koaMount from "koa-mount";
 import { Api, createApiRouter } from "../lib/index.js";
-import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/announcement/service.js";
-import { UUID4_GENERATOR } from "@eternal-twin/etwin-api-in-memory/uuid-generator.js";
+import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/lib/announcement/service.js";
+import { UUID4_GENERATOR } from "@eternal-twin/etwin-api-in-memory/lib/uuid-generator.js";
 import { KoaAuth } from "../lib/koa-auth.js";
 
 async function main(): Promise<void> {

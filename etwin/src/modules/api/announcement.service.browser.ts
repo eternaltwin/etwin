@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
-import { Announcement } from "@eternal-twin/etwin-api-types/announcement/announcement";
+import { Announcement } from "@eternal-twin/etwin-api-types/lib/announcement/announcement";
 import { Observable } from "rxjs";
 import { apiUri } from "./utils/api-uri";
 import { map as rxMap } from "rxjs/operators";

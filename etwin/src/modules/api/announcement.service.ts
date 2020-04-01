@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Announcement } from "@eternal-twin/etwin-api-types/announcement/announcement";
+import { Announcement } from "@eternal-twin/etwin-api-types/lib/announcement/announcement";
 import { Observable, of as rxOf } from "rxjs";
 
 @Injectable({

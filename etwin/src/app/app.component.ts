@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { Announcement } from "@eternal-twin/etwin-api-types/announcement/announcement";
+import { Announcement } from "@eternal-twin/etwin-api-types/lib/announcement/announcement";
 import { Observable } from "rxjs";
 import { AnnouncementService } from "../modules/api/announcement.service";
 

@@ -50,15 +50,6 @@
     "suppressImplicitAnyIndexErrors": false,
     "target": "es2017",
     "traceResolution": false,
-    "rootDir": ".",
-    "baseUrl": ".",
-    "paths": {
-      "@eternal-twin/etwin-api-types/*.js": [
-        "./etwin-api-types/build/lib/*.d.ts"
-      ],
-      "@eternal-twin/etwin-api-in-memory/*.js": [
-        "./etwin-api-in-memory/build/lib/*.d.ts"
-      ]
-    }
+    "rootDir": "."
   }
 }

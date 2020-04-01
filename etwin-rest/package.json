@@ -13,9 +13,9 @@
     "main:build": "tsc --build src/main/tsconfig.json",
     "test:build": "tsc --build src/test/tsconfig.json",
     "pretest": "yarn run test:build",
-    "test": "mocha \"build/test/**/*.spec.js\"",
+    "test": "mocha \"test/**/*.spec.js\"",
     "prestart": "yarn run main:build",
-    "start": "node build/main/main.js"
+    "start": "node main/main.js"
   },
   "publishConfig": {
     "access": "public",
@@ -50,9 +50,9 @@
   },
   "type": "module",
   "exports": {
-    "./": "./build/lib/"
+    "./lib/": "./lib/"
   },
   "files": [
-    "./build/lib"
+    "./lib/"
   ]
 }

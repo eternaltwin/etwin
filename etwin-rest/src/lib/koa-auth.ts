@@ -1,8 +1,8 @@
-import { GuestAuthContext } from "@eternal-twin/etwin-api-types/auth/guest-auth-context.js";
-import { AuthType } from "@eternal-twin/etwin-api-types/auth/auth-type.js";
-import { AuthScope } from "@eternal-twin/etwin-api-types/auth/auth-scope.js";
+import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
+import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
+import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
 import Koa from "koa";
-import { AuthContext } from "@eternal-twin/etwin-api-types/auth/auth-context.js";
+import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
 
 const GUEST_AUTH_CONTEXT: GuestAuthContext = {
   type: AuthType.Guest,

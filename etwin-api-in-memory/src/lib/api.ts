@@ -1,6 +1,6 @@
-import { User } from "@eternal-twin/etwin-api-types/user/user.js";
-import { Api } from "@eternal-twin/etwin-api-types/api.js";
-import { UserId } from "@eternal-twin/etwin-api-types/user/user-id.js";
+import { User } from "@eternal-twin/etwin-api-types/lib/user/user.js";
+import { Api } from "@eternal-twin/etwin-api-types/lib/api.js";
+import { UserId } from "@eternal-twin/etwin-api-types/lib/user/user-id.js";
 
 export class InMemoryApi implements Api {
   private readonly users: Map<UserId, User>;

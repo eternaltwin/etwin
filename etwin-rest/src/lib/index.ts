@@ -1,6 +1,6 @@
 import Koa from "koa";
 import koaMount from "koa-mount";
-import { AnnouncementService } from "@eternal-twin/etwin-api-types/announcement/service.js";
+import { AnnouncementService } from "@eternal-twin/etwin-api-types/lib/announcement/service.js";
 import { KoaAuth } from "./koa-auth.js";
 import { createAnnouncementsRouter } from "./announcements.js";
 
