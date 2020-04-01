@@ -19,9 +19,9 @@
           "options": {
             "outputPath": "dist/etwin/browser",
             "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.app.json",
+            "main": "src/browser/main.ts",
+            "polyfills": "src/browser/polyfills.ts",
+            "tsConfig": "src/browser/tsconfig.json",
             "aot": true,
             "assets": [
               "src/favicon.ico",
