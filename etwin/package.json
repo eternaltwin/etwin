@@ -2,17 +2,21 @@
   "name": "etwin",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "app:serve": "ng serve",
+    "app:dev:build:browser": "ng build",
+    "app:dev:build:server": "ng run etwin:server",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "dev:ssr": "ng run etwin:serve-ssr",
-    "serve:ssr": "node dist/etwin/server/main.js",
+    "serve:ssr": "node app/dev/server/main.js",
     "build:ssr": "ng build --prod && ng run etwin:server:production",
-    "ng:server:build": "ng build && ng run etwin:server",
-    "prerender": "ng run etwin:prerender"
+    "ng:server:build": "ng build && yarn run app:dev:build:server",
+    "main:build": "tsc --build ./src/main/tsconfig.json",
+    "main:run": "node main/main.js",
+    "prerender": "ng run etwin:prerender",
+    "prestart": "yarn run main:build",
+    "start": "yarn run main:run"
   },
   "private": true,
   "dependencies": {
@@ -64,5 +68,6 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.8.3"
-  }
+  },
+  "type": "module"
 }

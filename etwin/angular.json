@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/etwin/browser",
+            "outputPath": "app/dev/browser",
             "index": "src/index.html",
             "main": "src/browser/main.ts",
             "polyfills": "src/browser/polyfills.ts",
@@ -125,7 +125,7 @@
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "outputPath": "dist/etwin/server",
+            "outputPath": "app/dev/server",
             "main": "./src/server/main.ts",
             "tsConfig": "./src/server/tsconfig.json"
           },

@@ -1,0 +1,20 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": ".",
+    "outDir": "../../main"
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../../etwin-api-in-memory/src/lib"
+    },
+    {
+      "path": "../../../etwin-rest/src/lib"
+    }
+  ]
+}
