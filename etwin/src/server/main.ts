@@ -1,4 +1,6 @@
 import "zone.js/dist/zone-node";
+import "@angular/localize/init";
+
 import Koa from "koa";
 import { APP_BASE_HREF } from "@angular/common";
 import { NgKoaEngine } from "./ng-koa-engine";
@@ -13,7 +15,8 @@ const EXTERNAL_URI: string = "http://localhost:4200";
 // The Express app is exported so that it can be used by serverless Functions.
 export async function app() {
   const serverDir = furi.fromSysPath(__dirname);
-  const browserDir = furi.join(serverDir, "../browser");
+  const appName = furi.basename(serverDir);
+  const browserDir = furi.join(serverDir, "../../browser", appName);
   const router = new Koa();
 
   const engine: NgKoaEngine = await NgKoaEngine.create({
