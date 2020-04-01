@@ -25,6 +25,7 @@
     "@angular/platform-browser-dynamic": "~9.1.0",
     "@angular/platform-server": "~9.1.0",
     "@angular/router": "~9.1.0",
+    "@nguniversal/common": "^9.1.0",
     "@nguniversal/express-engine": "^9.1.0",
     "express": "^4.15.2",
     "rxjs": "~6.5.4",

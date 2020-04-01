@@ -9,19 +9,19 @@ import { existsSync } from 'fs';
 import { NgKoaEngine } from "./src/server/ng-koa-engine";
 
 // The Express app is exported so that it can be used by serverless Functions.
-export function app() {
+export async function app() {
   const server = express();
   const distFolder = join(process.cwd(), 'dist/etwin/browser');
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
 
-  const engine: NgKoaEngine = new NgKoaEngine({
+  const engine: NgKoaEngine = await NgKoaEngine.create({
     baseDir: distFolder,
     bootstrap: AppServerModule,
   });
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
   server.engine('html', (path: string, options: any, callback: (e: any, rendered: string) => void): void => {
-    engine.render(options.req, options.res)
+    engine.renderSimple()
       .then((str) => {
         callback(null, str);
       });
@@ -45,11 +45,11 @@ export function app() {
   return server;
 }
 
-function run() {
+async function run() {
   const port = process.env.PORT || 4000;
 
   // Start up the Node server
-  const server = app();
+  const server = await app();
   server.listen(port, () => {
     console.log(`Node Express server listening on http://localhost:${port}`);
   });
