@@ -1,12 +1,12 @@
 import 'zone.js/dist/zone-node';
 
-import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { join } from 'path';
 
 import { AppServerModule } from './src/main.server';
 import { APP_BASE_HREF } from '@angular/common';
 import { existsSync } from 'fs';
+import { NgKoaEngine } from "./src/server/ng-koa-engine";
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app() {
@@ -14,10 +14,18 @@ export function app() {
   const distFolder = join(process.cwd(), 'dist/etwin/browser');
   const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
 
-  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
-  server.engine('html', ngExpressEngine({
+  const engine: NgKoaEngine = new NgKoaEngine({
+    baseDir: distFolder,
     bootstrap: AppServerModule,
-  }));
+  });
+
+  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
+  server.engine('html', (path: string, options: any, callback: (e: any, rendered: string) => void): void => {
+    engine.render(options.req, options.res)
+      .then((str) => {
+        callback(null, str);
+      });
+  });
 
   server.set('view engine', 'html');
   server.set('views', distFolder);
