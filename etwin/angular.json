@@ -27,6 +27,7 @@
               "src/favicon.ico",
               "src/assets"
             ],
+            "extractCss": true,
             "styles": [
               "src/styles.scss"
             ],
