@@ -1,14 +1,13 @@
 import "zone.js/dist/zone-node";
 import Koa from "koa";
 import { join } from "path";
-import { AppServerModule } from "./src/main.server";
 import { APP_BASE_HREF } from "@angular/common";
-import { existsSync } from "fs";
-import { NgKoaEngine } from "./src/server/ng-koa-engine";
+import { NgKoaEngine } from "./ng-koa-engine";
 import url from "url";
 import koaStaticCache from "koa-static-cache";
 import * as furi from "furi";
 import * as koaRoute from "koa-route";
+import { AppServerModule } from "../app/app.server.module";
 
 const EXTERNAL_URI: string = "http://localhost:4200";
 
@@ -68,5 +67,3 @@ const moduleFilename = mainModule && mainModule.filename || "";
 if (moduleFilename === __filename || moduleFilename.includes("iisnode")) {
   run();
 }
-
-export * from "./src/main.server";

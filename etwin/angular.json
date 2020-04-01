@@ -126,8 +126,8 @@
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "dist/etwin/server",
-            "main": "server.ts",
-            "tsConfig": "tsconfig.server.json"
+            "main": "./src/server/main.ts",
+            "tsConfig": "./src/server/tsconfig.json"
           },
           "configurations": {
             "production": {
