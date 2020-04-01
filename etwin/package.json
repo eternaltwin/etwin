@@ -3,11 +3,15 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "ng:serve": "ng serve",
+    "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "dev:ssr": "ng run etwin:serve-ssr",
+    "serve:ssr": "node dist/etwin/server/main.js",
+    "build:ssr": "ng build --prod && ng run etwin:server:production",
+    "prerender": "ng run etwin:prerender"
   },
   "private": true,
   "dependencies": {
@@ -18,7 +22,10 @@
     "@angular/forms": "~9.1.0",
     "@angular/platform-browser": "~9.1.0",
     "@angular/platform-browser-dynamic": "~9.1.0",
+    "@angular/platform-server": "~9.1.0",
     "@angular/router": "~9.1.0",
+    "@nguniversal/express-engine": "^9.1.0",
+    "express": "^4.15.2",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
@@ -28,6 +35,8 @@
     "@angular/cli": "~9.1.0",
     "@angular/compiler-cli": "~9.1.0",
     "@angular/language-service": "~9.1.0",
+    "@nguniversal/builders": "^9.1.0",
+    "@types/express": "^4.17.0",
     "@types/node": "^12.11.1",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",

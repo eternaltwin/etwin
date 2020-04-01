@@ -5,8 +5,10 @@
     "types": []
   },
   "files": [
-    "./src/main.app.browser.ts",
-    "./src/polyfills.ts"
+    "src/main.ts",
+    "src/polyfills.ts"
   ],
-  "include": []
+  "include": [
+    "src/**/*.d.ts"
+  ]
 }
