@@ -1,46 +1,52 @@
 import "zone.js/dist/zone-node";
-import * as express from "express";
+import Koa from "koa";
 import { join } from "path";
 import { AppServerModule } from "./src/main.server";
 import { APP_BASE_HREF } from "@angular/common";
 import { existsSync } from "fs";
 import { NgKoaEngine } from "./src/server/ng-koa-engine";
+import url from "url";
+import koaStaticCache from "koa-static-cache";
+import * as furi from "furi";
+import * as koaRoute from "koa-route";
+
+const EXTERNAL_URI: string = "http://localhost:4200";
 
 // The Express app is exported so that it can be used by serverless Functions.
 export async function app() {
-  const server = express();
+  const router = new Koa();
   const distFolder = join(process.cwd(), "dist/etwin/browser");
-  const indexHtml = existsSync(join(distFolder, "index.original.html")) ? "index.original.html" : "index";
+  const browserDir: url.URL = furi.fromSysPath(distFolder);
 
   const engine: NgKoaEngine = await NgKoaEngine.create({
-    baseDir: distFolder,
+    browserDir,
     bootstrap: AppServerModule,
+    providers: [],
   });
 
-  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
-  server.engine("html", (path: string, options: any, callback: (e: any, rendered: string) => void): void => {
-    engine.render()
-      .then((str) => {
-        callback(null, str);
-      });
-  });
+  router.use(koaRoute.get("/", ngRender));
 
-  server.set("view engine", "html");
-  server.set("views", distFolder);
+  async function ngRender(ctx: Koa.Context): Promise<void> {
+    // let auth: AuthContext;
+    // try {
+    //   auth = await efApi.koaAuth.auth(ctx);
+    // } catch (err) {
+    //   console.error(err);
+    //   auth = GUEST_AUTH_CONTEXT;
+    // }
+    const reqUrl: url.URL = new url.URL(ctx.request.originalUrl, EXTERNAL_URI);
+    ctx.response.body = await engine.render({
+      url: reqUrl,
+      providers: [
+        {provide: APP_BASE_HREF, useValue: EXTERNAL_URI},
+      ],
+    });
+  }
 
-  // Example Express Rest API endpoints
-  // server.get('/api/**', (req, res) => { });
-  // Serve static files from /browser
-  server.get("*.*", express.static(distFolder, {
-    maxAge: "1y",
-  }));
+  const ONE_DAY: number = 24 * 3600;
+  router.use(koaStaticCache(furi.toSysPath(browserDir), {maxAge: ONE_DAY}));
 
-  // All regular routes use the Universal engine
-  server.get("*", (req, res) => {
-    res.render(indexHtml, {req, providers: [{provide: APP_BASE_HREF, useValue: req.baseUrl}]});
-  });
-
-  return server;
+  return router;
 }
 
 async function run() {

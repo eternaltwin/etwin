@@ -1,11 +1,18 @@
 import { ɵCommonEngine as CommonEngine } from "@nguniversal/common/engine";
-import * as sysPath from "path";
-import * as fs from "fs";
-import { NgModuleFactory, Type } from "@angular/core";
+import fs from "fs";
+import * as furi from "furi";
+import url from "url";
+import { NgModuleFactory, StaticProvider, Type } from "@angular/core";
 
 export interface EngineOptions {
-  baseDir: string;
+  browserDir: url.URL;
   bootstrap: Type<{}> | NgModuleFactory<{}>;
+  providers: StaticProvider[];
+}
+
+export interface RenderOptions {
+  url: url.URL;
+  providers: StaticProvider[];
 }
 
 export class NgKoaEngine {
@@ -14,22 +21,22 @@ export class NgKoaEngine {
   private readonly bootstrap: Type<{}> | NgModuleFactory<{}>;
 
   public static async create(options: EngineOptions): Promise<NgKoaEngine> {
-    const indexPath = sysPath.join(options.baseDir, "index.html");
-    const indexHtml = await readTextAsync(indexPath);
+    const indexFuri: url.URL = furi.join(options.browserDir, "index.html");
+    const indexHtml = await readTextAsync(indexFuri);
     return new NgKoaEngine(options, indexHtml);
   }
 
   private constructor(options: EngineOptions, document: string) {
-    this.commonEngine = new CommonEngine(options.bootstrap, []);
+    this.commonEngine = new CommonEngine(options.bootstrap, options.providers);
     this.document = document;
   }
 
-  public async render(): Promise<string> {
+  public async render(options: RenderOptions): Promise<string> {
     return this.commonEngine.render({
       bootstrap: this.bootstrap,
       document: this.document,
-      url: "http://localhost:4200/",
-      providers: [],
+      url: options.url.toString(),
+      providers: options.providers,
     });
   }
 }
