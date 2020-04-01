@@ -11,6 +11,7 @@
     "dev:ssr": "ng run etwin:serve-ssr",
     "serve:ssr": "node dist/etwin/server/main.js",
     "build:ssr": "ng build --prod && ng run etwin:server:production",
+    "ng:server:build": "ng build && ng run etwin:server",
     "prerender": "ng run etwin:prerender"
   },
   "private": true,
