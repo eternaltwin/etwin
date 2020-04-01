@@ -1,0 +1,32 @@
+$contentWidth: 960px;
+$bgColor: #101010;
+$textColor: #d0d0d0;
+$bgAccentColor: #6a100e;
+
+
+$accentColor: #6a100e;
+$accentColorLight: #a81e22;
+$accentColorDark: #470d0b;
+
+body {
+  color: $textColor;
+  background-color: $bgColor;
+  font-family: sans-serif;
+}
+
+header h1 {
+  background-color: $bgAccentColor;
+  text-align: center;
+  margin: 0;
+  padding: 0.5em;
+}
+
+.content, footer {
+  margin: 1em auto;
+  width: $contentWidth;
+  border: 1px solid lighten($bgColor, 20%);
+  padding: 1em;
+  a {
+    color: $accentColorLight;
+  }
+}
