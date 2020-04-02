@@ -9,8 +9,9 @@ import koaStaticCache from "koa-static-cache";
 import * as furi from "furi";
 import * as koaRoute from "koa-route";
 import { AppServerModule } from "../app/app.server.module";
+import { ROUTES } from "../routes";
 
-const EXTERNAL_URI: string = "http://localhost:4200";
+const EXTERNAL_URI: string = "http://localhost:50320";
 
 // The Express app is exported so that it can be used by serverless Functions.
 export async function app() {
@@ -25,9 +26,10 @@ export async function app() {
     providers: [],
   });
 
-  router.use(koaRoute.get("/", ngRender));
+  // TODO: Update `koaRoute` types to accept a readonly ROUTES.
+  router.use(koaRoute.get([...ROUTES], ngRender));
 
-  async function ngRender(ctx: Koa.Context): Promise<void> {
+  async function ngRender(cx: Koa.Context): Promise<void> {
     // let auth: AuthContext;
     // try {
     //   auth = await efApi.koaAuth.auth(ctx);
@@ -35,8 +37,8 @@ export async function app() {
     //   console.error(err);
     //   auth = GUEST_AUTH_CONTEXT;
     // }
-    const reqUrl: url.URL = new url.URL(ctx.request.originalUrl, EXTERNAL_URI);
-    ctx.response.body = await engine.render({
+    const reqUrl: url.URL = new url.URL(cx.request.originalUrl, EXTERNAL_URI);
+    cx.response.body = await engine.render({
       url: reqUrl,
       providers: [
         {provide: APP_BASE_HREF, useValue: EXTERNAL_URI},

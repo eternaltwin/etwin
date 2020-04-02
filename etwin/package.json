@@ -81,6 +81,7 @@
     "srcDir": "src/locales",
     "genDir": "src/locales",
     "defaultLanguage": "en-US",
+    "i18nFile": "messages.en-US.xlf",
     "languages": [
       "de-DE",
       "eo",

@@ -2,29 +2,89 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-US" datatype="plaintext" original="ng2.template" target-language="eo">
     <body>
+      <trans-unit id="app.loginNav" datatype="html">
+        <source>Sign in</source>
+        <target state="new">Sign in</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+        <note priority="1" from="description">Top-bar button to the login page</note>
+      </trans-unit>
       <trans-unit id="app.announcementsHeading" datatype="html">
         <source>Announcements</source>
         <target state="translated">Anoncoj</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/app.component.html</context>
-          <context context-type="linenumber">8</context>
-        </context-group>
         <note priority="1" from="description">Announcement section heading</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="app.firstAnnouncement" datatype="html">
         <source>
-          Welcome!<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/>"/>
-          Eternal-Twin is a project aiming to save the games by Motion-Twin.
-        </source>
+        Welcome!<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/>"/>
+        Eternal-Twin is a project aiming to save the games by Motion-Twin.
+      </source>
         <target state="translated">
           Bonvenon!<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/>"/>
           Eternal-Twin estas projekto celanta savi la ludojn per Motion-Twin.
         </target>
+        <note priority="1" from="description">Annoucement welcoming users</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/app.component.html</context>
+          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.method.etwin" datatype="html">
+        <source>Sign in with Eternal-Twin</source>
+        <target state="new">Sign in with Eternal-Twin</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/login/login.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="69b6ac577a19acc39fc0c22342092f327fff2529" datatype="html">
+        <source>Email address</source>
+        <target state="new">Email address</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/login/login.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
-        <note priority="1" from="description">Annoucement welcoming users</note>
+        <note priority="1" from="description">Email address field label&amp;&amp;login.email</note>
+      </trans-unit>
+      <trans-unit id="c32ef07f8803a223a83ed17024b38e8d82292407" datatype="html">
+        <source>Password</source>
+        <target state="new">Password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/login/login.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+        <note priority="1" from="description">Password field label&amp;&amp;login.password</note>
+      </trans-unit>
+      <trans-unit id="287d3301a32a65a1b31116bda5d3a6463158c42a" datatype="html">
+        <source>Sign in</source>
+        <target state="new">Sign in</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/login/login.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <note priority="1" from="description">Submit login form label&amp;&amp;login.signInAction</note>
+      </trans-unit>
+      <trans-unit id="login.method.twinoid" datatype="html">
+        <source>Sign in with Twinoid (Soon)</source>
+        <target state="new">Sign in with Twinoid (Soon)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/login/login.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.method.hammerfest" datatype="html">
+        <source>Sign in with Hammerfest (Soon)</source>
+        <target state="new">Sign in with Hammerfest (Soon)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/login/login.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
       </trans-unit>
     </body>
   </file>

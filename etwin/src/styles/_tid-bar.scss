@@ -4,4 +4,13 @@
   color: #b7b9c6;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  a {
+    font-weight: bold;
+    color: #d0d0d0;
+    margin-right: 2rem;
+    text-decoration: none;
+  }
 }

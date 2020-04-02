@@ -29,6 +29,7 @@ header h1 {
   margin: 1em auto;
   width: $contentWidth;
   border: 1px solid lighten($bgColor, 20%);
+  background-color: lighten($bgColor, 5%);
   padding: 1em;
   a {
     color: $accentColorLight;

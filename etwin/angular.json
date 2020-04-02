@@ -74,7 +74,7 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "subresourceIntegrity": true,
+              "subresourceIntegrity": false,
               "budgets": [
                 {
                   "type": "initial",
