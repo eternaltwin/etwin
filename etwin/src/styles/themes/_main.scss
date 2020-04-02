@@ -19,6 +19,10 @@ header h1 {
   text-align: center;
   margin: 0;
   padding: 0.5em;
+  a {
+    text-decoration: none;
+    color: $textColor;
+  }
 }
 
 .content, footer {

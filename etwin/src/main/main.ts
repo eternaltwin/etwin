@@ -4,28 +4,88 @@ import url from "url";
 import furi from "furi";
 import fs from "fs";
 import koaMount from "koa-mount";
+import { Locale } from "./locales.js";
+import { createKoaLocaleNegotiator, LocaleNegotiator } from "./koa-locale-negotiation.js";
 
 const PROJECT_ROOT: url.URL = furi.join(import.meta.url, "../..");
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 async function main(): Promise<void> {
   const apps: Apps = await findApps();
 
-  if (apps.dev === undefined) {
-    throw new Error("Missing dev app");
+  if (IS_PRODUCTION) {
+    if (apps.dev !== undefined) {
+      throw new Error("Aborting: dev app build exists. Remove it before starting the server in production mode");
+    }
   }
 
-  const appRouter: Koa = await loadAppRouter(apps.dev.serverMain);
+  const prodAppRouters: Map<string, Koa> = new Map();
+  for (const [locale, prodApp] of apps.prod) {
+    const appRouter: Koa = await loadAppRouter(prodApp.serverMain);
+    prodAppRouters.set(locale, appRouter);
+  }
+
+  let defaultRouter: Koa | undefined = prodAppRouters.get("en-US");
+  if (defaultRouter === undefined) {
+    if (IS_PRODUCTION) {
+      throw new Error("Aborting: Missing `en-US` app");
+    }
+    if (apps.dev !== undefined) {
+      defaultRouter = await loadAppRouter(apps.dev.serverMain);
+    } else {
+      throw new Error("Aborting: Missing default app (`en-US` or `dev`)");
+    }
+  }
+
+  const i18nRouter: Koa = createI18nRouter(defaultRouter, prodAppRouters);
 
   const router: Koa = new Koa();
   const port: number = 50320;
 
   router.use(koaLogger());
 
-  router.use(koaMount("/", appRouter));
+  router.use(koaMount("/", i18nRouter));
 
   router.listen(port, () => {
     console.log(`Listening on http://localhost:${port}`);
   });
+}
+
+function createI18nRouter(defaultRouter: Koa, localizedRouters: Map<Locale, Koa>): Koa {
+  const router: Koa = new Koa();
+
+  router.use(async (cx, next) => {
+    cx.res.setHeader("Vary", "Accept-Language, Cookie");
+    return next();
+  });
+
+  const localeNegotiator: LocaleNegotiator<Koa.Context> = createKoaLocaleNegotiator({
+    cookieName: "locale",
+    queryName: "l",
+    supportedLocales: localizedRouters.keys()
+  });
+
+  const defaultMiddleware: Koa.Middleware = koaMount(defaultRouter);
+  const localizedMiddlewares: Map<Locale, Koa.Middleware> = new Map();
+  for (const [locale, app] of localizedRouters) {
+    localizedMiddlewares.set(locale, koaMount(app));
+  }
+
+  router.use(async (cx, next) => {
+    const locale: Locale | undefined = localeNegotiator(cx);
+    if (locale !== undefined) {
+      const middleware: Koa.Middleware | undefined = localizedMiddlewares.get(locale);
+      if (middleware !== undefined) {
+        return middleware(cx, next);
+      }
+      // We matched a locale but don't have a corresponding router
+      // TODO: Log warning? We should never reach this point since available
+      //       locales are generated from available routers.
+    }
+    return defaultMiddleware(cx, next);
+  });
+
+  return router;
 }
 
 async function loadAppRouter(serverMain: url.URL): Promise<Koa> {
