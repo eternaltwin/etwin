@@ -10,6 +10,17 @@
         </context-group>
         <note priority="1" from="description">Announcement section heading</note>
       </trans-unit>
+      <trans-unit id="app.firstAnnouncement" datatype="html">
+        <source>
+          Welcome!<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/&gt;"/>
+          Eternal-Twin is a project aiming to save the games by Motion-Twin.
+        </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/app.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <note priority="1" from="description">Annoucement welcoming users</note>
+      </trans-unit>
     </body>
   </file>
 </xliff>

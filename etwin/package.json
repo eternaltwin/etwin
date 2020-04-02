@@ -7,7 +7,7 @@
     "app:dev:build:browser": "ng build",
     "app:dev:build:server": "ng run etwin:server",
     "app:dev:ssr": "ng run etwin:serve-ssr",
-    "app:xi18n": "ng run etwin:extract-i18n",
+    "app:xi18n": "ng run etwin:extract-i18n && xliffmerge",
     "app:prod:build": "yarn run app:prod:build:browser && yarn run app:prod:build:server",
     "app:prod:build:browser": "ng build --prod --localize",
     "app:prod:build:server": "ng run etwin:server:production --localize",
@@ -69,11 +69,25 @@
     "karma-coverage-istanbul-reporter": "~2.1.0",
     "karma-jasmine": "~3.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
+    "ngx-i18nsupport": "^0.17.1",
     "normalize.css": "^8.0.1",
     "protractor": "~5.4.3",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.8.3"
+  },
+  "xliffmergeOptions": {
+    "i18nFormat": "xlf",
+    "srcDir": "src/locales",
+    "genDir": "src/locales",
+    "defaultLanguage": "en-US",
+    "languages": [
+      "de-DE",
+      "eo",
+      "es-SP",
+      "fr-FR"
+    ],
+    "beautifyOutput": true
   },
   "type": "module"
 }

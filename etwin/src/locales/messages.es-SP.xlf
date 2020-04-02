@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file source-language="en-US" datatype="plaintext" original="ng2.template" target-language="fr-FR">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template" target-language="es-SP">
     <body>
       <trans-unit id="app.announcementsHeading" datatype="html">
         <source>Announcements</source>
-        <target state="translated">Annonces</target>
+        <target state="translated">Anuncios</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/app.component.html</context>
           <context context-type="linenumber">8</context>
@@ -17,8 +17,8 @@
           Eternal-Twin is a project aiming to save the games by Motion-Twin.
         </source>
         <target state="translated">
-          Bienvenue&nbsp;!<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/>"/>
-          Eternal-Twin est un project de sauvegarde des jeux de la Motion-Twin.
+          ¡Bienvenidos!<x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/>"/>
+          Eternal-Twin es un proyecto cuyo objetivo es salvar los juegos de Motion-Twin.
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/app.component.html</context>

@@ -19,6 +19,18 @@
           "baseHref": "/"
         },
         "locales": {
+          "de-DE": {
+            "translation": "./src/locales/messages.de-DE.xlf",
+            "baseHref": "/"
+          },
+          "eo": {
+            "translation": "./src/locales/messages.eo.xlf",
+            "baseHref": "/"
+          },
+          "es-SP": {
+            "translation": "./src/locales/messages.es-SP.xlf",
+            "baseHref": "/"
+          },
           "fr-FR": {
             "translation": "./src/locales/messages.fr-FR.xlf",
             "baseHref": "/"
@@ -94,7 +106,7 @@
           "options": {
             "browserTarget": "etwin:build",
             "format": "xlf",
-            "outFile": "../locales/messages.xlf"
+            "outFile": "../locales/messages.en-US.xlf"
           }
         },
         "test": {
