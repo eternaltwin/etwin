@@ -1,6 +1,9 @@
 {
   "name": "@eternal-twin/etwin-monorepo",
   "private": true,
+  "scripts": {
+    "start": "yarn --cwd etwin run start"
+  },
   "workspaces": {
     "packages": [
       "./etwin",

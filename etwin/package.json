@@ -13,7 +13,7 @@
     "app:prod:build:server": "ng run etwin:server:production --localize",
     "main:build": "tsc --build ./src/main/tsconfig.json",
     "main:run": "node main/main.js",
-    "prestart": "yarn run main:build",
+    "prestart": "yarn run app:prod:build && yarn run main:build",
     "start": "yarn run main:run",
     "test": "ng test",
     "lint": "ng lint",
