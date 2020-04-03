@@ -6,7 +6,8 @@
     "outDir": "../../main"
   },
   "include": [
-    "**/*.ts"
+    "**/*.ts",
+    "../server/config.d.ts"
   ],
   "exclude": [],
   "references": [

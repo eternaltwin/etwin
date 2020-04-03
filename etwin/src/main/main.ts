@@ -6,11 +6,18 @@ import fs from "fs";
 import koaMount from "koa-mount";
 import { Locale } from "./locales.js";
 import { createKoaLocaleNegotiator, LocaleNegotiator } from "./koa-locale-negotiation.js";
+import { getLocalConfig, ServerConfig } from "./config.js";
+import { ServerAppConfig } from "../server/config";
 
 const PROJECT_ROOT: url.URL = furi.join(import.meta.url, "../..");
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 async function main(): Promise<void> {
+  const config: ServerConfig = await getLocalConfig();
+  console.log("Server configuration:");
+  console.log(`ETWIN_HTTP_PORT: ${config.httpPort}`);
+  console.log(`ETWIN_EXTERNAL_BASE_URI: ${config.externalBaseUri}`);
+
   const apps: Apps = await findApps();
 
   if (IS_PRODUCTION) {
@@ -19,9 +26,13 @@ async function main(): Promise<void> {
     }
   }
 
+  const appConfig: ServerAppConfig = {
+    externalBaseUri: config.externalBaseUri
+  };
+
   const prodAppRouters: Map<string, Koa> = new Map();
   for (const [locale, prodApp] of apps.prod) {
-    const appRouter: Koa = await loadAppRouter(prodApp.serverMain);
+    const appRouter: Koa = await loadAppRouter(prodApp.serverMain, appConfig);
     prodAppRouters.set(locale, appRouter);
   }
 
@@ -31,7 +42,7 @@ async function main(): Promise<void> {
       throw new Error("Aborting: Missing `en-US` app");
     }
     if (apps.dev !== undefined) {
-      defaultRouter = await loadAppRouter(apps.dev.serverMain);
+      defaultRouter = await loadAppRouter(apps.dev.serverMain, appConfig);
     } else {
       throw new Error("Aborting: Missing default app (`en-US` or `dev`)");
     }
@@ -40,14 +51,13 @@ async function main(): Promise<void> {
   const i18nRouter: Koa = createI18nRouter(defaultRouter, prodAppRouters);
 
   const router: Koa = new Koa();
-  const port: number = 50320;
 
   router.use(koaLogger());
 
   router.use(koaMount("/", i18nRouter));
 
-  router.listen(port, () => {
-    console.log(`Listening on http://localhost:${port}`);
+  router.listen(config.httpPort, () => {
+    console.log(`Listening on internal port ${config.httpPort}, externally available at ${config.externalBaseUri}`);
   });
 }
 
@@ -88,12 +98,12 @@ function createI18nRouter(defaultRouter: Koa, localizedRouters: Map<Locale, Koa>
   return router;
 }
 
-async function loadAppRouter(serverMain: url.URL): Promise<Koa> {
+async function loadAppRouter(serverMain: url.URL, serverAppConfig: ServerAppConfig): Promise<Koa> {
   const serverMod: unknown = await import(serverMain.toString());
   const appRouterFn: Function = getAppRouterFn(serverMod);
   let appRouter: Koa;
   try {
-    appRouter = await appRouterFn();
+    appRouter = await appRouterFn(serverAppConfig);
   } catch (err) {
     throw new Error(`App router creation failed: ${serverMain}\nCaused by: ${err.stack}`);
   }
