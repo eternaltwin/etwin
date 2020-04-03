@@ -1,13 +1,14 @@
+import fs from "fs";
+import furi from "furi";
 import Koa from "koa";
 import koaLogger from "koa-logger";
-import url from "url";
-import furi from "furi";
-import fs from "fs";
 import koaMount from "koa-mount";
-import { Locale } from "./locales.js";
-import { createKoaLocaleNegotiator, LocaleNegotiator } from "./koa-locale-negotiation.js";
-import { getLocalConfig, ServerConfig } from "./config.js";
+import url from "url";
+
 import { ServerAppConfig } from "../server/config";
+import { getLocalConfig, ServerConfig } from "./config.js";
+import { createKoaLocaleNegotiator, LocaleNegotiator } from "./koa-locale-negotiation.js";
+import { Locale } from "./locales.js";
 
 const PROJECT_ROOT: url.URL = furi.join(import.meta.url, "../..");
 const IS_PRODUCTION = process.env.NODE_ENV === "production";

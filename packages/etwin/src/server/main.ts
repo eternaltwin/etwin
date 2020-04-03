@@ -1,17 +1,18 @@
 import "zone.js/dist/zone-node";
 import "@angular/localize/init";
 
-import Koa from "koa";
 import { APP_BASE_HREF } from "@angular/common";
-import { NgKoaEngine } from "./ng-koa-engine";
-import url from "url";
-import koaStaticCache from "koa-static-cache";
+import { StaticProvider } from "@angular/core";
 import * as furi from "furi";
+import Koa from "koa";
 import * as koaRoute from "koa-route";
+import koaStaticCache from "koa-static-cache";
+import url from "url";
+
 import { AppServerModule } from "../app/app.server.module";
 import { ROUTES } from "../routes";
-import { StaticProvider } from "@angular/core";
 import { ServerAppConfig } from "./config";
+import { NgKoaEngine } from "./ng-koa-engine";
 
 const IS_PRODUCTION: boolean = process.env.NODE_ENV === "production";
 

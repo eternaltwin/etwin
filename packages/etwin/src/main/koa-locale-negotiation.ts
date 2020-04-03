@@ -1,6 +1,7 @@
-import { Locale } from "./locales.js";
-import Koa from "koa";
 import acceptLanguageParser from "accept-language-parser";
+import Koa from "koa";
+
+import { Locale } from "./locales.js";
 
 export type LocaleNegotiator<Req> = (req: Req) => Locale | undefined;
 
@@ -12,7 +13,7 @@ export interface NegotiateLocaleOptions {
 
 export function createKoaLocaleNegotiator(options: NegotiateLocaleOptions): LocaleNegotiator<Koa.Context> {
   const localeSet: LocaleSet = new LocaleSet(options.supportedLocales);
-  return function(ctx: Koa.Context): Locale | undefined {
+  return function (ctx: Koa.Context): Locale | undefined {
     if (options.queryName !== undefined) {
       const inputLocale: unknown = Reflect.get(ctx.query, options.queryName);
       if (typeof inputLocale === "string") {

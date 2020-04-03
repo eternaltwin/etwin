@@ -1,5 +1,5 @@
-import { MarkdownText } from "./markdown-text";
 import { HtmlText } from "./html-text";
+import { MarkdownText } from "./markdown-text";
 
 export interface RenderedText {
   markdown: MarkdownText;

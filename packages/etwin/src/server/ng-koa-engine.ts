@@ -1,8 +1,8 @@
+import { NgModuleFactory, StaticProvider, Type } from "@angular/core";
 import { ɵCommonEngine as CommonEngine } from "@nguniversal/common/engine";
 import fs from "fs";
 import * as furi from "furi";
 import url from "url";
-import { NgModuleFactory, StaticProvider, Type } from "@angular/core";
 
 export interface EngineOptions {
   browserDir: url.URL;

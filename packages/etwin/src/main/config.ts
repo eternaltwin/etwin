@@ -1,8 +1,8 @@
 import { default as dotEnv } from "dotenv";
-import url from "url";
 import findUp from "find-up";
-import furi from "furi";
 import fs from "fs";
+import furi from "furi";
+import url from "url";
 
 export interface ServerConfig {
   httpPort: number;

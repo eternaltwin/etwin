@@ -1,11 +1,12 @@
-import * as assert from "assert";
-import { InMemoryAnnouncementService } from "../../lib/announcement/service.js";
-import { UUID4_GENERATOR } from "../../lib/uuid-generator.js";
-import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
+import { Announcement } from "@eternal-twin/etwin-api-types/lib/announcement/announcement.js";
+import { CreateAnnouncementOptions } from "@eternal-twin/etwin-api-types/lib/announcement/create-announcement-options.js";
 import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
-import { CreateAnnouncementOptions } from "@eternal-twin/etwin-api-types/lib/announcement/create-announcement-options.js";
-import { Announcement } from "@eternal-twin/etwin-api-types/lib/announcement/announcement.js";
+import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
+import assert from "assert";
+
+import { InMemoryAnnouncementService } from "../../lib/announcement/service.js";
+import { UUID4_GENERATOR } from "../../lib/uuid-generator.js";
 
 const guestAuth: GuestAuthContext = {
   type: AuthType.Guest,

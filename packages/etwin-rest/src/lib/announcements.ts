@@ -1,8 +1,9 @@
 import { AnnouncementService } from "@eternal-twin/etwin-api-types/lib/announcement/service.js";
+import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
 import Koa from "koa";
 import koaRoute from "koa-route";
+
 import { KoaAuth } from "./koa-auth";
-import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
 
 export interface Api {
   announcement: AnnouncementService;

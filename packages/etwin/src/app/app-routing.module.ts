@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+
 import { HomeView } from "./home/home.component";
 
 const routes: Routes = [

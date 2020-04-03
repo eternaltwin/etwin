@@ -1,7 +1,7 @@
-import { ClientSecret } from "./client-secret";
 import { AuthToken } from "./auth-token";
-import { UserId } from "./user/user-id";
+import { ClientSecret } from "./client-secret";
 import { User } from "./user/user";
+import { UserId } from "./user/user-id";
 
 export interface Api {
   /**

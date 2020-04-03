@@ -1,5 +1,5 @@
-import { UuidHex } from "../core/uuid-hex.js";
 import { LocaleId } from "../core/locale-id.js";
+import { UuidHex } from "../core/uuid-hex.js";
 import { AnnouncementRevision } from "./announcement-revision.js";
 
 export interface Announcement {
