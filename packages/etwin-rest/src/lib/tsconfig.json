@@ -1,5 +1,5 @@
 {
-  "extends": "../../../tsconfig.json",
+  "extends": "../../../../tsconfig.json",
   "compilerOptions": {
     "composite": true,
     "noEmit": false,
@@ -9,5 +9,10 @@
   "include": [
     "./**/*.ts"
   ],
-  "exclude": []
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../../etwin-api-types/src/lib"
+    }
+  ]
 }

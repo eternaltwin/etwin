@@ -2,14 +2,11 @@
   "name": "@eternal-twin/etwin-monorepo",
   "private": true,
   "scripts": {
-    "start": "yarn --cwd etwin run start"
+    "start": "yarn --cwd packages/etwin run start"
   },
   "workspaces": {
     "packages": [
-      "./etwin",
-      "./etwin-api-in-memory",
-      "./etwin-api-types",
-      "./etwin-rest"
+      "packages/*"
     ],
     "nohoist": [
       "**/@angular/**",
