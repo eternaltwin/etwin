@@ -6,7 +6,6 @@ import { StaticProvider } from "@angular/core";
 import * as furi from "furi";
 import Koa from "koa";
 import * as koaRoute from "koa-route";
-import koaStaticCache from "koa-static-cache";
 import url from "url";
 
 import { AppServerModule } from "../app/app.server.module";
@@ -80,9 +79,6 @@ export async function app(options?: Partial<ServerAppConfig>) {
       ],
     });
   }
-
-  const ONE_DAY: number = 24 * 3600;
-  router.use(koaStaticCache(furi.toSysPath(browserDir), {maxAge: ONE_DAY}));
 
   return router;
 }

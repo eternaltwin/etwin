@@ -15,25 +15,20 @@
       "prefix": "app",
       "i18n": {
         "sourceLocale": {
-          "code": "en-US",
-          "baseHref": "/"
+          "code": "en-US"
         },
         "locales": {
           "de-DE": {
-            "translation": "./src/locales/messages.de-DE.xlf",
-            "baseHref": "/"
+            "translation": "./src/locales/messages.de-DE.xlf"
           },
           "eo": {
-            "translation": "./src/locales/messages.eo.xlf",
-            "baseHref": "/"
+            "translation": "./src/locales/messages.eo.xlf"
           },
           "es-SP": {
-            "translation": "./src/locales/messages.es-SP.xlf",
-            "baseHref": "/"
+            "translation": "./src/locales/messages.es-SP.xlf"
           },
           "fr-FR": {
-            "translation": "./src/locales/messages.fr-FR.xlf",
-            "baseHref": "/"
+            "translation": "./src/locales/messages.fr-FR.xlf"
           }
         }
       },

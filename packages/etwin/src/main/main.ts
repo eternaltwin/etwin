@@ -3,6 +3,9 @@ import furi from "furi";
 import Koa from "koa";
 import koaLogger from "koa-logger";
 import koaMount from "koa-mount";
+import koaRoute from "koa-route";
+import koaSend from "koa-send";
+import koaStaticCache from "koa-static-cache";
 import url from "url";
 
 import { ServerAppConfig } from "../server/config";
@@ -12,6 +15,8 @@ import { Locale } from "./locales.js";
 
 const PROJECT_ROOT: url.URL = furi.join(import.meta.url, "../..");
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
+const APP_DIR: url.URL = furi.join(PROJECT_ROOT, "app");
+const BROWSER_APP_DIR: url.URL = furi.join(APP_DIR, "browser");
 
 async function main(): Promise<void> {
   const config: ServerConfig = await getLocalConfig();
@@ -28,7 +33,7 @@ async function main(): Promise<void> {
   }
 
   const appConfig: ServerAppConfig = {
-    externalBaseUri: config.externalBaseUri
+    externalBaseUri: config.externalBaseUri,
   };
 
   const prodAppRouters: Map<string, Koa> = new Map();
@@ -37,16 +42,20 @@ async function main(): Promise<void> {
     prodAppRouters.set(locale, appRouter);
   }
 
+  let defaultApp: App;
   let defaultRouter: Koa | undefined = prodAppRouters.get("en-US");
   if (defaultRouter === undefined) {
     if (IS_PRODUCTION) {
       throw new Error("Aborting: Missing `en-US` app");
     }
     if (apps.dev !== undefined) {
+      defaultApp = apps.dev;
       defaultRouter = await loadAppRouter(apps.dev.serverMain, appConfig);
     } else {
       throw new Error("Aborting: Missing default app (`en-US` or `dev`)");
     }
+  } else {
+    defaultApp = apps.prod.get("en-US")!;
   }
 
   const i18nRouter: Koa = createI18nRouter(defaultRouter, prodAppRouters);
@@ -57,6 +66,17 @@ async function main(): Promise<void> {
 
   router.use(koaMount("/", i18nRouter));
 
+  const ONE_DAY: number = 24 * 3600;
+  for (const [name, app] of apps.prod) {
+    router.use(koaStaticCache(furi.toSysPath(app.browserDir), {maxAge: ONE_DAY, prefix: `/${name}`}));
+  }
+
+  router.use(koaRoute.get("/favicon.ico", sendFavicon));
+
+  async function sendFavicon(cx: Koa.Context): Promise<void> {
+    await koaSend(cx, "favicon.ico", {root: furi.toSysPath(defaultApp.browserDir)});
+  }
+
   router.listen(config.httpPort, () => {
     console.log(`Listening on internal port ${config.httpPort}, externally available at ${config.externalBaseUri}`);
   });
@@ -65,15 +85,10 @@ async function main(): Promise<void> {
 function createI18nRouter(defaultRouter: Koa, localizedRouters: Map<Locale, Koa>): Koa {
   const router: Koa = new Koa();
 
-  router.use(async (cx, next) => {
-    cx.res.setHeader("Vary", "Accept-Language, Cookie");
-    return next();
-  });
-
   const localeNegotiator: LocaleNegotiator<Koa.Context> = createKoaLocaleNegotiator({
     cookieName: "locale",
     queryName: "l",
-    supportedLocales: localizedRouters.keys()
+    supportedLocales: localizedRouters.keys(),
   });
 
   const defaultMiddleware: Koa.Middleware = koaMount(defaultRouter);
@@ -139,9 +154,8 @@ interface Apps {
 }
 
 async function findApps(): Promise<Apps> {
-  const appDir: url.URL = furi.join(PROJECT_ROOT, "app");
-  const browserAppEnts: readonly fs.Dirent[] = await fs.promises.readdir(furi.join(appDir, "browser"), {withFileTypes: true});
-  const serverAppEnts: readonly fs.Dirent[] = await fs.promises.readdir(furi.join(appDir, "server"), {withFileTypes: true});
+  const browserAppEnts: readonly fs.Dirent[] = await fs.promises.readdir(BROWSER_APP_DIR, {withFileTypes: true});
+  const serverAppEnts: readonly fs.Dirent[] = await fs.promises.readdir(furi.join(APP_DIR, "server"), {withFileTypes: true});
 
   const browserApps: ReadonlySet<string> = pickDirectoryNames(browserAppEnts);
   const serverApps: ReadonlySet<string> = pickDirectoryNames(serverAppEnts);
@@ -161,7 +175,7 @@ async function findApps(): Promise<Apps> {
   let dev: App | undefined;
   let prod: Map<string, App> = new Map();
   for (const appName of browserApps) {
-    const app: App = resolveApp(appDir, appName);
+    const app: App = resolveApp(APP_DIR, appName);
     if (appName === "dev") {
       dev = app;
     } else {
@@ -175,7 +189,7 @@ async function findApps(): Promise<Apps> {
     const serverDir: url.URL = furi.join(appDir, "server", name);
     return {
       name,
-      browserDir: furi.join(appDir, "browser", name),
+      browserDir: furi.join(BROWSER_APP_DIR, name),
       serverDir,
       serverMain: furi.join(serverDir, "main.js"),
     };

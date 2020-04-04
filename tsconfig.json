@@ -23,7 +23,7 @@
       "es2017"
     ],
     "locale": "en-US",
-    "module": "es2020",
+    "module": "esNext",
     "moduleResolution": "node",
     "newLine": "lf",
     "noEmit": true,
