@@ -11,10 +11,10 @@
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
-    "lib:build": "node_modules/.bin/tsc --build src/lib/tsconfig.json",
-    "test:build": "node_modules/.bin/tsc --build src/test/tsconfig.json",
+    "lib:build": "tsc --build src/lib/tsconfig.json",
+    "test:build": "tsc --build src/test/tsconfig.json",
     "pretest": "yarn run test:build",
-    "test": "node_modules/.bin/mocha \"test/**/*.spec.js\""
+    "test": "mocha \"test/**/*.spec.js\""
   },
   "publishConfig": {
     "access": "public",

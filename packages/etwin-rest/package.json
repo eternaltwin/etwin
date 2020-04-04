@@ -15,7 +15,7 @@
     "main:build": "node_modules/.bin/tsc --build src/main/tsconfig.json",
     "test:build": "node_modules/.bin/tsc --build src/test/tsconfig.json",
     "pretest": "yarn run test:build",
-    "test": "node_modules/.bin/mocha \"test/**/*.spec.js\"",
+    "test": "mocha \"test/**/*.spec.js\"",
     "prestart": "yarn run main:build",
     "start": "node main/main.js"
   },

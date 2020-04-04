@@ -22,8 +22,8 @@
     "lib": [
       "es2017"
     ],
-    "locale": "en-us",
-    "module": "ESNext",
+    "locale": "en-US",
+    "module": "es2020",
     "moduleResolution": "node",
     "newLine": "lf",
     "noEmit": true,
