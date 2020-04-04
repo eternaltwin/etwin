@@ -36,24 +36,23 @@
   </source>
         <target state="new">
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
-      On March 27th 2020, Motion-Twin published <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>a message<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> on its
-      platform Twinoid about the end of Flash by the end of 2020. Their games will be gradually closed based on how the
-      player-base dwindles.
+      La 27-an de marto 2020, Motion-Twin anoncis en sia platformo Twinoid <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>anoncon<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>
+      pri la fino de Flash-subteno fine de 2020. Iliaj ludoj iom post iom fermiĝos dum iliaj respektivaj aŭdiencoj malpliiĝos.
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
-      Faced with the situation, a few players decided to start a project to save those games: the project Eternal-Twin.
-      Their goal is to keep the corresponding online communities alive and avoid losing this part of video-gaming history.
+      Fronte al ĉi tiu observado, iuj ludantoj decidis lanĉi projekton por savi ĉi tiujn ludojn: la projekto Eternal-Twin.
+      Ilia celo estas vivteni la komunumojn de ĉi tiuj ludoj kaj eviti la malaperon de ĉi tiu komuna videoluda heredaĵo.
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
-      This project is lead by MrPapy and Demurgos. Anyone is free to join and help.
+      Ĉi tiu projekto estas gvidata de MrPapy kaj Demurgos. Ĉiu povas aliĝi kaj helpi.
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
-      Useful links:
+      Utilaj ligoj:
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
     <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
-      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>Eternal-Twin Discord server<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Main communication channel<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
-      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a>"/>Eternal Twinpedia<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Wiki for the Motion-Twin games<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
-      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a>"/>Eternal-Twin Gitlab organization<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: All our source-code<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>Diskorda Eternal-Twin Servilo<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Ĉefa komunikila kanalo<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a>"/>Eternal Twinpedia<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Vikio por Movado-Ĝemelaj ludoj<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
+      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a>"/>Eternal-Twin organizo pri Gitlab<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Ĉiuj niaj fontkodoj<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
     <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
   </target>
         <context-group purpose="location">
