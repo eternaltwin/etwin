@@ -12,8 +12,7 @@
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
-    "test:build": "tsc --build src/test/tsconfig.json",
-    "pretest": "yarn run test:build",
+    "pretest": "tsc --build src/test/tsconfig.json",
     "test": "mocha \"test/**/*.spec.js\""
   },
   "publishConfig": {

@@ -2,11 +2,11 @@
   "name": "etwin",
   "version": "0.0.0",
   "scripts": {
-    "app:serve": "ng serve",
+    "app:serve:browswer": "ng serve",
+    "app:serve:server": "ng run etwin:serve-ssr",
     "app:dev:build": "yarn run app:dev:build:browser && yarn run app:dev:build:server",
     "app:dev:build:browser": "ng build",
     "app:dev:build:server": "ng run etwin:server",
-    "app:dev:ssr": "ng run etwin:serve-ssr",
     "app:xi18n": "ng run etwin:extract-i18n && xliffmerge",
     "app:prod:build": "yarn run app:prod:build:browser && yarn run app:prod:build:server && yarn run app:prod:build:post",
     "app:prod:build:browser": "ng build --prod --localize",

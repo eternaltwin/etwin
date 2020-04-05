@@ -11,12 +11,10 @@
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
-    "lib:build": "node_modules/.bin/tsc --build src/lib/tsconfig.json",
-    "main:build": "node_modules/.bin/tsc --build src/main/tsconfig.json",
-    "test:build": "node_modules/.bin/tsc --build src/test/tsconfig.json",
-    "pretest": "yarn run test:build",
+    "build": "tsc --build src/lib/tsconfig.json",
+    "pretest": "tsc --build src/test/tsconfig.json",
     "test": "mocha \"test/**/*.spec.js\"",
-    "prestart": "yarn run main:build",
+    "prestart": "tsc --build src/main/tsconfig.json",
     "start": "node main/main.js"
   },
   "publishConfig": {
