@@ -11,7 +11,10 @@
     "experimentalDecorators": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "noImplicitAny": true,
     "importHelpers": true,
+    "strict": true,
+    "strictNullChecks": true,
     "target": "es2015",
     "lib": [
       "es2018",

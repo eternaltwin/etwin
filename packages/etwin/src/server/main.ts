@@ -5,7 +5,8 @@ import { APP_BASE_HREF } from "@angular/common";
 import { StaticProvider } from "@angular/core";
 import * as furi from "furi";
 import Koa from "koa";
-import * as koaRoute from "koa-route";
+import koaRoute from "koa-route";
+import koaStaticCache from "koa-static-cache";
 import url from "url";
 
 import { AppServerModule } from "../app/app.server.module";
@@ -13,20 +14,24 @@ import { ROUTES } from "../routes";
 import { ServerAppConfig } from "./config";
 import { NgKoaEngine } from "./ng-koa-engine";
 
-const IS_PRODUCTION: boolean = process.env.NODE_ENV === "production";
-
 function resolveServerOptions(options?: Partial<ServerAppConfig>): ServerAppConfig {
+  let isProduction: boolean = false;
   if (options === undefined) {
-    if (IS_PRODUCTION) {
-      throw new Error("Aborting: Missing server options in production mode");
-    }
     options = {};
+  } else {
+    isProduction = options.isProduction === true;
   }
   let externalBaseUri: url.URL | undefined = options.externalBaseUri;
-  if (externalBaseUri === undefined && IS_PRODUCTION) {
-    throw new Error("Aborting: Missing server option `externalBaseUri` in production mode");
+  let isIndexNextToServerMain: boolean = options.isIndexNextToServerMain === true;
+  if (isProduction) {
+    if (externalBaseUri === undefined) {
+      throw new Error("Aborting: Missing server option `externalBaseUri` in production mode");
+    }
+    if (!isIndexNextToServerMain) {
+      throw new Error("Aborting: Index.html must be located next to server's main in production mode");
+    }
   }
-  return {externalBaseUri};
+  return {externalBaseUri, isIndexNextToServerMain, isProduction};
 }
 
 /**
@@ -45,8 +50,9 @@ export async function app(options?: Partial<ServerAppConfig>) {
   const config: ServerAppConfig = resolveServerOptions(options);
 
   const serverDir = furi.fromSysPath(__dirname);
-  const appName = furi.basename(serverDir);
-  const browserDir = furi.join(serverDir, "../../browser", appName);
+  const indexFuri = config.isIndexNextToServerMain
+    ? furi.join(serverDir, "index.html")
+    : furi.join(serverDir, "../../browser", furi.basename(serverDir), "index.html");
   const router = new Koa();
 
   const providers: StaticProvider[] = [];
@@ -55,7 +61,7 @@ export async function app(options?: Partial<ServerAppConfig>) {
   }
 
   const engine: NgKoaEngine = await NgKoaEngine.create({
-    browserDir,
+    indexFuri,
     bootstrap: AppServerModule,
     providers,
   });
@@ -80,12 +86,16 @@ export async function app(options?: Partial<ServerAppConfig>) {
     });
   }
 
+  if (!config.isIndexNextToServerMain) {
+    const browserDir = furi.join(serverDir, "../../browser", furi.basename(serverDir));
+    const ONE_DAY: number = 24 * 3600;
+    router.use(koaStaticCache(furi.toSysPath(browserDir), {maxAge: ONE_DAY}));
+  }
+
   return router;
 }
 
 async function run() {
-  console.log("isMain");
-  console.log(process.env.PORT);
   const port = process.env.PORT || 4000;
 
   // Start up the Node server

@@ -3,8 +3,6 @@ import furi from "furi";
 import Koa from "koa";
 import koaLogger from "koa-logger";
 import koaMount from "koa-mount";
-import koaRoute from "koa-route";
-import koaSend from "koa-send";
 import koaStaticCache from "koa-static-cache";
 import url from "url";
 
@@ -34,6 +32,8 @@ async function main(): Promise<void> {
 
   const appConfig: ServerAppConfig = {
     externalBaseUri: config.externalBaseUri,
+    isIndexNextToServerMain: true,
+    isProduction: IS_PRODUCTION,
   };
 
   const prodAppRouters: Map<string, Koa> = new Map();
@@ -41,21 +41,16 @@ async function main(): Promise<void> {
     const appRouter: Koa = await loadAppRouter(prodApp.serverMain, appConfig);
     prodAppRouters.set(locale, appRouter);
   }
-
-  let defaultApp: App;
   let defaultRouter: Koa | undefined = prodAppRouters.get("en-US");
   if (defaultRouter === undefined) {
     if (IS_PRODUCTION) {
       throw new Error("Aborting: Missing `en-US` app");
     }
     if (apps.dev !== undefined) {
-      defaultApp = apps.dev;
       defaultRouter = await loadAppRouter(apps.dev.serverMain, appConfig);
     } else {
       throw new Error("Aborting: Missing default app (`en-US` or `dev`)");
     }
-  } else {
-    defaultApp = apps.prod.get("en-US")!;
   }
 
   const i18nRouter: Koa = createI18nRouter(defaultRouter, prodAppRouters);
@@ -67,15 +62,7 @@ async function main(): Promise<void> {
   router.use(koaMount("/", i18nRouter));
 
   const ONE_DAY: number = 24 * 3600;
-  for (const [name, app] of apps.prod) {
-    router.use(koaStaticCache(furi.toSysPath(app.browserDir), {maxAge: ONE_DAY, prefix: `/${name}`}));
-  }
-
-  router.use(koaRoute.get("/favicon.ico", sendFavicon));
-
-  async function sendFavicon(cx: Koa.Context): Promise<void> {
-    await koaSend(cx, "favicon.ico", {root: furi.toSysPath(defaultApp.browserDir)});
-  }
+  router.use(koaStaticCache(furi.toSysPath(BROWSER_APP_DIR), {maxAge: ONE_DAY}));
 
   router.listen(config.httpPort, () => {
     console.log(`Listening on internal port ${config.httpPort}, externally available at ${config.externalBaseUri}`);

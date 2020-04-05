@@ -5,7 +5,7 @@ import * as furi from "furi";
 import url from "url";
 
 export interface EngineOptions {
-  browserDir: url.URL;
+  indexFuri: url.URL;
   bootstrap: Type<{}> | NgModuleFactory<{}>;
   providers: StaticProvider[];
 }
@@ -21,14 +21,14 @@ export class NgKoaEngine {
   private readonly bootstrap: Type<{}> | NgModuleFactory<{}>;
 
   public static async create(options: EngineOptions): Promise<NgKoaEngine> {
-    const indexFuri: url.URL = furi.join(options.browserDir, "index.html");
-    const indexHtml = await readTextAsync(indexFuri);
+    const indexHtml = await readTextAsync(options.indexFuri);
     return new NgKoaEngine(options, indexHtml);
   }
 
   private constructor(options: EngineOptions, document: string) {
-    this.commonEngine = new CommonEngine(options.bootstrap, options.providers);
     this.document = document;
+    this.bootstrap = options.bootstrap;
+    this.commonEngine = new CommonEngine(options.bootstrap, options.providers);
   }
 
   public async render(options: RenderOptions): Promise<string> {
