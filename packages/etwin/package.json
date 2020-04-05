@@ -12,6 +12,7 @@
     "app:prod:build:browser": "ng build --prod --localize",
     "app:prod:build:server": "ng run etwin:server:production --localize",
     "app:prod:build:post": "node ./scripts/copy-root-assets.mjs && node ./scripts/move-browser-index-to-server.mjs",
+    "app:prod:build:optimize": "gzip -rk ./app/browser",
     "main:build": "tsc --build ./src/main/tsconfig.json",
     "main:run": "node main/main.js",
     "prestart": "yarn run app:prod:build && yarn run main:build",
