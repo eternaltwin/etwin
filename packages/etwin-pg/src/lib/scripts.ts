@@ -1,5 +1,5 @@
-import url from "url";
 import furi from "furi";
+import url from "url";
 
 const PROJECT_ROOT: url.URL = furi.join(import.meta.url, "..", "..");
 
