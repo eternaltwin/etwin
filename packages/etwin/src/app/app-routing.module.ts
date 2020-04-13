@@ -6,6 +6,7 @@ import { HomeView } from "./home/home.component";
 const routes: Routes = [
   {path: "", component: HomeView, pathMatch: "full"},
   {path: "login", loadChildren: () => import("./login/login.module").then(({LoginModule}) => LoginModule)},
+  {path: "legal", loadChildren: () => import("./legal/legal.module").then(({LegalModule}) => LegalModule)},
 ];
 
 @NgModule({

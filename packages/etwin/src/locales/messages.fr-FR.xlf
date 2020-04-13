@@ -5,11 +5,15 @@
       <trans-unit id="app.loginNav" datatype="html">
         <source>Sign in</source>
         <target state="translated">Se connecter</target>
+        <note priority="1" from="description">Top-bar button to the login page</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
-        <note priority="1" from="description">Top-bar button to the login page</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="home.presentation" datatype="html">
         <source>
@@ -20,7 +24,8 @@
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       Faced with the situation, a few players decided to start a project to save those games: the project Eternal-Twin.
-      Their goal is to keep the corresponding online communities alive and avoid losing this part of video-gaming history.
+      Their goal is to keep the corresponding online communities alive and avoid losing this part of video-gaming
+      history.
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       This project is lead by MrPapy and Demurgos. Anyone is free to join and help.
@@ -34,31 +39,68 @@
       <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a>"/>Eternal-Twin Gitlab organization<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: All our source-code<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
     <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
   </source>
-        <target state="new">
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
+        <target state="translated"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       Le 27 mars 2020, Motion-Twin a publié sur sa plate-forme Twinoid <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>une annonce<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> relative à l'arrêt du support de Flash d'ici fin 2020. Leurs jeux seront progressivement fermés à mesure que leurs audiences respectives se réduiront.
-    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
+    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       Face à ce constat, quelques joueurs ont décidé de lancer un projet pour sauver ces jeux : le projet Eternal-Twin.
       Leur but est de garder vivantes les communautés de ces jeux et éviter la disparition de cet héritage vidéoludique commun.
-    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
+    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       Ce projet est mené par MrPapy et Demurgos. Chacun peut nous rejoindre et aider.
-    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
+    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       Liens utiles :
-    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-    <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
-      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>Serveur Discord Eternal-Twin<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Canal de communication principal<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
-      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a>"/>Eternal Twinpedia<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Wiki pour les jeux Motion-Twin<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
-      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a>"/>Organisation Eternal-Twin sur Gitlab<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Tout notre code source<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
-    <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
-  </target>
+    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>Serveur Discord Eternal-Twin<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Canal de communication principal<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a>"/>Eternal Twinpedia<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Wiki pour les jeux Motion-Twin<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a>"/>Organisation Eternal-Twin sur Gitlab<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Tout notre code source<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
         <note priority="1" from="description">Presentation of the Eternal-Twin project</note>
+      </trans-unit>
+      <trans-unit id="home.generalTitle" datatype="html">
+        <source>
+    General informations
+  </source>
+        <target state="translated">Informations générales</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+        <note priority="1" from="description">Title of the general informations section</note>
+      </trans-unit>
+      <trans-unit id="home.generalWhoAreWe" datatype="html">
+        <source>
+    Eternal-Twin is a non-commercial website operate by hobbyists. Its the goal to archive Motion-Twin's games. This
+    means we want to ensure they remain available even if the official website closes. <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/>We are not related to
+    Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.
+  </source>
+        <target state="translated">Eternal-Twin est un site web non-commercial géré par des amateurs. Son but est d'archiver les jeux de Motion Twin, c'est à dire les garder accessibles même en cas de fermeture du site officiel. <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/>Nous ne sommes pas liés à Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+        <note priority="1" from="description">Section describing who we are</note>
+      </trans-unit>
+      <trans-unit id="home.generalNoCheating" datatype="html">
+        <source>
+    We reverse engineered some of the games: this is done with the sole purpose of archiving them. We oppose anyone
+    using information we found in order to gain an unfair advantage in any game (even single-player games). We base our
+    judgement on the expectation of the community, not on what is technically possible or not: something may be possible
+    while still being considered cheating.
+  </source>
+        <target state="translated">Nous avons étudié certains jeux par rétro-ingénierie : l'unique but de cette analyse était l'archivage. Nous nous opposons à quiconque utilisant les informations trouvées afin de gagner un avantage en jeu (même pour les jeux à un seul joueur). Nous basons notre jugement sur les attente de la communauté, pas sur ce qui est techniquement possible : quelque chose peut être possible et pourtant considéré comme de la triche.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <note priority="1" from="description">Section explaining we're against cheating</note>
+      </trans-unit>
+      <trans-unit id="legalLink" datatype="html">
+        <source>Legal notices</source>
+        <target state="translated">Mentions légales</target>
+        <note priority="1" from="description">Link to legal notices</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="login.method.etwin" datatype="html">
         <source>Sign in with Eternal-Twin</source>
@@ -110,6 +152,99 @@
           <context context-type="sourcefile">../app/login/login.component.html</context>
           <context context-type="linenumber">22</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="legal.title" datatype="html">
+        <source>Legal notices</source>
+        <target state="translated">Mentions légales</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <note priority="1" from="description">Title of the legal notices section</note>
+      </trans-unit>
+      <trans-unit id="legal.hostingTitle" datatype="html">
+        <source>Web Hosting Provider</source>
+        <target state="translated">Hébergeur</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <note priority="1" from="description">Title of the web hosting provider section</note>
+      </trans-unit>
+      <trans-unit id="legal.hostingIntro" datatype="html">
+        <source>Eternal-Twin is hosted by
+    OVH. These are their contact details:</source>
+        <target state="translated">Eternal-Twin est hébergé auprès d'OVH. Veuillez trouvez ci-dessous leurs donnés de contact :</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <note priority="1" from="description">Introduction paragraph of the web hosting provider section</note>
+      </trans-unit>
+      <trans-unit id="legal.hostingNameLabel" datatype="html">
+        <source>Name</source>
+        <target state="translated">Nom</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <note priority="1" from="description">Label for the hosting provider name</note>
+      </trans-unit>
+      <trans-unit id="legal.hostingAddressLabel" datatype="html">
+        <source>Address</source>
+        <target state="translated">Adresse</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <note priority="1" from="description">Label for the hosting provider address</note>
+      </trans-unit>
+      <trans-unit id="legal.cookiesTitle" datatype="html">
+        <source>Cookies</source>
+        <target state="translated">Cookies</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <note priority="1" from="description">Title of the section on cookies</note>
+      </trans-unit>
+      <trans-unit id="legal.cookiesBody" datatype="html">
+        <source>
+    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin avoids any non-necessary cookies.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+    <x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Necessary cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/>
+    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin uses cookies to support authentication and remember the user's preferred language. Those are
+      first-party cookies required for the website to work. You may still disable them in your browser settings, but
+      this
+      may prevent the website from working.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+    <x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Other cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/>
+    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>There are no other cookies: no tracking, no analytics, no advertisement.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+  </source>
+        <target state="translated"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin évite tout cookie non-nécessaire.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Cookies nécessaires<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin utilise des cookies pour permettre l'authentification et retenir la langue préférée de l'utilisateur. Ces cookies sont nécessaires au fonctionnement du site web. Vous pouvez les désactiver dans les paramètres de votre navigateur, cependant cela peut empêcher le site de fonctionner correctement..<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Autres cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Il n'y a pas d'autres cookies : pas de pistage, pas d'analyse, pas de pub.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <note priority="1" from="description">Body of the section on cookies</note>
+      </trans-unit>
+      <trans-unit id="legal.personalDataTitle" datatype="html">
+        <source>Personal data</source>
+        <target state="translated">Données personnelles</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <note priority="1" from="description">Title of the personal data section</note>
+      </trans-unit>
+      <trans-unit id="legal.personalDataBody" datatype="html">
+        <source>Eternal-Twin stores user emails for authentication
+    (sign-in and password recovery). No other personal data is
+    stored. We do not share, sell or analyze any kind of personal data.</source>
+        <target state="translated">Eternal-Twin stocke l'email de ses utilisateur pour les besoins de l'authentication (connexion et récupération de mot de passe). Aucune autre donnée personnelle n'est stockée. Nous ne partageons, vendons ou analysons pas de données personnelles.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <note priority="1" from="description">Body of the personal data section</note>
       </trans-unit>
     </body>
   </file>

@@ -5,11 +5,15 @@
       <trans-unit id="app.loginNav" datatype="html">
         <source>Sign in</source>
         <target state="new">Sign in</target>
+        <note priority="1" from="description">Top-bar button to the login page</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
-        <note priority="1" from="description">Top-bar button to the login page</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="home.presentation" datatype="html">
         <source>
@@ -20,7 +24,8 @@
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       Faced with the situation, a few players decided to start a project to save those games: the project Eternal-Twin.
-      Their goal is to keep the corresponding online communities alive and avoid losing this part of video-gaming history.
+      Their goal is to keep the corresponding online communities alive and avoid losing this part of video-gaming
+      history.
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       This project is lead by MrPapy and Demurgos. Anyone is free to join and help.
@@ -60,6 +65,64 @@
           <context context-type="linenumber">8</context>
         </context-group>
         <note priority="1" from="description">Presentation of the Eternal-Twin project</note>
+      </trans-unit>
+      <trans-unit id="home.generalTitle" datatype="html">
+        <source>
+    General informations
+  </source>
+        <target state="new">
+    General informations
+  </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+        <note priority="1" from="description">Title of the general informations section</note>
+      </trans-unit>
+      <trans-unit id="home.generalWhoAreWe" datatype="html">
+        <source>
+    Eternal-Twin is a non-commercial website operate by hobbyists. Its the goal to archive Motion-Twin's games. This
+    means we want to ensure they remain available even if the official website closes. <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/>We are not related to
+    Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.
+  </source>
+        <target state="new">
+    Eternal-Twin is a non-commercial website operate by hobbyists. Its the goal to archive Motion-Twin's games. This
+    means we want to ensure they remain available even if the official website closes. <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/>We are not related to
+    Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.
+  </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+        <note priority="1" from="description">Section describing who we are</note>
+      </trans-unit>
+      <trans-unit id="home.generalNoCheating" datatype="html">
+        <source>
+    We reverse engineered some of the games: this is done with the sole purpose of archiving them. We oppose anyone
+    using information we found in order to gain an unfair advantage in any game (even single-player games). We base our
+    judgement on the expectation of the community, not on what is technically possible or not: something may be possible
+    while still being considered cheating.
+  </source>
+        <target state="new">
+    We reverse engineered some of the games: this is done with the sole purpose of archiving them. We oppose anyone
+    using information we found in order to gain an unfair advantage in any game (even single-player games). We base our
+    judgement on the expectation of the community, not on what is technically possible or not: something may be possible
+    while still being considered cheating.
+  </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <note priority="1" from="description">Section explaining we're against cheating</note>
+      </trans-unit>
+      <trans-unit id="legalLink" datatype="html">
+        <source>Legal notices</source>
+        <target state="new">Legal notices</target>
+        <note priority="1" from="description">Link to legal notices</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="login.method.etwin" datatype="html">
         <source>Sign in with Eternal-Twin</source>
@@ -111,6 +174,111 @@
           <context context-type="sourcefile">../app/login/login.component.html</context>
           <context context-type="linenumber">22</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="legal.title" datatype="html">
+        <source>Legal notices</source>
+        <target state="new">Legal notices</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <note priority="1" from="description">Title of the legal notices section</note>
+      </trans-unit>
+      <trans-unit id="legal.hostingTitle" datatype="html">
+        <source>Web Hosting Provider</source>
+        <target state="new">Web Hosting Provider</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+        <note priority="1" from="description">Title of the web hosting provider section</note>
+      </trans-unit>
+      <trans-unit id="legal.hostingIntro" datatype="html">
+        <source>Eternal-Twin is hosted by
+    OVH. These are their contact details:</source>
+        <target state="new">Eternal-Twin is hosted by
+    OVH. These are their contact details:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <note priority="1" from="description">Introduction paragraph of the web hosting provider section</note>
+      </trans-unit>
+      <trans-unit id="legal.hostingNameLabel" datatype="html">
+        <source>Name</source>
+        <target state="new">Name</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <note priority="1" from="description">Label for the hosting provider name</note>
+      </trans-unit>
+      <trans-unit id="legal.hostingAddressLabel" datatype="html">
+        <source>Address</source>
+        <target state="new">Address</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <note priority="1" from="description">Label for the hosting provider address</note>
+      </trans-unit>
+      <trans-unit id="legal.cookiesTitle" datatype="html">
+        <source>Cookies</source>
+        <target state="new">Cookies</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <note priority="1" from="description">Title of the section on cookies</note>
+      </trans-unit>
+      <trans-unit id="legal.cookiesBody" datatype="html">
+        <source>
+    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin avoids any non-necessary cookies.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+    <x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Necessary cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/>
+    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin uses cookies to support authentication and remember the user's preferred language. Those are
+      first-party cookies required for the website to work. You may still disable them in your browser settings, but
+      this
+      may prevent the website from working.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+    <x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Other cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/>
+    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>There are no other cookies: no tracking, no analytics, no advertisement.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+  </source>
+        <target state="new">
+    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin avoids any non-necessary cookies.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+    <x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Necessary cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/>
+    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin uses cookies to support authentication and remember the user's preferred language. Those are
+      first-party cookies required for the website to work. You may still disable them in your browser settings, but
+      this
+      may prevent the website from working.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+    <x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Other cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/>
+    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>There are no other cookies: no tracking, no analytics, no advertisement.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+  </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <note priority="1" from="description">Body of the section on cookies</note>
+      </trans-unit>
+      <trans-unit id="legal.personalDataTitle" datatype="html">
+        <source>Personal data</source>
+        <target state="new">Personal data</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <note priority="1" from="description">Title of the personal data section</note>
+      </trans-unit>
+      <trans-unit id="legal.personalDataBody" datatype="html">
+        <source>Eternal-Twin stores user emails for authentication
+    (sign-in and password recovery). No other personal data is
+    stored. We do not share, sell or analyze any kind of personal data.</source>
+        <target state="new">Eternalfest stores user emails for authentication
+    (sign-in and password recovery). No other personal data is
+    stored. We do not share, sell or analyze any kind of personal data.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <note priority="1" from="description">Body of the personal data section</note>
       </trans-unit>
     </body>
   </file>
