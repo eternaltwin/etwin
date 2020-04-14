@@ -5,7 +5,8 @@ import { HomeView } from "./home/home.component";
 
 const routes: Routes = [
   {path: "", component: HomeView, pathMatch: "full"},
-  {path: "login", loadChildren: () => import("./login/login.module").then(({LoginModule}) => LoginModule)},
+  {path: "login", loadChildren: () => import("./auth/login/login.module").then(({LoginModule}) => LoginModule)},
+  {path: "register", loadChildren: () => import("./auth/register/register.module").then(({RegisterModule}) => RegisterModule)},
   {path: "legal", loadChildren: () => import("./legal/legal.module").then(({LegalModule}) => LegalModule)},
 ];
 

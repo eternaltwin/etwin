@@ -2,11 +2,26 @@ import { JSON_READER } from "kryo-json/lib/json-reader.js";
 import { JSON_WRITER } from "kryo-json/lib/json-writer.js";
 import { registerErrMochaTests, registerMochaSuites, TestItem } from "kryo-testing";
 
-import { $CreateUserOptions, CreateUserOptions } from "../../lib/auth/create-user-options.js";
+import { $RegisterWithEmailOptions, RegisterWithEmailOptions } from "../../lib/auth/register-with-email-options.js";
 
-describe("CreateUserOptions", function () {
-  const items: TestItem<CreateUserOptions>[] = [
+describe("RegisterWithEmailOptions", function () {
+  const items: TestItem<RegisterWithEmailOptions>[] = [
     {
+      name: "Minimal options",
+      value: {
+        email: "foo@example.com",
+        password: Uint8Array.from([1, 2, 3]),
+      },
+      io: [
+        {
+          writer: JSON_WRITER,
+          reader: JSON_READER,
+          raw: "{\"email\":\"foo@example.com\",\"password\":\"010203\"}",
+        },
+      ],
+    },
+    {
+      name: "Options with displayName",
       value: {
         email: "foo@example.com",
         displayName: "Foo",
@@ -20,27 +35,14 @@ describe("CreateUserOptions", function () {
         },
       ],
     },
-    {
-      value: {
-        email: "foo@example.com",
-        password: Uint8Array.from([1, 2, 3]),
-      },
-      io: [
-        {
-          writer: JSON_WRITER,
-          reader: JSON_READER,
-          raw: "{\"email\":\"foo@example.com\",\"password\":\"010203\"}",
-        },
-      ],
-    },
   ];
 
-  registerMochaSuites($CreateUserOptions, items);
+  registerMochaSuites($RegisterWithEmailOptions, items);
 
   describe("Reader", function () {
     const invalids: string[] = [
       "{\"display_name\":\"Foo\",\"password\":\"010203\"}",
     ];
-    registerErrMochaTests(JSON_READER, $CreateUserOptions, invalids);
+    registerErrMochaTests(JSON_READER, $RegisterWithEmailOptions, invalids);
   });
 });

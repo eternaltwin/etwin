@@ -1,5 +1,5 @@
 import { AuthContext } from "./auth-context";
-import { CreateUserOptions } from "./create-user-options";
+import { RegisterWithEmailOptions } from "./register-with-email-options";
 import { LinkHammerfestUserOptions } from "./link-hammerfest-user-options";
 import { LoginWithHammerfestOptions } from "./login-with-hammerfest-options";
 
@@ -15,9 +15,9 @@ export interface Service {
    * @param authContext Auth context for the user creation, usually a guest context.
    * @param options User creation options.
    */
-  registerWithEmail(authContext: AuthContext, options: CreateUserOptions): Promise<void>;
+  registerWithEmail(authContext: AuthContext, options: RegisterWithEmailOptions): Promise<void>;
 
-  completeEmailRegistration(authContext: AuthContext, options: CreateUserOptions): Promise<void>;
+  completeEmailRegistration(authContext: AuthContext, options: RegisterWithEmailOptions): Promise<void>;
 
   /**
    * Authenticate with Hammerfest credentials.

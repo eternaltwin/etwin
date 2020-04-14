@@ -7,6 +7,7 @@ import { $LinkHammerfestUserOptions, LinkHammerfestUserOptions } from "../../lib
 describe("LinkHammerfestUserOptions", function () {
   const items: TestItem<LinkHammerfestUserOptions>[] = [
     {
+      name: "Alice Hammerfest user",
       value: {
         userId: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
         hammerfestServer: "hammerfest.fr",

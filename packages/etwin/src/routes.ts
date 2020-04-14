@@ -3,5 +3,9 @@
  */
 export const ROUTES: readonly string[] = [
   "/",
-  "/login"
+  "/legal",
+  "/login",
+  "/register",
+  "/register/email",
+  "/register/username",
 ];
