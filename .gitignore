@@ -17,6 +17,9 @@ dist/
 /.nyc_output/
 coverage/
 typedoc/
+/packages/*/lib/
+/packages/*/main/
+/packages/*/test/
 
 ###############################################################################
 # Dependencies                                                                #
