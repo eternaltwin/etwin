@@ -1,23 +1,28 @@
-import { AuthContext } from "./auth-context";
-import { RegisterWithEmailOptions } from "./register-with-email-options";
-import { LinkHammerfestUserOptions } from "./link-hammerfest-user-options";
-import { LoginWithHammerfestOptions } from "./login-with-hammerfest-options";
+import { AuthContext } from "./auth-context.js";
+import { LinkHammerfestUserOptions } from "./link-hammerfest-user-options.js";
+import { LoginWithHammerfestOptions } from "./login-with-hammerfest-options.js";
+import { RegisterOrLoginWithEmailOptions } from "./register-or-login-with-email-options.js";
+import { RegisterWithVerifiedEmailOptions } from "./register-with-verified-email-options.js";
 
-export interface Service {
+export interface AuthService {
   /**
-   * Creates a new user in a pending state.
+   * Authenticates a user using only his email address.
    *
-   * This action creates a new user from an email address, password and optional display name.
-   * The user is created in a pending state until it validates its email address.
-   * The function returns a token that should be sent by email to the user.
-   * User creation is completed with the `completeEmailUserCreation` action.
+   * If the email address is unknown, sends a registration email to verify the address and complete the registration.
+   * If the email address is known, sends a one-time authentication code to the address.
    *
-   * @param authContext Auth context for the user creation, usually a guest context.
-   * @param options User creation options.
+   * @param authContext Auth context for the user authentication.
+   * @param options Email address, with optional preferred locale for the email content.
    */
-  registerWithEmail(authContext: AuthContext, options: RegisterWithEmailOptions): Promise<void>;
+  registerOrLoginWithEmail(authContext: AuthContext, options: RegisterOrLoginWithEmailOptions): Promise<void>;
 
-  completeEmailRegistration(authContext: AuthContext, options: RegisterWithEmailOptions): Promise<void>;
+  /**
+   * Registers a user using an email verification token.
+   *
+   * @param authContext
+   * @param options
+   */
+  registerWithVerifiedEmail(authContext: AuthContext, options: RegisterWithVerifiedEmailOptions): Promise<void>;
 
   /**
    * Authenticate with Hammerfest credentials.

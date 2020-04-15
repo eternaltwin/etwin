@@ -1,5 +1,5 @@
 {
-  "name": "@eternal-twin/in-memory-email",
+  "name": "@eternal-twin/json-email-template",
   "version": "0.0.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "TypeScript definitions for the Node.js client API of the Eternal-Twin",
@@ -19,15 +19,12 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "pre-commit": {
-    "run": [
-      "lint"
-    ]
-  },
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@eternal-twin/etwin-api-types": "^0.0.1"
+    "@eternal-twin/etwin-api-types": "^0.0.1",
+    "@types/url-join": "^4.0.0",
+    "url-join": "^4.0.1"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",

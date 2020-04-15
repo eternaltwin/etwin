@@ -9,10 +9,5 @@
   "include": [
     "./**/*.ts"
   ],
-  "exclude": [],
-  "references": [
-    {
-      "path": "../../../pg-db/src/lib"
-    }
-  ]
+  "exclude": []
 }

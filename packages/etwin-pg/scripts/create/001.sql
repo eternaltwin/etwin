@@ -12,6 +12,5 @@ CREATE TABLE public.users (
 CREATE TABLE public.pending_email_registrations (
   -- Email address, encrypted with `pgp_sym_encrypt`
   email_address BYTEA NOT NULL,
-  display_name VARCHAR(64) NOT NULL,
-  token TODO,
+  display_name VARCHAR(64) NOT NULL
 );

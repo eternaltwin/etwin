@@ -1,23 +1,19 @@
 import { CaseStyle } from "kryo";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { $Ucs2String } from "kryo/lib/ucs2-string";
 
-import { $LocaleId, LocaleId } from "../core/locale-id.js";
-import { $EmailAddress, EmailAddress } from "../email/email-address.js";
 import { $Password, Password } from "../password/password.js";
 import { $UserDisplayName, UserDisplayName } from "../user/user-display-name.js";
 
-export interface RegisterWithEmailOptions {
+export interface RegisterWithVerifiedEmailOptions {
   /**
-   * Email address for the new user.
+   * Email verification token.
    *
-   * Not verified yet.
+   * This token is sent to the inbox of the registrant. He must provide it back
+   * to prove access to the inbox. This token allows to retrieve the email
+   * address.
    */
-  email: EmailAddress;
-
-  /**
-   * Preferred locale for the verification email.
-   */
-  verificationEmailLocale?: LocaleId;
+  emailVerificationToken: string;
 
   /**
    * Display name for the new user.
@@ -32,10 +28,9 @@ export interface RegisterWithEmailOptions {
   password: Password;
 }
 
-export const $RegisterWithEmailOptions: RecordIoType<RegisterWithEmailOptions> = new RecordType<RegisterWithEmailOptions>({
+export const $RegisterWithVerifiedEmailOptions: RecordIoType<RegisterWithVerifiedEmailOptions> = new RecordType<RegisterWithVerifiedEmailOptions>({
   properties: {
-    email: {type: $EmailAddress},
-    verificationEmailLocale: {type: $LocaleId, optional: true},
+    emailVerificationToken: {type: $Ucs2String},
     displayName: {type: $UserDisplayName, optional: true},
     password: {type: $Password},
   },

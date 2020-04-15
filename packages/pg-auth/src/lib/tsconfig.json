@@ -12,6 +12,9 @@
   "exclude": [],
   "references": [
     {
+      "path": "../../../etwin-api-types/src/lib"
+    },
+    {
       "path": "../../../pg-db/src/lib"
     }
   ]

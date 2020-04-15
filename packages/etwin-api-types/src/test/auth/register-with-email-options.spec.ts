@@ -2,47 +2,45 @@ import { JSON_READER } from "kryo-json/lib/json-reader.js";
 import { JSON_WRITER } from "kryo-json/lib/json-writer.js";
 import { registerErrMochaTests, registerMochaSuites, TestItem } from "kryo-testing";
 
-import { $RegisterWithEmailOptions, RegisterWithEmailOptions } from "../../lib/auth/register-with-email-options.js";
+import { $RegisterOrLoginWithEmailOptions, RegisterOrLoginWithEmailOptions } from "../../lib/auth/register-or-login-with-email-options.js";
 
 describe("RegisterWithEmailOptions", function () {
-  const items: TestItem<RegisterWithEmailOptions>[] = [
+  const items: TestItem<RegisterOrLoginWithEmailOptions>[] = [
     {
       name: "Minimal options",
       value: {
         email: "foo@example.com",
-        password: Uint8Array.from([1, 2, 3]),
       },
       io: [
         {
           writer: JSON_WRITER,
           reader: JSON_READER,
-          raw: "{\"email\":\"foo@example.com\",\"password\":\"010203\"}",
+          raw: "{\"email\":\"foo@example.com\"}",
         },
       ],
     },
     {
-      name: "Options with displayName",
+      name: "Options with locale",
       value: {
         email: "foo@example.com",
-        displayName: "Foo",
-        password: Uint8Array.from([1, 2, 3]),
+        locale: "fr-FR",
       },
       io: [
         {
           writer: JSON_WRITER,
           reader: JSON_READER,
-          raw: "{\"email\":\"foo@example.com\",\"display_name\":\"Foo\",\"password\":\"010203\"}",
+          raw: "{\"email\":\"foo@example.com\",\"locale\":\"fr-FR\"}",
         },
       ],
     },
   ];
 
-  registerMochaSuites($RegisterWithEmailOptions, items);
+  registerMochaSuites($RegisterOrLoginWithEmailOptions, items);
 
   describe("Reader", function () {
     const invalids: string[] = [
       "{\"display_name\":\"Foo\",\"password\":\"010203\"}",
     ];
-    registerErrMochaTests(JSON_READER, $RegisterWithEmailOptions, invalids);
+    registerErrMochaTests(JSON_READER, $RegisterOrLoginWithEmailOptions, invalids);
   });
 });

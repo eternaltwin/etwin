@@ -1,18 +1,17 @@
 {
   "extends": "../../../../tsconfig.json",
   "compilerOptions": {
-    "composite": true,
     "noEmit": false,
     "rootDir": ".",
-    "outDir": "../../lib"
+    "outDir": "../../test"
   },
   "include": [
-    "./**/*.ts"
+    "**/*.ts"
   ],
   "exclude": [],
   "references": [
     {
-      "path": "../../../pg-db/src/lib"
+      "path": "../lib"
     }
   ]
 }

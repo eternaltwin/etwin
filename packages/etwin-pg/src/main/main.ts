@@ -1,7 +1,7 @@
+import { withPgPool } from "@eternal-twin/pg-db";
 import pg from "pg";
 
 import { DbVersion, dropAndCreate, LATEST_DB_VERSION } from "../lib/index.js";
-import { withPgPool } from "../lib/pool.js";
 import { getLocalConfig } from "./config.js";
 
 export async function main() {
