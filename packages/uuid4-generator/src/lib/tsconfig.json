@@ -13,12 +13,6 @@
   "references": [
     {
       "path": "../../../etwin-api-types/src/lib"
-    },
-    {
-      "path": "../../../etwin-pg/src/lib"
-    },
-    {
-      "path": "../../../pg-db/src/lib"
     }
   ]
 }

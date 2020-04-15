@@ -20,7 +20,7 @@ export interface RegisterWithVerifiedEmailOptions {
    *
    * Default derived from the email address.
    */
-  displayName?: UserDisplayName;
+  displayName: UserDisplayName;
 
   /**
    * Password for the new user.
@@ -31,7 +31,7 @@ export interface RegisterWithVerifiedEmailOptions {
 export const $RegisterWithVerifiedEmailOptions: RecordIoType<RegisterWithVerifiedEmailOptions> = new RecordType<RegisterWithVerifiedEmailOptions>({
   properties: {
     emailVerificationToken: {type: $Ucs2String},
-    displayName: {type: $UserDisplayName, optional: true},
+    displayName: {type: $UserDisplayName},
     password: {type: $Password},
   },
   changeCase: CaseStyle.SnakeCase,

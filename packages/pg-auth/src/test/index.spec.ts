@@ -2,6 +2,7 @@ import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/ind
 import { InMemoryEmailService } from "@eternal-twin/in-memory-email";
 import { JsonEmailTemplateService } from "@eternal-twin/json-email-template";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
+import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 
 import { PgAuthService } from "../lib/index.js";
@@ -16,7 +17,7 @@ async function withPgAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     await dropAndCreate(db as any, LATEST_DB_VERSION);
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://twin.eternalfest.net"));
-    const auth = new PgAuthService(db, email, emailTemplate, Uint8Array.from([0, 1, 2, 3]));
+    const auth = new PgAuthService(db, "dbSecret", UUID4_GENERATOR, email, emailTemplate, Uint8Array.from([0, 1, 2, 3]));
     return fn({auth, email});
   });
 }

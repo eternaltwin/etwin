@@ -12,18 +12,6 @@
   "references": [
     {
       "path": "../lib"
-    },
-    {
-      "path": "../../../etwin-pg/src/lib"
-    },
-    {
-      "path": "../../../in-memory-email/src/lib"
-    },
-    {
-      "path": "../../../json-email-template/src/lib"
-    },
-    {
-      "path": "../../../uuid4-generator/src/lib"
     }
   ]
 }

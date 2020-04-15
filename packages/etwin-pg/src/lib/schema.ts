@@ -1,11 +1,20 @@
 export interface UserRow {
   user_id: string;
+
+  ctime: Date;
+
   display_name: string;
+
+  email_address: Uint8Array | null;
+
+  email_address_mtime: Date;
 
   /**
    * Username used to sign-in with a password.
    */
-  username: null | string;
+  username: string | null;
+
+  username_mtime: Date;
 }
 
 export interface UserEmailAddressRow {

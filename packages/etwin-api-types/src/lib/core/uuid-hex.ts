@@ -1,4 +1,1 @@
-/**
- * UUID as a hex string.
- */
-export type UuidHex = string;
+export { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
