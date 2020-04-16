@@ -3,7 +3,7 @@ import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context
 import Koa from "koa";
 import koaRoute from "koa-route";
 
-import { KoaAuth } from "./koa-auth";
+import { KoaAuth } from "./helpers/koa-auth.js";
 
 export interface Api {
   announcement: AnnouncementService;

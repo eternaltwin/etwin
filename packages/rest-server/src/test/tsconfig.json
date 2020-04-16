@@ -12,6 +12,9 @@
   "references": [
     {
       "path": "../lib"
+    },
+    {
+      "path": "../../../etwin-api-in-memory/src/lib"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@eternal-twin/etwin-rest",
+  "name": "@eternal-twin/rest-server",
   "version": "0.0.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin",
   "description": "Node.js in-memory client for the Eternal-Twin API",
@@ -35,17 +35,22 @@
     "@types/koa-route": "^3.2.4",
     "koa": "^2.11.0",
     "koa-mount": "^4.0.0",
-    "koa-route": "^3.2.0"
+    "koa-route": "^3.2.0",
+    "kryo-json": "^0.10.0"
   },
   "devDependencies": {
     "@eternal-twin/etwin-api-in-memory": "*",
+    "@eternal-twin/uuid4-generator": "*",
     "@koa/cors": "^3.0.0",
     "@types/koa__cors": "^3.0.1",
     "@types/koa-logger": "^3.1.1",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.9.5",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "eslint": "^6.8.0",
     "koa-logger": "^3.2.1",
+    "kryo": "^0.10.0",
     "mocha": "^7.1.1",
     "typescript": "^3.8.3"
   },

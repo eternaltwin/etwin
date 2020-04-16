@@ -1,5 +1,4 @@
 import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/lib/announcement/service.js";
-import { UUID4_GENERATOR } from "@eternal-twin/etwin-api-in-memory/lib/uuid-generator.js";
 import koaCors from "@koa/cors";
 import Koa from "koa";
 import koaLogger from "koa-logger";
@@ -7,6 +6,7 @@ import koaMount from "koa-mount";
 
 import { Api, createApiRouter } from "../lib";
 import { KoaAuth } from "../lib/koa-auth.js";
+import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 
 async function main(): Promise<void> {
   const announcement = new InMemoryAnnouncementService(UUID4_GENERATOR);

@@ -15,7 +15,7 @@
       "path": "../../../etwin-api-in-memory/src/lib"
     },
     {
-      "path": "../../../etwin-rest/src/lib"
+      "path": "../../../rest-server/src/lib"
     }
   ]
 }

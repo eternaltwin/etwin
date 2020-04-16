@@ -1,3 +1,5 @@
+import { TsEnumType } from "kryo/lib/ts-enum.js";
+
 export enum AuthType {
   /**
    * Unauthenticated
@@ -14,3 +16,7 @@ export enum AuthType {
    */
   System,
 }
+
+export const $AuthType: TsEnumType<AuthType> = new TsEnumType<AuthType>({
+  enum: AuthType,
+});

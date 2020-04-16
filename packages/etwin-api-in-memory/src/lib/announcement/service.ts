@@ -6,10 +6,9 @@ import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context
 import { HtmlText } from "@eternal-twin/etwin-api-types/lib/core/html-text.js";
 import { MarkdownText } from "@eternal-twin/etwin-api-types/lib/core/markdown-text.js";
 import { RenderedText } from "@eternal-twin/etwin-api-types/lib/core/rendered-text.js";
+import { UuidGenerator } from "@eternal-twin/etwin-api-types/lib/core/uuid-generator.js";
 import { UuidHex } from "@eternal-twin/etwin-api-types/lib/core/uuid-hex.js";
 import commonmark from "commonmark";
-
-import { UuidGenerator } from "../uuid-generator";
 
 export class InMemoryAnnouncementService implements AnnouncementService {
   private readonly uuidGen: UuidGenerator;
