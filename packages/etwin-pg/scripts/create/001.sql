@@ -24,6 +24,8 @@ CREATE TABLE public.users (
   password BYTEA NULL,
   -- Time of the last change to `password`
   password_mtime TIMESTAMP(0) NOT NULL,
+  -- Flag indicating that this user is an administrator (has elevated permissions)
+  is_administrator BOOLEAN NOT NULL,
   CHECK (email_address_mtime >= ctime),
   CHECK (username_mtime >= ctime),
   CHECK (password_mtime >= ctime),

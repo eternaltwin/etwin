@@ -3,6 +3,7 @@ import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
 import { LinkHammerfestUserOptions } from "@eternal-twin/etwin-api-types/lib/auth/link-hammerfest-user-options.js";
 import { LoginWithHammerfestOptions } from "@eternal-twin/etwin-api-types/lib/auth/login-with-hammerfest-options.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-or-login-with-email-options.js";
+import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options.js";
 import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-verified-email-options.js";
 import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service.js";
 import { Session } from "@eternal-twin/etwin-api-types/lib/auth/session.js";
@@ -17,6 +18,7 @@ import { PasswordService } from "@eternal-twin/etwin-api-types/lib/password/serv
 import { UserDisplayName } from "@eternal-twin/etwin-api-types/lib/user/user-display-name";
 import { UserId } from "@eternal-twin/etwin-api-types/lib/user/user-id.js";
 import { UserRef } from "@eternal-twin/etwin-api-types/lib/user/user-ref.js";
+import { Username } from "@eternal-twin/etwin-api-types/lib/user/username.js";
 import { SessionRow, UserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 import jsonWebToken from "jsonwebtoken";
@@ -24,8 +26,6 @@ import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
 import { UuidHex } from "kryo/lib/uuid-hex";
 
 import { $EmailRegistrationJwt, EmailRegistrationJwt } from "./email-registration-jwt.js";
-import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options";
-import { Username } from "@eternal-twin/etwin-api-types/lib/user/username";
 
 export const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
 
@@ -85,7 +85,10 @@ export class PgAuthService implements AuthService {
     await this.email.sendEmail(options.email, emailContent);
   }
 
-  async registerWithVerifiedEmail(acx: AuthContext, options: RegisterWithVerifiedEmailOptions): Promise<UserAndSession> {
+  async registerWithVerifiedEmail(
+    acx: AuthContext,
+    options: RegisterWithVerifiedEmailOptions,
+  ): Promise<UserAndSession> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can register");
     }
@@ -107,7 +110,7 @@ export class PgAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    this.database.transaction(TransactionMode.ReadWrite, async () => {
+    await this.database.transaction(TransactionMode.ReadWrite, async () => {
       throw new Error("NotImplemented");
     });
   }
@@ -140,27 +143,16 @@ export class PgAuthService implements AuthService {
       throw new Error(`Conflict: EmailAddressAlreadyInUse: ${JSON.stringify(oldUserRow)}`);
     }
 
-    const userId: UuidHex = this.uuidGen.next();
     const displayName: UserDisplayName = options.displayName;
-
     const passwordHash: PasswordHash = await this.password.hash(options.password);
-
-    const userRow: Row = await queryable.one(
-      `INSERT INTO users(user_id, ctime, display_name, email_address, email_address_mtime, username, username_mtime,
-                           password, password_mtime)
-         VALUES ($2::UUID, NOW(), $3::VARCHAR, pgp_sym_encrypt($4::TEXT, $1::TEXT), NOW(), NULL, NOW(),
-                 pgp_sym_encrypt_bytea($5::BYTEA, $1::TEXT), NOW())
-         RETURNING user_id, display_name;`,
-      [this.dbSecret, userId, displayName, email, passwordHash],
-    );
+    const user: UserRef = await this.createUser(queryable, displayName, email, null, passwordHash);
 
     try {
-      await this.createValidatedEmailVerification(queryable, userId, email, new Date(emailJwt.issuedAt * 1000));
+      await this.createValidatedEmailVerification(queryable, user.id, email, new Date(emailJwt.issuedAt * 1000));
     } catch (err) {
       console.warn(`FailedToCreateEmailVerification\n${err.stack}`);
     }
 
-    const user: UserRef = {id: userRow.user_id, displayName: userRow.display_name};
     const session: Session = await this.createSession(queryable, user.id);
 
     return {user, session};
@@ -188,23 +180,46 @@ export class PgAuthService implements AuthService {
       throw new Error(`Conflict: UsernameAlreadyInUse: ${JSON.stringify(oldUserRow)}`);
     }
 
-    const userId: UuidHex = this.uuidGen.next();
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
+    const user: UserRef = await this.createUser(queryable, displayName, null, username, passwordHash);
 
-    const userRow: Row = await queryable.one(
-      `INSERT INTO users(user_id, ctime, display_name, email_address, email_address_mtime, username, username_mtime,
-                           password, password_mtime)
-         VALUES ($2::UUID, NOW(), $3::VARCHAR, NULL, NOW(), $4::VARCHAR, NOW(),
-                 pgp_sym_encrypt_bytea($5::BYTEA, $1::TEXT), NOW())
-         RETURNING user_id, display_name;`,
-      [this.dbSecret, userId, displayName, username, passwordHash],
-    );
-
-    const user: UserRef = {id: userRow.user_id, displayName: userRow.display_name};
     const session: Session = await this.createSession(queryable, user.id);
 
     return {user, session};
+  }
+
+  private async createUser(
+    queryable: Queryable,
+    displayName: UserDisplayName,
+    emailAddress: EmailAddress | null,
+    username: Username | null,
+    passwordHash: PasswordHash,
+  ): Promise<UserRef> {
+    type Row = Pick<UserRow, "user_id" | "display_name">;
+    const userId: UuidHex = this.uuidGen.next();
+    const userRow: Row = await queryable.one(
+      `WITH administrator_exists AS (SELECT 1 FROM users WHERE is_administrator)
+         INSERT
+         INTO users(
+           user_id, ctime, display_name,
+           email_address, email_address_mtime,
+           username, username_mtime,
+           password, password_mtime,
+           is_administrator
+         )
+         VALUES (
+           $2::UUID, NOW(), $3::VARCHAR,
+           (CASE WHEN $4::TEXT IS NULL THEN NULL ELSE pgp_sym_encrypt($4::TEXT, $1::TEXT) END), NOW(),
+           $5::VARCHAR, NOW(),
+           pgp_sym_encrypt_bytea($6::BYTEA, $1::TEXT), NOW(),
+           (NOT EXISTS(SELECT 1 FROM administrator_exists))
+         )
+         RETURNING user_id, display_name;`,
+      [this.dbSecret, userId, displayName, emailAddress, username, passwordHash],
+    );
+
+    return {id: userRow.user_id, displayName: userRow.display_name};
   }
 
   private async createValidatedEmailVerification(
@@ -214,8 +229,12 @@ export class PgAuthService implements AuthService {
     ctime: Date,
   ): Promise<void> {
     await queryable.countOne(
-      `INSERT INTO email_verifications(user_id, email_address, ctime, validation_time)
-         VALUES ($2::UUID, pgp_sym_encrypt($3::TEXT, $1::TEXT), $4::TIMESTAMP, NOW());`,
+      `INSERT INTO email_verifications(
+        user_id, email_address, ctime, validation_time
+      )
+         VALUES (
+           $2::UUID, pgp_sym_encrypt($3::TEXT, $1::TEXT), $4::TIMESTAMP, NOW()
+         );`,
       [this.dbSecret, userId, email, ctime],
     );
   }
@@ -226,8 +245,12 @@ export class PgAuthService implements AuthService {
     const sessionId: UuidHex = this.uuidGen.next();
 
     const row: Row = await queryable.one(
-      `INSERT INTO sessions(session_id, user_id, ctime, atime, data)
-         VALUES ($1::UUID, $2::UUID, NOW(), NOW(), '{}')
+      `INSERT INTO sessions(
+        session_id, user_id, ctime, atime, data
+      )
+         VALUES (
+           $1::UUID, $2::UUID, NOW(), NOW(), '{}'
+         )
          RETURNING sessions.ctime, (SELECT display_name FROM users WHERE user_id = $2::UUID)`,
       [sessionId, userId],
     );
@@ -236,7 +259,7 @@ export class PgAuthService implements AuthService {
       id: sessionId,
       user: {id: userId, displayName: row.display_name},
       ctime: row.ctime,
-      atime: row.ctime
+      atime: row.ctime,
     };
   }
 

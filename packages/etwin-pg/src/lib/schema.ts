@@ -15,6 +15,8 @@ export interface UserRow {
   username: string | null;
 
   username_mtime: Date;
+
+  is_administrator: boolean;
 }
 
 export interface SessionRow {
