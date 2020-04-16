@@ -13,7 +13,7 @@ export interface RegisterWithVerifiedEmailOptions {
    * to prove access to the inbox. This token allows to retrieve the email
    * address.
    */
-  emailVerificationToken: string;
+  emailToken: string;
 
   /**
    * Display name for the new user.
@@ -30,7 +30,7 @@ export interface RegisterWithVerifiedEmailOptions {
 
 export const $RegisterWithVerifiedEmailOptions: RecordIoType<RegisterWithVerifiedEmailOptions> = new RecordType<RegisterWithVerifiedEmailOptions>({
   properties: {
-    emailVerificationToken: {type: $Ucs2String},
+    emailToken: {type: $Ucs2String},
     displayName: {type: $UserDisplayName},
     password: {type: $Password},
   },

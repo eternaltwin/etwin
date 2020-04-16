@@ -18,10 +18,15 @@ CREATE TABLE public.users (
   -- Unique username, mainly used for authentication
   -- This may be `NULL` if the value was never set, or if the value was removed.
   username VARCHAR(64) NULL,
-  -- Time of the last change to `username
+  -- Time of the last change to `username`
   username_mtime TIMESTAMP(0) NOT NULL,
+  -- Encrypted password hash (hashed with `scrypt`, encrypted with `pgp_sym_encrypt_bytea`)
+  password BYTEA NULL,
+  -- Time of the last change to `password`
+  password_mtime TIMESTAMP(0) NOT NULL,
   CHECK (email_address_mtime >= ctime),
   CHECK (username_mtime >= ctime),
+  CHECK (password_mtime >= ctime),
   UNIQUE (email_address)
 );
 
@@ -34,7 +39,7 @@ CREATE TABLE public.email_verifications (
   -- Date when the verification email was sent
   ctime TIMESTAMP(0) NOT NULL,
   -- Date when the email was validated. `null` if the email was not validated.
-  validation_time TIMESTAMP NULL,
+  validation_time TIMESTAMP(0) NULL,
   CHECK (validation_time >= ctime),
   CONSTRAINT email_verification__user__fk FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );

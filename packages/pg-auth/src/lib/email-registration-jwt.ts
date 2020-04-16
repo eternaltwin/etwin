@@ -1,19 +1,19 @@
 import { $EmailAddress, EmailAddress } from "@eternal-twin/etwin-api-types/lib/email/email-address.js";
-import { $Date } from "kryo/lib/date.js";
+import { $Uint53 } from "kryo/lib/integer.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 export interface EmailRegistrationJwt {
   email: EmailAddress;
 
-  issuedAt: Date;
+  issuedAt: number;
 
-  expirationTime: Date;
+  expirationTime: number;
 }
 
 export const $EmailRegistrationJwt: RecordIoType<EmailRegistrationJwt> = new RecordType<EmailRegistrationJwt>({
   properties: {
     email: {type: $EmailAddress},
-    issuedAt: {type: $Date, rename: "iat"},
-    expirationTime: {type: $Date, rename: "exp"},
+    issuedAt: {type: $Uint53, rename: "iat"},
+    expirationTime: {type: $Uint53, rename: "exp"},
   },
 });
