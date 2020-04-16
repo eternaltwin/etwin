@@ -66,23 +66,24 @@ export function createAuthRouter(api: Api): Koa {
   async function createSession(cx: Koa.Context): Promise<void> {
     const query: CreateSessionQuery = $CreateSessionQuery.read(QS_VALUE_READER, cx.request.query);
     switch (query.method) {
-    case AuthMethod.Credentials: {
-      await createSessionWithCredentials(cx);
-      break;
-    }
-    case AuthMethod.HammerfestCredentials: {
-      await createSessionWithHammerfestCredentials(cx);
-      break;
-    }
-    default:
-      cx.response.status = 422;
-      cx.response.body = {error: "InvalidMethod"};
+      case AuthMethod.Credentials: {
+        await createSessionWithCredentials(cx);
+        break;
+      }
+      case AuthMethod.HammerfestCredentials: {
+        await createSessionWithHammerfestCredentials(cx);
+        break;
+      }
+      default: {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidMethod"};
+      }
     }
   }
 
   async function createSessionWithCredentials(cx: Koa.Context): Promise<void> {
     const credentials: Credentials = $Credentials.read(JSON_VALUE_READER, cx.request.body);
-    const result: UserAndSession = await api.auth.loginWithCredentiels(GUEST_AUTH, credentials);
+    const result: UserAndSession = await api.auth.loginWithCredentials(GUEST_AUTH, credentials);
     cx.cookies.set(SESSION_COOKIE, result.session.id);
     cx.response.body = $UserRef.write(JSON_VALUE_WRITER, result.user);
   }

@@ -6,6 +6,7 @@ import koaMount from "koa-mount";
 import { createAnnouncementsRouter } from "./announcements.js";
 import { createAuthRouter } from "./auth.js";
 import { KoaAuth } from "./helpers/koa-auth.js";
+import { createUsersRouter } from "./users.js";
 
 export interface Api {
   announcement: AnnouncementService;
@@ -18,6 +19,7 @@ export function createApiRouter(api: Api): Koa {
 
   router.use(koaMount("/announcements", createAnnouncementsRouter(api)));
   router.use(koaMount("/auth", createAuthRouter(api)));
+  router.use(koaMount("/users", createUsersRouter(api)));
 
   router.use((ctx: Koa.Context) => {
     ctx.response.status = 404;

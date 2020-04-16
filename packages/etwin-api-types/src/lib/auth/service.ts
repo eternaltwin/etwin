@@ -5,6 +5,7 @@ import { LoginWithHammerfestOptions } from "./login-with-hammerfest-options.js";
 import { RegisterOrLoginWithEmailOptions } from "./register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "./register-with-username-options";
 import { RegisterWithVerifiedEmailOptions } from "./register-with-verified-email-options.js";
+import { SessionId } from "./session-id";
 import { UserAndSession } from "./user-and-session";
 
 export interface AuthService {
@@ -63,4 +64,6 @@ export interface AuthService {
   registerOrLoginWithHammerfest(authContext: AuthContext, options: LoginWithHammerfestOptions): Promise<void>;
 
   linkHammerfestUser(authContext: AuthContext, options: LinkHammerfestUserOptions): Promise<void>;
+
+  authenticateSession(authContext: AuthContext, sessionId: SessionId): Promise<UserAndSession | null>;
 }

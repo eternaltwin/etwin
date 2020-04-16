@@ -8,6 +8,7 @@ import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/etwin-api-types/l
 import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options.js";
 import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-verified-email-options.js";
 import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service.js";
+import { SessionId } from "@eternal-twin/etwin-api-types/lib/auth/session-id.js";
 import { Session } from "@eternal-twin/etwin-api-types/lib/auth/session.js";
 import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-session.js";
 import { LocaleId } from "@eternal-twin/etwin-api-types/lib/core/locale-id.js";
@@ -130,6 +131,20 @@ export class PgAuthService implements AuthService {
     throw new Error("NotImplemented");
   }
 
+  authenticateSession(acx: AuthContext, sessionId: string): Promise<UserAndSession | null> {
+    if (acx.type !== AuthType.Guest) {
+      throw Error("Forbidden: Only guests can register");
+    }
+    return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+      const session: Session | null = await this.getAndTouchSession(q, sessionId);
+      if (session === null) {
+        return null;
+      }
+      const user: UserRef = {id: session.user.id, displayName: session.user.displayName};
+      return {user, session};
+    });
+  }
+
   private async registerWithVerifiedEmailTx(
     queryable: Queryable,
     acx: AuthContext,
@@ -212,34 +227,34 @@ export class PgAuthService implements AuthService {
     type Row = Pick<UserRow, "user_id" | "display_name" | "password">;
     let row: Row;
     switch ($Login.match(credentials.login)) {
-    case $EmailAddress: {
-      const maybeRow: Row | undefined = await queryable.oneOrNone(
-        `SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
+      case $EmailAddress: {
+        const maybeRow: Row | undefined = await queryable.oneOrNone(
+          `SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
              FROM users
              WHERE users.email_address = pgp_sym_decrypt_bytea($2::TEXT, $1::TEXT);`,
-        [this.dbSecret, login],
-      );
-      if (maybeRow === undefined) {
-        throw new Error(`UserNotFound: User not found for the email: ${login}`);
+          [this.dbSecret, login],
+        );
+        if (maybeRow === undefined) {
+          throw new Error(`UserNotFound: User not found for the email: ${login}`);
+        }
+        row = maybeRow;
+        break;
       }
-      row = maybeRow;
-      break;
-    }
-    case $Username: {
-      const maybeRow: Row | undefined = await queryable.oneOrNone(
-        `SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
+      case $Username: {
+        const maybeRow: Row | undefined = await queryable.oneOrNone(
+          `SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
              FROM users
              WHERE users.username = $2::VARCHAR;`,
-        [this.dbSecret, login],
-      );
-      if (maybeRow === undefined) {
-        throw new Error(`UserNotFound: User not found for the username: ${login}`);
+          [this.dbSecret, login],
+        );
+        if (maybeRow === undefined) {
+          throw new Error(`UserNotFound: User not found for the username: ${login}`);
+        }
+        row = maybeRow;
+        break;
       }
-      row = maybeRow;
-      break;
-    }
-    default:
-      throw new Error("AssertionError: Invalid `creddentials.login` type");
+      default:
+        throw new Error("AssertionError: Invalid `creddentials.login` type");
     }
 
     if (row.password === null) {
@@ -329,6 +344,29 @@ export class PgAuthService implements AuthService {
       user: {id: userId, displayName: row.display_name},
       ctime: row.ctime,
       atime: row.ctime,
+    };
+  }
+
+  private async getAndTouchSession(queryable: Queryable, sessionId: SessionId): Promise<Session | null> {
+    type Row = Pick<SessionRow, "ctime" | "atime" | "user_id"> & Pick<UserRow, "display_name">;
+
+    const row: Row | undefined = await queryable.oneOrNone(
+      `UPDATE sessions
+        SET atime = NOW()
+        WHERE session_id = $1::UUID
+        RETURNING sessions.ctime, sessions.atime, sessions.user_id, (SELECT display_name FROM users WHERE user_id = sessions.user_id)`,
+      [sessionId],
+    );
+
+    if (row === undefined) {
+      return null;
+    }
+
+    return {
+      id: sessionId,
+      user: {id: row.user_id, displayName: row.display_name},
+      ctime: row.ctime,
+      atime: row.atime,
     };
   }
 

@@ -34,7 +34,7 @@ export async function withTestServer<R>(fn: (server: http.Server) => Promise<R>)
     const password = new ScryptPasswordService();
     const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes);
     const announcement = new InMemoryAnnouncementService(UUID4_GENERATOR);
-    const koaAuth = new KoaAuth();
+    const koaAuth = new KoaAuth(auth);
     const api: Api = {announcement, auth, koaAuth};
 
     const app: Koa = createApiRouter(api);

@@ -5,7 +5,7 @@ import koaLogger from "koa-logger";
 import koaMount from "koa-mount";
 
 import { Api, createApiRouter } from "../lib";
-import { KoaAuth } from "../lib/koa-auth.js";
+import { KoaAuth } from "../lib/helpers/koa-auth.js";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 
 async function main(): Promise<void> {
