@@ -19,11 +19,6 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "pre-commit": {
-    "run": [
-      "lint"
-    ]
-  },
   "keywords": [],
   "license": "MIT",
   "dependencies": {

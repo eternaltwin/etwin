@@ -1,4 +1,5 @@
 import { AnnouncementService } from "@eternal-twin/etwin-api-types/lib/announcement/service.js";
+import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service";
 import Koa from "koa";
 import koaMount from "koa-mount";
 
@@ -8,6 +9,7 @@ import { KoaAuth } from "./helpers/koa-auth.js";
 
 export interface Api {
   announcement: AnnouncementService;
+  auth: AuthService;
   koaAuth: KoaAuth;
 }
 

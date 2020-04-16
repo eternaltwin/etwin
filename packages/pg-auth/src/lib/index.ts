@@ -1,5 +1,6 @@
 import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
+import { Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials";
 import { LinkHammerfestUserOptions } from "@eternal-twin/etwin-api-types/lib/auth/link-hammerfest-user-options.js";
 import { LoginWithHammerfestOptions } from "@eternal-twin/etwin-api-types/lib/auth/login-with-hammerfest-options.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-or-login-with-email-options.js";
@@ -97,13 +98,19 @@ export class PgAuthService implements AuthService {
     });
   }
 
-  registerWithUsername(acx: AuthContext, options: RegisterWithUsernameOptions): Promise<UserAndSession> {
+  async registerWithUsername(acx: AuthContext, options: RegisterWithUsernameOptions): Promise<UserAndSession> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can register");
     }
     return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       return this.registerWithUsernameTx(acx, options, q);
     });
+  }
+
+  loginWithCredentiels(acx: AuthContext, credentials: Credentials): Promise<UserAndSession> {
+    console.warn(acx);
+    console.warn(credentials);
+    throw new Error("NotImplemented");
   }
 
   async registerOrLoginWithHammerfest(acx: AuthContext, _options: LoginWithHammerfestOptions): Promise<void> {

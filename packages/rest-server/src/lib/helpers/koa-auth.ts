@@ -4,6 +4,8 @@ import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
 import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
 import Koa from "koa";
 
+export const SESSION_COOKIE: string = "sid";
+
 const GUEST_AUTH_CONTEXT: GuestAuthContext = {
   type: AuthType.Guest,
   scope: AuthScope.Default,
@@ -16,7 +18,7 @@ export class KoaAuth {
   constructor() {
   }
 
-  async auth(_ctx: Koa.Context): Promise<AuthContext> {
+  async auth(_cx: Koa.Context): Promise<AuthContext> {
     // TODO: Implement authentication
     return GUEST_AUTH_CONTEXT;
   }
