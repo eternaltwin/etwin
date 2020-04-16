@@ -23,9 +23,6 @@
       "path": "../../../json-email-template/src/lib"
     },
     {
-      "path": "../../../local-config/src/lib"
-    },
-    {
       "path": "../../../uuid4-generator/src/lib"
     }
   ]

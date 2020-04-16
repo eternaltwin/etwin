@@ -1,5 +1,5 @@
 {
-  "name": "@eternal-twin/pg-auth",
+  "name": "@eternal-twin/local-config",
   "version": "0.0.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "TypeScript definitions for the Node.js client API of the Eternal-Twin",
@@ -27,15 +27,11 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@eternal-twin/etwin-api-types": "^0.0.1",
-    "@eternal-twin/pg-db": "^0.0.1",
-    "@types/jsonwebtoken": "^8.3.9",
-    "jsonwebtoken": "^8.5.1",
-    "kryo": "^0.10.0"
+    "@types/find-up": "^4.0.0",
+    "dotenv": "^8.2.0",
+    "find-up": "^4.1.0"
   },
   "devDependencies": {
-    "@eternal-twin/json-email-template": "^0.0.1",
-    "@eternal-twin/local-config": "^0.0.1",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.9.5",
