@@ -2,6 +2,7 @@ import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js"
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
 import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-or-login-with-email-options.js";
+import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options";
 import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-verified-email-options";
 import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-session.js";
@@ -43,6 +44,36 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
         password: Buffer.from("aaaaa"),
       };
       const actual: UserAndSession = await api.auth.registerWithVerifiedEmail(GUEST_AUTH, registerOptions);
+      {
+        const expected: UserAndSession = {
+          user: {
+            id: actual.user.id,
+            displayName: "Alice",
+          },
+          session: {
+            id: actual.session.id,
+            user: {
+              id: actual.user.id,
+              displayName: "Alice",
+            },
+            ctime: actual.session.ctime,
+            atime: actual.session.ctime,
+          },
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
+
+  it("Registers a user with a username", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const usernameOptions: RegisterWithUsernameOptions = {
+        username: "alice",
+        displayName: "Alice",
+        password: Buffer.from("aaaaa"),
+      };
+      const actual: UserAndSession = await api.auth.registerWithUsername(GUEST_AUTH, usernameOptions);
       {
         const expected: UserAndSession = {
           user: {

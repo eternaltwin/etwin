@@ -2,6 +2,7 @@ import { AuthContext } from "./auth-context.js";
 import { LinkHammerfestUserOptions } from "./link-hammerfest-user-options.js";
 import { LoginWithHammerfestOptions } from "./login-with-hammerfest-options.js";
 import { RegisterOrLoginWithEmailOptions } from "./register-or-login-with-email-options.js";
+import { RegisterWithUsernameOptions } from "./register-with-username-options";
 import { RegisterWithVerifiedEmailOptions } from "./register-with-verified-email-options.js";
 import { UserAndSession } from "./user-and-session";
 
@@ -27,6 +28,18 @@ export interface AuthService {
   registerWithVerifiedEmail(
     authContext: AuthContext,
     options: RegisterWithVerifiedEmailOptions,
+  ): Promise<UserAndSession>;
+
+  /**
+   * Registers a user using a username and password.
+   *
+   * @param authContext
+   * @param options
+   * @returns A reference to the newly created user.
+   */
+  registerWithUsername(
+    authContext: AuthContext,
+    options: RegisterWithUsernameOptions,
   ): Promise<UserAndSession>;
 
   /**

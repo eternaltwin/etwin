@@ -24,6 +24,8 @@ import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
 import { UuidHex } from "kryo/lib/uuid-hex";
 
 import { $EmailRegistrationJwt, EmailRegistrationJwt } from "./email-registration-jwt.js";
+import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options";
+import { Username } from "@eternal-twin/etwin-api-types/lib/user/username";
 
 export const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
 
@@ -92,6 +94,15 @@ export class PgAuthService implements AuthService {
     });
   }
 
+  registerWithUsername(acx: AuthContext, options: RegisterWithUsernameOptions): Promise<UserAndSession> {
+    if (acx.type !== AuthType.Guest) {
+      throw Error("Forbidden: Only guests can register");
+    }
+    return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+      return this.registerWithUsernameTx(acx, options, q);
+    });
+  }
+
   async registerOrLoginWithHammerfest(acx: AuthContext, _options: LoginWithHammerfestOptions): Promise<void> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
@@ -148,6 +159,47 @@ export class PgAuthService implements AuthService {
     } catch (err) {
       console.warn(`FailedToCreateEmailVerification\n${err.stack}`);
     }
+
+    const user: UserRef = {id: userRow.user_id, displayName: userRow.display_name};
+    const session: Session = await this.createSession(queryable, user.id);
+
+    return {user, session};
+  }
+
+  private async registerWithUsernameTx(
+    acx: AuthContext,
+    options: RegisterWithUsernameOptions,
+    queryable: Queryable,
+  ): Promise<UserAndSession> {
+    if (acx.type !== AuthType.Guest) {
+      throw Error("Forbidden: Only guests can authenticate");
+    }
+
+    const username: Username = options.username;
+
+    type Row = Pick<UserRow, "user_id" | "display_name">;
+    const oldUserRow: Row | undefined = await queryable.oneOrNone(
+      `SELECT user_id, display_name
+         FROM users
+         WHERE users.username = $1::VARCHAR;`,
+      [username],
+    );
+    if (oldUserRow !== undefined) {
+      throw new Error(`Conflict: UsernameAlreadyInUse: ${JSON.stringify(oldUserRow)}`);
+    }
+
+    const userId: UuidHex = this.uuidGen.next();
+    const displayName: UserDisplayName = options.displayName;
+    const passwordHash: PasswordHash = await this.password.hash(options.password);
+
+    const userRow: Row = await queryable.one(
+      `INSERT INTO users(user_id, ctime, display_name, email_address, email_address_mtime, username, username_mtime,
+                           password, password_mtime)
+         VALUES ($2::UUID, NOW(), $3::VARCHAR, NULL, NOW(), $4::VARCHAR, NOW(),
+                 pgp_sym_encrypt_bytea($5::BYTEA, $1::TEXT), NOW())
+         RETURNING user_id, display_name;`,
+      [this.dbSecret, userId, displayName, username, passwordHash],
+    );
 
     const user: UserRef = {id: userRow.user_id, displayName: userRow.display_name};
     const session: Session = await this.createSession(queryable, user.id);
