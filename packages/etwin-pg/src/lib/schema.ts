@@ -5,7 +5,7 @@ export interface UserRow {
 
   display_name: string;
 
-  email_address: Uint8Array | null;
+  email_address: string | null;
 
   email_address_mtime: Date;
 
@@ -15,6 +15,10 @@ export interface UserRow {
   username: string | null;
 
   username_mtime: Date;
+
+  password: Uint8Array | null;
+
+  password_mtime: Date;
 
   is_administrator: boolean;
 }

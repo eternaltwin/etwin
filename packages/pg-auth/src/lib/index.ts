@@ -3,6 +3,7 @@ import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
 import { Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials";
 import { LinkHammerfestUserOptions } from "@eternal-twin/etwin-api-types/lib/auth/link-hammerfest-user-options.js";
 import { LoginWithHammerfestOptions } from "@eternal-twin/etwin-api-types/lib/auth/login-with-hammerfest-options.js";
+import { $Login, Login } from "@eternal-twin/etwin-api-types/lib/auth/login.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options.js";
 import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-verified-email-options.js";
@@ -12,14 +13,14 @@ import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-
 import { LocaleId } from "@eternal-twin/etwin-api-types/lib/core/locale-id.js";
 import { UuidGenerator } from "@eternal-twin/etwin-api-types/lib/core/uuid-generator";
 import { EmailTemplateService } from "@eternal-twin/etwin-api-types/lib/email-template/service.js";
-import { EmailAddress } from "@eternal-twin/etwin-api-types/lib/email/email-address.js";
+import { $EmailAddress, EmailAddress } from "@eternal-twin/etwin-api-types/lib/email/email-address.js";
 import { EmailService } from "@eternal-twin/etwin-api-types/lib/email/service.js";
 import { PasswordHash } from "@eternal-twin/etwin-api-types/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/etwin-api-types/lib/password/service.js";
 import { UserDisplayName } from "@eternal-twin/etwin-api-types/lib/user/user-display-name";
 import { UserId } from "@eternal-twin/etwin-api-types/lib/user/user-id.js";
 import { UserRef } from "@eternal-twin/etwin-api-types/lib/user/user-ref.js";
-import { Username } from "@eternal-twin/etwin-api-types/lib/user/username.js";
+import { $Username, Username } from "@eternal-twin/etwin-api-types/lib/user/username.js";
 import { SessionRow, UserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 import jsonWebToken from "jsonwebtoken";
@@ -94,7 +95,7 @@ export class PgAuthService implements AuthService {
       throw Error("Forbidden: Only guests can register");
     }
     return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
-      return this.registerWithVerifiedEmailTx(acx, options, q);
+      return this.registerWithVerifiedEmailTx(q, acx, options);
     });
   }
 
@@ -103,14 +104,17 @@ export class PgAuthService implements AuthService {
       throw Error("Forbidden: Only guests can register");
     }
     return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
-      return this.registerWithUsernameTx(acx, options, q);
+      return this.registerWithUsernameTx(q, acx, options);
     });
   }
 
-  loginWithCredentiels(acx: AuthContext, credentials: Credentials): Promise<UserAndSession> {
-    console.warn(acx);
-    console.warn(credentials);
-    throw new Error("NotImplemented");
+  async loginWithCredentials(acx: AuthContext, credentials: Credentials): Promise<UserAndSession> {
+    if (acx.type !== AuthType.Guest) {
+      throw Error("Forbidden: Only guests can log in");
+    }
+    return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+      return this.loginWithCredentialsTx(q, acx, credentials);
+    });
   }
 
   async registerOrLoginWithHammerfest(acx: AuthContext, _options: LoginWithHammerfestOptions): Promise<void> {
@@ -127,9 +131,9 @@ export class PgAuthService implements AuthService {
   }
 
   private async registerWithVerifiedEmailTx(
+    queryable: Queryable,
     acx: AuthContext,
     options: RegisterWithVerifiedEmailOptions,
-    queryable: Queryable,
   ): Promise<UserAndSession> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
@@ -166,9 +170,9 @@ export class PgAuthService implements AuthService {
   }
 
   private async registerWithUsernameTx(
+    queryable: Queryable,
     acx: AuthContext,
     options: RegisterWithUsernameOptions,
-    queryable: Queryable,
   ): Promise<UserAndSession> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
@@ -191,6 +195,64 @@ export class PgAuthService implements AuthService {
     const passwordHash: PasswordHash = await this.password.hash(options.password);
     const user: UserRef = await this.createUser(queryable, displayName, null, username, passwordHash);
 
+    const session: Session = await this.createSession(queryable, user.id);
+
+    return {user, session};
+  }
+
+  private async loginWithCredentialsTx(
+    queryable: Queryable,
+    acx: AuthContext,
+    credentials: Credentials,
+  ): Promise<UserAndSession> {
+    if (acx.type !== AuthType.Guest) {
+      throw Error("Forbidden: Only guests can authenticate");
+    }
+    const login: Login = credentials.login;
+    type Row = Pick<UserRow, "user_id" | "display_name" | "password">;
+    let row: Row;
+    switch ($Login.match(credentials.login)) {
+    case $EmailAddress: {
+      const maybeRow: Row | undefined = await queryable.oneOrNone(
+        `SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
+             FROM users
+             WHERE users.email_address = pgp_sym_decrypt_bytea($2::TEXT, $1::TEXT);`,
+        [this.dbSecret, login],
+      );
+      if (maybeRow === undefined) {
+        throw new Error(`UserNotFound: User not found for the email: ${login}`);
+      }
+      row = maybeRow;
+      break;
+    }
+    case $Username: {
+      const maybeRow: Row | undefined = await queryable.oneOrNone(
+        `SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
+             FROM users
+             WHERE users.username = $2::VARCHAR;`,
+        [this.dbSecret, login],
+      );
+      if (maybeRow === undefined) {
+        throw new Error(`UserNotFound: User not found for the username: ${login}`);
+      }
+      row = maybeRow;
+      break;
+    }
+    default:
+      throw new Error("AssertionError: Invalid `creddentials.login` type");
+    }
+
+    if (row.password === null) {
+      throw new Error("NoPassword: Password authentication is not available for this user");
+    }
+
+    const isMatch: boolean = await this.password.verify(row.password, credentials.password);
+
+    if (!isMatch) {
+      throw new Error("InvalidPassword");
+    }
+
+    const user: UserRef = {id: row.user_id, displayName: row.display_name};
     const session: Session = await this.createSession(queryable, user.id);
 
     return {user, session};

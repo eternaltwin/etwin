@@ -94,4 +94,35 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
       }
     });
   });
+
+  it("Registers a user with a username and signs in", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const usernameOptions: RegisterWithUsernameOptions = {
+        username: "alice",
+        displayName: "Alice",
+        password: Buffer.from("aaaaa"),
+      };
+      await api.auth.registerWithUsername(GUEST_AUTH, usernameOptions);
+      const actual: UserAndSession = await api.auth.loginWithCredentials(GUEST_AUTH, {login: "alice", password: Buffer.from("aaaaa")});
+      {
+        const expected: UserAndSession = {
+          user: {
+            id: actual.user.id,
+            displayName: "Alice",
+          },
+          session: {
+            id: actual.session.id,
+            user: {
+              id: actual.user.id,
+              displayName: "Alice",
+            },
+            ctime: actual.session.ctime,
+            atime: actual.session.ctime,
+          },
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
 }

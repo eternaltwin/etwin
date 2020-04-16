@@ -50,7 +50,7 @@ export interface AuthService {
    * @param credentials Email or username, and password.
    * @returns A reference to the newly created user.
    */
-  loginWithCredentiels(
+  loginWithCredentials(
     authContext: AuthContext,
     credentials: Credentials,
   ): Promise<UserAndSession>;
