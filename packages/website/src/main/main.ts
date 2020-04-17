@@ -1,3 +1,4 @@
+import { createApiRouter } from "@eternal-twin/rest-server/lib/index.js";
 import fs from "fs";
 import furi from "furi";
 import Koa from "koa";
@@ -8,20 +9,19 @@ import url from "url";
 
 import { ServerAppConfig } from "../server/config.js";
 import { createActionsRouter } from "./actions/index.js";
-import { getLocalConfig, ServerConfig } from "./config.js";
+import { Api, withApi } from "./api.js";
+import { Config,getLocalConfig } from "./config.js";
 import { createKoaLocaleNegotiator, LocaleNegotiator } from "./koa-locale-negotiation.js";
 import { Locale } from "./locales.js";
 
-const PROJECT_ROOT: url.URL = furi.join(import.meta.url, "../..");
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
+const PROJECT_ROOT: url.URL = furi.join(import .meta.url, "../..");
+const IS_PRODUCTION: boolean = process.env.NODE_ENV === "production";
 const APP_DIR: url.URL = furi.join(PROJECT_ROOT, "app");
 const BROWSER_APP_DIR: url.URL = furi.join(APP_DIR, "browser");
 
-async function main(): Promise<void> {
-  const config: ServerConfig = await getLocalConfig();
+async function main(api: Api): Promise<void> {
+  const config: Config = await getLocalConfig();
   console.log("Server configuration:");
-  console.log(`ETWIN_HTTP_PORT: ${config.httpPort}`);
-  console.log(`ETWIN_EXTERNAL_BASE_URI: ${config.externalBaseUri}`);
 
   const apps: Apps = await findApps();
 
@@ -35,6 +35,7 @@ async function main(): Promise<void> {
     externalBaseUri: config.externalBaseUri,
     isIndexNextToServerMain: true,
     isProduction: IS_PRODUCTION,
+    api: api,
   };
 
   const prodAppRouters: Map<string, Koa> = new Map();
@@ -54,21 +55,21 @@ async function main(): Promise<void> {
     }
   }
 
-  const i18nRouter: Koa = createI18nRouter(defaultRouter, prodAppRouters);
-
   const router: Koa = new Koa();
 
   router.use(koaLogger());
 
-  const api: any = null;
+  const ONE_DAY: number = 24 * 3600;
+  router.use(koaStaticCache(furi.toSysPath(BROWSER_APP_DIR), {maxAge: ONE_DAY}));
+
+  const apiRouter: Koa = await createApiRouter(api);
+  router.use(koaMount("/api/v1", apiRouter));
 
   const actionsRouter: Koa = await createActionsRouter(api);
   router.use(koaMount("/actions", actionsRouter));
 
+  const i18nRouter: Koa = createI18nRouter(defaultRouter, prodAppRouters);
   router.use(koaMount("/", i18nRouter));
-
-  const ONE_DAY: number = 24 * 3600;
-  router.use(koaStaticCache(furi.toSysPath(BROWSER_APP_DIR), {maxAge: ONE_DAY}));
 
   router.listen(config.httpPort, () => {
     console.log(`Listening on internal port ${config.httpPort}, externally available at ${config.externalBaseUri}`);
@@ -135,10 +136,10 @@ async function loadAppRouter(serverMain: url.URL, serverAppConfig: ServerAppConf
 }
 
 interface App {
-  name: string,
-  browserDir: url.URL,
-  serverDir: url.URL,
-  serverMain: url.URL,
+  name: string;
+  browserDir: url.URL;
+  serverDir: url.URL;
+  serverMain: url.URL;
 }
 
 interface Apps {
@@ -166,7 +167,7 @@ async function findApps(): Promise<Apps> {
   }
 
   let dev: App | undefined;
-  let prod: Map<string, App> = new Map();
+  const prod: Map<string, App> = new Map();
   for (const appName of browserApps) {
     const app: App = resolveApp(APP_DIR, appName);
     if (appName === "dev") {
@@ -191,6 +192,9 @@ async function findApps(): Promise<Apps> {
   function pickDirectoryNames(dirEnts: Iterable<fs.Dirent>): Set<string> {
     const names: Set<string> = new Set();
     for (const dirEnt of dirEnts) {
+      if (dirEnt.name === "assets") {
+        continue;
+      }
       if (dirEnt.isDirectory()) {
         names.add(dirEnt.name);
       }
@@ -223,7 +227,18 @@ async function findApps(): Promise<Apps> {
   }
 }
 
-main()
+async function realMain(): Promise<void> {
+  const config: Config = await getLocalConfig();
+
+  return withApi(config, (api: Api): Promise<never> => {
+    // Create a never-resolving promise so the API is never closed
+    return new Promise<never>(() => {
+      main(api);
+    });
+  });
+}
+
+realMain()
   .catch((err: Error): never => {
     console.error(err.stack);
     process.exit(1);

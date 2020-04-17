@@ -2,6 +2,7 @@ import dotEnv from "dotenv";
 import findUp from "find-up";
 import fs from "fs";
 import furi from "furi";
+import url from "url";
 
 export interface Config {
   dbHost: string;
@@ -14,6 +15,16 @@ export interface Config {
    * Secret key used to encrypt sensitive DB columns (password hashes, emails) or sign JWTs.
    */
   secretKey: string;
+
+  /**
+   * Internal HTTP port
+   */
+  httpPort: number;
+
+  /**
+   * Public URI of the server
+   */
+  externalBaseUri: url.URL;
 }
 
 export function getPartialEnvConfig(env: NodeJS.ProcessEnv): Partial<Config> {
@@ -41,6 +52,14 @@ export function getPartialEnvConfig(env: NodeJS.ProcessEnv): Partial<Config> {
   if (typeof env.ETWIN_SECRET_KEY === "string") {
     secretKey = env.ETWIN_SECRET_KEY;
   }
+  let httpPort: number | undefined;
+  if (typeof env.ETWIN_HTTP_PORT === "string") {
+    httpPort = parseInt(env.ETWIN_HTTP_PORT);
+  }
+  let externalBaseUri: url.URL | undefined;
+  if (typeof env.ETWIN_EXTERNAL_BASE_URI === "string") {
+    externalBaseUri = new url.URL(env.ETWIN_EXTERNAL_BASE_URI);
+  }
 
   return {
     dbHost,
@@ -49,6 +68,8 @@ export function getPartialEnvConfig(env: NodeJS.ProcessEnv): Partial<Config> {
     dbUser,
     dbPassword,
     secretKey,
+    httpPort,
+    externalBaseUri,
   };
 }
 

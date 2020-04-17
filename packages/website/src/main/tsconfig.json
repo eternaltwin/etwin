@@ -12,7 +12,16 @@
   "exclude": [],
   "references": [
     {
+      "path": "../../../console-email/src/lib"
+    },
+    {
       "path": "../../../etwin-api-in-memory/src/lib"
+    },
+    {
+      "path": "../../../etwin-email-template/src/lib"
+    },
+    {
+      "path": "../../../local-config/src/lib"
     },
     {
       "path": "../../../rest-server/src/lib"

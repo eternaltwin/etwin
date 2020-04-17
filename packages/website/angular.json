@@ -43,16 +43,27 @@
             "tsConfig": "src/browser/tsconfig.json",
             "aot": true,
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              {
+                "input": "src/static",
+                "glob": "**/*",
+                "output": ""
+              }
             ],
             "extractCss": true,
             "styles": [
-              "src/styles.scss"
+              "src/styles/main.scss"
             ],
             "scripts": []
           },
           "configurations": {
+            "serve": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.serve.ts"
+                }
+              ]
+            },
             "production": {
               "outputPath": "app/browser",
               "fileReplacements": [
@@ -61,6 +72,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "assets": [],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -88,7 +100,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "etwin:build"
+            "browserTarget": "etwin:build:serve"
           },
           "configurations": {
             "production": {
@@ -112,11 +124,14 @@
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              {
+                "input": "src/static",
+                "glob": "**/*",
+                "output": ""
+              }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles/main.scss"
             ],
             "scripts": []
           }

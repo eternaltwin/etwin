@@ -74,12 +74,12 @@ async function oneOrNone<T>(simple: SimpleQueryable, query: string, values: read
   const result: pg.QueryResult = await simple.query(query, values);
 
   switch (result.rows.length) {
-  case 0:
-    return undefined;
-  case 1:
-    return result.rows[0];
-  default:
-    throw new Error(`AssertionError: Expected zero or one row, got ${result.rows.length}`);
+    case 0:
+      return undefined;
+    case 1:
+      return result.rows[0];
+    default:
+      throw new Error(`AssertionError: Expected zero or one row, got ${result.rows.length}`);
   }
 }
 
@@ -252,14 +252,14 @@ export class TransactionTask<T> {
 async function begin(client: pg.ClientBase, transactionMode: TransactionMode): Promise<void> {
   let query: string;
   switch (transactionMode) {
-  case TransactionMode.ReadWrite:
-    query = "BEGIN READ WRITE;";
-    break;
-  case TransactionMode.ReadOnly:
-    query = "BEGIN READ ONLY;";
-    break;
-  default:
-    throw new Error("AssertionError: Unexpected transaction mode");
+    case TransactionMode.ReadWrite:
+      query = "BEGIN READ WRITE;";
+      break;
+    case TransactionMode.ReadOnly:
+      query = "BEGIN READ ONLY;";
+      break;
+    default:
+      throw new Error("AssertionError: Unexpected transaction mode");
   }
   try {
     await client.query(query);

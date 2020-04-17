@@ -11,7 +11,7 @@ import url from "url";
 
 import { AppServerModule } from "../app/app.server.module";
 import { ROUTES } from "../routes";
-import { ServerAppConfig } from "./config";
+import { Api, ServerAppConfig } from "./config";
 import { NgKoaEngine } from "./ng-koa-engine";
 
 function resolveServerOptions(options?: Partial<ServerAppConfig>): ServerAppConfig {
@@ -31,7 +31,8 @@ function resolveServerOptions(options?: Partial<ServerAppConfig>): ServerAppConf
       throw new Error("Aborting: Index.html must be located next to server's main in production mode");
     }
   }
-  return {externalBaseUri, isIndexNextToServerMain, isProduction};
+  const api: Api = null as any;
+  return {externalBaseUri, isIndexNextToServerMain, isProduction, api};
 }
 
 /**
