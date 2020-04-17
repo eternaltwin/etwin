@@ -1,5 +1,9 @@
 <etwin-small-layout>
-  <form>
+  <form
+    method="POST"
+    enctype="application/x-www-form-urlencoded"
+    action="/actions/register"
+  >
     <div>
       Register with Eternal-Twin
     </div>
@@ -8,10 +12,14 @@
       <input type="text" name="username" class="field" />
     </label>
     <label>
+      <span i18n="Display name field label@@display_name">Display name</span>
+      <input type="text" name="display_name" class="field" />
+    </label>
+    <label>
       <span i18n="Password field label@@username">Password</span>
       <input type="password" name="password" class="field" />
     </label>
-    <input type="submit" class="btn primary" name="username_registration" value="Register (Soon)" />
+    <input type="submit" class="btn primary" name="register" value="Register" />
     <div>
       <a routerLink="/register">Back</a>
     </div>

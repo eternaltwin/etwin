@@ -6,7 +6,8 @@ import koaMount from "koa-mount";
 import koaStaticCache from "koa-static-cache";
 import url from "url";
 
-import { ServerAppConfig } from "../server/config";
+import { ServerAppConfig } from "../server/config.js";
+import { createActionsRouter } from "./actions/index.js";
 import { getLocalConfig, ServerConfig } from "./config.js";
 import { createKoaLocaleNegotiator, LocaleNegotiator } from "./koa-locale-negotiation.js";
 import { Locale } from "./locales.js";
@@ -58,6 +59,11 @@ async function main(): Promise<void> {
   const router: Koa = new Koa();
 
   router.use(koaLogger());
+
+  const api: any = null;
+
+  const actionsRouter: Koa = await createActionsRouter(api);
+  router.use(koaMount("/actions", actionsRouter));
 
   router.use(koaMount("/", i18nRouter));
 

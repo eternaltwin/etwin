@@ -32,9 +32,9 @@ export interface Api {
   koaAuth: KoaAuth;
 }
 
-export type CreateUserBody = RegisterWithVerifiedEmailOptions | RegisterWithUsernameOptions;
+type CreateUserBody = RegisterWithVerifiedEmailOptions | RegisterWithUsernameOptions;
 
-export const $CreateUserBody: TryUnionType<CreateUserBody> = new TryUnionType<CreateUserBody>({
+const $CreateUserBody: TryUnionType<CreateUserBody> = new TryUnionType<CreateUserBody>({
   variants: [$RegisterWithVerifiedEmailOptions, $RegisterWithUsernameOptions],
 });
 
