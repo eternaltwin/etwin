@@ -11,7 +11,7 @@ import {
 } from "@eternal-twin/etwin-api-types/lib/auth/register-with-verified-email-options.js";
 import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-session.js";
-import { $UserRef } from "@eternal-twin/etwin-api-types/lib/user/user-ref.js";
+import { $User } from "@eternal-twin/etwin-api-types/lib/user/user.js";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
@@ -64,7 +64,7 @@ export function createUsersRouter(api: Api): Koa {
       }
     }
     cx.cookies.set(SESSION_COOKIE, userAndSession.session.id);
-    cx.response.body = $UserRef.write(JSON_VALUE_WRITER, userAndSession.user);
+    cx.response.body = $User.write(JSON_VALUE_WRITER, userAndSession.user);
   }
 
   return router;

@@ -5,7 +5,7 @@ import { $Credentials, Credentials } from "@eternal-twin/etwin-api-types/lib/aut
 import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
 import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-session.js";
-import { $UserRef } from "@eternal-twin/etwin-api-types/lib/user/user-ref.js";
+import { $User } from "@eternal-twin/etwin-api-types/lib/user/user.js";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
@@ -64,7 +64,14 @@ export function createAuthRouter(api: Api): Koa {
   router.use(koaRoute.put("/self", koaCompose([koaBodyParser(), createSession])));
 
   async function createSession(cx: Koa.Context): Promise<void> {
-    const query: CreateSessionQuery = $CreateSessionQuery.read(QS_VALUE_READER, cx.request.query);
+    let query: CreateSessionQuery;
+    try {
+      query = $CreateSessionQuery.read(QS_VALUE_READER, cx.request.query);
+    } catch (_err) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidMethod"};
+      return;
+    }
     switch (query.method) {
       case AuthMethod.Credentials: {
         await createSessionWithCredentials(cx);
@@ -85,7 +92,7 @@ export function createAuthRouter(api: Api): Koa {
     const credentials: Credentials = $Credentials.read(JSON_VALUE_READER, cx.request.body);
     const result: UserAndSession = await api.auth.loginWithCredentials(GUEST_AUTH, credentials);
     cx.cookies.set(SESSION_COOKIE, result.session.id);
-    cx.response.body = $UserRef.write(JSON_VALUE_WRITER, result.user);
+    cx.response.body = $User.write(JSON_VALUE_WRITER, result.user);
   }
 
   async function createSessionWithHammerfestCredentials(cx: Koa.Context): Promise<void> {

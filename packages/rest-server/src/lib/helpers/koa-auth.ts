@@ -39,7 +39,7 @@ export class KoaAuth {
       scope: AuthScope.Default,
       userId: userAndSession.user.id,
       displayName: userAndSession.user.displayName,
-      isAdministrator: false,
+      isAdministrator: userAndSession.user.isAdministrator,
     };
   }
 }

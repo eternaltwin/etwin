@@ -18,9 +18,9 @@ import { $EmailAddress, EmailAddress } from "@eternal-twin/etwin-api-types/lib/e
 import { EmailService } from "@eternal-twin/etwin-api-types/lib/email/service.js";
 import { PasswordHash } from "@eternal-twin/etwin-api-types/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/etwin-api-types/lib/password/service.js";
+import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
 import { UserDisplayName } from "@eternal-twin/etwin-api-types/lib/user/user-display-name";
 import { UserId } from "@eternal-twin/etwin-api-types/lib/user/user-id.js";
-import { UserRef } from "@eternal-twin/etwin-api-types/lib/user/user-ref.js";
 import { $Username, Username } from "@eternal-twin/etwin-api-types/lib/user/username.js";
 import { SessionRow, UserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
@@ -140,7 +140,9 @@ export class PgAuthService implements AuthService {
       if (session === null) {
         return null;
       }
-      const user: UserRef = {id: session.user.id, displayName: session.user.displayName};
+
+      const user: User = await this.getExistingUserById(q, session.user.id);
+
       return {user, session};
     });
   }
@@ -171,7 +173,7 @@ export class PgAuthService implements AuthService {
 
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const user: UserRef = await this.createUser(queryable, displayName, email, null, passwordHash);
+    const user: User = await this.createUser(queryable, displayName, email, null, passwordHash);
 
     try {
       await this.createValidatedEmailVerification(queryable, user.id, email, new Date(emailJwt.issuedAt * 1000));
@@ -208,7 +210,7 @@ export class PgAuthService implements AuthService {
 
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const user: UserRef = await this.createUser(queryable, displayName, null, username, passwordHash);
+    const user: User = await this.createUser(queryable, displayName, null, username, passwordHash);
 
     const session: Session = await this.createSession(queryable, user.id);
 
@@ -267,8 +269,8 @@ export class PgAuthService implements AuthService {
       throw new Error("InvalidPassword");
     }
 
-    const user: UserRef = {id: row.user_id, displayName: row.display_name};
-    const session: Session = await this.createSession(queryable, user.id);
+    const session: Session = await this.createSession(queryable, row.user_id);
+    const user = await this.getExistingUserById(queryable, session.user.id);
 
     return {user, session};
   }
@@ -279,8 +281,8 @@ export class PgAuthService implements AuthService {
     emailAddress: EmailAddress | null,
     username: Username | null,
     passwordHash: PasswordHash,
-  ): Promise<UserRef> {
-    type Row = Pick<UserRow, "user_id" | "display_name">;
+  ): Promise<User> {
+    type Row = Pick<UserRow, "user_id" | "display_name" | "is_administrator">;
     const userId: UuidHex = this.uuidGen.next();
     const userRow: Row = await queryable.one(
       `WITH administrator_exists AS (SELECT 1 FROM users WHERE is_administrator)
@@ -299,11 +301,11 @@ export class PgAuthService implements AuthService {
            pgp_sym_encrypt_bytea($6::BYTEA, $1::TEXT), NOW(),
            (NOT EXISTS(SELECT 1 FROM administrator_exists))
          )
-         RETURNING user_id, display_name;`,
+         RETURNING user_id, display_name, is_administrator;`,
       [this.dbSecret, userId, displayName, emailAddress, username, passwordHash],
     );
 
-    return {id: userRow.user_id, displayName: userRow.display_name};
+    return {id: userRow.user_id, displayName: userRow.display_name, isAdministrator: userRow.is_administrator};
   }
 
   private async createValidatedEmailVerification(
@@ -352,9 +354,9 @@ export class PgAuthService implements AuthService {
 
     const row: Row | undefined = await queryable.oneOrNone(
       `UPDATE sessions
-        SET atime = NOW()
-        WHERE session_id = $1::UUID
-        RETURNING sessions.ctime, sessions.atime, sessions.user_id, (SELECT display_name FROM users WHERE user_id = sessions.user_id)`,
+         SET atime = NOW()
+         WHERE session_id = $1::UUID
+         RETURNING sessions.ctime, sessions.atime, sessions.user_id, (SELECT display_name FROM users WHERE user_id = sessions.user_id)`,
       [sessionId],
     );
 
@@ -368,6 +370,17 @@ export class PgAuthService implements AuthService {
       ctime: row.ctime,
       atime: row.atime,
     };
+  }
+
+  private async getExistingUserById(queryable: Queryable, userId: UserId): Promise<User> {
+    type Row = Pick<UserRow, "user_id" | "display_name" | "is_administrator">;
+    const row: Row = await queryable.one(
+      `SELECT user_id, display_name, is_administrator
+         FROM users
+         WHERE users.user_id = $1::UUID;`,
+      [userId],
+    );
+    return {id: row.user_id, displayName: row.display_name, isAdministrator: row.is_administrator};
   }
 
   private async createEmailVerificationToken(emailAddress: EmailAddress): Promise<string> {

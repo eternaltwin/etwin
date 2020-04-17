@@ -1,8 +1,10 @@
 import { $AuthContext, AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
 import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
+import { $Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials.js";
 import { $RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options.js";
-import { $UserRef, UserRef } from "@eternal-twin/etwin-api-types/lib/user/user-ref.js";
+import { UserRef } from "@eternal-twin/etwin-api-types/lib/user/user-ref.js";
+import { $User, User } from "@eternal-twin/etwin-api-types/lib/user/user.js";
 import chai from "chai";
 import chaiHttp from "chai-http";
 
@@ -39,12 +41,13 @@ describe("/auth", () => {
           displayName: "Alice",
           password: Buffer.from("aaaaa"),
         },
-        $UserRef,
+        $User,
       );
       {
-        const expected: UserRef = {
+        const expected: User = {
           id: actualUser.id,
           displayName: "Alice",
+          isAdministrator: true,
         };
         chai.assert.deepEqual(actualUser, expected);
       }
@@ -55,7 +58,53 @@ describe("/auth", () => {
           scope: AuthScope.Default,
           userId: actualUser.id,
           displayName: "Alice",
-          isAdministrator: false,
+          isAdministrator: true,
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
+
+  it("should register a user and authenticate back", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withTestServer(async server => {
+      let user: User;
+      {
+        const agent: TestAgent = new TestAgent(chai.request.agent(server));
+        user = await agent.post(
+          "/users",
+          $RegisterWithUsernameOptions,
+          {
+            username: "alice",
+            displayName: "Alice",
+            password: Buffer.from("aaaaa"),
+          },
+          $User,
+        );
+      }
+      const agent: TestAgent = new TestAgent(chai.request.agent(server));
+      {
+        const actual: AuthContext = await agent.get("/auth/self", $AuthContext);
+        const expected: AuthContext = {
+          type: AuthType.Guest,
+          scope: AuthScope.Default,
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+      {
+        const actual: User = await agent.put(
+          "/auth/self?method=Credentials",
+          $Credentials,
+          {
+            login: "alice",
+            password: Buffer.from("aaaaa"),
+          },
+          $User,
+        );
+        const expected: User = {
+          id: user.id,
+          displayName: "Alice",
+          isAdministrator: true,
         };
         chai.assert.deepEqual(actual, expected);
       }

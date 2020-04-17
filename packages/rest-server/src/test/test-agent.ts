@@ -20,13 +20,24 @@ export class TestAgent {
     return this.agent.post(url).send(req);
   }
 
+  public async rawPut(url: string, req: object): Promise<ChaiHttp.Response> {
+    return this.agent.put(url).send(req);
+  }
+
   public async get<Res>(url: string, resType: IoType<Res>): Promise<Res> {
     const res: ChaiHttp.Response = await this.rawGet(url);
     const raw: any = res.body;
     if (typeof raw.error === "string") {
       throw new Error(raw.error);
     } else {
-      return resType.read(JSON_VALUE_READER, raw);
+      try {
+        return resType.read(JSON_VALUE_READER, raw);
+      } catch (err) {
+        console.error(`GET ${url}`);
+        console.error(`Response (${res.status}):`);
+        console.error(JSON.stringify(res.body));
+        throw err;
+      }
     }
   }
 
@@ -37,7 +48,34 @@ export class TestAgent {
     if (typeof raw.error === "string") {
       throw new Error(raw.error);
     } else {
-      return resType.read(JSON_VALUE_READER, raw);
+      try {
+        return resType.read(JSON_VALUE_READER, raw);
+      } catch (err) {
+        console.error(`POST ${url}:`);
+        console.error(JSON.stringify(rawReq));
+        console.error(`Response (${res.status}):`);
+        console.error(JSON.stringify(res.body));
+        throw err;
+      }
+    }
+  }
+
+  public async put<Req, Res>(url: string, reqType: IoType<Req>, req: Req, resType: IoType<Res>): Promise<Res> {
+    const rawReq: object = reqType.write(JSON_VALUE_WRITER, req);
+    const res: ChaiHttp.Response = await this.rawPut(url, rawReq);
+    const raw: any = res.body;
+    if (typeof raw.error === "string") {
+      throw new Error(raw.error);
+    } else {
+      try {
+        return resType.read(JSON_VALUE_READER, raw);
+      } catch (err) {
+        console.error(`PUT ${url}:`);
+        console.error(JSON.stringify(rawReq));
+        console.error(`Response (${res.status}):`);
+        console.error(JSON.stringify(res.body));
+        throw err;
+      }
     }
   }
 }

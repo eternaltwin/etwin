@@ -49,6 +49,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
           user: {
             id: actual.user.id,
             displayName: "Alice",
+            isAdministrator: true,
           },
           session: {
             id: actual.session.id,
@@ -79,6 +80,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
           user: {
             id: actual.user.id,
             displayName: "Alice",
+            isAdministrator: true,
           },
           session: {
             id: actual.session.id,
@@ -110,6 +112,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
           user: {
             id: actual.user.id,
             displayName: "Alice",
+            isAdministrator: true,
           },
           session: {
             id: actual.session.id,
