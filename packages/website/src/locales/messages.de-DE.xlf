@@ -93,12 +93,10 @@
     judgement on the expectation of the community, not on what is technically possible or not: something may be possible
     while still being considered cheating.
   </source>
-        <target state="new">
-    We reverse engineered some of the games: this is done with the sole purpose of archiving them. We oppose anyone
-    using information we found in order to gain an unfair advantage in any game (even single-player games). We base our
-    judgement on the expectation of the community, not on what is technically possible or not: something may be possible
-    while still being considered cheating.
-  </target>
+        <target state="translated">    Wir haben einige der Spiele rekonstruiert: dies geschieht ausschließlich mit dem Zweck, sie zu archivieren. Wir sind gegen jede
+    Verwendung von Informationen, die wir gefunden haben, um einen unfairen Vorteil in jedem Spiel (auch Einzelspieler-Spiele) zu erlangen. Wir gründen unsere
+    Beurteilung der Erwartung der Gemeinschaft, nicht über das, was technisch möglich ist oder nicht: etwas kann möglich sein
+    während es immer noch als Betrug betrachtet werden kann.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
           <context context-type="linenumber">40</context>
@@ -133,7 +131,7 @@
       </trans-unit>
       <trans-unit id="login.password" datatype="html">
         <source>Password</source>
-        <target state="translated">Password</target>
+        <target state="translated">Passwort</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/login/login.component.html</context>
           <context context-type="linenumber">14</context>
@@ -235,7 +233,7 @@
         <target state="translated"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin verzichtet auf alle unwichtigen Cookies.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Erforderliche Cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin benutzt Cookies um Authentifizierung und bevorzugte Sprache des Users zu speichern. Diese
       Cookies von Erstanbietern werden benötigt damit die Webseite richtig funktioniert. Ihr könnt diese immer noch in eurem Browser deaktivieren, aber
       dies
-      verhindert vielleicht, dass die Webseite richtig funktioniert.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Andere Cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Keine anderen Cookies sind vorhanden, Keine Rückverfolgung, eine Analysen, keine Werbung.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></target>
+      verhindert vielleicht, dass die Webseite richtig funktioniert.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Andere Cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Keine anderen Cookies sind vorhanden. Keine Rückverfolgung, keine Analysen, keine Werbung.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
           <context context-type="linenumber">19</context>
