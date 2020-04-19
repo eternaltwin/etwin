@@ -1,22 +1,21 @@
-import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/lib/announcement/service.js";
+import { Config } from "@eternal-twin/local-config";
 import koaCors from "@koa/cors";
 import Koa from "koa";
 import koaLogger from "koa-logger";
 import koaMount from "koa-mount";
 
-import { Api, createApiRouter } from "../lib";
-import { KoaAuth } from "../lib/helpers/koa-auth.js";
-import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
+import { createApiRouter } from "../lib/index.js";
+import { createApi } from "./api.js";
+import { getLocalConfig } from "./config.js";
 
 async function main(): Promise<void> {
-  const announcement = new InMemoryAnnouncementService(UUID4_GENERATOR);
-  const koaAuth = new KoaAuth();
-  const api: Api = {announcement, koaAuth};
+  const config: Config = await getLocalConfig();
+  const {api} = await createApi(config);
 
   const apiRouter = createApiRouter(api);
 
   const app: Koa = new Koa();
-  const port: number = 50320;
+  const port: number = config.httpPort;
 
   app.use(koaLogger());
   // Allow local Angular development server

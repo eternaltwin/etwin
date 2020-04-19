@@ -1,7 +1,6 @@
 import dotEnv from "dotenv";
 import findUp from "find-up";
 import fs from "fs";
-import furi from "furi";
 import url from "url";
 
 export interface Config {
@@ -83,7 +82,7 @@ export function requireConfigKeys<K extends keyof Config>(conf: Partial<Config>,
 }
 
 export async function getPartialLocalConfig(): Promise<Partial<Config>> {
-  const dotEnvPath: string | undefined = await findUp(".env", {cwd: furi.toSysPath(import.meta.url)});
+  const dotEnvPath: string | undefined = await findUp(".env", {cwd: process.cwd()});
   if (dotEnvPath !== undefined) {
     const dotEnvText: string = await fs.promises.readFile(dotEnvPath, {encoding: "utf-8"});
     const parsedDotEnv: Record<string, string> = dotEnv.parse(dotEnvText);

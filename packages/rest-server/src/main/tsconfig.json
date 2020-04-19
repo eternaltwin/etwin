@@ -15,6 +15,9 @@
     },
     {
       "path": "../../../etwin-api-in-memory/src/lib"
+    },
+    {
+      "path": "../../../local-config/src/lib"
     }
   ]
 }

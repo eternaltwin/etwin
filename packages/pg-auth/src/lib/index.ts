@@ -30,7 +30,7 @@ import { UuidHex } from "kryo/lib/uuid-hex";
 
 import { $EmailRegistrationJwt, EmailRegistrationJwt } from "./email-registration-jwt.js";
 
-export const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
+const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
 
 export class PgAuthService implements AuthService {
   private readonly database: Database;
