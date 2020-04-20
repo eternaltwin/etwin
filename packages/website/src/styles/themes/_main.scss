@@ -35,3 +35,10 @@ header h1 {
     color: $accentColorLight;
   }
 }
+
+.error {
+  border: 1px solid $accentColor;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  background-color: rgba(31, 0, 0);
+}

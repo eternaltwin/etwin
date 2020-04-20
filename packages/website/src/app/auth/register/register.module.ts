@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { SharedModule } from "../../shared/shared.module";
 import { RegisterEmailComponent } from "./register-email.component";
@@ -11,6 +12,8 @@ import { RegisterComponent } from "./register.component";
   declarations: [RegisterComponent, RegisterEmailComponent, RegisterUsernameComponent],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     RegisterRoutingModule,
     SharedModule,
   ],

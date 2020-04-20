@@ -8,9 +8,17 @@
   cursor: pointer;
   text-decoration: none;
   user-select: none;
-  &:hover, &:focus {
-    background-color: rgba(0, 0, 0, 0.25);
-    border-color: #d0d0d0;
+
+  &[disabled] {
+    color: #808080;
+    cursor: default;
+  }
+
+  &:not([disabled]) {
+    &:hover, &:focus {
+      background-color: rgba(0, 0, 0, 0.25);
+      border-color: #d0d0d0;
+    }
   }
 
   &.primary {
@@ -20,9 +28,17 @@
     background-color: $submitBgColor;
     border-color: $submitBorderColor;
 
-    &:hover, &:focus {
-      background-color: lighten($submitBgColor, 3%);
-      border-color: lighten($submitBorderColor, 3%);
+    &[disabled] {
+      color: #637d63;
+      background-color: #1b2d1b;
+      border-color: #344234;
+    }
+
+    &:not([disabled]) {
+      &:hover, &:focus {
+        background-color: lighten($submitBgColor, 3%);
+        border-color: lighten($submitBorderColor, 3%);
+      }
     }
   }
 }
