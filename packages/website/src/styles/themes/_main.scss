@@ -42,3 +42,21 @@ header h1 {
   padding: 0.5rem;
   background-color: rgba(31, 0, 0);
 }
+
+
+label, input {
+  display: block;
+}
+
+$spacing: 1rem;
+
+label {
+  margin: $spacing 0;
+}
+
+input {
+  width: 100%;
+  height: 2.5em;
+  margin-top: 0.3em;
+  padding: 0.5em;
+}

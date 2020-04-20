@@ -1,6 +1,6 @@
 <ng-container *ngIf="auth$ | async as auth">
   <ng-container [ngSwitch]="auth.type">
-    <ng-container *ngSwitchCase="AuthType.User">{{auth.userId}}</ng-container>
+    <ng-container *ngSwitchCase="AuthType.User">{{auth.displayName}}</ng-container>
     <ng-container *ngSwitchDefault>
       <a class="button" routerLink="/register" i18n="Top-bar button to the login page@@app.registerNav">Register</a>
       <a class="button" routerLink="/login" i18n="Top-bar button to the login page@@app.loginNav">Sign in</a>

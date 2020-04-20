@@ -4,6 +4,7 @@
     enctype="application/x-www-form-urlencoded"
     action="/actions/register"
     [formGroup]="registrationForm"
+    (ngSubmit)="onSubmit($event)"
   >
     <div>
       Register with Eternal-Twin

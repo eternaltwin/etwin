@@ -3,8 +3,15 @@ import { TransferState } from "@angular/platform-browser";
 import { $AuthContext, AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context";
 import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type";
+import {
+  $RegisterWithUsernameOptions,
+  RegisterWithUsernameOptions,
+} from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options";
+import { UserAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/user-auth-context";
+import { $User, User } from "@eternal-twin/etwin-api-types/lib/user/user";
 import { JsonValueReader } from "kryo-json/lib/json-value-reader";
-import { Observable, of as rxOf } from "rxjs";
+import { Observable, of as rxOf, ReplaySubject, Subject } from "rxjs";
+import { tap as rxTap } from "rxjs/operators";
 
 import { RestService } from "../rest/rest.service";
 import { AuthService } from "./auth.service";
@@ -17,7 +24,7 @@ const GUEST_AUTH_CONTEXT: AuthContext = {type: AuthType.Guest, scope: AuthScope.
 @Injectable()
 export class BrowserAuthService extends AuthService {
   private readonly rest: RestService;
-  private readonly auth$: Observable<AuthContext>;
+  private readonly auth$: ReplaySubject<AuthContext>;
 
   constructor(transferState: TransferState, rest: RestService) {
     super();
@@ -38,11 +45,26 @@ export class BrowserAuthService extends AuthService {
       firstAuth = this.getSelf();
     }
 
-    this.auth$ = firstAuth;
+    this.auth$ = new ReplaySubject(1);
+    firstAuth.subscribe(this.auth$);
   }
 
-  auth(): Observable<AuthContext> {
+  public auth(): Observable<AuthContext> {
     return this.auth$;
+  }
+
+  public registerWithUsername(options: Readonly<RegisterWithUsernameOptions>): Observable<User> {
+    return this.rest.post(["users"], $RegisterWithUsernameOptions, options, $User)
+      .pipe(rxTap((user: User): void => {
+        const auth: UserAuthContext = {
+          type: AuthType.User,
+          scope: AuthScope.Default,
+          userId: user.id,
+          displayName: user.displayName,
+          isAdministrator: user.isAdministrator,
+        };
+        this.auth$.next(auth);
+      }));
   }
 
   private getSelf(): Observable<AuthContext> {
