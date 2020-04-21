@@ -1,7 +1,7 @@
 $contentWidth: 400px;
 $spacing: 1em;
 
-.content, footer {
+:host ::ng-deep .content, footer {
   width: $contentWidth;
 }
 

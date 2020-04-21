@@ -1,64 +1,71 @@
 <etwin-small-layout>
-  <form
-    method="POST"
-    enctype="application/x-www-form-urlencoded"
-    action="/actions/register"
-    [formGroup]="registrationForm"
-    (ngSubmit)="onSubmit($event)"
-  >
-    <div>
-      Register with Eternal-Twin
-    </div>
-    <div>
+  <div class="content">
+    <form
+      method="POST"
+      enctype="application/x-www-form-urlencoded"
+      action="/actions/register"
+      [formGroup]="registrationForm"
+      (ngSubmit)="onSubmit($event)"
+    >
+      <div>
+        Register with Eternal-Twin
+      </div>
+      <div>
+        <label>
+          <span i18n="Username field label@@username">Username</span>
+          <input type="text" name="username" class="field" formControlName="username" required="required"
+                 [minlength]="$Username.minLength" [maxlength]="$Username.maxLength" [pattern]="$Username.pattern"/>
+          <div *ngIf="username.invalid && (username.dirty || username.touched)" class="error">
+            <div *ngIf="username.errors?.required">
+              The username is required.
+            </div>
+            <div *ngIf="username.errors?.minlength">
+              The username must be at least {{$Username.minLength}} characters long.
+            </div>
+            <div *ngIf="username.errors?.maxlength">
+              The username must be at most {{$Username.maxLength}} characters long.
+            </div>
+            <div *ngIf="username.errors?.pattern && !username.errors?.minlength">
+              The username can only use the lowercase english letters "a-z" and digits "0-9" (it must start with a
+              letter).
+            </div>
+          </div>
+        </label>
+      </div>
       <label>
-        <span i18n="Username field label@@username">Username</span>
-        <input type="text" name="username" class="field" formControlName="username" required="required" [minlength]="$Username.minLength" [maxlength]="$Username.maxLength" [pattern]="$Username.pattern"/>
-        <div *ngIf="username.invalid && (username.dirty || username.touched)" class="error">
-          <div *ngIf="username.errors?.required">
-            The username is required.
+        <span i18n="Display name field label@@display_name">Display name</span>
+        <input type="text" name="display_name" class="field" formControlName="displayName"
+               [minlength]="$UserDisplayName.minLength" [maxlength]="$UserDisplayName.maxLength"
+               [pattern]="$UserDisplayName.pattern"/>
+        <div *ngIf="displayName.invalid && (displayName.dirty || displayName.touched)" class="error">
+          <div *ngIf="displayName.errors?.minlength">
+            The display name must be at least {{$UserDisplayName.minLength}} characters long.
           </div>
-          <div *ngIf="username.errors?.minlength">
-            The username must be at least {{$Username.minLength}} characters long.
+          <div *ngIf="displayName.errors?.maxlength">
+            The display name must be at most {{$UserDisplayName.maxLength}} characters long.
           </div>
-          <div *ngIf="username.errors?.maxlength">
-            The username must be at most {{$Username.maxLength}} characters long.
-          </div>
-          <div *ngIf="username.errors?.pattern && !username.errors?.minlength">
-            The username can only use the lowercase english letters "a-z" and digits "0-9" (it must start with a letter).
+          <div *ngIf="displayName.errors?.pattern && !displayName.errors?.minlength">
+            The display name must start with a letter and can only use the characters "A-Z", "a-z", "0-9" and spaces.
           </div>
         </div>
       </label>
-    </div>
-    <label>
-      <span i18n="Display name field label@@display_name">Display name</span>
-      <input type="text" name="display_name" class="field" formControlName="displayName" [minlength]="$UserDisplayName.minLength" [maxlength]="$UserDisplayName.maxLength" [pattern]="$UserDisplayName.pattern" />
-      <div *ngIf="displayName.invalid && (displayName.dirty || displayName.touched)" class="error">
-        <div *ngIf="displayName.errors?.minlength">
-          The display name must be at least {{$UserDisplayName.minLength}} characters long.
+      <label>
+        <span i18n="Password field label@@username">Password</span>
+        <input type="password" name="password" class="field" formControlName="password" required="required"
+               [minlength]="PASSWORD_LEN"/>
+        <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error">
+          <div *ngIf="password.errors?.required">
+            The password is required.
+          </div>
+          <div *ngIf="password.errors?.minlength">
+            The username must be at least {{PASSWORD_LEN}} characters long.
+          </div>
         </div>
-        <div *ngIf="displayName.errors?.maxlength">
-          The display name must be at most {{$UserDisplayName.maxLength}} characters long.
-        </div>
-        <div *ngIf="displayName.errors?.pattern && !displayName.errors?.minlength">
-          The display name must start with a letter and can only use the characters "A-Z", "a-z", "0-9" and spaces.
-        </div>
+      </label>
+      <input type="submit" class="btn primary" name="register" [disabled]="registrationForm.invalid" value="Register"/>
+      <div>
+        <a routerLink="/register">Back</a>
       </div>
-    </label>
-    <label>
-      <span i18n="Password field label@@username">Password</span>
-      <input type="password" name="password" class="field" formControlName="password" required="required" [minlength]="PASSWORD_LEN" />
-      <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error">
-        <div *ngIf="password.errors?.required">
-          The password is required.
-        </div>
-        <div *ngIf="password.errors?.minlength">
-          The username must be at least {{PASSWORD_LEN}} characters long.
-        </div>
-      </div>
-    </label>
-    <input type="submit" class="btn primary" name="register" [disabled]="registrationForm.invalid" value="Register" />
-    <div>
-      <a routerLink="/register">Back</a>
-    </div>
-  </form>
+    </form>
+  </div>
 </etwin-small-layout>

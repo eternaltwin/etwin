@@ -1,32 +1,22 @@
-<header>
-  <h1><a routerLink="/">Eternal-Twin</a></h1>
-</header>
-<div class="content">
-  <form>
-    <div class="active_method">
-      <img src="/assets/login-methods/eternal-twin.png"/><ng-container i18n="@@login.method.etwin">Sign in with Eternal-Twin</ng-container>
-    </div>
-    <label>
-      <span i18n="Email address field label@@login.email">Email address</span>
-      <input type="text" name="login" />
-    </label>
-    <label>
-      <span i18n="Password field label@@login.password">Password</span>
-      <input type="password" name="password" />
-    </label>
-    <input type="submit" name="sign_in" i18n-value="Submit login form label@@login.signInAction" value="Sign in (Soon)" />
-  </form>
-</div>
-<div class="content login_methods">
-  <a routerLink="/login?method=twinoid"><img src="/assets/login-methods/twinoid.png"/><ng-container i18n="@@login.method.twinoid">Sign in with Twinoid (Soon)</ng-container></a>
-  <a routerLink="/login?method=hammerfest"><img src="/assets/login-methods/hammerfest.png"/><ng-container i18n="@@login.method.hammerfest">Sign in with Hammerfest (Soon)</ng-container></a>
-</div>
-<footer>
-  <div class="languages">
-    <a lang="de-DE" href="/login?l=de">Deutsch</a> -
-    <a lang="en-US" href="/login?l=en">English</a> -
-    <a lang="eo" href="/login?l=eo">Esperanto</a> -
-    <a lang="es-SP" href="/login?l=es">Español</a> -
-    <a lang="fr-FR" href="/login?l=fr">Français</a>
+<etwin-small-layout>
+  <div class="content">
+    <form>
+      <div class="active_method">
+        <img src="/assets/login-methods/eternal-twin.png"/><ng-container i18n="@@login.method.etwin">Sign in with Eternal-Twin</ng-container>
+      </div>
+      <label>
+        <span i18n="Email address field label@@login.email">Email address</span>
+        <input type="text" name="login" class="field" />
+      </label>
+      <label>
+        <span i18n="Password field label@@login.password">Password</span>
+        <input type="password" name="password" class="field" />
+      </label>
+      <input type="submit" name="sign_in" class="btn primary" i18n-value="Submit login form label@@login.signInAction" value="Sign in (Soon)" />
+    </form>
   </div>
-</footer>
+  <div class="content login_methods">
+    <a routerLink="/login?method=twinoid" class="btn"><img src="/assets/login-methods/twinoid.png"/><ng-container i18n="@@login.method.twinoid">Sign in with Twinoid (Soon)</ng-container></a>
+    <a routerLink="/login?method=hammerfest" class="btn"><img src="/assets/login-methods/hammerfest.png"/><ng-container i18n="@@login.method.hammerfest">Sign in with Hammerfest (Soon)</ng-container></a>
+  </div>
+</etwin-small-layout>
