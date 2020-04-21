@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context";
 import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type";
+import { Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials";
+import { LoginWithHammerfestOptions } from "@eternal-twin/etwin-api-types/lib/auth/login-with-hammerfest-options";
 import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options";
 import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
 import { Observable, of as rxOf } from "rxjs";
@@ -32,6 +34,14 @@ export class ServerAuthService extends AuthService {
   }
 
   registerWithUsername(options: Readonly<RegisterWithUsernameOptions>): Observable<User> {
+    throw new Error("NotImplemented");
+  }
+
+  loginWithCredentials(options: Readonly<Credentials>): Observable<User> {
+    throw new Error("NotImplemented");
+  }
+
+  loginWithHammerfestCredentials(options: Readonly<LoginWithHammerfestOptions>): Observable<User> {
     throw new Error("NotImplemented");
   }
 }

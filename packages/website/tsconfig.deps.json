@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "../etwin-api-types/src/lib"
+    },
+    {
+      "path": "../uuid4-generator/src/lib"
+    },
+    {
+      "path": "../pg-auth/src/lib"
+    },
+    {
+      "path": "../pg-db/src/lib"
+    },
+    {
+      "path": "../scrypt-password/src/lib"
+    }
+  ]
+}
