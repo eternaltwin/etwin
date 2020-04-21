@@ -68,7 +68,7 @@ export class RegisterUsernameComponent implements OnDestroy {
     const authResult$ = this.auth.registerWithUsername({username, displayName, password});
     this.serverError = null;
     const subscription: Subscription = authResult$.subscribe({
-      next: (_value: User): void => {
+      next: (): void => {
         subscription.unsubscribe();
         this.pendingSubscription = null;
         this.router.navigateByUrl("/");

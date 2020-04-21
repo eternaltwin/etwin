@@ -1,5 +1,5 @@
 import { $AuthContext, AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
-import { $AuthMethod, AuthMethod } from "@eternal-twin/etwin-api-types/lib/auth/auth-method.js";
+import { AuthMethod } from "@eternal-twin/etwin-api-types/lib/auth/auth-method.js";
 import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
 import { $Credentials, Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials.js";
@@ -11,13 +11,12 @@ import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import koaRoute from "koa-route";
-import { CaseStyle } from "kryo";
 import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
 import { JsonValueWriter } from "kryo-json/lib/json-value-writer.js";
 import { QsValueReader } from "kryo-qs/lib/qs-value-reader.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { KoaAuth, SESSION_COOKIE } from "./helpers/koa-auth.js";
+import { $CreateSessionQuery, CreateSessionQuery } from "@eternal-twin/etwin-api-types/lib/auth/create-session-query.js";
 
 const JSON_VALUE_WRITER: JsonValueWriter = new JsonValueWriter();
 const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
@@ -29,18 +28,6 @@ export interface Api {
   auth: AuthService;
   koaAuth: KoaAuth;
 }
-
-export interface CreateSessionQuery {
-  method: AuthMethod;
-}
-
-export const $CreateSessionQuery: RecordIoType<CreateSessionQuery> = new RecordType<CreateSessionQuery>({
-  properties: {
-    method: {type: $AuthMethod},
-  },
-  changeCase: CaseStyle.SnakeCase,
-});
-
 
 export function createAuthRouter(api: Api): Koa {
   const router: Koa = new Koa();

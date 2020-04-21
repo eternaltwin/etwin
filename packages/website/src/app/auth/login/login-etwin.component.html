@@ -1,16 +1,32 @@
-<form>
+<form
+  method="POST"
+  enctype="application/x-www-form-urlencoded"
+  action="/actions/login-with-etwin"
+  [formGroup]="loginForm"
+  (ngSubmit)="onSubmit($event)"
+>
   <div class="active_method">
     <img src="/assets/login-methods/eternal-twin.png"/>
     <ng-container i18n="@@login.method.etwin">Sign in with Eternal-Twin</ng-container>
   </div>
   <label>
-    <span i18n="Email address field label@@login.email">Email address</span>
-    <input type="text" name="login" class="field"/>
+    <span i18n="Username or email address field label@@login.usernameOrEmail">Username or email address</span>
+    <input type="text" name="login" class="field" formControlName="login" required="required"/>
+    <div *ngIf="login.invalid && (login.dirty || login.touched)" class="error">
+      <div *ngIf="login.errors?.required">
+        The username or email is required.
+      </div>
+    </div>
   </label>
   <label>
     <span i18n="Password field label@@login.password">Password</span>
-    <input type="password" name="password" class="field"/>
+    <input type="password" name="password" class="field" formControlName="password" required="required"/>
+    <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error">
+      <div *ngIf="password.errors?.required">
+        The password is required.
+      </div>
+    </div>
   </label>
   <input type="submit" name="sign_in" class="btn primary" i18n-value="Submit login form label@@login.signInAction"
-         value="Sign in (Soon)"/>
+         value="Sign in" [disabled]="loginForm.invalid"/>
 </form>

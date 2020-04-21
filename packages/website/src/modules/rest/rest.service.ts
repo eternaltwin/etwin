@@ -11,6 +11,14 @@ import { environment } from "../../environments/environment";
 const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
 const JSON_VALUE_WRITER: JsonValueWriter = new JsonValueWriter();
 
+export interface RequestOptions<Query, Req, Res> {
+  queryType: IoType<Query>,
+  query: Query,
+  reqType: IoType<Req>,
+  req: Req,
+  resType: IoType<Res>,
+}
+
 @Injectable()
 export class RestService {
   private readonly http: HttpClient;
@@ -54,6 +62,22 @@ export class RestService {
       .pipe(rxMap((raw): Res => {
         try {
           return resType.read(JSON_VALUE_READER, raw);
+        } catch (err) {
+          console.error(`API Error: ${uri}`);
+          console.error(err);
+          throw err;
+        }
+      }));
+  }
+
+  public put<Query, Req, Res>(route: readonly string[], options: RequestOptions<Query, Req, Res>): Observable<Res> {
+    const uri = this.resolveUri(route);
+    const rawReq: object = options.reqType.write(JSON_VALUE_WRITER, options.req);
+    const rawQuery: Record<string, string> = options.queryType.write(JSON_VALUE_WRITER, options.query);
+    return this.http.put(uri, rawReq, {withCredentials: true, params: rawQuery})
+      .pipe(rxMap((raw): Res => {
+        try {
+          return options.resType.read(JSON_VALUE_READER, raw);
         } catch (err) {
           console.error(`API Error: ${uri}`);
           console.error(err);

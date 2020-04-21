@@ -1,8 +1,15 @@
 import { Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
 import { $AuthContext, AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context";
+import { AuthMethod } from "@eternal-twin/etwin-api-types/lib/auth/auth-method";
 import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type";
+import {
+  $CreateSessionQuery,
+  CreateSessionQuery,
+} from "@eternal-twin/etwin-api-types/lib/auth/create-session-query";
+import { $Credentials, Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials";
+import { LoginWithHammerfestOptions } from "@eternal-twin/etwin-api-types/lib/auth/login-with-hammerfest-options";
 import {
   $RegisterWithUsernameOptions,
   RegisterWithUsernameOptions,
@@ -68,6 +75,31 @@ export class BrowserAuthService extends AuthService {
         };
         this.auth$.next(auth);
       }));
+  }
+
+  loginWithCredentials(options: Readonly<Credentials>): Observable<User> {
+    const reqOptions = {
+      queryType: $CreateSessionQuery,
+      query: {method: AuthMethod.Etwin},
+      reqType: $Credentials,
+      req: options,
+      resType: $User,
+    };
+    return this.rest.put(["auth", "self"], reqOptions)
+      .pipe(rxTap((user: User): void => {
+        const auth: UserAuthContext = {
+          type: AuthType.User,
+          scope: AuthScope.Default,
+          userId: user.id,
+          displayName: user.displayName,
+          isAdministrator: user.isAdministrator,
+        };
+        this.auth$.next(auth);
+      }));
+  }
+
+  loginWithHammerfestCredentials(options: Readonly<LoginWithHammerfestOptions>): Observable<User> {
+    throw new Error("NotImplemented");
   }
 
   logout(): Observable<null> {
