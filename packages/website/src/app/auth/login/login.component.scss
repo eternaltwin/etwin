@@ -1,21 +1,23 @@
 $spacing: 1em;
 
-.login_methods a {
-  display: flex;
-  align-items: center;
+:host ::ng-deep {
+  .login_methods a {
+    display: flex;
+    align-items: center;
 
-  & + a {
-    margin-top: $spacing;
+    & + a {
+      margin-top: $spacing;
+    }
   }
-}
 
-img {
-  height: 1.2rem;
-  margin-right: 0.6rem;
-}
+  img {
+    height: 1.2rem;
+    margin-right: 0.6rem;
+  }
 
-.active_method {
-  height: 1rem;
-  display: flex;
-  align-items: center;
+  .active_method {
+    height: 1rem;
+    display: flex;
+    align-items: center;
+  }
 }

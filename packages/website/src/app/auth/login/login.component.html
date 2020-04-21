@@ -1,22 +1,29 @@
 <etwin-small-layout>
   <div class="content">
-    <form>
-      <div class="active_method">
-        <img src="/assets/login-methods/eternal-twin.png"/><ng-container i18n="@@login.method.etwin">Sign in with Eternal-Twin</ng-container>
-      </div>
-      <label>
-        <span i18n="Email address field label@@login.email">Email address</span>
-        <input type="text" name="login" class="field" />
-      </label>
-      <label>
-        <span i18n="Password field label@@login.password">Password</span>
-        <input type="password" name="password" class="field" />
-      </label>
-      <input type="submit" name="sign_in" class="btn primary" i18n-value="Submit login form label@@login.signInAction" value="Sign in (Soon)" />
-    </form>
+    <ng-container [ngSwitch]="method">
+      <ng-container *ngSwitchCase="AuthMethod.Hammerfest">
+        <etwin-login-hammerfest></etwin-login-hammerfest>
+      </ng-container>
+      <ng-container *ngSwitchCase="AuthMethod.Twinoid">
+        <etwin-login-twinoid></etwin-login-twinoid>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <etwin-login-etwin></etwin-login-etwin>
+      </ng-container>
+    </ng-container>
   </div>
   <div class="content login_methods">
-    <a routerLink="/login?method=twinoid" class="btn"><img src="/assets/login-methods/twinoid.png"/><ng-container i18n="@@login.method.twinoid">Sign in with Twinoid (Soon)</ng-container></a>
-    <a routerLink="/login?method=hammerfest" class="btn"><img src="/assets/login-methods/hammerfest.png"/><ng-container i18n="@@login.method.hammerfest">Sign in with Hammerfest (Soon)</ng-container></a>
+    <a routerLink="/login" [queryParams]="{method: 'etwin'}" class="btn" *ngIf="method !== AuthMethod.Etwin">
+      <img src="/assets/login-methods/eternal-twin.png"/>
+      <ng-container i18n="@@login.method.twinoid">Sign in with Eternal-Twin</ng-container>
+    </a>
+    <a routerLink="/login" [queryParams]="{method: 'twinoid'}" class="btn" *ngIf="method !== AuthMethod.Twinoid">
+      <img src="/assets/login-methods/twinoid.png"/>
+      <ng-container i18n="@@login.method.twinoid">Sign in with Twinoid (Soon)</ng-container>
+    </a>
+    <a routerLink="/login" [queryParams]="{method: 'hammerfest'}" class="btn" *ngIf="method !== AuthMethod.Hammerfest">
+      <img src="/assets/login-methods/hammerfest.png"/>
+      <ng-container i18n="@@login.method.hammerfest">Sign in with Hammerfest (Soon)</ng-container>
+    </a>
   </div>
 </etwin-small-layout>

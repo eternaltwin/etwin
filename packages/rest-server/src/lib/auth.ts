@@ -1,4 +1,5 @@
 import { $AuthContext, AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
+import { $AuthMethod, AuthMethod } from "@eternal-twin/etwin-api-types/lib/auth/auth-method.js";
 import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
 import { $Credentials, Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials.js";
@@ -15,7 +16,6 @@ import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
 import { JsonValueWriter } from "kryo-json/lib/json-value-writer.js";
 import { QsValueReader } from "kryo-qs/lib/qs-value-reader.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
-import { TsEnumType } from "kryo/lib/ts-enum.js";
 
 import { KoaAuth, SESSION_COOKIE } from "./helpers/koa-auth.js";
 
@@ -29,15 +29,6 @@ export interface Api {
   auth: AuthService;
   koaAuth: KoaAuth;
 }
-
-enum AuthMethod {
-  Credentials,
-  HammerfestCredentials,
-}
-
-const $AuthMethod: TsEnumType<AuthMethod> = new TsEnumType<AuthMethod>({
-  enum: AuthMethod,
-});
 
 export interface CreateSessionQuery {
   method: AuthMethod;
@@ -73,12 +64,16 @@ export function createAuthRouter(api: Api): Koa {
       return;
     }
     switch (query.method) {
-      case AuthMethod.Credentials: {
+      case AuthMethod.Etwin: {
         await createSessionWithCredentials(cx);
         break;
       }
-      case AuthMethod.HammerfestCredentials: {
+      case AuthMethod.Hammerfest: {
         await createSessionWithHammerfestCredentials(cx);
+        break;
+      }
+      case AuthMethod.Twinoid: {
+        await createSessionWithTwinoidCredentials(cx);
         break;
       }
       default: {
@@ -96,6 +91,10 @@ export function createAuthRouter(api: Api): Koa {
   }
 
   async function createSessionWithHammerfestCredentials(cx: Koa.Context): Promise<void> {
+    cx.response.status = 500;
+  }
+
+  async function createSessionWithTwinoidCredentials(cx: Koa.Context): Promise<void> {
     cx.response.status = 500;
   }
 

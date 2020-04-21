@@ -24,5 +24,10 @@
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
-  }
+  },
+  "references": [
+    {
+      "path": "../etwin-api-types/src/lib"
+    }
+  ]
 }
