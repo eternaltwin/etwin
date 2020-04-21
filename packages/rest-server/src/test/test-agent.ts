@@ -12,6 +12,10 @@ export class TestAgent {
     this.agent = agent;
   }
 
+  public async rawDelete(url: string): Promise<ChaiHttp.Response> {
+    return this.agent.delete(url).send();
+  }
+
   public async rawGet(url: string): Promise<ChaiHttp.Response> {
     return this.agent.get(url).send();
   }
@@ -22,6 +26,23 @@ export class TestAgent {
 
   public async rawPut(url: string, req: object): Promise<ChaiHttp.Response> {
     return this.agent.put(url).send(req);
+  }
+
+  public async delete<Res>(url: string, resType: IoType<Res>): Promise<Res> {
+    const res: ChaiHttp.Response = await this.rawDelete(url);
+    const raw: any = res.body;
+    if (typeof raw.error === "string") {
+      throw new Error(raw.error);
+    } else {
+      try {
+        return resType.read(JSON_VALUE_READER, raw);
+      } catch (err) {
+        console.error(`DELETE ${url}`);
+        console.error(`Response (${res.status}):`);
+        console.error(JSON.stringify(res.body));
+        throw err;
+      }
+    }
   }
 
   public async get<Res>(url: string, resType: IoType<Res>): Promise<Res> {

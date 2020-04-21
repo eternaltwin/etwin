@@ -10,8 +10,8 @@ import {
 import { UserAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/user-auth-context";
 import { $User, User } from "@eternal-twin/etwin-api-types/lib/user/user";
 import { JsonValueReader } from "kryo-json/lib/json-value-reader";
-import { Observable, of as rxOf, ReplaySubject, Subject } from "rxjs";
-import { tap as rxTap } from "rxjs/operators";
+import { concat as rxConcat, NEVER as RX_NEVER,Observable, of as rxOf, ReplaySubject } from "rxjs";
+import { map as rxMap, tap as rxTap } from "rxjs/operators";
 
 import { RestService } from "../rest/rest.service";
 import { AuthService } from "./auth.service";
@@ -45,8 +45,11 @@ export class BrowserAuthService extends AuthService {
       firstAuth = this.getSelf();
     }
 
+    // Prevent the `complete` event.
+    const infFirstAuth: Observable<AuthContext> = rxConcat(firstAuth, RX_NEVER);
+
     this.auth$ = new ReplaySubject(1);
-    firstAuth.subscribe(this.auth$);
+    infFirstAuth.subscribe(this.auth$);
   }
 
   public auth(): Observable<AuthContext> {
@@ -65,6 +68,16 @@ export class BrowserAuthService extends AuthService {
         };
         this.auth$.next(auth);
       }));
+  }
+
+  logout(): Observable<null> {
+    return this.rest.delete(["auth", "self"], $AuthContext)
+      .pipe(
+        rxMap((): null => {
+          this.auth$.next(GUEST_AUTH_CONTEXT);
+          return null;
+        }),
+      );
   }
 
   private getSelf(): Observable<AuthContext> {

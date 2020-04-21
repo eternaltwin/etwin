@@ -9,4 +9,6 @@ export abstract class AuthService {
   abstract auth(): Observable<AuthContext>;
 
   abstract registerWithUsername(options: Readonly<RegisterWithUsernameOptions>): Observable<User>;
+
+  abstract logout(): Observable<null>;
 }

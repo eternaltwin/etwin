@@ -110,4 +110,56 @@ describe("/auth", () => {
       }
     });
   });
+
+  it("should register a user and sign out", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withTestServer(async server => {
+      const agent: TestAgent = new TestAgent(chai.request.agent(server));
+      const actualUser: UserRef = await agent.post(
+        "/users",
+        $RegisterWithUsernameOptions,
+        {
+          username: "alice",
+          displayName: "Alice",
+          password: Buffer.from("aaaaa"),
+        },
+        $User,
+      );
+      {
+        const expected: User = {
+          id: actualUser.id,
+          displayName: "Alice",
+          isAdministrator: true,
+        };
+        chai.assert.deepEqual(actualUser, expected);
+      }
+      {
+        const actual: AuthContext = await agent.get("/auth/self", $AuthContext);
+        const expected: AuthContext = {
+          type: AuthType.User,
+          scope: AuthScope.Default,
+          userId: actualUser.id,
+          displayName: "Alice",
+          isAdministrator: true,
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+      {
+        const actual: AuthContext = await agent.delete("/auth/self", $AuthContext);
+        const expected: AuthContext = {
+          type: AuthType.Guest,
+          scope: AuthScope.Default,
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+      {
+        const actual: AuthContext = await agent.get("/auth/self", $AuthContext);
+        const expected: AuthContext = {
+          type: AuthType.Guest,
+          scope: AuthScope.Default,
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
 });

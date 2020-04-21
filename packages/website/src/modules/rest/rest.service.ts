@@ -33,6 +33,20 @@ export class RestService {
       }));
   }
 
+  public delete<R>(route: readonly string[], resType: IoType<R>): Observable<R> {
+    const uri = this.resolveUri(route);
+    return this.http.delete(uri, {withCredentials: true})
+      .pipe(rxMap((raw): R => {
+        try {
+          return resType.read(JSON_VALUE_READER, raw);
+        } catch (err) {
+          console.error(`API Error: ${uri}`);
+          console.error(err);
+          throw err;
+        }
+      }));
+  }
+
   public post<Req, Res>(route: readonly string[], reqType: IoType<Req>, req: Req, resType: IoType<Res>): Observable<Res> {
     const uri = this.resolveUri(route);
     const rawReq: object = reqType.write(JSON_VALUE_WRITER, req);

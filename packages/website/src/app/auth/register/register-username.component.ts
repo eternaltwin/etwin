@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
@@ -15,7 +15,7 @@ const TEXT_ENCODER: TextEncoder = new TextEncoder();
   templateUrl: "./register-username.component.html",
   styleUrls: [],
 })
-export class RegisterUsernameComponent {
+export class RegisterUsernameComponent implements OnDestroy {
   public readonly $Username = $Username;
   public readonly $UserDisplayName = $UserDisplayName;
   public readonly PASSWORD_LEN: number = 10;
@@ -84,5 +84,12 @@ export class RegisterUsernameComponent {
       }
     });
     this.pendingSubscription = subscription;
+  }
+
+  ngOnDestroy(): void {
+    if (this.pendingSubscription !== null) {
+      this.pendingSubscription.unsubscribe();
+      this.pendingSubscription = null;
+    }
   }
 }

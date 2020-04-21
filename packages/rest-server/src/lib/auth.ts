@@ -99,5 +99,12 @@ export function createAuthRouter(api: Api): Koa {
     cx.response.status = 500;
   }
 
+  router.use(koaRoute.delete("/self", deleteSession));
+
+  async function deleteSession(cx: Koa.Context): Promise<void> {
+    cx.cookies.set(SESSION_COOKIE, "");
+    cx.response.body = $AuthContext.write(JSON_VALUE_WRITER, GUEST_AUTH);
+  }
+
   return router;
 }
