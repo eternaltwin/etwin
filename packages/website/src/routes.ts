@@ -8,4 +8,6 @@ export const ROUTES: readonly string[] = [
   "/register",
   "/register/email",
   "/register/username",
+  "/users/:user_id",
+  "/settings"
 ];

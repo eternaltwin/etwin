@@ -43,6 +43,6 @@ etwindb=# ALTER SCHEMA public OWNER TO etwin;
 Enable pgcrypto.
 
 ```
-psql dbname
+$ psql dbname
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 ```

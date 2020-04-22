@@ -6,8 +6,16 @@ import { HomeView } from "./home/home.component";
 const routes: Routes = [
   {path: "", component: HomeView, pathMatch: "full"},
   {path: "login", loadChildren: () => import("./auth/login/login.module").then(({LoginModule}) => LoginModule)},
-  {path: "register", loadChildren: () => import("./auth/register/register.module").then(({RegisterModule}) => RegisterModule)},
+  {
+    path: "register",
+    loadChildren: () => import("./auth/register/register.module").then(({RegisterModule}) => RegisterModule),
+  },
   {path: "legal", loadChildren: () => import("./legal/legal.module").then(({LegalModule}) => LegalModule)},
+  {path: "users", loadChildren: () => import("./users/users.module").then(({UsersModule}) => UsersModule)},
+  {
+    path: "settings",
+    loadChildren: () => import("./settings/settings.module").then(({SettingsModule}) => SettingsModule),
+  },
 ];
 
 @NgModule({
