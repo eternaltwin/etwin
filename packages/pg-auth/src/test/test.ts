@@ -6,6 +6,7 @@ import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/a
 import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-verified-email-options";
 import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-session.js";
+import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type.js";
 import { EmailContent } from "@eternal-twin/etwin-api-types/lib/email/email-content.js";
 import { InMemoryEmailService } from "@eternal-twin/in-memory-email";
 import chai from "chai";
@@ -47,6 +48,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
       {
         const expected: UserAndSession = {
           user: {
+            type: ObjectType.User,
             id: actual.user.id,
             displayName: "Alice",
             isAdministrator: true,
@@ -54,6 +56,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
           session: {
             id: actual.session.id,
             user: {
+              type: ObjectType.User,
               id: actual.user.id,
               displayName: "Alice",
             },
@@ -78,6 +81,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
       {
         const expected: UserAndSession = {
           user: {
+            type: ObjectType.User,
             id: actual.user.id,
             displayName: "Alice",
             isAdministrator: true,
@@ -85,6 +89,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
           session: {
             id: actual.session.id,
             user: {
+              type: ObjectType.User,
               id: actual.user.id,
               displayName: "Alice",
             },
@@ -110,6 +115,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
       {
         const expected: UserAndSession = {
           user: {
+            type: ObjectType.User,
             id: actual.user.id,
             displayName: "Alice",
             isAdministrator: true,
@@ -117,6 +123,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
           session: {
             id: actual.session.id,
             user: {
+              type: ObjectType.User,
               id: actual.user.id,
               displayName: "Alice",
             },

@@ -3,6 +3,7 @@ import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js"
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
 import { $Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials.js";
 import { $RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options.js";
+import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type.js";
 import { UserRef } from "@eternal-twin/etwin-api-types/lib/user/user-ref.js";
 import { $User, User } from "@eternal-twin/etwin-api-types/lib/user/user.js";
 import chai from "chai";
@@ -45,6 +46,7 @@ describe("/auth", () => {
       );
       {
         const expected: User = {
+          type: ObjectType.User,
           id: actualUser.id,
           displayName: "Alice",
           isAdministrator: true,
@@ -93,7 +95,7 @@ describe("/auth", () => {
       }
       {
         const actual: User = await agent.put(
-          "/auth/self?method=Credentials",
+          "/auth/self?method=Etwin",
           $Credentials,
           {
             login: "alice",
@@ -102,6 +104,7 @@ describe("/auth", () => {
           $User,
         );
         const expected: User = {
+          type: ObjectType.User,
           id: user.id,
           displayName: "Alice",
           isAdministrator: true,
@@ -127,6 +130,7 @@ describe("/auth", () => {
       );
       {
         const expected: User = {
+          type: ObjectType.User,
           id: actualUser.id,
           displayName: "Alice",
           isAdministrator: true,

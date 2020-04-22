@@ -1,3 +1,5 @@
+import { $Null } from "kryo/lib/null.js";
+import { TryUnionType } from "kryo/lib/try-union.js";
 import { Ucs2StringType } from "kryo/lib/ucs2-string.js";
 
 /**
@@ -14,3 +16,7 @@ export const $Username: Ucs2StringType = new Ucs2StringType({
   maxLength: 64,
   pattern: /^[a-z][a-z0-9]{2,63}$/,
 });
+
+export type NullableUsername = null | Username;
+
+export const $NullableUsername: TryUnionType<NullableUsername> = new TryUnionType({variants: [$Null, $Username]});

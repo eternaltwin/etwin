@@ -1,3 +1,5 @@
+import { $Null } from "kryo/lib/null.js";
+import { TryUnionType } from "kryo/lib/try-union.js";
 import { Ucs2StringType } from "kryo/lib/ucs2-string.js";
 
 /**
@@ -17,3 +19,7 @@ export const $EmailAddress: Ucs2StringType = new Ucs2StringType({
   maxLength: 100,
   pattern: /@/,
 });
+
+export type NullableEmailAddress = null | EmailAddress;
+
+export const $NullableEmailAddress: TryUnionType<NullableEmailAddress> = new TryUnionType({variants: [$Null, $EmailAddress]});

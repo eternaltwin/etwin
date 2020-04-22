@@ -12,6 +12,7 @@ import { SessionId } from "@eternal-twin/etwin-api-types/lib/auth/session-id.js"
 import { Session } from "@eternal-twin/etwin-api-types/lib/auth/session.js";
 import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-session.js";
 import { LocaleId } from "@eternal-twin/etwin-api-types/lib/core/locale-id.js";
+import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type.js";
 import { UuidGenerator } from "@eternal-twin/etwin-api-types/lib/core/uuid-generator";
 import { EmailTemplateService } from "@eternal-twin/etwin-api-types/lib/email-template/service.js";
 import { $EmailAddress, EmailAddress } from "@eternal-twin/etwin-api-types/lib/email/email-address.js";
@@ -305,7 +306,12 @@ export class PgAuthService implements AuthService {
       [this.dbSecret, userId, displayName, emailAddress, username, passwordHash],
     );
 
-    return {id: userRow.user_id, displayName: userRow.display_name, isAdministrator: userRow.is_administrator};
+    return {
+      type: ObjectType.User,
+      id: userRow.user_id,
+      displayName: userRow.display_name,
+      isAdministrator: userRow.is_administrator,
+    };
   }
 
   private async createValidatedEmailVerification(
@@ -343,7 +349,7 @@ export class PgAuthService implements AuthService {
 
     return {
       id: sessionId,
-      user: {id: userId, displayName: row.display_name},
+      user: {type: ObjectType.User, id: userId, displayName: row.display_name},
       ctime: row.ctime,
       atime: row.ctime,
     };
@@ -366,7 +372,7 @@ export class PgAuthService implements AuthService {
 
     return {
       id: sessionId,
-      user: {id: row.user_id, displayName: row.display_name},
+      user: {type: ObjectType.User, id: row.user_id, displayName: row.display_name},
       ctime: row.ctime,
       atime: row.atime,
     };
@@ -380,7 +386,12 @@ export class PgAuthService implements AuthService {
          WHERE users.user_id = $1::UUID;`,
       [userId],
     );
-    return {id: row.user_id, displayName: row.display_name, isAdministrator: row.is_administrator};
+    return {
+      type: ObjectType.User,
+      id: row.user_id,
+      displayName: row.display_name,
+      isAdministrator: row.is_administrator,
+    };
   }
 
   private async createEmailVerificationToken(emailAddress: EmailAddress): Promise<string> {

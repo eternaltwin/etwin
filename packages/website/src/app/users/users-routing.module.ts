@@ -1,5 +1,6 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from "@angular/router";
+import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type";
 import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
 
 import { UserViewComponent } from "./user-view.component";
@@ -16,6 +17,7 @@ export class UserResolverService implements Resolve<User | null> {
     const userId: string | null = route.paramMap.get("user_id");
     if (userId !== null) {
       return {
+        type: ObjectType.User,
         id: userId,
         displayName: userId,
         isAdministrator: true,
