@@ -14,14 +14,47 @@ body {
   font-family: sans-serif;
 }
 
-header h1 {
-  background-color: $bgAccentColor;
-  text-align: center;
-  margin: 0;
-  padding: 0.5em;
-  a {
-    text-decoration: none;
-    color: $textColor;
+etwin-main-layout > header {
+  // The header is built with the following layers (ordered from the front to the back):
+  // 1. Light effect on the bottom border
+  // 2. Bottom border
+  // 3. Banner image
+  // 4. Red background gradient
+
+  $bannerHeight: 109px;
+  $bannerWidth: 1100px;
+  $borderHeight: 3px;
+
+  $borderColor: #a39fb9;
+  $borderLightColor: #ffffff;
+  $bgShadowColor: #2d0706;
+  $bgColor: #6a100e;
+
+  height: $bannerHeight + $borderHeight;
+  background-color: $bgColor;
+
+  background-size: $bannerWidth $borderHeight, 1px $borderHeight, auto, 1px $bannerHeight;
+  background-image:
+    linear-gradient(to right, $borderColor, $borderLightColor 50%, $borderColor),
+    linear-gradient($borderColor, $borderColor),
+    url("/assets/banner.png"),
+    linear-gradient($bgShadowColor, $bgColor 35%, lighten($bgColor, 3%) 50%, $bgColor 65%, $bgShadowColor);
+  background-repeat: no-repeat, repeat-x, no-repeat, repeat-x;
+  background-position: bottom center, bottom center, top center, top center;
+
+  h1 {
+    margin: 0;
+    padding: 0;
+    a {
+      display: block;
+      text-align: center;
+      width: $bannerWidth / 2;
+      height: $bannerHeight;
+      color: transparent;
+      margin: auto;
+      overflow: hidden;
+      padding: 2rem 0;
+    }
   }
 }
 
