@@ -1,3 +1,3 @@
-# Eternal-Twin in-memory email service
+# Eternal-Twin Postgres auth service
 
-Sends emails to RAM.
+Auth service implementation using a Postgres DB.

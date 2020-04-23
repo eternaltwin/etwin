@@ -234,7 +234,7 @@ export class PgAuthService implements AuthService {
         const maybeRow: Row | undefined = await queryable.oneOrNone(
           `SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
              FROM users
-             WHERE users.email_address = pgp_sym_decrypt_bytea($2::TEXT, $1::TEXT);`,
+             WHERE users.email_address = pgp_sym_encrypt($2::TEXT, $1::TEXT);`,
           [this.dbSecret, login],
         );
         if (maybeRow === undefined) {
