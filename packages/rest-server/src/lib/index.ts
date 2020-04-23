@@ -1,5 +1,6 @@
 import { AnnouncementService } from "@eternal-twin/etwin-api-types/lib/announcement/service.js";
-import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service";
+import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service.js";
+import { UserService } from "@eternal-twin/etwin-api-types/lib/user/service.js";
 import Koa from "koa";
 import koaMount from "koa-mount";
 
@@ -12,6 +13,7 @@ export interface Api {
   announcement: AnnouncementService;
   auth: AuthService;
   koaAuth: KoaAuth;
+  user: UserService;
 }
 
 export function createApiRouter(api: Api): Koa {

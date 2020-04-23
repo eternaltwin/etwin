@@ -47,6 +47,8 @@
   "devDependencies": {
     "@eternal-twin/etwin-api-in-memory": "*",
     "@eternal-twin/uuid4-generator": "*",
+    "@eternal-twin/pg-auth": "*",
+    "@eternal-twin/pg-user": "*",
     "@koa/cors": "^3.0.0",
     "@types/koa__cors": "^3.0.1",
     "@types/koa-logger": "^3.1.1",

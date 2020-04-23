@@ -18,6 +18,9 @@
     },
     {
       "path": "../../../pg-auth/src/lib"
+    },
+    {
+      "path": "../../../pg-user/src/lib"
     }
   ]
 }
