@@ -3,6 +3,7 @@ import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/l
 import { EtwinEmailTemplateService } from "@eternal-twin/etwin-email-template";
 import { PgAuthService } from "@eternal-twin/pg-auth";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
+import { PgUserService } from "@eternal-twin/pg-user";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
@@ -25,11 +26,12 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const email = new ConsoleEmailService();
   const emailTemplate = new EtwinEmailTemplateService(config.externalBaseUri);
   const password = new ScryptPasswordService();
+  const user = new PgUserService(db, secretKeyStr);
   const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes);
   const koaAuth = new KoaAuth(auth);
   const announcement = new InMemoryAnnouncementService(UUID4_GENERATOR);
 
-  const api: Api = {auth, announcement, koaAuth};
+  const api: Api = {auth, announcement, koaAuth, user};
 
   async function teardown(): Promise<void> {
     await teardownPool();

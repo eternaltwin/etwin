@@ -1,29 +1,28 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from "@angular/router";
 import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type";
+import { CompleteUser } from "@eternal-twin/etwin-api-types/lib/user/complete-user";
 import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
 
+import { UserService } from "../../modules/user/user.service";
 import { UserViewComponent } from "./user-view.component";
 
 @Injectable()
 export class UserResolverService implements Resolve<User | null> {
   private readonly router: Router;
+  private readonly user: UserService;
 
-  constructor(router: Router) {
+  constructor(router: Router, user: UserService) {
     this.router = router;
+    this.user = user;
   }
 
-  async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<User | null> {
+  async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<User | CompleteUser | null> {
     const userId: string | null = route.paramMap.get("user_id");
-    if (userId !== null) {
-      return {
-        type: ObjectType.User,
-        id: userId,
-        displayName: userId,
-        isAdministrator: true,
-      };
+    if (userId === null) {
+      return null;
     }
-    return null;
+    return this.user.getUserById(userId).toPromise();
   }
 }
 

@@ -1,4 +1,13 @@
 <etwin-main-layout>
-  <h1>User's profile</h1>
-  <p>This is a user profile. This page is only a placeholder at the moment, but it will be improved once authentication is more reliable. This page will contain the users's messages and achievements.</p>
+  <ng-container *ngIf="user$ | async as user">
+    <ng-container [ngSwitch]="user !== null ? user.type : null">
+      <ng-container *ngSwitchCase="ObjectType.User">
+        <h1>{{user.displayName}}'s profile</h1>
+        <p>This is a user profile. This page is only a placeholder at the moment, but it will be improved once authentication is more reliable. This page will contain {{user.displayName}}'s messages and achievements.</p>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <h1>User not found</h1>
+      </ng-container>
+    </ng-container>
+  </ng-container>
 </etwin-main-layout>
