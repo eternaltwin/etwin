@@ -1,6 +1,5 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from "@angular/router";
-import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type";
 import { CompleteUser } from "@eternal-twin/etwin-api-types/lib/user/complete-user";
 import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
 

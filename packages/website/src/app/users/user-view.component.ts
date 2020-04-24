@@ -18,6 +18,7 @@ export class UserViewComponent implements OnInit {
 
   public user$: Observable<User | CompleteUser | typeof USER_NOT_FOUND>;
   public readonly ObjectType = ObjectType;
+  public readonly USER_NOT_FOUND = USER_NOT_FOUND;
 
   constructor(
     route: ActivatedRoute,

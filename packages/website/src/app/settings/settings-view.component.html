@@ -1,4 +1,75 @@
 <etwin-main-layout>
-  <h1>Settings page</h1>
-  <p>This page will contains the user's settings.</p>
+  <ng-container *ngIf="user$ | async as user">
+    <ng-container [ngSwitch]="user">
+      <ng-container *ngSwitchCase="RESOLUTION_ERROR">
+        <h1>Authentication error</h1>
+        <p>Failed to load the settings page: make sure you are authenticated.</p>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <h1>Settings</h1>
+        <hr/>
+        <h2>Profile</h2>
+        <p>You can change your name as displayed to other users once every 6 months. Your old names will still be
+          displayed on your profile to help others recognize you.</p>
+        <form>
+          <label>
+            <span>New display name</span>
+            <input type="text" name="display_name" class="field" required="required" [value]="user.displayName"/>
+          </label>
+          <input type="submit" class="btn primary" value="Update my display name" disabled="disabled"/>
+        </form>
+        <hr/>
+        <h2>Authentication</h2>
+        <form>
+          <form>
+            <label>
+              <span>Email address</span>
+              <ng-container *ngIf="user.emailAddress as email; then updateEmail; else setEmail"></ng-container>
+              <ng-template #updateEmail let-email>
+                <input type="email" name="email_address" class="field" required="required" [value]="email"/>
+              </ng-template>
+              <ng-template #setEmail>
+                <input type="email" name="email_address" class="field" required="required"/>
+              </ng-template>
+            </label>
+            <input type="submit" class="btn primary" value="Update my email address" disabled="disabled"/>
+          </form>
+        </form>
+        <form>
+          <form>
+            <label>
+              <span>Username</span>
+              <ng-container *ngIf="user.username as username; then updateUsername; else setUsername"></ng-container>
+              <ng-template #updateUsername let-username>
+                <input type="text" name="username" class="field" required="required" [value]="username"/>
+              </ng-template>
+              <ng-template #setUsername>
+                <input type="text" name="username" class="field" required="required"/>
+              </ng-template>
+            </label>
+            <input type="submit" class="btn primary" value="Update my username" disabled="disabled"/>
+          </form>
+        </form>
+        <form>
+          <form>
+            <label>
+              <span>Password</span>
+              <input type="password" name="password" class="field" required="required"/>
+            </label>
+            <label>
+              <span>Password confirmation</span>
+              <input type="password" name="password2" class="field" required="required"/>
+            </label>
+            <input type="submit" class="btn primary" value="Update my password" disabled="disabled"/>
+          </form>
+        </form>
+        <hr/>
+        <h2>Linked accounts</h2>
+        <p>Twinoid account</p>
+        <p>Hammerfest account (french)</p>
+        <p>Hammerfest account (english)</p>
+        <p>Hammerfest account (spanish)</p>
+      </ng-container>
+    </ng-container>
+  </ng-container>
 </etwin-main-layout>
