@@ -3,7 +3,6 @@ $bgColor: #101010;
 $textColor: #d0d0d0;
 $bgAccentColor: #6a100e;
 
-
 $accentColor: #6a100e;
 $accentColorLight: #a81e22;
 $accentColorDark: #470d0b;
@@ -60,7 +59,7 @@ etwin-main-layout, etwin-small-layout {
       linear-gradient(to right, $borderColor, $borderLightColor 50%, $borderColor),
       linear-gradient($borderColor, $borderColor),
       url("/assets/banner.png"),
-      linear-gradient(lighten($bgShadowColor, 2%) 0%, $bgColor 22%, $bgColor 32%, lighten($bgShadowColor, 5%) 100%);
+      linear-gradient(lighten($bgShadowColor, 5%) 0%, $bgColor 68%, $bgColor 78%, lighten($bgShadowColor, 2%) 100%);
     background-repeat: no-repeat, repeat-x, no-repeat, repeat-x;
     background-position: bottom center, bottom center, top center, top center;
 
