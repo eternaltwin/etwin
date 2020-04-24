@@ -8,53 +8,83 @@ $accentColor: #6a100e;
 $accentColorLight: #a81e22;
 $accentColorDark: #470d0b;
 
+html {
+  min-height: 100%;
+  display: flex;
+}
+
 body {
+  flex: 1;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  min-width: 100%;
   color: $textColor;
   background-color: $bgColor;
   font-family: sans-serif;
 }
 
-etwin-main-layout > header {
-  // The header is built with the following layers (ordered from the front to the back):
-  // 1. Light effect on the bottom border
-  // 2. Bottom border
-  // 3. Banner image
-  // 4. Red background gradient
+app-root {
+  flex: 1;
+}
 
-  $bannerHeight: 109px;
-  $bannerWidth: 1100px;
-  $borderHeight: 3px;
+etwin-main-layout, etwin-small-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 
-  $borderColor: #a39fb9;
-  $borderLightColor: #ffffff;
-  $bgShadowColor: #2d0706;
-  $bgColor: #6a100e;
+  & > header {
+    // The header is built with the following layers (ordered from the front to the back):
+    // 1. Light effect on the bottom border
+    // 2. Bottom border
+    // 3. Banner image
+    // 4. Red background gradient
 
-  height: $bannerHeight + $borderHeight;
-  background-color: $bgColor;
+    $bannerHeight: 109px;
+    $bannerWidth: 1100px;
+    $borderHeight: 3px;
 
-  background-size: $bannerWidth $borderHeight, 1px $borderHeight, auto, 1px $bannerHeight;
-  background-image:
-    linear-gradient(to right, $borderColor, $borderLightColor 50%, $borderColor),
-    linear-gradient($borderColor, $borderColor),
-    url("/assets/banner.png"),
-    linear-gradient($bgShadowColor, $bgColor 35%, lighten($bgColor, 3%) 50%, $bgColor 65%, $bgShadowColor);
-  background-repeat: no-repeat, repeat-x, no-repeat, repeat-x;
-  background-position: bottom center, bottom center, top center, top center;
+    $borderColor: #a39fb9;
+    $borderLightColor: #ffffff;
+    $bgShadowColor: #2d0706;
+    $bgColor: #6a100e;
 
-  h1 {
-    margin: 0;
-    padding: 0;
-    a {
-      display: block;
-      text-align: center;
-      width: $bannerWidth / 2;
-      height: $bannerHeight;
-      color: transparent;
-      margin: auto;
-      overflow: hidden;
-      padding: 2rem 0;
+    height: $bannerHeight + $borderHeight;
+    background-color: $bgColor;
+
+    background-size: $bannerWidth $borderHeight, 1px $borderHeight, auto, 1px $bannerHeight;
+    background-image:
+      linear-gradient(to right, $borderColor, $borderLightColor 50%, $borderColor),
+      linear-gradient($borderColor, $borderColor),
+      url("/assets/banner.png"),
+      linear-gradient(lighten($bgShadowColor, 2%) 0%, $bgColor 22%, $bgColor 32%, lighten($bgShadowColor, 5%) 100%);
+    background-repeat: no-repeat, repeat-x, no-repeat, repeat-x;
+    background-position: bottom center, bottom center, top center, top center;
+
+    h1 {
+      margin: 0;
+      padding: 0;
+      a {
+        display: block;
+        text-align: center;
+        width: $bannerWidth / 2;
+        height: $bannerHeight;
+        color: transparent;
+        margin: auto;
+        overflow: hidden;
+        padding: 2rem 0;
+      }
     }
+  }
+
+  & > .star-bg {
+    flex: 1;
+    background-image: url("/assets/bg-star.svg");
+    background-repeat: no-repeat;
+    background-position: center -592px;
   }
 }
 
