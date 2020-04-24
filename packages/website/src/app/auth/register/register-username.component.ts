@@ -27,8 +27,8 @@ export class RegisterUsernameComponent implements OnDestroy {
 
   private readonly auth: AuthService;
   private readonly router: Router;
-  private pendingSubscription: Subscription | null;
-  private serverError: Error | null;
+  public pendingSubscription: Subscription | null;
+  public serverError: Error | null;
 
   constructor(auth: AuthService, router: Router) {
     this.auth = auth;

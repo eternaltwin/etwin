@@ -62,7 +62,10 @@
           </div>
         </div>
       </label>
-      <input type="submit" class="btn primary" name="register" [disabled]="registrationForm.invalid" value="Register"/>
+      <input type="submit" class="btn primary" name="register" [disabled]="registrationForm.invalid || pendingSubscription !== null" value="Register"/>
+      <div *ngIf="serverError" class="error">
+        Registration error: the username is already used or some other error occurred.
+      </div>
       <div>
         <a routerLink="/register">Back</a>
       </div>

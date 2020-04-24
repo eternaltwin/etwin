@@ -28,5 +28,8 @@
     </div>
   </label>
   <input type="submit" name="sign_in" class="btn primary" i18n-value="Submit login form label@@login.signInAction"
-         value="Sign in" [disabled]="loginForm.invalid"/>
+         value="Sign in" [disabled]="loginForm.invalid || pendingSubscription !== null"/>
+  <div *ngIf="serverError" class="error">
+    Failed to authenticate: please check your credentials.
+  </div>
 </form>
