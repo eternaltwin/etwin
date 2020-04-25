@@ -1,0 +1,48 @@
+{
+  "name": "@eternal-twin/http-hammerfest",
+  "version": "0.0.1",
+  "homepage": "https://gitlab.com/eternal-twin/etwin-api",
+  "description": "TypeScript definitions for the Node.js client API of the Eternal-Twin",
+  "repository": {
+    "type": "git",
+    "url": "git://gitlab.com:eternal-twin/etwin-api.git"
+  },
+  "private": false,
+  "scripts": {
+    "lint": "eslint \"./src/**/*.ts\"",
+    "format": "eslint --fix \"./src/**/*.ts\"",
+    "build": "tsc --build src/lib/tsconfig.json",
+    "pretest": "tsc --build src/test/tsconfig.json",
+    "test": "mocha \"test/**/*.spec.js\""
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "@eternalfest/hammerfest-api": "^0.4.1",
+    "@eternal-twin/etwin-api-types": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.9.5",
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "mocha": "^7.1.1",
+    "typescript": "^3.8.3"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./lib/index.js",
+    "./lib/": "./lib/"
+  },
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "./lib/"
+  ]
+}

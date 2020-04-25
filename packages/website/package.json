@@ -28,6 +28,7 @@
   "dependencies": {
     "@eternal-twin/console-email": "^0.0.1",
     "@eternal-twin/etwin-email-template": "^0.0.1",
+    "@eternal-twin/http-hammerfest": "^0.0.1",
     "@eternal-twin/local-config": "^0.0.1",
     "@angular/animations": "~9.1.0",
     "@angular/common": "~9.1.0",

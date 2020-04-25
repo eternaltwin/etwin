@@ -10,6 +10,7 @@ import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 
 import { Api } from "../lib/index.js";
 import { Config } from "./config.js";
+import { HttpHammerfestService } from "@eternal-twin/http-hammerfest";
 
 export async function createApi(config: Config): Promise<{api: Api; teardown(): Promise<void>}> {
   const {pool, teardown: teardownPool} = createPgPool({
@@ -27,7 +28,8 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const emailTemplate = new EtwinEmailTemplateService(config.externalBaseUri);
   const password = new ScryptPasswordService();
   const user = new PgUserService(db, secretKeyStr);
-  const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes);
+  const hammerfest = new HttpHammerfestService();
+  const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
   const koaAuth = new KoaAuth(auth);
   const announcement = new InMemoryAnnouncementService(UUID4_GENERATOR);
 
