@@ -14,6 +14,7 @@ import url from "url";
 import { KoaAuth } from "../lib/helpers/koa-auth.js";
 import { Api, createApiRouter } from "../lib/index.js";
 import { PgUserService } from "@eternal-twin/pg-user";
+import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
 
 export async function withTestServer<R>(fn: (server: http.Server) => Promise<R>): Promise<R> {
   const config = await getLocalConfig(["dbHost", "dbPort", "dbName", "dbUser", "dbPassword", "secretKey"]);
@@ -34,7 +35,8 @@ export async function withTestServer<R>(fn: (server: http.Server) => Promise<R>)
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://twin.eternalfest.net"));
     const password = new ScryptPasswordService();
     const user = new PgUserService(db, secretKeyStr);
-    const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes);
+    const hammerfest = new InMemoryHammerfestService();
+    const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
     const announcement = new InMemoryAnnouncementService(UUID4_GENERATOR);
     const koaAuth = new KoaAuth(auth);
     const api: Api = {announcement, auth, koaAuth, user};

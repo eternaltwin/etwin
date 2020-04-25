@@ -9,11 +9,14 @@ import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-
 import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type.js";
 import { EmailContent } from "@eternal-twin/etwin-api-types/lib/email/email-content.js";
 import { InMemoryEmailService } from "@eternal-twin/in-memory-email";
+import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
 import chai from "chai";
+import { HammerfestCredentials } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-credentials";
 
 export interface Api {
   auth: AuthService;
   email: InMemoryEmailService;
+  hammerfest: InMemoryHammerfestService;
 }
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};
@@ -126,6 +129,41 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
               type: ObjectType.User,
               id: actual.user.id,
               displayName: "Alice",
+            },
+            ctime: actual.session.ctime,
+            atime: actual.session.ctime,
+          },
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
+
+  it("Registers a user with Hammerfest", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      api.hammerfest.createUser("hammerfest.fr", 123, "alice", Buffer.from("aaaaa"));
+
+      const credentials: HammerfestCredentials = {
+        server: "hammerfest.fr",
+        login: "alice",
+        password: Buffer.from("aaaaa"),
+      };
+      const actual: UserAndSession = await api.auth.registerOrLoginWithHammerfest(GUEST_AUTH, credentials);
+      {
+        const expected: UserAndSession = {
+          user: {
+            type: ObjectType.User,
+            id: actual.user.id,
+            displayName: "alice",
+            isAdministrator: true,
+          },
+          session: {
+            id: actual.session.id,
+            user: {
+              type: ObjectType.User,
+              id: actual.user.id,
+              displayName: "alice",
             },
             ctime: actual.session.ctime,
             atime: actual.session.ctime,

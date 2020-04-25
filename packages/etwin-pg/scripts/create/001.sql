@@ -89,10 +89,13 @@ CREATE TABLE public.hammerfest_user_links (
   -- Hammerfest server
   hammerfest_server VARCHAR(64) NOT NULL,
   -- User ID on the Hammerfest server
-  hammerser_user_id INT NOT NULL,
+  hammerfest_user_id INT NOT NULL,
   -- Link creation time
   ctime TIMESTAMP(0) NOT NULL,
-  PRIMARY KEY (user_id, hammerfest_server, hammerser_user_id),
+  PRIMARY KEY (user_id, hammerfest_server, hammerfest_user_id),
   CONSTRAINT hammerfest_user_link__user__fk FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT hammerfest_user_link__hammerfest_user__fk FOREIGN KEY (hammerfest_server, hammerser_user_id) REFERENCES hammerfest_users(server, user_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT hammerfest_user_link__hammerfest_user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(server, user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
+
+INSERT INTO hammerfest_servers("domain")
+VALUES ('hammerfest.fr'), ('hfest.net'), ('hammerfest.es');

@@ -6,16 +6,16 @@ import { $HammerfestSessionKey, HammerfestSessionKey } from "./hammerfest-sessio
 import { $HammerfestUserRef, HammerfestUserRef } from "./hammerfest-user-ref.js";
 
 export interface HammerfestSession {
-  creationDate: Date;
-  lastUseDate: Date;
+  ctime: Date;
+  atime: Date;
   key: HammerfestSessionKey;
   user: HammerfestUserRef;
 }
 
 export const $CreateSessionOptions: RecordIoType<HammerfestSession> = new RecordType<HammerfestSession>({
   properties: {
-    creationDate: {type: $Date},
-    lastUseDate: {type: $Date},
+    ctime: {type: $Date},
+    atime: {type: $Date},
     key: {type: $HammerfestSessionKey},
     user: {type: $HammerfestUserRef},
   },

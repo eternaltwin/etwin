@@ -2,10 +2,15 @@ import { $AuthContext, AuthContext } from "@eternal-twin/etwin-api-types/lib/aut
 import { AuthMethod } from "@eternal-twin/etwin-api-types/lib/auth/auth-method.js";
 import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
+import { $CreateSessionQuery, CreateSessionQuery } from "@eternal-twin/etwin-api-types/lib/auth/create-session-query.js";
 import { $Credentials, Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials.js";
 import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
 import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-session.js";
+import {
+  $HammerfestCredentials,
+  HammerfestCredentials,
+} from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-credentials.js";
 import { $User } from "@eternal-twin/etwin-api-types/lib/user/user.js";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
@@ -16,7 +21,6 @@ import { JsonValueWriter } from "kryo-json/lib/json-value-writer.js";
 import { QsValueReader } from "kryo-qs/lib/qs-value-reader.js";
 
 import { KoaAuth, SESSION_COOKIE } from "./helpers/koa-auth.js";
-import { $CreateSessionQuery, CreateSessionQuery } from "@eternal-twin/etwin-api-types/lib/auth/create-session-query.js";
 
 const JSON_VALUE_WRITER: JsonValueWriter = new JsonValueWriter();
 const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
@@ -78,7 +82,10 @@ export function createAuthRouter(api: Api): Koa {
   }
 
   async function createSessionWithHammerfestCredentials(cx: Koa.Context): Promise<void> {
-    cx.response.status = 500;
+    const credentials: HammerfestCredentials = $HammerfestCredentials.read(JSON_VALUE_READER, cx.request.body);
+    const result: UserAndSession = await api.auth.registerOrLoginWithHammerfest(GUEST_AUTH, credentials);
+    cx.cookies.set(SESSION_COOKIE, result.session.id);
+    cx.response.body = $User.write(JSON_VALUE_WRITER, result.user);
   }
 
   async function createSessionWithTwinoidCredentials(cx: Koa.Context): Promise<void> {

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { Username } from "@eternal-twin/etwin-api-types/lib/user/username";
@@ -13,7 +13,7 @@ const TEXT_ENCODER: TextEncoder = new TextEncoder();
   templateUrl: "./login-etwin.component.html",
   styleUrls: [],
 })
-export class LoginEtwinComponent {
+export class LoginEtwinComponent implements OnDestroy {
   public readonly loginForm: FormGroup;
   public readonly login: FormControl;
   public readonly password: FormControl;

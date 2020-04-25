@@ -1,5 +1,5 @@
 {
-  "name": "@eternal-twin/pg-auth",
+  "name": "@eternal-twin/in-memory-hammerfest",
   "version": "0.0.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "TypeScript definitions for the Node.js client API of the Eternal-Twin",
@@ -19,25 +19,12 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "pre-commit": {
-    "run": [
-      "lint"
-    ]
-  },
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@eternal-twin/etwin-api-types": "^0.0.1",
-    "@eternal-twin/pg-db": "^0.0.1",
-    "@types/jsonwebtoken": "^8.3.9",
-    "jsonwebtoken": "^8.5.1",
-    "kryo": "^0.10.0"
+    "@eternal-twin/etwin-api-types": "^0.0.1"
   },
   "devDependencies": {
-    "@eternal-twin/in-memory-email": "^0.0.1",
-    "@eternal-twin/in-memory-hammerfest": "^0.0.1",
-    "@eternal-twin/json-email-template": "^0.0.1",
-    "@eternal-twin/local-config": "^0.0.1",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.9.5",

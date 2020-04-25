@@ -4,20 +4,20 @@ import { $AuthContext, AuthContext } from "@eternal-twin/etwin-api-types/lib/aut
 import { AuthMethod } from "@eternal-twin/etwin-api-types/lib/auth/auth-method";
 import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type";
-import {
-  $CreateSessionQuery,
-  CreateSessionQuery,
-} from "@eternal-twin/etwin-api-types/lib/auth/create-session-query";
+import { $CreateSessionQuery } from "@eternal-twin/etwin-api-types/lib/auth/create-session-query";
 import { $Credentials, Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials";
-import { LoginWithHammerfestOptions } from "@eternal-twin/etwin-api-types/lib/auth/login-with-hammerfest-options";
 import {
   $RegisterWithUsernameOptions,
   RegisterWithUsernameOptions,
 } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options";
 import { UserAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/user-auth-context";
+import {
+  $HammerfestCredentials,
+  HammerfestCredentials,
+} from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-credentials";
 import { $User, User } from "@eternal-twin/etwin-api-types/lib/user/user";
 import { JsonValueReader } from "kryo-json/lib/json-value-reader";
-import { concat as rxConcat, NEVER as RX_NEVER,Observable, of as rxOf, ReplaySubject } from "rxjs";
+import { concat as rxConcat, NEVER as RX_NEVER, Observable, of as rxOf, ReplaySubject } from "rxjs";
 import { map as rxMap, tap as rxTap } from "rxjs/operators";
 
 import { RestService } from "../rest/rest.service";
@@ -98,8 +98,25 @@ export class BrowserAuthService extends AuthService {
       }));
   }
 
-  loginWithHammerfestCredentials(options: Readonly<LoginWithHammerfestOptions>): Observable<User> {
-    throw new Error("NotImplemented");
+  loginWithHammerfestCredentials(options: Readonly<HammerfestCredentials>): Observable<User> {
+    const reqOptions = {
+      queryType: $CreateSessionQuery,
+      query: {method: AuthMethod.Hammerfest},
+      reqType: $HammerfestCredentials,
+      req: options,
+      resType: $User,
+    };
+    return this.rest.put(["auth", "self"], reqOptions)
+      .pipe(rxTap((user: User): void => {
+        const auth: UserAuthContext = {
+          type: AuthType.User,
+          scope: AuthScope.Default,
+          userId: user.id,
+          displayName: user.displayName,
+          isAdministrator: user.isAdministrator,
+        };
+        this.auth$.next(auth);
+      }));
   }
 
   logout(): Observable<null> {

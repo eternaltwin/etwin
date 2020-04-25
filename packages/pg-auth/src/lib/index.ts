@@ -2,7 +2,6 @@ import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
 import { Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials";
 import { LinkHammerfestUserOptions } from "@eternal-twin/etwin-api-types/lib/auth/link-hammerfest-user-options.js";
-import { LoginWithHammerfestOptions } from "@eternal-twin/etwin-api-types/lib/auth/login-with-hammerfest-options.js";
 import { $Login, Login } from "@eternal-twin/etwin-api-types/lib/auth/login.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options.js";
@@ -17,13 +16,17 @@ import { UuidGenerator } from "@eternal-twin/etwin-api-types/lib/core/uuid-gener
 import { EmailTemplateService } from "@eternal-twin/etwin-api-types/lib/email-template/service.js";
 import { $EmailAddress, EmailAddress } from "@eternal-twin/etwin-api-types/lib/email/email-address.js";
 import { EmailService } from "@eternal-twin/etwin-api-types/lib/email/service.js";
+import { HammerfestCredentials } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-credentials.js";
+import { HammerfestSession } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-session.js";
+import { HammerfestUserRef } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-user-ref.js";
+import { HammerfestService } from "@eternal-twin/etwin-api-types/lib/hammerfest/service.js";
 import { PasswordHash } from "@eternal-twin/etwin-api-types/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/etwin-api-types/lib/password/service.js";
 import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
-import { UserDisplayName } from "@eternal-twin/etwin-api-types/lib/user/user-display-name";
+import { $UserDisplayName, UserDisplayName } from "@eternal-twin/etwin-api-types/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/etwin-api-types/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/etwin-api-types/lib/user/username.js";
-import { SessionRow, UserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
+import { HammerfestUserLinkRow, SessionRow, UserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 import jsonWebToken from "jsonwebtoken";
 import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
@@ -42,6 +45,7 @@ export class PgAuthService implements AuthService {
   private readonly emailTemplate: EmailTemplateService;
   private readonly defaultLocale: LocaleId;
   private readonly tokenSecret: Buffer;
+  private readonly hammerfest: HammerfestService;
 
   /**
    * Creates a new authentication service.
@@ -53,6 +57,7 @@ export class PgAuthService implements AuthService {
    * @param email Email service to use.
    * @param emailTemplate Email template service to use.
    * @param tokenSecret Secret key used to generated and verify tokens.
+   * @param hammerfest Hammerfest service to use.
    */
   constructor(
     database: Database,
@@ -62,6 +67,7 @@ export class PgAuthService implements AuthService {
     email: EmailService,
     emailTemplate: EmailTemplateService,
     tokenSecret: Uint8Array,
+    hammerfest: HammerfestService,
   ) {
     this.database = database;
     this.dbSecret = dbSecret;
@@ -70,6 +76,7 @@ export class PgAuthService implements AuthService {
     this.email = email;
     this.emailTemplate = emailTemplate;
     this.tokenSecret = Buffer.from(tokenSecret);
+    this.hammerfest = hammerfest;
     this.defaultLocale = "en-US";
   }
 
@@ -119,12 +126,15 @@ export class PgAuthService implements AuthService {
     });
   }
 
-  async registerOrLoginWithHammerfest(acx: AuthContext, _options: LoginWithHammerfestOptions): Promise<void> {
+  async registerOrLoginWithHammerfest(
+    acx: AuthContext,
+    credentials: HammerfestCredentials,
+  ): Promise<UserAndSession> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    await this.database.transaction(TransactionMode.ReadWrite, async () => {
-      throw new Error("NotImplemented");
+    return await this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+      return this.registerOrLoginWithHammerfestTx(q, acx, credentials);
     });
   }
 
@@ -276,12 +286,61 @@ export class PgAuthService implements AuthService {
     return {user, session};
   }
 
+  private async registerOrLoginWithHammerfestTx(
+    queryable: Queryable,
+    acx: AuthContext,
+    credentials: HammerfestCredentials,
+  ): Promise<UserAndSession> {
+    if (acx.type !== AuthType.Guest) {
+      throw Error("Forbidden: Only guests can authenticate");
+    }
+    const hfSession: HammerfestSession = await this.hammerfest.createSession(acx, credentials);
+    const hfUser: HammerfestUserRef = hfSession.user;
+    await this.createOrUpdateHammerfestUser(queryable, hfUser);
+    type LinkRow = Pick<HammerfestUserLinkRow, "user_id">;
+    const linkRow: LinkRow | undefined = await queryable.oneOrNone(
+      `SELECT user_id
+         FROM hammerfest_user_links
+         WHERE hammerfest_server = $1::VARCHAR AND hammerfest_user_id = $2::INT;`,
+      [hfUser.server, hfUser.id],
+    );
+    let userId: UserId;
+    if (linkRow !== undefined) {
+      userId = linkRow.user_id;
+    } else {
+      let displayName: UserDisplayName = hfUser.login;
+      if (!$UserDisplayName.test(displayName)) {
+        displayName = `hf_${displayName}`;
+        if (!$UserDisplayName.test(displayName)) {
+          displayName = "hammerfestPlayer";
+        }
+      }
+      const user = await this.createUser(queryable, displayName, null, null, null);
+      await queryable.countOne(
+        `INSERT
+         INTO hammerfest_user_links(
+           user_id, hammerfest_server, hammerfest_user_id, ctime
+         )
+        VALUES (
+          $1::UUID, $2::VARCHAR, $3::INT, NOW()
+        );`,
+        [user.id, hfUser.server, hfUser.id],
+      );
+      userId = user.id;
+    }
+
+    const session: Session = await this.createSession(queryable, userId);
+    const user = await this.getExistingUserById(queryable, session.user.id);
+
+    return {user, session};
+  }
+
   private async createUser(
     queryable: Queryable,
     displayName: UserDisplayName,
     emailAddress: EmailAddress | null,
     username: Username | null,
-    passwordHash: PasswordHash,
+    passwordHash: PasswordHash | null,
   ): Promise<User> {
     type Row = Pick<UserRow, "user_id" | "display_name" | "is_administrator">;
     const userId: UuidHex = this.uuidGen.next();
@@ -392,6 +451,24 @@ export class PgAuthService implements AuthService {
       displayName: row.display_name,
       isAdministrator: row.is_administrator,
     };
+  }
+
+  private async createOrUpdateHammerfestUser(queryable: Queryable, hfUserRef: HammerfestUserRef): Promise<void> {
+    await queryable.countOne(
+      `INSERT INTO hammerfest_users(
+        server, user_id, username
+      )
+         VALUES (
+           $1::VARCHAR, $2::INT, $3::VARCHAR
+         )
+         ON CONFLICT (server, user_id)
+           DO UPDATE SET username = $3::VARCHAR;`,
+      [
+        hfUserRef.server,
+        hfUserRef.id,
+        hfUserRef.login,
+      ],
+    );
   }
 
   private async createEmailVerificationToken(emailAddress: EmailAddress): Promise<string> {

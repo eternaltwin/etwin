@@ -1,8 +1,8 @@
-import { Ucs2StringType } from "kryo/lib/ucs2-string.js";
+import { IntegerType } from "kryo/lib/integer";
 
 /**
  * A Hammerfest user id.
  */
-export type HammerfestUserId = string;
+export type HammerfestUserId = number;
 
-export const $HammerfestUserId: Ucs2StringType = new Ucs2StringType({maxLength: 10, trimmed: true, pattern: /^\d+$/});
+export const $HammerfestUserId: IntegerType = new IntegerType({min: 0, max: 1000000000});

@@ -34,3 +34,22 @@ export interface SessionRow {
 
   data: object;
 }
+
+export interface HammerfestUserRow {
+  server: string;
+
+  user_id: number;
+
+  username: string | null;
+}
+
+
+export interface HammerfestUserLinkRow {
+  user_id: string;
+
+  hammerfest_server: string;
+
+  hammerfest_user_id: number;
+
+  ctime: Date;
+}

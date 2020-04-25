@@ -1,12 +1,12 @@
 import { AuthContext } from "./auth-context.js";
 import { Credentials } from "./credentials.js";
 import { LinkHammerfestUserOptions } from "./link-hammerfest-user-options.js";
-import { LoginWithHammerfestOptions } from "./login-with-hammerfest-options.js";
 import { RegisterOrLoginWithEmailOptions } from "./register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "./register-with-username-options";
 import { RegisterWithVerifiedEmailOptions } from "./register-with-verified-email-options.js";
 import { SessionId } from "./session-id";
 import { UserAndSession } from "./user-and-session";
+import { HammerfestCredentials } from "../hammerfest/hammerfest-credentials";
 
 export interface AuthService {
   /**
@@ -61,7 +61,7 @@ export interface AuthService {
    *
    * Automatically creates a user if the credentials aren't linked to any user yet.
    */
-  registerOrLoginWithHammerfest(authContext: AuthContext, options: LoginWithHammerfestOptions): Promise<void>;
+  registerOrLoginWithHammerfest(authContext: AuthContext, credentials: HammerfestCredentials): Promise<UserAndSession>;
 
   linkHammerfestUser(authContext: AuthContext, options: LinkHammerfestUserOptions): Promise<void>;
 

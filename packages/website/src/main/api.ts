@@ -2,9 +2,12 @@ import { ConsoleEmailService } from "@eternal-twin/console-email";
 import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/lib/announcement/service.js";
 import { AnnouncementService } from "@eternal-twin/etwin-api-types/lib/announcement/service.js";
 import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service";
+import { UserService } from "@eternal-twin/etwin-api-types/lib/user/service.js";
 import { EtwinEmailTemplateService } from "@eternal-twin/etwin-email-template";
+import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
 import { PgAuthService } from "@eternal-twin/pg-auth";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
+import { PgUserService } from "@eternal-twin/pg-user";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
@@ -16,6 +19,7 @@ export interface Api {
   announcement: AnnouncementService;
   auth: AuthService;
   koaAuth: KoaAuth;
+  user: UserService;
 }
 
 async function createApi(config: Config): Promise<{api: Api; teardown(): Promise<void>}> {
@@ -33,11 +37,13 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   const email = new ConsoleEmailService();
   const emailTemplate = new EtwinEmailTemplateService(new url.URL("https://twin.eternalfest.net"));
   const password = new ScryptPasswordService();
-  const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes);
+  const hammerfest = new InMemoryHammerfestService();
+  const user = new PgUserService(db, secretKeyStr);
+  const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
   const koaAuth = new KoaAuth(auth);
   const announcement = new InMemoryAnnouncementService(UUID4_GENERATOR);
 
-  const api: Api = {auth, announcement, koaAuth};
+  const api: Api = {auth, announcement, koaAuth, user};
 
   async function teardown(): Promise<void> {
     await teardownPool();

@@ -12,18 +12,6 @@
   "references": [
     {
       "path": "../lib"
-    },
-    {
-      "path": "../../../etwin-api-in-memory/src/lib"
-    },
-    {
-      "path": "../../../in-memory-hammerfest/src/lib"
-    },
-    {
-      "path": "../../../pg-auth/src/lib"
-    },
-    {
-      "path": "../../../pg-user/src/lib"
     }
   ]
 }

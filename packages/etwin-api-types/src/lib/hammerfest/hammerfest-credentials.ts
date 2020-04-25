@@ -1,21 +1,21 @@
 import { CaseStyle } from "kryo";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
-import { $Ucs2String } from "kryo/lib/ucs2-string.js";
 
+import { $Password, Password } from "../password/password.js";
 import { $HammerfestLogin, HammerfestLogin } from "./hammerfest-login.js";
 import { $HammerfestServer, HammerfestServer } from "./hammerfest-server.js";
 
-export interface CreateSessionOptions {
+export interface HammerfestCredentials {
   server: HammerfestServer;
   login: HammerfestLogin;
-  password: string;
+  password: Password;
 }
 
-export const $CreateSessionOptions: RecordIoType<CreateSessionOptions> = new RecordType<CreateSessionOptions>({
+export const $HammerfestCredentials: RecordIoType<HammerfestCredentials> = new RecordType<HammerfestCredentials>({
   properties: {
     server: {type: $HammerfestServer},
     login: {type: $HammerfestLogin},
-    password: {type: $Ucs2String},
+    password: {type: $Password},
   },
   changeCase: CaseStyle.SnakeCase,
 });

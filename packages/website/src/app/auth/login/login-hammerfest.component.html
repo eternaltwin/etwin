@@ -1,16 +1,43 @@
-<form>
+<form
+  method="POST"
+  enctype="application/x-www-form-urlencoded"
+  action="/actions/login-with-hammerfest"
+  [formGroup]="loginForm"
+  (ngSubmit)="onSubmit($event)"
+>
   <div class="active_method">
     <img src="/assets/login-methods/hammerfest.png"/>
     <ng-container i18n="@@login.method.hammerfest">Sign in with Hammerfest</ng-container>
   </div>
   <label>
-    <span>Hammerfest username</span>
-    <input type="text" name="login" class="field"/>
+    <span i18n="Hammerfest server label@@login.hammerfestServer">Server</span>
+    <select class="small" name="server" class="field" formControlName="server">
+      <option value="hammerfest.fr">hammerfest.fr</option>
+      <option value="hfest.net">hfest.net</option>
+      <option value="hammerfest.es">hammerfest.es</option>
+    </select>
+  </label>
+  <label>
+    <span i18n="Hammerfest username address field label@@login.hammfestUsername">Hammerfest username</span>
+    <input type="text" name="login" class="field" formControlName="login" required="required"/>
+    <div *ngIf="login.invalid && (login.dirty || login.touched)" class="error">
+      <div *ngIf="login.errors?.required">
+        The username is required.
+      </div>
+    </div>
   </label>
   <label>
     <span i18n="Password field label@@login.password">Hammerfest password</span>
-    <input type="password" name="password" class="field"/>
+    <input type="password" name="password" class="field" formControlName="password" required="required"/>
+    <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error">
+      <div *ngIf="password.errors?.required">
+        The password is required.
+      </div>
+    </div>
   </label>
   <input type="submit" name="sign_in" class="btn primary" i18n-value="Submit login form label@@login.signInAction"
-         value="Sign in (Soon)"/>
+         value="Sign in" [disabled]="loginForm.invalid || pendingSubscription !== null"/>
+  <div *ngIf="serverError" class="error">
+    Failed to authenticate: please check your credentials.
+  </div>
 </form>

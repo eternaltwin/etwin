@@ -1,5 +1,5 @@
 import { AuthContext } from "../auth/auth-context";
-import { CreateSessionOptions } from "./create-session-options";
+import { HammerfestCredentials } from "./hammerfest-credentials";
 import { HammerfestServer } from "./hammerfest-server";
 import { HammerfestSession } from "./hammerfest-session";
 import { HammerfestSessionKey } from "./hammerfest-session-key";
@@ -13,7 +13,7 @@ export interface HammerfestService {
    * @returns Created session
    * @throws Unspecified error on invalid credentials or unreachable server.
    */
-  createSession(auth: AuthContext, options: CreateSessionOptions): Promise<HammerfestSession>;
+  createSession(auth: AuthContext, options: HammerfestCredentials): Promise<HammerfestSession>;
 
   /**
    * Tests if a session key is still valid.
