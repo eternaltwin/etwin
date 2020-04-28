@@ -27,7 +27,6 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@types/find-up": "^4.0.0",
     "dotenv": "^8.2.0",
     "find-up": "^4.1.0"
   },

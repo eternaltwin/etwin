@@ -32,7 +32,7 @@
     "@eternal-twin/pg-db": "^0.0.1",
     "@types/pg": "^7.14.3",
     "furi": "^2.0.0",
-    "pg": "^8.0.2"
+    "pg": "^8.0.3"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.2",

@@ -22,8 +22,8 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@eternalfest/hammerfest-api": "^0.4.1",
-    "@eternal-twin/etwin-api-types": "^0.0.1"
+    "@eternal-twin/etwin-api-types": "^0.0.1",
+    "@eternalfest/hammerfest-api": "^0.4.1"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
