@@ -27,6 +27,9 @@
       "path": "../../../local-config/src/lib"
     },
     {
+      "path": "../../../pg-user/src/lib"
+    },
+    {
       "path": "../../../rest-server/src/lib"
     }
   ]
