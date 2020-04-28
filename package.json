@@ -4,7 +4,8 @@
   "scripts": {
     "lint": "eslint \"packages/*/src/**/*.ts\"",
     "format": "eslint --fix \"packages/*/src/**/*.ts\"",
-    "start": "yarn --cwd packages/website run start"
+    "start": "yarn --cwd packages/website run start",
+    "build:production": "yarn --cwd packages/website run prestart"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.26.0",
