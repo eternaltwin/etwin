@@ -10,6 +10,8 @@ CREATE TABLE public.users (
   ctime TIMESTAMP(0),
   -- Value to use when displaying the user's name. May be different from `username` or `email_address`.
   display_name VARCHAR(64) NOT NULL,
+  -- Time of the last change to `display_name`
+  display_name_mtime TIMESTAMP(0) NOT NULL,
   -- Encrypted email address (using pgp_sym_encrypt)
   -- This may be `NULL` if the value was never set, or if the value was removed.
   email_address BYTEA NULL,
@@ -26,6 +28,7 @@ CREATE TABLE public.users (
   password_mtime TIMESTAMP(0) NOT NULL,
   -- Flag indicating that this user is an administrator (has elevated permissions)
   is_administrator BOOLEAN NOT NULL,
+  CHECK (display_name_mtime >= ctime),
   CHECK (email_address_mtime >= ctime),
   CHECK (username_mtime >= ctime),
   CHECK (password_mtime >= ctime),

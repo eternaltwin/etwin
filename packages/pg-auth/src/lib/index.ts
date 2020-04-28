@@ -348,14 +348,14 @@ export class PgAuthService implements AuthService {
       `WITH administrator_exists AS (SELECT 1 FROM users WHERE is_administrator)
          INSERT
          INTO users(
-           user_id, ctime, display_name,
+           user_id, ctime, display_name, display_name_mtime,
            email_address, email_address_mtime,
            username, username_mtime,
            password, password_mtime,
            is_administrator
          )
          VALUES (
-           $2::UUID, NOW(), $3::VARCHAR,
+           $2::UUID, NOW(), $3::VARCHAR, NOW(),
            (CASE WHEN $4::TEXT IS NULL THEN NULL ELSE pgp_sym_encrypt($4::TEXT, $1::TEXT) END), NOW(),
            $5::VARCHAR, NOW(),
            pgp_sym_encrypt_bytea($6::BYTEA, $1::TEXT), NOW(),
