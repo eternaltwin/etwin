@@ -5,7 +5,7 @@ import { AuthMethod } from "@eternal-twin/etwin-api-types/lib/auth/auth-method";
 import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type";
 import { $CreateSessionQuery } from "@eternal-twin/etwin-api-types/lib/auth/create-session-query";
-import { $Credentials, Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials";
+import { $RawCredentials, RawCredentials } from "@eternal-twin/etwin-api-types/lib/auth/raw-credentials";
 import {
   $RegisterWithUsernameOptions,
   RegisterWithUsernameOptions,
@@ -77,11 +77,11 @@ export class BrowserAuthService extends AuthService {
       }));
   }
 
-  loginWithCredentials(options: Readonly<Credentials>): Observable<User> {
+  loginWithCredentials(options: Readonly<RawCredentials>): Observable<User> {
     const reqOptions = {
       queryType: $CreateSessionQuery,
       query: {method: AuthMethod.Etwin},
-      reqType: $Credentials,
+      reqType: $RawCredentials,
       req: options,
       resType: $User,
     };

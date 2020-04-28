@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Username } from "@eternal-twin/etwin-api-types/lib/user/username";
+import { RawLogin } from "@eternal-twin/etwin-api-types/lib/auth/raw-login";
 import { Subscription } from "rxjs";
 
 import { AuthService } from "../../../modules/auth/auth.service";
@@ -50,7 +50,7 @@ export class LoginEtwinComponent implements OnDestroy {
       return;
     }
     const model: any = this.loginForm.getRawValue();
-    const login: Username = model.login;
+    const login: RawLogin = model.login;
     const passwordStr: string = model.password;
     const password: Uint8Array = TEXT_ENCODER.encode(passwordStr);
     const authResult$ = this.auth.loginWithCredentials({login, password});

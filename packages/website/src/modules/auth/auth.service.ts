@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context";
-import { Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials";
+import { RawCredentials } from "@eternal-twin/etwin-api-types/lib/auth/raw-credentials";
 import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options";
 import { HammerfestCredentials } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-credentials";
 import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
@@ -12,7 +12,7 @@ export abstract class AuthService {
 
   abstract registerWithUsername(options: Readonly<RegisterWithUsernameOptions>): Observable<User>;
 
-  abstract loginWithCredentials(options: Readonly<Credentials>): Observable<User>;
+  abstract loginWithCredentials(options: Readonly<RawCredentials>): Observable<User>;
 
   abstract loginWithHammerfestCredentials(credentials: Readonly<HammerfestCredentials>): Observable<User>;
 
