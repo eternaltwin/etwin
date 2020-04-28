@@ -346,8 +346,7 @@ export class PgAuthService implements AuthService {
     const userId: UuidHex = this.uuidGen.next();
     const userRow: Row = await queryable.one(
       `WITH administrator_exists AS (SELECT 1 FROM users WHERE is_administrator)
-         INSERT
-         INTO users(
+         INSERT INTO users(
            user_id, ctime, display_name, display_name_mtime,
            email_address, email_address_mtime,
            username, username_mtime,
