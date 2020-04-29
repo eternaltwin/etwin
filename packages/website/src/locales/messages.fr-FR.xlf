@@ -7,12 +7,287 @@
         <target state="translated">Se connecter</target>
         <note priority="1" from="description">Top-bar button to the login page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">2</context>
+          <context context-type="sourcefile">../app/shared/etwin-bar.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.heading" datatype="html">
+        <source>
+      Eternal-Twin registration
+    </source>
+        <target state="translated">Inscription à Eternal-Twin</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
+          <context context-type="linenumber">3</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">2</context>
+          <context context-type="sourcefile">../app/auth/register/register-email.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <note priority="1" from="description">Registration page heading</note>
+      </trans-unit>
+      <trans-unit id="register.efWarning" datatype="html">
+        <source>
+      If you played on Eternalfest, your account was imported automatically and you should <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>sign-in with Hammerfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>.
+    </source>
+        <target state="translated">Si vous avez joué sur Eternalfest, votre compte a été importé automatiquement et vous devriez <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>vous connecter avec Hammerfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.selectMethod" datatype="html">
+        <source>Select your preferred authentication method</source>
+        <target state="translated">Choisissez votre méthode de connexion préférée.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.method.username" datatype="html">
+        <source>Pick a username</source>
+        <target state="translated">Choisir un nom d'utilisateur</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.method.email" datatype="html">
+        <source>Use my email address (Soon)</source>
+        <target state="translated">Utiliser mon adresse email (Bientôt)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.loginLink" datatype="html">
+        <source>Already have an account? Sign-in</source>
+        <target state="translated">Avez-vous déjà un compte ? Connectez vous</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="label.emailAddress" datatype="html">
+        <source>Email address</source>
+        <target state="translated">Adresse email</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-email.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+        <note priority="1" from="description">Email address field label</note>
+      </trans-unit>
+      <trans-unit id="register.email.submit" datatype="html">
+        <source>Register (Soon)</source>
+        <target state="translated">S'inscrire (Bientôt)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-email.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.backToMethodSelection" datatype="html">
+        <source>Back</source>
+        <target state="translated">Retour</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-email.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">85</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.editableProfileInfo" datatype="html">
+        <source>Don't worry: you'll be able to edit all the values below in your profile if you ever want to.</source>
+        <target state="translated">Ne vous inquiétez pas : vous pourrez éditer les valeurs ci-dessous dans votre page de profil si jamais vous souhaitez les changer.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="label.username" datatype="html">
+        <source>Username</source>
+        <target state="translated">Nom d'utilisateur</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <note priority="1" from="description">Username field label</note>
+      </trans-unit>
+      <trans-unit id="register.usernameInfo" datatype="html">
+        <source>The identifier you want to use to sign-in. It must be a unique name containing only "a-z", "0-9" or "_".</source>
+        <target state="translated">L'identifiant à utiliser pour vous connecter. Il doit être unique et ne contenir que "a-z", "0-9" ou "_".</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.usernameRequired" datatype="html">
+        <source>
+              The username is required.
+            </source>
+        <target state="translated">Le nom d'utilisateur est requis.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.usernameMinLength" datatype="html">
+        <source>
+              The username must be at least <x id="INTERPOLATION" equiv-text="{{$RawUsername.minLength}}"/> characters long.
+            </source>
+        <target state="translated">Le nom d'utilisateur doit avoir au moins <x id="INTERPOLATION" equiv-text="{{$RawUsername.minLength}}"/> caractères.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.usernameMaxLength" datatype="html">
+        <source>
+              The username must be at most <x id="INTERPOLATION" equiv-text="{{$RawUsername.maxLength}}"/> characters long.
+            </source>
+        <target state="translated">Le nom d'utilisateur doit avoir au plus <x id="INTERPOLATION" equiv-text="{{$RawUsername.maxLength}}"/> caractères.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.usernamePattern" datatype="html">
+        <source>
+              The username can only use the lowercase english letters "a-z" and digits "0-9" (it must start with a
+              letter).
+            </source>
+        <target state="translated">Le nom d'utilisateur ne peut que contenir les lettres minuscules "a-z", les chiffres "0-9" ou "_" (il doit commencer par une lettre).</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="displayName" datatype="html">
+        <source>Display name</source>
+        <target state="translated">Nom affiché</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <note priority="1" from="description">Display name field label</note>
+      </trans-unit>
+      <trans-unit id="register.displayNameInfo" datatype="html">
+        <source>How your name should be displayed to other players. You can use any letter, spaces and parenthesis.</source>
+        <target state="translated">Comment votre nom devrait être affiché aux autres joueurs. Vous pouvez utilisez toutes les lettres, des espaces et des parenthèses.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.displayNameMinLength" datatype="html">
+        <source>
+            The display name must be at least <x id="INTERPOLATION" equiv-text="{{$UserDisplayName.minLength}}"/> characters long.
+          </source>
+        <target state="translated">Le nom affiché doit avoir au moins <x id="INTERPOLATION" equiv-text="{{$UserDisplayName.minLength}}"/> caractères.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.displayNameMaxLength" datatype="html">
+        <source>
+            The display name must be at most <x id="INTERPOLATION" equiv-text="{{$UserDisplayName.maxLength}}"/> characters long.
+          </source>
+        <target state="translated">Le nom affiché doit avoir au plus <x id="INTERPOLATION" equiv-text="{{$UserDisplayName.maxLength}}"/> caractères.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.displayNamePattern" datatype="html">
+        <source>
+            The display name can only use letters, spaces or parenthesis.
+          </source>
+        <target state="translated">Le nom affiché ne peut utiliser que des lettres, espaces ou parenthèses.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="label.password" datatype="html">
+        <source>Password</source>
+        <target state="translated">Mot de passe</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+        <note priority="1" from="description">Password field label</note>
+      </trans-unit>
+      <trans-unit id="register.passwordRequired" datatype="html">
+        <source>
+            The password is required.
+          </source>
+        <target state="translated">Le mot de passe est requis</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.passwordMinLength" datatype="html">
+        <source>
+            The password must be at least <x id="INTERPOLATION" equiv-text="{{PASSWORD_LEN}}"/> characters long.
+          </source>
+        <target state="translated">Le mot de passe doit faire au moins <x id="INTERPOLATION" equiv-text="{{PASSWORD_LEN}}"/> caractères.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="label.passwordConfirmation" datatype="html">
+        <source>Password confirmation</source>
+        <target state="translated">Confirmation du mot de passe</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+        <note priority="1" from="description">Password field label</note>
+      </trans-unit>
+      <trans-unit id="register.passwordConfirmationRequired" datatype="html">
+        <source>
+            The password confirmation is required.
+          </source>
+        <target state="translated">La confirmation du mot de passe est requise.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.passwordConfirmationMatch" datatype="html">
+        <source>
+            The password confirmation does not match the password.
+          </source>
+        <target state="translated">La confirmation du mot de passe ne correspond pas au mot de passe.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.username.submit" datatype="html">
+        <source>Register</source>
+        <target state="translated">S'inscrire</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.username.unknownError" datatype="html">
+        <source>
+        Registration error: the username is invalid or already used, please report this error if it persists.
+      </source>
+        <target state="translated">Échec d'inscription : le nom d'utilisateur est invalide ou déjà utilisé, veuillez signaler cette erreur si elle persiste.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="home.presentation" datatype="html">
@@ -49,22 +324,22 @@
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       Liens utiles :
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>Serveur Discord Eternal-Twin<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Canal de communication principal<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a>"/>Eternal Twinpedia<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Wiki pour les jeux Motion-Twin<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a>"/>Organisation Eternal-Twin sur Gitlab<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Tout notre code source<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/></target>
+        <note priority="1" from="description">Presentation of the Eternal-Twin project</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">8</context>
+          <context context-type="linenumber">2</context>
         </context-group>
-        <note priority="1" from="description">Presentation of the Eternal-Twin project</note>
       </trans-unit>
       <trans-unit id="home.generalTitle" datatype="html">
         <source>
     General informations
   </source>
         <target state="translated">Informations générales</target>
+        <note priority="1" from="description">Title of the general informations section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">26</context>
         </context-group>
-        <note priority="1" from="description">Title of the general informations section</note>
       </trans-unit>
       <trans-unit id="home.generalWhoAreWe" datatype="html">
         <source>
@@ -73,11 +348,11 @@
     Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.
   </source>
         <target state="translated">Eternal-Twin est un site web non-commercial géré par des amateurs. Son but est d'archiver les jeux de Motion Twin, c'est à dire les garder accessibles même en cas de fermeture du site officiel. <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/>Nous ne sommes pas liés à Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.</target>
+        <note priority="1" from="description">Section describing who we are</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="linenumber">29</context>
         </context-group>
-        <note priority="1" from="description">Section describing who we are</note>
       </trans-unit>
       <trans-unit id="home.generalNoCheating" datatype="html">
         <source>
@@ -87,11 +362,11 @@
     while still being considered cheating.
   </source>
         <target state="translated">Nous avons étudié certains jeux par rétro-ingénierie : l'unique but de cette analyse était l'archivage. Nous nous opposons à quiconque utilisant les informations trouvées afin de gagner un avantage en jeu (même pour les jeux à un seul joueur). Nous basons notre jugement sur les attente de la communauté, pas sur ce qui est techniquement possible : quelque chose peut être possible et pourtant considéré comme de la triche.</target>
+        <note priority="1" from="description">Section explaining we're against cheating</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">34</context>
         </context-group>
-        <note priority="1" from="description">Section explaining we're against cheating</note>
       </trans-unit>
       <trans-unit id="legalLink" datatype="html">
         <source>Legal notices</source>
@@ -99,114 +374,255 @@
         <note priority="1" from="description">Link to legal notices</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">47</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.registrationLink" datatype="html">
+        <source>Need an account? Register</source>
+        <target state="translated">Besoin d'un compte ? Inscrivez vous</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login.component.html</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.method.etwin" datatype="html">
         <source>Sign in with Eternal-Twin</source>
         <target state="translated">Se connecter avec Eternal-Twin</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/login/login.component.html</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="sourcefile">../app/auth/login/login.component.html</context>
+          <context context-type="linenumber">21</context>
         </context-group>
-      </trans-unit>
-      <trans-unit id="login.email" datatype="html">
-        <source>Email address</source>
-        <target state="translated">Adresse e-mail</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/login/login.component.html</context>
+          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
-        <note priority="1" from="description">Email address field label</note>
       </trans-unit>
       <trans-unit id="login.password" datatype="html">
         <source>Password</source>
         <target state="translated">Mot de passe</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/login/login.component.html</context>
-          <context context-type="linenumber">14</context>
-        </context-group>
         <note priority="1" from="description">Password field label</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
       </trans-unit>
-      <trans-unit id="login.signInAction" datatype="html">
+      <trans-unit id="login.passwordRequired" datatype="html">
+        <source>
+        The password is required.
+      </source>
+        <target state="translated">Le mot de passe est requis.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.etwin.submit" datatype="html">
+        <source>Sign in</source>
+        <target state="translated">Se connecter</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <note priority="1" from="description">Submit the Eternal-Twin login form label</note>
+      </trans-unit>
+      <trans-unit id="login.etwin.unknownError" datatype="html">
+        <source>
+    Failed to authenticate: please check your credentials.
+  </source>
+        <target state="translated">Échec de connexion : veuillez vérifier vos identifiants.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.hammerfestServer" datatype="html">
+        <source>Server</source>
+        <target state="translated">Serveur</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <note priority="1" from="description">Hammerfest server label</note>
+      </trans-unit>
+      <trans-unit id="login.hammfestUsername" datatype="html">
+        <source>Hammerfest username</source>
+        <target state="translated">Nom d'utilisateur Hammerfest</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <note priority="1" from="description">Hammerfest username address field label</note>
+      </trans-unit>
+      <trans-unit id="login.hammerfestUsernameRequired" datatype="html">
+        <source>
+        The username is required.
+      </source>
+        <target state="translated">Le nom d'utilisateur est requis</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.hammerfest.submit" datatype="html">
+        <source>Sign in</source>
+        <target state="translated">Se connecter</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <note priority="1" from="description">Submit the Hammerfest login form label</note>
+      </trans-unit>
+      <trans-unit id="login.hammerfest.unknownError" datatype="html">
+        <source>
+    Failed to authenticate: please check your credentials.
+  </source>
+        <target state="translated">Échec de connexion : veuillez vérifier vos identifiants.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.twinoid.submit" datatype="html">
         <source>Sign in (Soon)</source>
         <target state="translated">Se connecter (Bientôt)</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/login/login.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="sourcefile">../app/auth/login/login-twinoid.component.html</context>
+          <context context-type="linenumber">7</context>
         </context-group>
-        <note priority="1" from="description">Submit login form label</note>
+        <note priority="1" from="description">Submit the Twinoid login form label</note>
+      </trans-unit>
+      <trans-unit id="app.signOut" datatype="html">
+        <source>Sign out</source>
+        <target state="translated">Déconnexion</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/shared/etwin-bar.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <note priority="1" from="description">Label of the sign out button</note>
+      </trans-unit>
+      <trans-unit id="app.signOut.title" datatype="html">
+        <source>Sign out</source>
+        <target state="translated">Déconnexion</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/shared/etwin-bar.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <note priority="1" from="description">Title of the sign out button</note>
+      </trans-unit>
+      <trans-unit id="app.registerNav" datatype="html">
+        <source>Register</source>
+        <target state="translated">S'inscrire</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/shared/etwin-bar.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+        <note priority="1" from="description">Top-bar button to the login page</note>
       </trans-unit>
       <trans-unit id="login.method.twinoid" datatype="html">
         <source>Sign in with Twinoid (Soon)</source>
         <target state="translated">Se connecter avec Twinoid (Bientôt)</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/login/login.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="sourcefile">../app/auth/login/login.component.html</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.method.hammerfest" datatype="html">
-        <source>Sign in with Hammerfest (Soon)</source>
-        <target state="translated">Se connecter avec Hammerfest (Bientôt)</target>
+        <source>Sign in with Hammerfest</source>
+        <target state="translated">Se connecter avec Hammerfest</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/login/login.component.html</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="sourcefile">../app/auth/login/login.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-twinoid.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.usernameOrEmail" datatype="html">
+        <source>Username or email address</source>
+        <target state="translated">Nom d'utilisateur ou adresse email</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <note priority="1" from="description">Username or email address field label</note>
+      </trans-unit>
+      <trans-unit id="login.usernameOrEmailRequired" datatype="html">
+        <source>
+        The username or email is required.
+      </source>
+        <target state="translated">Le nom d'utilisateur ou l'adresse email est requis.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
+          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="legal.title" datatype="html">
         <source>Legal notices</source>
         <target state="translated">Mentions légales</target>
+        <note priority="1" from="description">Title of the legal notices section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">8</context>
+          <context context-type="linenumber">2</context>
         </context-group>
-        <note priority="1" from="description">Title of the legal notices section</note>
       </trans-unit>
       <trans-unit id="legal.hostingTitle" datatype="html">
         <source>Web Hosting Provider</source>
         <target state="translated">Hébergeur</target>
+        <note priority="1" from="description">Title of the web hosting provider section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="linenumber">3</context>
         </context-group>
-        <note priority="1" from="description">Title of the web hosting provider section</note>
       </trans-unit>
       <trans-unit id="legal.hostingIntro" datatype="html">
         <source>Eternal-Twin is hosted by
     OVH. These are their contact details:</source>
         <target state="translated">Eternal-Twin est hébergé auprès d'OVH. Veuillez trouvez ci-dessous leurs donnés de contact :</target>
+        <note priority="1" from="description">Introduction paragraph of the web hosting provider section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">10</context>
+          <context context-type="linenumber">4</context>
         </context-group>
-        <note priority="1" from="description">Introduction paragraph of the web hosting provider section</note>
       </trans-unit>
       <trans-unit id="legal.hostingNameLabel" datatype="html">
         <source>Name</source>
         <target state="translated">Nom</target>
+        <note priority="1" from="description">Label for the hosting provider name</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">7</context>
         </context-group>
-        <note priority="1" from="description">Label for the hosting provider name</note>
       </trans-unit>
       <trans-unit id="legal.hostingAddressLabel" datatype="html">
         <source>Address</source>
         <target state="translated">Adresse</target>
+        <note priority="1" from="description">Label for the hosting provider address</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">9</context>
         </context-group>
-        <note priority="1" from="description">Label for the hosting provider address</note>
       </trans-unit>
       <trans-unit id="legal.cookiesTitle" datatype="html">
         <source>Cookies</source>
         <target state="translated">Cookies</target>
+        <note priority="1" from="description">Title of the section on cookies</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">12</context>
         </context-group>
-        <note priority="1" from="description">Title of the section on cookies</note>
       </trans-unit>
       <trans-unit id="legal.cookiesBody" datatype="html">
         <source>
@@ -220,31 +636,31 @@
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>There are no other cookies: no tracking, no analytics, no advertisement.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
   </source>
         <target state="translated"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin évite tout cookie non-nécessaire.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Cookies nécessaires<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin utilise des cookies pour permettre l'authentification et retenir la langue préférée de l'utilisateur. Ces cookies sont nécessaires au fonctionnement du site web. Vous pouvez les désactiver dans les paramètres de votre navigateur, cependant cela peut empêcher le site de fonctionner correctement..<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Autres cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Il n'y a pas d'autres cookies : pas de pistage, pas d'analyse, pas de pub.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></target>
+        <note priority="1" from="description">Body of the section on cookies</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">13</context>
         </context-group>
-        <note priority="1" from="description">Body of the section on cookies</note>
       </trans-unit>
       <trans-unit id="legal.personalDataTitle" datatype="html">
         <source>Personal data</source>
         <target state="translated">Données personnelles</target>
+        <note priority="1" from="description">Title of the personal data section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">23</context>
         </context-group>
-        <note priority="1" from="description">Title of the personal data section</note>
       </trans-unit>
       <trans-unit id="legal.personalDataBody" datatype="html">
         <source>Eternal-Twin stores user emails for authentication
     (sign-in and password recovery). No other personal data is
     stored. We do not share, sell or analyze any kind of personal data.</source>
         <target state="translated">Eternal-Twin stocke l'email de ses utilisateur pour les besoins de l'authentication (connexion et récupération de mot de passe). Aucune autre donnée personnelle n'est stockée. Nous ne partageons, vendons ou analysons pas de données personnelles.</target>
+        <note priority="1" from="description">Body of the personal data section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">30</context>
+          <context context-type="linenumber">24</context>
         </context-group>
-        <note priority="1" from="description">Body of the personal data section</note>
       </trans-unit>
     </body>
   </file>
