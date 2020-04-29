@@ -16,13 +16,60 @@ describe("UserDisplayName", function () {
         },
       ],
     },
+    {
+      value: "éàë",
+      io: [
+        {
+          writer: JSON_WRITER,
+          reader: JSON_READER,
+          raw: "\"éàë\"",
+        },
+      ],
+    },
+    {
+      value: "A7",
+      io: [
+        {
+          writer: JSON_WRITER,
+          reader: JSON_READER,
+          raw: "\"A7\"",
+        },
+      ],
+    },
+    {
+      value: "Demurgos",
+      io: [
+        {
+          writer: JSON_WRITER,
+          reader: JSON_READER,
+          raw: "\"Demurgos\"",
+        },
+      ],
+    },
+    {
+      value: "demurgos",
+      io: [
+        {
+          writer: JSON_WRITER,
+          reader: JSON_READER,
+          raw: "\"demurgos\"",
+        },
+      ],
+    },
   ];
 
   registerMochaSuites($UserDisplayName, items);
 
   describe("Reader", function () {
     const invalids: string[] = [
-      "\"Fo\"",
+      "\"F\"",
+      "\"Foo>\"",
+      "\"Foo<\"",
+      "\"Foo?\"",
+      "\"Foo#\"",
+      "\"Foo@\"",
+      "\"Foo!\"",
+      "\"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\"",
     ];
     registerErrMochaTests(JSON_READER, $UserDisplayName, invalids);
   });

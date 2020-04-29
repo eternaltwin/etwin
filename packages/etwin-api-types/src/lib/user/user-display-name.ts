@@ -8,14 +8,14 @@ export type UserDisplayName = string;
 
 let pattern: RegExp;
 try {
-  pattern = new RegExp("^[\\p{Letter}_ ()]+$", "u");
+  pattern = new RegExp("^[\\p{Letter}_ ()][\\p{Letter}_ ()0-9]*$", "u");
 } catch {
   pattern = /^[\s\S]+$/;
 }
 
 export const $UserDisplayName: Ucs2StringType = new Ucs2StringType({
   trimmed: true,
-  minLength: 3,
+  minLength: 2,
   maxLength: 64,
   pattern,
 });

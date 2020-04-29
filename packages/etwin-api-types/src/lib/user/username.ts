@@ -12,7 +12,7 @@ export type Username = string;
  */
 export const $Username: Ucs2StringType = new Ucs2StringType({
   trimmed: true,
-  minLength: 3,
+  minLength: 2,
   maxLength: 32,
   pattern: /^[a-z_][a-z0-9_]{2,31}$/,
 });
