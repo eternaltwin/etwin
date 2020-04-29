@@ -342,6 +342,14 @@ export class PgAuthService implements AuthService {
     username: Username | null,
     passwordHash: PasswordHash | null,
   ): Promise<User> {
+    if (!$UserDisplayName.test(displayName)) {
+      throw new Error("InvalidDisplayName");
+    } else if (username !== null && !$Username.test(username)) {
+      throw new Error("InvalidUsername");
+    } else if (emailAddress !== null && !$EmailAddress.test(emailAddress)) {
+      throw new Error("InvalidEmailAddress");
+    }
+
     type Row = Pick<UserRow, "user_id" | "display_name" | "is_administrator">;
     const userId: UuidHex = this.uuidGen.next();
     const userRow: Row = await queryable.one(

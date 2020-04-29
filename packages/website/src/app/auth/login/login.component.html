@@ -11,11 +11,14 @@
         <etwin-login-etwin></etwin-login-etwin>
       </ng-container>
     </ng-container>
+    <p>
+      <a routerLink="/register" i18n="@@login.registrationLink">Need an account? Register</a>
+    </p>
   </div>
   <div class="content login_methods">
     <a routerLink="/login" [queryParams]="{method: 'etwin'}" class="btn" *ngIf="method !== AuthMethod.Etwin">
       <img src="/assets/login-methods/eternal-twin.png"/>
-      <ng-container i18n="@@login.method.twinoid">Sign in with Eternal-Twin</ng-container>
+      <ng-container i18n="@@login.method.etwin">Sign in with Eternal-Twin</ng-container>
     </a>
     <a routerLink="/login" [queryParams]="{method: 'twinoid'}" class="btn" *ngIf="method !== AuthMethod.Twinoid">
       <img src="/assets/login-methods/twinoid.png"/>

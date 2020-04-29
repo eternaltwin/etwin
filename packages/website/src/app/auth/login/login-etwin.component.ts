@@ -50,7 +50,10 @@ export class LoginEtwinComponent implements OnDestroy {
       return;
     }
     const model: any = this.loginForm.getRawValue();
-    const login: RawLogin = model.login;
+    let login: RawLogin = model.login;
+    if (login.indexOf("@") < 0) {
+      login = login.toLowerCase();
+    }
     const passwordStr: string = model.password;
     const password: Uint8Array = TEXT_ENCODER.encode(passwordStr);
     const authResult$ = this.auth.loginWithCredentials({login, password});

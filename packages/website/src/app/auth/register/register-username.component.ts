@@ -1,14 +1,25 @@
 import { Component, OnDestroy } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
+import { $RawUsername, RawUsername } from "@eternal-twin/etwin-api-types/lib/user/raw-username";
 import { $UserDisplayName, UserDisplayName } from "@eternal-twin/etwin-api-types/lib/user/user-display-name";
-import { $Username, Username } from "@eternal-twin/etwin-api-types/lib/user/username";
+import { Username } from "@eternal-twin/etwin-api-types/lib/user/username";
 import { Subscription } from "rxjs";
 
 import { AuthService } from "../../../modules/auth/auth.service";
 
 const TEXT_ENCODER: TextEncoder = new TextEncoder();
+
+const passwordConfirmationMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const password: AbstractControl | null = control.get("password");
+  const password2: AbstractControl | null = control.get("password2");
+
+  if (password !== null && password2 !== null && password.value === password2.value) {
+    return null;
+  } else {
+    return {passwordConfirmationMatch: true};
+  }
+};
 
 @Component({
   selector: "etwin-register-username",
@@ -16,7 +27,7 @@ const TEXT_ENCODER: TextEncoder = new TextEncoder();
   styleUrls: [],
 })
 export class RegisterUsernameComponent implements OnDestroy {
-  public readonly $Username = $Username;
+  public readonly $RawUsername = $RawUsername;
   public readonly $UserDisplayName = $UserDisplayName;
   public readonly PASSWORD_LEN: number = 10;
 
@@ -24,6 +35,7 @@ export class RegisterUsernameComponent implements OnDestroy {
   public readonly username: FormControl;
   public readonly displayName: FormControl;
   public readonly password: FormControl;
+  public readonly password2: FormControl;
 
   private readonly auth: AuthService;
   private readonly router: Router;
@@ -36,7 +48,7 @@ export class RegisterUsernameComponent implements OnDestroy {
 
     this.username = new FormControl(
       "",
-      [Validators.required, Validators.minLength($Username.minLength ?? 0), Validators.maxLength($Username.maxLength), Validators.pattern($Username.pattern!)],
+      [Validators.required, Validators.minLength($RawUsername.minLength ?? 0), Validators.maxLength($RawUsername.maxLength), Validators.pattern($RawUsername.pattern!)],
     );
     this.displayName = new FormControl(
       "",
@@ -46,11 +58,16 @@ export class RegisterUsernameComponent implements OnDestroy {
       "",
       [Validators.required, Validators.minLength(this.PASSWORD_LEN)],
     );
+    this.password2 = new FormControl(
+      "",
+      [Validators.required],
+    );
     this.registrationForm = new FormGroup({
       username: this.username,
       displayName: this.displayName,
       password: this.password,
-    });
+      password2: this.password2,
+    }, {validators: [passwordConfirmationMatchValidator]});
     this.pendingSubscription = null;
     this.serverError = null;
   }
@@ -61,7 +78,8 @@ export class RegisterUsernameComponent implements OnDestroy {
       return;
     }
     const model: any = this.registrationForm.getRawValue();
-    const username: Username = model.username;
+    const rawUsername: RawUsername = model.username;
+    const username: Username = rawUsername.toLowerCase();
     const displayName: UserDisplayName = model.displayName;
     const passwordStr: string = model.password;
     const password: Uint8Array = TEXT_ENCODER.encode(passwordStr);
@@ -81,7 +99,7 @@ export class RegisterUsernameComponent implements OnDestroy {
       complete: (): void => {
         subscription.unsubscribe();
         this.pendingSubscription = null;
-      }
+      },
     });
     this.pendingSubscription = subscription;
   }

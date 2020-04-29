@@ -7,25 +7,27 @@
       [formGroup]="registrationForm"
       (ngSubmit)="onSubmit($event)"
     >
-      <div>
+      <div class="active_method" i18n="Registration page heading@@register.heading">
         Register with Eternal-Twin
       </div>
+      <div class="info" i18n="@@register.editableProfileInfo">Don't worry: you'll be able to edit all the values below in your profile if you ever want to.</div>
       <div>
         <label>
-          <span i18n="Username field label@@username">Username</span>
+          <span i18n="Username field label@@label.username">Username</span>
+          <div class="info" i18n="@@register.usernameInfo">The identifier you want to use to sign-in. It must be a unique name containing only "a-z", "0-9" or "_".</div>
           <input type="text" name="username" class="field" formControlName="username" required="required"
-                 [minlength]="$Username.minLength" [maxlength]="$Username.maxLength" [pattern]="$Username.pattern"/>
+                 [minlength]="$RawUsername.minLength" [maxlength]="$RawUsername.maxLength" [pattern]="$RawUsername.pattern"/>
           <div *ngIf="username.invalid && (username.dirty || username.touched)" class="error">
-            <div *ngIf="username.errors?.required">
+            <div *ngIf="username.errors?.required" i18n="@@register.usernameRequired">
               The username is required.
             </div>
-            <div *ngIf="username.errors?.minlength">
-              The username must be at least {{$Username.minLength}} characters long.
+            <div *ngIf="username.errors?.minlength" i18n="@@register.usernameMinLength">
+              The username must be at least {{$RawUsername.minLength}} characters long.
             </div>
-            <div *ngIf="username.errors?.maxlength">
-              The username must be at most {{$Username.maxLength}} characters long.
+            <div *ngIf="username.errors?.maxlength" i18n="@@register.usernameMaxLength">
+              The username must be at most {{$RawUsername.maxLength}} characters long.
             </div>
-            <div *ngIf="username.errors?.pattern && !username.errors?.minlength">
+            <div *ngIf="username.errors?.pattern && !username.errors?.minlength" i18n="@@register.usernamePattern">
               The username can only use the lowercase english letters "a-z" and digits "0-9" (it must start with a
               letter).
             </div>
@@ -33,41 +35,54 @@
         </label>
       </div>
       <label>
-        <span i18n="Display name field label@@display_name">Display name</span>
+        <span i18n="Display name field label@@displayName">Display name</span>
+        <div class="info" i18n="@@register.displayNameInfo">How your name should be displayed to other players. You can use any letter, spaces and parenthesis.</div>
         <input type="text" name="display_name" class="field" formControlName="displayName"
                [minlength]="$UserDisplayName.minLength" [maxlength]="$UserDisplayName.maxLength"
                [pattern]="$UserDisplayName.pattern"/>
         <div *ngIf="displayName.invalid && (displayName.dirty || displayName.touched)" class="error">
-          <div *ngIf="displayName.errors?.minlength">
+          <div *ngIf="displayName.errors?.minlength" i18n="@@register.displayNameMinLength">
             The display name must be at least {{$UserDisplayName.minLength}} characters long.
           </div>
-          <div *ngIf="displayName.errors?.maxlength">
+          <div *ngIf="displayName.errors?.maxlength" i18n="@@register.displayNameMaxLength">
             The display name must be at most {{$UserDisplayName.maxLength}} characters long.
           </div>
-          <div *ngIf="displayName.errors?.pattern && !displayName.errors?.minlength">
-            The display name must start with a letter and can only use the characters "A-Z", "a-z", "0-9" and spaces.
+          <div *ngIf="displayName.errors?.pattern && !displayName.errors?.minlength" i18n="@@register.displayNamePattern">
+            The display name can only use letters, spaces or parenthesis.
           </div>
         </div>
       </label>
       <label>
-        <span i18n="Password field label@@username">Password</span>
+        <span i18n="Password field label@@label.password">Password</span>
         <input type="password" name="password" class="field" formControlName="password" required="required"
                [minlength]="PASSWORD_LEN"/>
         <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error">
-          <div *ngIf="password.errors?.required">
+          <div *ngIf="password.errors?.required" i18n="@@register.passwordRequired">
             The password is required.
           </div>
-          <div *ngIf="password.errors?.minlength">
+          <div *ngIf="password.errors?.minlength" i18n="@@register.passwordMinLength">
             The password must be at least {{PASSWORD_LEN}} characters long.
           </div>
         </div>
       </label>
-      <input type="submit" class="btn primary" name="register" [disabled]="registrationForm.invalid || pendingSubscription !== null" value="Register"/>
-      <div *ngIf="serverError" class="error">
-        Registration error: the username is already used or some other error occurred.
+      <label>
+        <span i18n="Password field label@@label.passwordConfirmation">Password confirmation</span>
+        <input type="password" name="password2" class="field" formControlName="password2" required="required" />
+        <div *ngIf="(password2.invalid || registrationForm.errors?.passwordConfirmationMatch) && (password2.dirty || password2.touched)" class="error">
+          <div *ngIf="password2.errors?.required" i18n="@@register.passwordConfirmationRequired">
+            The password confirmation is required.
+          </div>
+          <div *ngIf="registrationForm.errors?.passwordConfirmationMatch" i18n="@@register.passwordConfirmationMatch">
+            The password confirmation does not match the password.
+          </div>
+        </div>
+      </label>
+      <input type="submit" class="btn primary" name="register" [disabled]="registrationForm.invalid || pendingSubscription !== null" i18n-value="@@register.username.submit" value="Register"/>
+      <div *ngIf="serverError" class="error" i18n="@@register.username.unknownError">
+        Registration error: the username is invalid or already used, please report this error if it persists.
       </div>
       <div>
-        <a routerLink="/register">Back</a>
+        <a routerLink="/register" i18n="@@register.backToMethodSelection">Back</a>
       </div>
     </form>
   </div>

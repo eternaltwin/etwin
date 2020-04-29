@@ -1,12 +1,18 @@
 <etwin-small-layout>
   <div class="content">
-    <div class="active_method">
+    <div class="active_method" i18n="Registration page heading@@register.heading">
       Register with Eternal-Twin
     </div>
+    <div class="info" i18n="@@register.efWarning">
+      If you played on Eternalfest, your account was imported automatically and you should <a routerLink="/login" [queryParams]="{method: 'hammerfest'}">sign-in with Hammerfest</a>.
+    </div>
     <label>
-      <span>Select your preferred authentication method</span>
+      <span i18n="@@register.selectMethod">Select your preferred authentication method</span>
     </label>
-    <a routerLink="/register/username" class="btn">Pick a username</a>
-    <a routerLink="/register/email" class="btn">Use my email address</a>
+    <a routerLink="/register/username" class="btn" i18n="@@register.method.username">Pick a username</a>
+    <a routerLink="/register/email" class="btn" i18n="@@register.method.email">Use my email address (Soon)</a>
+    <p>
+      <a routerLink="/login" i18n="@@register.loginLink">Already have an account? Sign-in</a>
+    </p>
   </div>
 </etwin-small-layout>

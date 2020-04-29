@@ -6,9 +6,16 @@ import { Ucs2StringType } from "kryo/lib/ucs2-string.js";
  */
 export type UserDisplayName = string;
 
+let pattern: RegExp;
+try {
+  pattern = new RegExp("^[\\p{Letter}_ ()]+$", "u");
+} catch {
+  pattern = /^[\s\S]+$/;
+}
+
 export const $UserDisplayName: Ucs2StringType = new Ucs2StringType({
   trimmed: true,
   minLength: 3,
   maxLength: 64,
-  pattern: /^[0-9A-Za-z_ ()]{3,64}$/,
+  pattern,
 });

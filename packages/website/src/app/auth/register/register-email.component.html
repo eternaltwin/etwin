@@ -5,16 +5,16 @@
       enctype="application/x-www-form-urlencoded"
       action="/actions/register"
     >
-      <div>
+      <div class="active_method" i18n="Registration page heading@@register.heading">
         Register with Eternal-Twin
       </div>
       <label>
-        <span i18n="Email address field label@@email">Email address</span>
+        <span i18n="Email address field label@@label.emailAddress">Email address</span>
         <input type="email" name="email" class="field"/>
       </label>
-      <input type="submit" class="btn primary" name="email_registration" value="Register (Soon)" disabled="disabled"/>
+      <input type="submit" class="btn primary" name="email_registration" i18n-value="@@register.email.submit" value="Register (Soon)" disabled="disabled"/>
       <div>
-        <a routerLink="/register">Back</a>
+        <a routerLink="/register" i18n="@@register.backToMethodSelection">Back</a>
       </div>
     </form>
   </div>
