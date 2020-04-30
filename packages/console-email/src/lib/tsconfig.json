@@ -9,5 +9,10 @@
   "include": [
     "./**/*.ts"
   ],
-  "exclude": []
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../../etwin-api-types/src/lib"
+    }
+  ]
 }

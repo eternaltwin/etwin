@@ -1,5 +1,6 @@
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/index.js";
 import { InMemoryEmailService } from "@eternal-twin/in-memory-email";
+import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
 import { JsonEmailTemplateService } from "@eternal-twin/json-email-template";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { PgAuthService } from "@eternal-twin/pg-auth";
@@ -30,7 +31,8 @@ async function withPgAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://twin.eternalfest.net"));
     const password = new ScryptPasswordService();
     const user = new PgUserService(db, secretKeyStr);
-    const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes);
+    const hammerfest = new InMemoryHammerfestService();
+    const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
     return fn({auth, user});
   });
 }

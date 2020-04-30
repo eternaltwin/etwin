@@ -12,6 +12,9 @@
   "exclude": [],
   "references": [
     {
+      "path": "../../tsconfig.deps.json"
+    },
+    {
       "path": "../../../console-email/src/lib"
     },
     {

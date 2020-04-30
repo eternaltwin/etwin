@@ -3,10 +3,10 @@ import { CreateAnnouncementOptions } from "@eternal-twin/etwin-api-types/lib/ann
 import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
 import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
+import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import assert from "assert";
 
 import { InMemoryAnnouncementService } from "../../lib/announcement/service.js";
-import { UUID4_GENERATOR } from "../../lib/uuid-generator.js";
 
 const guestAuth: GuestAuthContext = {
   type: AuthType.Guest,
@@ -22,7 +22,7 @@ describe("InMemoryAnnouncementService", () => {
     }
     {
       const options: CreateAnnouncementOptions = {
-        locale: "fr",
+        locale: "fr-FR",
         title: "Création d'Eternal-Twin",
         body: "Ouverture d'**Eternal-Twin**!"
       };
@@ -33,7 +33,7 @@ describe("InMemoryAnnouncementService", () => {
         revision: {
           id: actual.revision.id,
           date: actual.createdAt,
-          locale: "fr",
+          locale: "fr-FR",
           title: "Création d'Eternal-Twin",
           body: {
             markdown: "Ouverture d'**Eternal-Twin**!",
