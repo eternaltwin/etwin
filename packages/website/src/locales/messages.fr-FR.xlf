@@ -361,7 +361,7 @@
     judgement on the expectation of the community, not on what is technically possible or not: something may be possible
     while still being considered cheating.
   </source>
-        <target state="translated">Nous avons étudié certains jeux par rétro-ingénierie : l'unique but de cette analyse était l'archivage. Nous nous opposons à quiconque utilisant les informations trouvées afin de gagner un avantage en jeu (même pour les jeux à un seul joueur). Nous basons notre jugement sur les attente de la communauté, pas sur ce qui est techniquement possible : quelque chose peut être possible et pourtant considéré comme de la triche.</target>
+        <target state="translated">Nous avons étudié certains jeux par rétro-ingénierie : l'unique but de cette analyse était l'archivage. Nous nous opposons à quiconque utilisant les informations trouvées afin de gagner un avantage en jeu (même pour les jeux à un seul joueur). Nous basons notre jugement sur les attentes de la communauté, pas sur ce qui est techniquement possible : quelque chose peut être possible et pourtant considéré comme de la triche.</target>
         <note priority="1" from="description">Section explaining we're against cheating</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
@@ -590,7 +590,7 @@
       <trans-unit id="legal.hostingIntro" datatype="html">
         <source>Eternal-Twin is hosted by
     OVH. These are their contact details:</source>
-        <target state="translated">Eternal-Twin est hébergé auprès d'OVH. Veuillez trouvez ci-dessous leurs donnés de contact :</target>
+        <target state="translated">Eternal-Twin est hébergé auprès d'OVH. Veuillez trouvez ci-dessous leurs données de contact :</target>
         <note priority="1" from="description">Introduction paragraph of the web hosting provider section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
@@ -635,7 +635,7 @@
     <x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Other cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>There are no other cookies: no tracking, no analytics, no advertisement.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
   </source>
-        <target state="translated"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin évite tout cookie non-nécessaire.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Cookies nécessaires<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin utilise des cookies pour permettre l'authentification et retenir la langue préférée de l'utilisateur. Ces cookies sont nécessaires au fonctionnement du site web. Vous pouvez les désactiver dans les paramètres de votre navigateur, cependant cela peut empêcher le site de fonctionner correctement..<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Autres cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Il n'y a pas d'autres cookies : pas de pistage, pas d'analyse, pas de pub.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></target>
+        <target state="translated"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin évite tout n'étant pas nécessaire à la navigation.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Cookies nécessaires<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin utilise des cookies pour permettre l'authentification et retenir la langue préférée de l'utilisateur. Ces cookies sont nécessaires au fonctionnement du site web. Vous pouvez les désactiver dans les paramètres de votre navigateur, cependant cela peut empêcher le site de fonctionner correctement..<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Autres cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Il n'y a pas d'autres cookies : pas de pistage, pas d'analyse, pas de pub.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></target>
         <note priority="1" from="description">Body of the section on cookies</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
@@ -655,7 +655,7 @@
         <source>Eternal-Twin stores user emails for authentication
     (sign-in and password recovery). No other personal data is
     stored. We do not share, sell or analyze any kind of personal data.</source>
-        <target state="translated">Eternal-Twin stocke l'email de ses utilisateur pour les besoins de l'authentication (connexion et récupération de mot de passe). Aucune autre donnée personnelle n'est stockée. Nous ne partageons, vendons ou analysons pas de données personnelles.</target>
+        <target state="translated">Eternal-Twin stocke l'email de ses utilisateurs pour les besoins de l'authentification (connexion et récupération de mot de passe). Aucune autre donnée personnelle n'est stockée. Nous ne partageons, vendons ou analysons pas de données personnelles.</target>
         <note priority="1" from="description">Body of the personal data section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
