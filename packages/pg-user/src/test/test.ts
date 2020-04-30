@@ -1,17 +1,17 @@
-import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
-import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
-import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options";
-import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service.js";
-import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-session.js";
-import { UserAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/user-auth-context";
-import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type.js";
-import { CompleteUser } from "@eternal-twin/etwin-api-types/lib/user/complete-user";
-import { UserService } from "@eternal-twin/etwin-api-types/lib/user/service";
-import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
-import { UserDisplayName } from "@eternal-twin/etwin-api-types/lib/user/user-display-name";
-import { NullableUserRef } from "@eternal-twin/etwin-api-types/lib/user/user-ref";
-import { Username } from "@eternal-twin/etwin-api-types/lib/user/username";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
+import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
+import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
+import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
+import { UserService } from "@eternal-twin/core/lib/user/service";
+import { User } from "@eternal-twin/core/lib/user/user";
+import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name";
+import { NullableUserRef } from "@eternal-twin/core/lib/user/user-ref";
+import { Username } from "@eternal-twin/core/lib/user/username";
 import chai from "chai";
 
 export interface Api {

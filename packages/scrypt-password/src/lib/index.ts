@@ -1,6 +1,6 @@
-import { PasswordHash } from "@eternal-twin/etwin-api-types/lib/password/password-hash.js";
-import { Password } from "@eternal-twin/etwin-api-types/lib/password/password.js";
-import { PasswordService } from "@eternal-twin/etwin-api-types/lib/password/service.js";
+import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
+import { Password } from "@eternal-twin/core/lib/password/password.js";
+import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import scryptKdf from "scrypt-kdf";
 
 const DEFAULT_MAX_TIME_SECONDS: number = 1;

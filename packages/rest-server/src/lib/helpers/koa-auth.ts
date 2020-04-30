@@ -1,10 +1,10 @@
-import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
-import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
-import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
-import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service.js";
-import { $SessionId, SessionId } from "@eternal-twin/etwin-api-types/lib/auth/session-id.js";
-import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-session.js";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
+import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { $SessionId, SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
+import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import Koa from "koa";
 
 export const SESSION_COOKIE: string = "sid";

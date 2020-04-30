@@ -1,4 +1,4 @@
-import { EmailContent } from "@eternal-twin/etwin-api-types/lib/email/email-content.js";
+import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
 import chai from "chai";
 import url from "url";
 

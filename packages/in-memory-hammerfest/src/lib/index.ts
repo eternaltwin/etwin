@@ -1,13 +1,13 @@
-import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
-import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type.js";
-import { HammerfestCredentials } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-credentials.js";
-import { HammerfestLogin } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-login.js";
-import { HammerfestServer } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-server.js";
-import { HammerfestSessionKey } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-session-key.js";
-import { HammerfestSession } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-session.js";
-import { HammerfestUserId } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-user-id.js";
-import { HammerfestService } from "@eternal-twin/etwin-api-types/lib/hammerfest/service.js";
-import { Password } from "@eternal-twin/etwin-api-types/lib/password/password.js";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
+import { HammerfestLogin } from "@eternal-twin/core/lib/hammerfest/hammerfest-login.js";
+import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
+import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
+import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
+import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
+import { Password } from "@eternal-twin/core/lib/password/password.js";
 
 interface InMemoryServer {
   isAvailable: boolean;

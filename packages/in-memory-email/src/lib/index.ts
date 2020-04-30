@@ -1,6 +1,6 @@
-import { EmailAddress } from "@eternal-twin/etwin-api-types/lib/email/email-address.js";
-import { $EmailContent, EmailContent } from "@eternal-twin/etwin-api-types/lib/email/email-content.js";
-import { EmailService } from "@eternal-twin/etwin-api-types/lib/email/service.js";
+import { EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
+import { $EmailContent, EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
+import { EmailService } from "@eternal-twin/core/lib/email/service.js";
 
 export class InMemoryEmailService implements EmailService {
   private readonly inboxes: Map<EmailAddress, EmailContent[]>;

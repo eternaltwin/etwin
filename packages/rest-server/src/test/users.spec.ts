@@ -1,6 +1,6 @@
-import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type.js";
-import { $CompleteUser, CompleteUser } from "@eternal-twin/etwin-api-types/lib/user/complete-user.js";
-import { $User, User } from "@eternal-twin/etwin-api-types/lib/user/user.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
+import { $User, User } from "@eternal-twin/core/lib/user/user.js";
 import chai from "chai";
 import chaiHttp from "chai-http";
 

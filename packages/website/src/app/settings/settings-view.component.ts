@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { CompleteUser } from "@eternal-twin/etwin-api-types/lib/user/complete-user";
+import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
 import { Observable } from "rxjs";
 import { NEVER as RX_NEVER } from "rxjs/internal/observable/never";
 import { map as rxMap } from "rxjs/internal/operators/map";

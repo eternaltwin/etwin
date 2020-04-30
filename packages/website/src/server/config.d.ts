@@ -1,4 +1,4 @@
-import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
 import url from "url";
 
 interface Api {

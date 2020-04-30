@@ -7,7 +7,7 @@
   "include": [],
   "references": [
     {
-      "path": "../etwin-api-types/src/lib"
+      "path": "../core/src/lib"
     },
     {
       "path": "../uuid4-generator/src/lib"

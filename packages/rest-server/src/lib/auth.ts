@@ -1,17 +1,17 @@
-import { $AuthContext, AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
-import { AuthMethod } from "@eternal-twin/etwin-api-types/lib/auth/auth-method.js";
-import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
-import { $CreateSessionQuery, CreateSessionQuery } from "@eternal-twin/etwin-api-types/lib/auth/create-session-query.js";
-import { $Credentials, Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials.js";
-import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
-import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service.js";
-import { UserAndSession } from "@eternal-twin/etwin-api-types/lib/auth/user-and-session.js";
+import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { AuthMethod } from "@eternal-twin/core/lib/auth/auth-method.js";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { $CreateSessionQuery, CreateSessionQuery } from "@eternal-twin/core/lib/auth/create-session-query.js";
+import { $Credentials, Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
+import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
+import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import {
   $HammerfestCredentials,
   HammerfestCredentials,
-} from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-credentials.js";
-import { $User } from "@eternal-twin/etwin-api-types/lib/user/user.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
+import { $User } from "@eternal-twin/core/lib/user/user.js";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";

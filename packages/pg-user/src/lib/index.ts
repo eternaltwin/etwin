@@ -1,11 +1,11 @@
-import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
-import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
-import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type.js";
-import { CompleteUser } from "@eternal-twin/etwin-api-types/lib/user/complete-user.js";
-import { UserService } from "@eternal-twin/etwin-api-types/lib/user/service.js";
-import { UserId } from "@eternal-twin/etwin-api-types/lib/user/user-id.js";
-import { UserRef } from "@eternal-twin/etwin-api-types/lib/user/user-ref.js";
-import { User } from "@eternal-twin/etwin-api-types/lib/user/user.js";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
+import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
+import { UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
+import { User } from "@eternal-twin/core/lib/user/user.js";
 import { UserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 

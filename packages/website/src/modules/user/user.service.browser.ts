@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
-import { CompleteUser } from "@eternal-twin/etwin-api-types/lib/user/complete-user";
-import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
-import { UserId } from "@eternal-twin/etwin-api-types/lib/user/user-id";
+import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
+import { User } from "@eternal-twin/core/lib/user/user";
+import { UserId } from "@eternal-twin/core/lib/user/user-id";
 import { Observable, of as rxOf } from "rxjs";
 import { catchError as rxCatchError } from "rxjs/operators";
 

@@ -1,8 +1,8 @@
-import { Announcement } from "@eternal-twin/etwin-api-types/lib/announcement/announcement.js";
-import { CreateAnnouncementOptions } from "@eternal-twin/etwin-api-types/lib/announcement/create-announcement-options.js";
-import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
-import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
+import { Announcement } from "@eternal-twin/core/lib/announcement/announcement.js";
+import { CreateAnnouncementOptions } from "@eternal-twin/core/lib/announcement/create-announcement-options.js";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import assert from "assert";
 

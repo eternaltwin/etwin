@@ -1,6 +1,6 @@
-import { EmailAddress } from "@eternal-twin/etwin-api-types/lib/email/email-address.js";
-import { EmailContent } from "@eternal-twin/etwin-api-types/lib/email/email-content.js";
-import { EmailService } from "@eternal-twin/etwin-api-types/lib/email/service.js";
+import { EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
+import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
+import { EmailService } from "@eternal-twin/core/lib/email/service.js";
 
 export class ConsoleEmailService implements EmailService {
   constructor() {

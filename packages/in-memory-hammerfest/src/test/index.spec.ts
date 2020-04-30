@@ -1,8 +1,8 @@
-import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
-import { GuestAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/guest-auth-context.js";
-import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type.js";
-import { HammerfestSession } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-session.js";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import chai from "chai";
 
 import { InMemoryHammerfestService } from "../lib/index.js";

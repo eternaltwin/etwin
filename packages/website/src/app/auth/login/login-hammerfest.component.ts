@@ -1,8 +1,8 @@
 import { Component, OnDestroy } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { HammerfestLogin } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-login";
-import { HammerfestServer } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-server";
+import { HammerfestLogin } from "@eternal-twin/core/lib/hammerfest/hammerfest-login";
+import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
 import { Subscription } from "rxjs";
 
 import { AuthService } from "../../../modules/auth/auth.service";

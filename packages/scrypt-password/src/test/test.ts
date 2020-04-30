@@ -1,5 +1,5 @@
-import { PasswordHash } from "@eternal-twin/etwin-api-types/lib/password/password-hash";
-import { PasswordService } from "@eternal-twin/etwin-api-types/lib/password/service";
+import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
+import { PasswordService } from "@eternal-twin/core/lib/password/service";
 import chai from "chai";
 
 export interface Api {

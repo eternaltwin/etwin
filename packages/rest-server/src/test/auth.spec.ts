@@ -1,11 +1,11 @@
-import { $AuthContext, AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
-import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type.js";
-import { $Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials.js";
-import { $RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options.js";
-import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type.js";
-import { UserRef } from "@eternal-twin/etwin-api-types/lib/user/user-ref.js";
-import { $User, User } from "@eternal-twin/etwin-api-types/lib/user/user.js";
+import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { $Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
+import { $RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
+import { $User, User } from "@eternal-twin/core/lib/user/user.js";
 import chai from "chai";
 import chaiHttp from "chai-http";
 

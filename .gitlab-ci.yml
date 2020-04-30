@@ -23,15 +23,15 @@ before_script:
 stages:
   - "ci"
 
+core:
+  stage: "ci"
+  script:
+    - "yarn --cwd packages/core run test"
+
 etwin-api-in-memory:
   stage: "ci"
   script:
     - "yarn --cwd packages/etwin-api-in-memory run test"
-
-etwin-api-types:
-  stage: "ci"
-  script:
-    - "yarn --cwd packages/etwin-api-types run test"
 
 etwin-email-template:
   stage: "ci"

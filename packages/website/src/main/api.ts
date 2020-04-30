@@ -1,8 +1,8 @@
 import { ConsoleEmailService } from "@eternal-twin/console-email";
+import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/lib/announcement/service.js";
-import { AnnouncementService } from "@eternal-twin/etwin-api-types/lib/announcement/service.js";
-import { AuthService } from "@eternal-twin/etwin-api-types/lib/auth/service";
-import { UserService } from "@eternal-twin/etwin-api-types/lib/user/service.js";
 import { EtwinEmailTemplateService } from "@eternal-twin/etwin-email-template";
 import { HttpHammerfestService } from "@eternal-twin/http-hammerfest";
 import { PgAuthService } from "@eternal-twin/pg-auth";

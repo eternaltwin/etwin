@@ -1,6 +1,6 @@
-import { LocaleId } from "@eternal-twin/etwin-api-types/lib/core/locale-id.js";
-import { EmailTemplateService } from "@eternal-twin/etwin-api-types/lib/email-template/service.js";
-import { EmailContent } from "@eternal-twin/etwin-api-types/lib/email/email-content.js";
+import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
+import { EmailTemplateService } from "@eternal-twin/core/lib/email-template/service.js";
+import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
 import url from "url";
 import urlJoin from "url-join";
 

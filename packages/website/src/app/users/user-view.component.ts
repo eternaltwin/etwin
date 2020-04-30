@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type";
-import { CompleteUser } from "@eternal-twin/etwin-api-types/lib/user/complete-user";
-import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
+import { User } from "@eternal-twin/core/lib/user/user";
 import { NEVER as RX_NEVER, Observable } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 

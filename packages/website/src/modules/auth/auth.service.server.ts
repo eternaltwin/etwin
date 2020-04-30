@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context";
-import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope";
-import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type";
-import { Credentials } from "@eternal-twin/etwin-api-types/lib/auth/credentials";
-import { RegisterWithUsernameOptions } from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options";
-import { HammerfestCredentials } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-credentials";
-import { User } from "@eternal-twin/etwin-api-types/lib/user/user";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { Credentials } from "@eternal-twin/core/lib/auth/credentials";
+import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
+import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
+import { User } from "@eternal-twin/core/lib/user/user";
 import { Observable, of as rxOf } from "rxjs";
 
 import { AuthService } from "./auth.service";

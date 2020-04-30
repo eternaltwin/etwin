@@ -1,4 +1,4 @@
-import { $UuidHex } from "@eternal-twin/etwin-api-types/lib/core/uuid-hex.js";
+import { $UuidHex } from "@eternal-twin/core/lib/core/uuid-hex.js";
 import chai from "chai";
 
 import { UUID4_GENERATOR } from "../lib/index.js";

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
-import { AuthMethod } from "@eternal-twin/etwin-api-types/lib/auth/auth-method";
+import { AuthMethod } from "@eternal-twin/core/lib/auth/auth-method";
 import { Subscription } from "rxjs";
 
 @Component({

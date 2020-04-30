@@ -27,7 +27,7 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-    "@eternal-twin/etwin-api-types": "^0.0.1",
+    "@eternal-twin/core": "^0.0.1",
     "@types/url-join": "^4.0.0",
     "url-join": "^4.0.1"
   },

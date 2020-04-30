@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { RawLogin } from "@eternal-twin/etwin-api-types/lib/auth/raw-login";
+import { RawLogin } from "@eternal-twin/core/lib/auth/raw-login";
 import { Subscription } from "rxjs";
 
 import { AuthService } from "../../../modules/auth/auth.service";

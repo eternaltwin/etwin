@@ -1,10 +1,10 @@
-import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
-import { ObjectType } from "@eternal-twin/etwin-api-types/lib/core/object-type.js";
-import { HammerfestCredentials } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-credentials.js";
-import { HammerfestServer } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-server.js";
-import { HammerfestSessionKey } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-session-key.js";
-import { HammerfestSession } from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-session.js";
-import { HammerfestService } from "@eternal-twin/etwin-api-types/lib/hammerfest/service.js";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
+import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
+import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
+import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
+import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import hfApi from "@eternalfest/hammerfest-api";
 
 export class HttpHammerfestService implements HammerfestService {

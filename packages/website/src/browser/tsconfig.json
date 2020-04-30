@@ -11,7 +11,7 @@
   "include": [],
   "references": [
     {
-      "path": "../../../etwin-api-types/src/lib"
+      "path": "../../../core/src/lib"
     }
   ]
 }

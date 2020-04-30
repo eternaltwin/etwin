@@ -1,3 +1,4 @@
+import { HammerfestCredentials } from "../hammerfest/hammerfest-credentials";
 import { AuthContext } from "./auth-context.js";
 import { Credentials } from "./credentials.js";
 import { LinkHammerfestUserOptions } from "./link-hammerfest-user-options.js";
@@ -6,7 +7,6 @@ import { RegisterWithUsernameOptions } from "./register-with-username-options";
 import { RegisterWithVerifiedEmailOptions } from "./register-with-verified-email-options.js";
 import { SessionId } from "./session-id";
 import { UserAndSession } from "./user-and-session";
-import { HammerfestCredentials } from "../hammerfest/hammerfest-credentials";
 
 export interface AuthService {
   /**

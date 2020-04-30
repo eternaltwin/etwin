@@ -1,10 +1,12 @@
 import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/lib/announcement/service.js";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg";
 import { InMemoryEmailService } from "@eternal-twin/in-memory-email";
+import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
 import { JsonEmailTemplateService } from "@eternal-twin/json-email-template";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { PgAuthService } from "@eternal-twin/pg-auth";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
+import { PgUserService } from "@eternal-twin/pg-user";
 import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import http from "http";
@@ -13,8 +15,6 @@ import url from "url";
 
 import { KoaAuth } from "../lib/helpers/koa-auth.js";
 import { Api, createApiRouter } from "../lib/index.js";
-import { PgUserService } from "@eternal-twin/pg-user";
-import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
 
 export async function withTestServer<R>(fn: (server: http.Server) => Promise<R>): Promise<R> {
   const config = await getLocalConfig(["dbHost", "dbPort", "dbName", "dbUser", "dbPassword", "secretKey"]);

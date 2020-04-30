@@ -1,21 +1,21 @@
 import { Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
-import { $AuthContext, AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context";
-import { AuthMethod } from "@eternal-twin/etwin-api-types/lib/auth/auth-method";
-import { AuthScope } from "@eternal-twin/etwin-api-types/lib/auth/auth-scope";
-import { AuthType } from "@eternal-twin/etwin-api-types/lib/auth/auth-type";
-import { $CreateSessionQuery } from "@eternal-twin/etwin-api-types/lib/auth/create-session-query";
-import { $RawCredentials, RawCredentials } from "@eternal-twin/etwin-api-types/lib/auth/raw-credentials";
+import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { AuthMethod } from "@eternal-twin/core/lib/auth/auth-method";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { $CreateSessionQuery } from "@eternal-twin/core/lib/auth/create-session-query";
+import { $RawCredentials, RawCredentials } from "@eternal-twin/core/lib/auth/raw-credentials";
 import {
   $RegisterWithUsernameOptions,
   RegisterWithUsernameOptions,
-} from "@eternal-twin/etwin-api-types/lib/auth/register-with-username-options";
-import { UserAuthContext } from "@eternal-twin/etwin-api-types/lib/auth/user-auth-context";
+} from "@eternal-twin/core/lib/auth/register-with-username-options";
+import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
 import {
   $HammerfestCredentials,
   HammerfestCredentials,
-} from "@eternal-twin/etwin-api-types/lib/hammerfest/hammerfest-credentials";
-import { $User, User } from "@eternal-twin/etwin-api-types/lib/user/user";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
+import { $User, User } from "@eternal-twin/core/lib/user/user";
 import { JsonValueReader } from "kryo-json/lib/json-value-reader";
 import { concat as rxConcat, NEVER as RX_NEVER, Observable, of as rxOf, ReplaySubject } from "rxjs";
 import { map as rxMap, tap as rxTap } from "rxjs/operators";

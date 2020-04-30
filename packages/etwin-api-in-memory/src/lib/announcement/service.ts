@@ -1,13 +1,13 @@
-import { AnnouncementRevision } from "@eternal-twin/etwin-api-types/lib/announcement/announcement-revision.js";
-import { Announcement } from "@eternal-twin/etwin-api-types/lib/announcement/announcement.js";
-import { CreateAnnouncementOptions } from "@eternal-twin/etwin-api-types/lib/announcement/create-announcement-options.js";
-import { AnnouncementService } from "@eternal-twin/etwin-api-types/lib/announcement/service.js";
-import { AuthContext } from "@eternal-twin/etwin-api-types/lib/auth/auth-context.js";
-import { HtmlText } from "@eternal-twin/etwin-api-types/lib/core/html-text.js";
-import { MarkdownText } from "@eternal-twin/etwin-api-types/lib/core/markdown-text.js";
-import { RenderedText } from "@eternal-twin/etwin-api-types/lib/core/rendered-text.js";
-import { UuidGenerator } from "@eternal-twin/etwin-api-types/lib/core/uuid-generator.js";
-import { UuidHex } from "@eternal-twin/etwin-api-types/lib/core/uuid-hex.js";
+import { AnnouncementRevision } from "@eternal-twin/core/lib/announcement/announcement-revision.js";
+import { Announcement } from "@eternal-twin/core/lib/announcement/announcement.js";
+import { CreateAnnouncementOptions } from "@eternal-twin/core/lib/announcement/create-announcement-options.js";
+import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { HtmlText } from "@eternal-twin/core/lib/core/html-text.js";
+import { MarkdownText } from "@eternal-twin/core/lib/core/markdown-text.js";
+import { RenderedText } from "@eternal-twin/core/lib/core/rendered-text.js";
+import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
+import { UuidHex } from "@eternal-twin/core/lib/core/uuid-hex.js";
 import commonmark from "commonmark";
 
 export class InMemoryAnnouncementService implements AnnouncementService {
