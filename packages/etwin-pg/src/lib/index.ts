@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import { create1, create2, resolveScriptFuri } from "./scripts.js";
+import { create1, create2, resolveScriptFuri, upgrade1to2 } from "./scripts.js";
 
 export interface DbConfig {
   /**
@@ -78,7 +78,16 @@ export async function create(queryable: Queryable, version: DbVersion): Promise<
     case DbVersion.V002:
       return create2(queryable, false);
     default:
-      throw new Error("AssertionError: Unexpectd value for `DbVersion`: ");
+      throw new Error(`AssertionError: Unexpectd value for \`DbVersion\`: ${version}`);
+  }
+}
+
+export async function upgrade(queryable: Queryable, version: DbVersion): Promise<void> {
+  switch (version) {
+    case DbVersion.V002:
+      return upgrade1to2(queryable, false);
+    default:
+      throw new Error(`AssertionError: Unexpectd value for \`DbVersion\`: ${version}`);
   }
 }
 

@@ -1,5 +1,8 @@
 COMMENT ON SCHEMA public IS '{"version": "V002"}';
 
+ALTER TABLE users
+  ADD CONSTRAINT username__uniq UNIQUE(username);
+
 -- OAuth clients
 CREATE TABLE public.oauth_clients (
   -- OAuth client id

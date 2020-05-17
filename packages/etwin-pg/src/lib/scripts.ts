@@ -35,6 +35,10 @@ export async function create1(queryable: Queryable, _isVoid: boolean): Promise<v
 
 export async function create2(queryable: Queryable, isVoid: boolean): Promise<void> {
   await create1(queryable, isVoid);
+  await upgrade1to2(queryable, isVoid);
+}
+
+export async function upgrade1to2(queryable: Queryable, _isVoid: boolean): Promise<void> {
   const script: string = await readUpgradeScript(DbVersion.V001, DbVersion.V002);
   return execSql(queryable, script);
 }
