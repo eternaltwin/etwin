@@ -1,8 +1,13 @@
-<form>
+<form
+  ngNoForm
+  method="POST"
+  enctype="application/x-www-form-urlencoded"
+  action="/actions/login/twinoid"
+>
   <div class="active_method">
     <img src="/assets/login-methods/twinoid.png"/>
     <ng-container i18n="@@login.method.hammerfest">Sign in with Twinoid</ng-container>
   </div>
   <input type="submit" name="sign_in" class="btn primary" i18n-value="Submit the Twinoid login form label@@login.twinoid.submit"
-         value="Sign in (Soon)" disabled="disabled"/>
+         value="Sign in (Soon)" [disabled]="true" />
 </form>

@@ -12,6 +12,18 @@ export enum AuthType {
   User,
 
   /**
+   * Authenticated as an oauth client application.
+   *
+   * This represents a request from the client itself, not on behalf of a user.
+   */
+  OauthClient,
+
+  /**
+   * Authenticated as a user, accessed from an OAuth client.
+   */
+  AccessToken,
+
+  /**
    * System action
    */
   System,

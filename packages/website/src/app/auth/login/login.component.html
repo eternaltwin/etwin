@@ -16,15 +16,15 @@
     </p>
   </div>
   <div class="content login_methods">
-    <a routerLink="/login" [queryParams]="{method: 'etwin'}" class="btn" *ngIf="method !== AuthMethod.Etwin">
+    <a routerLink="/login" [queryParams]="{method: 'etwin', next: next}" class="btn" *ngIf="method !== AuthMethod.Etwin">
       <img src="/assets/login-methods/eternal-twin.png"/>
       <ng-container i18n="@@login.method.etwin">Sign in with Eternal-Twin</ng-container>
     </a>
-    <a routerLink="/login" [queryParams]="{method: 'twinoid'}" class="btn" *ngIf="method !== AuthMethod.Twinoid">
+    <a routerLink="/login" [queryParams]="{method: 'twinoid', next: next}" class="btn" *ngIf="method !== AuthMethod.Twinoid">
       <img src="/assets/login-methods/twinoid.png"/>
-      <ng-container i18n="@@login.method.twinoid">Sign in with Twinoid (Soon)</ng-container>
+      <ng-container i18n="@@login.method.twinoid">Sign in with Twinoid</ng-container>
     </a>
-    <a routerLink="/login" [queryParams]="{method: 'hammerfest'}" class="btn" *ngIf="method !== AuthMethod.Hammerfest">
+    <a routerLink="/login" [queryParams]="{method: 'hammerfest', next: next}" class="btn" *ngIf="method !== AuthMethod.Hammerfest">
       <img src="/assets/login-methods/hammerfest.png"/>
       <ng-container i18n="@@login.method.hammerfest">Sign in with Hammerfest</ng-container>
     </a>

@@ -48,6 +48,16 @@ http-hammerfest:
   script:
     - "yarn --cwd packages/http-hammerfest run test"
 
+http-oauth-client:
+  stage: "ci"
+  script:
+    - "yarn --cwd packages/http-oauth-client run test"
+
+http-twinoid-api-client:
+  stage: "ci"
+  script:
+    - "yarn --cwd packages/http-twinoid-api-client run test"
+
 in-memory-email:
   stage: "ci"
   script:
@@ -73,6 +83,11 @@ pg-auth:
   script:
     - "yarn --cwd packages/pg-auth run test"
 
+pg-oauth-provider:
+  stage: "ci"
+  script:
+    - "yarn --cwd packages/pg-oauth-provider run test"
+
 pg-user:
   stage: "ci"
   script:
@@ -87,6 +102,11 @@ scrypt-password:
   stage: "ci"
   script:
     - "yarn --cwd packages/scrypt-password run test"
+
+twinoid-api-types:
+  stage: "ci"
+  script:
+    - "yarn --cwd packages/twinoid-api-types run test"
 
 uuid4-generator:
   stage: "ci"

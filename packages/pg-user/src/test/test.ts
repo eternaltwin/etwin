@@ -36,19 +36,18 @@ async function createUser(
   return {
     type: AuthType.User,
     scope: AuthScope.Default,
-    userId: userAndSession.user.id,
-    displayName: userAndSession.user.displayName,
+    user: userAndSession.user,
     isAdministrator: userAndSession.user.isAdministrator,
   };
 }
 
-export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Promise<void>) {
+export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Promise<void>) {
   it("Register the admin and retrieve itself (ref)", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       {
-        const actual: NullableUserRef = await api.user.getUserRefById(aliceAuth, aliceAuth.userId);
+        const actual: NullableUserRef = await api.user.getUserRefById(aliceAuth, aliceAuth.user.id);
         chai.assert.isNotNull(actual);
         const expected: NullableUserRef = {
           type: ObjectType.User,
@@ -65,7 +64,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
     return withApi(async (api: Api): Promise<void> => {
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       {
-        const actual: User | CompleteUser | null = await api.user.getUserById(aliceAuth, aliceAuth.userId);
+        const actual: User | CompleteUser | null = await api.user.getUserById(aliceAuth, aliceAuth.user.id);
         chai.assert.isNotNull(actual);
         chai.assert.instanceOf((actual as CompleteUser).ctime, Date);
         const expected: CompleteUser = {
@@ -89,7 +88,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
       {
-        const actual: User | CompleteUser | null = await api.user.getUserById(bobAuth, aliceAuth.userId);
+        const actual: User | CompleteUser | null = await api.user.getUserById(bobAuth, aliceAuth.user.id);
         chai.assert.isNotNull(actual);
         const expected: User = {
           type: ObjectType.User,

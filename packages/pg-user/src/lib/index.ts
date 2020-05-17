@@ -40,7 +40,7 @@ export class PgUserService implements UserService {
   ): Promise<User | CompleteUser | null> {
     let retrieveComplete: boolean = false;
     if (acx.type === AuthType.User) {
-      retrieveComplete = acx.userId === id || acx.isAdministrator;
+      retrieveComplete = acx.user.id === id || acx.isAdministrator;
     }
 
     if (retrieveComplete) {

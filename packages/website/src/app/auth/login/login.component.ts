@@ -14,6 +14,7 @@ export class LoginComponent implements OnDestroy, OnInit {
   private readonly route: ActivatedRoute;
 
   public method: AuthMethod;
+  public next: string | undefined;
 
   private pendingSubscription: Subscription | null;
 
@@ -41,6 +42,9 @@ export class LoginComponent implements OnDestroy, OnInit {
           default:
             this.method = AuthMethod.Etwin;
             break;
+        }
+        if (typeof value.next === "string" && value.next.startsWith("/")) {
+          this.next = value.next;
         }
       },
       error: (): void => {

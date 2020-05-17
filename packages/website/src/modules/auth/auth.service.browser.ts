@@ -11,6 +11,7 @@ import {
   RegisterWithUsernameOptions,
 } from "@eternal-twin/core/lib/auth/register-with-username-options";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
 import {
   $HammerfestCredentials,
   HammerfestCredentials,
@@ -69,8 +70,11 @@ export class BrowserAuthService extends AuthService {
         const auth: UserAuthContext = {
           type: AuthType.User,
           scope: AuthScope.Default,
-          userId: user.id,
-          displayName: user.displayName,
+          user: {
+            type: ObjectType.User,
+            id: user.id,
+            displayName: user.displayName,
+          },
           isAdministrator: user.isAdministrator,
         };
         this.auth$.next(auth);
@@ -90,8 +94,11 @@ export class BrowserAuthService extends AuthService {
         const auth: UserAuthContext = {
           type: AuthType.User,
           scope: AuthScope.Default,
-          userId: user.id,
-          displayName: user.displayName,
+          user: {
+            type: ObjectType.User,
+            id: user.id,
+            displayName: user.displayName,
+          },
           isAdministrator: user.isAdministrator,
         };
         this.auth$.next(auth);
@@ -111,8 +118,11 @@ export class BrowserAuthService extends AuthService {
         const auth: UserAuthContext = {
           type: AuthType.User,
           scope: AuthScope.Default,
-          userId: user.id,
-          displayName: user.displayName,
+          user: {
+            type: ObjectType.User,
+            id: user.id,
+            displayName: user.displayName,
+          },
           isAdministrator: user.isAdministrator,
         };
         this.auth$.next(auth);

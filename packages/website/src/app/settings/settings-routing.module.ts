@@ -29,7 +29,7 @@ export class UserResolverService implements Resolve<CompleteUser | null> {
         if (curUser.type !== AuthType.User) {
           return rxThrowError(new Error("Unauthenticated"));
         }
-        return this.user.getUserById(curUser.userId);
+        return this.user.getUserById(curUser.user.id);
       }),
       rxMap((user: User | CompleteUser | null): CompleteUser => {
         if (user === null || !$CompleteUser.test(user as any)) {

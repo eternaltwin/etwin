@@ -16,14 +16,12 @@ import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import koaRoute from "koa-route";
-import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
-import { JsonValueWriter } from "kryo-json/lib/json-value-writer.js";
+import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
+import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 import { QsValueReader } from "kryo-qs/lib/qs-value-reader.js";
 
 import { KoaAuth, SESSION_COOKIE } from "./helpers/koa-auth.js";
 
-const JSON_VALUE_WRITER: JsonValueWriter = new JsonValueWriter();
-const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
 const QS_VALUE_READER: QsValueReader = new QsValueReader();
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};

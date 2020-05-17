@@ -23,7 +23,7 @@ export class ScryptPasswordService implements PasswordService {
     this.params = scryptKdf.pickParams(maxTimeSeconds, maxMemBytes);
   }
 
-  public async hash(clear: Password): Promise<Uint8Array> {
+  public async hash(clear: Password): Promise<PasswordHash> {
     return scryptKdf.kdf(clear, this.params);
   }
 

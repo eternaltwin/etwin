@@ -3,16 +3,14 @@ import { $Boolean } from "kryo/lib/boolean.js";
 import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
-import { $UserDisplayName, UserDisplayName } from "../user/user-display-name.js";
-import { $UserId, UserId } from "../user/user-id.js";
+import { $UserRef, UserRef } from "../user/user-ref.js";
 import { $AuthScope, AuthScope } from "./auth-scope.js";
 import { $AuthType, AuthType } from "./auth-type.js";
 
 export interface UserAuthContext {
   type: AuthType.User;
   scope: AuthScope;
-  userId: UserId;
-  displayName: UserDisplayName;
+  user: UserRef;
   isAdministrator: boolean;
 }
 
@@ -20,8 +18,7 @@ export const $UserAuthContext: RecordIoType<UserAuthContext> = new RecordType<Us
   properties: {
     type: {type: new LiteralType({type: $AuthType, value: AuthType.User})},
     scope: {type: $AuthScope},
-    userId: {type: $UserId},
-    displayName: {type: $UserDisplayName},
+    user: {type: $UserRef},
     isAdministrator: {type: $Boolean},
   },
   changeCase: CaseStyle.SnakeCase,

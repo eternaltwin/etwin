@@ -6,9 +6,10 @@ import { TsEnumType } from "kryo/lib/ts-enum.js";
  * It helps with discriminated unions and reflection.
  */
 export enum ObjectType {
-  User,
   HammerfestUser,
   TwinoidUser,
+  OauthClient,
+  User,
 }
 
 export const $ObjectType: TsEnumType<ObjectType> = new TsEnumType<ObjectType>({

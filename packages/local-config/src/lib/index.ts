@@ -24,6 +24,14 @@ export interface Config {
    * Public URI of the server
    */
   externalBaseUri: url.URL;
+
+  eternalfestAppUri: url.URL;
+  eternalfestCallbackUri: url.URL;
+  eternalfestSecret: string;
+
+  twinoidOauthClientId: string;
+
+  twinoidOauthSecret: string;
 }
 
 export function getPartialEnvConfig(env: NodeJS.ProcessEnv): Partial<Config> {
@@ -59,6 +67,26 @@ export function getPartialEnvConfig(env: NodeJS.ProcessEnv): Partial<Config> {
   if (typeof env.ETWIN_EXTERNAL_BASE_URI === "string") {
     externalBaseUri = new url.URL(env.ETWIN_EXTERNAL_BASE_URI);
   }
+  let eternalfestAppUri: url.URL | undefined;
+  if (typeof env.ETWIN_ETERNALFEST_APP_URI === "string") {
+    eternalfestAppUri = new url.URL(env.ETWIN_ETERNALFEST_APP_URI);
+  }
+  let eternalfestCallbackUri: url.URL | undefined;
+  if (typeof env.ETWIN_ETERNALFEST_CALLBACK_URI === "string") {
+    eternalfestCallbackUri = new url.URL(env.ETWIN_ETERNALFEST_CALLBACK_URI);
+  }
+  let eternalfestSecret: string | undefined;
+  if (typeof env.ETWIN_ETERNALFEST_SECRET === "string") {
+    eternalfestSecret = env.ETWIN_ETERNALFEST_SECRET;
+  }
+  let twinoidOauthClientId: string | undefined;
+  if (typeof env.ETWIN_TWINOID_OAUTH_CLIENT_ID === "string") {
+    twinoidOauthClientId = env.ETWIN_TWINOID_OAUTH_CLIENT_ID;
+  }
+  let twinoidOauthSecret: string | undefined;
+  if (typeof env.ETWIN_TWINOID_OAUTH_SECRET === "string") {
+    twinoidOauthSecret = env.ETWIN_TWINOID_OAUTH_SECRET;
+  }
 
   return {
     dbHost,
@@ -69,6 +97,11 @@ export function getPartialEnvConfig(env: NodeJS.ProcessEnv): Partial<Config> {
     secretKey,
     httpPort,
     externalBaseUri,
+    eternalfestAppUri,
+    eternalfestCallbackUri,
+    eternalfestSecret,
+    twinoidOauthClientId,
+    twinoidOauthSecret,
   };
 }
 

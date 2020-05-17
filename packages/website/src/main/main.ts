@@ -13,6 +13,7 @@ import { Api, withApi } from "./api.js";
 import { Config,getLocalConfig } from "./config.js";
 import { createKoaLocaleNegotiator, LocaleNegotiator } from "./koa-locale-negotiation.js";
 import { Locale } from "./locales.js";
+import { createOauthRouter } from "./oauth/index.js";
 
 const PROJECT_ROOT: url.URL = furi.join(import .meta.url, "../..");
 const IS_PRODUCTION: boolean = process.env.NODE_ENV === "production";
@@ -67,6 +68,9 @@ async function main(api: Api): Promise<void> {
 
   const actionsRouter: Koa = await createActionsRouter(api);
   router.use(koaMount("/actions", actionsRouter));
+
+  const oauthRouter: Koa = await createOauthRouter(api);
+  router.use(koaMount("/oauth", oauthRouter));
 
   const i18nRouter: Koa = createI18nRouter(defaultRouter, prodAppRouters);
   router.use(koaMount("/", i18nRouter));

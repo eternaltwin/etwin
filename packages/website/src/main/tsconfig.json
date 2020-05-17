@@ -27,7 +27,16 @@
       "path": "../../../http-hammerfest/src/lib"
     },
     {
+      "path": "../../../http-oauth-client/src/lib"
+    },
+    {
       "path": "../../../local-config/src/lib"
+    },
+    {
+      "path": "../../../pg-auth/src/lib"
+    },
+    {
+      "path": "../../../pg-oauth-provider/src/lib"
     },
     {
       "path": "../../../pg-user/src/lib"

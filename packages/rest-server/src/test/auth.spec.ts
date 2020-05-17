@@ -58,8 +58,11 @@ describe("/auth", () => {
         const expected: AuthContext = {
           type: AuthType.User,
           scope: AuthScope.Default,
-          userId: actualUser.id,
-          displayName: "Alice",
+          user: {
+            type: ObjectType.User,
+            id: actualUser.id,
+            displayName: "Alice",
+          },
           isAdministrator: true,
         };
         chai.assert.deepEqual(actual, expected);
@@ -142,8 +145,11 @@ describe("/auth", () => {
         const expected: AuthContext = {
           type: AuthType.User,
           scope: AuthScope.Default,
-          userId: actualUser.id,
-          displayName: "Alice",
+          user: {
+            type: ObjectType.User,
+            id: actualUser.id,
+            displayName: "Alice",
+          },
           isAdministrator: true,
         };
         chai.assert.deepEqual(actual, expected);

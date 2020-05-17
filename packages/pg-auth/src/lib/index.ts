@@ -1,4 +1,5 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { Credentials } from "@eternal-twin/core/lib/auth/credentials";
 import { LinkHammerfestUserOptions } from "@eternal-twin/core/lib/auth/link-hammerfest-user-options.js";
@@ -20,17 +21,24 @@ import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerf
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
+import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { User } from "@eternal-twin/core/lib/user/user";
 import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
-import { HammerfestUserLinkRow, SessionRow, UserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
+import {
+  HammerfestUserLinkRow,
+  OauthAccessTokenRow,
+  OauthClientRow,
+  SessionRow,
+  UserRow,
+} from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 import jsonWebToken from "jsonwebtoken";
 import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
-import { UuidHex } from "kryo/lib/uuid-hex";
+import { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
 
 import { $EmailRegistrationJwt, EmailRegistrationJwt } from "./email-registration-jwt.js";
 
@@ -142,7 +150,7 @@ export class PgAuthService implements AuthService {
     throw new Error("NotImplemented");
   }
 
-  authenticateSession(acx: AuthContext, sessionId: string): Promise<UserAndSession | null> {
+  async authenticateSession(acx: AuthContext, sessionId: string): Promise<UserAndSession | null> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can register");
     }
@@ -156,6 +164,121 @@ export class PgAuthService implements AuthService {
 
       return {user, session};
     });
+  }
+
+  public async authenticateAccessToken(token: OauthAccessTokenKey): Promise<AuthContext> {
+    return await this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+      return this.authenticateAccessTokenTx(q, token);
+    });
+  }
+
+  public async authenticateAccessTokenTx(queryable: Queryable, token: OauthAccessTokenKey): Promise<AuthContext> {
+    type Row = Pick<OauthAccessTokenRow, "ctime" | "atime" | "user_id" | "oauth_client_id">
+      & {user_display_name: UserRow["display_name"], oauth_client_display_name: OauthClientRow["display_name"], oauth_client_key: OauthClientRow["key"]};
+
+    const row: Row | undefined = await queryable.oneOrNone(
+      `
+      SELECT oauth_access_tokens.ctime, oauth_access_tokens.atime,
+        oauth_access_tokens.user_id, oauth_access_tokens.oauth_client_id,
+        users.display_name AS user_display_name, oauth_clients.display_name AS oauth_client_display_name, oauth_clients.key AS oauth_client_key
+      FROM oauth_access_tokens
+        INNER JOIN users USING(user_id)
+        INNER JOIN oauth_clients USING(oauth_client_id)
+      WHERE oauth_access_token_id = $1::UUID;`,
+      [token],
+    );
+
+    if (row === undefined) {
+      throw new Error("NotFound");
+    }
+
+    type AtimeRow = Pick<OauthAccessTokenRow, "atime">;
+
+    const atimeRow: AtimeRow = await queryable.one(
+      `
+      UPDATE oauth_access_tokens
+      SET atime = NOW()
+      WHERE oauth_access_token_id = $1::UUID
+      RETURNING atime`,
+      [token],
+    );
+
+    // TODO: Add the access time to the auth context?
+    // The assertion below is redundant with the DB constraints, it's there just to use `atimeRow`.
+    // The three lines below should be removed once `atimeRow` is used for real.
+    if (atimeRow.atime.getTime() > row.ctime.getTime()) {
+      throw new Error("AssertionError");
+    }
+
+    return {
+      type: AuthType.AccessToken,
+      scope: AuthScope.Default,
+      client: {
+        type: ObjectType.OauthClient,
+        id: row.oauth_client_id,
+        key: row.oauth_client_key,
+        displayName: row.oauth_client_display_name,
+      },
+      user: {
+        type: ObjectType.User,
+        id: row.user_id,
+        displayName: row.user_display_name,
+      }
+    };
+  }
+
+  public async authenticateCredentials(credentials: Credentials): Promise<AuthContext> {
+    return await this.database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
+      return this.authenticateCredentialsTx(q, credentials);
+    });
+  }
+
+  public async authenticateCredentialsTx(queryable: Queryable, credentials: Credentials): Promise<AuthContext> {
+    const login: Login = credentials.login;
+    type Row = Pick<OauthClientRow, "oauth_client_id" | "key" | "display_name" | "secret">;
+    let row: Row;
+    if ($UuidHex.test(login)) {
+      const maybeRow: Row | undefined = await queryable.oneOrNone(
+        `
+        SELECT oauth_client_id, key, display_name, pgp_sym_decrypt_bytea(secret, $1::TEXT) AS secret
+        FROM oauth_clients
+        WHERE oauth_client_id = $2::UUID;`,
+        [this.dbSecret, login],
+      );
+      if (maybeRow === undefined) {
+        throw new Error(`OauthClientNotFound: Client not found for the id: ${login}`);
+      }
+      row = maybeRow;
+    } else {
+      const maybeRow: Row | undefined = await queryable.oneOrNone(
+        `
+        SELECT oauth_client_id, key, display_name, pgp_sym_decrypt_bytea(secret, $1::TEXT) AS secret
+        FROM oauth_clients
+        WHERE key = $2::VARCHAR;`,
+        [this.dbSecret, login],
+      );
+      if (maybeRow === undefined) {
+        throw new Error(`OauthClientNotFound: Client not found for the key: ${login}`);
+      }
+      row = maybeRow;
+    }
+
+    const isMatch: boolean = await this.password.verify(row.secret, credentials.password);
+
+    if (!isMatch) {
+      throw new Error("InvalidSecret");
+    }
+
+    return {
+      type: AuthType.OauthClient,
+      scope: AuthScope.Default,
+      client: {
+        type: ObjectType.OauthClient,
+        id: row.oauth_client_id,
+        key: row.key,
+        displayName: row.display_name,
+      },
+    };
   }
 
   private async registerWithVerifiedEmailTx(
@@ -242,9 +365,10 @@ export class PgAuthService implements AuthService {
     switch ($Login.match(credentials.login)) {
       case $EmailAddress: {
         const maybeRow: Row | undefined = await queryable.oneOrNone(
-          `SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
-             FROM users
-             WHERE users.email_address = pgp_sym_encrypt($2::TEXT, $1::TEXT);`,
+          `
+          SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
+          FROM users
+          WHERE users.email_address = pgp_sym_encrypt($2::TEXT, $1::TEXT);`,
           [this.dbSecret, login],
         );
         if (maybeRow === undefined) {
@@ -255,9 +379,10 @@ export class PgAuthService implements AuthService {
       }
       case $Username: {
         const maybeRow: Row | undefined = await queryable.oneOrNone(
-          `SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
-             FROM users
-             WHERE users.username = $2::VARCHAR;`,
+          `
+          SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
+          FROM users
+          WHERE users.username = $2::VARCHAR;`,
           [this.dbSecret, login],
         );
         if (maybeRow === undefined) {
@@ -267,7 +392,7 @@ export class PgAuthService implements AuthService {
         break;
       }
       default:
-        throw new Error("AssertionError: Invalid `creddentials.login` type");
+        throw new Error("AssertionError: Invalid `credentials.login` type");
     }
 
     if (row.password === null) {
@@ -299,9 +424,10 @@ export class PgAuthService implements AuthService {
     await this.createOrUpdateHammerfestUser(queryable, hfUser);
     type LinkRow = Pick<HammerfestUserLinkRow, "user_id">;
     const linkRow: LinkRow | undefined = await queryable.oneOrNone(
-      `SELECT user_id
-         FROM hammerfest_user_links
-         WHERE hammerfest_server = $1::VARCHAR AND hammerfest_user_id = $2::INT;`,
+      `
+      SELECT user_id
+      FROM hammerfest_user_links
+      WHERE hammerfest_server = $1::VARCHAR AND hammerfest_user_id = $2::INT;`,
       [hfUser.server, hfUser.id],
     );
     let userId: UserId;
@@ -317,10 +443,11 @@ export class PgAuthService implements AuthService {
       }
       const user = await this.createUser(queryable, displayName, null, null, null);
       await queryable.countOne(
-        `INSERT
-         INTO hammerfest_user_links(
-           user_id, hammerfest_server, hammerfest_user_id, ctime
-         )
+        `
+        INSERT
+        INTO hammerfest_user_links(
+          user_id, hammerfest_server, hammerfest_user_id, ctime
+        )
         VALUES (
           $1::UUID, $2::VARCHAR, $3::INT, NOW()
         );`,
@@ -353,22 +480,24 @@ export class PgAuthService implements AuthService {
     type Row = Pick<UserRow, "user_id" | "display_name" | "is_administrator">;
     const userId: UuidHex = this.uuidGen.next();
     const userRow: Row = await queryable.one(
-      `WITH administrator_exists AS (SELECT 1 FROM users WHERE is_administrator)
-         INSERT INTO users(
-           user_id, ctime, display_name, display_name_mtime,
-           email_address, email_address_mtime,
-           username, username_mtime,
-           password, password_mtime,
-           is_administrator
-         )
-         VALUES (
-           $2::UUID, NOW(), $3::VARCHAR, NOW(),
-           (CASE WHEN $4::TEXT IS NULL THEN NULL ELSE pgp_sym_encrypt($4::TEXT, $1::TEXT) END), NOW(),
-           $5::VARCHAR, NOW(),
-           pgp_sym_encrypt_bytea($6::BYTEA, $1::TEXT), NOW(),
-           (NOT EXISTS(SELECT 1 FROM administrator_exists))
-         )
-         RETURNING user_id, display_name, is_administrator;`,
+      `
+      WITH administrator_exists AS (SELECT 1 FROM users WHERE is_administrator)
+      INSERT
+      INTO users(
+        user_id, ctime, display_name, display_name_mtime,
+        email_address, email_address_mtime,
+        username, username_mtime,
+        password, password_mtime,
+        is_administrator
+      )
+      VALUES (
+        $2::UUID, NOW(), $3::VARCHAR, NOW(),
+        (CASE WHEN $4::TEXT IS NULL THEN NULL ELSE pgp_sym_encrypt($4::TEXT, $1::TEXT) END), NOW(),
+        $5::VARCHAR, NOW(),
+        pgp_sym_encrypt_bytea($6::BYTEA, $1::TEXT), NOW(),
+        (NOT EXISTS(SELECT 1 FROM administrator_exists))
+      )
+      RETURNING user_id, display_name, is_administrator;`,
       [this.dbSecret, userId, displayName, emailAddress, username, passwordHash],
     );
 
@@ -387,12 +516,13 @@ export class PgAuthService implements AuthService {
     ctime: Date,
   ): Promise<void> {
     await queryable.countOne(
-      `INSERT INTO email_verifications(
+      `
+      INSERT INTO email_verifications(
         user_id, email_address, ctime, validation_time
       )
-         VALUES (
-           $2::UUID, pgp_sym_encrypt($3::TEXT, $1::TEXT), $4::TIMESTAMP, NOW()
-         );`,
+      VALUES (
+        $2::UUID, pgp_sym_encrypt($3::TEXT, $1::TEXT), $4::TIMESTAMP, NOW()
+      );`,
       [this.dbSecret, userId, email, ctime],
     );
   }
@@ -403,13 +533,14 @@ export class PgAuthService implements AuthService {
     const sessionId: UuidHex = this.uuidGen.next();
 
     const row: Row = await queryable.one(
-      `INSERT INTO sessions(
+      `
+      INSERT INTO sessions(
         session_id, user_id, ctime, atime, data
       )
-         VALUES (
-           $1::UUID, $2::UUID, NOW(), NOW(), '{}'
-         )
-         RETURNING sessions.ctime, (SELECT display_name FROM users WHERE user_id = $2::UUID)`,
+      VALUES (
+        $1::UUID, $2::UUID, NOW(), NOW(), '{}'
+      )
+      RETURNING sessions.ctime, (SELECT display_name FROM users WHERE user_id = $2::UUID)`,
       [sessionId, userId],
     );
 
@@ -425,10 +556,11 @@ export class PgAuthService implements AuthService {
     type Row = Pick<SessionRow, "ctime" | "atime" | "user_id"> & Pick<UserRow, "display_name">;
 
     const row: Row | undefined = await queryable.oneOrNone(
-      `UPDATE sessions
-         SET atime = NOW()
-         WHERE session_id = $1::UUID
-         RETURNING sessions.ctime, sessions.atime, sessions.user_id, (SELECT display_name FROM users WHERE user_id = sessions.user_id)`,
+      `
+      UPDATE sessions
+      SET atime = NOW()
+      WHERE session_id = $1::UUID
+      RETURNING sessions.ctime, sessions.atime, sessions.user_id, (SELECT display_name FROM users WHERE user_id = sessions.user_id)`,
       [sessionId],
     );
 
@@ -447,9 +579,10 @@ export class PgAuthService implements AuthService {
   private async getExistingUserById(queryable: Queryable, userId: UserId): Promise<User> {
     type Row = Pick<UserRow, "user_id" | "display_name" | "is_administrator">;
     const row: Row = await queryable.one(
-      `SELECT user_id, display_name, is_administrator
-         FROM users
-         WHERE users.user_id = $1::UUID;`,
+      `
+      SELECT user_id, display_name, is_administrator
+      FROM users
+      WHERE users.user_id = $1::UUID;`,
       [userId],
     );
     return {
@@ -462,14 +595,15 @@ export class PgAuthService implements AuthService {
 
   private async createOrUpdateHammerfestUser(queryable: Queryable, hfUserRef: HammerfestUserRef): Promise<void> {
     await queryable.countOne(
-      `INSERT INTO hammerfest_users(
+      `
+      INSERT INTO hammerfest_users(
         server, user_id, username
       )
-         VALUES (
-           $1::VARCHAR, $2::INT, $3::VARCHAR
-         )
-         ON CONFLICT (server, user_id)
-           DO UPDATE SET username = $3::VARCHAR;`,
+      VALUES (
+        $1::VARCHAR, $2::INT, $3::VARCHAR
+      )
+      ON CONFLICT (server, user_id)
+        DO UPDATE SET username = $3::VARCHAR;`,
       [
         hfUserRef.server,
         hfUserRef.id,

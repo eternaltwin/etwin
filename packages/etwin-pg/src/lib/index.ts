@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import { resolveScriptFuri } from "./scripts.js";
+import { create1, create2, resolveScriptFuri } from "./scripts.js";
 
 export interface DbConfig {
   /**
@@ -31,12 +31,17 @@ export interface DbConfig {
 
 export enum DbVersion {
   /**
-   * First version: Eternal-Twin users, display names, emails, Hammerfest users
+   * Eternal-Twin users, display names, emails, Hammerfest users
    */
   V001 = "001",
+
+  /**
+   * Oauth client registration
+   */
+  V002 = "002",
 }
 
-export const LATEST_DB_VERSION: DbVersion = DbVersion.V001;
+export const LATEST_DB_VERSION: DbVersion = DbVersion.V002;
 
 /**
  * Represents a simple queryable object for a database.
@@ -66,8 +71,25 @@ export async function dropAndCreate(queryable: Queryable, version: DbVersion): P
   await create(queryable, version);
 }
 
-async function create(queryable: Queryable, version: DbVersion): Promise<void> {
-  const scriptFuri = resolveScriptFuri("create", `${version}.sql`);
-  const script: string = await fs.promises.readFile(scriptFuri, {encoding: "utf-8"});
-  return execSql(queryable, script);
+export async function create(queryable: Queryable, version: DbVersion): Promise<void> {
+  switch (version) {
+    case DbVersion.V001:
+      return create1(queryable, false);
+    case DbVersion.V002:
+      return create2(queryable, false);
+    default:
+      throw new Error("AssertionError: Unexpectd value for `DbVersion`: ");
+  }
 }
+
+// async function create1(queryable: Queryable, version: DbVersion): Promise<void> {
+//   const scriptFuri = resolveScriptFuri("create", `${version}.sql`);
+//   const script: string = await fs.promises.readFile(scriptFuri, {encoding: "utf-8"});
+//   return execSql(queryable, script);
+// }
+//
+// async function upgrade1to2(queryable: Queryable, version: DbVersion): Promise<void> {
+//   const scriptFuri = resolveScriptFuri("create", `${version}.sql`);
+//   const script: string = await fs.promises.readFile(scriptFuri, {encoding: "utf-8"});
+//   return execSql(queryable, script);
+// }

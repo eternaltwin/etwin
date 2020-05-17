@@ -1,8 +1,10 @@
-import { Component, OnDestroy } from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { RawLogin } from "@eternal-twin/core/lib/auth/raw-login";
 import { Subscription } from "rxjs";
+import { first as rxFirst } from "rxjs/operators";
 
 import { AuthService } from "../../../modules/auth/auth.service";
 
@@ -13,20 +15,28 @@ const TEXT_ENCODER: TextEncoder = new TextEncoder();
   templateUrl: "./login-etwin.component.html",
   styleUrls: [],
 })
-export class LoginEtwinComponent implements OnDestroy {
+export class LoginEtwinComponent implements OnDestroy, OnInit {
   public readonly loginForm: FormGroup;
   public readonly login: FormControl;
   public readonly password: FormControl;
 
   private readonly auth: AuthService;
   private readonly router: Router;
+  private readonly route: ActivatedRoute
+  private readonly document: Document;
+
+  private nextUri: string | undefined;
 
   public pendingSubscription: Subscription | null;
   public serverError: Error | null;
 
-  constructor(auth: AuthService, router: Router) {
+  constructor(auth: AuthService, router: Router, route: ActivatedRoute, @Inject(DOCUMENT) document: Document) {
     this.auth = auth;
     this.router = router;
+    this.route = route;
+    this.document = document;
+
+    this.nextUri = undefined;
 
     this.login = new FormControl(
       "",
@@ -62,7 +72,12 @@ export class LoginEtwinComponent implements OnDestroy {
       next: (): void => {
         subscription.unsubscribe();
         this.pendingSubscription = null;
-        this.router.navigateByUrl("/");
+        if (this.nextUri !== undefined) {
+          this.document.location.href = this.nextUri;
+          console.log(this.document.location.href);
+        } else {
+          this.router.navigateByUrl("/");
+        }
       },
       error: (err: Error): void => {
         subscription.unsubscribe();
@@ -82,5 +97,13 @@ export class LoginEtwinComponent implements OnDestroy {
       this.pendingSubscription.unsubscribe();
       this.pendingSubscription = null;
     }
+  }
+
+  ngOnInit(): void {
+    this.route.queryParams.pipe(rxFirst()).toPromise().then((value: Params) => {
+      if (typeof value.next === "string" && value.next.startsWith("/")) {
+        this.nextUri = value.next;
+      }
+    });
   }
 }

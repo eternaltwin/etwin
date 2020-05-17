@@ -10,9 +10,9 @@ import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 
 import { PgUserService } from "../lib/index.js";
-import { Api, testAuthService } from "./test.js";
+import { Api, testUserService } from "./test.js";
 
-async function withPgAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
+async function withPgUserService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const config = await getLocalConfig(["dbHost", "dbPort", "dbName", "dbUser", "dbPassword", "secretKey"]);
   const dbConfig: DbConfig = {
     host: config.dbHost,
@@ -38,5 +38,5 @@ async function withPgAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
 }
 
 describe("PgAuthService", function () {
-  testAuthService(withPgAuthService);
+  testUserService(withPgUserService);
 });
