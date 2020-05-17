@@ -41,7 +41,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   const secretKeyStr: string = config.secretKey;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new ConsoleEmailService();
-  const emailTemplate = new EtwinEmailTemplateService(new url.URL("https://twin.eternalfest.net"));
+  const emailTemplate = new EtwinEmailTemplateService(new url.URL(config.externalBaseUri.toString()));
   const password = new ScryptPasswordService();
   const hammerfest = new HttpHammerfestService();
   const user = new PgUserService(db, secretKeyStr);
