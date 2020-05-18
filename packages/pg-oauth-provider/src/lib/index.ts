@@ -348,8 +348,7 @@ export class PgOauthProviderService implements OauthProviderService {
         subject: userId,
         audience,
         algorithm: "HS256",
-        // expiresIn: "5min",
-        expiresIn: "5h",
+        expiresIn: "5min",
       },
     );
   }
