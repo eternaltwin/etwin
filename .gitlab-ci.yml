@@ -23,10 +23,20 @@ before_script:
 stages:
   - "ci"
 
+lint:
+  stage: "ci"
+  script:
+    - "yarn run lint"
+
 auth-in-memory:
   stage: "ci"
   script:
     - "yarn --cwd packages/auth-in-memory run test"
+
+auth-pg:
+  stage: "ci"
+  script:
+    - "yarn --cwd packages/auth-pg run test"
 
 core:
   stage: "ci"
@@ -82,21 +92,10 @@ local-config:
   stage: "ci"
   script:
     - "yarn --cwd packages/local-config run test"
-
-pg-auth:
+oauth-provider-pg:
   stage: "ci"
   script:
-    - "yarn --cwd packages/pg-auth run test"
-
-pg-oauth-provider:
-  stage: "ci"
-  script:
-    - "yarn --cwd packages/pg-oauth-provider run test"
-
-pg-user:
-  stage: "ci"
-  script:
-    - "yarn --cwd packages/pg-user run test"
+    - "yarn --cwd packages/oauth-provider-pg run test"
 
 rest-server:
   stage: "ci"
@@ -117,6 +116,11 @@ user-in-memory:
   stage: "ci"
   script:
     - "yarn --cwd packages/user-in-memory run test"
+
+user-pg:
+  stage: "ci"
+  script:
+    - "yarn --cwd packages/user-pg run test"
 
 uuid4-generator:
   stage: "ci"

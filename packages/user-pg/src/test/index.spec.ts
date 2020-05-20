@@ -1,16 +1,16 @@
+import { PgAuthService } from "@eternal-twin/auth-pg";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/index.js";
 import { InMemoryEmailService } from "@eternal-twin/in-memory-email";
 import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
 import { JsonEmailTemplateService } from "@eternal-twin/json-email-template";
 import { getLocalConfig } from "@eternal-twin/local-config";
-import { PgAuthService } from "@eternal-twin/pg-auth";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
+import { Api, testUserService } from "@eternal-twin/user-test";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 
 import { PgUserService } from "../lib/index.js";
-import { Api, testUserService } from "@eternal-twin/user-test";
 
 async function withPgUserService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const config = await getLocalConfig(["dbHost", "dbPort", "dbName", "dbUser", "dbPassword", "secretKey"]);

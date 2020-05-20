@@ -3,6 +3,7 @@ import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
+import { CreateOrUpdateSystemClientOptions } from "@eternal-twin/core/lib/oauth/create-or-update-system-client-options.js";
 import { OauthAccessTokenRequest } from "@eternal-twin/core/lib/oauth/oauth-access-token-request.js";
 import { OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
 import { OauthClientDisplayName } from "@eternal-twin/core/lib/oauth/oauth-client-display-name.js";
@@ -25,13 +26,6 @@ import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
 
 import { $OauthCodeJwt, OauthCodeJwt } from "./oauth-code-jwt.js";
-
-export interface SystemClientOptions {
-  displayName: OauthClientDisplayName;
-  appUri: Url,
-  callbackUri: Url,
-  secret: Uint8Array;
-}
 
 export class PgOauthProviderService implements OauthProviderService {
   private readonly database: Database;
@@ -60,7 +54,7 @@ export class PgOauthProviderService implements OauthProviderService {
     });
   }
 
-  public async createOrUpdateSystemClient(key: OauthClientKey, options: SystemClientOptions): Promise<OauthClient> {
+  public async createOrUpdateSystemClient(key: OauthClientKey, options: CreateOrUpdateSystemClientOptions): Promise<OauthClient> {
     return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       return this.createOrUpdateSystemClientTx(q, key, options);
     });
@@ -152,7 +146,7 @@ export class PgOauthProviderService implements OauthProviderService {
   private async createOrUpdateSystemClientTx(
     queryable: Queryable,
     key: OauthClientKey,
-    options: SystemClientOptions,
+    options: CreateOrUpdateSystemClientOptions,
   ): Promise<OauthClient> {
     type OldRow = Pick<OauthClientRow, "oauth_client_id" | "key" | "display_name" | "app_uri" | "callback_uri" | "secret">;
     const oldRow: OldRow | undefined = await queryable.oneOrNone(

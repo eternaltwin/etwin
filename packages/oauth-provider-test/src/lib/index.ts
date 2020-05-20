@@ -3,12 +3,11 @@ import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
+import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service";
 import chai from "chai";
 
-import { PgOauthProviderService } from "../lib";
-
 export interface Api {
-  oauthProvider: PgOauthProviderService;
+  oauthProvider: OauthProviderService;
 }
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};

@@ -1,5 +1,5 @@
 {
-  "name": "@eternal-twin/in-memory-user",
+  "name": "@eternal-twin/oauth-provider-pg",
   "version": "0.0.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "TypeScript definitions for the Node.js client API of the Eternal-Twin",
@@ -29,12 +29,14 @@
   "dependencies": {
     "@eternal-twin/core": "^0.0.1",
     "@eternal-twin/pg-db": "^0.0.1",
-    "kryo": "^0.10.0"
+    "jsonwebtoken": "^8.5.1",
+    "kryo": "^0.10.0",
+    "kryo-json": "^0.10.2"
   },
   "devDependencies": {
-    "@eternal-twin/auth-in-memory": "^0.0.1",
     "@eternal-twin/local-config": "^0.0.1",
     "@eternal-twin/auth-pg": "^0.0.1",
+    "@eternal-twin/oauth-provider-test": "^0.0.1",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.9.5",

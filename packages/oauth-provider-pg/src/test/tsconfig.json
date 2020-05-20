@@ -14,6 +14,9 @@
       "path": "../lib"
     },
     {
+      "path": "../../../auth-pg/src/lib"
+    },
+    {
       "path": "../../../etwin-pg/src/lib"
     },
     {
@@ -29,13 +32,10 @@
       "path": "../../../local-config/src/lib"
     },
     {
-      "path": "../../../pg-auth/src/lib"
+      "path": "../../../oauth-provider-test/src/lib"
     },
     {
       "path": "../../../scrypt-password/src/lib"
-    },
-    {
-      "path": "../../../user-test/src/lib"
     },
     {
       "path": "../../../uuid4-generator/src/lib"

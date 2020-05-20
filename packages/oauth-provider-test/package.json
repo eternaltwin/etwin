@@ -1,5 +1,5 @@
 {
-  "name": "@eternal-twin/pg-user",
+  "name": "@eternal-twin/oauth-provider-test",
   "version": "0.0.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "TypeScript definitions for the Node.js client API of the Eternal-Twin",
@@ -11,9 +11,7 @@
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
-    "build": "tsc --build src/lib/tsconfig.json",
-    "pretest": "tsc --build src/test/tsconfig.json",
-    "test": "mocha \"test/**/*.spec.js\""
+    "build": "tsc --build src/lib/tsconfig.json"
   },
   "publishConfig": {
     "access": "public",
@@ -29,12 +27,13 @@
   "dependencies": {
     "@eternal-twin/core": "^0.0.1",
     "@eternal-twin/pg-db": "^0.0.1",
-    "kryo": "^0.10.0"
+    "jsonwebtoken": "^8.5.1",
+    "kryo": "^0.10.0",
+    "kryo-json": "^0.10.2"
   },
   "devDependencies": {
     "@eternal-twin/local-config": "^0.0.1",
-    "@eternal-twin/pg-auth": "^0.0.1",
-    "@eternal-twin/user-test": "^0.0.1",
+    "@eternal-twin/auth-pg": "^0.0.1",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.9.5",

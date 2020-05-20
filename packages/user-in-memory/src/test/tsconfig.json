@@ -32,7 +32,7 @@
       "path": "../../../local-config/src/lib"
     },
     {
-      "path": "../../../pg-auth/src/lib"
+      "path": "../../../auth-pg/src/lib"
     },
     {
       "path": "../../../scrypt-password/src/lib"

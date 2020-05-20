@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@eternal-twin/local-config": "^0.0.1",
-    "@eternal-twin/pg-auth": "^0.0.1",
+    "@eternal-twin/auth-pg": "^0.0.1",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.9.5",

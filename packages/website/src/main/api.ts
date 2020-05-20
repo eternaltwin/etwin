@@ -1,3 +1,4 @@
+import { PgAuthService } from "@eternal-twin/auth-pg";
 import { ConsoleEmailService } from "@eternal-twin/console-email";
 import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service";
@@ -7,12 +8,11 @@ import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/l
 import { EtwinEmailTemplateService } from "@eternal-twin/etwin-email-template";
 import { HttpHammerfestService } from "@eternal-twin/http-hammerfest";
 import { HttpOauthClientService, OauthClientService } from "@eternal-twin/http-oauth-client";
-import { PgAuthService } from "@eternal-twin/pg-auth";
+import { PgOauthProviderService } from "@eternal-twin/oauth-provider-pg";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
-import { PgOauthProviderService } from "@eternal-twin/pg-oauth-provider";
-import { PgUserService } from "@eternal-twin/pg-user";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
+import { PgUserService } from "@eternal-twin/user-pg";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 import urljoin from "url-join";

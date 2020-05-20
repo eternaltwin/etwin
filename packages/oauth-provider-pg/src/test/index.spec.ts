@@ -1,11 +1,11 @@
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/index.js";
 import { getLocalConfig } from "@eternal-twin/local-config";
+import { Api, testOauthProviderService } from "@eternal-twin/oauth-provider-test";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 
 import { PgOauthProviderService } from "../lib/index.js";
-import { Api, testOauthProviderService } from "./test.js";
 
 async function withPgOauthProviderService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const config = await getLocalConfig(["dbHost", "dbPort", "dbName", "dbUser", "dbPassword", "secretKey"]);

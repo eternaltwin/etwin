@@ -29,10 +29,10 @@
       "path": "../../../local-config/src/lib"
     },
     {
-      "path": "../../../pg-auth/src/lib"
+      "path": "../../../auth-pg/src/lib"
     },
     {
-      "path": "../../../pg-user/src/lib"
+      "path": "../../../user-pg/src/lib"
     },
     {
       "path": "../../../scrypt-password/src/lib"
