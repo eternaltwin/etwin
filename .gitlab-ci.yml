@@ -23,6 +23,11 @@ before_script:
 stages:
   - "ci"
 
+auth-in-memory:
+  stage: "ci"
+  script:
+    - "yarn --cwd packages/auth-in-memory run test"
+
 core:
   stage: "ci"
   script:
@@ -107,6 +112,11 @@ twinoid-api-types:
   stage: "ci"
   script:
     - "yarn --cwd packages/twinoid-api-types run test"
+
+user-in-memory:
+  stage: "ci"
+  script:
+    - "yarn --cwd packages/user-in-memory run test"
 
 uuid4-generator:
   stage: "ci"

@@ -1,0 +1,27 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "rootDir": ".",
+    "outDir": "../../lib"
+  },
+  "include": [
+    "./**/*.ts"
+  ],
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../../core/src/lib"
+    },
+    {
+      "path": "../../../in-memory-email/src/lib"
+    },
+    {
+      "path": "../../../in-memory-hammerfest/src/lib"
+    },
+    {
+      "path": "../../../pg-db/src/lib"
+    }
+  ]
+}

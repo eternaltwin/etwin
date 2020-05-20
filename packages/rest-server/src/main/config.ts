@@ -4,6 +4,7 @@ export { Config };
 
 export async function getLocalConfig(): Promise<Config> {
   const config = await innerGetLocalConfig([
+    "inMemory",
     "dbHost",
     "dbPort",
     "dbName",
@@ -14,6 +15,9 @@ export async function getLocalConfig(): Promise<Config> {
     "externalBaseUri",
     "twinoidOauthClientId",
     "twinoidOauthSecret",
+    "eternalfestAppUri",
+    "eternalfestCallbackUri",
+    "eternalfestSecret",
   ]);
   return config;
 }

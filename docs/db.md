@@ -14,17 +14,17 @@ Example
 ```sh
 postgres@host $ createuser --encrypted --interactive --pwprompt
 Enter name of role to add: etwin
-Enter password for new role:
-Enter it again:
+Enter password for new role: dev
+Enter it again: dev
 Shall the new role be a superuser? (y/n) y
 ```
 
 ## Create a DB
 
 ```sh
-createdb --owner=dbuser dbname
-psql dbname
-ALTER SCHEMA public OWNER TO dbuser;
+createdb --owner=<dbuser> <dbname>
+psql <dbname>
+ALTER SCHEMA public OWNER TO <dbuser>;
 ```
 
 Example:

@@ -4,6 +4,11 @@ import fs from "fs";
 import url from "url";
 
 export interface Config {
+  /**
+   * Use the in-memory API implementations.
+   */
+  inMemory: boolean;
+
   dbHost: string;
   dbPort: number;
   dbName: string;
@@ -35,6 +40,13 @@ export interface Config {
 }
 
 export function getPartialEnvConfig(env: NodeJS.ProcessEnv): Partial<Config> {
+  let inMemory: boolean | undefined;
+  if (typeof env.ETWIN_IN_MEMORY === "string") {
+    inMemory = env.ETWIN_IN_MEMORY === "true";
+    if (env.NODE_ENV === "production" && !inMemory) {
+      throw new Error("Aborting: `ETWIN_IN_MEMORY=true` is not allowed in production (`NODE_ENV=production`).");
+    }
+  }
   let dbHost: string | undefined;
   if (typeof env.ETWIN_DB_HOST === "string") {
     dbHost = env.ETWIN_DB_HOST;
@@ -89,6 +101,7 @@ export function getPartialEnvConfig(env: NodeJS.ProcessEnv): Partial<Config> {
   }
 
   return {
+    inMemory,
     dbHost,
     dbPort,
     dbName,

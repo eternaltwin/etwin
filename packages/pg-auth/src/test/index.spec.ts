@@ -1,3 +1,4 @@
+import { Api, testAuthService } from "@eternal-twin/auth-test";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/index.js";
 import { InMemoryEmailService } from "@eternal-twin/in-memory-email";
 import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
@@ -9,7 +10,6 @@ import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 
 import { PgAuthService } from "../lib/index.js";
-import { Api, testAuthService } from "./test.js";
 
 async function withPgAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const config = await getLocalConfig(["dbHost", "dbPort", "dbName", "dbUser", "dbPassword", "secretKey"]);

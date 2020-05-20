@@ -35,6 +35,9 @@
       "path": "../../../scrypt-password/src/lib"
     },
     {
+      "path": "../../../user-test/src/lib"
+    },
+    {
       "path": "../../../uuid4-generator/src/lib"
     }
   ]

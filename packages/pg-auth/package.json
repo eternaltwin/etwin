@@ -34,6 +34,7 @@
     "kryo": "^0.10.0"
   },
   "devDependencies": {
+    "@eternal-twin/auth-test": "^0.0.1",
     "@eternal-twin/in-memory-email": "^0.0.1",
     "@eternal-twin/in-memory-hammerfest": "^0.0.1",
     "@eternal-twin/json-email-template": "^0.0.1",

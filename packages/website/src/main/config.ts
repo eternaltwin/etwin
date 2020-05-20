@@ -4,6 +4,7 @@ export { Config };
 
 export async function getLocalConfig(): Promise<Config> {
   const config = await innerGetLocalConfig([
+    "inMemory",
     "dbHost",
     "dbPort",
     "dbName",

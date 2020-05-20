@@ -22,13 +22,13 @@ export class PgUserService implements UserService {
   }
 
   public async getUserById(acx: AuthContext, id: UserId): Promise<User | CompleteUser | null> {
-    return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+    return this.database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
       return this.getUserByIdTx(q, acx, id);
     });
   }
 
   public async getUserRefById(acx: AuthContext, id: UserId): Promise<UserRef | null> {
-    return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+    return this.database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
       return this.getUserRefByIdTx(q, acx, id);
     });
   }
