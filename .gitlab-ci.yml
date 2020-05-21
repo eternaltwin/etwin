@@ -92,6 +92,12 @@ local-config:
   stage: "ci"
   script:
     - "yarn --cwd packages/local-config run test"
+
+oauth-provider-in-memory:
+  stage: "ci"
+  script:
+    - "yarn --cwd packages/oauth-provider-in-memory run test"
+
 oauth-provider-pg:
   stage: "ci"
   script:

@@ -1,0 +1,44 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": ".",
+    "outDir": "../../test"
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [],
+  "references": [
+    {
+      "path": "../lib"
+    },
+    {
+      "path": "../../../auth-pg/src/lib"
+    },
+    {
+      "path": "../../../etwin-pg/src/lib"
+    },
+    {
+      "path": "../../../in-memory-email/src/lib"
+    },
+    {
+      "path": "../../../in-memory-hammerfest/src/lib"
+    },
+    {
+      "path": "../../../json-email-template/src/lib"
+    },
+    {
+      "path": "../../../local-config/src/lib"
+    },
+    {
+      "path": "../../../oauth-provider-test/src/lib"
+    },
+    {
+      "path": "../../../scrypt-password/src/lib"
+    },
+    {
+      "path": "../../../uuid4-generator/src/lib"
+    }
+  ]
+}
