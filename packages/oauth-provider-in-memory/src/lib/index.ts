@@ -4,6 +4,7 @@ import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
 import { CreateOrUpdateSystemClientOptions } from "@eternal-twin/core/lib/oauth/create-or-update-system-client-options.js";
+import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
 import { OauthAccessTokenRequest } from "@eternal-twin/core/lib/oauth/oauth-access-token-request.js";
 import { OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
 import { OauthClientDisplayName } from "@eternal-twin/core/lib/oauth/oauth-client-display-name.js";
@@ -26,7 +27,7 @@ import { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
 
 import { $OauthCodeJwt, OauthCodeJwt } from "./oauth-code-jwt.js";
 
-interface InMemoryOauthClient {
+export interface InMemoryOauthClient {
   id: OauthClientId;
   key: NullableOauthClientKey;
   ctime: Date;
@@ -37,7 +38,7 @@ interface InMemoryOauthClient {
   passwordHash: ValueWithChanges<Uint8Array>;
 }
 
-interface InMemoryAccessToken {
+export interface InMemoryAccessToken {
   id: UuidHex;
   clientId: OauthClientId;
   userId: UserId;
@@ -45,7 +46,7 @@ interface InMemoryAccessToken {
   atime: Date;
 }
 
-interface ValueWithChanges<T> {
+export interface ValueWithChanges<T> {
   latest: T;
   mtime: Date;
   changes: {value: T, startTime: Date}[];
@@ -242,7 +243,7 @@ export class InMemoryOauthProviderService implements OauthProviderService {
     return $OauthCodeJwt.read(JSON_VALUE_READER, codeObj);
   }
 
-  private _getInMemoryClientByIdOrKey(idOrKey: OauthClientId | OauthClientKey): InMemoryOauthClient | null {
+  public _getInMemoryClientByIdOrKey(idOrKey: OauthClientId | OauthClientKey): InMemoryOauthClient | null {
     if ($UuidHex.test(idOrKey)) {
       return this._getInMemoryClientById(idOrKey);
     } else {
@@ -250,7 +251,7 @@ export class InMemoryOauthProviderService implements OauthProviderService {
     }
   }
 
-  private _getInMemoryClientById(id: OauthClientId): InMemoryOauthClient | null {
+  public _getInMemoryClientById(id: OauthClientId): InMemoryOauthClient | null {
     for (const client of this.clients) {
       if (client.id === id) {
         return client;
@@ -263,6 +264,15 @@ export class InMemoryOauthProviderService implements OauthProviderService {
     for (const client of this.clients) {
       if (client.key === key) {
         return client;
+      }
+    }
+    return null;
+  }
+
+  public _getInMemoryAccessTokenById(id: OauthAccessTokenKey): InMemoryAccessToken | null {
+    for (const token of this.accessTokens) {
+      if (token.id === id) {
+        return token;
       }
     }
     return null;

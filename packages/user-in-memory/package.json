@@ -1,5 +1,5 @@
 {
-  "name": "@eternal-twin/in-memory-user",
+  "name": "@eternal-twin/user-in-memory",
   "version": "0.0.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "TypeScript definitions for the Node.js client API of the Eternal-Twin",

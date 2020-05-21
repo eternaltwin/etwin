@@ -7,6 +7,9 @@
   "include": [],
   "references": [
     {
+      "path": "../auth-in-memory/src/lib"
+    },
+    {
       "path": "../auth-pg/src/lib"
     },
     {
@@ -16,6 +19,9 @@
       "path": "../uuid4-generator/src/lib"
     },
     {
+      "path": "../oauth-provider-in-memory/src/lib"
+    },
+    {
       "path": "../oauth-provider-pg/src/lib"
     },
     {
@@ -23,6 +29,9 @@
     },
     {
       "path": "../scrypt-password/src/lib"
+    },
+    {
+      "path": "../user-in-memory/src/lib"
     },
     {
       "path": "../user-pg/src/lib"

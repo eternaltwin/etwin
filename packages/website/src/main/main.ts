@@ -23,6 +23,9 @@ const BROWSER_APP_DIR: url.URL = furi.join(APP_DIR, "browser");
 async function main(api: Api): Promise<void> {
   const config: Config = await getLocalConfig();
   console.log("Server configuration:");
+  console.log(`In-Memory: ${config.inMemory}`);
+  console.log(`HTTP port: ${config.httpPort}`);
+  console.log(`External URI: ${config.externalBaseUri}`);
 
   const apps: Apps = await findApps();
 

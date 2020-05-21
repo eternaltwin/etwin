@@ -1,6 +1,6 @@
 import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { OauthClientService } from "@eternal-twin/http-oauth-client/src/lib";
+import { OauthClientService } from "@eternal-twin/http-oauth-client";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import Koa from "koa";
 import koaMount from "koa-mount";

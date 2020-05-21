@@ -1,9 +1,8 @@
+import { TwinoidApiClient } from "@eternal-twin/twinoid-api-types";
+import { AccessToken } from "@eternal-twin/twinoid-api-types/lib/access-token.js";
+import { User } from "@eternal-twin/twinoid-api-types/lib/user.js";
 import superagent from "superagent";
 import url from "url";
-
-import { TwinoidApiClient } from "../../../twinoid-api-types/src/lib";
-import { AccessToken } from "../../../twinoid-api-types/src/lib/access-token";
-import { User } from "../../../twinoid-api-types/src/lib/user";
 
 export class HttpTwinoidApiClient implements TwinoidApiClient {
   private readonly agent: superagent.SuperAgent<superagent.SuperAgentRequest>;

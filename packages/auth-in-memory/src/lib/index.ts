@@ -31,7 +31,12 @@ import { User } from "@eternal-twin/core/lib/user/user";
 import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
-import { InMemoryUser, InMemoryUserService } from "@eternal-twin/in-memory-user/src/lib";
+import {
+  InMemoryAccessToken,
+  InMemoryOauthClient,
+  InMemoryOauthProviderService,
+} from "@eternal-twin/oauth-provider-in-memory";
+import { InMemoryUser, InMemoryUserService } from "@eternal-twin/user-in-memory";
 import jsonWebToken from "jsonwebtoken";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { UuidHex } from "kryo/lib/uuid-hex.js";
@@ -67,6 +72,7 @@ export class InMemoryAuthService implements AuthService {
   private readonly tokenSecret: Buffer;
   private readonly hammerfest: HammerfestService;
   private readonly user: InMemoryUserService;
+  private readonly oauthProvider: InMemoryOauthProviderService;
 
   private readonly sessions: Map<SessionId, Session>;
   private readonly emailVerifications: Set<EmailVerification>;
@@ -83,6 +89,7 @@ export class InMemoryAuthService implements AuthService {
    * @param tokenSecret Secret key used to generated and verify tokens.
    * @param hammerfest Hammerfest service to use.
    * @param user User service to use.
+   * @param oauthProvider Oauth provider service to use.
    */
   constructor(
     uuidGen: UuidGenerator,
@@ -92,6 +99,7 @@ export class InMemoryAuthService implements AuthService {
     tokenSecret: Uint8Array,
     hammerfest: HammerfestService,
     user: InMemoryUserService,
+    oauthProvider: InMemoryOauthProviderService,
   ) {
     this.uuidGen = uuidGen;
     this.password = password;
@@ -100,6 +108,7 @@ export class InMemoryAuthService implements AuthService {
     this.tokenSecret = Buffer.from(tokenSecret);
     this.hammerfest = hammerfest;
     this.user = user;
+    this.oauthProvider = oauthProvider;
     this.defaultLocale = "en-US";
     this.sessions = new Map();
     this.emailVerifications = new Set();
@@ -285,12 +294,58 @@ export class InMemoryAuthService implements AuthService {
     return {user, session};
   }
 
-  public async authenticateAccessToken(_token: OauthAccessTokenKey): Promise<AuthContext> {
-    throw new Error("NotImplemented");
+  public async authenticateAccessToken(token: OauthAccessTokenKey): Promise<AuthContext> {
+    const imToken: InMemoryAccessToken | null = this.oauthProvider._getInMemoryAccessTokenById(token);
+    if (imToken === null) {
+      throw new Error("NotFound");
+    }
+    const client = this.oauthProvider._getInMemoryClientById(imToken.clientId);
+    if (client === null) {
+      throw new Error("AssertionError: Expected client to exist");
+    }
+    const user = await this.getExistingUserById(imToken.userId);
+
+    imToken.atime = new Date();
+
+    return {
+      type: AuthType.AccessToken,
+      scope: AuthScope.Default,
+      client: {
+        type: ObjectType.OauthClient,
+        id: client.id,
+        key: client.key,
+        displayName: client.displayName.latest,
+      },
+      user: {
+        type: ObjectType.User,
+        id: user.id,
+        displayName: user.displayName,
+      }
+    };
   }
 
-  public async authenticateCredentials(_credentials: Credentials): Promise<AuthContext> {
-    throw new Error("NotImplemented");
+  public async authenticateCredentials(credentials: Credentials): Promise<AuthContext> {
+    const imClient: InMemoryOauthClient | null = this.oauthProvider._getInMemoryClientByIdOrKey(credentials.login);
+    if (imClient === null) {
+      throw new Error(`OauthClientNotFound: Client not found for the id or key: ${credentials.login}`);
+    }
+
+    const isMatch: boolean = await this.password.verify(imClient.passwordHash.latest, credentials.password);
+
+    if (!isMatch) {
+      throw new Error("InvalidSecret");
+    }
+
+    return {
+      type: AuthType.OauthClient,
+      scope: AuthScope.Default,
+      client: {
+        type: ObjectType.OauthClient,
+        id: imClient.id,
+        key: imClient.key,
+        displayName: imClient.displayName.latest,
+      },
+    };
   }
 
   private async getAndTouchSession(sessionId: SessionId): Promise<Session | null> {

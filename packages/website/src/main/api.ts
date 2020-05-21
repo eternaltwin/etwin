@@ -1,3 +1,4 @@
+import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { ConsoleEmailService } from "@eternal-twin/console-email";
 import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
@@ -8,10 +9,12 @@ import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/l
 import { EtwinEmailTemplateService } from "@eternal-twin/etwin-email-template";
 import { HttpHammerfestService } from "@eternal-twin/http-hammerfest";
 import { HttpOauthClientService, OauthClientService } from "@eternal-twin/http-oauth-client";
+import { InMemoryOauthProviderService } from "@eternal-twin/oauth-provider-in-memory";
 import { PgOauthProviderService } from "@eternal-twin/oauth-provider-pg";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
+import { InMemoryUserService } from "@eternal-twin/user-in-memory";
 import { PgUserService } from "@eternal-twin/user-pg";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
@@ -29,28 +32,46 @@ export interface Api {
 }
 
 async function createApi(config: Config): Promise<{api: Api; teardown(): Promise<void>}> {
-  const {pool, teardown: teardownPool} = createPgPool({
-    host: config.dbHost,
-    port: config.dbPort,
-    name: config.dbName,
-    user: config.dbUser,
-    password: config.dbPassword,
-  });
-
-  const db = new Database(pool);
   const secretKeyStr: string = config.secretKey;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new ConsoleEmailService();
   const emailTemplate = new EtwinEmailTemplateService(new url.URL(config.externalBaseUri.toString()));
   const password = new ScryptPasswordService();
   const hammerfest = new HttpHammerfestService();
-  const user = new PgUserService(db, secretKeyStr);
-  const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
+
+  let user: UserService;
+  let auth: AuthService;
+  let oauthProvider: OauthProviderService;
+  let teardown: () => Promise<void>;
+
+  if (config.inMemory) {
+    const imUser: InMemoryUserService = new InMemoryUserService(UUID4_GENERATOR);
+    user = imUser;
+    const imOauthProvider = new InMemoryOauthProviderService(UUID4_GENERATOR, password, secretKeyBytes);
+    oauthProvider = imOauthProvider;
+    auth = new InMemoryAuthService(UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest, imUser, imOauthProvider);
+    teardown = async function(): Promise<void> {};
+  } else {
+    const {pool, teardown: teardownPool} = createPgPool({
+      host: config.dbHost,
+      port: config.dbPort,
+      name: config.dbName,
+      user: config.dbUser,
+      password: config.dbPassword,
+    });
+    const db = new Database(pool);
+    user = new PgUserService(db, secretKeyStr);
+    auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
+    oauthProvider = new PgOauthProviderService(db, UUID4_GENERATOR, password, secretKeyStr, secretKeyBytes);
+    teardown = async function(): Promise<void> {
+      await teardownPool();
+    };
+  }
+
   const koaAuth = new KoaAuth(auth);
   const announcement = new InMemoryAnnouncementService(UUID4_GENERATOR);
   const oauthCallbackUri: url.URL = new url.URL(urljoin(config.externalBaseUri.toString(), "oauth/callback"));
   const oauthClient = new HttpOauthClientService(config.twinoidOauthClientId, config.twinoidOauthSecret, oauthCallbackUri);
-  const oauthProvider = new PgOauthProviderService(db, UUID4_GENERATOR, password, secretKeyStr, secretKeyBytes);
 
   await oauthProvider.createOrUpdateSystemClient(
     "eternalfest",
@@ -63,10 +84,6 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   );
 
   const api: Api = {auth, announcement, koaAuth, oauthClient, oauthProvider, user};
-
-  async function teardown(): Promise<void> {
-    await teardownPool();
-  }
 
   return {api, teardown};
 }

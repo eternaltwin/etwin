@@ -18,6 +18,9 @@
       "path": "../../../etwin-pg/src/lib"
     },
     {
+      "path": "../../../oauth-provider-in-memory/src/lib"
+    },
+    {
       "path": "../../../pg-db/src/lib"
     },
     {
