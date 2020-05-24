@@ -1,3 +1,3 @@
 # Eternal-Twin auth tests
 
-Auth service implementation using a Postgres DB.
+Implementation-independent tests for the Eternal-Twin's `AuthService` interface.

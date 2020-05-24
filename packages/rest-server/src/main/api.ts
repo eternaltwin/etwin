@@ -1,11 +1,11 @@
 import { PgAuthService } from "@eternal-twin/auth-pg";
-import { ConsoleEmailService } from "@eternal-twin/console-email";
-import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/lib/announcement/service.js";
-import { EtwinEmailTemplateService } from "@eternal-twin/etwin-email-template";
-import { HttpHammerfestService } from "@eternal-twin/http-hammerfest";
+import { ConsoleEmailService } from "@eternal-twin/email-console";
+import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
+import { InMemoryAnnouncementService } from "@eternal-twin/etwin-client-in-memory/lib/announcement/service.js";
+import { HttpHammerfestService } from "@eternal-twin/hammerfest-http";
+import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
-import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
 import { PgUserService } from "@eternal-twin/user-pg";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 

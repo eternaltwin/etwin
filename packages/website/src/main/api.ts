@@ -1,19 +1,17 @@
 import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
-import { ConsoleEmailService } from "@eternal-twin/console-email";
-import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
-import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/lib/announcement/service.js";
-import { EtwinEmailTemplateService } from "@eternal-twin/etwin-email-template";
-import { HttpHammerfestService } from "@eternal-twin/http-hammerfest";
-import { HttpOauthClientService, OauthClientService } from "@eternal-twin/http-oauth-client";
+import { ConsoleEmailService } from "@eternal-twin/email-console";
+import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
+import { HttpHammerfestService } from "@eternal-twin/hammerfest-http";
+import { HttpOauthClientService, OauthClientService } from "@eternal-twin/oauth-client-http";
 import { InMemoryOauthProviderService } from "@eternal-twin/oauth-provider-in-memory";
 import { PgOauthProviderService } from "@eternal-twin/oauth-provider-pg";
+import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
-import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
 import { InMemoryUserService } from "@eternal-twin/user-in-memory";
 import { PgUserService } from "@eternal-twin/user-pg";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
@@ -23,7 +21,6 @@ import urljoin from "url-join";
 import { Config } from "./config.js";
 
 export interface Api {
-  announcement: AnnouncementService;
   auth: AuthService;
   koaAuth: KoaAuth;
   oauthClient: OauthClientService;
@@ -69,7 +66,6 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   }
 
   const koaAuth = new KoaAuth(auth);
-  const announcement = new InMemoryAnnouncementService(UUID4_GENERATOR);
   const oauthCallbackUri: url.URL = new url.URL(urljoin(config.externalBaseUri.toString(), "oauth/callback"));
   const oauthClient = new HttpOauthClientService(config.twinoidOauthClientId, config.twinoidOauthSecret, oauthCallbackUri);
 
@@ -83,7 +79,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     }
   );
 
-  const api: Api = {auth, announcement, koaAuth, oauthClient, oauthProvider, user};
+  const api: Api = {auth, koaAuth, oauthClient, oauthProvider, user};
 
   return {api, teardown};
 }

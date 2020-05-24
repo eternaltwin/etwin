@@ -102,12 +102,12 @@ function getAuthorizationHeader(cx: Koa.Context): BasicAuth | BearerAuth | null 
       }
       let credentials: string;
       try {
-        credentials = Buffer.from(token, "base64").toString("UTF-8");
+        credentials = Buffer.from(token, "base64").toString("utf-8");
       } catch (e) {
         // Invalid encoding
         return null;
       }
-      let colonIndex = credentials.indexOf(":");
+      const colonIndex = credentials.indexOf(":");
       if (colonIndex < 0) {
         // Malformed credentials
         return null;

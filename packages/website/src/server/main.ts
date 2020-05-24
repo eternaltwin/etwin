@@ -21,8 +21,8 @@ function resolveServerOptions(options?: Partial<ServerAppConfig>): ServerAppConf
   } else {
     isProduction = options.isProduction === true;
   }
-  let externalBaseUri: url.URL | undefined = options.externalBaseUri;
-  let isIndexNextToServerMain: boolean = options.isIndexNextToServerMain === true;
+  const externalBaseUri: url.URL | undefined = options.externalBaseUri;
+  const isIndexNextToServerMain: boolean = options.isIndexNextToServerMain === true;
   if (isProduction) {
     if (externalBaseUri === undefined) {
       throw new Error("Aborting: Missing server option `externalBaseUri` in production mode");

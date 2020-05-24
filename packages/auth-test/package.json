@@ -28,20 +28,17 @@
   "license": "MIT",
   "dependencies": {
     "@eternal-twin/core": "^0.0.1",
-    "@eternal-twin/in-memory-email": "^0.0.1",
-    "@eternal-twin/in-memory-hammerfest": "^0.0.1",
-    "@types/jsonwebtoken": "^8.3.9",
-    "jsonwebtoken": "^8.5.1",
-    "kryo": "^0.10.0"
+    "@eternal-twin/email-in-memory": "^0.0.1",
+    "@eternal-twin/hammerfest-in-memory": "^0.0.1",
+    "chai": "^4.2.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
-    "@types/node": "^13.9.5",
-    "chai": "^4.2.0",
-    "eslint": "^6.8.0",
-    "mocha": "^7.1.1",
-    "typescript": "^3.8.3"
+    "@types/node": "^14.0.5",
+    "eslint": "^7.1.0",
+    "mocha": "^7.2.0",
+    "typescript": "^3.9.3"
   },
   "type": "module",
   "exports": {

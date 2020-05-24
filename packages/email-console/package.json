@@ -1,0 +1,48 @@
+{
+  "name": "@eternal-twin/email-console",
+  "version": "0.0.1",
+  "homepage": "https://gitlab.com/eternal-twin/etwin-api",
+  "description": "TypeScript definitions for the Node.js client API of the Eternal-Twin",
+  "repository": {
+    "type": "git",
+    "url": "git://gitlab.com:eternal-twin/etwin-api.git"
+  },
+  "private": false,
+  "scripts": {
+    "lint": "eslint \"./src/**/*.ts\"",
+    "format": "eslint --fix \"./src/**/*.ts\"",
+    "build": "tsc --build src/lib/tsconfig.json",
+    "prestart": "tsc --build src/main/tsconfig.json",
+    "start": "node main/main.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "pre-commit": {
+    "run": [
+      "lint"
+    ]
+  },
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "@eternal-twin/core": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.5",
+    "eslint": "^7.1.0",
+    "typescript": "^3.9.3"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./lib/index.js",
+    "./lib/": "./lib/"
+  },
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "./lib/"
+  ]
+}

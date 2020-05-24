@@ -1,8 +1,8 @@
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/index.js";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { Api, testOauthProviderService } from "@eternal-twin/oauth-provider-test";
+import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
-import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 
 import { PgOauthProviderService } from "../lib/index.js";

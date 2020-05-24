@@ -43,50 +43,50 @@ core:
   script:
     - "yarn --cwd packages/core run test"
 
-etwin-api-in-memory:
+etwin-client-in-memory:
   stage: "ci"
   script:
-    - "yarn --cwd packages/etwin-api-in-memory run test"
+    - "yarn --cwd packages/etwin-client-in-memory run test"
 
-etwin-email-template:
+email-template-etwin:
   stage: "ci"
   script:
-    - "yarn --cwd packages/etwin-email-template run test"
+    - "yarn --cwd packages/email-template-etwin run test"
 
 etwin-pg:
   stage: "ci"
   script:
     - "yarn --cwd packages/etwin-pg run prestart"
 
-http-hammerfest:
+hammerfest-http:
   stage: "ci"
   script:
-    - "yarn --cwd packages/http-hammerfest run test"
+    - "yarn --cwd packages/hammerfest-http run test"
 
-http-oauth-client:
+oauth-client-http:
   stage: "ci"
   script:
-    - "yarn --cwd packages/http-oauth-client run test"
+    - "yarn --cwd packages/oauth-client-http run test"
 
-http-twinoid-api-client:
+twinoid-client-http:
   stage: "ci"
   script:
-    - "yarn --cwd packages/http-twinoid-api-client run test"
+    - "yarn --cwd packages/twinoid-client-http run test"
 
-in-memory-email:
+email-in-memory:
   stage: "ci"
   script:
-    - "yarn --cwd packages/in-memory-email run test"
+    - "yarn --cwd packages/email-in-memory run test"
 
-in-memory-hammerfest:
+hammerfest-in-memory:
   stage: "ci"
   script:
-    - "yarn --cwd packages/in-memory-hammerfest run test"
+    - "yarn --cwd packages/hammerfest-in-memory run test"
 
-json-email-template:
+email-template-json:
   stage: "ci"
   script:
-    - "yarn --cwd packages/json-email-template run test"
+    - "yarn --cwd packages/email-template-json run test"
 
 local-config:
   stage: "ci"
@@ -108,15 +108,15 @@ rest-server:
   script:
     - "yarn --cwd packages/rest-server run test"
 
-scrypt-password:
+password-scrypt:
   stage: "ci"
   script:
-    - "yarn --cwd packages/scrypt-password run test"
+    - "yarn --cwd packages/password-scrypt run test"
 
-twinoid-api-types:
+twinoid-core:
   stage: "ci"
   script:
-    - "yarn --cwd packages/twinoid-api-types run test"
+    - "yarn --cwd packages/twinoid-core run test"
 
 user-in-memory:
   stage: "ci"

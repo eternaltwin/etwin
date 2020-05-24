@@ -15,10 +15,10 @@
       "path": "../../../core/src/lib"
     },
     {
-      "path": "../../../in-memory-email/src/lib"
+      "path": "../../../email-in-memory/src/lib"
     },
     {
-      "path": "../../../in-memory-hammerfest/src/lib"
+      "path": "../../../hammerfest-in-memory/src/lib"
     },
     {
       "path": "../../../pg-db/src/lib"

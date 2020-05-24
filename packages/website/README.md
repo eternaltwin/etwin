@@ -30,9 +30,9 @@ When there are pairs of files with the `.server.ts` and `.browser.ts` suffixes, 
 - `./app/server/` contains server-side rendering files: a `main.js` and `index.html` for each locale.
 - `./main/` contains the top-level server. It handles routing for the API and the app routes. 
 
-## Actions
+## Tasks
 
-Most project-level actions are defined as `yarn` commands, in the `scripts` field of `package.json`.
+The project-level tasks are defined as `yarn` commands, in the `scripts` field of `package.json`.
 
 Here are the main actions:
 

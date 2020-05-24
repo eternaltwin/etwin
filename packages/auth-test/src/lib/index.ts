@@ -9,8 +9,8 @@ import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js"
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
-import { InMemoryEmailService } from "@eternal-twin/in-memory-email";
-import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
+import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
+import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
 import chai from "chai";
 
 export interface Api {

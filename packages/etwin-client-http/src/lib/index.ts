@@ -20,7 +20,6 @@ export class HttpEtwinClient implements EtwinClientService {
     return this.get(accessToken, ["auth", "self"], $AuthContext);
   }
 
-
   public async getUserById(accessToken: OauthAccessTokenKey | null, userId: UserId): Promise<UserRef> {
     return this.get(accessToken, ["user", userId], $UserRef);
   }

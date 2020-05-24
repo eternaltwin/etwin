@@ -1,1 +1,0 @@
-# HTTP-based Twinoid service

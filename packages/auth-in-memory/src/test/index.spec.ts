@@ -1,10 +1,10 @@
 import { Api, testAuthService } from "@eternal-twin/auth-test";
-import { InMemoryEmailService } from "@eternal-twin/in-memory-email";
-import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
-import { JsonEmailTemplateService } from "@eternal-twin/json-email-template";
+import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
+import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
+import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { InMemoryOauthProviderService } from "@eternal-twin/oauth-provider-in-memory";
-import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
+import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { InMemoryUserService } from "@eternal-twin/user-in-memory";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";

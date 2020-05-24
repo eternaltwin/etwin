@@ -73,7 +73,7 @@ export class InMemoryOauthProviderService implements OauthProviderService {
   }
 
   public async getClientByIdOrKey(_auth: AuthContext, idOrKey: OauthClientId | OauthClientKey): Promise<OauthClient | null> {
-    let imClient: InMemoryOauthClient | null = this._getInMemoryClientByIdOrKey(idOrKey);
+    const imClient: InMemoryOauthClient | null = this._getInMemoryClientByIdOrKey(idOrKey);
     if (imClient === null) {
       return null;
     }

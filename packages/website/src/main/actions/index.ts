@@ -1,6 +1,5 @@
-import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { OauthClientService } from "@eternal-twin/http-oauth-client";
+import { OauthClientService } from "@eternal-twin/oauth-client-http";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import Koa from "koa";
 import koaMount from "koa-mount";
@@ -9,7 +8,6 @@ import { createLoginRouter, createOauthRouter } from "./login.js";
 import { createRegisterRouter } from "./register.js";
 
 export interface Api {
-  announcement: AnnouncementService;
   auth: AuthService;
   oauthClient: OauthClientService;
   koaAuth: KoaAuth;

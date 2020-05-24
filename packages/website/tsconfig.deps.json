@@ -28,7 +28,7 @@
       "path": "../pg-db/src/lib"
     },
     {
-      "path": "../scrypt-password/src/lib"
+      "path": "../password-scrypt/src/lib"
     },
     {
       "path": "../user-in-memory/src/lib"

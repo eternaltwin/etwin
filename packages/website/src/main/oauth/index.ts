@@ -1,4 +1,3 @@
-import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
@@ -19,7 +18,7 @@ import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
 import { $OauthCode, OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
 import { OauthResponseType } from "@eternal-twin/core/lib/oauth/oauth-response-type.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
-import { OauthClientService } from "@eternal-twin/http-oauth-client";
+import { OauthClientService } from "@eternal-twin/oauth-client-http";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
@@ -33,7 +32,6 @@ import querystring from "querystring";
 import url from "url";
 
 export interface Api {
-  announcement: AnnouncementService;
   auth: AuthService;
   oauthClient: OauthClientService;
   oauthProvider: OauthProviderService;

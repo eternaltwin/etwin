@@ -1,3 +1,3 @@
-# Eternal-Twin Postgres OAuth provider service
+# Eternal-Twin Oauth provider tests
 
-Oauth provider service a Postgres DB.
+Implementation-independent tests for the Eternal-Twin's `OauthProviderService` interface.

@@ -1,12 +1,11 @@
 import { PgAuthService } from "@eternal-twin/auth-pg";
-import { InMemoryAnnouncementService } from "@eternal-twin/etwin-api-in-memory/lib/announcement/service.js";
+import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
+import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg";
-import { InMemoryEmailService } from "@eternal-twin/in-memory-email";
-import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
-import { JsonEmailTemplateService } from "@eternal-twin/json-email-template";
+import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
 import { getLocalConfig } from "@eternal-twin/local-config";
+import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
-import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
 import { PgUserService } from "@eternal-twin/user-pg";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import http from "http";
@@ -37,9 +36,8 @@ export async function withTestServer<R>(fn: (server: http.Server) => Promise<R>)
     const user = new PgUserService(db, secretKeyStr);
     const hammerfest = new InMemoryHammerfestService();
     const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
-    const announcement = new InMemoryAnnouncementService(UUID4_GENERATOR);
     const koaAuth = new KoaAuth(auth);
-    const api: Api = {announcement, auth, koaAuth, user};
+    const api: Api = {auth, koaAuth, user};
 
     const app: Koa = createApiRouter(api);
 

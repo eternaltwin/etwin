@@ -58,7 +58,7 @@ async function runCreate(version: DbVersion) {
       );
     }
     for (const hfUser of users.hammerfest_users) {
-      let srv: string | undefined = ({fr: "hammerfest.fr", en: "hfest.net", es: "hammerfest.es"} as any)[hfUser.server];
+      const srv: string | undefined = ({fr: "hammerfest.fr", en: "hfest.net", es: "hammerfest.es"} as any)[hfUser.server];
       if (srv === undefined) {
         throw new Error(`ServeurNotFound: ${hfUser.server}`);
       }
@@ -78,7 +78,7 @@ async function runCreate(version: DbVersion) {
     }
     for (const hfLink of users.hammerfest_links) {
       const ctime: Date = new Date(hfLink.ctime);
-      let srv: string | undefined = ({fr: "hammerfest.fr", en: "hfest.net", es: "hammerfest.es"} as any)[hfLink.hammerfest_server];
+      const srv: string | undefined = ({fr: "hammerfest.fr", en: "hfest.net", es: "hammerfest.es"} as any)[hfLink.hammerfest_server];
       if (srv === undefined) {
         throw new Error(`ServeurNotFound: ${hfLink.server}`);
       }

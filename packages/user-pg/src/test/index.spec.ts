@@ -1,11 +1,11 @@
 import { PgAuthService } from "@eternal-twin/auth-pg";
+import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
+import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/index.js";
-import { InMemoryEmailService } from "@eternal-twin/in-memory-email";
-import { InMemoryHammerfestService } from "@eternal-twin/in-memory-hammerfest";
-import { JsonEmailTemplateService } from "@eternal-twin/json-email-template";
+import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
 import { getLocalConfig } from "@eternal-twin/local-config";
+import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
-import { ScryptPasswordService } from "@eternal-twin/scrypt-password";
 import { Api, testUserService } from "@eternal-twin/user-test";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
