@@ -1,12 +1,18 @@
 {
   "name": "@eternal-twin/auth-test",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
-  "description": "TypeScript definitions for the Node.js client API of the Eternal-Twin",
+  "description": "Implementation-independent tests for Eternal-Twin's `AuthService`",
   "repository": {
     "type": "git",
     "url": "git://gitlab.com:eternal-twin/etwin-api.git"
   },
+  "licenses": [
+    {
+      "type": "AGPL-3.0-or-later",
+      "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
+    }
+  ],
   "private": false,
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
@@ -25,11 +31,13 @@
     ]
   },
   "keywords": [],
-  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
-    "@eternal-twin/core": "^0.0.1",
-    "@eternal-twin/email-in-memory": "^0.0.1",
-    "@eternal-twin/hammerfest-in-memory": "^0.0.1",
+    "@eternal-twin/core": "^0.1.0",
+    "@eternal-twin/email-in-memory": "^0.1.0",
+    "@eternal-twin/hammerfest-in-memory": "^0.1.0",
     "chai": "^4.2.0"
   },
   "devDependencies": {

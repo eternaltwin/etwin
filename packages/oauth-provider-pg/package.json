@@ -1,12 +1,18 @@
 {
   "name": "@eternal-twin/oauth-provider-pg",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
-  "description": "TypeScript definitions for the Node.js client API of the Eternal-Twin",
+  "description": "Eternal-Twin `OauthProviderService` Postgres implementation",
   "repository": {
     "type": "git",
     "url": "git://gitlab.com:eternal-twin/etwin-api.git"
   },
+  "licenses": [
+    {
+      "type": "AGPL-3.0-or-later",
+      "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
+    }
+  ],
   "private": false,
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
@@ -25,18 +31,20 @@
     ]
   },
   "keywords": [],
-  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
-    "@eternal-twin/core": "^0.0.1",
-    "@eternal-twin/pg-db": "^0.0.1",
+    "@eternal-twin/core": "^0.1.0",
+    "@eternal-twin/pg-db": "^0.1.0",
     "jsonwebtoken": "^8.5.1",
     "kryo": "^0.10.0",
     "kryo-json": "^0.10.2"
   },
   "devDependencies": {
-    "@eternal-twin/local-config": "^0.0.1",
-    "@eternal-twin/auth-pg": "^0.0.1",
-    "@eternal-twin/oauth-provider-test": "^0.0.1",
+    "@eternal-twin/local-config": "^0.1.0",
+    "@eternal-twin/auth-pg": "^0.1.0",
+    "@eternal-twin/oauth-provider-test": "^0.1.0",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "@types/node": "^14.0.5",
