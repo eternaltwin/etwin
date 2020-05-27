@@ -42,7 +42,7 @@ export class NgKoaEngine {
 
 async function readTextAsync(filePath: fs.PathLike): Promise<string> {
   return new Promise<string>((resolve, reject) => {
-    fs.readFile(filePath, {encoding: "UTF-8"}, (err: NodeJS.ErrnoException | null, text: string): void => {
+    fs.readFile(filePath, {encoding: "utf-8"}, (err: NodeJS.ErrnoException | null, text: string): void => {
       if (err !== null) {
         reject(err);
       } else {
