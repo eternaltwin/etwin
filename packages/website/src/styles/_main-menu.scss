@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
+
+/* --- SET SIZES --- */
+
+$contentWidth: 1024px;
+$desktopBreakpoint: 768px;
+
+$fontSize: 1em;
+$fontSizeMobile: 0.88em;
+$fontWeightLight: 300;
+$fontWeightRegular: 400;
+$fontWeightBold: 800;
+$lineHeight: 1.4em;
+
+/* --- OLD COLORS --- */
+
+$bgColor: #101010;
+$textColor: #d0d0d0;
+$bgAccentColor: #6a100e;
+
+$accentColor: #6a100e;
+$accentColorLight: #a81e22;
+$accentColorDark: #470d0b;
+
+
+/* --- SET COLORS --- */
+
+$red: #b52125;
+$darkRed: #6a0f0d;
+$deepRed: #590503;
+
+$lightViolet: #a29eb8;
+$darkViolet: #222034;
+$deepViolet: #181623;
+
+$lightWhite: #ededed;
+$lightGrey: #6f6f6f;
+$mediumGrey: #4d4d4d;
+$darkGrey: #1f1f1f;
+$deepGrey: #0f0f0f;
+$deepBlack: #040406;
+
+$pink: #ffafae;
+$darkPink: #ec8989;
+$orange: #cd6f00;
+
+
+
+
+#headBar {
+  width: 88%;
+  max-width: $contentWidth;
+  margin: 0 auto;
+  padding: 0;
+  z-index: 5;
+  
+  #main-menu {
+    min-height: 44px;
+  }
+  
+  .npc {
+    float: right;
+    position: relative;
+    top: 6px;
+    right: 9px;
+  }
+}
+
+@mixin mainMenuButtonStyle {
+  text-align: center;
+  background: linear-gradient(to bottom, transparentize($darkGrey, 1) 0%, $darkGrey 100%);
+  border-right: 1px solid $lightGrey;
+  border-image: linear-gradient( to bottom, transparentize($lightGrey, 1), $lightGrey ) 1 100%;
+  display: inline-block;
+  font-size: 1em;
+  color: lighten($lightGrey, 15%);
+  font-weight: 800;
+  font-style: italic;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  letter-spacing: 0.065em;
+  padding: 14px 16px 6px 16px;
+  cursor: pointer;
+  
+  &:hover, &:focus {
+    background: linear-gradient(to bottom, transparentize($darkGrey, 1) 15%, $mediumGrey 100%);
+    color: rgba(238,238,238,1);
+  }
+  
+  &:active {
+    /*background: linear-gradient(to bottom, transparentize($darkGrey, 1) 0%, $mediumGrey 100%);*/
+    
+    background: linear-gradient(to bottom, transparentize($red, 1) 25%, $red 100%);
+  }
+  
+  transition: color .25s, background .15s;
+}
+
+
+nav {
+  ul {
+    float: left;
+    height: 44px;
+    display: flex;
+    align-items: flex-end;
+    list-style-type: none;
+    padding: 0;
+    margin: 0 1.2em;
+
+    li {
+      &:first-child a {
+        border-left: 1px solid $lightGrey;
+      }
+      
+      a {        
+        @include mainMenuButtonStyle;
+        
+        &[disabled], &.disabled {
+          background: linear-gradient(to bottom, rgba(32,32,32,0) 15%, rgba(5,5,7,1) 100%);
+          color: $lightGrey;
+          font-weight: 400;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  li  {
+    display: inline-block;
+  }
+}
+
+#menu-toggle {display: none;}
+.label-toggle {display: none;}
+
+
+
+/* --- MOBILE CONTENT --- */
+
+
+@media only screen and (max-width: $desktopBreakpoint) {
+
+  #main-menu {
+    width: 92%;
+    font-size: 1.15em;
+
+    ul {
+      background-color: $deepGrey;
+      border: 1px solid $mediumGrey;
+      border-bottom: 3px solid $mediumGrey;
+      border-radius: 4px;
+      flex-direction: column;
+      align-items: stretch;
+      position: absolute;
+      height: auto;
+      margin: 6px .2rem 0 .2rem;
+      padding: 8px 0;
+      opacity: 0;
+      visibility: hidden;
+      box-shadow: 0 0 12px 4px $deepBlack;
+      
+      transition: opacity .15s;
+      
+      &:before {
+        content:"";
+        /*height: 16px;
+        width: 16px;
+        background-color: $deepGrey;
+        border: 1px solid $mediumGrey;
+        transform: rotate(45deg);
+        position:absolute;
+        left: 28px;
+        top: -8px;
+        clip-path: polygon(0 0, 0% 100%, 100% 0);*/
+        
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 9px 9px 9px;
+        position:absolute;
+        left: 26px;
+        top: -9px;
+        border-color: transparent transparent $mediumGrey transparent;
+      }
+    }
+
+    li a {
+      background: none;
+      border: none;
+      width: 100%;
+      padding :12px 26px;
+      text-align: left;
+      
+      &:hover, &:focus, &:active {
+        background-color: $darkViolet;
+      }
+    }
+    
+    #menu-toggle:checked ~ ul {
+      opacity: 1;
+      visibility: visible;
+      
+      transition: opacity .15s;
+    }
+    
+    .label-toggle {
+      display: block;
+      height: 40px;
+      border-left: 1px solid $lightGrey;
+      padding: 14px 16px 6px 16px;
+      margin: 4px 0 0 16px;
+      @include mainMenuButtonStyle;
+    }
+    
+    #menu-toggle:checked ~ .label-toggle {
+      color: rgba(238,238,238,1);
+      background: linear-gradient(to bottom, transparentize($red, 1) 25%, $red 100%);
+    }
+  }
+
+  
+}

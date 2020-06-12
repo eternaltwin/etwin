@@ -1,4 +1,19 @@
-$contentWidth: 960px;
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
+
+/* --- SET SIZES --- */
+
+$contentWidth: 1024px;
+$desktopBreakpoint: 768px;
+
+$fontSize: 1em;
+$fontSizeMobile: 0.88em;
+$fontWeightLight: 300;
+$fontWeightRegular: 400;
+$fontWeightBold: 800;
+$lineHeight: 1.4em;
+
+/* --- OLD COLORS, SHOULD NOT BE USED --- */
+
 $bgColor: #101010;
 $textColor: #d0d0d0;
 $bgAccentColor: #6a100e;
@@ -6,6 +21,29 @@ $bgAccentColor: #6a100e;
 $accentColor: #6a100e;
 $accentColorLight: #a81e22;
 $accentColorDark: #470d0b;
+
+
+/* --- SET COLORS --- */
+
+$red: #b52125;
+$darkRed: #6a0f0d;
+$deepRed: #590503;
+
+$lightViolet: #a29eb8;
+$darkViolet: #222034;
+$deepViolet: #181623;
+
+$lightWhite: #ededed;
+$lightGrey: #6f6f6f;
+$mediumGrey: #4d4d4d;
+$darkGrey: #1f1f1f;
+$deepGrey: #0f0f0f;
+$deepBlack: #040406;
+
+$pink: #ffafae;
+$darkPink: #ec8989;
+$orange: #cd6f00;
+
 
 html {
   min-height: 100%;
@@ -21,9 +59,28 @@ body {
   flex-direction: column;
   min-height: 100%;
   min-width: 100%;
-  color: $textColor;
-  background-color: $bgColor;
-  font-family: sans-serif;
+  background-color: $deepGrey;
+  
+  color: $lightWhite;
+  font-family: "Nunito Sans", "sans serif";
+  font-size: $fontSize;
+  line-height: $lineHeight;
+  font-weight: $fontWeightRegular;
+  font-style: normal;
+  letter-spacing: 0.005em;
+  
+  a {
+    color: $lightViolet;
+    text-decoration: none;
+    
+    &:hover, &:focus {
+      text-decoration: underline;
+    }
+  }   
+  b, strong {
+    font-weight: $fontWeightBold;
+    letter-spacing: 0.01em;
+  }
 }
 
 app-root {
@@ -52,6 +109,7 @@ etwin-main-layout, etwin-small-layout {
     $bgColor: #6a100e;
 
     height: $bannerHeight + $borderHeight;
+    margin: 41px 0 42px 0;
     background-color: $bgColor;
 
     background-size: $bannerWidth $borderHeight, 1px $borderHeight, auto, 1px $bannerHeight;
@@ -83,32 +141,118 @@ etwin-main-layout, etwin-small-layout {
     flex: 1;
     background-image: url("/assets/bg-star.svg");
     background-repeat: no-repeat;
-    background-position: center -592px;
+    background-position: center -440px;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -10;
+    top: 0;
   }
 }
 
-.content, footer {
-  margin: 1em auto;
-  width: $contentWidth;
-  border: 1px solid lighten($bgColor, 20%);
-  background-color: lighten($bgColor, 5%);
-  padding: 1em;
-  a {
-    color: $accentColorLight;
+.content {
+  margin: 0 auto 4.3em auto;
+  padding: 2.25em;
+  box-sizing: border-box;
+  max-width: $contentWidth;
+  width: 88%;
+  background-color: transparentize($deepGrey, .2);
+  border-top: 3px solid $red;
+  border-radius: 6px;
+  
+  box-shadow: 0 0 18px 3px transparentize($lightViolet, .7);
+
+
+
+  /* --- TEXT AND TITLING DEFINITIONS --- */
+  
+  p, h1, h2, h3, h4, h5, h6 {
+    margin: .8em 0 .25em 0;
+  }
+  
+  ul, ol, dl {
+    padding-left: 22px;
+  }
+  
+  h1 {
+    font-size: 3em;
+    line-height: 0.98em;
+    color: $red;
+    font-weight: $fontWeightLight;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: -0.025em;
+    margin-left: -.1em;
+  }
+
+  h2 {
+    font-size: 2.625em;
+    line-height: 1.05em;
+    color: $red;
+    font-weight: $fontWeightBold;
+    letter-spacing: -0.015em;
+    margin-left: -0.08em;
+  }
+
+  h3 {
+    font-size: 2em;
+    line-height: 1.25em;
+    font-weight: $fontWeightLight;
+    letter-spacing: -0.01em;
+  }
+
+  h4 {
+    font-size: 1.07em;
+    line-height: 1.45em;
+    font-weight: $fontWeightBold;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 0.085em;
+  }
+
+  h5 {
+    font-size: $fontSize;
+    line-height: 1.4em;
+    font-weight: $fontWeightLight;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  h6 {
+    font-size: $fontSize;
+    line-height: 1.4em;
+    color: $mediumGrey;
+    font-weight: $fontWeightBold;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 0.065em;
+  }
+  
+  
+  .info {
+    font-style: italic;
+    font-size: .92em;
   }
 }
+
+
+
+footer {
+  margin: auto 0 0 0;
+  padding: 0.9em 2.4em 1.5em 2.4em;
+  background-color: $deepBlack;
+}
+
 
 .error {
-  border: 1px solid $accentColor;
-  border-radius: 0.25rem;
-  padding: 0.5rem;
-  background-color: rgba(31, 0, 0);
-  font-size: 0.8em;
-}
-
-.info {
-  margin: 0.5rem 0;
-  font-size: 0.8em;
+  font-size: .85em;
+  line-height: 1.3em;
+  font-weight: 700;
+  letter-spacing: .015em;
+  padding: 9px;
+  border-radius: 4px;
+  background-color: $darkViolet;
 }
 
 label, input {
@@ -126,4 +270,39 @@ input, select {
   height: 2.5em;
   margin-top: 0.3em;
   padding: 0.5em;
+}
+
+
+
+/* --- MOBILE CONTENT --- */
+
+
+@media only screen and (max-width: $desktopBreakpoint) {
+  
+  body {
+    font-size: $fontSizeMobile;
+  }
+  .content {
+    padding: 1.2em;
+    width: 92%;
+    border-radius: 4px;
+    
+    box-shadow: 0 0 18px 3px transparentize($lightViolet, .7);
+    
+    h1 {
+      font-size: 2.6em;
+    }
+    
+    h2 {
+      font-size: 2.25em;
+    }
+    
+    h3 {
+      font-size: 1.65em;
+    }
+  }
+
+  footer {
+    font-size: $fontSizeMobile;
+  }
 }

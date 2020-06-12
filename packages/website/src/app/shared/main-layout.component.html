@@ -2,17 +2,41 @@
 <header>
   <h1><a routerLink="/">Eternal-Twin</a></h1>
 </header>
-<div class="star-bg">
-  <div class="content">
-    <ng-content></ng-content>
-  </div>
-  <footer>
-    <div class="languages">
-      <a lang="de-DE" href="/?l=de">Deutsch</a> -
-      <a lang="en-US" href="/?l=en">English</a> -
-      <a lang="eo" href="/?l=eo">Esperanto</a> -
-      <a lang="es-SP" href="/?l=es">Español</a> -
-      <a lang="fr-FR" href="/?l=fr">Français</a>
+
+<div class="star-bg"> </div>
+
+<!--   THE FOLLOWING PART CONTAINS THE STILL-UNUSED MAIN MENU   -->
+<!--
+
+<div id="headBar">
+  <nav id="main-menu">
+    <input type="checkbox" id="menu-toggle" />
+    <label for="menu-toggle" class="label-toggle">Menu</label>
+    <ul>
+      <li><a href="#">Nexus</a></li>
+      <li><a href="#">Games</a></li>
+      <li><a href="#">Forums</a></li>
+      <li><a href="#">Groups</a></li>
+      <li><a href="#" class="disabled">Fundings (soon)</a></li>
+    </ul>
+    <div class="npc">
+      <img src="https://data.twinoid.com/img/characters/dino_mandragore.png" alt="Dino">
     </div>
-  </footer>
+  </nav>
 </div>
+
+-->
+
+<div class="content">
+  <ng-content></ng-content>
+</div>
+
+<footer>
+  <div class="languages">
+    <a lang="de-DE" href="/?l=de">Deutsch</a> -
+    <a lang="en-US" href="/?l=en">English</a> -
+    <a lang="eo" href="/?l=eo">Esperanto</a> -
+    <a lang="es-SP" href="/?l=es">Español</a> -
+    <a lang="fr-FR" href="/?l=fr">Français</a>
+  </div>
+</footer>

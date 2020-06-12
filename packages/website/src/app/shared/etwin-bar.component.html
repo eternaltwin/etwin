@@ -1,27 +1,29 @@
 <ng-container *ngIf="auth$ | async as auth">
   <ng-container [ngSwitch]="auth.type">
-    <ng-container *ngSwitchCase="AuthType.User">
-      <a class="button" [routerLink]="['/users', auth.user.id]">{{auth.user.displayName}}</a>
-      <a class="button" routerLink="/settings">Settings</a>
-      <form
-        action="/actions/logout"
-        enctype="application/x-www-form-urlencoded"
-        method="POST"
-        (ngSubmit)="onSignOut($event)"
-      >
-        <input
-          class="button"
-          type="submit"
-          i18n-value="Label of the sign out button@@app.signOut"
-          value="Sign out"
-          i18n-title="Title of the sign out button@@app.signOut.title"
-          title="Sign out"
-        />
-      </form>
-    </ng-container>
-    <ng-container *ngSwitchDefault>
-      <a class="button" routerLink="/register" i18n="Top-bar button to the login page@@app.registerNav">Register</a>
-      <a class="button" routerLink="/login" i18n="Top-bar button to the login page@@app.loginNav">Sign in</a>
-    </ng-container>
+  <div class="buttonList">
+      <ng-container *ngSwitchCase="AuthType.User">
+        <a class="button" [routerLink]="['/users', auth.user.id]">{{auth.user.displayName}}</a>
+        <a class="button" routerLink="/settings">Settings</a>
+        <form
+          action="/actions/logout"
+          enctype="application/x-www-form-urlencoded"
+          method="POST"
+          (ngSubmit)="onSignOut($event)"
+        >
+          <input
+            class="button"
+            type="submit"
+            i18n-value="Label of the sign out button@@app.signOut"
+            value="Sign out"
+            i18n-title="Title of the sign out button@@app.signOut.title"
+            title="Sign out"
+          />
+        </form>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <a class="button" routerLink="/register" i18n="Top-bar button to the login page@@app.registerNav">Register</a>
+        <a class="button" routerLink="/login" i18n="Top-bar button to the login page@@app.loginNav">Sign in</a>
+      </ng-container>
+    </div>
   </ng-container>
 </ng-container>

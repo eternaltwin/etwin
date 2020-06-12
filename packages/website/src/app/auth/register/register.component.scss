@@ -1,8 +1,10 @@
-$contentWidth: 400px;
+$contentWidth: 384px;
 $spacing: 1em;
 
-.content, footer {
-  width: $contentWidth;
+/*.content, footer {
+  max-width: $contentWidth;
+  width: 85%;
+  box-sizing: border-box;
 }
 
 label, input {
@@ -38,4 +40,4 @@ img {
   height: 1rem;
   display: flex;
   align-items: center;
-}
+}*/

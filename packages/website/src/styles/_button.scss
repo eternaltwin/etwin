@@ -1,57 +1,198 @@
+/* --- SET SIZES --- */
+
+$contentWidth: 1024px;
+
+$fontSize: 1em;
+$fontWeightLight: 300;
+$fontWeightRegular: 400;
+$fontWeightBold: 800;
+$lineHeight: 1.4em;
+
+/* --- OLD COLORS --- */
+
+$bgColor: #101010;
+$textColor: #d0d0d0;
+$bgAccentColor: #6a100e;
+
+$accentColor: #6a100e;
+$accentColorLight: #a81e22;
+$accentColorDark: #470d0b;
+
+
+/* --- SET COLORS --- */
+
+$red: #b52125;
+$darkRed: #6a0f0d;
+$deepRed: #590503;
+
+$lightViolet: #a29eb8;
+$darkViolet: #222034;
+$deepViolet: #181623;
+
+$lightWhite: #ededed;
+$lightGrey: #6f6f6f;
+$mediumGrey: #4d4d4d;
+$darkGrey: #1f1f1f;
+$deepGrey: #0f0f0f;
+$deepBlack: #040406;
+
+$pink: #ffafae;
+$darkPink: #ec8989;
+$orange: #cd6f00;
+
+/* --- MAIN BUTTONS --- */
+
+.content .btnContainer {
+  display: flex;
+  margin: -4px;
+  flex-wrap: wrap;
+  
+  &.reverseWrap {
+    flex-wrap: wrap-reverse;
+  }
+  
+  & > * {
+  flex: 1 1;
+  min-width: auto!important;
+  white-space: pre;
+  }
+  
+  & > .flexSize2 {
+  flex: 2 2;
+  }
+  
+  & > .flexSize3 {
+  flex: 3 3;
+  }
+}
+
 .content .btn {
-  min-height: 2.5rem;
-  padding: 0.5rem;
-  background: transparent;
-  border: 1px solid darken(#d0d0d0, 25%);
-  border-radius: 0.25rem;
-  color: #d0d0d0;
-  cursor: pointer;
+  $verticalPadding: 10px;
+  $horizontalPadding: 14px;
+  font-size: .86rem;
+  line-height: 1.15em;
+  color: $lightWhite;
+  font-weight: 800;
+  text-transform: uppercase;
   text-decoration: none;
-  user-select: none;
+  text-align: center;
+  letter-spacing: 0.08em;
+  
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  
+  min-height: 2.5rem;
+  padding: $verticalPadding $horizontalPadding;
+  margin: 4px;
+  box-sizing: border-box;
+  cursor: pointer;
+  background-color: $darkViolet; /* for fallback only */
+  border-radius: 4px;
+  border: 1px solid transparentize($lightWhite, .9);
+  outline: none;
+  box-shadow: 0 3px 0 0 $deepBlack;
+  
+  transition: all .25s, box-shadow 0.45s;
 
-  &[disabled] {
-    color: #808080;
-    cursor: default;
-  }
-
-  &:not([disabled]) {
+  &:not([disabled]):not(.disabled) {
     &:hover, &:focus {
-      background-color: rgba(0, 0, 0, 0.25);
-      border-color: #d0d0d0;
+      padding: ($verticalPadding - 1) ($horizontalPadding - 1);
+      border-width: 2px;
+      text-decoration: none;
+      
+      background-color: darken(saturate($darkViolet, 8.50), 3.7);
+      
+      box-shadow: 0 1px 0 1px $deepBlack;
+    }
+    
+    &:active {
+      padding: ($verticalPadding - 1) ($horizontalPadding - 1);
+      border-width: 2px;
+      background-color: darken(saturate($darkViolet, 13), 5.3);
+      box-shadow: 0 -2px 2px 1px $deepBlack;
     }
   }
+  
+  &.secondary {
+    font-weight: 600;
+    background-color: $darkGrey;
 
-  &.primary {
-    $submitBgColor: #102010;
-    $submitBorderColor: lighten($submitBgColor, 10%);
-
-    background-color: $submitBgColor;
-    border-color: $submitBorderColor;
-
-    &[disabled] {
-      color: #637d63;
-      background-color: #1b2d1b;
-      border-color: #344234;
-    }
-
-    &:not([disabled]) {
+    &:not([disabled]):not(.disabled) {
       &:hover, &:focus {
-        background-color: lighten($submitBgColor, 3%);
-        border-color: lighten($submitBorderColor, 3%);
+        background-color: darken($darkGrey, 4);
       }
+      
+      &:active {
+        background-color: darken($darkGrey, 5.5);
+      }
+    }
+  }
+  
+  &.tertiary {
+    font-weight: 600;
+    color: $lightGrey;
+    background: none;
+    padding: ($verticalPadding - 1) ($horizontalPadding - 1);
+    border: 2px solid transparentize($darkGrey, .65);
+    box-shadow: none;
+
+    &:not([disabled]):not(.disabled) {
+      &:hover, &:focus {
+        color: $lightWhite;
+        background: none;
+        border-color: transparentize($lightWhite, .9);
+      }
+      
+      &:active {
+        color: $lightWhite;
+        background: none;
+        border-color: transparentize($lightWhite, .9);
+      }
+    }
+  }
+  
+  &[disabled], &.disabled {
+    font-weight: 600;
+    color: $lightGrey;
+    /*background-color: darken($darkGrey, 5.9);*/
+    background-image: linear-gradient(135deg, darken($darkGrey, 2%) 16.67%, $deepGrey 16.67%, $deepGrey 50%, darken($darkGrey, 2%) 50%, darken($darkGrey, 2%) 66.67%, $deepGrey 66.67%, $deepGrey 100%);
+    background-size: 12.00px 12.00px;
+    box-shadow: 0 1px 0 1px $deepBlack;
+    cursor: not-allowed;
+    padding: ($verticalPadding - 1) ($horizontalPadding - 1);
+    border: 2px solid darken($darkGrey, 2%);
+    
+    transition: background-image .45s, border .45s;
+    
+    &:hover, &:focus {
+      background-image: linear-gradient(135deg, $darkGrey 16.67%, $deepGrey 16.67%, $deepGrey 50%, $darkGrey 50%, $darkGrey 66.67%, $deepGrey 66.67%, $deepGrey 100%);
+      border: 2px solid $darkGrey;
     }
   }
 }
 
-.content .field {
-  height: 2.5rem;
-  padding: 0.5rem;
-  background: #101010;
-  border: 1px solid darken(#d0d0d0, 25%);
-  border-radius: 0.25rem;
-  color: #d0d0d0;
+.content input.field {
+  $verticalPadding: 10px;
+  $horizontalPadding: 14px;
 
-  &:focus {
-    border-color: #d0d0d0;
+  color: $lightWhite;
+  background-color: $darkGrey;
+  padding: $verticalPadding $horizontalPadding;
+  margin: 6px 0 4px 0;
+  border: 1px solid $lightViolet;
+  border-radius: 4px;
+  outline: none;
+  transition: background-color .1s;
+  
+  &:hover {
+    padding: ($verticalPadding - 1) ($horizontalPadding - 1);
+    border-width: 2px;
+  }
+  
+   &:focus, &:active {
+    padding: ($verticalPadding - 1) ($horizontalPadding - 1);
+    border-width: 2px;
+    background-color: $deepViolet;
   }
 }

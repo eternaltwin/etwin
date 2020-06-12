@@ -1,26 +1,46 @@
+$lightWhite: #ededed;
+$lightViolet: #a29eb8;
+$darkViolet: #222034;
+$deepViolet: #181623;
+$mediumGrey: #4d4d4d;
+$deepBlack: #040406;
+$red: #b52125;
+
 etwin-bar {
-  height: 32px;
-  background-color: #111317;
-  color: #b7b9c6;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  height: 40px;
+  background-color: $deepBlack;
+  color: $lightViolet;
+  border-bottom:1px solid $red;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  box-sizing: initial;
+
+  .buttonList {
+    float:right;
+    display: flex;
+    height: inherit;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   .button {
-    font-weight: bold;
-    color: #d0d0d0;
+    font-weight: 800;
+    color: $lightWhite;
     margin: 0;
-    margin-right: 2rem;
-    padding: 0;
+    padding: 6px 12px;
+    height: 28px;
     text-decoration: none;
-    border: none;
-    background: none;
-    width: auto;
-    height: auto;
+    line-height: 1.8em;
+    
     cursor: pointer;
-    &:hover {
-      color: white;
+    border-left: 1px solid $mediumGrey;
+    
+    transition: color .15s, background-color .15s;
+
+    &:hover, &:focus {
+      background-color: $darkViolet;
+      text-decoration: none;
     }
   }
 }
