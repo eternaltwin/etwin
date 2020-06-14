@@ -32,8 +32,12 @@ etwin-bar {
     height: 28px;
     text-decoration: none;
     line-height: 1.8em;
-    
+
     cursor: pointer;
+    height: auto;
+    width: auto;
+    background-color:$deepBlack;;
+    border: none;
     border-left: 1px solid $mediumGrey;
     
     transition: color .15s, background-color .15s;
