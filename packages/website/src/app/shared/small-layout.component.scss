@@ -4,7 +4,6 @@ $spacing: 1em;
 :host ::ng-deep .content {
   max-width: $contentWidth;
   width: 85%;
-  box-sizing: border-box;
 }
 
 label, input {

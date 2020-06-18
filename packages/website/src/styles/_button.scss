@@ -46,23 +46,23 @@ $orange: #cd6f00;
   display: flex;
   margin: -4px;
   flex-wrap: wrap;
-  
+
   &.reverseWrap {
     flex-wrap: wrap-reverse;
   }
-  
+
   & > * {
-  flex: 1 1;
-  min-width: auto!important;
-  white-space: pre;
+    flex: 1 1;
+    min-width: auto !important;
+    white-space: pre;
   }
-  
+
   & > .flexSize2 {
-  flex: 2 2;
+    flex: 2 2;
   }
-  
+
   & > .flexSize3 {
-  flex: 3 3;
+    flex: 3 3;
   }
 }
 
@@ -77,35 +77,31 @@ $orange: #cd6f00;
   text-decoration: none;
   text-align: center;
   letter-spacing: 0.08em;
-  
+
   align-items: center;
   display: flex;
   justify-content: center;
-  
+
   min-height: 2.5rem;
   padding: $verticalPadding $horizontalPadding;
   margin: 4px;
-  box-sizing: border-box;
   cursor: pointer;
   background-color: $darkViolet; /* for fallback only */
   border-radius: 4px;
   border: 1px solid transparentize($lightWhite, .9);
   outline: none;
   box-shadow: 0 3px 0 0 $deepBlack;
-  
-  transition: all .25s, box-shadow 0.45s;
+
+  transition: background-color 0.25s, box-shadow 0.45s;
 
   &:not([disabled]):not(.disabled) {
     &:hover, &:focus {
       padding: ($verticalPadding - 1) ($horizontalPadding - 1);
       border-width: 2px;
-      text-decoration: none;
-      
       background-color: darken(saturate($darkViolet, 8.50), 3.7);
-      
       box-shadow: 0 1px 0 1px $deepBlack;
     }
-    
+
     &:active {
       padding: ($verticalPadding - 1) ($horizontalPadding - 1);
       border-width: 2px;
@@ -113,7 +109,7 @@ $orange: #cd6f00;
       box-shadow: 0 -2px 2px 1px $deepBlack;
     }
   }
-  
+
   &.secondary {
     font-weight: 600;
     background-color: $darkGrey;
@@ -122,13 +118,13 @@ $orange: #cd6f00;
       &:hover, &:focus {
         background-color: darken($darkGrey, 4);
       }
-      
+
       &:active {
         background-color: darken($darkGrey, 5.5);
       }
     }
   }
-  
+
   &.tertiary {
     font-weight: 600;
     color: $lightGrey;
@@ -143,7 +139,7 @@ $orange: #cd6f00;
         background: none;
         border-color: transparentize($lightWhite, .9);
       }
-      
+
       &:active {
         color: $lightWhite;
         background: none;
@@ -151,7 +147,7 @@ $orange: #cd6f00;
       }
     }
   }
-  
+
   &[disabled], &.disabled {
     font-weight: 600;
     color: $lightGrey;
@@ -162,9 +158,9 @@ $orange: #cd6f00;
     cursor: not-allowed;
     padding: ($verticalPadding - 1) ($horizontalPadding - 1);
     border: 2px solid darken($darkGrey, 2%);
-    
+
     transition: background-image .45s, border .45s;
-    
+
     &:hover, &:focus {
       background-image: linear-gradient(135deg, $darkGrey 16.67%, $deepGrey 16.67%, $deepGrey 50%, $darkGrey 50%, $darkGrey 66.67%, $deepGrey 66.67%, $deepGrey 100%);
       border: 2px solid $darkGrey;
@@ -184,13 +180,13 @@ $orange: #cd6f00;
   border-radius: 4px;
   outline: none;
   transition: background-color .1s;
-  
+
   &:hover {
     padding: ($verticalPadding - 1) ($horizontalPadding - 1);
     border-width: 2px;
   }
-  
-   &:focus, &:active {
+
+  &:focus, &:active {
     padding: ($verticalPadding - 1) ($horizontalPadding - 1);
     border-width: 2px;
     background-color: $deepViolet;

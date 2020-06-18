@@ -60,7 +60,7 @@ body {
   min-height: 100%;
   min-width: 100%;
   background-color: $deepGrey;
-  
+
   color: $lightWhite;
   font-family: "Nunito Sans", "sans serif";
   font-size: $fontSize;
@@ -68,15 +68,15 @@ body {
   font-weight: $fontWeightRegular;
   font-style: normal;
   letter-spacing: 0.005em;
-  
+
   a {
     color: $lightViolet;
     text-decoration: none;
-    
+
     &:hover, &:focus {
       text-decoration: underline;
     }
-  }   
+  }
   b, strong {
     font-weight: $fontWeightBold;
     letter-spacing: 0.01em;
@@ -153,27 +153,26 @@ etwin-main-layout, etwin-small-layout {
 .content {
   margin: 0 auto 4.3em auto;
   padding: 2.25em;
-  box-sizing: border-box;
   max-width: $contentWidth;
   width: 88%;
   background-color: transparentize($deepGrey, .2);
   border-top: 3px solid $red;
   border-radius: 6px;
-  
+
   box-shadow: 0 0 18px 3px transparentize($lightViolet, .7);
 
 
 
   /* --- TEXT AND TITLING DEFINITIONS --- */
-  
+
   p, h1, h2, h3, h4, h5, h6 {
     margin: .8em 0 .25em 0;
   }
-  
+
   ul, ol, dl {
     padding-left: 22px;
   }
-  
+
   h1 {
     font-size: 3em;
     line-height: 0.98em;
@@ -228,8 +227,8 @@ etwin-main-layout, etwin-small-layout {
     text-transform: uppercase;
     letter-spacing: 0.065em;
   }
-  
-  
+
+
   .info {
     font-style: italic;
     font-size: .92em;
@@ -270,15 +269,15 @@ input, select {
   height: 2.5em;
   margin-top: 0.3em;
   padding: 0.5em;
+  border: none;
 }
-
 
 
 /* --- MOBILE CONTENT --- */
 
 
 @media only screen and (max-width: $desktopBreakpoint) {
-  
+
   body {
     font-size: $fontSizeMobile;
   }
@@ -286,17 +285,17 @@ input, select {
     padding: 1.2em;
     width: 92%;
     border-radius: 4px;
-    
+
     box-shadow: 0 0 18px 3px transparentize($lightViolet, .7);
-    
+
     h1 {
       font-size: 2.6em;
     }
-    
+
     h2 {
       font-size: 2.25em;
     }
-    
+
     h3 {
       font-size: 1.65em;
     }
