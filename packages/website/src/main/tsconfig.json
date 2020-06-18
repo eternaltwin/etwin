@@ -15,6 +15,9 @@
       "path": "../../tsconfig.deps.json"
     },
     {
+      "path": "../../../auth-pg/src/lib"
+    },
+    {
       "path": "../../../email-console/src/lib"
     },
     {
@@ -31,9 +34,6 @@
     },
     {
       "path": "../../../local-config/src/lib"
-    },
-    {
-      "path": "../../../auth-pg/src/lib"
     },
     {
       "path": "../../../oauth-provider-pg/src/lib"

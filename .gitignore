@@ -19,6 +19,7 @@ coverage/
 typedoc/
 /packages/*/lib/
 /packages/*/main/
+/packages/*/target/
 /packages/*/test/
 
 ###############################################################################

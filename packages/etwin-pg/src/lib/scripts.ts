@@ -38,7 +38,17 @@ export async function create2(queryable: Queryable, isVoid: boolean): Promise<vo
   await upgrade1to2(queryable, isVoid);
 }
 
+export async function create3(queryable: Queryable, isVoid: boolean): Promise<void> {
+  await create2(queryable, isVoid);
+  await upgrade2to3(queryable, isVoid);
+}
+
 export async function upgrade1to2(queryable: Queryable, _isVoid: boolean): Promise<void> {
   const script: string = await readUpgradeScript(DbVersion.V001, DbVersion.V002);
+  return execSql(queryable, script);
+}
+
+export async function upgrade2to3(queryable: Queryable, _isVoid: boolean): Promise<void> {
+  const script: string = await readUpgradeScript(DbVersion.V002, DbVersion.V003);
   return execSql(queryable, script);
 }

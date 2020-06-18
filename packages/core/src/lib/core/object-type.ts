@@ -10,6 +10,11 @@ export enum ObjectType {
   TwinoidUser,
   OauthClient,
   User,
+  ForumSection,
+  ForumThread,
+  ForumPost,
+  ForumPostRevision,
+  ForumRole,
 }
 
 export const $ObjectType: TsEnumType<ObjectType> = new TsEnumType<ObjectType>({

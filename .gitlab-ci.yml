@@ -1,5 +1,5 @@
-# node:14.0
-image: "node@sha256:9e8704229d548d88f4b34563a6d8f359e4ecbea14f1edadacedd375273a0f9d4"
+# demurgos/node:14
+image: "demurgos/node@sha256:6112dd5193b5d0c6f521f3eb0b4031710899e3866b72b308ae67f83210978e26"
 
 services:
   - "postgres:latest"
@@ -17,123 +17,38 @@ before_script:
   - "node --version"
   - "npm --version"
   - "yarn --version"
+  - "rustup --version"
+  - "cargo --version"
+  - "rustc --version"
   - "yarn install --quiet"
   - 'echo -e "ETWIN_DB_NAME=${POSTGRES_DB}\nETWIN_DB_USER=${POSTGRES_USER}\nETWIN_DB_PASSWORD=${POSTGRES_PASSWORD}\nETWIN_DB_HOST=postgres\nETWIN_DB_PORT=5432\nETWIN_SECRET_KEY=dev_secret\nETWIN_HTTP_PORT=50320\nETWIN_EXTERNAL_BASE_URI=http://localhost:50320\n" > .env'
 
 stages:
   - "ci"
 
-lint:
+ci:
   stage: "ci"
   script:
     - "yarn run lint"
-
-auth-in-memory:
-  stage: "ci"
-  script:
     - "yarn --cwd packages/auth-in-memory run test"
-
-auth-pg:
-  stage: "ci"
-  script:
     - "yarn --cwd packages/auth-pg run test"
-
-core:
-  stage: "ci"
-  script:
     - "yarn --cwd packages/core run test"
-
-etwin-client-in-memory:
-  stage: "ci"
-  script:
-    - "yarn --cwd packages/etwin-client-in-memory run test"
-
-email-template-etwin:
-  stage: "ci"
-  script:
-    - "yarn --cwd packages/email-template-etwin run test"
-
-etwin-pg:
-  stage: "ci"
-  script:
-    - "yarn --cwd packages/etwin-pg run prestart"
-
-hammerfest-http:
-  stage: "ci"
-  script:
-    - "yarn --cwd packages/hammerfest-http run test"
-
-oauth-client-http:
-  stage: "ci"
-  script:
-    - "yarn --cwd packages/oauth-client-http run test"
-
-twinoid-client-http:
-  stage: "ci"
-  script:
-    - "yarn --cwd packages/twinoid-client-http run test"
-
-email-in-memory:
-  stage: "ci"
-  script:
     - "yarn --cwd packages/email-in-memory run test"
-
-hammerfest-in-memory:
-  stage: "ci"
-  script:
-    - "yarn --cwd packages/hammerfest-in-memory run test"
-
-email-template-json:
-  stage: "ci"
-  script:
+    - "yarn --cwd packages/email-template-etwin run test"
     - "yarn --cwd packages/email-template-json run test"
-
-local-config:
-  stage: "ci"
-  script:
+    - "yarn --cwd packages/etwin-client-in-memory run test"
+    - "yarn --cwd packages/etwin-pg run prestart"
+    - "yarn --cwd packages/hammerfest-http run test"
+    - "yarn --cwd packages/hammerfest-in-memory run test"
     - "yarn --cwd packages/local-config run test"
-
-oauth-provider-in-memory:
-  stage: "ci"
-  script:
+    - "yarn --cwd packages/oauth-client-http run test"
     - "yarn --cwd packages/oauth-provider-in-memory run test"
-
-oauth-provider-pg:
-  stage: "ci"
-  script:
     - "yarn --cwd packages/oauth-provider-pg run test"
-
-rest-server:
-  stage: "ci"
-  script:
-    - "yarn --cwd packages/rest-server run test"
-
-password-scrypt:
-  stage: "ci"
-  script:
     - "yarn --cwd packages/password-scrypt run test"
-
-twinoid-core:
-  stage: "ci"
-  script:
+    - "yarn --cwd packages/rest-server run test"
+    - "yarn --cwd packages/twinoid-client-http run test"
     - "yarn --cwd packages/twinoid-core run test"
-
-user-in-memory:
-  stage: "ci"
-  script:
     - "yarn --cwd packages/user-in-memory run test"
-
-user-pg:
-  stage: "ci"
-  script:
     - "yarn --cwd packages/user-pg run test"
-
-uuid4-generator:
-  stage: "ci"
-  script:
     - "yarn --cwd packages/uuid4-generator run test"
-
-website:
-  stage: "ci"
-  script:
     - 'yarn --cwd packages/website run main:build'

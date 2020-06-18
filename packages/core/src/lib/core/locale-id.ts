@@ -1,3 +1,5 @@
+import { $Null } from "kryo/lib/null.js";
+import { TryUnionType } from "kryo/lib/try-union.js";
 import { $Ucs2String } from "kryo/lib/ucs2-string.js";
 import { WhiteListType } from "kryo/lib/white-list.js";
 
@@ -15,3 +17,7 @@ export const $LocaleId: WhiteListType<LocaleId> = new WhiteListType({
   itemType: $Ucs2String,
   values: ["de-DE", "en-US", "eo", "es-SP", "fr-FR"],
 });
+
+export type NullableLocaleId = null | LocaleId;
+
+export const $NullableLocaleId: TryUnionType<NullableLocaleId> = new TryUnionType({variants: [$Null, $LocaleId]});

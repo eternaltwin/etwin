@@ -2,6 +2,7 @@ import { PgAuthService } from "@eternal-twin/auth-pg";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg";
+import { PgForumService } from "@eternal-twin/forum-pg";
 import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
@@ -37,7 +38,8 @@ export async function withTestServer<R>(fn: (server: http.Server) => Promise<R>)
     const hammerfest = new InMemoryHammerfestService();
     const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
     const koaAuth = new KoaAuth(auth);
-    const api: Api = {auth, koaAuth, user};
+    const forum = new PgForumService(db, UUID4_GENERATOR, user);
+    const api: Api = {auth, forum, koaAuth, user};
 
     const app: Koa = createApiRouter(api);
 

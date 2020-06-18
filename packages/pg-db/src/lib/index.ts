@@ -54,6 +54,14 @@ export interface Queryable extends SimpleQueryable {
    * @param values
    */
   countOne(query: string, values: readonly unknown[]): Promise<void>;
+
+  /**
+   * Execute the provided parametrized SQL query and returns all the rows.
+   *
+   * @param query
+   * @param values
+   */
+  many(query: string, values: readonly unknown[]): Promise<any[]>;
 }
 
 /**
@@ -67,6 +75,7 @@ export function deriveQueryable(simple: SimpleQueryable): Queryable {
     oneOrNone: async <R>(query: string, values: any[]): Promise<R | undefined> => oneOrNone<R>(simple, query, values),
     one: async (query: string, values: any[]) => one(simple, query, values),
     countOne: async (query: string, values: any[]) => countOne(simple, query, values),
+    many: async (query: string, values: any[]) => many(simple, query, values),
   };
 }
 
@@ -96,6 +105,11 @@ async function countOne(simple: SimpleQueryable, query: string, values: readonly
   if (result.rowCount !== 1) {
     throw new Error(`AssertionError: Expected query to only touch row, got ${result.rowCount}`);
   }
+}
+
+async function many<T>(simple: SimpleQueryable, query: string, values: readonly unknown[]): Promise<T[]> {
+  const result: pg.QueryResult = await simple.query(query, values);
+  return result.rows;
 }
 
 export interface DbConfig {
@@ -164,6 +178,10 @@ export class Database implements Queryable {
 
   public async countOne(query: string, values: any[]): Promise<void> {
     return countOne(this.pool, query, values);
+  }
+
+  public async many(query: string, values: any[]): Promise<any[]> {
+    return many(this.pool, query, values);
   }
 
   async withClient<T>(fn: (client: pg.PoolClient) => Promise<T>): Promise<T> {

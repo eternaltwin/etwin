@@ -23,7 +23,7 @@
     "app:prod:build:static": "node ./scripts/move-browser-index-to-server.mjs && cpy --parents --cwd \"./src/static\" \"**/*.{gif,ico,jpg,png,svg}\" \"../../app/browser\"",
     "app:prod:build:optimize": "gzipper --include \"gif,ico,jpg,png,svg\" --exclude gz ./app/browser",
     "main:build": "tsc --build ./src/main/tsconfig.json",
-    "main:run": "node main/main.js",
+    "main:run": "node --experimental-wasm-modules main/main.js",
     "prestart": "yarn run app:prod:build && yarn run main:build",
     "start": "yarn run main:run",
     "test": "ng test",

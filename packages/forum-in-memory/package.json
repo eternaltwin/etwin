@@ -1,0 +1,66 @@
+{
+  "name": "@eternal-twin/forum-in-memory",
+  "version": "0.1.0",
+  "homepage": "https://gitlab.com/eternal-twin/etwin-api",
+  "description": "Eternal-Twin `ForumService` in-memory implementation",
+  "repository": {
+    "type": "git",
+    "url": "git://gitlab.com:eternal-twin/etwin-api.git"
+  },
+  "licenses": [
+    {
+      "type": "AGPL-3.0-or-later",
+      "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
+    }
+  ],
+  "private": false,
+  "scripts": {
+    "lint": "eslint \"./src/**/*.ts\"",
+    "format": "eslint --fix \"./src/**/*.ts\"",
+    "build": "tsc --build src/lib/tsconfig.json",
+    "pretest": "tsc --build src/test/tsconfig.json",
+    "test": "mocha --experimental-wasm-modules \"test/**/*.spec.js\""
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "pre-commit": {
+    "run": [
+      "lint"
+    ]
+  },
+  "keywords": [],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "@eternal-twin/core": "^0.1.0",
+    "@eternal-twin/marktwin": "^0.1.1",
+    "@eternal-twin/pg-db": "^0.1.0",
+    "kryo": "^0.10.0"
+  },
+  "devDependencies": {
+    "@eternal-twin/local-config": "^0.1.0",
+    "@eternal-twin/auth-pg": "^0.1.0",
+    "@eternal-twin/user-test": "^0.1.0",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^14.0.5",
+    "chai": "^4.2.0",
+    "eslint": "^7.1.0",
+    "mocha": "^7.2.0",
+    "typescript": "^3.9.3"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./lib/index.js",
+    "./lib/": "./lib/"
+  },
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "./lib/"
+  ]
+}

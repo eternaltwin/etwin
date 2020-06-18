@@ -1036,6 +1036,18 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@eternal-twin/marktwin-parser@^0.1.0":
+  version "0.1.0"
+  resolved "https://npm.eternalfest.net/@eternal-twin%2fmarktwin-parser/-/marktwin-parser-0.1.0.tgz#c9c86a7756d52e58519cbca6fd63f8704a6f34a5"
+  integrity sha512-umozeJOh8pT82EKO0/kG2bc/eV3CytxO6nR+Wxzl737TH1X5umgknWn7UHSjvk7YnsCUC/nYfRGzrrlqRrYscw==
+
+"@eternal-twin/marktwin@^0.1.1":
+  version "0.1.1"
+  resolved "https://npm.eternalfest.net/@eternal-twin%2fmarktwin/-/marktwin-0.1.1.tgz#868c2d220386a9f976049243e7d774ca32ffb38e"
+  integrity sha512-P6Gu2/NWAR/v4gzeL3b93WocVOAPawVhziXKEGByIla5b8l/LOhtyz2pRWwtzedwU+krZWo/kKm1o0F6q6c88g==
+  dependencies:
+    "@eternal-twin/marktwin-parser" "^0.1.0"
+
 "@eternalfest/hammerfest-api@^0.4.1":
   version "0.4.1"
   resolved "https://npm.eternalfest.net/@eternalfest%2fhammerfest-api/-/hammerfest-api-0.4.1.tgz#7f62f1b4929c465be2b9c80cc6d4d915a83ecb85"

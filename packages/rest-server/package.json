@@ -19,9 +19,9 @@
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
     "pretest": "tsc --build src/test/tsconfig.json",
-    "test": "mocha \"test/**/*.spec.js\"",
+    "test": "mocha --experimental-wasm-modules \"test/**/*.spec.js\"",
     "prestart": "tsc --build src/main/tsconfig.json",
-    "start": "node main/main.js"
+    "start": "node --experimental-wasm-modules main/main.js"
   },
   "publishConfig": {
     "access": "public",
@@ -59,6 +59,7 @@
     "@eternal-twin/hammerfest-http": "^0.1.0",
     "@eternal-twin/hammerfest-in-memory": "^0.1.0",
     "@eternal-twin/auth-pg": "^0.1.0",
+    "@eternal-twin/forum-pg": "^0.1.0",
     "@eternal-twin/user-pg": "^0.1.0",
     "@eternal-twin/uuid4-generator": "^0.1.0",
     "@koa/cors": "^3.1.0",

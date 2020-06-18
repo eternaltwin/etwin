@@ -91,3 +91,50 @@ export interface OauthAccessTokenRow {
   ctime: Date;
   atime: Date;
 }
+
+export interface ForumSectionRow {
+  forum_section_id: string;
+  key: string | null;
+  ctime: Date;
+  display_name: string;
+  display_name_mtime: Date;
+  locale: string | null;
+  locale_mtime: Date;
+}
+
+export interface ForumThreadRow {
+  forum_thread_id: string;
+  key: string | null;
+  ctime: Date;
+  title: string;
+  title_mtime: Date;
+  forum_section_id: string;
+  is_pinned: boolean;
+  is_pinned_mtime: Date;
+  is_locked: boolean;
+  is_locked_mtime: Date;
+}
+
+export interface ForumPostRow {
+  forum_post_id: string;
+  ctime: Date;
+  forum_thread_id: string;
+}
+
+export interface ForumPostRevisionRow {
+  forum_post_revision_id: string;
+  time: Date;
+  body: string | null;
+  _html_body: string | null;
+  mod_body: string | null;
+  _html_mod_body: string | null;
+  forum_post_id: string;
+  author_id: string;
+  comment: string | null;
+}
+
+export interface PostFormattingCostRow {
+  forum_post_revision_id: string;
+  formatting: string;
+  cost: number;
+}

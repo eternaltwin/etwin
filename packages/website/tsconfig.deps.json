@@ -16,7 +16,10 @@
       "path": "../core/src/lib"
     },
     {
-      "path": "../uuid4-generator/src/lib"
+      "path": "../forum-in-memory/src/lib"
+    },
+    {
+      "path": "../forum-pg/src/lib"
     },
     {
       "path": "../oauth-provider-in-memory/src/lib"
@@ -25,16 +28,19 @@
       "path": "../oauth-provider-pg/src/lib"
     },
     {
-      "path": "../pg-db/src/lib"
+      "path": "../password-scrypt/src/lib"
     },
     {
-      "path": "../password-scrypt/src/lib"
+      "path": "../pg-db/src/lib"
     },
     {
       "path": "../user-in-memory/src/lib"
     },
     {
       "path": "../user-pg/src/lib"
+    },
+    {
+      "path": "../uuid4-generator/src/lib"
     }
   ]
 }

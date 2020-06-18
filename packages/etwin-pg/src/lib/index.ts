@@ -1,6 +1,6 @@
 import fs from "fs";
 
-import { create1, create2, resolveScriptFuri, upgrade1to2 } from "./scripts.js";
+import { create1, create2, create3, resolveScriptFuri, upgrade1to2, upgrade2to3 } from "./scripts.js";
 
 export interface DbConfig {
   /**
@@ -39,9 +39,14 @@ export enum DbVersion {
    * Oauth client registration
    */
   V002 = "002",
+
+  /**
+   * Forum support
+   */
+  V003 = "003",
 }
 
-export const LATEST_DB_VERSION: DbVersion = DbVersion.V002;
+export const LATEST_DB_VERSION: DbVersion = DbVersion.V003;
 
 /**
  * Represents a simple queryable object for a database.
@@ -77,6 +82,8 @@ export async function create(queryable: Queryable, version: DbVersion): Promise<
       return create1(queryable, false);
     case DbVersion.V002:
       return create2(queryable, false);
+    case DbVersion.V003:
+      return create3(queryable, false);
     default:
       throw new Error(`AssertionError: Unexpectd value for \`DbVersion\`: ${version}`);
   }
@@ -86,6 +93,8 @@ export async function upgrade(queryable: Queryable, version: DbVersion): Promise
   switch (version) {
     case DbVersion.V002:
       return upgrade1to2(queryable, false);
+    case DbVersion.V003:
+      return upgrade2to3(queryable, false);
     default:
       throw new Error(`AssertionError: Unexpectd value for \`DbVersion\`: ${version}`);
   }

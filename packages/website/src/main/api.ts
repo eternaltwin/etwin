@@ -1,10 +1,13 @@
 import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
+import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
+import { PgForumService } from "@eternal-twin/forum-pg";
 import { HttpHammerfestService } from "@eternal-twin/hammerfest-http";
 import { HttpOauthClientService, OauthClientService } from "@eternal-twin/oauth-client-http";
 import { InMemoryOauthProviderService } from "@eternal-twin/oauth-provider-in-memory";
@@ -23,6 +26,7 @@ import { Config } from "./config.js";
 export interface Api {
   auth: AuthService;
   koaAuth: KoaAuth;
+  forum: ForumService;
   oauthClient: OauthClientService;
   oauthProvider: OauthProviderService;
   user: UserService;
@@ -36,8 +40,9 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   const password = new ScryptPasswordService();
   const hammerfest = new HttpHammerfestService();
 
-  let user: UserService;
   let auth: AuthService;
+  let forum: ForumService;
+  let user: UserService;
   let oauthProvider: OauthProviderService;
   let teardown: () => Promise<void>;
 
@@ -47,6 +52,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     const imOauthProvider = new InMemoryOauthProviderService(UUID4_GENERATOR, password, secretKeyBytes);
     oauthProvider = imOauthProvider;
     auth = new InMemoryAuthService(UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest, imUser, imOauthProvider);
+    forum = new InMemoryForumService(UUID4_GENERATOR, user);
     teardown = async function(): Promise<void> {};
   } else {
     const {pool, teardown: teardownPool} = createPgPool({
@@ -60,6 +66,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     user = new PgUserService(db, secretKeyStr);
     auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
     oauthProvider = new PgOauthProviderService(db, UUID4_GENERATOR, password, secretKeyStr, secretKeyBytes);
+    forum = new PgForumService(db, UUID4_GENERATOR, user);
     teardown = async function(): Promise<void> {
       await teardownPool();
     };
@@ -79,7 +86,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     }
   );
 
-  const api: Api = {auth, koaAuth, oauthClient, oauthProvider, user};
+  const api: Api = {auth, koaAuth, forum, oauthClient, oauthProvider, user};
 
   return {api, teardown};
 }
