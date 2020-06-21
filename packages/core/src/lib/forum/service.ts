@@ -5,18 +5,20 @@ import { CreateThreadOptions } from "./create-thread-options.js";
 import { ForumPost } from "./forum-post.js";
 import { ForumSectionId } from "./forum-section-id.js";
 import { ForumSectionKey } from "./forum-section-key.js";
+import { ForumSectionListing } from "./forum-section-listing.js";
 import { ForumSection } from "./forum-section.js";
 import { ForumThreadId } from "./forum-thread-id.js";
 import { ForumThreadListing } from "./forum-thread-listing.js";
 import { ForumThread } from "./forum-thread.js";
+import { GetSectionOptions } from "./get-section-options.js";
 import { GetThreadOptions } from "./get-thread-options.js";
 
 export interface ForumService {
   createOrUpdateSystemSection(key: ForumSectionKey, options: CreateOrUpdateSystemSectionOptions): Promise<ForumSection>;
 
-  getSections(): Promise<ForumSection[]>;
+  getSections(acx: AuthContext): Promise<ForumSectionListing>;
 
-  getSectionById(id: ForumSectionId): Promise<ForumSection | null>;
+  getSectionById(acx: AuthContext, id: ForumSectionId | ForumSectionKey, options: GetSectionOptions): Promise<ForumSection | null>;
 
   getThreads(acx: AuthContext, sectionIdOrKey: ForumSectionId | ForumSectionKey): Promise<ForumThreadListing>;
 

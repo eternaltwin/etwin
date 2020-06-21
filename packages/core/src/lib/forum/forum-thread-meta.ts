@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
 import { $Boolean } from "kryo/lib/boolean.js";
-import { $Date } from "kryo/lib/date";
-import { LiteralType } from "kryo/lib/literal";
+import { $Date } from "kryo/lib/date.js";
+import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $ListingCount, ListingCount } from "../core/listing-count.js";

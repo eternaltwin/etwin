@@ -1,5 +1,7 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { HtmlText } from "@eternal-twin/core/lib/core/html-text.js";
 import { $NullableLocaleId, NullableLocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { MarktwinText } from "@eternal-twin/core/lib/core/marktwin-text.js";
@@ -19,6 +21,7 @@ import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post.js";
 import { ForumSectionDisplayName } from "@eternal-twin/core/lib/forum/forum-section-display-name.js";
 import { $ForumSectionId, ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id.js";
 import { ForumSectionKey } from "@eternal-twin/core/lib/forum/forum-section-key.js";
+import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing.js";
 import { ForumSectionMeta } from "@eternal-twin/core/lib/forum/forum-section-meta.js";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section.js";
 import { $ForumThreadId, ForumThreadId } from "@eternal-twin/core/lib/forum/forum-thread-id.js";
@@ -26,6 +29,7 @@ import { ForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key.js
 import { ForumThreadListing } from "@eternal-twin/core/lib/forum/forum-thread-listing.js";
 import { ForumThreadMeta } from "@eternal-twin/core/lib/forum/forum-thread-meta.js";
 import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
+import { GetSectionOptions } from "@eternal-twin/core/lib/forum/get-section-options.js";
 import { GetThreadOptions } from "@eternal-twin/core/lib/forum/get-thread-options.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
@@ -39,6 +43,11 @@ import {
 import { renderMarktwin } from "@eternal-twin/marktwin";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 
+const SYSTEM_AUTH: SystemAuthContext = {
+  type: AuthType.System,
+  scope: AuthScope.Default,
+};
+
 export class PgForumService implements ForumService {
   private readonly database: Database;
   private readonly uuidGen: UuidGenerator;
@@ -50,7 +59,7 @@ export class PgForumService implements ForumService {
     this.user = user;
   }
 
-  getThreads(_acx: AuthContext, _sectionIdOrKey: string): Promise<ForumThreadListing> {
+  async getThreads(_acx: AuthContext, _sectionIdOrKey: string): Promise<ForumThreadListing> {
     throw new Error("Method not implemented.");
   }
 
@@ -75,12 +84,16 @@ export class PgForumService implements ForumService {
     });
   }
 
-  async getSections(): Promise<ForumSection[]> {
-    throw new Error("Method not implemented.");
+  async getSections(acx: AuthContext): Promise<ForumSectionListing> {
+    return this.database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
+      return this.getSectionsTx(q, acx);
+    });
   }
 
-  async getSectionById(_id: string): Promise<ForumSection | null> {
-    throw new Error("Method not implemented.");
+  async getSectionById(acx: AuthContext, sectionIdOrKey: ForumSectionId | ForumSectionKey, options: GetSectionOptions): Promise<ForumSection | null> {
+    return this.database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
+      return this.getSectionTx(q, acx, sectionIdOrKey, options);
+    });
   }
 
   async getThreadById(
@@ -101,13 +114,23 @@ export class PgForumService implements ForumService {
     if (!$NullableLocaleId.test(options.locale)) {
       throw new Error("InvalidLocalId");
     }
-    type OldRow = Pick<ForumSectionRow, "forum_section_id" | "key" | "ctime" | "display_name" | "locale">;
+    type OldRow =
+      Pick<ForumSectionRow, "forum_section_id" | "key" | "ctime" | "display_name" | "locale">
+      & {thread_count: number};
     const oldRow: OldRow | undefined = await queryable.oneOrNone(
-      `
-        SELECT forum_section_id, key, ctime,
-          display_name, locale
+      `WITH section AS (
+        SELECT forum_section_id, key, ctime, display_name, locale
         FROM forum_sections
-        WHERE key = $1::VARCHAR;`,
+        WHERE key = $1::VARCHAR
+      ),
+           thread_count AS (
+             SELECT COUNT(*)::INT AS thread_count
+             FROM forum_threads, section
+             WHERE forum_threads.forum_section_id = section.forum_section_id
+           )
+         SELECT forum_section_id, key, ctime, display_name, locale, thread_count
+         FROM section, thread_count;
+      `,
       [key],
     );
 
@@ -160,7 +183,13 @@ export class PgForumService implements ForumService {
       if (locale !== undefined) {
         throw new Error("NotImplemented: Update section locale");
       }
-      const threads = await this.getThreadsTx(queryable, oldRow.forum_section_id, 0, 50);
+      const threads = await this.getThreadsTx(
+        queryable,
+        SYSTEM_AUTH,
+        {id: oldRow.forum_section_id, threads: {count: oldRow.thread_count}},
+        0,
+        50,
+      );
       return {
         type: ObjectType.ForumSection,
         id: oldRow.forum_section_id,
@@ -173,8 +202,69 @@ export class PgForumService implements ForumService {
     }
   }
 
+  private async getSectionsTx(
+    queryable: Queryable,
+    _acx: AuthContext,
+  ): Promise<ForumSectionListing> {
+    type Row =
+      Pick<ForumSectionRow, "forum_section_id" | "key" | "ctime" | "display_name" | "locale">
+      & {thread_count: number};
+    const rows: Row[] = await queryable.many(
+      `WITH section AS (
+        SELECT forum_section_id, key, ctime, display_name, locale
+        FROM forum_sections
+      ),
+           thread_count AS (
+             SELECT COUNT(*)::INT AS thread_count
+             FROM forum_threads, section
+             WHERE forum_threads.forum_section_id = section.forum_section_id
+           )
+         SELECT forum_section_id, key, ctime, display_name, locale, thread_count
+         FROM section, thread_count;
+      `,
+      [],
+    );
+    const items: ForumSectionMeta[] = [];
+    for (const row of rows) {
+      const section: ForumSectionMeta = {
+        type: ObjectType.ForumSection,
+        id: row.forum_section_id,
+        key: row.key,
+        displayName: row.display_name,
+        ctime: row.ctime,
+        locale: row.locale as NullableLocaleId,
+        threads: {count: row.thread_count},
+      };
+      items.push(section);
+    }
+    return {items};
+  }
+
+  private async getSectionTx(
+    queryable: Queryable,
+    acx: AuthContext,
+    sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    options: GetSectionOptions,
+  ): Promise<ForumSection | null> {
+    const section: ForumSectionMeta | null = await this.getSectionMetaTx(queryable, acx, sectionIdOrKey);
+    if (section === null) {
+      return null;
+    }
+    const threads: ForumThreadListing = await this.getThreadsTx(queryable, acx, section, options.threadOffset, options.threadLimit);
+    return {
+      type: ObjectType.ForumSection,
+      id: section.id,
+      key: section.key,
+      displayName: section.displayName,
+      ctime: section.ctime,
+      locale: section.locale,
+      threads,
+    };
+  }
+
   private async getSectionMetaTx(
     queryable: Queryable,
+    _acx: AuthContext,
     sectionIdOrKey: ForumSectionId | ForumSectionKey,
   ): Promise<ForumSectionMeta | null> {
     let sectionId: ForumSectionId | null = null;
@@ -222,14 +312,11 @@ export class PgForumService implements ForumService {
 
   private async getThreadsTx(
     queryable: Queryable,
-    sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    _acx: AuthContext,
+    section: Pick<ForumSectionMeta, "id" | "threads">,
     offset: number,
     limit: number,
   ): Promise<ForumThreadListing> {
-    const section: ForumSectionMeta | null = await this.getSectionMetaTx(queryable, sectionIdOrKey);
-    if (section === null) {
-      throw new Error("SectionNotFound");
-    }
     type Row = Pick<ForumThreadRow, "forum_thread_id" | "key" | "title" | "ctime" | "is_pinned" | "is_locked">;
     const rows: Row[] = await queryable.many(
       `SELECT forum_thread_id, title, ctime, is_pinned, is_locked
@@ -265,7 +352,7 @@ export class PgForumService implements ForumService {
     sectionIdOrKey: string,
     options: CreateThreadOptions,
   ): Promise<ForumThread> {
-    const section: ForumSectionMeta | null = await this.getSectionMetaTx(queryable, sectionIdOrKey);
+    const section: ForumSectionMeta | null = await this.getSectionMetaTx(queryable, acx, sectionIdOrKey);
     if (section === null) {
       throw new Error("SectionNotFound");
     }
@@ -392,17 +479,21 @@ export class PgForumService implements ForumService {
     threadIdOrKey: ForumThreadId | ForumThreadKey,
     options: GetThreadOptions,
   ): Promise<ForumThread | null> {
-    const thread: ForumThreadMeta | null = await this.getThreadMetaTx(queryable, threadIdOrKey);
+    const thread = await this.getThreadMetaTx(queryable, threadIdOrKey);
     if (thread === null) {
       return null;
     }
     const posts: ForumPostListing = await this.getPostsTx(queryable, acx, thread, options.postOffset, options.postLimit);
+    const section: ForumSectionMeta | null = await this.getSectionMetaTx(queryable, acx, thread.sectionId);
+    if (section === null) {
+      throw new Error(`AssertionError: Expected session ${thread.sectionId} for thread ${thread.id}`);
+    }
     return {
       type: ObjectType.ForumThread,
       id: thread.id,
       key: thread.key,
       ctime: thread.ctime,
-      section: null as any,
+      section,
       isPinned: thread.isPinned,
       isLocked: thread.isLocked,
       title: thread.title,
@@ -413,7 +504,7 @@ export class PgForumService implements ForumService {
   private async getPostsTx(
     queryable: Queryable,
     acx: AuthContext,
-    thread: ForumThreadMeta,
+    thread: Pick<ForumThreadMeta, "id" | "posts">,
     offset: number,
     limit: number,
   ): Promise<ForumPostListing> {
@@ -514,7 +605,7 @@ export class PgForumService implements ForumService {
   private async getThreadMetaTx(
     queryable: Queryable,
     threadIdOrKey: ForumThreadId | ForumThreadKey,
-  ): Promise<ForumThreadMeta | null> {
+  ): Promise<(ForumThreadMeta & {sectionId: ForumSectionId}) | null> {
     let threadId: ForumSectionId | null = null;
     let threadKey: ForumSectionKey | null = null;
     if ($ForumThreadId.test(threadIdOrKey)) {
@@ -523,21 +614,21 @@ export class PgForumService implements ForumService {
       threadKey = threadIdOrKey;
     }
     type Row =
-      Pick<ForumThreadRow, "forum_thread_id" | "key" | "ctime" | "title" | "is_pinned" | "is_locked">
+      Pick<ForumThreadRow, "forum_thread_id" | "forum_section_id" | "key" | "ctime" | "title" | "is_pinned" | "is_locked">
       & {post_count: number};
     const row: Row | undefined = await queryable.oneOrNone(
       `
         WITH thread AS (
-          SELECT forum_thread_id, ctime, title
+          SELECT forum_thread_id, forum_section_id, key, ctime, title, is_pinned, is_locked
           FROM forum_threads
-          WHERE forum_section_id = $1::UUID OR key = $2::VARCHAR
+          WHERE forum_thread_id = $1::UUID OR key = $2::VARCHAR
         ),
           post_count AS (
             SELECT COUNT(*)::INT AS post_count
             FROM forum_posts, thread
             WHERE forum_posts.forum_thread_id = thread.forum_thread_id
           )
-        SELECT forum_thread_id, ctime, title, post_count
+        SELECT forum_thread_id, forum_section_id, key, ctime, title, is_pinned, is_locked, post_count
         FROM thread, post_count;
       `,
       [threadId, threadKey],
@@ -556,6 +647,7 @@ export class PgForumService implements ForumService {
       posts: {
         count: row.post_count,
       },
+      sectionId: row.forum_section_id,
     };
   }
 }

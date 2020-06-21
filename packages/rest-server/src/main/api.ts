@@ -1,7 +1,7 @@
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
-import { InMemoryAnnouncementService } from "@eternal-twin/etwin-client-in-memory/lib/announcement/service.js";
+import { PgForumService } from "@eternal-twin/forum-pg";
 import { HttpHammerfestService } from "@eternal-twin/hammerfest-http";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
@@ -31,9 +31,9 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const hammerfest = new HttpHammerfestService();
   const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
   const koaAuth = new KoaAuth(auth);
-  const announcement = new InMemoryAnnouncementService(UUID4_GENERATOR);
+  const forum = new PgForumService(db, UUID4_GENERATOR, user);
 
-  const api: Api = {auth, announcement, koaAuth, user};
+  const api: Api = {auth, koaAuth, forum, user};
 
   async function teardown(): Promise<void> {
     await teardownPool();
