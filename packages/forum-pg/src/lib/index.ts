@@ -319,7 +319,7 @@ export class PgForumService implements ForumService {
   ): Promise<ForumThreadListing> {
     type Row = Pick<ForumThreadRow, "forum_thread_id" | "key" | "title" | "ctime" | "is_pinned" | "is_locked">;
     const rows: Row[] = await queryable.many(
-      `SELECT forum_thread_id, title, ctime, is_pinned, is_locked
+      `SELECT forum_thread_id, title, key, ctime, is_pinned, is_locked
          FROM forum_threads
          WHERE forum_section_id = $1::UUID`,
       [section.id],

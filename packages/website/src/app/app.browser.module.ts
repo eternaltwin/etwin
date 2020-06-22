@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { BrowserTransferStateModule } from "@angular/platform-browser";
 
 import { BrowserAuthModule } from "../modules/auth/auth.module.browser";
+import { BrowserForumModule } from "../modules/forum/forum.module.browser";
 import { BrowserUserModule } from "../modules/user/user.module.browser";
 import { AppComponent } from "./app.component";
 import { AppModule } from "./app.module";
@@ -11,6 +12,7 @@ import { AppModule } from "./app.module";
   imports: [
     AppModule,
     BrowserAuthModule,
+    BrowserForumModule,
     BrowserTransferStateModule,
     BrowserUserModule,
   ],

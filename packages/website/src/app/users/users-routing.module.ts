@@ -7,7 +7,7 @@ import { UserService } from "../../modules/user/user.service";
 import { UserViewComponent } from "./user-view.component";
 
 @Injectable()
-export class UserResolverService implements Resolve<User | null> {
+export class UserResolverService implements Resolve<User | CompleteUser | null> {
   private readonly router: Router;
   private readonly user: UserService;
 

@@ -12,6 +12,7 @@ const routes: Routes = [
   },
   {path: "legal", loadChildren: () => import("./legal/legal.module").then(({LegalModule}) => LegalModule)},
   {path: "users", loadChildren: () => import("./users/users.module").then(({UsersModule}) => UsersModule)},
+  {path: "forum", loadChildren: () => import("./forum/forum.module").then(({ForumModule}) => ForumModule)},
   {
     path: "settings",
     loadChildren: () => import("./settings/settings.module").then(({SettingsModule}) => SettingsModule),

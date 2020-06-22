@@ -1,0 +1,20 @@
+<etwin-main-layout>
+  <ng-container *ngIf="section$ | async as section">
+    <ng-container [ngSwitch]="section !== FORUM_SECTION_NOT_FOUND">
+      <ng-container *ngSwitchCase="true">
+        <h1>{{section.displayName}}</h1>
+        <ol>
+          <li *ngFor="let thread of section.threads.items">
+            <a [routerLink]="['', 'forum', 'threads', thread.id]">
+              <span class="name">{{thread.title}}</span>
+              <span class="count">{{thread.posts.count}}</span>
+            </a>
+          </li>
+        </ol>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <h1>Forum section not found</h1>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</etwin-main-layout>
