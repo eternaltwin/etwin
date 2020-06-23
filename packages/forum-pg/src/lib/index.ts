@@ -435,7 +435,7 @@ export class PgForumService implements ForumService {
     };
   }
 
-  async createPostRevisionTx(
+  private async createPostRevisionTx(
     queryable: Queryable,
     _acx: AuthContext,
     postId: ForumPostId,
