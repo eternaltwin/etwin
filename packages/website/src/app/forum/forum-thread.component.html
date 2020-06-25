@@ -14,6 +14,12 @@
             <p [innerHTML]="post.revisions.latest.content?.html"></p>
           </li>
         </ol>
+        <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">
+          <a [routerLink]="['', 'forum', 'threads', thread.id, 'reply']">Reply</a>
+        </ng-container>
+        <ng-template #unauthenticated>
+          <a [routerLink]="['', 'login']">Sign in to reply</a>
+        </ng-template>
       </ng-container>
       <ng-container *ngSwitchDefault>
         <h1>Forum section not found</h1>

@@ -1,6 +1,8 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { $CreatePostOptions, CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options.js";
 import { $CreateThreadOptions, CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options.js";
+import { $ForumPost, ForumPost } from "@eternal-twin/core/lib/forum/forum-post.js";
 import { $ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id.js";
 import { $ForumSectionKey } from "@eternal-twin/core/lib/forum/forum-section-key.js";
 import { $ForumSectionListing, ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing.js";
@@ -102,6 +104,29 @@ export function createForumRouter(api: Api): Router {
       return;
     }
     cx.response.body = $ForumThread.write(JSON_VALUE_WRITER, thread);
+  }
+
+  router.post("/threads/:thread_id", koaCompose([koaBodyParser(), createPost]));
+
+  async function createPost(cx: Koa.Context): Promise<void> {
+    const rawThreadIdOrKey: string = cx.params["thread_id"];
+    const auth: AuthContext = await api.koaAuth.auth(cx);
+    if (!$ForumThreadId.test(rawThreadIdOrKey) && !$ForumThreadKey.test(rawThreadIdOrKey)) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidThreadIdOrKey"};
+      return;
+    }
+    const threadIdOrKey: ForumThreadId | ForumThreadKey = rawThreadIdOrKey;
+    let body: CreatePostOptions;
+    try {
+      body = $CreatePostOptions.read(JSON_VALUE_READER, cx.request.body);
+    } catch (_err) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidRequestBody"};
+      return;
+    }
+    const post: ForumPost = await api.forum.createPost(auth, threadIdOrKey, body);
+    cx.response.body = $ForumPost.write(JSON_VALUE_WRITER, post);
   }
 
   return router;

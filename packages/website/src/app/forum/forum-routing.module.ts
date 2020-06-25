@@ -8,6 +8,7 @@ import { ForumService } from "../../modules/forum/forum.service";
 import { ForumHomeComponent } from "./forum-home.component";
 import { ForumSectionComponent } from "./forum-section.component";
 import { ForumThreadComponent } from "./forum-thread.component";
+import { NewForumPostComponent } from "./new-forum-post.component";
 import { NewForumThreadComponent } from "./new-forum-thread.component";
 
 @Injectable()
@@ -91,6 +92,14 @@ const routes: Routes = [
   {
     path: "threads/:thread_id",
     component: ForumThreadComponent,
+    pathMatch: "full",
+    resolve: {
+      thread: ForumThreadResolverService,
+    },
+  },
+  {
+    path: "threads/:thread_id/reply",
+    component: NewForumPostComponent,
     pathMatch: "full",
     resolve: {
       thread: ForumThreadResolverService,

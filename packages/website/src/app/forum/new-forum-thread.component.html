@@ -6,7 +6,7 @@
         <form
           method="POST"
           enctype="application/x-www-form-urlencoded"
-          action="/actions/register"
+          action="/actions/new-thread"
           [formGroup]="newThreadForm"
           (ngSubmit)="onSubmit($event)"
         >
@@ -27,7 +27,7 @@
             </div>
           </label>
           <label>
-            <span i18n="Body of the first post of the new thread@@threadTitle">Body</span>
+            <span i18n="Body of the first post of the new thread@@threadBody">Body</span>
             <textarea name="body" class="field" formControlName="body"></textarea>
           </label>
           <input type="submit" class="btn primary" name="register" [disabled]="newThreadForm.invalid || pendingSubscription !== null" i18n-value="@@forum.newThread.submit" value="Create a new thread"/>
