@@ -1,4 +1,7 @@
 import { Injectable } from "@angular/core";
+import { CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options";
+import { CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options";
+import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
 import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id";
 import { ForumSectionKey } from "@eternal-twin/core/lib/forum/forum-section-key";
@@ -15,4 +18,8 @@ export abstract class ForumService {
   abstract getForumSection(idOrKey: ForumSectionId | ForumSectionKey): Observable<ForumSection>;
 
   abstract getForumThread(idOrKey: ForumThreadId | ForumThreadKey): Observable<ForumThread>;
+
+  abstract createThread(sectionIdOrKey: ForumSectionId | ForumSectionKey, options: CreateThreadOptions): Observable<ForumThread>;
+
+  abstract createPost(threadIdOrKey: ForumThreadId | ForumThreadKey, options: CreatePostOptions): Observable<ForumPost>;
 }

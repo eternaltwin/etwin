@@ -8,6 +8,7 @@ import { ForumService } from "../../modules/forum/forum.service";
 import { ForumHomeComponent } from "./forum-home.component";
 import { ForumSectionComponent } from "./forum-section.component";
 import { ForumThreadComponent } from "./forum-thread.component";
+import { NewForumThreadComponent } from "./new-forum-thread.component";
 
 @Injectable()
 export class ForumSectionsResolverService implements Resolve<ForumSectionListing> {
@@ -74,6 +75,14 @@ const routes: Routes = [
   {
     path: "sections/:section_id",
     component: ForumSectionComponent,
+    pathMatch: "full",
+    resolve: {
+      section: ForumSectionResolverService,
+    },
+  },
+  {
+    path: "sections/:section_id/new",
+    component: NewForumThreadComponent,
     pathMatch: "full",
     resolve: {
       section: ForumSectionResolverService,

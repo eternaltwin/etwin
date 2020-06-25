@@ -77,6 +77,7 @@ body {
       text-decoration: underline;
     }
   }
+
   b, strong {
     font-weight: $fontWeightBold;
     letter-spacing: 0.01em;
@@ -113,17 +114,17 @@ etwin-main-layout, etwin-small-layout {
     background-color: $bgColor;
 
     background-size: $bannerWidth $borderHeight, 1px $borderHeight, auto, 1px $bannerHeight;
-    background-image:
-      linear-gradient(to right, $borderColor, $borderLightColor 50%, $borderColor),
-      linear-gradient($borderColor, $borderColor),
-      url("/assets/banner.png"),
-      linear-gradient(lighten($bgShadowColor, 5%) 0%, $bgColor 68%, $bgColor 78%, lighten($bgShadowColor, 2%) 100%);
+    background-image: linear-gradient(to right, $borderColor, $borderLightColor 50%, $borderColor),
+    linear-gradient($borderColor, $borderColor),
+    url("/assets/banner.png"),
+    linear-gradient(lighten($bgShadowColor, 5%) 0%, $bgColor 68%, $bgColor 78%, lighten($bgShadowColor, 2%) 100%);
     background-repeat: no-repeat, repeat-x, no-repeat, repeat-x;
     background-position: bottom center, bottom center, top center, top center;
 
     h1 {
       margin: 0;
       padding: 0;
+
       a {
         display: block;
         text-align: center;
@@ -160,7 +161,6 @@ etwin-main-layout, etwin-small-layout {
   border-radius: 6px;
 
   box-shadow: 0 0 18px 3px transparentize($lightViolet, .7);
-
 
 
   /* --- TEXT AND TITLING DEFINITIONS --- */
@@ -236,7 +236,6 @@ etwin-main-layout, etwin-small-layout {
 }
 
 
-
 footer {
   margin: auto 0 0 0;
   padding: 0.9em 2.4em 1.5em 2.4em;
@@ -272,6 +271,12 @@ input, select {
   border: none;
 }
 
+textarea {
+  overflow: auto;
+  width: 100%;
+  resize: vertical;
+  min-height: 2em;
+}
 
 /* --- MOBILE CONTENT --- */
 

@@ -1,8 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
-import { NEVER as RX_NEVER, Observable } from "rxjs";
-import { map as rxMap } from "rxjs/operators";
+import { NEVER as RX_NEVER, Observable, of as rxOf } from "rxjs";
+import { catchError as rxCatchError, map as rxMap, startWith as rxStartWith } from "rxjs/operators";
+
+import { AuthService } from "../../modules/auth/auth.service";
 
 const FORUM_SECTION_NOT_FOUND: unique symbol = Symbol("FORUM_SECTION_NOT_FOUND");
 
@@ -12,16 +15,25 @@ const FORUM_SECTION_NOT_FOUND: unique symbol = Symbol("FORUM_SECTION_NOT_FOUND")
   styleUrls: [],
 })
 export class ForumSectionComponent implements OnInit {
+  private readonly auth: AuthService;
   private readonly route: ActivatedRoute;
 
   public section$: Observable<ForumSection | typeof FORUM_SECTION_NOT_FOUND>;
+  public isAuthenticated$: Observable<boolean>;
   public readonly FORUM_SECTION_NOT_FOUND = FORUM_SECTION_NOT_FOUND;
 
   constructor(
+    auth: AuthService,
     route: ActivatedRoute,
   ) {
+    this.auth = auth;
     this.route = route;
     this.section$ = RX_NEVER;
+    this.isAuthenticated$ = auth.auth().pipe(
+      rxMap((acx) => acx.type !== AuthType.Guest),
+      rxStartWith(false),
+      rxCatchError(() => rxOf(false)),
+    );
   }
 
   ngOnInit(): void {

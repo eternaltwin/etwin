@@ -1,0 +1,44 @@
+<etwin-main-layout>
+  <ng-container *ngIf="section$ | async as section">
+    <ng-container [ngSwitch]="section !== FORUM_SECTION_NOT_FOUND">
+      <ng-container *ngSwitchCase="true">
+        <h1>New thread in <em>{{section.displayName}}</em></h1>
+        <form
+          method="POST"
+          enctype="application/x-www-form-urlencoded"
+          action="/actions/register"
+          [formGroup]="newThreadForm"
+          (ngSubmit)="onSubmit($event)"
+        >
+          <input type="hidden" name="section_id" formControlName="sectionId" required="required" [value]="section.id"/>
+          <label>
+            <span i18n="Title of the new thread@@threadTitle">Thread title</span>
+            <input type="text" name="title" class="field" formControlName="title"/>
+            <div *ngIf="title.invalid && (title.dirty || title.touched)" class="error">
+              <div *ngIf="title.errors?.required" i18n="@@newThread.titleRequired">
+                The title is required.
+              </div>
+              <div *ngIf="title.errors?.minlength" i18n="@@newThread.titleMinLength">
+                The title must be at least {{$ForumThreadTitle.minLength}} characters long.
+              </div>
+              <div *ngIf="title.errors?.maxlength" i18n="@@newThread.titleMaxLength">
+                The title must be at most {{$ForumThreadTitle.maxLength}} characters long.
+              </div>
+            </div>
+          </label>
+          <label>
+            <span i18n="Body of the first post of the new thread@@threadTitle">Body</span>
+            <textarea name="body" class="field" formControlName="body"></textarea>
+          </label>
+          <input type="submit" class="btn primary" name="register" [disabled]="newThreadForm.invalid || pendingSubscription !== null" i18n-value="@@forum.newThread.submit" value="Create a new thread"/>
+          <div *ngIf="serverError" class="error" i18n="@@newThread.unknownError">
+            Thread creation error: unknown server error on creation.
+          </div>
+        </form>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <h1>Forum section not found</h1>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</etwin-main-layout>

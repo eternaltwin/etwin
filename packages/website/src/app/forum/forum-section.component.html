@@ -11,6 +11,12 @@
             </a>
           </li>
         </ol>
+        <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">
+          <a [routerLink]="['', 'forum', 'sections', section.id, 'new']">New thread</a>
+        </ng-container>
+        <ng-template #unauthenticated>
+          <a [routerLink]="['', 'login']">Sign in to create a new thread</a>
+        </ng-template>
       </ng-container>
       <ng-container *ngSwitchDefault>
         <h1>Forum section not found</h1>

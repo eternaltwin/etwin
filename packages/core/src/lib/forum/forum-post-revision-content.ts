@@ -19,7 +19,6 @@ export const $ForumPostRevisionContent: RecordIoType<ForumPostRevisionContent> =
   changeCase: CaseStyle.SnakeCase,
 });
 
-
 export type NullableForumPostRevisionContent = null | ForumPostRevisionContent;
 
 export const $NullableForumPostRevisionContent: TryUnionType<NullableForumPostRevisionContent> = new TryUnionType({variants: [$Null, $ForumPostRevisionContent]});

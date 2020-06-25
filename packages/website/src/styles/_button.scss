@@ -192,3 +192,27 @@ $orange: #cd6f00;
     background-color: $deepViolet;
   }
 }
+
+.content textarea {
+  $padding: 10px;
+
+  color: $lightWhite;
+  background-color: $darkGrey;
+  border: 1px solid $lightViolet;
+  border-radius: 4px;
+  outline: none;
+  transition: background-color .1s;
+  padding: $padding;
+  height: 10em;
+
+  &:hover {
+    padding: ($padding - 1) ($padding - 1);
+    border-width: 2px;
+  }
+
+  &:focus, &:active {
+    padding: ($padding - 1) ($padding - 1);
+    border-width: 2px;
+    background-color: $deepViolet;
+  }
+}

@@ -21,7 +21,9 @@ export function createApiRouter(api: Api): Koa {
 
   router.use(koaMount("/auth", createAuthRouter(api)));
   router.use(koaMount("/users", createUsersRouter(api)));
-  router.use(koaMount("/forum", createForumRouter(api)));
+  const forum = createForumRouter(api);
+  router.use(koaMount("/forum", forum.routes()));
+  router.use(koaMount("/forum", forum.allowedMethods()));
 
   router.use((ctx: Koa.Context) => {
     ctx.response.status = 404;
