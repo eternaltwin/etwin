@@ -7,25 +7,22 @@ import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $ForumPostAuthor, ForumPostAuthor } from "./forum-post-author.js";
 import { $ForumPostId, ForumPostId } from "./forum-post-id.js";
 import { $ForumPostRevisionListing, ForumPostRevisionListing } from "./forum-post-revision-listing.js";
-import { $ForumThreadMeta, ForumThreadMeta } from "./forum-thread-meta.js";
 
-export interface ForumPost {
+export interface ShortForumPost {
   type: ObjectType.ForumPost;
   id: ForumPostId;
   ctime: Date;
   author: ForumPostAuthor;
   revisions: ForumPostRevisionListing;
-  thread: ForumThreadMeta;
 }
 
-export const $ForumPost: RecordIoType<ForumPost> = new RecordType<ForumPost>({
+export const $ShortForumPost: RecordIoType<ShortForumPost> = new RecordType<ShortForumPost>({
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.ForumPost})},
     id: {type: $ForumPostId},
     ctime: {type: $Date},
     author: {type: $ForumPostAuthor},
     revisions: {type: $ForumPostRevisionListing},
-    thread: {type: $ForumThreadMeta},
   },
   changeCase: CaseStyle.SnakeCase,
 });

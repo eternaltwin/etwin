@@ -1,0 +1,12 @@
+<p>
+  <ng-container [ngSwitch]="post.author.type">
+    <ng-container *ngSwitchCase="ObjectType.User">
+      {{asUserRef(post.author).displayName}}
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      Unexpected author type: {{post.author | json}}
+    </ng-container>
+  </ng-container>
+  | {{post.ctime}}
+</p>
+<p [innerHTML]="post.revisions.latest.content?.html"></p>

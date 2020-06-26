@@ -66,7 +66,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     user = new PgUserService(db, secretKeyStr);
     auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
     oauthProvider = new PgOauthProviderService(db, UUID4_GENERATOR, password, secretKeyStr, secretKeyBytes);
-    forum = new PgForumService(db, UUID4_GENERATOR, user);
+    forum = new PgForumService(db, UUID4_GENERATOR, user, 20);
     teardown = async function(): Promise<void> {
       await teardownPool();
     };

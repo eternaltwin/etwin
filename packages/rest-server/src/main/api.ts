@@ -31,7 +31,7 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const hammerfest = new HttpHammerfestService();
   const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
   const koaAuth = new KoaAuth(auth);
-  const forum = new PgForumService(db, UUID4_GENERATOR, user);
+  const forum = new PgForumService(db, UUID4_GENERATOR, user, 20);
 
   const api: Api = {auth, koaAuth, forum, user};
 

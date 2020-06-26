@@ -10,8 +10,7 @@
         </nav>
         <ol>
           <li *ngFor="let post of thread.posts.items">
-            <p>{{post.author.displayName}} | {{post.ctime}}</p>
-            <p [innerHTML]="post.revisions.latest.content?.html"></p>
+            <etwin-forum-post [post]="post"></etwin-forum-post>
           </li>
         </ol>
         <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">

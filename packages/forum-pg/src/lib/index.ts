@@ -32,6 +32,7 @@ import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { GetSectionOptions } from "@eternal-twin/core/lib/forum/get-section-options.js";
 import { GetThreadOptions } from "@eternal-twin/core/lib/forum/get-thread-options.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { $UserRef, UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import {
@@ -52,11 +53,13 @@ export class PgForumService implements ForumService {
   private readonly database: Database;
   private readonly uuidGen: UuidGenerator;
   private readonly user: UserService;
+  private readonly defaultPostsPerPage: number;
 
-  constructor(database: Database, uuidGen: UuidGenerator, user: UserService) {
+  constructor(database: Database, uuidGen: UuidGenerator, user: UserService, defaultPostsPerPage: number) {
     this.database = database;
     this.uuidGen = uuidGen;
     this.user = user;
+    this.defaultPostsPerPage = defaultPostsPerPage;
   }
 
   async getThreads(_acx: AuthContext, _sectionIdOrKey: string): Promise<ForumThreadListing> {
@@ -378,7 +381,7 @@ export class PgForumService implements ForumService {
       [threadId, options.title, section.id],
     );
 
-    await this.createPostTx(queryable, acx, threadId, {body: options.body});
+    await this.innerCreatePostTx(queryable, acx, threadId, {body: options.body});
 
     const threadMeta: ForumThreadMeta = {
       type: ObjectType.ForumThread,
@@ -390,7 +393,7 @@ export class PgForumService implements ForumService {
       isLocked: false,
       posts: {count: 1},
     };
-    const posts: ForumPostListing = await this.getPostsTx(queryable, acx, threadMeta, 0, 20);
+    const posts: ForumPostListing = await this.getPostsTx(queryable, acx, threadMeta, 0, this.defaultPostsPerPage);
     return {
       ...threadMeta,
       section: {...section, threads: {count: section.threads.count + 1}},
@@ -404,6 +407,20 @@ export class PgForumService implements ForumService {
     threadId: ForumThreadId,
     options: CreatePostOptions,
   ): Promise<ForumPost> {
+    const short: ShortForumPost = await this.innerCreatePostTx(queryable, acx, threadId, options);
+    const thread: ForumThreadMeta | null = await this.getThreadMetaTx(queryable, threadId);
+    if (thread === null) {
+      throw new Error("AssertionError: Expected thread to be defined");
+    }
+    return {...short, thread};
+  }
+
+  async innerCreatePostTx(
+    queryable: Queryable,
+    acx: AuthContext,
+    threadId: ForumThreadId,
+    options: CreatePostOptions,
+  ): Promise<ShortForumPost> {
     if (acx.type !== AuthType.User) {
       throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
     }
@@ -534,23 +551,26 @@ export class PgForumService implements ForumService {
           FIRST_VALUE(author_id) OVER w AS first_revision_author_id,
           ROW_NUMBER() OVER w AS rn
         FROM forum_post_revisions
-               INNER JOIN forum_posts USING (forum_post_id)
+          INNER JOIN forum_posts USING (forum_post_id)
         WHERE forum_thread_id = $1::UUID
         WINDOW w AS (PARTITION BY forum_post_id ORDER BY time ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
       )
-         SELECT forum_post_id, ctime,
-           latest_revision_id,
-           latest_revision_time,
-           latest_revision_body, latest_revision_html_body,
-           latest_revision_mod_body, latest_revision_html_mod_body,
-           latest_revision_comment,
-           latest_revision_author_id,
-           first_revision_author_id
-         FROM posts
-         WHERE posts.rn = 1;`,
-      [thread.id],
+        SELECT forum_post_id, ctime,
+          latest_revision_id,
+          latest_revision_time,
+          latest_revision_body, latest_revision_html_body,
+          latest_revision_mod_body, latest_revision_html_mod_body,
+          latest_revision_comment,
+          latest_revision_author_id,
+          first_revision_author_id
+        FROM posts
+        WHERE posts.rn = 1
+        ORDER BY ctime
+        LIMIT $2::INT
+        OFFSET $3::INT;`,
+      [thread.id, limit, offset],
     );
-    const items: ForumPost[] = [];
+    const items: ShortForumPost[] = [];
     for (const row of rows) {
       let content: NullableForumPostRevisionContent = null;
       if (row.latest_revision_body !== null && row.latest_revision_html_body !== null) {
@@ -574,7 +594,7 @@ export class PgForumService implements ForumService {
       if (lastRevAuthor === null) {
         throw new Error("AssertionError: Null author");
       }
-      const post: ForumPost = {
+      const post: ShortForumPost = {
         type: ObjectType.ForumPost,
         id: row.forum_post_id,
         ctime: row.ctime,

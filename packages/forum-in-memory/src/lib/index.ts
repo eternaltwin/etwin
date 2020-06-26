@@ -33,6 +33,7 @@ import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { GetSectionOptions } from "@eternal-twin/core/lib/forum/get-section-options";
 import { GetThreadOptions } from "@eternal-twin/core/lib/forum/get-thread-options.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $UserRef, UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
@@ -132,34 +133,12 @@ export class InMemoryForumService implements ForumService {
   }
 
   async createPost(acx: AuthContext, threadId: ForumThreadId, options: CreatePostOptions): Promise<ForumPost> {
-    if (acx.type !== AuthType.User) {
-      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    const short: ShortForumPost = await this.innerCreatePost(acx, threadId, options);
+    const thread: ForumThreadMeta | null = await this.getThreadMetaSync(acx, threadId);
+    if (thread === null) {
+      throw new Error("AssertionError: Expected thread to exist");
     }
-    if (this.getImThread(acx, threadId) === null) {
-      throw new Error("ThreadNotFound");
-    }
-    const author: ForumPostAuthor = $UserRef.clone(acx.user);
-    const revision = await this.createPostRevisionSync(acx, author, options.body, null, null);
-    const postId: ForumPostId = this.uuidGen.next();
-    const post: InMemoryPost = {
-      id: postId,
-      threadId,
-      authorId: author.id,
-      ctime: new Date(revision.time.getTime()),
-      revisions: [revision],
-    };
-    this.posts.set(post.id, post);
-
-    return {
-      type: ObjectType.ForumPost,
-      id: post.id,
-      ctime: new Date(post.ctime.getTime()),
-      author: $UserRef.clone(acx.user),
-      revisions: {
-        count: 1,
-        latest: $ForumPostRevision.clone(revision),
-      },
-    };
+    return {...short, thread};
   }
 
   async createOrUpdateSystemSection(
@@ -385,7 +364,7 @@ export class InMemoryForumService implements ForumService {
     offset: number,
     limit: number,
   ): Promise<ForumPostListing> {
-    const items: ForumPost[] = [];
+    const items: ShortForumPost[] = [];
     for (const post of this.posts.values()) {
       if (post.threadId !== thread.id) {
         continue;
@@ -395,7 +374,7 @@ export class InMemoryForumService implements ForumService {
         throw new Error("AssertionError: Expected author to exist");
       }
       const revisions: ForumPostRevisionListing = this.getPostRevisions(post.id);
-      const item: ForumPost = {
+      const item: ShortForumPost = {
         type: ObjectType.ForumPost,
         id: post.id,
         ctime: post.ctime,
@@ -404,11 +383,49 @@ export class InMemoryForumService implements ForumService {
       };
       items.push(item);
     }
+
+    items.sort(compare);
+
+    function compare(left: ShortForumPost, right: ShortForumPost): number {
+      return left.ctime.getTime() - right.ctime.getTime();
+    }
+
     return {
       offset,
       limit,
       count: thread.posts.count,
-      items,
+      items: items.splice(offset, limit),
+    };
+  }
+
+  async innerCreatePost(acx: AuthContext, threadId: ForumThreadId, options: CreatePostOptions): Promise<ShortForumPost> {
+    if (acx.type !== AuthType.User) {
+      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    }
+    if (this.getImThread(acx, threadId) === null) {
+      throw new Error("ThreadNotFound");
+    }
+    const author: ForumPostAuthor = $UserRef.clone(acx.user);
+    const revision = await this.createPostRevisionSync(acx, author, options.body, null, null);
+    const postId: ForumPostId = this.uuidGen.next();
+    const post: InMemoryPost = {
+      id: postId,
+      threadId,
+      authorId: author.id,
+      ctime: new Date(revision.time.getTime()),
+      revisions: [revision],
+    };
+    this.posts.set(post.id, post);
+
+    return {
+      type: ObjectType.ForumPost,
+      id: post.id,
+      ctime: new Date(post.ctime.getTime()),
+      author: $UserRef.clone(acx.user),
+      revisions: {
+        count: 1,
+        latest: $ForumPostRevision.clone(revision),
+      },
     };
   }
 
