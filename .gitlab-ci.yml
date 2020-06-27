@@ -21,7 +21,39 @@ before_script:
   - "cargo --version"
   - "rustc --version"
   - "yarn install --quiet"
-  - 'echo -e "ETWIN_DB_NAME=${POSTGRES_DB}\nETWIN_DB_USER=${POSTGRES_USER}\nETWIN_DB_PASSWORD=${POSTGRES_PASSWORD}\nETWIN_DB_HOST=postgres\nETWIN_DB_PORT=5432\nETWIN_SECRET_KEY=dev_secret\nETWIN_HTTP_PORT=50320\nETWIN_EXTERNAL_BASE_URI=http://localhost:50320\n" > .env'
+  - |
+    cat >etwin.toml <<EOL
+    [etwin]
+    api = "postgres"
+    secret = "dev_secret"
+    http_port = 50320
+    external_uri = "http://localhost:50320"
+
+    [db]
+    host = "postgres"
+    port = 5432
+    name = "${POSTGRES_DB}"
+    user = "${POSTGRES_USER}"
+    password = "${POSTGRES_PASSWORD}"
+
+    [clients.eternalfest]
+    display_name = "Eternalfest"
+    app_uri = "http://localhost:50313"
+    callback_uri = "http://localhost:50313/oauth/callback"
+    secret = "eternalfest_secret"
+
+    [auth.twinoid]
+    client_id = "380"
+    secret = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+    [forum]
+    posts_per_page = 20
+    threads_per_page = 20
+
+    [forum.sections.fr_main]
+    display_name = "Forum Général"
+    locale = "fr-FR"
+    EOL
 
 stages:
   - "ci"

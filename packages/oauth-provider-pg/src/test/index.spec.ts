@@ -8,18 +8,18 @@ import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import { PgOauthProviderService } from "../lib/index.js";
 
 async function withPgOauthProviderService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
-  const config = await getLocalConfig(["dbHost", "dbPort", "dbName", "dbUser", "dbPassword", "secretKey"]);
+  const config = await getLocalConfig();
   const dbConfig: DbConfig = {
-    host: config.dbHost,
-    port: config.dbPort,
-    name: config.dbName,
-    user: config.dbUser,
-    password: config.dbPassword,
+    host: config.db.host,
+    port: config.db.port,
+    name: config.db.name,
+    user: config.db.user,
+    password: config.db.password,
   };
 
   return withPgPool(dbConfig, async (pool) => {
     const db = new Database(pool);
-    const secretKeyStr: string = config.secretKey;
+    const secretKeyStr: string = config.etwin.secret;
     const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
     await dropAndCreate(db as any, LATEST_DB_VERSION);
     const password = new ScryptPasswordService();

@@ -6,7 +6,7 @@ import { JsonEmailTemplateService } from "../lib/index.js";
 
 describe("JsonEmailTemplateService", () => {
   it("fr-FR", async () => {
-    const baseUrl: url.URL = new url.URL("https://twin.eternalfest.net");
+    const baseUrl: url.URL = new url.URL("https://eternal-twin.net");
     const emailTemplate = new JsonEmailTemplateService(baseUrl);
 
     const token: string = "abcdef";
@@ -17,7 +17,7 @@ describe("JsonEmailTemplateService", () => {
         "{",
         "  \"locale\": \"fr-FR\",",
         "  \"token\": \"abcdef\",",
-        "  \"uri\": \"https://twin.eternalfest.net/register/verified-email?token=abcdef\"",
+        "  \"uri\": \"https://eternal-twin.net/register/verified-email?token=abcdef\"",
         "}",
       ].join("\n"),
     };
@@ -25,7 +25,7 @@ describe("JsonEmailTemplateService", () => {
   });
 
   it("en-US", async () => {
-    const baseUrl: url.URL = new url.URL("https://twin.eternalfest.net");
+    const baseUrl: url.URL = new url.URL("https://eternal-twin.net");
     const emailTemplate = new JsonEmailTemplateService(baseUrl);
 
     const token: string = "abcdef";
@@ -36,7 +36,7 @@ describe("JsonEmailTemplateService", () => {
         "{",
         "  \"locale\": \"en-US\",",
         "  \"token\": \"abcdef\",",
-        "  \"uri\": \"https://twin.eternalfest.net/register/verified-email?token=abcdef\"",
+        "  \"uri\": \"https://eternal-twin.net/register/verified-email?token=abcdef\"",
         "}",
       ].join("\n"),
     };

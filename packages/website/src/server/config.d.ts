@@ -12,7 +12,7 @@ interface Api {
 }
 
 export interface ServerAppConfig {
-  externalBaseUri?: url.URL;
+  externalUri?: url.URL;
   isIndexNextToServerMain: boolean;
   isProduction: boolean;
   api: Api;

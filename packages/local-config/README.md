@@ -1,3 +1,3 @@
 # Eternal-Twin local configuration resolution
 
-Read local configuration from `.env` files.
+Read local configuration from `etwin.toml` files.

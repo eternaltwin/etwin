@@ -1,24 +1,28 @@
-import dotEnv from "dotenv";
 import findUp from "find-up";
 import fs from "fs";
+import toml from "toml";
 import url from "url";
 
 export interface Config {
-  /**
-   * Use the in-memory API implementations.
-   */
-  inMemory: boolean;
+  etwin: EtwinConfig;
+  db: DbConfig;
+  clients: Map<string, ClientConfig>
+  auth: AuthConfig;
+  forum: ForumConfig;
+}
 
-  dbHost: string;
-  dbPort: number;
-  dbName: string;
-  dbUser: string;
-  dbPassword: string;
+export enum ApiType {
+  Postgres,
+  InMemory,
+}
+
+export interface EtwinConfig {
+  api: ApiType;
 
   /**
    * Secret key used to encrypt sensitive DB columns (password hashes, emails) or sign JWTs.
    */
-  secretKey: string;
+  secret: string;
 
   /**
    * Internal HTTP port
@@ -28,118 +32,202 @@ export interface Config {
   /**
    * Public URI of the server
    */
-  externalBaseUri: url.URL;
-
-  eternalfestAppUri: url.URL;
-  eternalfestCallbackUri: url.URL;
-  eternalfestSecret: string;
-
-  twinoidOauthClientId: string;
-
-  twinoidOauthSecret: string;
+  externalUri: url.URL;
 }
 
-export function getPartialEnvConfig(env: NodeJS.ProcessEnv): Partial<Config> {
-  let inMemory: boolean | undefined;
-  if (typeof env.ETWIN_IN_MEMORY === "string") {
-    inMemory = env.ETWIN_IN_MEMORY === "true";
-    if (env.NODE_ENV === "production" && !inMemory) {
-      throw new Error("Aborting: `ETWIN_IN_MEMORY=true` is not allowed in production (`NODE_ENV=production`).");
+export interface DbConfig {
+  host: string;
+  port: number;
+  name: string;
+  user: string;
+  password: string;
+}
+
+export interface ClientConfig {
+  displayName: string;
+  appUri: url.URL;
+  callbackUri: url.URL;
+  secret: string;
+}
+
+export interface AuthConfig {
+  twinoid: TwinoidAuthConfig;
+}
+
+export interface TwinoidAuthConfig {
+  clientId: string;
+  secret: string;
+}
+
+export interface ForumConfig {
+  postsPerPage: number;
+  threadsPerPage: number;
+  sections: Map<string, ForumSectionConfig>;
+}
+
+export interface ForumSectionConfig {
+  displayName: string;
+  locale: "fr-FR" | null;
+}
+
+function parseConfig(input: string): Config {
+  const raw: unknown = toml.parse(input);
+  return readConfig(raw);
+}
+
+function readConfig(raw: unknown): Config {
+  if (typeof raw !== "object" || raw === null) {
+    throw new Error("Expected config root to be an object");
+  }
+  const rawEtwin: object = readObj(raw, "etwin", "etwin");
+  const etwin: EtwinConfig = readEtwinConfig(rawEtwin);
+  const rawDb: object = readObj(raw, "db", "db");
+  const db: DbConfig = readDbConfig(rawDb);
+  const rawClients: object | null = readOptObj(raw, "clients", "clients");
+  const clients: Map<string, ClientConfig> = new Map();
+  if (rawClients !== null) {
+    for (const [key, value] of Object.entries(rawClients)) {
+      const clientConfig: ClientConfig = readClientConfig(value, `clients.${key}`);
+      clients.set(key, clientConfig);
     }
   }
-  let dbHost: string | undefined;
-  if (typeof env.ETWIN_DB_HOST === "string") {
-    dbHost = env.ETWIN_DB_HOST;
-  }
-  let dbPort: number | undefined;
-  if (typeof env.ETWIN_DB_PORT === "string") {
-    dbPort = parseInt(env.ETWIN_DB_PORT, 10);
-  }
-  let dbName: string | undefined;
-  if (typeof env.ETWIN_DB_NAME === "string") {
-    dbName = env.ETWIN_DB_NAME;
-  }
-  let dbUser: string | undefined;
-  if (typeof env.ETWIN_DB_USER === "string") {
-    dbUser = env.ETWIN_DB_USER;
-  }
-  let dbPassword: string | undefined;
-  if (typeof env.ETWIN_DB_PASSWORD === "string") {
-    dbPassword = env.ETWIN_DB_PASSWORD;
-  }
-  let secretKey: string | undefined;
-  if (typeof env.ETWIN_SECRET_KEY === "string") {
-    secretKey = env.ETWIN_SECRET_KEY;
-  }
-  let httpPort: number | undefined;
-  if (typeof env.ETWIN_HTTP_PORT === "string") {
-    httpPort = parseInt(env.ETWIN_HTTP_PORT);
-  }
-  let externalBaseUri: url.URL | undefined;
-  if (typeof env.ETWIN_EXTERNAL_BASE_URI === "string") {
-    externalBaseUri = new url.URL(env.ETWIN_EXTERNAL_BASE_URI);
-  }
-  let eternalfestAppUri: url.URL | undefined;
-  if (typeof env.ETWIN_ETERNALFEST_APP_URI === "string") {
-    eternalfestAppUri = new url.URL(env.ETWIN_ETERNALFEST_APP_URI);
-  }
-  let eternalfestCallbackUri: url.URL | undefined;
-  if (typeof env.ETWIN_ETERNALFEST_CALLBACK_URI === "string") {
-    eternalfestCallbackUri = new url.URL(env.ETWIN_ETERNALFEST_CALLBACK_URI);
-  }
-  let eternalfestSecret: string | undefined;
-  if (typeof env.ETWIN_ETERNALFEST_SECRET === "string") {
-    eternalfestSecret = env.ETWIN_ETERNALFEST_SECRET;
-  }
-  let twinoidOauthClientId: string | undefined;
-  if (typeof env.ETWIN_TWINOID_OAUTH_CLIENT_ID === "string") {
-    twinoidOauthClientId = env.ETWIN_TWINOID_OAUTH_CLIENT_ID;
-  }
-  let twinoidOauthSecret: string | undefined;
-  if (typeof env.ETWIN_TWINOID_OAUTH_SECRET === "string") {
-    twinoidOauthSecret = env.ETWIN_TWINOID_OAUTH_SECRET;
-  }
-
-  return {
-    inMemory,
-    dbHost,
-    dbPort,
-    dbName,
-    dbUser,
-    dbPassword,
-    secretKey,
-    httpPort,
-    externalBaseUri,
-    eternalfestAppUri,
-    eternalfestCallbackUri,
-    eternalfestSecret,
-    twinoidOauthClientId,
-    twinoidOauthSecret,
-  };
+  const rawAuth: object = readObj(raw, "auth", "auth");
+  const auth: AuthConfig = readAuthConfig(rawAuth);
+  const rawForum: object = readObj(raw, "forum", "forum");
+  const forum: ForumConfig = readForumConfig(rawForum);
+  return {etwin, db, clients, auth, forum};
 }
 
-export function requireConfigKeys<K extends keyof Config>(conf: Partial<Config>, keys: readonly K[]): Pick<Config, K> {
-  for (const key of keys) {
-    if (conf[key] === undefined) {
-      throw new Error(`MissingRequiredConfig: ${key}`);
+function readEtwinConfig(raw: object): EtwinConfig {
+  const rawApiType: string = readString(raw, "api", "etwin.api");
+  let api: ApiType;
+  switch (rawApiType) {
+    case "postgres":
+      api = ApiType.Postgres;
+      break;
+    case "in-memory":
+      api = ApiType.InMemory;
+      break;
+    default:
+      throw new Error("Invalid API type, expected \"postgres\" or \"in-memory\"");
+  }
+  const secret: string = readString(raw, "secret", "etwin.secret");
+  const httpPort: number = readUint(raw, "http_port", "etwin.http_port");
+  const rawExternalUri: string = readString(raw, "external_uri", "etwin.external_uri");
+  const externalUri = Object.freeze(new url.URL(rawExternalUri));
+  return {api, secret, httpPort, externalUri};
+}
+
+function readDbConfig(raw: object): DbConfig {
+  const host: string = readString(raw, "host", "db.host");
+  const port: number = readUint(raw, "port", "db.port");
+  const name: string = readString(raw, "name", "db.name");
+  const user: string = readString(raw, "user", "db.user");
+  const password: string = readString(raw, "password", "db.password");
+  return {host, port, name, user, password};
+}
+
+function readClientConfig(raw: unknown, prefix: string): ClientConfig {
+  if (typeof raw !== "object" || raw === null) {
+    throw new Error(`Expected client config to be an object: ${prefix}`);
+  }
+  const displayName: string = readString(raw, "display_name", `${prefix}.display_name`);
+  const rawAppUri: string = readString(raw, "app_uri", `${prefix}.app_uri`);
+  const appUri = Object.freeze(new url.URL(rawAppUri));
+  const rawCallbackUri: string = readString(raw, "callback_uri", `${prefix}.callback_uri`);
+  const callbackUri = Object.freeze(new url.URL(rawCallbackUri));
+  const secret: string = readString(raw, "secret", "etwin.secret");
+  return {displayName, appUri, callbackUri, secret};
+}
+
+function readAuthConfig(raw: object): AuthConfig {
+  const rawTwinoid: object = readObj(raw, "twinoid", "auth.twinoid");
+  const twinoid: TwinoidAuthConfig = readTwinoidAuthConfig(rawTwinoid);
+  return {twinoid};
+}
+
+function readTwinoidAuthConfig(raw: object): TwinoidAuthConfig {
+  const clientId: string = readString(raw, "client_id", "auth.twinoid.client_id");
+  const secret: string = readString(raw, "secret", "auth.twinoid.secret");
+  return {clientId, secret};
+}
+
+function readForumConfig(raw: object): ForumConfig {
+  const postsPerPage: number = readUint(raw, "posts_per_page", "forum.posts_per_page");
+  const threadsPerPage: number = readUint(raw, "threads_per_page", "forum.threads_per_page");
+  const rawSections: object | null = readOptObj(raw, "sections", "forum.sections");
+  const sections: Map<string, ForumSectionConfig> = new Map();
+  if (rawSections !== null) {
+    for (const [key, value] of Object.entries(rawSections)) {
+      const sectionConfig: ForumSectionConfig = readForumSectionConfig(value, `forum.sections.${key}`);
+      sections.set(key, sectionConfig);
     }
   }
-  return conf as Pick<Config, K>;
+  return {postsPerPage, threadsPerPage, sections};
 }
 
-export async function getPartialLocalConfig(): Promise<Partial<Config>> {
-  const dotEnvPath: string | undefined = await findUp(".env", {cwd: process.cwd()});
-  if (dotEnvPath !== undefined) {
-    const dotEnvText: string = await fs.promises.readFile(dotEnvPath, {encoding: "utf-8"});
-    const parsedDotEnv: Record<string, string> = dotEnv.parse(dotEnvText);
-    for (const [key, value] of Object.entries(parsedDotEnv)) {
-      Reflect.set(process.env, key, value);
-    }
+function readForumSectionConfig(raw: unknown, prefix: string): ForumSectionConfig {
+  if (typeof raw !== "object" || raw === null) {
+    throw new Error(`Expected forum section config to be an object: ${prefix}`);
   }
-  return getPartialEnvConfig(process.env);
+  const displayName: string = readString(raw, "display_name", `${prefix}.display_name`);
+  const locale: string = readString(raw, "locale", `${prefix}.locale`);
+  if (locale !== "fr-FR") {
+    throw new Error("AssertionError: Only `fr-FR` is support currently");
+  }
+  return {displayName, locale};
 }
 
-export async function getLocalConfig<K extends keyof Config>(keys: readonly K[]): Promise<Pick<Config, K>> {
-  const partial = await getPartialLocalConfig();
-  return requireConfigKeys(partial, keys);
+function readObj(rawObj: object, key: string, fullKey: string): object {
+  if (!Reflect.has(rawObj, key)) {
+    throw new Error(`Missing config: ${fullKey}`);
+  }
+  const value: unknown = Reflect.get(rawObj, key);
+  if (typeof value !== "object" || value === null) {
+    throw new Error(`Invalid config type, expected object: ${fullKey}`);
+  }
+  return value;
+}
+
+function readOptObj(rawObj: object, key: string, fullKey: string): object | null {
+  if (!Reflect.has(rawObj, key)) {
+    return null;
+  }
+  const value: unknown = Reflect.get(rawObj, key);
+  if (typeof value !== "object" || value === null) {
+    throw new Error(`Invalid config type, expected object: ${fullKey}`);
+  }
+  return value;
+}
+
+function readString(rawObj: object, key: string, fullKey: string): string {
+  if (!Reflect.has(rawObj, key)) {
+    throw new Error(`Missing config: ${fullKey}`);
+  }
+  const value: unknown = Reflect.get(rawObj, key);
+  if (typeof value !== "string") {
+    throw new Error(`Invalid config type, expected string: ${fullKey}`);
+  }
+  return value;
+}
+
+function readUint(rawObj: object, key: string, fullKey: string): number {
+  if (!Reflect.has(rawObj, key)) {
+    throw new Error(`Missing config: ${fullKey}`);
+  }
+  const value: unknown = Reflect.get(rawObj, key);
+  if (typeof value !== "number" || !(value >= 0) || Math.floor(value) !== value) {
+    throw new Error(`Invalid config type, expected positive integer: ${fullKey}`);
+  }
+  return value;
+}
+
+export async function getLocalConfig(): Promise<Config> {
+  const cwd: string = process.cwd();
+  const configPath: string | undefined = await findUp("etwin.toml", {cwd});
+  if (configPath === undefined) {
+    throw new Error(`Config file \`etwin.toml\` not found from ${cwd}`);
+  }
+  const configText: string = await fs.promises.readFile(configPath, {encoding: "utf-8"});
+  return parseConfig(configText);
 }

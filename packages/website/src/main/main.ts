@@ -1,3 +1,4 @@
+import { ApiType, Config, getLocalConfig } from "@eternal-twin/local-config";
 import { createApiRouter } from "@eternal-twin/rest-server/lib/index.js";
 import fs from "fs";
 import furi from "furi";
@@ -10,7 +11,6 @@ import url from "url";
 import { ServerAppConfig } from "../server/config.js";
 import { createActionsRouter } from "./actions/index.js";
 import { Api, withApi } from "./api.js";
-import { Config,getLocalConfig } from "./config.js";
 import { createKoaLocaleNegotiator, LocaleNegotiator } from "./koa-locale-negotiation.js";
 import { Locale } from "./locales.js";
 import { createOauthRouter } from "./oauth/index.js";
@@ -23,9 +23,40 @@ const BROWSER_APP_DIR: url.URL = furi.join(APP_DIR, "browser");
 async function main(api: Api): Promise<void> {
   const config: Config = await getLocalConfig();
   console.log("Server configuration:");
-  console.log(`In-Memory: ${config.inMemory}`);
-  console.log(`HTTP port: ${config.httpPort}`);
-  console.log(`External URI: ${config.externalBaseUri}`);
+  console.log("[Eternal-Twin]");
+  console.log(`API type: ${ApiType[config.etwin.api]}`);
+  console.log(`HTTP port: ${config.etwin.httpPort}`);
+  console.log(`External URI: ${config.etwin.externalUri.toString()}`);
+  console.log("");
+  console.log("[Database]");
+  console.log(`Host: ${config.db.host}`);
+  console.log(`Port: ${config.db.port}`);
+  console.log(`Name: ${config.db.name}`);
+  console.log("");
+  console.log("[OAuth clients]");
+  if (config.clients.size === 0) {
+    console.log("(none)");
+  } else {
+    for (const [key, client] of config.clients) {
+      console.log(`${key} {`);
+      console.log(`  Display name: ${client.displayName}`);
+      console.log(`  App URI: ${client.appUri}`);
+      console.log(`  Callback URI: ${client.callbackUri}`);
+      console.log("}");
+    }
+  }
+  console.log("");
+  console.log("[Forum]");
+  console.log(`Threads per page: ${config.forum.threadsPerPage}`);
+  console.log(`Posts per page: ${config.forum.postsPerPage}`);
+  console.log("Root sections:");
+  if (config.forum.sections.size === 0) {
+    console.log("(none)");
+  } else {
+    for (const [key, section] of config.forum.sections) {
+      console.log(`${key} { ${section.displayName} }`);
+    }
+  }
 
   const apps: Apps = await findApps();
 
@@ -36,7 +67,7 @@ async function main(api: Api): Promise<void> {
   }
 
   const appConfig: ServerAppConfig = {
-    externalBaseUri: config.externalBaseUri,
+    externalUri: config.etwin.externalUri,
     isIndexNextToServerMain: true,
     isProduction: IS_PRODUCTION,
     api: api,
@@ -78,8 +109,8 @@ async function main(api: Api): Promise<void> {
   const i18nRouter: Koa = createI18nRouter(defaultRouter, prodAppRouters);
   router.use(koaMount("/", i18nRouter));
 
-  router.listen(config.httpPort, () => {
-    console.log(`Listening on internal port ${config.httpPort}, externally available at ${config.externalBaseUri}`);
+  router.listen(config.etwin.httpPort, () => {
+    console.log(`Listening on internal port ${config.etwin.httpPort}, externally available at ${config.etwin.externalUri}`);
   });
 }
 

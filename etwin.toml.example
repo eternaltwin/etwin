@@ -1,0 +1,30 @@
+[etwin]
+api = "postgres"
+secret = "dev_secret"
+http_port = 50320
+external_uri = "http://localhost:50320"
+
+[db]
+host = "localhost"
+port = 5432
+name = "etwindb"
+user = "etwin"
+password = "dev"
+
+[clients.eternalfest]
+display_name = "Eternalfest"
+app_uri = "http://localhost:50313"
+callback_uri = "http://localhost:50313/oauth/callback"
+secret = "eternalfest_secret"
+
+[auth.twinoid]
+client_id = "380"
+secret = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+[forum]
+posts_per_page = 20
+threads_per_page = 20
+
+[forum.sections.fr_main]
+display_name = "Forum Général"
+locale = "fr-FR"

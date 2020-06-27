@@ -35,7 +35,7 @@
     "node": ">=14.0.0"
   },
   "dependencies": {
-    "dotenv": "^8.2.0",
+    "toml": "^3.0.0",
     "find-up": "^4.1.0"
   },
   "devDependencies": {

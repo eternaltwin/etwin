@@ -12,12 +12,12 @@ import url from "url";
 import { InMemoryUserService } from "../lib/index.js";
 
 async function withPgUserService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
-  const config = await getLocalConfig(["secretKey"]);
+  const config = await getLocalConfig();
 
-  const secretKeyStr: string = config.secretKey;
+  const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new InMemoryEmailService();
-  const emailTemplate = new JsonEmailTemplateService(new url.URL("https://twin.eternalfest.net"));
+  const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
   const password = new ScryptPasswordService();
   const user = new InMemoryUserService(UUID4_GENERATOR);
   const hammerfest = new InMemoryHammerfestService();

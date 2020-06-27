@@ -9,6 +9,7 @@ import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
 import { PgForumService } from "@eternal-twin/forum-pg";
 import { HttpHammerfestService } from "@eternal-twin/hammerfest-http";
+import { ApiType, Config } from "@eternal-twin/local-config";
 import { HttpOauthClientService, OauthClientService } from "@eternal-twin/oauth-client-http";
 import { InMemoryOauthProviderService } from "@eternal-twin/oauth-provider-in-memory";
 import { PgOauthProviderService } from "@eternal-twin/oauth-provider-pg";
@@ -21,8 +22,6 @@ import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 import urljoin from "url-join";
 
-import { Config } from "./config.js";
-
 export interface Api {
   auth: AuthService;
   koaAuth: KoaAuth;
@@ -33,10 +32,10 @@ export interface Api {
 }
 
 async function createApi(config: Config): Promise<{api: Api; teardown(): Promise<void>}> {
-  const secretKeyStr: string = config.secretKey;
+  const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new ConsoleEmailService();
-  const emailTemplate = new EtwinEmailTemplateService(new url.URL(config.externalBaseUri.toString()));
+  const emailTemplate = new EtwinEmailTemplateService(new url.URL(config.etwin.externalUri.toString()));
   const password = new ScryptPasswordService();
   const hammerfest = new HttpHammerfestService();
 
@@ -46,7 +45,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   let oauthProvider: OauthProviderService;
   let teardown: () => Promise<void>;
 
-  if (config.inMemory) {
+  if (config.etwin.api === ApiType.InMemory) {
     const imUser: InMemoryUserService = new InMemoryUserService(UUID4_GENERATOR);
     user = imUser;
     const imOauthProvider = new InMemoryOauthProviderService(UUID4_GENERATOR, password, secretKeyBytes);
@@ -56,11 +55,11 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     teardown = async function(): Promise<void> {};
   } else {
     const {pool, teardown: teardownPool} = createPgPool({
-      host: config.dbHost,
-      port: config.dbPort,
-      name: config.dbName,
-      user: config.dbUser,
-      password: config.dbPassword,
+      host: config.db.host,
+      port: config.db.port,
+      name: config.db.name,
+      user: config.db.user,
+      password: config.db.password,
     });
     const db = new Database(pool);
     user = new PgUserService(db, secretKeyStr);
@@ -73,26 +72,30 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   }
 
   const koaAuth = new KoaAuth(auth);
-  const oauthCallbackUri: url.URL = new url.URL(urljoin(config.externalBaseUri.toString(), "oauth/callback"));
-  const oauthClient = new HttpOauthClientService(config.twinoidOauthClientId, config.twinoidOauthSecret, oauthCallbackUri);
+  const oauthCallbackUri: url.URL = new url.URL(urljoin(config.etwin.externalUri.toString(), "oauth/callback"));
+  const oauthClient = new HttpOauthClientService(config.auth.twinoid.clientId, config.auth.twinoid.secret, oauthCallbackUri);
 
-  await oauthProvider.createOrUpdateSystemClient(
-    "eternalfest",
-    {
-      displayName: "Eternalfest",
-      appUri: config.eternalfestAppUri.toString(),
-      callbackUri: config.eternalfestCallbackUri.toString(),
-      secret: Buffer.from(config.eternalfestSecret),
-    }
-  );
+  for (const [key, client] of config.clients) {
+    await oauthProvider.createOrUpdateSystemClient(
+      key,
+      {
+        displayName: client.displayName,
+        appUri: client.appUri.toString(),
+        callbackUri: client.callbackUri.toString(),
+        secret: Buffer.from(client.secret),
+      }
+    );
+  }
 
-  await forum.createOrUpdateSystemSection(
-    "fr_main",
-    {
-      displayName: "Forum Général",
-      locale: "fr-FR",
-    },
-  );
+  for (const [key, section] of config.forum.sections) {
+    await forum.createOrUpdateSystemSection(
+      key,
+      {
+        displayName: section.displayName,
+        locale: section.locale,
+      },
+    );
+  }
 
   const api: Api = {auth, koaAuth, forum, oauthClient, oauthProvider, user};
 

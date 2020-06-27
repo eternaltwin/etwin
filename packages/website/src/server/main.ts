@@ -30,10 +30,10 @@ function resolveServerOptions(options?: Partial<ServerAppConfig>): ServerAppConf
   } else {
     isProduction = options.isProduction === true;
   }
-  const externalBaseUri: url.URL | undefined = options.externalBaseUri;
+  const externalUri: url.URL | undefined = options.externalUri;
   const isIndexNextToServerMain: boolean = options.isIndexNextToServerMain === true;
   if (isProduction) {
-    if (externalBaseUri === undefined) {
+    if (externalUri === undefined) {
       throw new Error("Aborting: Missing server option `externalBaseUri` in production mode");
     }
     if (!isIndexNextToServerMain) {
@@ -44,15 +44,15 @@ function resolveServerOptions(options?: Partial<ServerAppConfig>): ServerAppConf
     throw new Error("Missing `api` configuration");
   }
   const api: Api = options.api;
-  return {externalBaseUri, isIndexNextToServerMain, isProduction, api};
+  return {externalUri, isIndexNextToServerMain, isProduction, api};
 }
 
 /**
  * Resolves the fully qualified URL from the path and query
  */
 function fullyQualifyUrl(options: ServerAppConfig, pathAndQuery: string): url.URL {
-  if (options.externalBaseUri !== undefined) {
-    return new url.URL(pathAndQuery, options.externalBaseUri);
+  if (options.externalUri !== undefined) {
+    return new url.URL(pathAndQuery, options.externalUri);
   } else {
     return new url.URL(pathAndQuery, "http://localhost/");
   }
@@ -69,8 +69,8 @@ export async function app(options?: Partial<ServerAppConfig>) {
   const router = new Koa();
 
   const providers: StaticProvider[] = [];
-  if (config.externalBaseUri !== undefined) {
-    providers.push({provide: APP_BASE_HREF, useValue: config.externalBaseUri.toString()});
+  if (config.externalUri !== undefined) {
+    providers.push({provide: APP_BASE_HREF, useValue: config.externalUri.toString()});
   }
   providers.push({provide: FORUM, useValue: config.api.forum});
   providers.push({provide: USER, useValue: config.api.user});
