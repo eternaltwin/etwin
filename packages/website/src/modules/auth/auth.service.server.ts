@@ -1,32 +1,27 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
 import { Credentials } from "@eternal-twin/core/lib/auth/credentials";
 import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
 import { User } from "@eternal-twin/core/lib/user/user";
 import { Observable, of as rxOf } from "rxjs";
 
+import { AUTH_CONTEXT } from "../../server/tokens";
 import { AuthService } from "./auth.service";
-
-const GUEST_AUTH_CONTEXT: AuthContext = {type: AuthType.Guest, scope: AuthScope.Default};
 
 @Injectable()
 export class ServerAuthService extends AuthService {
   private readonly auth$: Observable<AuthContext>;
+  readonly #acx: AuthContext;
 
-  constructor() {
+  constructor(@Inject(AUTH_CONTEXT) acx: AuthContext) {
     super();
-    this.auth$ = this.getSelf();
+    this.auth$ = rxOf(acx);
+    this.#acx = acx;
   }
 
   auth(): Observable<AuthContext> {
     return this.auth$;
-  }
-
-  private getSelf(): Observable<AuthContext> {
-    return rxOf(GUEST_AUTH_CONTEXT);
   }
 
   logout(): Observable<null> {

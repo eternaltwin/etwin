@@ -86,6 +86,14 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     }
   );
 
+  await forum.createOrUpdateSystemSection(
+    "fr_main",
+    {
+      displayName: "Forum Général",
+      locale: "fr-FR",
+    },
+  );
+
   const api: Api = {auth, koaAuth, forum, oauthClient, oauthProvider, user};
 
   return {api, teardown};

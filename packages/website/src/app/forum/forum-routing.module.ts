@@ -41,7 +41,7 @@ export class ForumSectionResolverService implements Resolve<ForumSection | null>
     if (sectionIdOrKey === null) {
       return null;
     }
-    return this.forum.getForumSection(sectionIdOrKey).toPromise();
+    return this.forum.getForumSection(sectionIdOrKey, 0).toPromise();
   }
 }
 
@@ -60,7 +60,7 @@ export class ForumThreadResolverService implements Resolve<ForumThread | null> {
     if (threadIdOrKey === null) {
       return null;
     }
-    return this.forum.getForumThread(threadIdOrKey).toPromise();
+    return this.forum.getForumThread(threadIdOrKey, 0).toPromise();
   }
 }
 

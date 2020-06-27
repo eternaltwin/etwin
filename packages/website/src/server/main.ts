@@ -3,6 +3,9 @@ import "@angular/localize/init";
 
 import { APP_BASE_HREF } from "@angular/common";
 import { StaticProvider } from "@angular/core";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
 import * as furi from "furi";
 import Koa from "koa";
 import koaRoute from "koa-route";
@@ -13,6 +16,12 @@ import { AppServerModule } from "../app/app.server.module";
 import { ROUTES } from "../routes";
 import { Api, ServerAppConfig } from "./config";
 import { NgKoaEngine } from "./ng-koa-engine";
+import { AUTH_CONTEXT, FORUM, USER } from "./tokens";
+
+const GUEST_AUTH_CONTEXT: AuthContext = Object.freeze({
+  type: AuthType.Guest,
+  scope: AuthScope.Default,
+});
 
 function resolveServerOptions(options?: Partial<ServerAppConfig>): ServerAppConfig {
   let isProduction: boolean = false;
@@ -31,7 +40,10 @@ function resolveServerOptions(options?: Partial<ServerAppConfig>): ServerAppConf
       throw new Error("Aborting: Index.html must be located next to server's main in production mode");
     }
   }
-  const api: Api = null as any;
+  if (options.api === undefined) {
+    throw new Error("Missing `api` configuration");
+  }
+  const api: Api = options.api;
   return {externalBaseUri, isIndexNextToServerMain, isProduction, api};
 }
 
@@ -60,6 +72,8 @@ export async function app(options?: Partial<ServerAppConfig>) {
   if (config.externalBaseUri !== undefined) {
     providers.push({provide: APP_BASE_HREF, useValue: config.externalBaseUri.toString()});
   }
+  providers.push({provide: FORUM, useValue: config.api.forum});
+  providers.push({provide: USER, useValue: config.api.user});
 
   const engine: NgKoaEngine = await NgKoaEngine.create({
     indexFuri,
@@ -71,18 +85,18 @@ export async function app(options?: Partial<ServerAppConfig>) {
   router.use(koaRoute.get([...ROUTES], ngRender));
 
   async function ngRender(cx: Koa.Context): Promise<void> {
-    // let auth: AuthContext;
-    // try {
-    //   auth = await efApi.koaAuth.auth(ctx);
-    // } catch (err) {
-    //   console.error(err);
-    //   auth = GUEST_AUTH_CONTEXT;
-    // }
+    let acx: AuthContext;
+    try {
+      acx = await config.api.koaAuth.auth(cx);
+    } catch (err) {
+      console.error(err);
+      acx = GUEST_AUTH_CONTEXT;
+    }
     const reqUrl: url.URL = fullyQualifyUrl(config, cx.request.originalUrl);
     cx.response.body = await engine.render({
       url: reqUrl,
       providers: [
-        // TODO: Provide auth context
+        {provide: AUTH_CONTEXT, useValue: acx},
       ],
     });
   }

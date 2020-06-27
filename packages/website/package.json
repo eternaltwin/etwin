@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "app:deps": "tsc --build tsconfig.deps.json",
-    "app:serve:browswer": "ng serve",
+    "app:serve:browser": "ng serve",
     "app:serve:server": "ng run etwin:serve-ssr",
     "app:dev:build": "yarn run app:dev:build:browser && yarn run app:dev:build:server",
     "app:dev:build:browser": "ng build",

@@ -15,9 +15,9 @@ import { Observable } from "rxjs";
 export abstract class ForumService {
   abstract getForumSections(): Observable<ForumSectionListing>;
 
-  abstract getForumSection(idOrKey: ForumSectionId | ForumSectionKey): Observable<ForumSection>;
+  abstract getForumSection(idOrKey: ForumSectionId | ForumSectionKey, pageIndex: number): Observable<ForumSection | null>;
 
-  abstract getForumThread(idOrKey: ForumThreadId | ForumThreadKey): Observable<ForumThread>;
+  abstract getForumThread(idOrKey: ForumThreadId | ForumThreadKey, pageIndex: number): Observable<ForumThread | null>;
 
   abstract createThread(sectionIdOrKey: ForumSectionId | ForumSectionKey, options: CreateThreadOptions): Observable<ForumThread>;
 
