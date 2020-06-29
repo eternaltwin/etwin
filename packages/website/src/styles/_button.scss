@@ -42,6 +42,14 @@ $orange: #cd6f00;
 
 /* --- MAIN BUTTONS --- */
 
+/* THERE ARE 5 EXISTING BUTTON STYLES:
+- PRIMARY (default), for call-to-action buttons. Should be used in limited amount to lead users to specific destinations.
+- SECONDARY, for alternative actions. Can be used when similar actions are proposed, or as alternatives.
+- TERTIARY, for repulsive or minimal actions. Can be used when the button implies a "step back" or "step out" action.
+- AGGRESSIVE, for irreversible and negative actions. MUST be used carefully, and very explicitely describe the action consequences.
+- DISABLED, for (yet) unavailable actions. Consider adding explanations to help and guide users.*/
+
+
 .content .btnContainer {
   display: flex;
   margin: -4px;
@@ -67,8 +75,6 @@ $orange: #cd6f00;
 }
 
 .content .btn {
-  $verticalPadding: 10px;
-  $horizontalPadding: 14px;
   font-size: .86rem;
   line-height: 1.15em;
   color: $lightWhite;
@@ -83,30 +89,32 @@ $orange: #cd6f00;
   justify-content: center;
 
   min-height: 2.5rem;
-  padding: $verticalPadding $horizontalPadding;
-  margin: 4px 0;
+  padding: 11px 15px;
+  margin: 4px;
   cursor: pointer;
   background-color: $darkViolet; /* for fallback only */
   border-radius: 4px;
-  border: 1px solid transparentize($lightWhite, .9);
   outline: none;
-  box-shadow: 0 3px 0 0 $deepBlack;
+  box-shadow:
+    0 3px 0 0 $deepBlack,
+    inset 0 0 0 1px transparentize($lightWhite, .9); /*Inset shadow, simulates a white border*/
 
-  transition: background-color 0.25s, box-shadow 0.45s;
+  transition: all 0.25s, box-shadow 0.45s;
 
   &:not([disabled]):not(.disabled) {
     &:hover, &:focus {
-      padding: ($verticalPadding - 1) ($horizontalPadding - 1);
       border-width: 2px;
       background-color: darken(saturate($darkViolet, 8.50), 3.7);
-      box-shadow: 0 1px 0 1px $deepBlack;
+      box-shadow:
+        0 1px 0 1px $deepBlack,
+        inset 0 0 0 2px transparentize($lightWhite, .9);
     }
 
     &:active {
-      padding: ($verticalPadding - 1) ($horizontalPadding - 1);
-      border-width: 2px;
       background-color: darken(saturate($darkViolet, 13), 5.3);
-      box-shadow: 0 -2px 2px 1px $deepBlack;
+      box-shadow:
+        0 -2px 2px 1px $deepBlack,
+        inset 0 0 0 2px transparentize($lightWhite, .9);
     }
   }
 
@@ -129,21 +137,40 @@ $orange: #cd6f00;
     font-weight: 600;
     color: $lightGrey;
     background: none;
-    padding: ($verticalPadding - 1) ($horizontalPadding - 1);
-    border: 2px solid transparentize($darkGrey, .65);
-    box-shadow: none;
+    box-shadow:
+      0 0 0 1px transparentize($deepBlack, 1),
+      inset 0 0 0 2px transparentize($darkGrey, .65); /*Inset shadow, simulates a white border*/
 
     &:not([disabled]):not(.disabled) {
       &:hover, &:focus {
         color: $lightWhite;
         background: none;
-        border-color: transparentize($lightWhite, .9);
+        box-shadow:
+          0 0 0 1px transparentize($deepBlack, .7),
+          inset 0 0 0 2px transparentize($lightWhite, .9);
       }
 
       &:active {
         color: $lightWhite;
-        background: none;
-        border-color: transparentize($lightWhite, .9);
+        background: transparentize($lightWhite, .98);
+        box-shadow:
+          0 0 0 1px transparentize($deepBlack, .7),
+          inset 0 0 0 2px transparentize($lightWhite, .85);
+      }
+    }
+  }
+
+  &.aggressive {
+    font-weight: 800;
+    background-color: $darkRed;
+
+    &:not([disabled]):not(.disabled) {
+      &:hover, &:focus {
+        background-color: darken(saturate($darkRed, 15.5), 3.3);
+      }
+
+      &:active {
+        background-color: darken(saturate($darkRed, 20), 5.5);
       }
     }
   }
@@ -151,44 +178,56 @@ $orange: #cd6f00;
   &[disabled], &.disabled {
     font-weight: 600;
     color: $lightGrey;
-    /*background-color: darken($darkGrey, 5.9);*/
-    background-image: linear-gradient(135deg, darken($darkGrey, 2%) 16.67%, $deepGrey 16.67%, $deepGrey 50%, darken($darkGrey, 2%) 50%, darken($darkGrey, 2%) 66.67%, $deepGrey 66.67%, $deepGrey 100%);
+    background-color: darken($darkGrey, 5.9);
+    background-image: linear-gradient(135deg,
+      darken($darkGrey, 2%) 16.67%,
+      $deepGrey 16.67%,
+      $deepGrey 50%,
+      darken($darkGrey, 2%) 50%,
+      darken($darkGrey, 2%) 66.67%,
+      $deepGrey 66.67%,
+      $deepGrey 100%);   /*diagonal gradient to create a stripes effect background*/
     background-size: 12.00px 12.00px;
-    box-shadow: 0 1px 0 1px $deepBlack;
+    box-shadow:
+      0 1px 0 1px $deepBlack,
+      inset 0 0 0 2px darken($darkGrey, 2%);  /*Inset shadow, simulates a white border*/
     cursor: not-allowed;
-    padding: ($verticalPadding - 1) ($horizontalPadding - 1);
-    border: 2px solid darken($darkGrey, 2%);
 
-    transition: background-image .45s, border .45s;
+    transition: background-image .25s;
 
-    &:hover, &:focus {
-      background-image: linear-gradient(135deg, $darkGrey 16.67%, $deepGrey 16.67%, $deepGrey 50%, $darkGrey 50%, $darkGrey 66.67%, $deepGrey 66.67%, $deepGrey 100%);
-      border: 2px solid $darkGrey;
+    &:hover, &:focus, &:active {
+      background-image: linear-gradient(135deg,
+        $darkGrey 16.67%,
+        $deepGrey 16.67%,
+        $deepGrey 50%,
+        $darkGrey 50%,
+        $darkGrey 66.67%,
+        $deepGrey 66.67%,
+        $deepGrey 100%);
+      box-shadow:
+        0 1px 0 1px $deepBlack,
+        inset 0 0 0 2px $darkGrey, 2%;  /*Inset shadow, simulates a white border*/
     }
   }
 }
 
-.content input.field {
-  $verticalPadding: 10px;
-  $horizontalPadding: 14px;
 
+.content input.field {
   color: $lightWhite;
   background-color: $darkGrey;
-  padding: $verticalPadding $horizontalPadding;
+  padding: 11px 15px;
   margin: 6px 0 4px 0;
-  border: 1px solid $lightViolet;
   border-radius: 4px;
   outline: none;
-  transition: background-color .1s;
+  box-shadow: inset 0 0 0 1px $lightViolet;  /*Inset shadow, simulates a white border*/
+
+  transition: all .1s;
 
   &:hover {
-    padding: ($verticalPadding - 1) ($horizontalPadding - 1);
-    border-width: 2px;
+    box-shadow: inset 0 0 0 2px $lightViolet;
   }
 
   &:focus, &:active {
-    padding: ($verticalPadding - 1) ($horizontalPadding - 1);
-    border-width: 2px;
     background-color: $deepViolet;
   }
 }

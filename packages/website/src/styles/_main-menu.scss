@@ -61,6 +61,59 @@ $orange: #cd6f00;
     position: relative;
     top: 6px;
     right: 9px;
+
+    .npcTip {
+      position: absolute;
+      display: flex;
+      top: 22px;
+      right: 78px;
+      margin: 0;
+      align-items: center;
+      height: 0;
+
+      visibility: hidden;
+      opacity: 0;
+
+      transition: opacity .15s, visibility .3s, right .25s;
+
+      p {
+        padding: 8px 9px;
+        min-width: 240px;
+        background-color: $deepGrey;
+        border: 1px solid $darkPink;
+        border-bottom: 3px solid $darkPink;
+        border-radius: 2px;
+        box-shadow: 0 0 8px 3px transparentize($darkPink, .75);
+
+        color: lighten($pink, 10%);
+        font-size: .8em;
+        font-weight: 700;
+        letter-spacing: .012em;
+        line-height: 1.48em;
+
+        &:before {
+          content:"";
+          width: 0;
+          height: 0;
+          border-style: solid;
+          border-width: 9px 0px 9px 9px;
+          position:absolute;
+          right: -9px;
+          top: -9px;
+          border-color: transparent transparent transparent $darkPink;
+        }
+      }
+    }
+
+    &:hover, &:active, &:focus, &:focus-within {
+      .npcTip {
+        right: 58px;
+        visibility: visible;
+        opacity: 1;
+
+        transition: opacity .4s .2s, visibility 0s, right .4s .2s;
+      }
+    }
   }
 }
 
@@ -138,7 +191,7 @@ nav {
 
 @media only screen and (max-width: $desktopBreakpoint) {
 
-  #main-menu {
+  #headBar {
     width: 92%;
     font-size: 1.15em;
 
@@ -157,20 +210,10 @@ nav {
       visibility: hidden;
       box-shadow: 0 0 12px 4px $deepBlack;
 
-      transition: opacity .15s;
+      transition: opacity .15s, visibility .2s;
 
       &:before {
         content:"";
-        /*height: 16px;
-        width: 16px;
-        background-color: $deepGrey;
-        border: 1px solid $mediumGrey;
-        transform: rotate(45deg);
-        position:absolute;
-        left: 28px;
-        top: -8px;
-        clip-path: polygon(0 0, 0% 100%, 100% 0);*/
-
         width: 0;
         height: 0;
         border-style: solid;
@@ -198,7 +241,7 @@ nav {
       opacity: 1;
       visibility: visible;
 
-      transition: opacity .15s;
+      transition: opacity .15s, visibility 0s;
     }
 
     .label-toggle {
@@ -214,7 +257,10 @@ nav {
       color: rgba(238,238,238,1);
       background: linear-gradient(to bottom, transparentize($red, 1) 25%, $red 100%);
     }
-  }
 
+    .npc .npcTip p {
+      font-size: .75em;
+    }
+  }
 
 }
