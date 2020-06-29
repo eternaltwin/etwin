@@ -167,8 +167,20 @@ etwin-main-layout, etwin-small-layout {
     margin: .8em 0 .25em 0;
   }
 
-  ul, ol, dl {
+  ul, ol {
     padding-left: 22px;
+  }
+
+  dl {
+    dt {
+      font-weight: $fontWeightBold;
+      text-decoration:underline;
+      margin: 0;
+    }
+
+    dd {
+      margin-left: .6em;
+    }
   }
 
   h1 {
@@ -183,7 +195,7 @@ etwin-main-layout, etwin-small-layout {
   }
 
   h2 {
-    font-size: 2.625em;
+    font-size: 2.4em;
     line-height: 1.05em;
     color: $red;
     font-weight: $fontWeightBold;
@@ -301,11 +313,11 @@ textarea {
     }
 
     h2 {
-      font-size: 2.25em;
+      font-size: 1.85em;
     }
 
     h3 {
-      font-size: 1.65em;
+      font-size: 1.5em;
     }
   }
 
