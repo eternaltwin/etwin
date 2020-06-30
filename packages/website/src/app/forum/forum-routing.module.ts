@@ -60,7 +60,13 @@ export class ForumThreadResolverService implements Resolve<ForumThread | null> {
     if (threadIdOrKey === null) {
       return null;
     }
-    return this.forum.getForumThread(threadIdOrKey, 0).toPromise();
+    const pageStr = route.queryParamMap.get("p");
+    const page: number = pageStr !== null ? parseInt(pageStr, 10) : 1;
+    if (page > 0) {
+      return this.forum.getForumThread(threadIdOrKey, page - 1).toPromise();
+    } else {
+      return null;
+    }
   }
 }
 
@@ -93,6 +99,7 @@ const routes: Routes = [
     path: "threads/:thread_id",
     component: ForumThreadComponent,
     pathMatch: "full",
+    runGuardsAndResolvers: "paramsOrQueryParamsChange",
     resolve: {
       thread: ForumThreadResolverService,
     },

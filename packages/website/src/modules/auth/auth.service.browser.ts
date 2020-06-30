@@ -140,6 +140,6 @@ export class BrowserAuthService extends AuthService {
   }
 
   private getSelf(): Observable<AuthContext> {
-    return this.rest.get(["auth", "self"], $AuthContext);
+    return this.rest.get(["auth", "self"], {resType: $AuthContext});
   }
 }

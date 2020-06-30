@@ -24,7 +24,7 @@ async function withInMemoryForumService<R>(fn: (api: Api) => Promise<R>): Promis
   const user = new InMemoryUserService(UUID4_GENERATOR);
   const oauthProvider = new InMemoryOauthProviderService(UUID4_GENERATOR, password, secretKeyBytes);
   const auth = new InMemoryAuthService(UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest, user, oauthProvider);
-  const forum = new InMemoryForumService(UUID4_GENERATOR, user);
+  const forum = new InMemoryForumService(UUID4_GENERATOR, user, 10, 20);
   return fn({auth, forum});
 }
 

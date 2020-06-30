@@ -34,7 +34,7 @@ async function withPgForumService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const user = new PgUserService(db, secretKeyStr);
     const hammerfest = new InMemoryHammerfestService();
     const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
-    const forum = new PgForumService(db, UUID4_GENERATOR, user, 20);
+    const forum = new PgForumService(db, UUID4_GENERATOR, user, 10, 20);
     return fn({auth, forum});
   });
 }

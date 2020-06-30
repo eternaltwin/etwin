@@ -21,6 +21,8 @@ export class ForumThreadComponent implements OnInit {
   public thread$: Observable<ForumThread | typeof FORUM_THREAD_NOT_FOUND>;
   public isAuthenticated$: Observable<boolean>;
   public readonly FORUM_THREAD_NOT_FOUND = FORUM_THREAD_NOT_FOUND;
+  public readonly floor = Math.floor;
+  public readonly ceil = Math.ceil;
 
   constructor(
     auth: AuthService,

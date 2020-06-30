@@ -1,0 +1,33 @@
+.content .post-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+etwin-forum-post {
+  $metaColor: $lightViolet;
+  $metaBg: $deepViolet;
+  $borderColor: $lightViolet;
+  $spacing: 0.5rem;
+
+  display: block;
+  border-radius: $spacing;
+  box-shadow: 0 0 $spacing $borderColor;
+  margin: 2 * $spacing 0;
+
+  .post-meta {
+    display: flex;
+    background-color: $metaBg;
+    color: $metaColor;
+    border-radius: $spacing $spacing 0 0;
+    padding: $spacing;
+
+    .author {
+      flex-grow: 1;
+    }
+  }
+
+  .body {
+    padding: $spacing;
+  }
+}

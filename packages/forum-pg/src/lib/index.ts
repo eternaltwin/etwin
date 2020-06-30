@@ -53,13 +53,15 @@ export class PgForumService implements ForumService {
   private readonly database: Database;
   private readonly uuidGen: UuidGenerator;
   private readonly user: UserService;
-  private readonly defaultPostsPerPage: number;
+  public readonly defaultPostsPerPage: number;
+  public readonly defaultThreadsPerPage: number;
 
-  constructor(database: Database, uuidGen: UuidGenerator, user: UserService, defaultPostsPerPage: number) {
+  constructor(database: Database, uuidGen: UuidGenerator, user: UserService, defaultPostsPerPage: number, defaultThreadsPerPage: number) {
     this.database = database;
     this.uuidGen = uuidGen;
     this.user = user;
     this.defaultPostsPerPage = defaultPostsPerPage;
+    this.defaultThreadsPerPage = defaultThreadsPerPage;
   }
 
   async getThreads(_acx: AuthContext, _sectionIdOrKey: string): Promise<ForumThreadListing> {
@@ -167,7 +169,7 @@ export class PgForumService implements ForumService {
         locale: options.locale,
         threads: {
           offset: 0,
-          limit: 50,
+          limit: this.defaultThreadsPerPage,
           count: 0,
           items: [],
         },
@@ -191,7 +193,7 @@ export class PgForumService implements ForumService {
         SYSTEM_AUTH,
         {id: oldRow.forum_section_id, threads: {count: oldRow.thread_count}},
         0,
-        50,
+        this.defaultThreadsPerPage,
       );
       return {
         type: ObjectType.ForumSection,

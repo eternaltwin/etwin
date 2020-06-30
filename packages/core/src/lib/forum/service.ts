@@ -14,6 +14,9 @@ import { GetSectionOptions } from "./get-section-options.js";
 import { GetThreadOptions } from "./get-thread-options.js";
 
 export interface ForumService {
+  readonly defaultPostsPerPage: number;
+  readonly defaultThreadsPerPage: number;
+
   createOrUpdateSystemSection(key: ForumSectionKey, options: CreateOrUpdateSystemSectionOptions): Promise<ForumSection>;
 
   getSections(acx: AuthContext): Promise<ForumSectionListing>;

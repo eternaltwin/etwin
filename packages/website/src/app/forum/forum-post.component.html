@@ -1,12 +1,17 @@
-<p>
-  <ng-container [ngSwitch]="post.author.type">
-    <ng-container *ngSwitchCase="ObjectType.User">
-      {{asUserRef(post.author).displayName}}
+<div class="post-meta">
+  <div class="author">
+    <ng-container [ngSwitch]="post.author.type">
+      <ng-container *ngSwitchCase="ObjectType.User">
+        <a [routerLink]="['', 'users', asUserRef(post.author).id]">{{asUserRef(post.author).displayName}}</a>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        Unexpected author type: {{post.author | json}}
+      </ng-container>
     </ng-container>
-    <ng-container *ngSwitchDefault>
-      Unexpected author type: {{post.author | json}}
-    </ng-container>
-  </ng-container>
-  | {{post.ctime}}
-</p>
-<p [innerHTML]="post.revisions.latest.content?.html"></p>
+  </div>
+  <div class="time" [title]="post.ctime.toISOString()">
+    {{post.ctime | date : "short"}}
+  </div>
+</div>
+<div class="body" [innerHTML]="post.revisions.latest.content?.html">
+</div>

@@ -20,7 +20,7 @@ export class BrowserUserService extends UserService {
   }
 
   getUserById(userId: UserId): Observable<User | CompleteUser | null> {
-    return this.rest.get(["users", userId], $MaybeCompleteUser)
+    return this.rest.get(["users", userId], {resType: $MaybeCompleteUser})
       .pipe(
         rxCatchError((err: Error): Observable<null> => {
           return rxOf(null);

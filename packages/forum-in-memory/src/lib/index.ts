@@ -78,9 +78,14 @@ export class InMemoryForumService implements ForumService {
   private readonly threads: Map<ForumThreadId, InMemoryThread>;
   private readonly posts: Map<ForumPostId, InMemoryPost>;
 
-  constructor(uuidGen: UuidGenerator, user: UserService) {
+  readonly defaultPostsPerPage: number;
+  readonly defaultThreadsPerPage: number;
+
+  constructor(uuidGen: UuidGenerator, user: UserService, defaultPostsPerPage: number, defaultThreadsPerPage: number) {
     this.uuidGen = uuidGen;
     this.user = user;
+    this.defaultPostsPerPage = defaultPostsPerPage;
+    this.defaultThreadsPerPage = defaultThreadsPerPage;
     this.sections = new Map();
     this.threads = new Map();
     this.posts = new Map();
@@ -89,7 +94,7 @@ export class InMemoryForumService implements ForumService {
   async getThreads(_acx: AuthContext, _sectionIdOrKey: string): Promise<ForumThreadListing> {
     return {
       offset: 0,
-      limit: 50,
+      limit: this.defaultThreadsPerPage,
       count: 0,
       items: [],
     };
@@ -124,7 +129,7 @@ export class InMemoryForumService implements ForumService {
       isLocked: false,
       posts: {count: 1},
     };
-    const posts: ForumPostListing = await this.getPosts(acx, threadMeta, 0, 20);
+    const posts: ForumPostListing = await this.getPosts(acx, threadMeta, 0, this.defaultPostsPerPage);
     return {
       ...threadMeta,
       section: {...section, threads: {count: section.threads.count + 1}},

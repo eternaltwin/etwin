@@ -1,5 +1,6 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { $ListingQuery, ListingQuery } from "@eternal-twin/core/lib/core/listing-query.js";
 import { $CreatePostOptions, CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options.js";
 import { $CreateThreadOptions, CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options.js";
 import { $ForumPost, ForumPost } from "@eternal-twin/core/lib/forum/forum-post.js";
@@ -17,6 +18,7 @@ import koaCompose from "koa-compose";
 import Router from "koa-router";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
+import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader.js";
 
 import { KoaAuth } from "./helpers/koa-auth.js";
 
@@ -48,9 +50,17 @@ export function createForumRouter(api: Api): Router {
       return;
     }
     const sectionIdOrKey: ForumThreadId | ForumThreadKey = rawSectionIdOrKey;
+    let query: ListingQuery;
+    try {
+      query = $ListingQuery.read(QS_VALUE_READER, cx.request.query);
+    } catch (_err) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidQueryParameters"};
+      return;
+    }
     const section: ForumSection | null = await api.forum.getSectionById(auth, sectionIdOrKey, {
-      threadOffset: 0,
-      threadLimit: 20,
+      threadOffset: query.offset ?? 0,
+      threadLimit: query.limit ?? api.forum.defaultThreadsPerPage,
     });
     if (section === null) {
       cx.response.status = 404;
@@ -94,9 +104,17 @@ export function createForumRouter(api: Api): Router {
       return;
     }
     const threadIdOrKey: ForumThreadId | ForumThreadKey = rawThreadIdOrKey;
+    let query: ListingQuery;
+    try {
+      query = $ListingQuery.read(QS_VALUE_READER, cx.request.query);
+    } catch (_err) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidQueryParameters"};
+      return;
+    }
     const thread: ForumThread | null = await api.forum.getThreadById(auth, threadIdOrKey, {
-      postOffset: 0,
-      postLimit: 20,
+      postOffset: query.offset ?? 0,
+      postLimit: query.limit ?? api.forum.defaultPostsPerPage,
     });
     if (thread === null) {
       cx.response.status = 404;

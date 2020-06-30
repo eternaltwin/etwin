@@ -5,16 +5,17 @@ import { RouterModule } from "@angular/router";
 
 import { EtwinBarComponent } from "./etwin-bar.component";
 import { MainLayoutComponent } from "./main-layout.component";
+import { PaginationComponent } from "./pagination.component";
 import { SmallLayoutComponent } from "./small-layout.component";
 
 @NgModule({
-  declarations: [EtwinBarComponent, MainLayoutComponent, SmallLayoutComponent],
+  declarations: [EtwinBarComponent, MainLayoutComponent, PaginationComponent, SmallLayoutComponent],
   imports: [
     CommonModule,
     FormsModule,
     RouterModule,
   ],
-  exports: [MainLayoutComponent, SmallLayoutComponent, RouterModule],
+  exports: [MainLayoutComponent, SmallLayoutComponent, RouterModule, PaginationComponent],
 })
 export class SharedModule {
 }

@@ -8,14 +8,22 @@
             <span class="name">{{thread.section.displayName}}</span>
           </a>
         </nav>
-        <ol>
+        <ol class="post-list">
           <li *ngFor="let post of thread.posts.items">
-            <etwin-forum-post [post]="post"></etwin-forum-post>
+            <etwin-forum-post [post]="post" [id]="post.id"></etwin-forum-post>
           </li>
         </ol>
         <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">
           <a [routerLink]="['', 'forum', 'threads', thread.id, 'reply']">Reply</a>
         </ng-container>
+        |
+        <etwin-pagination [link]="['', 'forum', 'threads', thread.id]" [page1]="floor(thread.posts.offset / thread.posts.limit) + 1" [pageCount]="ceil(thread.posts.count / thread.posts.limit)"></etwin-pagination>
+
+<!--        <a routerLink="/login" [queryParams]="{method: 'hammerfest', next: next}" class="btn" *ngIf="method !== AuthMethod.Hammerfest">-->
+<!--          <img src="/assets/login-methods/hammerfest.png"/>-->
+<!--          <ng-container i18n="@@login.method.hammerfest">Sign in with Hammerfest</ng-container>-->
+<!--        </a>-->
+
         <ng-template #unauthenticated>
           <a [routerLink]="['', 'login']">Sign in to reply</a>
         </ng-template>

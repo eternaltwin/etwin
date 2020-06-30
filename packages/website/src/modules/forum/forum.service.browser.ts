@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
+import { $ListingQuery } from "@eternal-twin/core/lib/core/listing-query";
 import { $CreatePostOptions,CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options";
 import { $CreateThreadOptions,CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options";
 import { $ForumPost, ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
@@ -25,15 +26,22 @@ export class BrowserForumService extends ForumService {
   }
 
   getForumSections(): Observable<ForumSectionListing> {
-    return this.rest.get(["forum", "sections"], $ForumSectionListing);
+    return this.rest.get(["forum", "sections"], {resType: $ForumSectionListing});
   }
 
   getForumSection(idOrKey: ForumSectionId | ForumSectionKey): Observable<ForumSection> {
-    return this.rest.get(["forum", "sections", idOrKey], $ForumSection);
+    return this.rest.get(["forum", "sections", idOrKey], {resType: $ForumSection});
   }
 
-  getForumThread(idOrKey: ForumThreadId | ForumThreadKey): Observable<ForumThread> {
-    return this.rest.get(["forum", "threads", idOrKey], $ForumThread);
+  getForumThread(idOrKey: ForumThreadId | ForumThreadKey, page0: number): Observable<ForumThread> {
+    return this.rest.get(
+      ["forum", "threads", idOrKey],
+      {
+        queryType: $ListingQuery,
+        query: {offset: page0 * 10, limit: 10},
+        resType: $ForumThread,
+      },
+    );
   }
 
   createThread(sectionIdOrKey: ForumSectionId | ForumSectionKey, options: CreateThreadOptions): Observable<ForumThread> {

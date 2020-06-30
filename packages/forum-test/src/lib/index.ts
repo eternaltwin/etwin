@@ -62,7 +62,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
           ctime: section.ctime,
           threads: {
             offset: 0,
-            limit: 50,
+            limit: 20,
             count: 0,
             items: [],
           },
@@ -86,7 +86,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
           ctime: section.ctime,
           threads: {
             offset: 0,
-            limit: 50,
+            limit: 20,
             count: 0,
             items: [],
           },
@@ -133,7 +133,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
           posts: {
             count: 1,
             offset: 0,
-            limit: 20,
+            limit: 10,
             items: [
               {
                 type: ObjectType.ForumPost,
