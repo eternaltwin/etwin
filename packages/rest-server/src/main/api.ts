@@ -33,6 +33,28 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const koaAuth = new KoaAuth(auth);
   const forum = new PgForumService(db, UUID4_GENERATOR, user, config.forum.postsPerPage, config.forum.threadsPerPage);
 
+  // for (const [key, client] of config.clients) {
+  //   await oauthProvider.createOrUpdateSystemClient(
+  //     key,
+  //     {
+  //       displayName: client.displayName,
+  //       appUri: client.appUri.toString(),
+  //       callbackUri: client.callbackUri.toString(),
+  //       secret: Buffer.from(client.secret),
+  //     }
+  //   );
+  // }
+
+  for (const [key, section] of config.forum.sections) {
+    await forum.createOrUpdateSystemSection(
+      key,
+      {
+        displayName: section.displayName,
+        locale: section.locale,
+      },
+    );
+  }
+
   const api: Api = {auth, koaAuth, forum, user};
 
   async function teardown(): Promise<void> {

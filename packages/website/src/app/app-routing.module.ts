@@ -5,12 +5,14 @@ import { HomeView } from "./home/home.component";
 
 const routes: Routes = [
   {path: "", component: HomeView, pathMatch: "full"},
+  {path: "donate", loadChildren: () => import("./donate/donate.module").then(({DonateModule}) => DonateModule)},
   {path: "login", loadChildren: () => import("./auth/login/login.module").then(({LoginModule}) => LoginModule)},
   {
     path: "register",
     loadChildren: () => import("./auth/register/register.module").then(({RegisterModule}) => RegisterModule),
   },
   {path: "legal", loadChildren: () => import("./legal/legal.module").then(({LegalModule}) => LegalModule)},
+  {path: "games", loadChildren: () => import("./games/games.module").then(({GamesModule}) => GamesModule)},
   {path: "users", loadChildren: () => import("./users/users.module").then(({UsersModule}) => UsersModule)},
   {path: "forum", loadChildren: () => import("./forum/forum.module").then(({ForumModule}) => ForumModule)},
   {

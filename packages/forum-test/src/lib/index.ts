@@ -7,6 +7,7 @@ import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js"
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
+import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section.js";
 import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
@@ -96,6 +97,40 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
     });
   });
 
+  it("Create the main forum section and retrieve the section list", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      {
+        const actual: ForumSectionListing = await api.forum.getSections(aliceAuth);
+        const expected: ForumSectionListing = {
+          // count: 1,
+          // offset: 0,
+          // limit: 50,
+          items: [{
+            type: ObjectType.ForumSection,
+            id: section.id,
+            key: "fr_main",
+            displayName: "Forum Général",
+            locale: "fr-FR",
+            ctime: section.ctime,
+            threads: {
+              count: 0,
+            },
+          }],
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
+
   it("Create a thread in the main forum section", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
@@ -108,7 +143,10 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
       );
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
 
-      const thread: ForumThread = await api.forum.createThread(aliceAuth, section.id, {title: "Hello", body: "**First** discussion thread"});
+      const thread: ForumThread = await api.forum.createThread(aliceAuth, section.id, {
+        title: "Hello",
+        body: "**First** discussion thread",
+      });
 
       {
         const expected: ForumThread = {
@@ -161,11 +199,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                     },
                     moderation: null,
                     time: thread.ctime,
-                  }
-                }
-              }
-            ]
-          }
+                  },
+                },
+              },
+            ],
+          },
         };
         chai.assert.deepEqual(thread, expected);
       }
@@ -184,7 +222,10 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
       );
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
 
-      const thread: ForumThread = await api.forum.createThread(aliceAuth, section.id, {title: "Hello", body: "Original post"});
+      const thread: ForumThread = await api.forum.createThread(aliceAuth, section.id, {
+        title: "Hello",
+        body: "Original post",
+      });
 
       const posts: ForumPost[] = [];
 
@@ -197,7 +238,10 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
       chai.assert.lengthOf(posts, 10);
 
       {
-        const actual: ForumThread | null = await api.forum.getThreadById(aliceAuth, thread.id, {postOffset: 7, postLimit: 5});
+        const actual: ForumThread | null = await api.forum.getThreadById(aliceAuth, thread.id, {
+          postOffset: 7,
+          postLimit: 5,
+        });
         const expected: ForumThread = {
           type: ObjectType.ForumThread,
           id: thread.id,
@@ -248,8 +292,8 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                     },
                     moderation: null,
                     time: posts[6].ctime,
-                  }
-                }
+                  },
+                },
               },
               {
                 type: ObjectType.ForumPost,
@@ -277,8 +321,8 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                     },
                     moderation: null,
                     time: posts[7].ctime,
-                  }
-                }
+                  },
+                },
               },
               {
                 type: ObjectType.ForumPost,
@@ -306,8 +350,8 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                     },
                     moderation: null,
                     time: posts[8].ctime,
-                  }
-                }
+                  },
+                },
               },
               {
                 type: ObjectType.ForumPost,
@@ -335,11 +379,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                     },
                     moderation: null,
                     time: posts[9].ctime,
-                  }
-                }
+                  },
+                },
               },
-            ]
-          }
+            ],
+          },
         };
         chai.assert.deepEqual(actual, expected);
       }
