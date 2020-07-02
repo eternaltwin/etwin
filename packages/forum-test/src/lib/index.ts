@@ -6,12 +6,14 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
+import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post.js";
+import { ForumRole } from "@eternal-twin/core/lib/forum/forum-role.js";
 import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section.js";
 import { $ForumThread, ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
+import { $UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
 import chai from "chai";
 
@@ -414,6 +416,367 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
           chai.assert.deepEqual(actual, expected);
           throw new Error("Actual does not match expected");
         }
+      }
+    });
+  });
+
+  it("Guests can't add moderators", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+
+      try {
+        await api.forum.addModerator(GUEST_AUTH, section.id, bobAuth.user.id);
+        throw chai.assert.fail("Expected moderator addition from guest to fail");
+      } catch (e) {
+        chai.assert.propertyVal(e, "message", "Unauthorized");
+      }
+    });
+  });
+
+  it("Regular users can't add moderators", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+
+      // Regular users can't add moderators
+      try {
+        await api.forum.addModerator(bobAuth, section.id, bobAuth.user.id);
+        throw chai.assert.fail("Expected moderator addition from regular user to fail");
+      } catch (e) {
+        chai.assert.propertyVal(e, "message", "Forbidden");
+      }
+    });
+  });
+
+  it("Administrators can add moderators", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+      const charlieAuth: UserAuthContext = await createUser(api.auth, "charlie", "Charlie", "ccccc");
+
+      // Administrators can add moderators
+      const sectionWithBobMod = await api.forum.addModerator(aliceAuth, section.id, bobAuth.user.id);
+      {
+        const expected: ForumSection = {
+          ...section,
+          roleGrants: [
+            {
+              role: ForumRole.Moderator,
+              user: $UserRef.clone(bobAuth.user),
+              startTime: sectionWithBobMod.roleGrants[0].startTime,
+              grantedBy: $UserRef.clone(aliceAuth.user),
+            },
+          ],
+        };
+        chai.assert.deepEqual(sectionWithBobMod, expected);
+      }
+
+      // Users can see moderators
+      {
+        const actual = await api.forum.getSectionById(charlieAuth, section.id, {threadOffset: 0, threadLimit: 20});
+        chai.assert.deepEqual(actual, sectionWithBobMod);
+      }
+      // Guests can see moderators
+      {
+        const actual = await api.forum.getSectionById(GUEST_AUTH, section.id, {threadOffset: 0, threadLimit: 20});
+        chai.assert.deepEqual(actual, sectionWithBobMod);
+      }
+    });
+  });
+
+  it("Moderator addition is idempotent", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+
+      const sectionWithBobMod = await api.forum.addModerator(aliceAuth, section.id, bobAuth.user.id);
+
+      {
+        const actual = await api.forum.addModerator(aliceAuth, section.id, bobAuth.user.id);
+        chai.assert.deepEqual(actual, sectionWithBobMod);
+      }
+    });
+  });
+
+  it("Moderators can't add other moderators", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+      const charlieAuth: UserAuthContext = await createUser(api.auth, "charlie", "Charlie", "ccccc");
+
+      await api.forum.addModerator(aliceAuth, section.id, bobAuth.user.id);
+
+      try {
+        await api.forum.addModerator(bobAuth, section.id, charlieAuth.user.id);
+        throw chai.assert.fail("Expected moderator addition from other moderator to fail");
+      } catch (e) {
+        chai.assert.propertyVal(e, "message", "Forbidden");
+      }
+    });
+  });
+
+  it("There can be multiple moderators for a section", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+      const charlieAuth: UserAuthContext = await createUser(api.auth, "charlie", "Charlie", "ccccc");
+
+      const sectionWithBobMod = await api.forum.addModerator(aliceAuth, section.id, bobAuth.user.id);
+
+      const sectionWithCharlieMod = await api.forum.addModerator(aliceAuth, section.id, charlieAuth.user.id);
+      {
+        const expected: ForumSection = {
+          ...section,
+          roleGrants: [
+            {
+              role: ForumRole.Moderator,
+              user: $UserRef.clone(bobAuth.user),
+              startTime: sectionWithBobMod.roleGrants[0].startTime,
+              grantedBy: $UserRef.clone(aliceAuth.user),
+            },
+            {
+              role: ForumRole.Moderator,
+              user: $UserRef.clone(charlieAuth.user),
+              startTime: sectionWithCharlieMod.roleGrants[1].startTime,
+              grantedBy: $UserRef.clone(aliceAuth.user),
+            },
+          ],
+        };
+        chai.assert.deepEqual(sectionWithCharlieMod, expected);
+      }
+    });
+  });
+
+  it("Guests can't delete moderators", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+      const charlieAuth: UserAuthContext = await createUser(api.auth, "charlie", "Charlie", "ccccc");
+
+      await api.forum.addModerator(aliceAuth, section.id, bobAuth.user.id);
+      await api.forum.addModerator(aliceAuth, section.id, charlieAuth.user.id);
+
+      try {
+        await api.forum.deleteModerator(GUEST_AUTH, section.id, bobAuth.user.id);
+        throw chai.assert.fail("Expected moderator deletion from guest to fail");
+      } catch (e) {
+        chai.assert.propertyVal(e, "message", "Unauthorized");
+      }
+    });
+  });
+
+  it("Users can't delete moderators", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+      const charlieAuth: UserAuthContext = await createUser(api.auth, "charlie", "Charlie", "ccccc");
+      const danAuth: UserAuthContext = await createUser(api.auth, "dan", "Dan", "ddddd");
+
+      await api.forum.addModerator(aliceAuth, section.id, bobAuth.user.id);
+      await api.forum.addModerator(aliceAuth, section.id, charlieAuth.user.id);
+
+      try {
+        await api.forum.deleteModerator(danAuth, section.id, bobAuth.user.id);
+        throw chai.assert.fail("Expected moderator deletion from regular user to fail");
+      } catch (e) {
+        chai.assert.propertyVal(e, "message", "Forbidden");
+      }
+    });
+  });
+
+  it("Moderators can't delete other moderators", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+      const charlieAuth: UserAuthContext = await createUser(api.auth, "charlie", "Charlie", "ccccc");
+
+      await api.forum.addModerator(aliceAuth, section.id, bobAuth.user.id);
+      await api.forum.addModerator(aliceAuth, section.id, charlieAuth.user.id);
+
+      try {
+        await api.forum.deleteModerator(charlieAuth, section.id, bobAuth.user.id);
+        throw chai.assert.fail("Expected moderator deletion from other moderator to fail");
+      } catch (e) {
+        chai.assert.propertyVal(e, "message", "Forbidden");
+      }
+    });
+  });
+
+  it("Moderators can delete themselves", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+      const charlieAuth: UserAuthContext = await createUser(api.auth, "charlie", "Charlie", "ccccc");
+
+      await api.forum.addModerator(aliceAuth, section.id, bobAuth.user.id);
+      const sectionWithCharlieMod = await api.forum.addModerator(aliceAuth, section.id, charlieAuth.user.id);
+
+      const sectionWithBobRevoked = await api.forum.deleteModerator(bobAuth, section.id, bobAuth.user.id);
+      {
+        const expected: ForumSection = {
+          ...section,
+          roleGrants: [
+            {
+              role: ForumRole.Moderator,
+              user: $UserRef.clone(charlieAuth.user),
+              startTime: sectionWithCharlieMod.roleGrants[1].startTime,
+              grantedBy: $UserRef.clone(aliceAuth.user),
+            },
+          ],
+        };
+        chai.assert.deepEqual(sectionWithBobRevoked, expected);
+      }
+    });
+  });
+
+  it("Administrators can delete moderators", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+      const charlieAuth: UserAuthContext = await createUser(api.auth, "charlie", "Charlie", "ccccc");
+
+      await api.forum.addModerator(aliceAuth, section.id, bobAuth.user.id);
+      const sectionWithCharlieMod = await api.forum.addModerator(aliceAuth, section.id, charlieAuth.user.id);
+
+      {
+        const actual = await api.forum.deleteModerator(aliceAuth, section.id, charlieAuth.user.id);
+        const expected: ForumSection = {
+          ...section,
+          roleGrants: [
+            {
+              role: ForumRole.Moderator,
+              user: $UserRef.clone(bobAuth.user),
+              startTime: sectionWithCharlieMod.roleGrants[0].startTime,
+              grantedBy: $UserRef.clone(aliceAuth.user),
+            },
+          ],
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
+
+  it("Moderator deletion is idempotent", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
+      const charlieAuth: UserAuthContext = await createUser(api.auth, "charlie", "Charlie", "ccccc");
+
+      await api.forum.addModerator(aliceAuth, section.id, bobAuth.user.id);
+      const sectionWithCharlieMod = await api.forum.addModerator(aliceAuth, section.id, charlieAuth.user.id);
+
+      await api.forum.deleteModerator(aliceAuth, section.id, charlieAuth.user.id);
+      {
+        const actual = await api.forum.deleteModerator(aliceAuth, section.id, charlieAuth.user.id);
+        const expected: ForumSection = {
+          ...section,
+          roleGrants: [
+            {
+              role: ForumRole.Moderator,
+              user: $UserRef.clone(bobAuth.user),
+              startTime: sectionWithCharlieMod.roleGrants[0].startTime,
+              grantedBy: $UserRef.clone(aliceAuth.user),
+            },
+          ],
+        };
+        chai.assert.deepEqual(actual, expected);
       }
     });
   });

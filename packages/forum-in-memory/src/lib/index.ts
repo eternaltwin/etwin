@@ -18,6 +18,8 @@ import { ForumPostRevisionId } from "@eternal-twin/core/lib/forum/forum-post-rev
 import { ForumPostRevisionListing } from "@eternal-twin/core/lib/forum/forum-post-revision-listing.js";
 import { $ForumPostRevision, ForumPostRevision } from "@eternal-twin/core/lib/forum/forum-post-revision.js";
 import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post.js";
+import { $ForumRoleGrant, ForumRoleGrant } from "@eternal-twin/core/lib/forum/forum-role-grant.js";
+import { ForumRole } from "@eternal-twin/core/lib/forum/forum-role.js";
 import { ForumSectionDisplayName } from "@eternal-twin/core/lib/forum/forum-section-display-name.js";
 import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id.js";
 import { ForumSectionKey, NullableForumSectionKey } from "@eternal-twin/core/lib/forum/forum-section-key.js";
@@ -47,6 +49,7 @@ interface InMemorySection {
   displayName: ForumSectionDisplayName;
   displayNameMtime: Date;
   locale: NullableLocaleId;
+  roleGrants: Set<ForumRoleGrant>;
 }
 
 interface InMemoryThread {
@@ -162,6 +165,7 @@ export class InMemoryForumService implements ForumService {
         displayName: options.displayName,
         displayNameMtime: new Date(time),
         locale: options.locale,
+        roleGrants: new Set(),
       };
       this.sections.set(section.id, section);
 
@@ -190,7 +194,7 @@ export class InMemoryForumService implements ForumService {
         displayName: oldSection.displayName,
         locale: oldSection.locale,
         threads: await this.getThreads(SYSTEM_AUTH, oldSection.id),
-        roleGrants: [],
+        roleGrants: this.getRoleGrants(SYSTEM_AUTH, oldSection.id),
       };
     }
   }
@@ -232,7 +236,7 @@ export class InMemoryForumService implements ForumService {
       ctime: section.ctime,
       locale: section.locale,
       threads,
-      roleGrants: [],
+      roleGrants: this.getRoleGrants(acx, section.id),
     };
   }
 
@@ -259,6 +263,42 @@ export class InMemoryForumService implements ForumService {
       section,
       posts,
     };
+  }
+
+  async addModerator(
+    acx: AuthContext,
+    sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    userId: UserId,
+  ): Promise<ForumSection> {
+    await this.innerAddModerator(acx, sectionIdOrKey, userId);
+    const section: ForumSection | null = await this.getSectionById(acx, sectionIdOrKey, {
+      threadOffset: 0,
+      threadLimit: this.defaultThreadsPerPage,
+    });
+    if (section === null) {
+      throw new Error("AssertionError: Expected section to exist");
+    }
+    return section;
+  }
+
+  async deleteModerator(
+    acx: AuthContext,
+    sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    userId: UserId,
+  ): Promise<ForumSection> {
+    await this.innerDeleteModerator(acx, sectionIdOrKey, userId);
+    const section: ForumSection | null = await this.getSectionById(acx, sectionIdOrKey, {
+      threadOffset: 0,
+      threadLimit: this.defaultThreadsPerPage,
+    });
+    if (section === null) {
+      throw new Error("AssertionError: Expected section to exist");
+    }
+    return section;
+  }
+
+  async deletePost(_acx: AuthContext, _postId: ForumPostId): Promise<ForumPost> {
+    throw new Error("Unimplemented");
   }
 
   private getImSection(_acx: AuthContext, idOrKey: ForumSectionId | ForumSectionKey): InMemorySection | null {
@@ -407,7 +447,23 @@ export class InMemoryForumService implements ForumService {
     };
   }
 
-  async innerCreatePost(acx: AuthContext, threadId: ForumThreadId, options: CreatePostOptions): Promise<ShortForumPost> {
+  private getRoleGrants(acx: AuthContext, idOrKey: ForumSectionId | ForumSectionKey): ForumRoleGrant[] {
+    const section: InMemorySection | null = this.getImSection(acx, idOrKey);
+    if (section === null) {
+      throw new Error("AssertionError: Expected section to exist");
+    }
+    const grants: ForumRoleGrant[] = [];
+    for (const grant of section.roleGrants) {
+      grants.push($ForumRoleGrant.clone(grant));
+    }
+    return grants;
+  }
+
+  async innerCreatePost(
+    acx: AuthContext,
+    threadId: ForumThreadId,
+    options: CreatePostOptions,
+  ): Promise<ShortForumPost> {
     if (acx.type !== AuthType.User) {
       throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
     }
@@ -476,23 +532,59 @@ export class InMemoryForumService implements ForumService {
     return postRevision;
   }
 
-  async addModerator(
-    _acx: AuthContext,
-    _sectionIdOrKey: ForumSectionId | ForumSectionKey,
-    _userId: UserId
-  ): Promise<ForumSection> {
-    throw new Error("Unimplemented");
+  private async innerAddModerator(
+    acx: AuthContext,
+    sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    userId: UserId,
+  ): Promise<void> {
+    if (!(acx.type === AuthType.User && acx.isAdministrator)) {
+      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    }
+    const imSection: InMemorySection | null = this.getImSection(acx, sectionIdOrKey);
+    if (imSection === null) {
+      throw new Error("SectionNotFound");
+    }
+
+    for (const oldGrant of imSection.roleGrants) {
+      if (oldGrant.user.id === userId) {
+        return;
+      }
+    }
+    const user: UserRef | null = await this.user.getUserRefById(acx, userId);
+    if (user === null) {
+      throw new Error("AssertionError: Expected user to exist");
+    }
+    const granter: UserRef = $UserRef.clone(acx.user);
+    const newGrant: ForumRoleGrant = {
+      role: ForumRole.Moderator,
+      user,
+      grantedBy: granter,
+      startTime: new Date(),
+    };
+    imSection.roleGrants.add(newGrant);
   }
 
-  async deleteModerator(
-    _acx: AuthContext,
-    _sectionIdOrKey: ForumSectionId | ForumSectionKey,
-    _userId: UserId
-  ): Promise<ForumSection> {
-    throw new Error("Unimplemented");
-  }
-
-  async deletePost(_acx: AuthContext, _postId: ForumPostId): Promise<ForumPost> {
-    throw new Error("Unimplemented");
+  private async innerDeleteModerator(
+    acx: AuthContext,
+    sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    userId: UserId,
+  ): Promise<void> {
+    if (!(acx.type === AuthType.User && (acx.isAdministrator || acx.user.id === userId))) {
+      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    }
+    const imSection: InMemorySection | null = this.getImSection(acx, sectionIdOrKey);
+    if (imSection === null) {
+      throw new Error("SectionNotFound");
+    }
+    let oldGrant: ForumRoleGrant | null = null;
+    for (const grant of imSection.roleGrants) {
+      if (grant.user.id === userId) {
+        oldGrant = grant;
+        break;
+      }
+    }
+    if (oldGrant !== null) {
+      imSection.roleGrants.delete(oldGrant);
+    }
   }
 }

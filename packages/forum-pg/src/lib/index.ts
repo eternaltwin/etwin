@@ -770,7 +770,7 @@ export class PgForumService implements ForumService {
     sectionIdOrKey: ForumSectionId | ForumSectionKey,
     userId: UserId,
   ): Promise<void> {
-    if (acx.type !== AuthType.User || !acx.isAdministrator) {
+    if (!(acx.type === AuthType.User && acx.isAdministrator)) {
       throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
     }
     const granterId: UserId = acx.user.id;
@@ -781,7 +781,7 @@ export class PgForumService implements ForumService {
     } else {
       sectionKey = sectionIdOrKey;
     }
-    await queryable.countOne(
+    await queryable.countOneOrNone(
       `
         WITH section AS (
           SELECT forum_section_id
@@ -789,7 +789,11 @@ export class PgForumService implements ForumService {
           WHERE forum_section_id = $1::UUID OR key = $2::VARCHAR
         )
         INSERT INTO forum_role_grants(forum_section_id, user_id, start_time, granted_by)
-        VALUES (section.forum_section_id, $3::UUID, NOW(), $4::UUID);
+        (
+          SELECT forum_section_id, $3::UUID AS user_id, NOW() AS start_time, $4::UUID AS granted_by
+          FROM section
+        )
+        ON CONFLICT (forum_section_id, user_id) DO NOTHING;
       `,
       [sectionId, sectionKey, userId, granterId],
     );
@@ -801,7 +805,7 @@ export class PgForumService implements ForumService {
     sectionIdOrKey: ForumSectionId | ForumSectionKey,
     userId: UserId,
   ): Promise<void> {
-    if (acx.type !== AuthType.User || !acx.isAdministrator) {
+    if (!(acx.type === AuthType.User && (acx.isAdministrator || acx.user.id === userId))) {
       throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
     }
     const revokerId: UserId = acx.user.id;
@@ -812,28 +816,41 @@ export class PgForumService implements ForumService {
     } else {
       sectionKey = sectionIdOrKey;
     }
-    await queryable.countOne(
+    type Row = Pick<ForumRoleGrantRow, "user_id" | "start_time" | "granted_by">;
+    const roleGrantRow: Row | undefined = await queryable.oneOrNone(
       `
         WITH section AS (
           SELECT forum_section_id
           FROM forum_sections
           WHERE forum_section_id = $1::UUID OR key = $2::VARCHAR
         )
-        DELETE FROM forum_role_revocations WHERE section_id = section.forum_section_id AND user_id = $3::UUID;
-      `,
+        DELETE
+        FROM forum_role_grants
+        USING section
+        WHERE forum_role_grants.forum_section_id = section.forum_section_id AND user_id = $3::UUID
+        RETURNING user_id, start_time, granted_by;`,
       [sectionId, sectionKey, userId],
     );
-    await queryable.countOne(
+    if (roleGrantRow === undefined) {
+      // No grant, or already revoked
+      return;
+    }
+
+    await queryable.countOneOrNone(
       `
         WITH section AS (
           SELECT forum_section_id
           FROM forum_sections
           WHERE forum_section_id = $1::UUID OR key = $2::VARCHAR
         )
-        INSERT INTO forum_role_grants(forum_section_id, user_id, start_time, granted_by)
-        VALUES (section.forum_section_id, $3::UUID, NOW(), $4::UUID);
+        INSERT INTO forum_role_revocations(forum_section_id, user_id, start_time, end_time, granted_by, revoked_by)
+          (
+            SELECT forum_section_id, $3::UUID AS user_id, $4::TIMESTAMP AS start_time, NOW() AS end_time, $5::UUID AS granted_by, $6::UUID AS revoked_by
+            FROM section
+          )
+        ON CONFLICT (forum_section_id, user_id, start_time) DO NOTHING;
       `,
-      [sectionId, sectionKey, userId, revokerId],
+      [sectionId, sectionKey, userId, roleGrantRow.start_time, roleGrantRow.granted_by, revokerId],
     );
   }
 }

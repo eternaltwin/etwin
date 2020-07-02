@@ -56,6 +56,14 @@ export interface Queryable extends SimpleQueryable {
   countOne(query: string, values: readonly unknown[]): Promise<void>;
 
   /**
+   * Execute the provided parametrized SQL query and assert that it affects exactly zero or one row.
+   *
+   * @param query
+   * @param values
+   */
+  countOneOrNone(query: string, values: readonly unknown[]): Promise<void>;
+
+  /**
    * Execute the provided parametrized SQL query and returns all the rows.
    *
    * @param query
@@ -75,6 +83,7 @@ export function deriveQueryable(simple: SimpleQueryable): Queryable {
     oneOrNone: async <R>(query: string, values: any[]): Promise<R | undefined> => oneOrNone<R>(simple, query, values),
     one: async (query: string, values: any[]) => one(simple, query, values),
     countOne: async (query: string, values: any[]) => countOne(simple, query, values),
+    countOneOrNone: async (query: string, values: any[]) => countOneOrNone(simple, query, values),
     many: async (query: string, values: any[]) => many(simple, query, values),
   };
 }
@@ -103,7 +112,14 @@ async function one<T>(simple: SimpleQueryable, query: string, values: readonly u
 async function countOne(simple: SimpleQueryable, query: string, values: readonly unknown[]): Promise<void> {
   const result: pg.QueryResult = await simple.query(query, values);
   if (result.rowCount !== 1) {
-    throw new Error(`AssertionError: Expected query to only touch row, got ${result.rowCount}`);
+    throw new Error(`AssertionError: Expected query to touch 1 row, got ${result.rowCount}`);
+  }
+}
+
+async function countOneOrNone(simple: SimpleQueryable, query: string, values: readonly unknown[]): Promise<void> {
+  const result: pg.QueryResult = await simple.query(query, values);
+  if (result.rowCount > 1) {
+    throw new Error(`AssertionError: Expected query to touch 0 or 1 row, got ${result.rowCount}`);
   }
 }
 
@@ -178,6 +194,10 @@ export class Database implements Queryable {
 
   public async countOne(query: string, values: any[]): Promise<void> {
     return countOne(this.pool, query, values);
+  }
+
+  public async countOneOrNone(query: string, values: any[]): Promise<void> {
+    return countOneOrNone(this.pool, query, values);
   }
 
   public async many(query: string, values: any[]): Promise<any[]> {
