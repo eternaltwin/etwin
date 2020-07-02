@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { SharedModule } from "../shared/shared.module";
+import { ForumActorComponent } from "./forum-actor.component";
 import { ForumHomeComponent } from "./forum-home.component";
 import { ForumPostComponent } from "./forum-post.component";
 import { ForumRoutingModule } from "./forum-routing.module";
@@ -12,7 +13,7 @@ import { NewForumPostComponent } from "./new-forum-post.component";
 import { NewForumThreadComponent } from "./new-forum-thread.component";
 
 @NgModule({
-  declarations: [ForumHomeComponent, ForumPostComponent, ForumThreadComponent, ForumSectionComponent, NewForumPostComponent, NewForumThreadComponent],
+  declarations: [ForumActorComponent, ForumHomeComponent, ForumPostComponent, ForumThreadComponent, ForumSectionComponent, NewForumPostComponent, NewForumThreadComponent],
   imports: [
     CommonModule,
     FormsModule,

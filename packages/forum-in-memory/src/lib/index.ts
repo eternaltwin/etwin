@@ -10,7 +10,7 @@ import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
 import { CreateOrUpdateSystemSectionOptions } from "@eternal-twin/core/lib/forum/create-or-update-system-section-options.js";
 import { CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options.js";
 import { CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options.js";
-import { $ForumPostAuthor, ForumPostAuthor } from "@eternal-twin/core/lib/forum/forum-post-author.js";
+import { $ForumActor, ForumActor } from "@eternal-twin/core/lib/forum/forum-actor.js";
 import { ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id.js";
 import { ForumPostListing } from "@eternal-twin/core/lib/forum/forum-post-listing.js";
 import { ForumPostRevisionComment } from "@eternal-twin/core/lib/forum/forum-post-revision-comment.js";
@@ -30,10 +30,11 @@ import { ForumThreadListing } from "@eternal-twin/core/lib/forum/forum-thread-li
 import { ForumThreadMeta } from "@eternal-twin/core/lib/forum/forum-thread-meta.js";
 import { ForumThreadTitle } from "@eternal-twin/core/lib/forum/forum-thread-title.js";
 import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
-import { GetSectionOptions } from "@eternal-twin/core/lib/forum/get-section-options";
+import { GetSectionOptions } from "@eternal-twin/core/lib/forum/get-section-options.js";
 import { GetThreadOptions } from "@eternal-twin/core/lib/forum/get-thread-options.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js";
+import { UserForumActor } from "@eternal-twin/core/lib/forum/user-forum-actor.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $UserRef, UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
@@ -172,6 +173,7 @@ export class InMemoryForumService implements ForumService {
         displayName: section.displayName,
         locale: section.locale,
         threads: await this.getThreads(SYSTEM_AUTH, section.id),
+        roleGrants: [],
       };
     } else {
       if (oldSection.locale !== options.locale) {
@@ -188,6 +190,7 @@ export class InMemoryForumService implements ForumService {
         displayName: oldSection.displayName,
         locale: oldSection.locale,
         threads: await this.getThreads(SYSTEM_AUTH, oldSection.id),
+        roleGrants: [],
       };
     }
   }
@@ -229,6 +232,7 @@ export class InMemoryForumService implements ForumService {
       ctime: section.ctime,
       locale: section.locale,
       threads,
+      roleGrants: [],
     };
   }
 
@@ -383,7 +387,7 @@ export class InMemoryForumService implements ForumService {
         type: ObjectType.ForumPost,
         id: post.id,
         ctime: post.ctime,
-        author,
+        author: {type: ObjectType.UserForumActor, user: author},
         revisions,
       };
       items.push(item);
@@ -410,13 +414,13 @@ export class InMemoryForumService implements ForumService {
     if (this.getImThread(acx, threadId) === null) {
       throw new Error("ThreadNotFound");
     }
-    const author: ForumPostAuthor = $UserRef.clone(acx.user);
+    const author: UserForumActor = {type: ObjectType.UserForumActor, user: $UserRef.clone(acx.user)};
     const revision = await this.createPostRevisionSync(acx, author, options.body, null, null);
     const postId: ForumPostId = this.uuidGen.next();
     const post: InMemoryPost = {
       id: postId,
       threadId,
-      authorId: author.id,
+      authorId: author.user.id,
       ctime: new Date(revision.time.getTime()),
       revisions: [revision],
     };
@@ -426,7 +430,7 @@ export class InMemoryForumService implements ForumService {
       type: ObjectType.ForumPost,
       id: post.id,
       ctime: new Date(post.ctime.getTime()),
-      author: $UserRef.clone(acx.user),
+      author: author,
       revisions: {
         count: 1,
         latest: $ForumPostRevision.clone(revision),
@@ -448,12 +452,12 @@ export class InMemoryForumService implements ForumService {
 
   private createPostRevisionSync(
     _acx: AuthContext,
-    author: ForumPostAuthor,
+    author: ForumActor,
     body: MarktwinText | null,
     modBody: MarktwinText | null,
     comment: ForumPostRevisionComment | null,
   ): ForumPostRevision {
-    if (author.type !== ObjectType.User) {
+    if (author.type !== ObjectType.UserForumActor) {
       throw new Error("NotImeplemented: Non-User post author");
     }
     const revisionId: ForumPostRevisionId = this.uuidGen.next();
@@ -466,9 +470,29 @@ export class InMemoryForumService implements ForumService {
       time: new Date(time),
       content: body !== null ? {marktwin: body, html: htmlBody!} : null,
       moderation: modBody !== null ? {marktwin: modBody, html: htmlModBody!} : null,
-      author: $ForumPostAuthor.clone(author),
+      author: $ForumActor.clone(author),
       comment,
     };
     return postRevision;
+  }
+
+  async addModerator(
+    _acx: AuthContext,
+    _sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    _userId: UserId
+  ): Promise<ForumSection> {
+    throw new Error("Unimplemented");
+  }
+
+  async deleteModerator(
+    _acx: AuthContext,
+    _sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    _userId: UserId
+  ): Promise<ForumSection> {
+    throw new Error("Unimplemented");
+  }
+
+  async deletePost(_acx: AuthContext, _postId: ForumPostId): Promise<ForumPost> {
+    throw new Error("Unimplemented");
   }
 }

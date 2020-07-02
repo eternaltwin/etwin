@@ -63,3 +63,32 @@ CREATE TABLE public._post_formatting_costs (
   CONSTRAINT forum_post_revision__forum_revision__fk FOREIGN KEY (forum_post_revision_id) REFERENCES forum_post_revisions(forum_post_revision_id) ON DELETE CASCADE ON UPDATE CASCADE,
   CHECK (cost > 0)
 );
+
+CREATE TABLE public.forum_role_grants (
+  forum_section_id UUID NOT NULL,
+  user_id UUID NOT NULL,
+  start_time TIMESTAMP(3),
+  -- User who granted the moderator permissions
+  granted_by UUID NOT NULL,
+  CONSTRAINT forum_moderator__forum_section__fk FOREIGN KEY (forum_section_id) REFERENCES forum_sections(forum_section_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT forum_moderator__user__fk FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT forum_moderator_granter__user__fk FOREIGN KEY (granted_by) REFERENCES users(user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  PRIMARY KEY (forum_section_id, user_id)
+);
+
+CREATE TABLE public.forum_role_revocations (
+  forum_section_id UUID NOT NULL,
+  user_id UUID NOT NULL,
+  start_time TIMESTAMP(3),
+  end_time TIMESTAMP(3),
+  -- User who granted the moderator permissions
+  granted_by UUID NOT NULL,
+  -- User who revoked the moderator permissions
+  revoked_by UUID NOT NULL,
+  CONSTRAINT forum_role_revocation__forum_section__fk FOREIGN KEY (forum_section_id) REFERENCES forum_sections(forum_section_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT forum_role_revocation_user__user__fk FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT forum_moderator_granter__user__fk FOREIGN KEY (granted_by) REFERENCES users(user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT forum_moderator_revoker__user__fk FOREIGN KEY (revoked_by) REFERENCES users(user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  PRIMARY KEY (forum_section_id, user_id, start_time),
+  CHECK (start_time < end_time)
+);

@@ -1,0 +1,8 @@
+<ng-container [ngSwitch]="actor.type">
+  <ng-container *ngSwitchCase="ObjectType.UserForumActor">
+    <a [routerLink]="['', 'users', asUserForumActor(actor).user.id]">{{asUserForumActor(actor).user.displayName}}</a>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <pre>{{actor | json}}</pre>
+  </ng-container>
+</ng-container>

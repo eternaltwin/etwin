@@ -1,13 +1,6 @@
 <div class="post-meta">
   <div class="author">
-    <ng-container [ngSwitch]="post.author.type">
-      <ng-container *ngSwitchCase="ObjectType.User">
-        <a [routerLink]="['', 'users', asUserRef(post.author).id]">{{asUserRef(post.author).displayName}}</a>
-      </ng-container>
-      <ng-container *ngSwitchDefault>
-        Unexpected author type: {{post.author | json}}
-      </ng-container>
-    </ng-container>
+    <etwin-forum-actor [actor]="post.author"></etwin-forum-actor>
   </div>
   <div class="time" [title]="post.ctime.toISOString()">
     {{post.ctime | date : "short"}}

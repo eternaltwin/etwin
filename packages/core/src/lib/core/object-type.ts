@@ -14,7 +14,9 @@ export enum ObjectType {
   ForumThread,
   ForumPost,
   ForumPostRevision,
-  ForumRole,
+  ClientForumActor,
+  RoleForumActor,
+  UserForumActor,
 }
 
 export const $ObjectType: TsEnumType<ObjectType> = new TsEnumType<ObjectType>({

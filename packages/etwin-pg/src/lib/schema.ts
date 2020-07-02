@@ -138,3 +138,19 @@ export interface PostFormattingCostRow {
   formatting: string;
   cost: number;
 }
+
+export interface ForumRoleGrantRow {
+  forum_section_id: string;
+  user_id: string;
+  start_time: Date;
+  granted_by: string;
+}
+
+export interface ForumRoleRevocationRow {
+  forum_section_id: string;
+  user_id: string;
+  start_time: Date;
+  end_time: Date;
+  granted_by: string;
+  revoked_by: string;
+}

@@ -9,7 +9,7 @@ import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
 import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section.js";
-import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
+import { $ForumThread, ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
@@ -67,6 +67,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
             count: 0,
             items: [],
           },
+          roleGrants: [],
         };
         chai.assert.deepEqual(section, expected);
       }
@@ -91,6 +92,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
             count: 0,
             items: [],
           },
+          roleGrants: [],
         };
         chai.assert.deepEqual(actual, expected);
       }
@@ -177,9 +179,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                 type: ObjectType.ForumPost,
                 ctime: thread.ctime,
                 author: {
-                  type: ObjectType.User,
-                  id: aliceAuth.user.id,
-                  displayName: aliceAuth.user.displayName,
+                  type: ObjectType.UserForumActor, user: {
+                    type: ObjectType.User,
+                    id: aliceAuth.user.id,
+                    displayName: aliceAuth.user.displayName,
+                  },
                 },
                 id: thread.posts.items[0].id,
                 revisions: {
@@ -188,9 +192,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                     type: ObjectType.ForumPostRevision,
                     id: thread.posts.items[0].revisions.latest.id,
                     author: {
-                      type: ObjectType.User,
-                      id: aliceAuth.user.id,
-                      displayName: aliceAuth.user.displayName,
+                      type: ObjectType.UserForumActor, user: {
+                        type: ObjectType.User,
+                        id: aliceAuth.user.id,
+                        displayName: aliceAuth.user.displayName,
+                      },
                     },
                     comment: null,
                     content: {
@@ -205,7 +211,10 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
             ],
           },
         };
-        chai.assert.deepEqual(thread, expected);
+        if (!$ForumThread.test(thread) || !$ForumThread.equals(thread, expected)) {
+          chai.assert.deepEqual(thread, expected);
+          throw new Error("Actual does not match expected");
+        }
       }
     });
   });
@@ -270,9 +279,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                 type: ObjectType.ForumPost,
                 ctime: posts[6].ctime,
                 author: {
-                  type: ObjectType.User,
-                  id: aliceAuth.user.id,
-                  displayName: aliceAuth.user.displayName,
+                  type: ObjectType.UserForumActor, user: {
+                    type: ObjectType.User,
+                    id: aliceAuth.user.id,
+                    displayName: aliceAuth.user.displayName,
+                  },
                 },
                 id: posts[6].id,
                 revisions: {
@@ -281,9 +292,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                     type: ObjectType.ForumPostRevision,
                     id: posts[6].revisions.latest.id,
                     author: {
-                      type: ObjectType.User,
-                      id: aliceAuth.user.id,
-                      displayName: aliceAuth.user.displayName,
+                      type: ObjectType.UserForumActor, user: {
+                        type: ObjectType.User,
+                        id: aliceAuth.user.id,
+                        displayName: aliceAuth.user.displayName,
+                      },
                     },
                     comment: null,
                     content: {
@@ -299,9 +312,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                 type: ObjectType.ForumPost,
                 ctime: posts[7].ctime,
                 author: {
-                  type: ObjectType.User,
-                  id: aliceAuth.user.id,
-                  displayName: aliceAuth.user.displayName,
+                  type: ObjectType.UserForumActor, user: {
+                    type: ObjectType.User,
+                    id: aliceAuth.user.id,
+                    displayName: aliceAuth.user.displayName,
+                  },
                 },
                 id: posts[7].id,
                 revisions: {
@@ -310,9 +325,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                     type: ObjectType.ForumPostRevision,
                     id: posts[7].revisions.latest.id,
                     author: {
-                      type: ObjectType.User,
-                      id: aliceAuth.user.id,
-                      displayName: aliceAuth.user.displayName,
+                      type: ObjectType.UserForumActor, user: {
+                        type: ObjectType.User,
+                        id: aliceAuth.user.id,
+                        displayName: aliceAuth.user.displayName,
+                      },
                     },
                     comment: null,
                     content: {
@@ -328,9 +345,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                 type: ObjectType.ForumPost,
                 ctime: posts[8].ctime,
                 author: {
-                  type: ObjectType.User,
-                  id: aliceAuth.user.id,
-                  displayName: aliceAuth.user.displayName,
+                  type: ObjectType.UserForumActor, user: {
+                    type: ObjectType.User,
+                    id: aliceAuth.user.id,
+                    displayName: aliceAuth.user.displayName,
+                  },
                 },
                 id: posts[8].id,
                 revisions: {
@@ -339,9 +358,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                     type: ObjectType.ForumPostRevision,
                     id: posts[8].revisions.latest.id,
                     author: {
-                      type: ObjectType.User,
-                      id: aliceAuth.user.id,
-                      displayName: aliceAuth.user.displayName,
+                      type: ObjectType.UserForumActor, user: {
+                        type: ObjectType.User,
+                        id: aliceAuth.user.id,
+                        displayName: aliceAuth.user.displayName,
+                      },
                     },
                     comment: null,
                     content: {
@@ -357,9 +378,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                 type: ObjectType.ForumPost,
                 ctime: posts[9].ctime,
                 author: {
-                  type: ObjectType.User,
-                  id: aliceAuth.user.id,
-                  displayName: aliceAuth.user.displayName,
+                  type: ObjectType.UserForumActor, user: {
+                    type: ObjectType.User,
+                    id: aliceAuth.user.id,
+                    displayName: aliceAuth.user.displayName,
+                  },
                 },
                 id: posts[9].id,
                 revisions: {
@@ -368,9 +391,11 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                     type: ObjectType.ForumPostRevision,
                     id: posts[9].revisions.latest.id,
                     author: {
-                      type: ObjectType.User,
-                      id: aliceAuth.user.id,
-                      displayName: aliceAuth.user.displayName,
+                      type: ObjectType.UserForumActor, user: {
+                        type: ObjectType.User,
+                        id: aliceAuth.user.id,
+                        displayName: aliceAuth.user.displayName,
+                      },
                     },
                     comment: null,
                     content: {
@@ -385,7 +410,10 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
             ],
           },
         };
-        chai.assert.deepEqual(actual, expected);
+        if (!$ForumThread.test(actual) || !$ForumThread.equals(actual, expected)) {
+          chai.assert.deepEqual(actual, expected);
+          throw new Error("Actual does not match expected");
+        }
       }
     });
   });
