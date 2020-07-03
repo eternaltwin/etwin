@@ -6,5 +6,5 @@
     {{post.ctime | date : "short"}}
   </div>
 </div>
-<div class="body" [innerHTML]="post.revisions.latest.content?.html">
+<div class="body" [innerHTML]="post.revisions.last.content?.html">
 </div>

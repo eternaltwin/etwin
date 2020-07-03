@@ -4,17 +4,19 @@ import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { HtmlText } from "@eternal-twin/core/lib/core/html-text.js";
 import { $NullableLocaleId, NullableLocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
-import { MarktwinText } from "@eternal-twin/core/lib/core/marktwin-text.js";
+import { NullableMarktwinText } from "@eternal-twin/core/lib/core/marktwin-text.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
 import { CreateOrUpdateSystemSectionOptions } from "@eternal-twin/core/lib/forum/create-or-update-system-section-options.js";
 import { CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options.js";
 import { CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options.js";
+import { DeletePostOptions } from "@eternal-twin/core/lib/forum/delete-post-options.js";
 import { ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id.js";
 import { ForumPostListing } from "@eternal-twin/core/lib/forum/forum-post-listing";
-import { ForumPostRevisionComment } from "@eternal-twin/core/lib/forum/forum-post-revision-comment.js";
-import { NullableForumPostRevisionContent } from "@eternal-twin/core/lib/forum/forum-post-revision-content";
+import { NullableForumPostRevisionComment } from "@eternal-twin/core/lib/forum/forum-post-revision-comment.js";
+import { NullableForumPostRevisionContent } from "@eternal-twin/core/lib/forum/forum-post-revision-content.js";
 import { ForumPostRevisionId } from "@eternal-twin/core/lib/forum/forum-post-revision-id.js";
+import { ForumPostRevisionListing } from "@eternal-twin/core/lib/forum/forum-post-revision-listing.js";
 import { ForumPostRevision } from "@eternal-twin/core/lib/forum/forum-post-revision.js";
 import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post.js";
 import { ForumRoleGrant } from "@eternal-twin/core/lib/forum/forum-role-grant.js";
@@ -34,6 +36,7 @@ import { GetSectionOptions } from "@eternal-twin/core/lib/forum/get-section-opti
 import { GetThreadOptions } from "@eternal-twin/core/lib/forum/get-thread-options.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js";
+import { UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options.js";
 import { UserForumActor } from "@eternal-twin/core/lib/forum/user-forum-actor.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id";
@@ -74,24 +77,17 @@ export class PgForumService implements ForumService {
     this.defaultThreadsPerPage = defaultThreadsPerPage;
   }
 
-  deletePost(_acx: AuthContext, _postId: string): Promise<ForumPost> {
-    // return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
-    //   const revision = await this.createPostRevisionTx(q, acx, postId, author, options.body, null, null);
-    //
-    //   await this.addModeratorTx(q, acx, sectionIdOrKey, userId);
-    //   const section: ForumSection | null = await this.getSectionTx(q, acx, sectionIdOrKey, {threadOffset: 0, threadLimit: this.defaultThreadsPerPage});
-    //   if (section === null) {
-    //     throw new Error("AssertionError: Expected section to exist");
-    //   }
-    //   return section;
-    // });
-    throw new Error("Method not implemented.");
-  }
-
-  addModerator(acx: AuthContext, sectionIdOrKey: ForumSectionId | ForumSectionKey, userId: UserId): Promise<ForumSection> {
+  async addModerator(
+    acx: AuthContext,
+    sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    userId: UserId,
+  ): Promise<ForumSection> {
     return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       await this.addModeratorTx(q, acx, sectionIdOrKey, userId);
-      const section: ForumSection | null = await this.getSectionTx(q, acx, sectionIdOrKey, {threadOffset: 0, threadLimit: this.defaultThreadsPerPage});
+      const section: ForumSection | null = await this.getSectionTx(q, acx, sectionIdOrKey, {
+        threadOffset: 0,
+        threadLimit: this.defaultThreadsPerPage,
+      });
       if (section === null) {
         throw new Error("AssertionError: Expected section to exist");
       }
@@ -99,10 +95,13 @@ export class PgForumService implements ForumService {
     });
   }
 
-  deleteModerator(acx: AuthContext, sectionIdOrKey: string, userId: string): Promise<ForumSection> {
+  async deleteModerator(acx: AuthContext, sectionIdOrKey: string, userId: string): Promise<ForumSection> {
     return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       await this.deleteModeratorTx(q, acx, sectionIdOrKey, userId);
-      const section: ForumSection | null = await this.getSectionTx(q, acx, sectionIdOrKey, {threadOffset: 0, threadLimit: this.defaultThreadsPerPage});
+      const section: ForumSection | null = await this.getSectionTx(q, acx, sectionIdOrKey, {
+        threadOffset: 0,
+        threadLimit: this.defaultThreadsPerPage,
+      });
       if (section === null) {
         throw new Error("AssertionError: Expected section to exist");
       }
@@ -114,16 +113,41 @@ export class PgForumService implements ForumService {
     throw new Error("Method not implemented.");
   }
 
-  async createThread(acx: AuthContext, sectionIdOrKey: string, options: CreateThreadOptions): Promise<ForumThread> {
+  async createThread(
+    acx: AuthContext,
+    sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    options: CreateThreadOptions,
+  ): Promise<ForumThread> {
     return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       return this.createThreadTx(q, acx, sectionIdOrKey, options);
     });
   }
 
-  async createPost(acx: AuthContext, threadId: string, options: CreatePostOptions): Promise<ForumPost> {
+  async createPost(acx: AuthContext, threadId: ForumThreadId, options: CreatePostOptions): Promise<ForumPost> {
     return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       return this.createPostTx(q, acx, threadId, options);
     });
+  }
+
+  async getPost(acx: AuthContext, postId: ForumPostId): Promise<ForumPost | null> {
+    return this.database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
+      return this.getPostTx(q, acx, postId);
+    });
+  }
+
+  async updatePost(acx: AuthContext, postId: ForumPostId, options: UpdatePostOptions): Promise<ForumPost> {
+    return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+      await this.updatePostTx(q, acx, postId, options);
+      const post: ForumPost | null = await this.getPostTx(q, acx, postId);
+      if (post === null) {
+        throw new Error("AssertionError: Post not found");
+      }
+      return post;
+    });
+  }
+
+  async deletePost(acx: AuthContext, postId: string, options: DeletePostOptions): Promise<ForumPost> {
+    return this.updatePost(acx, postId, {...options, content: null, moderation: null});
   }
 
   async createOrUpdateSystemSection(
@@ -161,7 +185,7 @@ export class PgForumService implements ForumService {
     });
   }
 
-  async createOrUpdateSystemSectionTx(
+  private async createOrUpdateSystemSectionTx(
     queryable: Queryable,
     key: string,
     options: CreateOrUpdateSystemSectionOptions,
@@ -440,7 +464,7 @@ export class PgForumService implements ForumService {
     return items;
   }
 
-  async createThreadTx(
+  private async createThreadTx(
     queryable: Queryable,
     acx: AuthContext,
     sectionIdOrKey: string,
@@ -492,21 +516,89 @@ export class PgForumService implements ForumService {
     };
   }
 
-  async createPostTx(
+  private async createPostTx(
     queryable: Queryable,
     acx: AuthContext,
     threadId: ForumThreadId,
     options: CreatePostOptions,
   ): Promise<ForumPost> {
     const short: ShortForumPost = await this.innerCreatePostTx(queryable, acx, threadId, options);
-    const thread: ForumThreadMeta | null = await this.getThreadMetaTx(queryable, threadId);
-    if (thread === null) {
-      throw new Error("AssertionError: Expected thread to be defined");
+    const post: ForumPost | null = await this.getPostTx(queryable, acx, short.id);
+    if (post === null) {
+      throw new Error("AssertionError: Expected post to exist");
     }
-    return {...short, thread};
+    return post;
   }
 
-  async innerCreatePostTx(
+  private async getPostTx(
+    queryable: Queryable,
+    acx: AuthContext,
+    postId: ForumPostId,
+  ): Promise<ForumPost | null> {
+    type Row =
+      Pick<ForumPostRow, "forum_thread_id" | "ctime" | "forum_post_id">
+      & Pick<ForumThreadRow, "forum_section_id">
+      & {revision_count: number};
+    const row: Row | undefined = await queryable.oneOrNone(
+      `WITH revision_count AS (
+        SELECT COUNT(*)::INT AS revision_count
+        FROM forum_post_revisions
+        WHERE forum_post_id = $1::UUID
+      )
+         SELECT revision_count, forum_posts.ctime, forum_post_id, forum_thread_id, forum_section_id
+         FROM revision_count,
+           forum_posts
+             INNER JOIN forum_threads USING (forum_thread_id)
+         WHERE forum_post_id = $1::UUID;
+      `,
+      [postId],
+    );
+    if (row === undefined) {
+      return null;
+    }
+    const revisions = await this.getPostRevisionsTx(queryable, acx, row.forum_post_id, row.revision_count, 0, 100);
+    const thread = await this.getThreadMetaTx(queryable, acx, row.forum_thread_id);
+    if (thread === null) {
+      throw new Error("AssertionError: Expected thread to exist");
+    }
+    const section = await this.getSectionMetaTx(queryable, acx, thread.sectionId);
+    delete thread.sectionId;
+    if (section === null) {
+      throw new Error("AssertionError: Expected section to exist");
+    }
+
+    type FirstRevisionRow = Pick<ForumPostRevisionRow, "author_id">;
+    const firstRevRow: FirstRevisionRow | undefined = await queryable.oneOrNone(
+      `WITH first_rev AS (
+        SELECT FIRST_VALUE(author_id) OVER w AS author_id, ROW_NUMBER() OVER w AS rn
+        FROM forum_post_revisions
+        WHERE forum_post_id = $1::UUID
+          WINDOW w AS (PARTITION BY forum_post_id ORDER BY time ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+      )
+         SELECT author_id
+         FROM first_rev
+         WHERE first_rev.rn = 1;`,
+      [postId],
+    );
+    if (firstRevRow === undefined) {
+      throw new Error("AssertionError: Expected author to exist");
+    }
+    const author: UserRef | null = await this.user.getUserRefById(acx, firstRevRow.author_id);
+    if (author === null) {
+      throw new Error("AssertionError: Expected author to exist");
+    }
+
+    return {
+      type: ObjectType.ForumPost,
+      id: row.forum_post_id,
+      ctime: row.ctime,
+      revisions,
+      author: {type: ObjectType.UserForumActor, user: author},
+      thread: {...thread, section},
+    };
+  }
+
+  private async innerCreatePostTx(
     queryable: Queryable,
     acx: AuthContext,
     threadId: ForumThreadId,
@@ -541,7 +633,7 @@ export class PgForumService implements ForumService {
       author,
       revisions: {
         count: 1,
-        latest: revision,
+        last: revision,
       },
     };
   }
@@ -551,9 +643,9 @@ export class PgForumService implements ForumService {
     _acx: AuthContext,
     postId: ForumPostId,
     author: UserForumActor,
-    body: MarktwinText | null,
-    modBody: MarktwinText | null,
-    comment: ForumPostRevisionComment | null,
+    body: NullableMarktwinText,
+    modBody: NullableMarktwinText,
+    comment: NullableForumPostRevisionComment,
   ): Promise<ForumPostRevision> {
     if (author.type !== ObjectType.UserForumActor) {
       throw new Error("NotImeplemented: Non-User post author");
@@ -584,13 +676,98 @@ export class PgForumService implements ForumService {
     };
   }
 
+  private async updatePostTx(
+    queryable: Queryable,
+    acx: AuthContext,
+    postId: ForumPostId,
+    options: UpdatePostOptions,
+  ): Promise<void> {
+    if (acx.type !== AuthType.User) {
+      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    }
+    type Row = Pick<ForumPostRow, "forum_post_id">
+      & Pick<ForumThreadRow, "forum_section_id">
+      & {
+      last_revision_id: ForumPostRevisionRow["forum_post_revision_id"],
+      last_revision_time: ForumPostRevisionRow["time"],
+      last_revision_body: ForumPostRevisionRow["body"],
+      last_revision_mod_body: ForumPostRevisionRow["mod_body"],
+      first_revision_author_id: ForumPostRevisionRow["author_id"],
+      first_revision_time: ForumPostRevisionRow["time"],
+    };
+    const row: Row | undefined = await queryable.oneOrNone(
+      `WITH posts AS (
+        SELECT forum_post_id,
+          LAST_VALUE(forum_post_revision_id) OVER w AS last_revision_id,
+          LAST_VALUE(time) OVER w AS last_revision_time,
+          LAST_VALUE(body) OVER w AS last_revision_body,
+          LAST_VALUE(mod_body) OVER w AS last_revision_mod_body,
+          FIRST_VALUE(author_id) OVER w AS first_revision_author_id,
+          FIRST_VALUE(time) OVER w AS first_revision_time,
+          ROW_NUMBER() OVER w AS rn
+        FROM forum_post_revisions
+        WHERE forum_post_id = $1::UUID
+          WINDOW w AS (PARTITION BY forum_post_id ORDER BY time ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+      )
+         SELECT forum_post_id,
+           last_revision_id,
+           last_revision_time,
+           last_revision_body,
+           last_revision_mod_body,
+           first_revision_author_id,
+           first_revision_time,
+           forum_section_id
+         FROM posts
+                INNER JOIN forum_posts USING (forum_post_id)
+                INNER JOIN forum_threads USING (forum_thread_id)
+         WHERE posts.rn = 1;`,
+      [postId],
+    );
+    if (row === undefined) {
+      throw new Error("PostNotFound");
+    }
+    const isModerator: boolean = acx.isAdministrator ? true : await this.isModeratorTx(queryable, acx, row.forum_section_id, acx.user.id);
+
+    let newBody: NullableMarktwinText;
+    if (options.content === undefined || options.content === row.last_revision_body) {
+      newBody = row.last_revision_body;
+    } else {
+      if (options.content === null) {
+        if (!isModerator) {
+          throw new Error("Forbidden");
+        }
+      } else {
+        if (acx.user.id !== row.first_revision_author_id) {
+          throw new Error("Forbidden");
+        }
+      }
+      newBody = options.content;
+    }
+
+    let newModBody: NullableMarktwinText;
+    if (options.moderation === undefined || options.moderation === row.last_revision_mod_body) {
+      newModBody = row.last_revision_mod_body;
+    } else {
+      if (!isModerator) {
+        throw new Error("Forbidden");
+      }
+      newModBody = options.moderation;
+    }
+
+    const author: UserForumActor = {
+      type: ObjectType.UserForumActor,
+      user: $UserRef.clone(acx.user),
+    };
+    await this.createPostRevisionTx(queryable, acx, postId, author, newBody, newModBody, options.comment);
+  }
+
   private async getThreadByIdTx(
     queryable: Queryable,
     acx: AuthContext,
     threadIdOrKey: ForumThreadId | ForumThreadKey,
     options: GetThreadOptions,
   ): Promise<ForumThread | null> {
-    const thread = await this.getThreadMetaTx(queryable, threadIdOrKey);
+    const thread = await this.getThreadMetaTx(queryable, acx, threadIdOrKey);
     if (thread === null) {
       return null;
     }
@@ -694,7 +871,7 @@ export class PgForumService implements ForumService {
         author: {type: ObjectType.UserForumActor, user: firstRevAuthor},
         revisions: {
           count: 1,
-          latest: {
+          last: {
             type: ObjectType.ForumPostRevision,
             id: row.latest_revision_id,
             time: row.latest_revision_time,
@@ -717,6 +894,7 @@ export class PgForumService implements ForumService {
 
   private async getThreadMetaTx(
     queryable: Queryable,
+    _acx: AuthContext,
     threadIdOrKey: ForumThreadId | ForumThreadKey,
   ): Promise<(ForumThreadMeta & {sectionId: ForumSectionId}) | null> {
     let threadId: ForumThreadId | null = null;
@@ -764,6 +942,62 @@ export class PgForumService implements ForumService {
     };
   }
 
+  private async getPostRevisionsTx(
+    queryable: Queryable,
+    acx: AuthContext,
+    postId: ForumPostId,
+    postRevisionCount: number,
+    offset: number,
+    limit: number,
+  ): Promise<ForumPostRevisionListing> {
+    type Row = Pick<ForumPostRevisionRow, "forum_post_revision_id" | "time" | "author_id" | "body" | "_html_body" | "mod_body" | "_html_mod_body" | "comment">;
+    const rows: Row[] = await queryable.many(
+      `SELECT forum_post_revision_id, time, author_id, body, _html_body, mod_body, _html_mod_body, comment
+         FROM forum_post_revisions
+         WHERE forum_post_id = $1::UUID
+         ORDER BY time
+         LIMIT $2::INT OFFSET $3::INT;`,
+      [postId, limit, offset],
+    );
+    const items: ForumPostRevision[] = [];
+    for (const row of rows) {
+      let content: NullableForumPostRevisionContent = null;
+      if (row.body !== null && row._html_body !== null) {
+        content = {
+          marktwin: row.body,
+          html: row._html_body,
+        };
+      }
+      let moderation: NullableForumPostRevisionContent = null;
+      if (row.mod_body !== null && row._html_mod_body !== null) {
+        moderation = {
+          marktwin: row.mod_body,
+          html: row._html_mod_body,
+        };
+      }
+      const author: UserRef | null = await this.user.getUserRefById(acx, row.author_id);
+      if (author === null) {
+        throw new Error("AssertionError: Expected author to exist");
+      }
+      const revision: ForumPostRevision = {
+        type: ObjectType.ForumPostRevision,
+        id: row.forum_post_revision_id,
+        time: row.time,
+        author: {type: ObjectType.UserForumActor, user: author},
+        content,
+        moderation,
+        comment: row.comment,
+      };
+      items.push(revision);
+    }
+    return {
+      offset,
+      limit,
+      count: postRevisionCount,
+      items,
+    };
+  }
+
   private async addModeratorTx(
     queryable: Queryable,
     acx: AuthContext,
@@ -788,11 +1022,14 @@ export class PgForumService implements ForumService {
           FROM forum_sections
           WHERE forum_section_id = $1::UUID OR key = $2::VARCHAR
         )
-        INSERT INTO forum_role_grants(forum_section_id, user_id, start_time, granted_by)
-        (
-          SELECT forum_section_id, $3::UUID AS user_id, NOW() AS start_time, $4::UUID AS granted_by
-          FROM section
+        INSERT
+        INTO forum_role_grants(
+          forum_section_id, user_id, start_time, granted_by
         )
+          (
+            SELECT forum_section_id, $3::UUID AS user_id, NOW() AS start_time, $4::UUID AS granted_by
+            FROM section
+          )
         ON CONFLICT (forum_section_id, user_id) DO NOTHING;
       `,
       [sectionId, sectionKey, userId, granterId],
@@ -826,7 +1063,7 @@ export class PgForumService implements ForumService {
         )
         DELETE
         FROM forum_role_grants
-        USING section
+          USING section
         WHERE forum_role_grants.forum_section_id = section.forum_section_id AND user_id = $3::UUID
         RETURNING user_id, start_time, granted_by;`,
       [sectionId, sectionKey, userId],
@@ -843,14 +1080,48 @@ export class PgForumService implements ForumService {
           FROM forum_sections
           WHERE forum_section_id = $1::UUID OR key = $2::VARCHAR
         )
-        INSERT INTO forum_role_revocations(forum_section_id, user_id, start_time, end_time, granted_by, revoked_by)
+        INSERT
+        INTO forum_role_revocations(
+          forum_section_id, user_id, start_time, end_time, granted_by, revoked_by
+        )
           (
-            SELECT forum_section_id, $3::UUID AS user_id, $4::TIMESTAMP AS start_time, NOW() AS end_time, $5::UUID AS granted_by, $6::UUID AS revoked_by
+            SELECT forum_section_id, $3::UUID AS user_id, $4::TIMESTAMP AS start_time, NOW() AS end_time,
+              $5::UUID AS granted_by, $6::UUID AS revoked_by
             FROM section
           )
         ON CONFLICT (forum_section_id, user_id, start_time) DO NOTHING;
       `,
       [sectionId, sectionKey, userId, roleGrantRow.start_time, roleGrantRow.granted_by, revokerId],
     );
+  }
+
+  private async isModeratorTx(
+    queryable: Queryable,
+    _acx: AuthContext,
+    sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    userId: UserId,
+  ): Promise<boolean> {
+    let sectionId: ForumSectionId | null = null;
+    let sectionKey: ForumSectionKey | null = null;
+    if ($ForumSectionId.test(sectionIdOrKey)) {
+      sectionId = sectionIdOrKey;
+    } else {
+      sectionKey = sectionIdOrKey;
+    }
+    const row = await queryable.oneOrNone(
+      `
+        WITH section AS (
+          SELECT forum_section_id
+          FROM forum_sections
+          WHERE forum_section_id = $1::UUID OR key = $2::VARCHAR
+        )
+        SELECT TRUE as is_moderator
+        FROM section
+               INNER JOIN forum_role_grants USING (forum_section_id)
+        WHERE user_id = $3::UUID;
+      `,
+      [sectionId, sectionKey, userId],
+    );
+    return row !== undefined;
   }
 }

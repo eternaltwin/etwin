@@ -7,7 +7,7 @@ import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $ForumActor, ForumActor } from "./forum-actor.js";
 import { $ForumPostId, ForumPostId } from "./forum-post-id.js";
 import { $ForumPostRevisionListing, ForumPostRevisionListing } from "./forum-post-revision-listing.js";
-import { $ForumThreadMeta, ForumThreadMeta } from "./forum-thread-meta.js";
+import { $ForumThreadMetaWithSection, ForumThreadMetaWithSection } from "./forum-thread-meta-with-section.js";
 
 export interface ForumPost {
   type: ObjectType.ForumPost;
@@ -15,7 +15,7 @@ export interface ForumPost {
   ctime: Date;
   author: ForumActor;
   revisions: ForumPostRevisionListing;
-  thread: ForumThreadMeta;
+  thread: ForumThreadMetaWithSection;
 }
 
 export const $ForumPost: RecordIoType<ForumPost> = new RecordType<ForumPost>({
@@ -25,7 +25,7 @@ export const $ForumPost: RecordIoType<ForumPost> = new RecordType<ForumPost>({
     ctime: {type: $Date},
     author: {type: $ForumActor},
     revisions: {type: $ForumPostRevisionListing},
-    thread: {type: $ForumThreadMeta},
+    thread: {type: $ForumThreadMetaWithSection},
   },
   changeCase: CaseStyle.SnakeCase,
 });

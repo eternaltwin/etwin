@@ -39,6 +39,6 @@ async function withPgForumService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   });
 }
 
-describe("PgAuthService", function () {
+describe("PgForumService", function () {
   testForumService(withPgForumService);
 });

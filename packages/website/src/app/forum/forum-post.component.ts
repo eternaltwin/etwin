@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
+import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post";
 
 @Component({
   selector: "etwin-forum-post",
@@ -8,7 +8,7 @@ import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
 })
 export class ForumPostComponent {
   @Input()
-  public post!: ForumPost;
+  public post!: ShortForumPost;
 
   constructor() {
   }

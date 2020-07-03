@@ -4,12 +4,13 @@ import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { HtmlText } from "@eternal-twin/core/lib/core/html-text.js";
 import { NullableLocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
-import { MarktwinText } from "@eternal-twin/core/lib/core/marktwin-text.js";
+import { MarktwinText, NullableMarktwinText } from "@eternal-twin/core/lib/core/marktwin-text.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
 import { CreateOrUpdateSystemSectionOptions } from "@eternal-twin/core/lib/forum/create-or-update-system-section-options.js";
 import { CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options.js";
 import { CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options.js";
+import { DeletePostOptions } from "@eternal-twin/core/lib/forum/delete-post-options.js";
 import { $ForumActor, ForumActor } from "@eternal-twin/core/lib/forum/forum-actor.js";
 import { ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id.js";
 import { ForumPostListing } from "@eternal-twin/core/lib/forum/forum-post-listing.js";
@@ -35,7 +36,9 @@ import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { GetSectionOptions } from "@eternal-twin/core/lib/forum/get-section-options.js";
 import { GetThreadOptions } from "@eternal-twin/core/lib/forum/get-thread-options.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { ShortForumPostRevisionListing } from "@eternal-twin/core/lib/forum/short-forum-post-revision-listing.js";
 import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js";
+import { UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options.js";
 import { UserForumActor } from "@eternal-twin/core/lib/forum/user-forum-actor.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
@@ -95,6 +98,15 @@ export class InMemoryForumService implements ForumService {
     this.posts = new Map();
   }
 
+  async updatePost(acx: AuthContext, postId: ForumPostId, options: UpdatePostOptions): Promise<ForumPost> {
+    await this.innerUpdatePost(acx, postId, options);
+    const post: ForumPost | null = await this.getPost(acx, postId);
+    if (post === null) {
+      throw new Error("AssertionError: Expected post to exist");
+    }
+    return post;
+  }
+
   async getThreads(_acx: AuthContext, _sectionIdOrKey: string): Promise<ForumThreadListing> {
     return {
       offset: 0,
@@ -143,11 +155,43 @@ export class InMemoryForumService implements ForumService {
 
   async createPost(acx: AuthContext, threadId: ForumThreadId, options: CreatePostOptions): Promise<ForumPost> {
     const short: ShortForumPost = await this.innerCreatePost(acx, threadId, options);
-    const thread: ForumThreadMeta | null = await this.getThreadMetaSync(acx, threadId);
+    const post: ForumPost | null = await this.getPost(acx, short.id);
+    if (post === null) {
+      throw new Error("AssertionError: Expected post to exist");
+    }
+    return post;
+  }
+
+  async getPost(acx: AuthContext, postId: ForumPostId): Promise<ForumPost | null> {
+    const imPost: InMemoryPost | undefined = this.posts.get(postId);
+    if (imPost === undefined) {
+      return null;
+    }
+    const imThread: InMemoryThread | null = this.getImThread(acx, imPost.threadId);
+    if (imThread === null) {
+      return null;
+    }
+    const revisions = await this.getPostRevisions(acx, postId, 0, 100);
+    const thread: ForumThreadMeta | null = await this.getThreadMetaSync(acx, imPost.threadId);
     if (thread === null) {
       throw new Error("AssertionError: Expected thread to exist");
     }
-    return {...short, thread};
+    const section: ForumSectionMeta | null = await this.getSectionMetaSync(acx, imThread.sectionId);
+    if (section === null) {
+      throw new Error("AssertionError: Expected section to exist");
+    }
+    const author: UserRef | null = await this.user.getUserRefById(acx, imPost.authorId);
+    if (author === null) {
+      throw new Error("AssertionError: Expected author to exist");
+    }
+    return {
+      type: ObjectType.ForumPost,
+      id: imPost.id,
+      ctime: new Date(imPost.ctime.getTime()),
+      author: {type: ObjectType.UserForumActor, user: author},
+      revisions,
+      thread: {...thread, section},
+    };
   }
 
   async createOrUpdateSystemSection(
@@ -297,8 +341,8 @@ export class InMemoryForumService implements ForumService {
     return section;
   }
 
-  async deletePost(_acx: AuthContext, _postId: ForumPostId): Promise<ForumPost> {
-    throw new Error("Unimplemented");
+  async deletePost(acx: AuthContext, postId: ForumPostId, options: DeletePostOptions): Promise<ForumPost> {
+    return this.updatePost(acx, postId, {...options, content: null, moderation: null});
   }
 
   private getImSection(_acx: AuthContext, idOrKey: ForumSectionId | ForumSectionKey): InMemorySection | null {
@@ -422,7 +466,7 @@ export class InMemoryForumService implements ForumService {
       if (author === null) {
         throw new Error("AssertionError: Expected author to exist");
       }
-      const revisions: ForumPostRevisionListing = this.getPostRevisions(post.id);
+      const revisions: ShortForumPostRevisionListing = this.getShortPostRevisions(post.id);
       const item: ShortForumPost = {
         type: ObjectType.ForumPost,
         id: post.id,
@@ -443,7 +487,7 @@ export class InMemoryForumService implements ForumService {
       offset,
       limit,
       count: thread.posts.count,
-      items: items.splice(offset, limit),
+      items: items.slice(offset, offset + limit),
     };
   }
 
@@ -489,12 +533,67 @@ export class InMemoryForumService implements ForumService {
       author: author,
       revisions: {
         count: 1,
-        latest: $ForumPostRevision.clone(revision),
+        last: $ForumPostRevision.clone(revision),
       },
     };
   }
 
-  private getPostRevisions(postId: ForumPostId): ForumPostRevisionListing {
+  async innerUpdatePost(
+    acx: AuthContext,
+    postId: ForumPostId,
+    options: UpdatePostOptions,
+  ): Promise<void> {
+    if (acx.type !== AuthType.User) {
+      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    }
+    const imPost = this.posts.get(postId);
+    if (imPost === undefined) {
+      throw new Error("PostNotFound");
+    }
+    const sectionId: ForumSectionId | undefined = this.threads.get(imPost.threadId)?.sectionId;
+    if (sectionId === undefined) {
+      throw new Error("ThreadNotFound");
+    }
+    const firstRevision = imPost.revisions[0];
+    const lastRevision = imPost.revisions[imPost.revisions.length - 1];
+    const lastMktContent: NullableMarktwinText = lastRevision.content !== null ? lastRevision.content.marktwin : null;
+    const lastMktMod: NullableMarktwinText = lastRevision.moderation !== null ? lastRevision.moderation.marktwin : null;
+    const isModerator: boolean = acx.isAdministrator ? true : await this.isModerator(acx, sectionId, acx.user.id);
+    let newBody: NullableMarktwinText;
+    if (options.content === undefined || options.content === lastMktContent) {
+      newBody = lastMktContent;
+    } else {
+      if (options.content === null) {
+        if (!isModerator) {
+          throw new Error("Forbidden");
+        }
+      } else {
+        if (firstRevision.author.type === ObjectType.UserForumActor && acx.user.id !== firstRevision.author.user.id) {
+          throw new Error("Forbidden");
+        }
+      }
+      newBody = options.content;
+    }
+
+    let newModBody: NullableMarktwinText;
+    if (options.moderation === undefined || options.moderation === lastMktMod) {
+      newModBody = lastMktMod;
+    } else {
+      if (!isModerator) {
+        throw new Error("Forbidden");
+      }
+      newModBody = options.moderation;
+    }
+
+    const author: UserForumActor = {
+      type: ObjectType.UserForumActor,
+      user: $UserRef.clone(acx.user),
+    };
+    const revision = this.createPostRevisionSync(acx, author, newBody, newModBody, options.comment);
+    imPost.revisions.push(revision);
+  }
+
+  private getShortPostRevisions(postId: ForumPostId): ShortForumPostRevisionListing {
     const imPost: InMemoryPost | undefined = this.posts.get(postId);
     if (imPost === undefined) {
       throw new Error("PostNotFound");
@@ -502,7 +601,46 @@ export class InMemoryForumService implements ForumService {
     const lastRevision = imPost.revisions[imPost.revisions.length - 1];
     return {
       count: imPost.revisions.length,
-      latest: $ForumPostRevision.clone(lastRevision),
+      last: $ForumPostRevision.clone(lastRevision),
+    };
+  }
+
+  private async getPostRevisions(
+    _acx: AuthContext,
+    postId: ForumPostId,
+    offset: number,
+    limit: number,
+  ): Promise<ForumPostRevisionListing> {
+    const imPost: InMemoryPost | undefined = this.posts.get(postId);
+    if (imPost === undefined) {
+      throw new Error("PostNotFound");
+    }
+    const items: ForumPostRevision[] = [];
+    for (const rev of imPost.revisions) {
+      const author = $ForumActor.clone(rev.author);
+      const item: ForumPostRevision = {
+        type: ObjectType.ForumPostRevision,
+        id: rev.id,
+        time: rev.time,
+        author: author,
+        content: rev.content,
+        moderation: rev.moderation,
+        comment: rev.comment,
+      };
+      items.push(item);
+    }
+
+    items.sort(compare);
+
+    function compare(left: ForumPostRevision, right: ForumPostRevision): number {
+      return left.time.getTime() - right.time.getTime();
+    }
+
+    return {
+      offset,
+      limit,
+      count: items.length,
+      items: items.slice(offset, offset + limit),
     };
   }
 
@@ -586,5 +724,22 @@ export class InMemoryForumService implements ForumService {
     if (oldGrant !== null) {
       imSection.roleGrants.delete(oldGrant);
     }
+  }
+
+  private isModerator(
+    acx: AuthContext,
+    sectionId: ForumSectionId,
+    userId: UserId,
+  ): boolean {
+    const section: InMemorySection | null = this.getImSection(acx, sectionId);
+    if (section === null) {
+      throw new Error("SectionNotFound");
+    }
+    for (const rg of section.roleGrants) {
+      if (rg.user.id === userId) {
+        return true;
+      }
+    }
+    return false;
   }
 }

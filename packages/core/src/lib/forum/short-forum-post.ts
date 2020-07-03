@@ -6,14 +6,14 @@ import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $ForumActor, ForumActor } from "./forum-actor.js";
 import { $ForumPostId, ForumPostId } from "./forum-post-id.js";
-import { $ForumPostRevisionListing, ForumPostRevisionListing } from "./forum-post-revision-listing.js";
+import { $ShortForumPostRevisionListing, ShortForumPostRevisionListing } from "./short-forum-post-revision-listing.js";
 
 export interface ShortForumPost {
   type: ObjectType.ForumPost;
   id: ForumPostId;
   ctime: Date;
   author: ForumActor;
-  revisions: ForumPostRevisionListing;
+  revisions: ShortForumPostRevisionListing;
 }
 
 export const $ShortForumPost: RecordIoType<ShortForumPost> = new RecordType<ShortForumPost>({
@@ -22,7 +22,7 @@ export const $ShortForumPost: RecordIoType<ShortForumPost> = new RecordType<Shor
     id: {type: $ForumPostId},
     ctime: {type: $Date},
     author: {type: $ForumActor},
-    revisions: {type: $ForumPostRevisionListing},
+    revisions: {type: $ShortForumPostRevisionListing},
   },
   changeCase: CaseStyle.SnakeCase,
 });
