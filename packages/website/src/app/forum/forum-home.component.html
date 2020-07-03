@@ -3,11 +3,11 @@
     Forum
   </h1>
   <ng-container *ngIf="sections$ | async as sections">
-    <ul class="section-list">
+    <ul class="forum-list">
       <li *ngFor="let section of sections.items">
         <a [routerLink]="['', 'forum', 'sections', section.id]">
           <span class="name">{{section.displayName}}</span>
-          <span class="count">{{section.threads.count}}</span>
+          <span class="count">{{section.threads.count}} threads</span>
         </a>
       </li>
     </ul>

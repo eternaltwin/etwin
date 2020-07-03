@@ -79,13 +79,13 @@ $orange: #cd6f00;
       p {
         padding: 8px 9px;
         min-width: 240px;
-        background-color: $deepGrey;
-        border: 1px solid $darkPink;
-        border-bottom: 3px solid $darkPink;
-        border-radius: 2px;
-        box-shadow: 0 0 8px 3px transparentize($darkPink, .75);
+        background-color: darken($orange, 38%);
+        border: 1px solid $orange;
+        border-bottom: 3px solid darken($orange, 0%);
+        border-radius: 4px;
+        box-shadow: 0 0 8px 3px transparentize($orange, .75);
 
-        color: lighten($pink, 10%);
+        color: $lightWhite;
         font-size: .8em;
         font-weight: 700;
         letter-spacing: .012em;
@@ -100,7 +100,7 @@ $orange: #cd6f00;
           position:absolute;
           right: -9px;
           top: -9px;
-          border-color: transparent transparent transparent $darkPink;
+          border-color: transparent transparent transparent $orange;
         }
       }
     }

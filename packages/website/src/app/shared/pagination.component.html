@@ -1,5 +1,7 @@
-<a [routerLink]="link" [queryParams]="getParams(1)" i18n="Pagination link to the first page@@shared.pagination.first">First</a>
-<a [routerLink]="link" [queryParams]="getParams(page1 > 1 ? page1 - 1 : 1)" i18n="Pagination link to the previous page@@shared.pagination.previous">Previous</a>
-<span i18n="Current page label@@shared.pagination.current">Page {{page1}} / {{pageCount}}</span>
-<a [routerLink]="link" [queryParams]="getParams(page1 < pageCount ? page1 + 1 : pageCount)" i18n="Pagination link to the next page@@shared.pagination.next">Next</a>
-<a [routerLink]="link" [queryParams]="getParams(pageCount)" i18n="Pagination link to the last page@@shared.pagination.last">Last</a>
+<div class="multi">
+  <a [routerLink]="link" [queryParams]="getParams(1)" class="btn tertiary" i18n="Pagination link to the first page@@shared.pagination.first">First</a>
+  <a [routerLink]="link" [queryParams]="getParams(page1 > 1 ? page1 - 1 : 1)" class="btn tertiary" i18n="Pagination link to the previous page@@shared.pagination.previous">Previous</a>
+  <span class="btn tertiary" i18n="Current page label@@shared.pagination.current">Page {{page1}} / {{pageCount}}</span>
+  <a [routerLink]="link" [queryParams]="getParams(page1 < pageCount ? page1 + 1 : pageCount)" class="btn tertiary" i18n="Pagination link to the next page@@shared.pagination.next">Next</a>
+  <a [routerLink]="link" [queryParams]="getParams(pageCount)" class="btn tertiary" i18n="Pagination link to the last page@@shared.pagination.last">Last</a>
+</div>

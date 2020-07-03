@@ -50,31 +50,38 @@ $orange: #cd6f00;
 - DISABLED, for (yet) unavailable actions. Consider adding explanations to help and guide users.*/
 
 
-.content .btnContainer {
+.content .btnContainer, .content .btnContainer .multi {
   display: flex;
-  margin: -4px;
+  align-items: center;
   flex-wrap: wrap;
-
+  margin: .65em -4px 1.2em -4px;
+  
+  .multi {
+    flex-wrap: nowrap;
+    margin: 4px;
+  }
+  
   &.reverseWrap {
     flex-wrap: wrap-reverse;
   }
 
   & > * {
-    flex: 1 1;
+    flex: 1;
     min-width: auto !important;
     white-space: pre;
   }
 
   & > .flexSize2 {
-    flex: 2 2;
+    flex: 2;
   }
 
   & > .flexSize3 {
-    flex: 3 3;
+    flex: 3;
   }
 }
 
 .content .btn {
+  z-index: 2;
   font-size: .86rem;
   line-height: 1.15em;
   color: $lightWhite;
@@ -97,23 +104,26 @@ $orange: #cd6f00;
   outline: none;
   box-shadow:
     0 3px 0 0 $deepBlack,
-    inset 0 0 0 1px transparentize($lightWhite, .9); /*Inset shadow, simulates a white border*/
+    inset 0 0 0 2px transparentize($lightWhite, .93); /*Inset shadow, simulates a white border*/
 
   transition: all 0.25s, box-shadow 0.45s;
 
   &:not([disabled]):not(.disabled) {
     &:hover, &:focus {
-      border-width: 2px;
+      z-index: 1;
+      transform: translate(0, 1px);
       background-color: darken(saturate($darkViolet, 8.50), 3.7);
       box-shadow:
-        0 1px 0 1px $deepBlack,
+        0 1px 0 0 $deepBlack,
         inset 0 0 0 2px transparentize($lightWhite, .9);
     }
 
     &:active {
+      z-index: 1;
+      transform: translate(0, 2px);
       background-color: darken(saturate($darkViolet, 13), 5.3);
       box-shadow:
-        0 -2px 2px 1px $deepBlack,
+        0 -2px 0 0 $deepBlack,
         inset 0 0 0 2px transparentize($lightWhite, .9);
     }
   }
@@ -140,6 +150,7 @@ $orange: #cd6f00;
     box-shadow:
       0 0 0 1px transparentize($deepBlack, 1),
       inset 0 0 0 2px transparentize($darkGrey, .65); /*Inset shadow, simulates a white border*/
+    transform: none !important;
 
     &:not([disabled]):not(.disabled) {
       &:hover, &:focus {
@@ -203,7 +214,7 @@ $orange: #cd6f00;
         $darkGrey 50%,
         $darkGrey 66.67%,
         $deepGrey 66.67%,
-        $deepGrey 100%);
+        $deepGrey 100%);  /*Stripes background*/
       box-shadow:
         0 1px 0 1px $deepBlack,
         inset 0 0 0 2px $darkGrey, 2%;  /*Inset shadow, simulates a white border*/
@@ -211,6 +222,24 @@ $orange: #cd6f00;
   }
 }
 
+.multi .btn {
+  border-radius: 0;
+  margin: 0 -1px;
+  clip-path: inset(-4px 1px -4px -4px);
+  
+  &:first-child {
+    border-radius: 4px 0 0 4px;
+  }
+  
+  &:last-child {
+    border-radius: 0 4px 4px 0;
+    clip-path: inset(-4px -4px -4px -4px);
+  }
+  
+  &:hover, &:focus, &:active {
+    clip-path: inset(-4px -4px -4px -4px);
+  }
+}
 
 .content input.field {
   color: $lightWhite;

@@ -191,6 +191,7 @@ etwin-main-layout, etwin-small-layout {
     font-style: italic;
     text-transform: uppercase;
     letter-spacing: -0.025em;
+    overflow-wrap: break-word;
     margin-left: -.1em;
   }
 
@@ -200,6 +201,7 @@ etwin-main-layout, etwin-small-layout {
     color: $red;
     font-weight: $fontWeightBold;
     letter-spacing: -0.015em;
+    overflow-wrap: break-word;
     margin-left: -0.08em;
   }
 
@@ -208,6 +210,7 @@ etwin-main-layout, etwin-small-layout {
     line-height: 1.25em;
     font-weight: $fontWeightLight;
     letter-spacing: -0.01em;
+    overflow-wrap: break-word;
   }
 
   h4 {
@@ -244,7 +247,11 @@ etwin-main-layout, etwin-small-layout {
 
   .info {
     font-style: italic;
-    font-size: .92em;
+    font-size: .95em;
+    color: darken($lightWhite, 30%);
+    padding-left: .6em;
+    border-left: 2px solid $lightGrey;
+    margin: .6em 0;
   }
 }
 
@@ -264,6 +271,26 @@ footer {
   padding: 9px;
   border-radius: 4px;
   background-color: $darkViolet;
+}
+
+.splitter {
+  width: 100%;
+  margin: 2.3em 0;
+  border-bottom: 2px solid $mediumGrey;
+  display: block;
+  clear: both;
+  height: 2px;
+  overflow: visible;
+  color: $lightWhite;
+  text-align: center;
+  line-height: .3em;
+  text-transform: uppercase;
+  text-shadow: 0 0 5px $deepGrey;
+  font-size: .76em;
+  letter-spacing: .05em;
+
+  &.s {  margin: 1.4em 0; }
+  &.xl { margin: 3.8em 0; }
 }
 
 label, input[type=text], input[type=submit], input[type=password] {

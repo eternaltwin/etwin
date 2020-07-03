@@ -3,7 +3,12 @@
     <ng-container [ngSwitch]="thread !== FORUM_THREAD_NOT_FOUND">
       <ng-container *ngSwitchCase="true">
         <h1>{{thread.title}}</h1>
-        <nav>
+        <nav class="breadcrumb">
+          In
+          <a href="/">
+            Forum
+          </a>
+           >
           <a [routerLink]="['', 'forum', 'sections', thread.section.id]">
             <span class="name">{{thread.section.displayName}}</span>
           </a>
@@ -13,14 +18,15 @@
             <etwin-forum-post [post]="post" [id]="post.id" [canEdit]="canEditPosts$ | async"></etwin-forum-post>
           </li>
         </ol>
-        <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">
-          <a [routerLink]="['', 'forum', 'threads', thread.id, 'reply']" i18n="Link to the thread reply (new post) page@@forum.newPostLink">Reply</a>
-        </ng-container>
-        <ng-template #unauthenticated>
-          <a [routerLink]="['', 'login']" [queryParams]="{next: '/forum/threads/' + thread.id + '/reply'}" i18n="Link to the thread reply (new post) page for guests (redirect through login)@@forum.newPostLink.guest">Sign in to reply</a>
-        </ng-template>
-        |
-        <etwin-pagination [link]="['', 'forum', 'threads', thread.id]" [page1]="floor(thread.posts.offset / thread.posts.limit) + 1" [pageCount]="ceil(thread.posts.count / thread.posts.limit)"></etwin-pagination>
+        <div class="btnContainer">
+          <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">
+            <a [routerLink]="['', 'forum', 'threads', thread.id, 'reply']" class="btn primary" i18n="Link to the thread reply (new post) page@@forum.newPostLink">Reply</a>
+          </ng-container>
+          <ng-template #unauthenticated>
+            <a [routerLink]="['', 'login']" [queryParams]="{next: '/forum/threads/' + thread.id + '/reply'}" class="btn primary" i18n="Link to the thread reply (new post) page for guests (redirect through login)@@forum.newPostLink.guest">Sign in to reply</a>
+          </ng-template>
+          <etwin-pagination [link]="['', 'forum', 'threads', thread.id]" [page1]="floor(thread.posts.offset / thread.posts.limit) + 1" [pageCount]="ceil(thread.posts.count / thread.posts.limit)"></etwin-pagination>
+        </div>
       </ng-container>
       <ng-container *ngSwitchDefault>
         <h1 i18n="Forum thread not found error message@@forum.error.threadNotFound">Forum thread not found</h1>
