@@ -72,6 +72,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
             items: [],
           },
           roleGrants: [],
+          self: {roles: []},
         };
         assertKryoEqual($ForumSection, section, expected);
       }
@@ -97,6 +98,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
             items: [],
           },
           roleGrants: [],
+          self: {roles: []},
         };
         assertKryoEqual($ForumSection, actual, expected);
       }
@@ -117,20 +119,20 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
       {
         const actual: ForumSectionListing = await api.forum.getSections(aliceAuth);
         const expected: ForumSectionListing = {
-          // count: 1,
-          // offset: 0,
-          // limit: 50,
-          items: [{
-            type: ObjectType.ForumSection,
-            id: section.id,
-            key: "fr_main",
-            displayName: "Forum Général",
-            locale: "fr-FR",
-            ctime: section.ctime,
-            threads: {
-              count: 0,
+          items: [
+            {
+              type: ObjectType.ForumSection,
+              id: section.id,
+              key: "fr_main",
+              displayName: "Forum Général",
+              locale: "fr-FR",
+              ctime: section.ctime,
+              threads: {
+                count: 0,
+              },
+              self: {roles: [ForumRole.Administrator]},
             },
-          }],
+          ],
         };
         assertKryoEqual($ForumSectionListing, actual, expected);
       }
@@ -173,6 +175,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
             threads: {
               count: 1,
             },
+            self: {roles: [ForumRole.Administrator]},
           },
           posts: {
             count: 1,
@@ -270,6 +273,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
             threads: {
               count: 1,
             },
+            self: {roles: [ForumRole.Administrator]},
           },
           posts: {
             count: 11,
@@ -487,6 +491,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
               grantedBy: $UserRef.clone(aliceAuth.user),
             },
           ],
+          self: {roles: [ForumRole.Administrator]},
         };
         assertKryoEqual($ForumSection, sectionWithBobMod, expected);
       }
@@ -494,12 +499,17 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
       // Users can see moderators
       {
         const actual = await api.forum.getSectionById(charlieAuth, section.id, {threadOffset: 0, threadLimit: 20});
-        assertKryoEqual($ForumSection, actual, sectionWithBobMod);
+        assertKryoEqual($ForumSection, actual, {...sectionWithBobMod, self: {roles: []}});
       }
       // Guests can see moderators
       {
         const actual = await api.forum.getSectionById(GUEST_AUTH, section.id, {threadOffset: 0, threadLimit: 20});
-        assertKryoEqual($ForumSection, actual, sectionWithBobMod);
+        assertKryoEqual($ForumSection, actual, {...sectionWithBobMod, self: {roles: []}});
+      }
+      // Moderators can see themselves
+      {
+        const actual = await api.forum.getSectionById(bobAuth, section.id, {threadOffset: 0, threadLimit: 20});
+        assertKryoEqual($ForumSection, actual, {...sectionWithBobMod, self: {roles: [ForumRole.Moderator]}});
       }
     });
   });
@@ -585,6 +595,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
               grantedBy: $UserRef.clone(aliceAuth.user),
             },
           ],
+          self: {roles: [ForumRole.Administrator]},
         };
         assertKryoEqual($ForumSection, sectionWithCharlieMod, expected);
       }
@@ -734,6 +745,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
               grantedBy: $UserRef.clone(aliceAuth.user),
             },
           ],
+          self: {roles: [ForumRole.Administrator]},
         };
         assertKryoEqual($ForumSection, actual, expected);
       }
@@ -770,6 +782,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
               grantedBy: $UserRef.clone(aliceAuth.user),
             },
           ],
+          self: {roles: [ForumRole.Administrator]},
         };
         assertKryoEqual($ForumSection, actual, expected);
       }
@@ -829,6 +842,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
               ctime: section.ctime,
               locale: "fr-FR",
               threads: {count: 1},
+              self: {roles: [ForumRole.Administrator]},
             },
           },
           revisions: {
@@ -1077,6 +1091,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
               ctime: section.ctime,
               locale: "fr-FR",
               threads: {count: 1},
+              self: {roles: [ForumRole.Administrator]},
             },
           },
           revisions: {
@@ -1267,6 +1282,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
               ctime: section.ctime,
               locale: "fr-FR",
               threads: {count: 1},
+              self: {roles: [ForumRole.Moderator]},
             },
           },
           revisions: {

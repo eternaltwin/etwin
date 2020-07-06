@@ -9,6 +9,7 @@ import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $ForumSectionDisplayName, ForumSectionDisplayName } from "./forum-section-display-name.js";
 import { $ForumSectionId, ForumSectionId } from "./forum-section-id.js";
 import { $NullableForumSectionKey, NullableForumSectionKey } from "./forum-section-key.js";
+import { $ForumSectionSelf, ForumSectionSelf } from "./forum-section-self.js";
 
 export interface ForumSectionMeta {
   type: ObjectType.ForumSection;
@@ -18,6 +19,7 @@ export interface ForumSectionMeta {
   ctime: Date;
   locale: LocaleId | null;
   threads: ListingCount;
+  self: ForumSectionSelf;
 }
 
 export const $ForumSectionMeta: RecordIoType<ForumSectionMeta> = new RecordType<ForumSectionMeta>({
@@ -29,6 +31,7 @@ export const $ForumSectionMeta: RecordIoType<ForumSectionMeta> = new RecordType<
     ctime: {type: $Date},
     locale: {type: $LocaleId},
     threads: {type: $ListingCount},
+    self: {type: $ForumSectionSelf},
   },
   changeCase: CaseStyle.SnakeCase,
 });

@@ -10,6 +10,7 @@ import { $ForumRoleGrant, ForumRoleGrant } from "./forum-role-grant.js";
 import { $ForumSectionDisplayName, ForumSectionDisplayName } from "./forum-section-display-name.js";
 import { $ForumSectionId, ForumSectionId } from "./forum-section-id.js";
 import { $NullableForumSectionKey, NullableForumSectionKey } from "./forum-section-key.js";
+import { $ForumSectionSelf, ForumSectionSelf } from "./forum-section-self.js";
 import { $ForumThreadListing, ForumThreadListing } from "./forum-thread-listing.js";
 
 export interface ForumSection {
@@ -21,6 +22,7 @@ export interface ForumSection {
   locale: LocaleId | null;
   threads: ForumThreadListing;
   roleGrants: ForumRoleGrant[];
+  self: ForumSectionSelf;
 }
 
 export const $ForumSection: RecordIoType<ForumSection> = new RecordType<ForumSection>({
@@ -33,6 +35,7 @@ export const $ForumSection: RecordIoType<ForumSection> = new RecordType<ForumSec
     locale: {type: $LocaleId},
     threads: {type: $ForumThreadListing},
     roleGrants: {type: new ArrayType({itemType: $ForumRoleGrant, maxLength: Infinity})},
+    self: {type: $ForumSectionSelf},
   },
   changeCase: CaseStyle.SnakeCase,
 });

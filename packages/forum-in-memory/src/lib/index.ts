@@ -26,6 +26,7 @@ import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id.js
 import { ForumSectionKey, NullableForumSectionKey } from "@eternal-twin/core/lib/forum/forum-section-key.js";
 import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing.js";
 import { ForumSectionMeta } from "@eternal-twin/core/lib/forum/forum-section-meta.js";
+import { ForumSectionSelf } from "@eternal-twin/core/lib/forum/forum-section-self.js";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section.js";
 import { ForumThreadId } from "@eternal-twin/core/lib/forum/forum-thread-id.js";
 import { ForumThreadKey, NullableForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key.js";
@@ -222,6 +223,7 @@ export class InMemoryForumService implements ForumService {
         locale: section.locale,
         threads: await this.getThreads(SYSTEM_AUTH, section.id),
         roleGrants: [],
+        self: {roles: []},
       };
     } else {
       if (oldSection.locale !== options.locale) {
@@ -239,6 +241,7 @@ export class InMemoryForumService implements ForumService {
         locale: oldSection.locale,
         threads: await this.getThreads(SYSTEM_AUTH, oldSection.id),
         roleGrants: this.getRoleGrants(SYSTEM_AUTH, oldSection.id),
+        self: this.getSectionSelf(SYSTEM_AUTH, oldSection.id),
       };
     }
   }
@@ -256,6 +259,7 @@ export class InMemoryForumService implements ForumService {
         threads: {
           count: this.getThreadCount(acx, imSection.id),
         },
+        self: this.getSectionSelf(acx, imSection.id),
       };
       items.push(section);
     }
@@ -281,6 +285,7 @@ export class InMemoryForumService implements ForumService {
       locale: section.locale,
       threads,
       roleGrants: this.getRoleGrants(acx, section.id),
+      self: this.getSectionSelf(acx, section.id),
     };
   }
 
@@ -369,6 +374,7 @@ export class InMemoryForumService implements ForumService {
       threads: {
         count: this.getThreadCount(acx, section.id),
       },
+      self: this.getSectionSelf(acx, section.id),
     };
   }
 
@@ -501,6 +507,32 @@ export class InMemoryForumService implements ForumService {
       grants.push($ForumRoleGrant.clone(grant));
     }
     return grants;
+  }
+
+  private getSectionSelf(acx: AuthContext, sectionIdOrKey: ForumSectionId | ForumSectionKey): ForumSectionSelf {
+    switch (acx.type) {
+      case AuthType.AccessToken:
+        return {roles: []};
+      case AuthType.Guest:
+        return {roles: []};
+      case AuthType.OauthClient:
+        return {roles: []};
+      case AuthType.System:
+        return {roles: []};
+      case AuthType.User: {
+        const roles: ForumRole[] = [];
+        if (acx.isAdministrator) {
+          roles.push(ForumRole.Administrator);
+        }
+        if (this.isModerator(acx, sectionIdOrKey, acx.user.id)) {
+          roles.push(ForumRole.Moderator);
+        }
+        return {roles};
+      }
+      default: {
+        throw new Error("AssertionError: Unexpected `AuthType`");
+      }
+    }
   }
 
   async innerCreatePost(

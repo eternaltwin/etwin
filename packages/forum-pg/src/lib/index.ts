@@ -26,6 +26,7 @@ import { $ForumSectionId, ForumSectionId } from "@eternal-twin/core/lib/forum/fo
 import { ForumSectionKey } from "@eternal-twin/core/lib/forum/forum-section-key.js";
 import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing.js";
 import { ForumSectionMeta } from "@eternal-twin/core/lib/forum/forum-section-meta.js";
+import { ForumSectionSelf } from "@eternal-twin/core/lib/forum/forum-section-self.js";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section.js";
 import { $ForumThreadId, ForumThreadId } from "@eternal-twin/core/lib/forum/forum-thread-id.js";
 import { ForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key.js";
@@ -248,6 +249,7 @@ export class PgForumService implements ForumService {
           items: [],
         },
         roleGrants: [],
+        self: {roles: []},
       };
     } else {
       const displayName: ForumSectionDisplayName | undefined = oldRow.display_name === options.displayName
@@ -275,6 +277,7 @@ export class PgForumService implements ForumService {
         SYSTEM_AUTH,
         oldRow.forum_section_id,
       );
+      const self: ForumSectionSelf = await this.getSectionSelfTx(queryable, SYSTEM_AUTH, oldRow.forum_section_id);
       return {
         type: ObjectType.ForumSection,
         id: oldRow.forum_section_id,
@@ -284,13 +287,14 @@ export class PgForumService implements ForumService {
         locale: locale !== undefined ? locale : (oldRow.locale as NullableLocaleId),
         threads,
         roleGrants,
+        self,
       };
     }
   }
 
   private async getSectionsTx(
     queryable: Queryable,
-    _acx: AuthContext,
+    acx: AuthContext,
   ): Promise<ForumSectionListing> {
     type Row =
       Pick<ForumSectionRow, "forum_section_id" | "key" | "ctime" | "display_name" | "locale">
@@ -312,6 +316,7 @@ export class PgForumService implements ForumService {
     );
     const items: ForumSectionMeta[] = [];
     for (const row of rows) {
+      const self = await this.getSectionSelfTx(queryable, acx, row.forum_section_id);
       const section: ForumSectionMeta = {
         type: ObjectType.ForumSection,
         id: row.forum_section_id,
@@ -320,6 +325,7 @@ export class PgForumService implements ForumService {
         ctime: row.ctime,
         locale: row.locale as NullableLocaleId,
         threads: {count: row.thread_count},
+        self,
       };
       items.push(section);
     }
@@ -338,6 +344,7 @@ export class PgForumService implements ForumService {
     }
     const threads: ForumThreadListing = await this.getThreadsTx(queryable, acx, section, options.threadOffset, options.threadLimit);
     const roleGrants: ForumRoleGrant[] = await this.getRoleGrantsTx(queryable, acx, section.id);
+    const self: ForumSectionSelf = await this.getSectionSelfTx(queryable, acx, section.id);
     return {
       type: ObjectType.ForumSection,
       id: section.id,
@@ -347,12 +354,13 @@ export class PgForumService implements ForumService {
       locale: section.locale,
       threads,
       roleGrants,
+      self,
     };
   }
 
   private async getSectionMetaTx(
     queryable: Queryable,
-    _acx: AuthContext,
+    acx: AuthContext,
     sectionIdOrKey: ForumSectionId | ForumSectionKey,
   ): Promise<ForumSectionMeta | null> {
     let sectionId: ForumSectionId | null = null;
@@ -384,6 +392,7 @@ export class PgForumService implements ForumService {
     if (row === undefined) {
       return null;
     }
+    const self: ForumSectionSelf = await this.getSectionSelfTx(queryable, acx, row.forum_section_id);
 
     return {
       type: ObjectType.ForumSection,
@@ -395,6 +404,7 @@ export class PgForumService implements ForumService {
       threads: {
         count: row.thread_count,
       },
+      self,
     };
   }
 
@@ -462,6 +472,36 @@ export class PgForumService implements ForumService {
       items.push(grant);
     }
     return items;
+  }
+
+  private async getSectionSelfTx(
+    queryable: Queryable,
+    acx: AuthContext,
+    sectionIdOrKey: ForumSectionId | ForumSectionKey,
+  ): Promise<ForumSectionSelf> {
+    switch (acx.type) {
+      case AuthType.AccessToken:
+        return {roles: []};
+      case AuthType.Guest:
+        return {roles: []};
+      case AuthType.OauthClient:
+        return {roles: []};
+      case AuthType.System:
+        return {roles: []};
+      case AuthType.User: {
+        const roles: ForumRole[] = [];
+        if (acx.isAdministrator) {
+          roles.push(ForumRole.Administrator);
+        }
+        if (await this.isModeratorTx(queryable, acx, sectionIdOrKey, acx.user.id)) {
+          roles.push(ForumRole.Moderator);
+        }
+        return {roles};
+      }
+      default: {
+        throw new Error("AssertionError: Unexpected `AuthType`");
+      }
+    }
   }
 
   private async createThreadTx(
