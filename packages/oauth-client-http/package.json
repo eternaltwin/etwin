@@ -36,13 +36,13 @@
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
-    "@types/node": "^14.0.13",
-    "@types/superagent": "^4.1.7",
+    "@types/node": "^14.0.14",
+    "@types/superagent": "^4.1.8",
     "chai": "^4.2.0",
-    "eslint": "^7.2.0",
+    "eslint": "^7.4.0",
     "mocha": "^8.0.1",
-    "superagent": "^5.2.2",
-    "typescript": "^3.9.5"
+    "superagent": "^5.3.1",
+    "typescript": "^3.9.6"
   },
   "type": "module",
   "exports": {

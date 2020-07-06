@@ -35,16 +35,16 @@
     "node": ">=14.0.0"
   },
   "dependencies": {
-    "kryo": "^0.10.0"
+    "kryo": "^0.11.0"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.2",
-    "@types/node": "^14.0.13",
-    "eslint": "^7.2.0",
+    "@types/node": "^14.0.14",
+    "eslint": "^7.4.0",
     "kryo-json": "^0.11.0",
     "kryo-testing": "^0.11.0",
     "mocha": "^8.0.1",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.6"
   },
   "type": "module",
   "exports": {
