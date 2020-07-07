@@ -3,7 +3,7 @@
     Forum
   </h1>
   <ng-container *ngIf="sections$ | async as sections">
-    <ul>
+    <ul class="section-list">
       <li *ngFor="let section of sections.items">
         <a [routerLink]="['', 'forum', 'sections', section.id]">
           <span class="name">{{section.displayName}}</span>

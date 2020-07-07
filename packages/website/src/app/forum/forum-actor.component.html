@@ -1,6 +1,6 @@
 <ng-container [ngSwitch]="actor.type">
   <ng-container *ngSwitchCase="ObjectType.UserForumActor">
-    <a [routerLink]="['', 'users', asUserForumActor(actor).user.id]">{{asUserForumActor(actor).user.displayName}}</a>
+    <etwin-user-link [user]="asUserForumActor(actor).user"></etwin-user-link>
   </ng-container>
   <ng-container *ngSwitchDefault>
     <pre>{{actor | json}}</pre>

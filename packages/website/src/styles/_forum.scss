@@ -1,7 +1,9 @@
-.content .post-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.content {
+  .post-list, .section-list, .thread-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
 }
 
 etwin-forum-post {
@@ -29,5 +31,45 @@ etwin-forum-post {
 
   .body {
     padding: $spacing;
+  }
+}
+
+.content .thread-list, .content .section-list {
+  $bgColor: $darkViolet;
+  $borderColor: $lightWhite;
+  $spacing: 0.5rem;
+
+  margin: $spacing 0;
+
+  a {
+    display: flex;
+    border: 1px solid transparentize($borderColor, .9);
+    border-top: none;
+    padding: $spacing;
+    transition: background-color 0.25s;
+    background-color: $bgColor;
+
+    &:hover, &:focus {
+      background-color: darken(saturate($bgColor, 8.50), 3.7);
+    }
+
+    &:active {
+      background-color: darken(saturate($bgColor, 13), 5.3);
+    }
+  }
+
+  li:first-child > a {
+    border-top-left-radius: $spacing;
+    border-top-right-radius: $spacing;
+    border-top: 1px solid transparentize($borderColor, .9);
+  }
+
+  li:last-child > a {
+    border-bottom-left-radius: $spacing;
+    border-bottom-right-radius: $spacing;
+  }
+
+  .name, .title {
+    flex-grow: 1;
   }
 }

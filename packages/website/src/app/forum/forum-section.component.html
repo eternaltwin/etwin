@@ -3,10 +3,10 @@
     <ng-container [ngSwitch]="section !== FORUM_SECTION_NOT_FOUND">
       <ng-container *ngSwitchCase="true">
         <h1>{{section.displayName}}</h1>
-        <ol>
+        <ol class="thread-list">
           <li *ngFor="let thread of section.threads.items">
             <a [routerLink]="['', 'forum', 'threads', thread.id]">
-              <span class="name">{{thread.title}}</span>
+              <span class="title">{{thread.title}}</span>
               <span class="count">{{thread.posts.count}}</span>
             </a>
           </li>
@@ -16,6 +16,17 @@
         </ng-container>
         <ng-template #unauthenticated>
           <a [routerLink]="['', 'login']">Sign in to create a new thread</a>
+        </ng-template>
+        <h2>Moderators</h2>
+        <ng-container *ngIf="section.roleGrants.length > 0; else noRoleGrants">
+          <ol>
+            <li *ngFor="let rg of section.roleGrants">
+              <etwin-user-link [user]="rg.user"></etwin-user-link>
+            </li>
+          </ol>
+        </ng-container>
+        <ng-template #noRoleGrants>
+          There are no users with elevated privilege on this forum section. Only administrators can manage this section.
         </ng-template>
       </ng-container>
       <ng-container *ngSwitchDefault>

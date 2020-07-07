@@ -7,15 +7,16 @@ import { EtwinBarComponent } from "./etwin-bar.component";
 import { MainLayoutComponent } from "./main-layout.component";
 import { PaginationComponent } from "./pagination.component";
 import { SmallLayoutComponent } from "./small-layout.component";
+import { UserLinkComponent } from "./user-link.component";
 
 @NgModule({
-  declarations: [EtwinBarComponent, MainLayoutComponent, PaginationComponent, SmallLayoutComponent],
+  declarations: [EtwinBarComponent, MainLayoutComponent, PaginationComponent, SmallLayoutComponent, UserLinkComponent],
   imports: [
     CommonModule,
     FormsModule,
     RouterModule,
   ],
-  exports: [MainLayoutComponent, SmallLayoutComponent, RouterModule, PaginationComponent],
+  exports: [MainLayoutComponent, SmallLayoutComponent, RouterModule, PaginationComponent, UserLinkComponent],
 })
 export class SharedModule {
 }
