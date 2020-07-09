@@ -11,6 +11,7 @@ import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
 import { ForumThreadId } from "@eternal-twin/core/lib/forum/forum-thread-id";
 import { ForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key";
 import { ForumService as CoreForumService } from "@eternal-twin/core/lib/forum/service";
+import { UserId } from "@eternal-twin/core/lib/user/user-id";
 import { from as rxFrom, Observable } from "rxjs";
 
 import { AUTH_CONTEXT, FORUM } from "../../server/tokens";
@@ -48,5 +49,13 @@ export class ServerForumService extends ForumService {
 
   createPost(threadIdOrKey: ForumThreadId | ForumThreadKey, options: CreatePostOptions): Observable<ForumPost> {
     throw new Error("AssertionError: Server side service is read-only (createPost)");
+  }
+
+  addModerator(sectionIdOrKey: ForumSectionId | ForumSectionKey, userId: UserId): Observable<ForumSection> {
+    throw new Error("AssertionError: Server side service is read-only (addModerator)");
+  }
+
+  deleteModerator(sectionIdOrKey: ForumSectionId | ForumSectionKey, userId: UserId): Observable<ForumSection> {
+    throw new Error("AssertionError: Server side service is read-only (deleteModerator)");
   }
 }

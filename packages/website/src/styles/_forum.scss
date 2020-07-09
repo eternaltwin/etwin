@@ -1,5 +1,5 @@
 .content {
-  .post-list, .section-list, .thread-list {
+  .post-list, .section-list, .thread-list, .moderator-list {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -71,5 +71,11 @@ etwin-forum-post {
 
   .name, .title {
     flex-grow: 1;
+  }
+}
+
+etwin-pagination {
+  a, span {
+    margin: 0 0.2em;
   }
 }

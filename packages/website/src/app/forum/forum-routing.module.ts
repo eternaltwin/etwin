@@ -83,6 +83,7 @@ const routes: Routes = [
     path: "sections/:section_id",
     component: ForumSectionComponent,
     pathMatch: "full",
+    runGuardsAndResolvers: "always",
     resolve: {
       section: ForumSectionResolverService,
     },

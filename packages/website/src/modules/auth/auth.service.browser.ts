@@ -130,7 +130,7 @@ export class BrowserAuthService extends AuthService {
   }
 
   logout(): Observable<null> {
-    return this.rest.delete(["auth", "self"], $AuthContext)
+    return this.rest.delete(["auth", "self"], {resType: $AuthContext})
       .pipe(
         rxMap((): null => {
           this.auth$.next(GUEST_AUTH_CONTEXT);

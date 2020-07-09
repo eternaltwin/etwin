@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
 import { $ListingQuery } from "@eternal-twin/core/lib/core/listing-query";
-import { $CreatePostOptions,CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options";
-import { $CreateThreadOptions,CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options";
+import { $CreatePostOptions, CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options";
+import { $CreateThreadOptions, CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options";
 import { $ForumPost, ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
 import { $ForumSection, ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
 import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id";
@@ -11,6 +11,8 @@ import { $ForumSectionListing, ForumSectionListing } from "@eternal-twin/core/li
 import { $ForumThread, ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
 import { ForumThreadId } from "@eternal-twin/core/lib/forum/forum-thread-id";
 import { ForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key";
+import { UserId } from "@eternal-twin/core/lib/user/user-id";
+import { $UserIdRef } from "@eternal-twin/core/lib/user/user-id-ref";
 import { Observable } from "rxjs";
 
 import { RestService } from "../rest/rest.service";
@@ -44,11 +46,26 @@ export class BrowserForumService extends ForumService {
     );
   }
 
-  createThread(sectionIdOrKey: ForumSectionId | ForumSectionKey, options: CreateThreadOptions): Observable<ForumThread> {
+  createThread(
+    sectionIdOrKey: ForumSectionId | ForumSectionKey,
+    options: CreateThreadOptions,
+  ): Observable<ForumThread> {
     return this.rest.post(["forum", "sections", sectionIdOrKey], $CreateThreadOptions, options, $ForumThread);
   }
 
   createPost(threadIdOrKey: ForumThreadId | ForumThreadKey, options: CreatePostOptions): Observable<ForumPost> {
     return this.rest.post(["forum", "threads", threadIdOrKey], $CreatePostOptions, options, $ForumPost);
+  }
+
+  addModerator(sectionIdOrKey: ForumSectionId | ForumSectionKey, userId: UserId): Observable<ForumSection> {
+    return this.rest.post(["forum", "sections", sectionIdOrKey, "role_grants"], $UserIdRef, {userId}, $ForumSection);
+  }
+
+  deleteModerator(sectionIdOrKey: ForumSectionId | ForumSectionKey, userId: UserId): Observable<ForumSection> {
+    return this.rest.delete(["forum", "sections", sectionIdOrKey, "role_grants"], {
+      reqType: $UserIdRef,
+      req: {userId},
+      resType: $ForumSection,
+    });
   }
 }

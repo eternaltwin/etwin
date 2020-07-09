@@ -20,7 +20,10 @@ export class ForumSectionComponent implements OnInit {
 
   public section$: Observable<ForumSection | typeof FORUM_SECTION_NOT_FOUND>;
   public isAuthenticated$: Observable<boolean>;
+  public isAdministrator$: Observable<boolean>;
   public readonly FORUM_SECTION_NOT_FOUND = FORUM_SECTION_NOT_FOUND;
+  public readonly floor = Math.floor;
+  public readonly ceil = Math.ceil;
 
   constructor(
     auth: AuthService,
@@ -31,6 +34,11 @@ export class ForumSectionComponent implements OnInit {
     this.section$ = RX_NEVER;
     this.isAuthenticated$ = auth.auth().pipe(
       rxMap((acx) => acx.type !== AuthType.Guest),
+      rxStartWith(false),
+      rxCatchError(() => rxOf(false)),
+    );
+    this.isAdministrator$ = auth.auth().pipe(
+      rxMap((acx) => acx.type === AuthType.User && acx.isAdministrator),
       rxStartWith(false),
       rxCatchError(() => rxOf(false)),
     );

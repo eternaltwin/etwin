@@ -72,12 +72,28 @@ export class RestService {
       }));
   }
 
-  public delete<R>(route: readonly string[], resType: IoType<R>): Observable<R> {
+  // public delete<R>(route: readonly string[], resType: IoType<R>): Observable<R> {
+  //   const uri = this.resolveUri(route);
+  //   return this.http.delete(uri, {withCredentials: true})
+  //     .pipe(rxMap((raw): R => {
+  //       try {
+  //         return resType.read(JSON_VALUE_READER, raw);
+  //       } catch (err) {
+  //         console.error(`API Error: ${uri}`);
+  //         console.error(err);
+  //         throw err;
+  //       }
+  //     }));
+  // }
+
+  public delete<Query, Req, Res>(route: readonly string[], options: RequestOptions<Query, Req, Res>): Observable<Res> {
     const uri = this.resolveUri(route);
-    return this.http.delete(uri, {withCredentials: true})
-      .pipe(rxMap((raw): R => {
+    const rawReq: object | undefined = options.reqType !== undefined ? options.reqType.write(JSON_VALUE_WRITER, options.req) : undefined;
+    const rawQuery: Record<string, string> | undefined = options.queryType !== undefined ? options.queryType.write(JSON_VALUE_WRITER, options.query) : undefined;
+    return this.http.request("delete", uri, {body: rawReq, withCredentials: true, params: rawQuery})
+      .pipe(rxMap((raw): Res => {
         try {
-          return resType.read(JSON_VALUE_READER, raw);
+          return options.resType.read(JSON_VALUE_READER, raw);
         } catch (err) {
           console.error(`API Error: ${uri}`);
           console.error(err);

@@ -23,7 +23,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, {initialNavigation: "enabled"}),
+    RouterModule.forRoot(routes, {initialNavigation: "enabled", onSameUrlNavigation: "reload"}),
   ],
   exports: [RouterModule],
 })

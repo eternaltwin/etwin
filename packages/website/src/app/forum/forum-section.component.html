@@ -17,17 +17,27 @@
         <ng-template #unauthenticated>
           <a [routerLink]="['', 'login']">Sign in to create a new thread</a>
         </ng-template>
+        |
+        <etwin-pagination [link]="['', 'forum', 'sections', section.id]"
+                          [page1]="floor(section.threads.offset / section.threads.limit) + 1"
+                          [pageCount]="ceil(section.threads.count / section.threads.limit)"></etwin-pagination>
         <h2>Moderators</h2>
         <ng-container *ngIf="section.roleGrants.length > 0; else noRoleGrants">
-          <ol>
+          <ol class="moderator-list">
             <li *ngFor="let rg of section.roleGrants">
               <etwin-user-link [user]="rg.user"></etwin-user-link>
+              <ng-container *ngIf="isAdministrator$ | async">
+                <etwin-delete-moderator [sectionId]="section.id" [userId]="rg.user.id"></etwin-delete-moderator>
+              </ng-container>
             </li>
           </ol>
         </ng-container>
         <ng-template #noRoleGrants>
           There are no users with elevated privilege on this forum section. Only administrators can manage this section.
         </ng-template>
+        <ng-container *ngIf="isAdministrator$ | async">
+          <etwin-add-moderator [sectionId]="section.id"></etwin-add-moderator>
+        </ng-container>
       </ng-container>
       <ng-container *ngSwitchDefault>
         <h1>Forum section not found</h1>

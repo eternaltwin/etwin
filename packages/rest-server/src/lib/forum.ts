@@ -12,6 +12,7 @@ import { $ForumThreadId, ForumThreadId } from "@eternal-twin/core/lib/forum/foru
 import { $ForumThreadKey, ForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key.js";
 import { $ForumThread, ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { $UserIdRef, UserIdRef } from "@eternal-twin/core/lib/user/user-id-ref.js";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
@@ -91,6 +92,52 @@ export function createForumRouter(api: Api): Router {
     }
     const thread: ForumThread = await api.forum.createThread(auth, sectionIdOrKey, body);
     cx.response.body = $ForumThread.write(JSON_VALUE_WRITER, thread);
+  }
+
+  router.post("/sections/:section_id/role_grants", koaCompose([koaBodyParser(), addModerator]));
+
+  async function addModerator(cx: Koa.Context): Promise<void> {
+    const rawSectionIdOrKey: string = cx.params["section_id"];
+    const auth: AuthContext = await api.koaAuth.auth(cx);
+    if (!$ForumSectionId.test(rawSectionIdOrKey) && !$ForumSectionKey.test(rawSectionIdOrKey)) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidSectionIdOrKey"};
+      return;
+    }
+    const sectionIdOrKey: ForumThreadId | ForumThreadKey = rawSectionIdOrKey;
+    let body: UserIdRef;
+    try {
+      body = $UserIdRef.read(JSON_VALUE_READER, cx.request.body);
+    } catch (_err) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidRequestBody"};
+      return;
+    }
+    const section: ForumSection = await api.forum.addModerator(auth, sectionIdOrKey, body.userId);
+    cx.response.body = $ForumSection.write(JSON_VALUE_WRITER, section);
+  }
+
+  router.delete("/sections/:section_id/role_grants", koaCompose([koaBodyParser(), deleteModerator]));
+
+  async function deleteModerator(cx: Koa.Context): Promise<void> {
+    const rawSectionIdOrKey: string = cx.params["section_id"];
+    const auth: AuthContext = await api.koaAuth.auth(cx);
+    if (!$ForumSectionId.test(rawSectionIdOrKey) && !$ForumSectionKey.test(rawSectionIdOrKey)) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidSectionIdOrKey"};
+      return;
+    }
+    const sectionIdOrKey: ForumThreadId | ForumThreadKey = rawSectionIdOrKey;
+    let body: UserIdRef;
+    try {
+      body = $UserIdRef.read(JSON_VALUE_READER, cx.request.body);
+    } catch (_err) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidRequestBody"};
+      return;
+    }
+    const section: ForumSection = await api.forum.deleteModerator(auth, sectionIdOrKey, body.userId);
+    cx.response.body = $ForumSection.write(JSON_VALUE_WRITER, section);
   }
 
   router.get("/threads/:thread_id", getThreadByIdOrKey);

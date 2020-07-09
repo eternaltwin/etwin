@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { $MarktwinText, MarktwinText } from "@eternal-twin/core/lib/core/marktwin-text";
 import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
-import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
 import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id";
 import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
 import { $ForumThreadTitle, ForumThreadTitle } from "@eternal-twin/core/lib/forum/forum-thread-title";
@@ -26,7 +25,6 @@ export class NewForumPostComponent implements OnInit {
 
   public thread$: Observable<ForumThread | typeof FORUM_THREAD_NOT_FOUND>;
   public readonly FORUM_THREAD_NOT_FOUND = FORUM_THREAD_NOT_FOUND;
-  public readonly $ForumThreadTitle = $ForumThreadTitle;
 
   public readonly newPostForm: FormGroup;
   public readonly body: FormControl;

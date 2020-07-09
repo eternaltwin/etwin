@@ -1,0 +1,16 @@
+<form
+  method="POST"
+  enctype="application/x-www-form-urlencoded"
+  action="/actions/add-moderator"
+  [formGroup]="deleteModeratorForm"
+  (ngSubmit)="onSubmit($event)"
+>
+  <input type="hidden" name="section_id" formControlName="sectionId" required="required" [value]="sectionId"/>
+  <input type="hidden" name="user_id" formControlName="userId" required="required" [value]="userId"/>
+  <input type="submit" class="btn primary" name="register"
+         [disabled]="deleteModeratorForm.invalid || pendingSubscription !== null" i18n-value="@@forum.deleteModerator.submit"
+         value="Delete moderator"/>
+  <div *ngIf="serverError" class="error" i18n="@@deleteModerator.unknownError">
+    Moderator deletion failed: unknown server error.
+  </div>
+</form>

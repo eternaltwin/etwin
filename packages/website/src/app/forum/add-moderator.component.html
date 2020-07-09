@@ -1,0 +1,19 @@
+<form
+  method="POST"
+  enctype="application/x-www-form-urlencoded"
+  action="/actions/add-moderator"
+  [formGroup]="addModeratorForm"
+  (ngSubmit)="onSubmit($event)"
+>
+  <input type="hidden" name="section_id" formControlName="sectionId" required="required" [value]="sectionId"/>
+  <label>
+    <span i18n="Label for the new moderator user selection@@newModeratorLabel">New moderator</span>
+    <etwin-user-input name="user_id" formControlName="userId"></etwin-user-input>
+  </label>
+  <input type="submit" class="btn primary" name="register"
+         [disabled]="addModeratorForm.invalid || pendingSubscription !== null" i18n-value="@@forum.addModerator.submit"
+         value="Add moderator"/>
+  <div *ngIf="serverError" class="error" i18n="@@addModerator.unknownError">
+    Moderator addition failed: unknown server error on creation.
+  </div>
+</form>
