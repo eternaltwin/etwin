@@ -10,7 +10,7 @@
         </nav>
         <ol class="post-list">
           <li *ngFor="let post of thread.posts.items">
-            <etwin-forum-post [post]="post" [id]="post.id"></etwin-forum-post>
+            <etwin-forum-post [post]="post" [id]="post.id" [canEdit]="canEditPosts$ | async"></etwin-forum-post>
           </li>
         </ol>
         <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">

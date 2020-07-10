@@ -1,0 +1,38 @@
+<etwin-main-layout>
+  <ng-container *ngIf="post$ | async as post">
+    <ng-container [ngSwitch]="post !== FORUM_POST_NOT_FOUND">
+      <ng-container *ngSwitchCase="true">
+        <h1>Update post in {{post.thread.title}}, by <etwin-forum-actor [actor]="post.author"></etwin-forum-actor>, at {{post.ctime | date : "short"}}</h1>
+        <form
+          method="POST"
+          enctype="application/x-www-form-urlencoded"
+          action="/actions/update_post"
+          [formGroup]="updatePostForm"
+          (ngSubmit)="onSubmit($event, post)"
+        >
+          <input type="hidden" name="post_id" formControlName="postId" required="required" [value]="post.id"/>
+          <input type="hidden" name="last_revision_id" formControlName="lastRevisionId" required="required" [value]="post.revisions.items[post.revisions.items.length - 1].id"/>
+          <label>
+            <input type="checkbox" name="hide_post_content" formControlName="hidePostContent" [defaultChecked]="false"/>
+            <span i18n="@@hidePostContent">Hide message content</span>
+          </label>
+          <label>
+            <span i18n="@@updateModerationWarning">Moderation warning</span>
+            <textarea name="moderation" class="field" formControlName="moderation"></textarea>
+          </label>
+          <label>
+            <span i18n="Comment of the new post revision@@updatePostComment">Comment describing the reason of the update</span>
+            <input type="text" name="comment" class="field" formControlName="comment"/>
+          </label>
+          <input type="submit" class="btn primary" name="register" [disabled]="updatePostForm.invalid || pendingSubscription !== null" i18n-value="@@forum.newPost.submit" value="Post the reply"/>
+          <div *ngIf="serverError" class="error" i18n="@@updatePost.unknownError">
+            Post update failed: unknown server error.
+          </div>
+        </form>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <h1>Forum thread not found</h1>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</etwin-main-layout>

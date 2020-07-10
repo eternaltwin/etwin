@@ -51,11 +51,11 @@ $orange: #cd6f00;
   margin: 0 auto;
   padding: 0;
   z-index: 5;
-  
+
   #main-menu {
     min-height: 44px;
   }
-  
+
   .npc {
     float: right;
     position: relative;
@@ -79,18 +79,18 @@ $orange: #cd6f00;
   letter-spacing: 0.065em;
   padding: 14px 16px 6px 16px;
   cursor: pointer;
-  
+
   &:hover, &:focus {
     background: linear-gradient(to bottom, transparentize($darkGrey, 1) 15%, $mediumGrey 100%);
     color: rgba(238,238,238,1);
   }
-  
+
   &:active {
     /*background: linear-gradient(to bottom, transparentize($darkGrey, 1) 0%, $mediumGrey 100%);*/
-    
+
     background: linear-gradient(to bottom, transparentize($red, 1) 25%, $red 100%);
   }
-  
+
   transition: color .25s, background .15s;
 }
 
@@ -109,10 +109,10 @@ nav {
       &:first-child a {
         border-left: 1px solid $lightGrey;
       }
-      
-      a {        
+
+      a {
         @include mainMenuButtonStyle;
-        
+
         &[disabled], &.disabled {
           background: linear-gradient(to bottom, rgba(32,32,32,0) 15%, rgba(5,5,7,1) 100%);
           color: $lightGrey;
@@ -156,9 +156,9 @@ nav {
       opacity: 0;
       visibility: hidden;
       box-shadow: 0 0 12px 4px $deepBlack;
-      
+
       transition: opacity .15s;
-      
+
       &:before {
         content:"";
         /*height: 16px;
@@ -170,7 +170,7 @@ nav {
         left: 28px;
         top: -8px;
         clip-path: polygon(0 0, 0% 100%, 100% 0);*/
-        
+
         width: 0;
         height: 0;
         border-style: solid;
@@ -188,19 +188,19 @@ nav {
       width: 100%;
       padding :12px 26px;
       text-align: left;
-      
+
       &:hover, &:focus, &:active {
         background-color: $darkViolet;
       }
     }
-    
+
     #menu-toggle:checked ~ ul {
       opacity: 1;
       visibility: visible;
-      
+
       transition: opacity .15s;
     }
-    
+
     .label-toggle {
       display: block;
       height: 40px;
@@ -209,12 +209,12 @@ nav {
       margin: 4px 0 0 16px;
       @include mainMenuButtonStyle;
     }
-    
+
     #menu-toggle:checked ~ .label-toggle {
       color: rgba(238,238,238,1);
       background: linear-gradient(to bottom, transparentize($red, 1) 25%, $red 100%);
     }
   }
 
-  
+
 }

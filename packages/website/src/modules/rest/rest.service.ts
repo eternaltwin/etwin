@@ -54,79 +54,31 @@ export class RestService {
     this.http = http;
   }
 
-  public get<Query, Res>(
-    route: readonly string[],
-    options: SimpleRequestOptions<Res> | QueryRequestOptions<Query, Res>,
-  ): Observable<Res> {
-    const uri = this.resolveUri(route);
-    const rawQuery: Record<string, string> | undefined = options.queryType !== undefined ? options.queryType.write(JSON_VALUE_WRITER, options.query) : undefined;
-    return this.http.get(uri, {withCredentials: true, params: rawQuery})
-      .pipe(rxMap((raw): Res => {
-        try {
-          return options.resType.read(JSON_VALUE_READER, raw);
-        } catch (err) {
-          console.error(`API Error: ${uri}`);
-          console.error(err);
-          throw err;
-        }
-      }));
-  }
-
-  // public delete<R>(route: readonly string[], resType: IoType<R>): Observable<R> {
-  //   const uri = this.resolveUri(route);
-  //   return this.http.delete(uri, {withCredentials: true})
-  //     .pipe(rxMap((raw): R => {
-  //       try {
-  //         return resType.read(JSON_VALUE_READER, raw);
-  //       } catch (err) {
-  //         console.error(`API Error: ${uri}`);
-  //         console.error(err);
-  //         throw err;
-  //       }
-  //     }));
-  // }
-
   public delete<Query, Req, Res>(route: readonly string[], options: RequestOptions<Query, Req, Res>): Observable<Res> {
-    const uri = this.resolveUri(route);
-    const rawReq: object | undefined = options.reqType !== undefined ? options.reqType.write(JSON_VALUE_WRITER, options.req) : undefined;
-    const rawQuery: Record<string, string> | undefined = options.queryType !== undefined ? options.queryType.write(JSON_VALUE_WRITER, options.query) : undefined;
-    return this.http.request("delete", uri, {body: rawReq, withCredentials: true, params: rawQuery})
-      .pipe(rxMap((raw): Res => {
-        try {
-          return options.resType.read(JSON_VALUE_READER, raw);
-        } catch (err) {
-          console.error(`API Error: ${uri}`);
-          console.error(err);
-          throw err;
-        }
-      }));
+    return this.request("delete", route, options);
   }
 
-  public post<Req, Res>(
-    route: readonly string[],
-    reqType: IoType<Req>,
-    req: Req,
-    resType: IoType<Res>,
-  ): Observable<Res> {
-    const uri = this.resolveUri(route);
-    const rawReq: object = reqType.write(JSON_VALUE_WRITER, req);
-    return this.http.post(uri, rawReq, {withCredentials: true})
-      .pipe(rxMap((raw): Res => {
-        try {
-          return resType.read(JSON_VALUE_READER, raw);
-        } catch (err) {
-          console.error(`API Error: ${uri}`);
-          console.error(err);
-          throw err;
-        }
-      }));
+  public get<Query, Res>(route: readonly string[], options: SimpleRequestOptions<Res> | QueryRequestOptions<Query, Res>): Observable<Res> {
+    return this.request("get", route, options);
+  }
+
+  public patch<Query, Req, Res>(route: readonly string[], options: RequestOptions<Query, Req, Res>): Observable<Res> {
+    return this.request("patch", route, options);
+  }
+
+  public post<Query, Req, Res>(route: readonly string[], options: RequestOptions<Query, Req, Res>): Observable<Res> {
+    return this.request("post", route, options);
   }
 
   public put<Query, Req, Res>(route: readonly string[], options: RequestOptions<Query, Req, Res>): Observable<Res> {
+    return this.request("put", route, options);
+  }
+
+  private request<Query, Req, Res>(method: string, route: readonly string[], options: RequestOptions<Query, Req, Res>): Observable<Res> {
     const uri = this.resolveUri(route);
     const rawReq: object | undefined = options.reqType !== undefined ? options.reqType.write(JSON_VALUE_WRITER, options.req) : undefined;
     const rawQuery: Record<string, string> | undefined = options.queryType !== undefined ? options.queryType.write(JSON_VALUE_WRITER, options.query) : undefined;
-    return this.http.put(uri, rawReq, {withCredentials: true, params: rawQuery})
+    return this.http.request(method, uri, {body: rawReq, withCredentials: true, params: rawQuery})
       .pipe(rxMap((raw): Res => {
         try {
           return options.resType.read(JSON_VALUE_READER, raw);

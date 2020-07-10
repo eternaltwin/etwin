@@ -1,0 +1,14 @@
+<div class="post-meta">
+  <div class="author">
+    <etwin-forum-actor [actor]="post.author"></etwin-forum-actor>
+    <ng-container *ngIf="canEdit">
+      | <a [routerLink]="['', 'forum', 'posts', post.id, 'edit']">Edit</a>
+    </ng-container>
+  </div>
+  <div class="time" [title]="post.ctime.toISOString()">
+    {{post.ctime | date : "short"}}
+  </div>
+</div>
+<div class="deleted" *ngIf="post.revisions.last.moderation === null && post.revisions.last.content === null">Deleted post</div>
+<div class="moderation" *ngIf="post.revisions.last.moderation !== null" [innerHTML]="post.revisions.last.moderation.html"></div>
+<div class="body" *ngIf="post.revisions.last.content !== null" [innerHTML]="post.revisions.last.content.html"></div>

@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options";
 import { CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options";
 import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
+import { ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
 import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id";
 import { ForumSectionKey } from "@eternal-twin/core/lib/forum/forum-section-key";
@@ -9,6 +10,7 @@ import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-
 import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
 import { ForumThreadId } from "@eternal-twin/core/lib/forum/forum-thread-id";
 import { ForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key";
+import { UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options";
 import { UserId } from "@eternal-twin/core/lib/user/user-id";
 import { Observable } from "rxjs";
 
@@ -25,7 +27,11 @@ export abstract class ForumService {
     options: CreateThreadOptions,
   ): Observable<ForumThread>;
 
+  abstract getForumPost(postId: ForumPostId, page0: number): Observable<ForumPost | null>;
+
   abstract createPost(threadIdOrKey: ForumThreadId | ForumThreadKey, options: CreatePostOptions): Observable<ForumPost>;
+
+  abstract updatePost(postId: ForumPostId, options: UpdatePostOptions): Observable<ForumPost>;
 
   abstract addModerator(sectionIdOrKey: ForumSectionId | ForumSectionKey, userId: UserId): Observable<ForumSection>;
 

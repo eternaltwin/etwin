@@ -3,6 +3,7 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { $ListingQuery, ListingQuery } from "@eternal-twin/core/lib/core/listing-query.js";
 import { $CreatePostOptions, CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options.js";
 import { $CreateThreadOptions, CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options.js";
+import { $ForumPostId, ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id.js";
 import { $ForumPost, ForumPost } from "@eternal-twin/core/lib/forum/forum-post.js";
 import { $ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id.js";
 import { $ForumSectionKey } from "@eternal-twin/core/lib/forum/forum-section-key.js";
@@ -12,6 +13,7 @@ import { $ForumThreadId, ForumThreadId } from "@eternal-twin/core/lib/forum/foru
 import { $ForumThreadKey, ForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key.js";
 import { $ForumThread, ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { $UpdatePostOptions, UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options.js";
 import { $UserIdRef, UserIdRef } from "@eternal-twin/core/lib/user/user-id-ref.js";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
@@ -191,6 +193,60 @@ export function createForumRouter(api: Api): Router {
       return;
     }
     const post: ForumPost = await api.forum.createPost(auth, threadIdOrKey, body);
+    cx.response.body = $ForumPost.write(JSON_VALUE_WRITER, post);
+  }
+
+  router.get("/posts/:post_id", getPost);
+
+  async function getPost(cx: Koa.Context): Promise<void> {
+    const rawPostId: string = cx.params["post_id"];
+    const auth: AuthContext = await api.koaAuth.auth(cx);
+    if (!$ForumPostId.test(rawPostId)) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidPostId"};
+      return;
+    }
+    const postId: ForumPostId = rawPostId;
+    // let query: ListingQuery;
+    // try {
+    //   query = $ListingQuery.read(QS_VALUE_READER, cx.request.query);
+    // } catch (_err) {
+    //   cx.response.status = 422;
+    //   cx.response.body = {error: "InvalidQueryParameters"};
+    //   return;
+    // }
+    const post: ForumPost | null = await api.forum.getPost(auth, postId, /* {
+      postOffset: query.offset ?? 0,
+      postLimit: query.limit ?? api.forum.defaultPostsPerPage,
+    }*/);
+    if (post === null) {
+      cx.response.status = 404;
+      cx.response.body = {error: "PostNotFound"};
+      return;
+    }
+    cx.response.body = $ForumPost.write(JSON_VALUE_WRITER, post);
+  }
+
+  router.patch("/posts/:post_id", koaCompose([koaBodyParser(), updatePost]));
+
+  async function updatePost(cx: Koa.Context): Promise<void> {
+    const rawPostId: string = cx.params["post_id"];
+    const auth: AuthContext = await api.koaAuth.auth(cx);
+    if (!$ForumPostId.test(rawPostId)) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidThreadIdOrKey"};
+      return;
+    }
+    const postId: ForumPostId = rawPostId;
+    let body: UpdatePostOptions;
+    try {
+      body = $UpdatePostOptions.read(JSON_VALUE_READER, cx.request.body);
+    } catch (_err) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidRequestBody"};
+      return;
+    }
+    const post: ForumPost = await api.forum.updatePost(auth, postId, body);
     cx.response.body = $ForumPost.write(JSON_VALUE_WRITER, post);
   }
 

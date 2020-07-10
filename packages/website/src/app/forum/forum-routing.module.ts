@@ -1,5 +1,6 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from "@angular/router";
+import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
 import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing";
 import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
@@ -10,6 +11,7 @@ import { ForumSectionComponent } from "./forum-section.component";
 import { ForumThreadComponent } from "./forum-thread.component";
 import { NewForumPostComponent } from "./new-forum-post.component";
 import { NewForumThreadComponent } from "./new-forum-thread.component";
+import { UpdateForumPostComponent } from "./update-forum-post.component";
 
 @Injectable()
 export class ForumSectionsResolverService implements Resolve<ForumSectionListing> {
@@ -70,6 +72,27 @@ export class ForumThreadResolverService implements Resolve<ForumThread | null> {
   }
 }
 
+@Injectable()
+export class ForumPostResolverService implements Resolve<ForumPost | null> {
+  private readonly router: Router;
+  private readonly forum: ForumService;
+
+  constructor(router: Router, forum: ForumService) {
+    this.router = router;
+    this.forum = forum;
+  }
+
+  async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<ForumPost | null> {
+    const postId: string | null = route.paramMap.get("post_id");
+    if (postId === null) {
+      return null;
+    }
+    // const pageStr = route.queryParamMap.get("p");
+    // const page: number = pageStr !== null ? parseInt(pageStr, 10) : 1;
+    return this.forum.getForumPost(postId, 0).toPromise();
+  }
+}
+
 const routes: Routes = [
   {
     path: "",
@@ -113,12 +136,21 @@ const routes: Routes = [
       thread: ForumThreadResolverService,
     },
   },
+  {
+    path: "posts/:post_id/edit",
+    component: UpdateForumPostComponent,
+    pathMatch: "full",
+    runGuardsAndResolvers: "paramsOrQueryParamsChange",
+    resolve: {
+      post: ForumPostResolverService,
+    },
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [ForumSectionsResolverService, ForumSectionResolverService, ForumThreadResolverService],
+  providers: [ForumPostResolverService, ForumSectionsResolverService, ForumSectionResolverService, ForumThreadResolverService],
 })
 export class ForumRoutingModule {
 }

@@ -29,8 +29,17 @@ etwin-forum-post {
     }
   }
 
-  .body {
+  .body, .deleted, .moderation {
     padding: $spacing;
+    border-radius: 0 0 $spacing $spacing;
+  }
+
+  .deleted {
+    background-color: black;
+  }
+
+  .moderation {
+    background-color: #470d0b;
   }
 }
 

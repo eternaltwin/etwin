@@ -65,7 +65,7 @@ export class BrowserAuthService extends AuthService {
   }
 
   public registerWithUsername(options: Readonly<RegisterWithUsernameOptions>): Observable<User> {
-    return this.rest.post(["users"], $RegisterWithUsernameOptions, options, $User)
+    return this.rest.post(["users"], {reqType: $RegisterWithUsernameOptions, req: options, resType: $User})
       .pipe(rxTap((user: User): void => {
         const auth: UserAuthContext = {
           type: AuthType.User,

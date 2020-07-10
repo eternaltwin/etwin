@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { ForumRole } from "@eternal-twin/core/lib/forum/forum-role";
 import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
 import { NEVER as RX_NEVER, Observable, of as rxOf } from "rxjs";
 import { catchError as rxCatchError } from "rxjs/internal/operators/catchError";
@@ -20,6 +21,7 @@ export class ForumThreadComponent implements OnInit {
 
   public thread$: Observable<ForumThread | typeof FORUM_THREAD_NOT_FOUND>;
   public isAuthenticated$: Observable<boolean>;
+  public canEditPosts$: Observable<boolean>;
   public readonly FORUM_THREAD_NOT_FOUND = FORUM_THREAD_NOT_FOUND;
   public readonly floor = Math.floor;
   public readonly ceil = Math.ceil;
@@ -35,6 +37,17 @@ export class ForumThreadComponent implements OnInit {
       rxStartWith(false),
       rxCatchError(() => rxOf(false)),
     );
+    this.canEditPosts$ = this.thread$.pipe(
+      rxMap((thread: ForumThread | typeof FORUM_THREAD_NOT_FOUND): boolean => {
+        if (thread === FORUM_THREAD_NOT_FOUND) {
+          return false;
+        }
+        const roles: ForumRole[] = thread.section.self.roles;
+        return roles.includes(ForumRole.Moderator) || roles.includes(ForumRole.Administrator);
+      }),
+      rxStartWith(false),
+      rxCatchError(() => rxOf(false)),
+    );
   }
 
   ngOnInit(): void {
@@ -44,5 +57,16 @@ export class ForumThreadComponent implements OnInit {
 
     const routeData$: Observable<RouteData> = this.route.data as any;
     this.thread$ = routeData$.pipe(rxMap(({thread}: RouteData) => thread !== null ? thread : FORUM_THREAD_NOT_FOUND));
+    this.canEditPosts$ = this.thread$.pipe(
+      rxMap((thread: ForumThread | typeof FORUM_THREAD_NOT_FOUND): boolean => {
+        if (thread === FORUM_THREAD_NOT_FOUND) {
+          return false;
+        }
+        const roles: ForumRole[] = thread.section.self.roles;
+        return roles.includes(ForumRole.Moderator) || roles.includes(ForumRole.Administrator);
+      }),
+      rxStartWith(false),
+      rxCatchError(() => rxOf(false)),
+    );
   }
 }
