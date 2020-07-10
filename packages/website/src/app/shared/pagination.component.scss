@@ -1,0 +1,39 @@
+$colWidth-alt: 72px;
+
+.pages {
+  $green: #79b102;
+  $orange: #ea7a03;
+  
+  flex-wrap: nowrap;
+  
+  .btn > img { padding: 0; }
+  .current {
+    flex: 4;
+    text-transform: none;
+    letter-spacing: 0.04em;
+  }
+  .previous, .next {
+    max-width: $colWidth-alt;
+    &:not([disabled]):not(.disabled) {
+      &:hover, &:focus, { background-color: transparentize($green, .93); }
+      &:active, { background-color: transparentize($green, .87); }
+    }
+    &[disabled], &.disabled {
+      background: none;
+      box-shadow: none;
+      img { opacity: 0.35; }
+    }
+  }
+  .first, .last {
+    max-width: $colWidth-alt;
+    &:not([disabled]):not(.disabled) {
+      &:hover, &:focus, { background-color: transparentize($orange, .93); }
+      &:active, { background-color: transparentize($orange, .87); }
+    }
+    &[disabled], &.disabled {
+      background: none;
+      box-shadow: none;
+      img { opacity: 0.35; }
+    }
+  }
+}

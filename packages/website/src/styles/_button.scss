@@ -1,6 +1,13 @@
 /* --- SET SIZES --- */
 
 $contentWidth: 1024px;
+$marginWidth: 36px;
+$columns: 12;
+$colWidth: 50px;
+$colWidth-alt: 72px;
+$gutterWidth: ($contentWidth - (2 * $marginWidth) - ($columns * $colWidth)) / ($columns - 1) ; // 32px
+$gutterWidth-alt: ($contentWidth - (2 * $marginWidth) - ($columns * $colWidth-alt)) / ($columns - 1) ; // 8px
+
 
 $fontSize: 1em;
 $fontWeightLight: 300;
@@ -42,245 +49,309 @@ $orange: #cd6f00;
 
 /* --- MAIN BUTTONS --- */
 
-/* THERE ARE 5 EXISTING BUTTON STYLES:
-- PRIMARY (default), for call-to-action buttons. Should be used in limited amount to lead users to specific destinations.
-- SECONDARY, for alternative actions. Can be used when similar actions are proposed, or as alternatives.
-- TERTIARY, for repulsive or minimal actions. Can be used when the button implies a "step back" or "step out" action.
-- AGGRESSIVE, for irreversible and negative actions. MUST be used carefully, and very explicitely describe the action consequences.
-- DISABLED, for (yet) unavailable actions. Consider adding explanations to help and guide users.*/
+// THERE ARE 4 DISTINCT BUTTON STYLES:
+// - PRIMARY (default), for call-to-action buttons. Should be used in limited amount to lead users to specific destinations.
+// - SECONDARY, for alternative actions. Can be used when similar actions are proposed, or as alternatives.
+// - TERTIARY, for repulsive or minimal actions. Can be used when the button implies a "step back" or "step out" action.
+//- AGGRESSIVE, for irreversible and negative actions. MUST be used carefully, and very explicitely describe the action consequences.
+
+// BUTTONS CAN ALSO HAVE ADDITIONAL STYLES:
+// - DISABLED, for (yet) unavailable actions.
+// - ICON, for icon-only buttons. Don't forget to add an "alt" text in case the image cannot load.
+// - MULTI (applied to the parent ".actionBox" div) to create a visually linked buttons bar.
 
 
-.content .btnContainer, .content .btnContainer .multi {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  margin: .65em -4px 1.2em -4px;
-  
-  .multi {
-    flex-wrap: nowrap;
-    margin: 4px;
-  }
-  
-  &.reverseWrap {
-    flex-wrap: wrap-reverse;
-  }
 
-  & > * {
-    flex: 1;
-    min-width: auto !important;
-    white-space: pre;
-  }
 
-  & > .flexSize2 {
-    flex: 2;
-  }
+.content {
+  .box, .actionBox {
+    // default boxes for flex elements. ActionBox must be wrapped in a box, and btn wrapped in an actionBox
 
-  & > .flexSize3 {
-    flex: 3;
-  }
-}
+    display: flex;
+    flex-wrap: wrap;
+    margin: .65em 0 1.2em 0;
+    justify-content: flex-start;
+    align-items: flex-start;
 
-.content .btn {
-  z-index: 2;
-  font-size: .86rem;
-  line-height: 1.15em;
-  color: $lightWhite;
-  font-weight: 800;
-  text-transform: uppercase;
-  text-decoration: none;
-  text-align: center;
-  letter-spacing: 0.08em;
-
-  align-items: center;
-  display: flex;
-  justify-content: center;
-
-  min-height: 2.5rem;
-  padding: 11px 15px;
-  margin: 4px;
-  cursor: pointer;
-  background-color: $darkViolet; /* for fallback only */
-  border-radius: 4px;
-  outline: none;
-  box-shadow:
-    0 3px 0 0 $deepBlack,
-    inset 0 0 0 2px transparentize($lightWhite, .93); /*Inset shadow, simulates a white border*/
-
-  transition: all 0.25s, box-shadow 0.45s;
-
-  &:not([disabled]):not(.disabled) {
-    &:hover, &:focus {
-      z-index: 1;
-      transform: translate(0, 1px);
-      background-color: darken(saturate($darkViolet, 8.50), 3.7);
-      box-shadow:
-        0 1px 0 0 $deepBlack,
-        inset 0 0 0 2px transparentize($lightWhite, .9);
+    & > .box, & > .actionBox, & > .btn {
+      flex: 1;
+      flex-basis: 0;
+      min-width: auto;
+      white-space: pre;
     }
 
-    &:active {
-      z-index: 1;
-      transform: translate(0, 2px);
-      background-color: darken(saturate($darkViolet, 13), 5.3);
-      box-shadow:
-        0 -2px 0 0 $deepBlack,
-        inset 0 0 0 2px transparentize($lightWhite, .9);
+    &.left {   justify-content: flex-start; }
+    &.right {  justify-content: flex-end; }
+    &.center { justify-content: center; }
+
+    & > div:not(.actionBox), & > .box { margin: 0; }
+    &.half {
+      border: 1px solid red;
     }
+
+
+    &.reverseWrap {
+      flex-wrap: wrap-reverse;
+    }
+
+    & > .flex1 { flex: 1 1; }
+    & > .flex2 { flex: 2 1; }
+    & > .flex3 { flex: 3 1; }
+    & > .flex4 { flex: 4 1; }
+    & > .flex5 { flex: 5 1; }
+    & > .flex6 { flex: 6 1; }
+
+    &.multi {
+      flex-direction: row !important;
+    }
+
+  & .box, & .actionBox { margin-top: 0; margin-bottom: 0; }
+
   }
 
-  &.secondary {
-    font-weight: 600;
-    background-color: $darkGrey;
+  .actionBox {
+    // two actionBox in a box will automatically balance their content left and right
 
-    &:not([disabled]):not(.disabled) {
-      &:hover, &:focus {
-        background-color: darken($darkGrey, 4);
-      }
+    margin-left: (-$gutterWidth-alt / 2);
+    margin-right: (-$gutterWidth-alt / 2);
 
-      &:active {
-        background-color: darken($darkGrey, 5.5);
+    & + .actionBox { justify-content: flex-end; }
+
+    @media only screen and (max-width: $desktopBreakpoint) {
+      min-width: 100% !important;
+      margin-right: (-$gutterWidth-alt / 2) !important;
+      margin-left: (-$gutterWidth-alt / 2) !important;
+      .btn:not(:only-child) {
+        max-width: 100% ;
       }
     }
+
+    @media only screen and (max-width: $desktopBreakpoint / 2) {
+      .btn {
+        max-width: 100% ;
+      }
+    }
+
   }
 
-  &.tertiary {
-    font-weight: 600;
-    color: $lightGrey;
-    background: none;
+  .actionBox:first-child:not(:only-child) { margin-right: 0; }
+  .actionBox:last-child:not(:only-child) { margin-left: 0; }
+
+  .btn {
+    & > img { padding: 0 0.35rem 0 0; }
+
+    max-width: 2 * $colWidth-alt + $gutterWidth-alt;
+    z-index: 2;
+    font-size: .86rem;
+    line-height: 1.15em;
+    color: $lightWhite;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    letter-spacing: 0.08em;
+
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+    min-height: 2.5rem;
+    padding: 11px 15px;
+    margin: ($gutterWidth-alt / 2);
+    cursor: pointer;
+    background-color: $darkViolet;
+    border-radius: 4px;
+    outline: none;
     box-shadow:
-      0 0 0 1px transparentize($deepBlack, 1),
-      inset 0 0 0 2px transparentize($darkGrey, .65); /*Inset shadow, simulates a white border*/
-    transform: none !important;
+      0 3px 0 0 $deepBlack,
+      inset 0 0 0 2px transparentize($lightWhite, .93); /*Inset shadow, simulates a white border*/
+
+    transition: all 0.25s, box-shadow 0.45s;
 
     &:not([disabled]):not(.disabled) {
       &:hover, &:focus {
-        color: $lightWhite;
-        background: none;
+        z-index: 1;
+        transform: translate(0, 1px);
+        background-color: darken(saturate($darkViolet, 8.50), 3.7);
         box-shadow:
-          0 0 0 1px transparentize($deepBlack, .7),
+          0 1px 0 0 $deepBlack,
           inset 0 0 0 2px transparentize($lightWhite, .9);
       }
 
       &:active {
-        color: $lightWhite;
-        background: transparentize($lightWhite, .98);
+        z-index: 1;
+        transform: translate(0, 2px);
+        background-color: darken(saturate($darkViolet, 13), 5.3);
         box-shadow:
-          0 0 0 1px transparentize($deepBlack, .7),
-          inset 0 0 0 2px transparentize($lightWhite, .85);
+          0 -2px 0 0 $deepBlack,
+          inset 0 0 0 2px transparentize($lightWhite, .9);
       }
     }
-  }
 
-  &.aggressive {
-    font-weight: 800;
-    background-color: $darkRed;
+    &.secondary {
+      font-weight: 600;
+      background-color: $darkGrey;
 
-    &:not([disabled]):not(.disabled) {
-      &:hover, &:focus {
-        background-color: darken(saturate($darkRed, 15.5), 3.3);
-      }
+      &:not([disabled]):not(.disabled) {
+        &:hover, &:focus {
+          background-color: darken($darkGrey, 4);
+        }
 
-      &:active {
-        background-color: darken(saturate($darkRed, 20), 5.5);
+        &:active {
+          background-color: darken($darkGrey, 5.5);
+        }
       }
     }
-  }
 
-  &[disabled], &.disabled {
-    font-weight: 600;
-    color: $lightGrey;
-    background-color: darken($darkGrey, 5.9);
-    background-image: linear-gradient(135deg,
-      darken($darkGrey, 2%) 16.67%,
-      $deepGrey 16.67%,
-      $deepGrey 50%,
-      darken($darkGrey, 2%) 50%,
-      darken($darkGrey, 2%) 66.67%,
-      $deepGrey 66.67%,
-      $deepGrey 100%);   /*diagonal gradient to create a stripes effect background*/
-    background-size: 12.00px 12.00px;
-    box-shadow:
-      0 1px 0 1px $deepBlack,
-      inset 0 0 0 2px darken($darkGrey, 2%);  /*Inset shadow, simulates a white border*/
-    cursor: not-allowed;
+    &.tertiary {
+      font-weight: 600;
+      color: $lightGrey;
+      background: none;
+      box-shadow:
+        0 0 0 1px transparentize($deepBlack, 1),
+        inset 0 0 0 2px transparentize($darkGrey, .65); /*Inset shadow, simulates a white border*/
+      transform: none !important;
 
-    transition: background-image .25s;
+      &:not([disabled]):not(.disabled) {
+        &:hover, &:focus {
+          color: $lightWhite;
+          background: none;
+          box-shadow:
+            0 0 0 1px transparentize($deepBlack, .7),
+            inset 0 0 0 2px transparentize($lightWhite, .9);
+        }
 
-    &:hover, &:focus, &:active {
+        &:active {
+          color: $lightWhite;
+          background: transparentize($lightWhite, .98);
+          box-shadow:
+            0 0 0 1px transparentize($deepBlack, .7),
+            inset 0 0 0 2px transparentize($lightWhite, .85);
+        }
+      }
+      &[disabled], &.disabled {
+        box-shadow:
+          0 0 0 1px transparentize($deepBlack, 1),
+          inset 0 0 0 2px transparentize($darkGrey, .65);
+      }
+    }
+
+    &.aggressive {
+      font-weight: 800;
+      background-color: $darkRed;
+
+      &:not([disabled]):not(.disabled) {
+        &:hover, &:focus {
+          background-color: darken(saturate($darkRed, 15.5), 3.3);
+        }
+
+        &:active {
+          background-color: darken(saturate($darkRed, 20), 5.5);
+        }
+      }
+    }
+
+    &[disabled], &.disabled {
+      font-weight: 600;
+      color: $lightGrey;
+      background-color: darken($darkGrey, 5.9);
       background-image: linear-gradient(135deg,
-        $darkGrey 16.67%,
+        darken($darkGrey, 2%) 16.67%,
         $deepGrey 16.67%,
         $deepGrey 50%,
-        $darkGrey 50%,
-        $darkGrey 66.67%,
+        darken($darkGrey, 2%) 50%,
+        darken($darkGrey, 2%) 66.67%,
         $deepGrey 66.67%,
-        $deepGrey 100%);  /*Stripes background*/
+        $deepGrey 100%);   /*diagonal gradient to create a stripes effect background*/
+      background-size: 12.00px 12.00px;
       box-shadow:
         0 1px 0 1px $deepBlack,
-        inset 0 0 0 2px $darkGrey, 2%;  /*Inset shadow, simulates a white border*/
+        inset 0 0 0 2px darken($darkGrey, 2%);  /*Inset shadow, simulates a white border*/
+      cursor: not-allowed;
+
+      transition: background-image .25s;
+
+      &:hover, &:focus, &:active {
+        background-image: linear-gradient(135deg,
+          $darkGrey 16.67%,
+          $deepGrey 16.67%,
+          $deepGrey 50%,
+          $darkGrey 50%,
+          $darkGrey 66.67%,
+          $deepGrey 66.67%,
+          $deepGrey 100%);  /*Stripes background*/
+        box-shadow:
+          0 1px 0 1px $deepBlack,
+          inset 0 0 0 2px $darkGrey, 2%;  /*Inset shadow, simulates a white border*/
+      }
     }
   }
-}
 
-.multi .btn {
-  border-radius: 0;
-  margin: 0 -1px;
-  clip-path: inset(-4px 1px -4px -4px);
-  
-  &:first-child {
-    border-radius: 4px 0 0 4px;
-  }
-  
-  &:last-child {
-    border-radius: 0 4px 4px 0;
-    clip-path: inset(-4px -4px -4px -4px);
-  }
-  
-  &:hover, &:focus, &:active {
-    clip-path: inset(-4px -4px -4px -4px);
-  }
-}
+  .actionBox.multi .btn, .btn.multi {
+    border-radius: 0;
+    margin: ($gutterWidth-alt / 2) -1px;
+    clip-path: inset(-4px 1px -4px -4px);
+    -webkit-clip-path: inset(-4px 1px -4px -4px);
 
-.content input.field {
-  color: $lightWhite;
-  background-color: $darkGrey;
-  padding: 11px 15px;
-  margin: 6px 0 4px 0;
-  border-radius: 4px;
-  outline: none;
-  box-shadow: inset 0 0 0 1px $lightViolet;  /*Inset shadow, simulates a white border*/
+    &:first-child {
+      border-radius: 4px 0 0 4px;
+      margin-left: ($gutterWidth-alt / 2);
+    }
 
-  transition: all .1s;
+    &:last-child {
+      border-radius: 0 4px 4px 0;
+      margin-right: ($gutterWidth-alt / 2);
+      clip-path: inset(-4px -4px -4px -4px);
+      -webkit-clip-path: inset(-4px -4px -4px -4px);
+    }
 
-  &:hover {
-    box-shadow: inset 0 0 0 2px $lightViolet;
+    &:hover, &:focus, &:active {
+      clip-path: inset(-4px -4px -4px -4px);
+      -webkit-clip-path: inset(-4px -4px -4px -4px);
+    }
   }
 
-  &:focus, &:active {
-    background-color: $deepViolet;
-  }
-}
+  input.field {
+    color: $lightWhite;
+    background-color: $darkGrey;
+    padding: 11px 15px;
+    margin: 6px 0 4px 0;
+    border-radius: 4px;
+    outline: none;
+    box-shadow: inset 0 0 0 1px $lightViolet;  /*Inset shadow, simulates a white border*/
 
-.content textarea {
-  $padding: 10px;
+    transition: all .1s;
 
-  color: $lightWhite;
-  background-color: $darkGrey;
-  border: 1px solid $lightViolet;
-  border-radius: 4px;
-  outline: none;
-  transition: background-color .1s;
-  padding: $padding;
-  height: 10em;
+    &:hover {
+      box-shadow: inset 0 0 0 2px $lightViolet;
+    }
 
-  &:hover {
-    padding: ($padding - 1) ($padding - 1);
-    border-width: 2px;
+    &:focus, &:active {
+      background-color: $deepViolet;
+    }
   }
 
-  &:focus, &:active {
-    padding: ($padding - 1) ($padding - 1);
-    border-width: 2px;
-    background-color: $deepViolet;
+   textarea {
+    $padding: 10px;
+
+    color: $lightWhite;
+    background-color: $darkGrey;
+    border: 1px solid $lightViolet;
+    border-radius: 4px;
+    outline: none;
+    transition: background-color .1s;
+    padding: $padding;
+    height: 10em;
+
+    &:hover {
+      padding: ($padding - 1) ($padding - 1);
+      border-width: 2px;
+    }
+
+    &:focus, &:active {
+      padding: ($padding - 1) ($padding - 1);
+      border-width: 2px;
+      background-color: $deepViolet;
+    }
   }
 }

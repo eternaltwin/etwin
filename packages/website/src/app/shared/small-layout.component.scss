@@ -4,9 +4,18 @@ $spacing: 1em;
 :host ::ng-deep .content {
   max-width: $contentWidth;
   width: 85%;
+  
+  .btn {
+    max-width: 100% ;
+  }
+  
+  img {
+    height: 1.2rem;
+    margin-right: 0.6rem;
+  }
 }
 
-label, input {
+/*label, input {
   display: block;
 }
 
@@ -93,3 +102,8 @@ img {
   display: flex;
   align-items: center;
 }
+
+.content .btn {
+  max-width: auto;
+}
+*/

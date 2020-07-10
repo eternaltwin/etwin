@@ -18,13 +18,15 @@
             <etwin-forum-post [post]="post" [id]="post.id" [canEdit]="canEditPosts$ | async"></etwin-forum-post>
           </li>
         </ol>
-        <div class="btnContainer">
-          <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">
-            <a [routerLink]="['', 'forum', 'threads', thread.id, 'reply']" class="btn primary" i18n="Link to the thread reply (new post) page@@forum.newPostLink">Reply</a>
-          </ng-container>
-          <ng-template #unauthenticated>
-            <a [routerLink]="['', 'login']" [queryParams]="{next: '/forum/threads/' + thread.id + '/reply'}" class="btn primary" i18n="Link to the thread reply (new post) page for guests (redirect through login)@@forum.newPostLink.guest">Sign in to reply</a>
-          </ng-template>
+        <div class="box">
+          <div class="actionBox">
+            <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">
+              <a [routerLink]="['', 'forum', 'threads', thread.id, 'reply']" class="btn primary" i18n="Link to the thread reply (new post) page@@forum.newPostLink">Reply</a>
+            </ng-container>
+            <ng-template #unauthenticated>
+              <a [routerLink]="['', 'login']" [queryParams]="{next: '/forum/threads/' + thread.id + '/reply'}" class="btn primary" i18n="Link to the thread reply (new post) page for guests (redirect through login)@@forum.newPostLink.guest">Sign in to reply</a>
+            </ng-template>
+          </div>
           <etwin-pagination [link]="['', 'forum', 'threads', thread.id]" [page1]="floor(thread.posts.offset / thread.posts.limit) + 1" [pageCount]="ceil(thread.posts.count / thread.posts.limit)"></etwin-pagination>
         </div>
       </ng-container>

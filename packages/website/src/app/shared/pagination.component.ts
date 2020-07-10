@@ -3,7 +3,7 @@ import { Component, Input } from "@angular/core";
 @Component({
   selector: "etwin-pagination",
   templateUrl: "./pagination.component.html",
-  styleUrls: [],
+  styleUrls: ["./pagination.component.scss"],
 })
 export class PaginationComponent {
   @Input()
