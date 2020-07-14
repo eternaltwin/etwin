@@ -21,7 +21,7 @@
     "app:prod:build:server": "ng run etwin:server:production --localize",
     "app:prod:build:post": "yarn run app:prod:build:static && yarn run app:prod:build:optimize",
     "app:prod:build:static": "node ./scripts/move-browser-index-to-server.mjs && cpy --parents --cwd \"./src/static\" \"**/*.{gif,ico,jpg,png,svg}\" \"../../app/browser\"",
-    "app:prod:build:optimize": "gzipper --include \"gif,ico,jpg,png,svg\" --exclude gz ./app/browser",
+    "app:prod:build:optimize": "gzipper compress --include \"gif,ico,jpg,png,svg\" --exclude gz ./app/browser",
     "main:build": "tsc --build ./src/main/tsconfig.json",
     "main:run": "node --experimental-wasm-modules main/main.js",
     "prestart": "yarn run app:prod:build && yarn run main:build",
