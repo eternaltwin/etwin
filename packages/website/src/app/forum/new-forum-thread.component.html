@@ -2,42 +2,42 @@
   <ng-container *ngIf="section$ | async as section">
     <ng-container [ngSwitch]="section !== FORUM_SECTION_NOT_FOUND">
       <ng-container *ngSwitchCase="true">
-        <h1>New thread in <em>{{section.displayName}}</em></h1>
+        <h1 i18n="Title for the thread creation form@@forum.newThread.title">New thread in <em>{{section.displayName}}</em></h1>
         <form
           method="POST"
           enctype="application/x-www-form-urlencoded"
-          action="/actions/new-thread"
+          action="/actions/new_thread"
           [formGroup]="newThreadForm"
           (ngSubmit)="onSubmit($event)"
         >
           <input type="hidden" name="section_id" formControlName="sectionId" required="required" [value]="section.id"/>
           <label>
-            <span i18n="Title of the new thread@@threadTitle">Thread title</span>
+            <span i18n="Title of the new thread@@forum.newThread.title">Thread title</span>
             <input type="text" name="title" class="field" formControlName="title"/>
             <div *ngIf="title.invalid && (title.dirty || title.touched)" class="error">
-              <div *ngIf="title.errors?.required" i18n="@@newThread.titleRequired">
+              <div *ngIf="title.errors?.required" i18n="@@forum.newThread.titleRequired">
                 The title is required.
               </div>
-              <div *ngIf="title.errors?.minlength" i18n="@@newThread.titleMinLength">
+              <div *ngIf="title.errors?.minlength" i18n="@@forum.newThread.titleMinLength">
                 The title must be at least {{$ForumThreadTitle.minLength}} characters long.
               </div>
-              <div *ngIf="title.errors?.maxlength" i18n="@@newThread.titleMaxLength">
+              <div *ngIf="title.errors?.maxlength" i18n="@@forum.newThread.titleMaxLength">
                 The title must be at most {{$ForumThreadTitle.maxLength}} characters long.
               </div>
             </div>
           </label>
           <label>
-            <span i18n="Body of the first post of the new thread@@threadBody">Body</span>
+            <span i18n="Content of the first post of the new thread@@forum.newThread.content">Body</span>
             <textarea name="body" class="field" formControlName="body"></textarea>
           </label>
           <input type="submit" class="btn primary" name="register" [disabled]="newThreadForm.invalid || pendingSubscription !== null" i18n-value="@@forum.newThread.submit" value="Create a new thread"/>
-          <div *ngIf="serverError" class="error" i18n="@@newThread.unknownError">
+          <div *ngIf="serverError" class="error" i18n="@@forum.newThread.unknownError">
             Thread creation error: unknown server error on creation.
           </div>
         </form>
       </ng-container>
       <ng-container *ngSwitchDefault>
-        <h1>Forum section not found</h1>
+        <h1 i18n="Forum section not found error message@@forum.error.sectionNotFound">Forum section not found</h1>
       </ng-container>
     </ng-container>
   </ng-container>

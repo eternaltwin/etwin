@@ -1,17 +1,9 @@
-import { Component, Input, Self } from "@angular/core";
+import { Component, Input, Optional, Self } from "@angular/core";
 import { ControlValueAccessor, NgControl } from "@angular/forms";
 
 @Component({
   selector: "etwin-user-input",
   templateUrl: "./user-input.component.html",
-  // To support fully custom value accessor, remove the `NgControl` injector and uncomment the next block
-  // providers: [
-  //   {
-  //     provide: NG_VALUE_ACCESSOR,
-  //     useExisting: forwardRef(() => UserInputComponent),
-  //     multi: true,
-  //   },
-  // ],
 })
 export class UserInputComponent implements ControlValueAccessor {
   public ngControl: NgControl;
@@ -22,7 +14,9 @@ export class UserInputComponent implements ControlValueAccessor {
   @Input()
   public disabled: boolean = false;
 
-  constructor(@Self() ngControl: NgControl) {
+  // The `@Optional` decorator is a workaround for an error during i18n extraction
+  // (`ngControl` is in fact required)
+  constructor(@Optional() @Self() ngControl: NgControl) {
     this.ngControl = ngControl;
     ngControl.valueAccessor = this;
   }

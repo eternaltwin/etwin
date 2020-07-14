@@ -2,27 +2,27 @@
   <ng-container *ngIf="thread$ | async as thread">
     <ng-container [ngSwitch]="thread !== FORUM_THREAD_NOT_FOUND">
       <ng-container *ngSwitchCase="true">
-        <h1>Post a reply for <em>{{thread.title}}</em></h1>
+        <h1 i18n="Title for the thread reply (new post) form@@forum.newPost.title">Post a reply for <em>{{thread.title}}</em></h1>
         <form
           method="POST"
           enctype="application/x-www-form-urlencoded"
-          action="/actions/new-post"
+          action="/actions/new_post"
           [formGroup]="newPostForm"
           (ngSubmit)="onSubmit($event)"
         >
           <input type="hidden" name="thread_id" formControlName="threadId" required="required" [value]="thread.id"/>
           <label>
-            <span i18n="Body of the reply@@postBody">Body</span>
+            <span i18n="Content of the thread reply (new post)@@forum.newPost.content">Body</span>
             <textarea name="body" class="field" formControlName="body"></textarea>
           </label>
           <input type="submit" class="btn primary" name="register" [disabled]="newPostForm.invalid || pendingSubscription !== null" i18n-value="@@forum.newPost.submit" value="Post the reply"/>
-          <div *ngIf="serverError" class="error" i18n="@@newPost.unknownError">
-            Post creation error: unknown server error on creation.
+          <div *ngIf="serverError" class="error" i18n="Error message displayed when the server rejects the new post@@forum.newPost.unknownError">
+            Post creation failure: unknown server error on reply.
           </div>
         </form>
       </ng-container>
       <ng-container *ngSwitchDefault>
-        <h1>Forum thread not found</h1>
+        <h1 i18n="Forum thread not found error message@@forum.error.threadNotFound">Forum thread not found</h1>
       </ng-container>
     </ng-container>
   </ng-container>

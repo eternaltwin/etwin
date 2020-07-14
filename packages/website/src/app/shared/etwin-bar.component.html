@@ -3,7 +3,7 @@
   <div class="buttonList">
       <ng-container *ngSwitchCase="AuthType.User">
         <a class="button" [routerLink]="['/users', auth.user.id]">{{auth.user.displayName}}</a>
-        <a class="button" routerLink="/settings">Settings</a>
+        <a class="button" routerLink="/settings" i18n="Top-bar link to the user settings page@@app.settingsNav">Settings</a>
         <form
           action="/actions/logout"
           enctype="application/x-www-form-urlencoded"

@@ -12,16 +12,16 @@
           </li>
         </ol>
         <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">
-          <a [routerLink]="['', 'forum', 'sections', section.id, 'new']">New thread</a>
+          <a [routerLink]="['', 'forum', 'sections', section.id, 'new']" i18n="Link to the thread creation page@@forum.newThreadLink">New thread</a>
         </ng-container>
         <ng-template #unauthenticated>
-          <a [routerLink]="['', 'login']">Sign in to create a new thread</a>
+          <a [routerLink]="['', 'login']" [queryParams]="{next: '/forum/sections/' + section.id + '/new'}" i18n="Link to the thread creation page for guests (redirect through login)@@forum.newThreadLink.guest">Sign in to create a new thread</a>
         </ng-template>
         |
         <etwin-pagination [link]="['', 'forum', 'sections', section.id]"
                           [page1]="floor(section.threads.offset / section.threads.limit) + 1"
                           [pageCount]="ceil(section.threads.count / section.threads.limit)"></etwin-pagination>
-        <h2>Moderators</h2>
+        <h2 i18n="Title of the moderator list section (on a section page)@@forum.moderatorsTitle">Moderators</h2>
         <ng-container *ngIf="section.roleGrants.length > 0; else noRoleGrants">
           <ol class="moderator-list">
             <li *ngFor="let rg of section.roleGrants">
@@ -32,7 +32,7 @@
             </li>
           </ol>
         </ng-container>
-        <ng-template #noRoleGrants>
+        <ng-template #noRoleGrants i18n="Message indicating that the thread section moderator list is empty@@forum.noModerators">
           There are no users with elevated privilege on this forum section. Only administrators can manage this section.
         </ng-template>
         <ng-container *ngIf="isAdministrator$ | async">
@@ -40,7 +40,7 @@
         </ng-container>
       </ng-container>
       <ng-container *ngSwitchDefault>
-        <h1>Forum section not found</h1>
+        <h1 i18n="Forum section not found error message@@forum.error.sectionNotFound">Forum section not found</h1>
       </ng-container>
     </ng-container>
   </ng-container>
