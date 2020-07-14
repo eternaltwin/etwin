@@ -12,7 +12,7 @@
         >
           <input type="hidden" name="section_id" formControlName="sectionId" required="required" [value]="section.id"/>
           <label>
-            <span i18n="Title of the new thread@@forum.newThread.title">Thread title</span>
+            <span i18n="Title of the new thread@@forum.newThread.titleLabel">Thread title</span>
             <input type="text" name="title" class="field" formControlName="title"/>
             <div *ngIf="title.invalid && (title.dirty || title.touched)" class="error">
               <div *ngIf="title.errors?.required" i18n="@@forum.newThread.titleRequired">

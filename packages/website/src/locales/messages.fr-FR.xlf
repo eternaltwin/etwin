@@ -4,7 +4,7 @@
     <body>
       <trans-unit id="app.menu.toggle" datatype="html">
         <source>Menu</source>
-        <target state="new">Menu</target>
+        <target state="translated">Menu</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
           <context context-type="linenumber">11</context>
@@ -13,7 +13,7 @@
       </trans-unit>
       <trans-unit id="app.menu.nexus" datatype="html">
         <source>Nexus</source>
-        <target state="new">Nexus</target>
+        <target state="translated">Nexus</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
           <context context-type="linenumber">13</context>
@@ -22,7 +22,7 @@
       </trans-unit>
       <trans-unit id="app.menu.games" datatype="html">
         <source>Games</source>
-        <target state="new">Games</target>
+        <target state="translated">Jeux</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
           <context context-type="linenumber">14</context>
@@ -31,7 +31,7 @@
       </trans-unit>
       <trans-unit id="app.menu.forum" datatype="html">
         <source>Forum</source>
-        <target state="new">Forum</target>
+        <target state="translated">Forum</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
           <context context-type="linenumber">15</context>
@@ -40,7 +40,7 @@
       </trans-unit>
       <trans-unit id="app.menu.groups" datatype="html">
         <source>Groups</source>
-        <target state="new">Groups</target>
+        <target state="translated">Groupes</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
           <context context-type="linenumber">16</context>
@@ -49,7 +49,7 @@
       </trans-unit>
       <trans-unit id="app.menu.donate" datatype="html">
         <source>Donate</source>
-        <target state="new">Donate</target>
+        <target state="translated">Faire un don</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
           <context context-type="linenumber">17</context>
@@ -58,7 +58,7 @@
       </trans-unit>
       <trans-unit id="shared.pagination.first" datatype="html">
         <source>First</source>
-        <target state="new">First</target>
+        <target state="translated">Première page</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/pagination.component.html</context>
           <context context-type="linenumber">1</context>
@@ -67,7 +67,7 @@
       </trans-unit>
       <trans-unit id="shared.pagination.previous" datatype="html">
         <source>Previous</source>
-        <target state="new">Previous</target>
+        <target state="translated">Page précédente</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/pagination.component.html</context>
           <context context-type="linenumber">2</context>
@@ -76,7 +76,7 @@
       </trans-unit>
       <trans-unit id="shared.pagination.current" datatype="html">
         <source>Page <x id="INTERPOLATION" equiv-text="{{page1}}"/> / <x id="INTERPOLATION_1" equiv-text="{{pageCount}}"/></source>
-        <target state="new">Page <x id="INTERPOLATION" equiv-text="{{page1}}"/> / <x id="INTERPOLATION_1" equiv-text="{{pageCount}}"/></target>
+        <target state="translated">Page <x id="INTERPOLATION" equiv-text="{{page1}}"/> / <x id="INTERPOLATION_1" equiv-text="{{pageCount}}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/pagination.component.html</context>
           <context context-type="linenumber">3</context>
@@ -85,7 +85,7 @@
       </trans-unit>
       <trans-unit id="shared.pagination.next" datatype="html">
         <source>Next</source>
-        <target state="new">Next</target>
+        <target state="translated">Page suivante</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/pagination.component.html</context>
           <context context-type="linenumber">4</context>
@@ -94,7 +94,7 @@
       </trans-unit>
       <trans-unit id="shared.pagination.last" datatype="html">
         <source>Last</source>
-        <target state="new">Last</target>
+        <target state="translated">Dernière page</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/pagination.component.html</context>
           <context context-type="linenumber">5</context>
@@ -478,7 +478,7 @@
       </trans-unit>
       <trans-unit id="donate.title" datatype="html">
         <source>Donate</source>
-        <target state="new">Donate</target>
+        <target state="translated">Faire un don</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/donate/donate.component.html</context>
           <context context-type="linenumber">2</context>
@@ -492,11 +492,11 @@
     Eternal-Twin wants to archive the Motion-Twin games and provide a place for their communities.
     If you like what we do and want to help us, consider making a donation.
   </source>
-        <target state="new">
-    Eternal-Twin is a free website. We only depend on donations to cover our costs and stay online.
-    The website is maintained by volunteers and we do not generate any profit.
-    Eternal-Twin wants to archive the Motion-Twin games and provide a place for their communities.
-    If you like what we do and want to help us, consider making a donation.
+        <target state="translated">
+    Eternal-Twin est un site web gratuit. Nous ne dépendons que de dons pour couvrir nos coûts et rester en ligne.
+    Le site web est géré par des volontaires et nous ne générons pas de profit.
+    Eternal-Twin vise à archivre les jeux de Motion-Twin et fournir un espace pour leurs communautés.
+    Si vous aimez ce que nous faisons, veuillez faire un don.
   </target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/donate/donate.component.html</context>
@@ -506,7 +506,7 @@
       </trans-unit>
       <trans-unit id="app.settingsNav" datatype="html">
         <source>Settings</source>
-        <target state="new">Settings</target>
+        <target state="translated">Paramètres</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/etwin-bar.component.html</context>
           <context context-type="linenumber">6</context>
@@ -800,7 +800,7 @@
       </trans-unit>
       <trans-unit id="games.title" datatype="html">
         <source>Games</source>
-        <target state="new">Games</target>
+        <target state="translated">Jeux</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">2</context>
@@ -809,7 +809,7 @@
       </trans-unit>
       <trans-unit id="games.eternalfestTitle" datatype="html">
         <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></source>
-        <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></target>
+        <target state="translated"><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">3</context>
@@ -820,9 +820,7 @@
         <source>
     <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> is a reimplementation of <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Hammerfest<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/>. It has both the
     official levels, and new content!</source>
-        <target state="new">
-    <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> is a reimplementation of <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Hammerfest<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/>. It has both the
-    official levels, and new content!</target>
+        <target state="translated"><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> est une recréation de <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Hammerfest<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/>, avec les niveaux officiels ainsi que du nouveau cotenu !</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">4</context>
@@ -831,7 +829,7 @@
       </trans-unit>
       <trans-unit id="games.moreTitle" datatype="html">
         <source>More</source>
-        <target state="new">More</target>
+        <target state="translated">Plua</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">7</context>
@@ -841,8 +839,7 @@
       <trans-unit id="games.moreDescription" datatype="html">
         <source>This section will be expanded
     as new games are published online.</source>
-        <target state="new">This section will be expanded
-    as new games are published online.</target>
+        <target state="translated">Cette section sera étendue au fur et à mesure que les nouveaux jeux seront publiés.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">8</context>
@@ -851,7 +848,7 @@
       </trans-unit>
       <trans-unit id="forum.addModerator.userLabel" datatype="html">
         <source>New moderator</source>
-        <target state="new">New moderator</target>
+        <target state="translated">Nouveau modérateur</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/add-moderator.component.html</context>
           <context context-type="linenumber">10</context>
@@ -860,7 +857,7 @@
       </trans-unit>
       <trans-unit id="forum.addModerator.submit" datatype="html">
         <source>Add moderator</source>
-        <target state="new">Add moderator</target>
+        <target state="translated">Ajouter un modérateur</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/add-moderator.component.html</context>
           <context context-type="linenumber">15</context>
@@ -870,9 +867,7 @@
         <source>
     Moderator addition failure: unknown server error.
   </source>
-        <target state="new">
-    Moderator addition failure: unknown server error.
-  </target>
+        <target state="translated">Échec de l'ajout de modérateur : erreur serveur inconnue.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/add-moderator.component.html</context>
           <context context-type="linenumber">16</context>
@@ -881,7 +876,7 @@
       </trans-unit>
       <trans-unit id="forum.deleteModerator.submit" datatype="html">
         <source>Delete moderator</source>
-        <target state="new">Delete moderator</target>
+        <target state="translated">Supprimer le modérateur</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/delete-moderator.component.html</context>
           <context context-type="linenumber">12</context>
@@ -891,9 +886,7 @@
         <source>
     Moderator deletion failure: unknown server error.
   </source>
-        <target state="new">
-    Moderator deletion failure: unknown server error.
-  </target>
+        <target state="translated">Échec de la suppression de modérateur : erreur serveur inconnue.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/delete-moderator.component.html</context>
           <context context-type="linenumber">13</context>
@@ -908,7 +901,7 @@
         <source>
     Forum
   </source>
-        <target state="new">
+        <target state="translated">
     Forum
   </target>
         <context-group purpose="location">
@@ -919,7 +912,7 @@
       </trans-unit>
       <trans-unit id="forum.newPostLink" datatype="html">
         <source>Reply</source>
-        <target state="new">Reply</target>
+        <target state="translated">Répondre</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-thread.component.html</context>
           <context context-type="linenumber">17</context>
@@ -928,7 +921,7 @@
       </trans-unit>
       <trans-unit id="forum.newPostLink.guest" datatype="html">
         <source>Sign in to reply</source>
-        <target state="new">Sign in to reply</target>
+        <target state="translated">Se connecter pour répondre</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-thread.component.html</context>
           <context context-type="linenumber">20</context>
@@ -937,7 +930,7 @@
       </trans-unit>
       <trans-unit id="forum.error.threadNotFound" datatype="html">
         <source>Forum thread not found</source>
-        <target state="new">Forum thread not found</target>
+        <target state="translated">Sujet de forum non trouvé</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-thread.component.html</context>
           <context context-type="linenumber">26</context>
@@ -950,7 +943,7 @@
       </trans-unit>
       <trans-unit id="forum.newThreadLink" datatype="html">
         <source>New thread</source>
-        <target state="new">New thread</target>
+        <target state="translated">Nouveau sujet</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
           <context context-type="linenumber">15</context>
@@ -959,7 +952,7 @@
       </trans-unit>
       <trans-unit id="forum.newThreadLink.guest" datatype="html">
         <source>Sign in to create a new thread</source>
-        <target state="new">Sign in to create a new thread</target>
+        <target state="translated">Se connecter pour créer un nouveau sujet</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
           <context context-type="linenumber">18</context>
@@ -968,7 +961,7 @@
       </trans-unit>
       <trans-unit id="forum.moderatorsTitle" datatype="html">
         <source>Moderators</source>
-        <target state="new">Moderators</target>
+        <target state="translated">Modérateurs</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
           <context context-type="linenumber">24</context>
@@ -979,9 +972,7 @@
         <source>
           There are no users with elevated privilege on this forum section. Only administrators can manage this section.
         </source>
-        <target state="new">
-          There are no users with elevated privilege on this forum section. Only administrators can manage this section.
-        </target>
+        <target state="translated">Il n'y a pas d'utilisateurs avec droits avancés sur cette section du forum. Seuls les administrateurs peuvent gérer cette section.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
           <context context-type="linenumber">35</context>
@@ -990,7 +981,7 @@
       </trans-unit>
       <trans-unit id="forum.error.sectionNotFound" datatype="html">
         <source>Forum section not found</source>
-        <target state="new">Forum section not found</target>
+        <target state="translated">Section de forum non trouvée</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
           <context context-type="linenumber">43</context>
@@ -1003,7 +994,7 @@
       </trans-unit>
       <trans-unit id="forum.newPost.title" datatype="html">
         <source>Post a reply for <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{thread.title}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
-        <target state="new">Post a reply for <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{thread.title}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <target state="translated">Envoyer une réponse dans <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{thread.title}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
           <context context-type="linenumber">5</context>
@@ -1012,7 +1003,7 @@
       </trans-unit>
       <trans-unit id="forum.newPost.content" datatype="html">
         <source>Body</source>
-        <target state="new">Body</target>
+        <target state="translated">Corps</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
           <context context-type="linenumber">15</context>
@@ -1021,7 +1012,7 @@
       </trans-unit>
       <trans-unit id="forum.newPost.submit" datatype="html">
         <source>Post the reply</source>
-        <target state="new">Post the reply</target>
+        <target state="translated">Envoyer la réponse</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
           <context context-type="linenumber">18</context>
@@ -1031,9 +1022,7 @@
         <source>
             Post creation failure: unknown server error on reply.
           </source>
-        <target state="new">
-            Post creation failure: unknown server error on reply.
-          </target>
+        <target state="translated">Échec de la création du message : erreur serveur inconnue.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
           <context context-type="linenumber">19</context>
@@ -1042,24 +1031,27 @@
       </trans-unit>
       <trans-unit id="forum.newThread.title" datatype="html">
         <source>New thread in <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{section.displayName}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
-        <target state="new">New thread in <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{section.displayName}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <target state="translated">Nouveau sujet de discussion dans <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{section.displayName}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <note priority="1" from="description">Title for the thread creation form</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="forum.newThread.titleLabel" datatype="html">
+        <source>Thread title</source>
+        <target state="translated">Titre du sujet de discussion</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
-        <note priority="1" from="description">Title for the thread creation form</note>
+        <note priority="1" from="description">Title of the new thread</note>
       </trans-unit>
       <trans-unit id="forum.newThread.titleRequired" datatype="html">
         <source>
                 The title is required.
               </source>
-        <target state="new">
-                The title is required.
-              </target>
+        <target state="translated">Le titre est requis.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">18</context>
@@ -1069,9 +1061,7 @@
         <source>
                 The title must be at least <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.minLength}}"/> characters long.
               </source>
-        <target state="new">
-                The title must be at least <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.minLength}}"/> characters long.
-              </target>
+        <target state="translated">Le titre doit avoir au moins <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.minLength}}"/> caractères.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">21</context>
@@ -1081,9 +1071,7 @@
         <source>
                 The title must be at most <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.maxLength}}"/> characters long.
               </source>
-        <target state="new">
-                The title must be at most <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.maxLength}}"/> characters long.
-              </target>
+        <target state="translated">Le titre doit avoir au plus <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.maxLength}}"/> caractères.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">24</context>
@@ -1091,7 +1079,7 @@
       </trans-unit>
       <trans-unit id="forum.newThread.content" datatype="html">
         <source>Body</source>
-        <target state="new">Body</target>
+        <target state="translated">Corps</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">30</context>
@@ -1100,7 +1088,7 @@
       </trans-unit>
       <trans-unit id="forum.newThread.submit" datatype="html">
         <source>Create a new thread</source>
-        <target state="new">Create a new thread</target>
+        <target state="translated">Créer un nouveau sujet de discussion</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">33</context>
@@ -1110,9 +1098,7 @@
         <source>
             Thread creation error: unknown server error on creation.
           </source>
-        <target state="new">
-            Thread creation error: unknown server error on creation.
-          </target>
+        <target state="translated">Échec de la création du sujet de discussion : erreur serveur inconnue.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">34</context>
@@ -1120,7 +1106,7 @@
       </trans-unit>
       <trans-unit id="forum.post.editLink" datatype="html">
         <source>Edit</source>
-        <target state="new">Edit</target>
+        <target state="translated">Éditer</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/short-forum-post.component.html</context>
           <context context-type="linenumber">5</context>
@@ -1129,7 +1115,7 @@
       </trans-unit>
       <trans-unit id="forum.post.deleted" datatype="html">
         <source>Deleted post</source>
-        <target state="new">Deleted post</target>
+        <target state="translated">Message supprimé</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/short-forum-post.component.html</context>
           <context context-type="linenumber">12</context>
@@ -1138,7 +1124,7 @@
       </trans-unit>
       <trans-unit id="forum.post.title" datatype="html">
         <source>Update post in <x id="INTERPOLATION" equiv-text="{{post.thread.title}}"/>, by <x id="START_TAG_ETWIN-FORUM-ACTOR" ctype="x-etwin-forum-actor" equiv-text="&lt;etwin-forum-actor>"/><x id="CLOSE_TAG_ETWIN-FORUM-ACTOR" ctype="x-etwin-forum-actor" equiv-text="&lt;/etwin-forum-actor>"/>, at <x id="INTERPOLATION_1" equiv-text="{{post.ctime | date : &quot;short&quot;}}"/></source>
-        <target state="new">Update post in <x id="INTERPOLATION" equiv-text="{{post.thread.title}}"/>, by <x id="START_TAG_ETWIN-FORUM-ACTOR" ctype="x-etwin-forum-actor" equiv-text="&lt;etwin-forum-actor>"/><x id="CLOSE_TAG_ETWIN-FORUM-ACTOR" ctype="x-etwin-forum-actor" equiv-text="&lt;/etwin-forum-actor>"/>, at <x id="INTERPOLATION_1" equiv-text="{{post.ctime | date : &quot;short&quot;}}"/></target>
+        <target state="translated">Éditer le message dans <x id="INTERPOLATION" equiv-text="{{post.thread.title}}"/>, par <x id="START_TAG_ETWIN-FORUM-ACTOR" ctype="x-etwin-forum-actor" equiv-text="&lt;etwin-forum-actor>"/><x id="CLOSE_TAG_ETWIN-FORUM-ACTOR" ctype="x-etwin-forum-actor" equiv-text="&lt;/etwin-forum-actor>"/>, à <x id="INTERPOLATION_1" equiv-text="{{post.ctime | date : &quot;short&quot;}}"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">5</context>
@@ -1147,7 +1133,7 @@
       </trans-unit>
       <trans-unit id="forum.updatePost.hideContent" datatype="html">
         <source>Hide message content</source>
-        <target state="new">Hide message content</target>
+        <target state="translated">Masquer le contenu du message</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">17</context>
@@ -1156,7 +1142,7 @@
       </trans-unit>
       <trans-unit id="forum.updatePost.moderation" datatype="html">
         <source>Moderation warning</source>
-        <target state="new">Moderation warning</target>
+        <target state="translated">Avertissement de modération</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">20</context>
@@ -1165,7 +1151,7 @@
       </trans-unit>
       <trans-unit id="forum.updatePost.comment" datatype="html">
         <source>Comment describing the reason of the update</source>
-        <target state="new">Comment describing the reason of the update</target>
+        <target state="translated">Commentaire expliquant la raison de la modification</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">24</context>
@@ -1174,7 +1160,7 @@
       </trans-unit>
       <trans-unit id="forum.updatePost.submit" datatype="html">
         <source>Update post</source>
-        <target state="new">Update post</target>
+        <target state="translated">Mettre à jour le message</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">27</context>

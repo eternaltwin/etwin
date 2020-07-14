@@ -919,11 +919,15 @@
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
+        <note priority="1" from="description">Title for the thread creation form</note>
+      </trans-unit>
+      <trans-unit id="forum.newThread.titleLabel" datatype="html">
+        <source>Thread title</source>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
-        <note priority="1" from="description">Title for the thread creation form</note>
+        <note priority="1" from="description">Title of the new thread</note>
       </trans-unit>
       <trans-unit id="forum.newThread.titleRequired" datatype="html">
         <source>

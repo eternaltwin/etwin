@@ -1098,15 +1098,20 @@
       <trans-unit id="forum.newThread.title" datatype="html">
         <source>New thread in <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{section.displayName}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
         <target state="new">New thread in <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{section.displayName}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <note priority="1" from="description">Title for the thread creation form</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="forum.newThread.titleLabel" datatype="html">
+        <source>Thread title</source>
+        <target state="new">Thread title</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
-        <note priority="1" from="description">Title for the thread creation form</note>
+        <note priority="1" from="description">Title of the new thread</note>
       </trans-unit>
       <trans-unit id="forum.newThread.titleRequired" datatype="html">
         <source>
