@@ -125,7 +125,18 @@ export async function createOauthRouter(api: Api): Promise<Koa> {
   async function getAccessToken(cx: Koa.Context): Promise<void> {
     const auth: AuthContext = await api.koaAuth.auth(cx);
     const req: OauthAccessTokenRequest = $OauthAccessTokenRequest.read(JSON_VALUE_READER, cx.request.body);
-    const accessToken: OauthAccessToken = await api.oauthProvider.createAccessToken(auth, req);
+    let accessToken: OauthAccessToken;
+    try {
+      accessToken = await api.oauthProvider.createAccessToken(auth, req);
+    } catch (e) {
+      if (e.name === "TokenExpiredError") {
+        cx.response.status = 401;
+        cx.response.body = {error: "Unauthorized", cause: "CodeExpiredError"};
+        return;
+      } else {
+        throw e;
+      }
+    }
     cx.response.body = $OauthAccessToken.write(JSON_VALUE_WRITER, accessToken);
   }
 

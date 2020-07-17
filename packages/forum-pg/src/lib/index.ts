@@ -11,6 +11,7 @@ import { CreateOrUpdateSystemSectionOptions } from "@eternal-twin/core/lib/forum
 import { CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options.js";
 import { CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options.js";
 import { DeletePostOptions } from "@eternal-twin/core/lib/forum/delete-post-options.js";
+import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id.js";
 import { ForumPostListing } from "@eternal-twin/core/lib/forum/forum-post-listing";
 import { NullableForumPostRevisionComment } from "@eternal-twin/core/lib/forum/forum-post-revision-comment.js";
@@ -61,21 +62,18 @@ export class PgForumService implements ForumService {
   private readonly database: Database;
   private readonly uuidGen: UuidGenerator;
   private readonly user: UserService;
-  public readonly defaultPostsPerPage: number;
-  public readonly defaultThreadsPerPage: number;
+  public readonly config: Readonly<ForumConfig>;
 
   constructor(
     database: Database,
     uuidGen: UuidGenerator,
     user: UserService,
-    defaultPostsPerPage: number,
-    defaultThreadsPerPage: number,
+    config: Readonly<ForumConfig>,
   ) {
     this.database = database;
     this.uuidGen = uuidGen;
     this.user = user;
-    this.defaultPostsPerPage = defaultPostsPerPage;
-    this.defaultThreadsPerPage = defaultThreadsPerPage;
+    this.config = {postsPerPage: config.postsPerPage, threadsPerPage: config.threadsPerPage};
   }
 
   async addModerator(
@@ -87,7 +85,7 @@ export class PgForumService implements ForumService {
       await this.addModeratorTx(q, acx, sectionIdOrKey, userId);
       const section: ForumSection | null = await this.getSectionTx(q, acx, sectionIdOrKey, {
         threadOffset: 0,
-        threadLimit: this.defaultThreadsPerPage,
+        threadLimit: this.config.threadsPerPage,
       });
       if (section === null) {
         throw new Error("AssertionError: Expected section to exist");
@@ -101,7 +99,7 @@ export class PgForumService implements ForumService {
       await this.deleteModeratorTx(q, acx, sectionIdOrKey, userId);
       const section: ForumSection | null = await this.getSectionTx(q, acx, sectionIdOrKey, {
         threadOffset: 0,
-        threadLimit: this.defaultThreadsPerPage,
+        threadLimit: this.config.threadsPerPage,
       });
       if (section === null) {
         throw new Error("AssertionError: Expected section to exist");
@@ -244,7 +242,7 @@ export class PgForumService implements ForumService {
         locale: options.locale,
         threads: {
           offset: 0,
-          limit: this.defaultThreadsPerPage,
+          limit: this.config.threadsPerPage,
           count: 0,
           items: [],
         },
@@ -270,7 +268,7 @@ export class PgForumService implements ForumService {
         SYSTEM_AUTH,
         {id: oldRow.forum_section_id, threads: {count: oldRow.thread_count}},
         0,
-        this.defaultThreadsPerPage,
+        this.config.threadsPerPage,
       );
       const roleGrants = await this.getRoleGrantsTx(
         queryable,
@@ -548,7 +546,7 @@ export class PgForumService implements ForumService {
       isLocked: false,
       posts: {count: 1},
     };
-    const posts: ForumPostListing = await this.getPostsTx(queryable, acx, threadMeta, 0, this.defaultPostsPerPage);
+    const posts: ForumPostListing = await this.getPostsTx(queryable, acx, threadMeta, 0, this.config.postsPerPage);
     return {
       ...threadMeta,
       section: {...section, threads: {count: section.threads.count + 1}},

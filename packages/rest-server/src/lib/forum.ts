@@ -63,7 +63,7 @@ export function createForumRouter(api: Api): Router {
     }
     const section: ForumSection | null = await api.forum.getSectionById(auth, sectionIdOrKey, {
       threadOffset: query.offset ?? 0,
-      threadLimit: query.limit ?? api.forum.defaultThreadsPerPage,
+      threadLimit: query.limit ?? api.forum.config.threadsPerPage,
     });
     if (section === null) {
       cx.response.status = 404;
@@ -163,7 +163,7 @@ export function createForumRouter(api: Api): Router {
     }
     const thread: ForumThread | null = await api.forum.getThreadById(auth, threadIdOrKey, {
       postOffset: query.offset ?? 0,
-      postLimit: query.limit ?? api.forum.defaultPostsPerPage,
+      postLimit: query.limit ?? api.forum.config.postsPerPage,
     });
     if (thread === null) {
       cx.response.status = 404;

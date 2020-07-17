@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "packages/auth-in-memory/src/test"
+    },
+    {
+      "path": "packages/auth-pg/src/test"
+    },
+    {
+      "path": "packages/core/src/test"
+    },
+    {
+      "path": "packages/forum-in-memory/src/test"
+    },
+    {
+      "path": "packages/forum-pg/src/test"
+    },
+    {
+      "path": "packages/oauth-provider-in-memory/src/test"
+    },
+    {
+      "path": "packages/oauth-provider-pg/src/test"
+    },
+    {
+      "path": "packages/password-scrypt/src/test"
+    },
+    {
+      "path": "packages/user-in-memory/src/test"
+    },
+    {
+      "path": "packages/user-pg/src/test"
+    },
+    {
+      "path": "packages/uuid4-generator/src/test"
+    }
+  ]
+}

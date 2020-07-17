@@ -5,6 +5,7 @@ import Koa from "koa";
 import koaMount from "koa-mount";
 
 import { createAuthRouter } from "./auth.js";
+import { createConfigRouter } from "./config.js";
 import { createForumRouter } from "./forum.js";
 import { KoaAuth } from "./helpers/koa-auth.js";
 import { createUsersRouter } from "./users.js";
@@ -20,6 +21,9 @@ export function createApiRouter(api: Api): Koa {
   const router: Koa = new Koa();
 
   router.use(koaMount("/auth", createAuthRouter(api)));
+  const config = createConfigRouter(api);
+  router.use(koaMount("/config", config.routes()));
+  router.use(koaMount("/config", config.allowedMethods()));
   router.use(koaMount("/users", createUsersRouter(api)));
   const forum = createForumRouter(api);
   router.use(koaMount("/forum", forum.routes()));

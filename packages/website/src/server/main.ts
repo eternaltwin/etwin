@@ -6,6 +6,7 @@ import { StaticProvider } from "@angular/core";
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
 import * as furi from "furi";
 import Koa from "koa";
 import koaRoute from "koa-route";
@@ -16,7 +17,7 @@ import { AppServerModule } from "../app/app.server.module";
 import { ROUTES } from "../routes";
 import { Api, ServerAppConfig } from "./config";
 import { NgKoaEngine } from "./ng-koa-engine";
-import { AUTH_CONTEXT, FORUM, USER } from "./tokens";
+import { AUTH_CONTEXT, CONFIG, FORUM, USER } from "./tokens";
 
 const GUEST_AUTH_CONTEXT: AuthContext = Object.freeze({
   type: AuthType.Guest,
@@ -44,7 +45,11 @@ function resolveServerOptions(options?: Partial<ServerAppConfig>): ServerAppConf
     throw new Error("Missing `api` configuration");
   }
   const api: Api = options.api;
-  return {externalUri, isIndexNextToServerMain, isProduction, api};
+  if (options.forum === undefined) {
+    throw new Error("Missing `forum` configuration");
+  }
+  const forum: ForumConfig = options.forum;
+  return {externalUri, isIndexNextToServerMain, isProduction, api, forum};
 }
 
 /**
@@ -74,6 +79,7 @@ export async function app(options?: Partial<ServerAppConfig>) {
   }
   providers.push({provide: FORUM, useValue: config.api.forum});
   providers.push({provide: USER, useValue: config.api.user});
+  providers.push({provide: CONFIG, useValue: {forum: config.forum}});
 
   const engine: NgKoaEngine = await NgKoaEngine.create({
     indexFuri,

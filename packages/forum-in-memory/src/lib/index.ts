@@ -12,6 +12,7 @@ import { CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-opti
 import { CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options.js";
 import { DeletePostOptions } from "@eternal-twin/core/lib/forum/delete-post-options.js";
 import { $ForumActor, ForumActor } from "@eternal-twin/core/lib/forum/forum-actor.js";
+import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id.js";
 import { ForumPostListing } from "@eternal-twin/core/lib/forum/forum-post-listing.js";
 import { ForumPostRevisionComment } from "@eternal-twin/core/lib/forum/forum-post-revision-comment.js";
@@ -86,14 +87,12 @@ export class InMemoryForumService implements ForumService {
   private readonly threads: Map<ForumThreadId, InMemoryThread>;
   private readonly posts: Map<ForumPostId, InMemoryPost>;
 
-  readonly defaultPostsPerPage: number;
-  readonly defaultThreadsPerPage: number;
+  readonly config: Readonly<ForumConfig>;
 
-  constructor(uuidGen: UuidGenerator, user: UserService, defaultPostsPerPage: number, defaultThreadsPerPage: number) {
+  constructor(uuidGen: UuidGenerator, user: UserService, config: Readonly<ForumConfig>) {
     this.uuidGen = uuidGen;
     this.user = user;
-    this.defaultPostsPerPage = defaultPostsPerPage;
-    this.defaultThreadsPerPage = defaultThreadsPerPage;
+    this.config = {postsPerPage: config.postsPerPage, threadsPerPage: config.threadsPerPage};
     this.sections = new Map();
     this.threads = new Map();
     this.posts = new Map();
@@ -111,7 +110,7 @@ export class InMemoryForumService implements ForumService {
   async getThreads(_acx: AuthContext, _sectionIdOrKey: string): Promise<ForumThreadListing> {
     return {
       offset: 0,
-      limit: this.defaultThreadsPerPage,
+      limit: this.config.threadsPerPage,
       count: 0,
       items: [],
     };
@@ -146,7 +145,7 @@ export class InMemoryForumService implements ForumService {
       isLocked: false,
       posts: {count: 1},
     };
-    const posts: ForumPostListing = await this.getPosts(acx, threadMeta, 0, this.defaultPostsPerPage);
+    const posts: ForumPostListing = await this.getPosts(acx, threadMeta, 0, this.config.postsPerPage);
     return {
       ...threadMeta,
       section: {...section, threads: {count: section.threads.count + 1}},
@@ -322,7 +321,7 @@ export class InMemoryForumService implements ForumService {
     await this.innerAddModerator(acx, sectionIdOrKey, userId);
     const section: ForumSection | null = await this.getSectionById(acx, sectionIdOrKey, {
       threadOffset: 0,
-      threadLimit: this.defaultThreadsPerPage,
+      threadLimit: this.config.threadsPerPage,
     });
     if (section === null) {
       throw new Error("AssertionError: Expected section to exist");
@@ -338,7 +337,7 @@ export class InMemoryForumService implements ForumService {
     await this.innerDeleteModerator(acx, sectionIdOrKey, userId);
     const section: ForumSection | null = await this.getSectionById(acx, sectionIdOrKey, {
       threadOffset: 0,
-      threadLimit: this.defaultThreadsPerPage,
+      threadLimit: this.config.threadsPerPage,
     });
     if (section === null) {
       throw new Error("AssertionError: Expected section to exist");

@@ -1,4 +1,5 @@
 import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
 import { ForumService } from "@eternal-twin/core/lib/forum/service";
 import { UserService } from "@eternal-twin/core/lib/user/service";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
@@ -16,4 +17,5 @@ export interface ServerAppConfig {
   isIndexNextToServerMain: boolean;
   isProduction: boolean;
   api: Api;
+  forum: ForumConfig;
 }

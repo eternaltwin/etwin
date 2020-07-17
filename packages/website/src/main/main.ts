@@ -71,6 +71,7 @@ async function main(api: Api): Promise<void> {
     isIndexNextToServerMain: true,
     isProduction: IS_PRODUCTION,
     api: api,
+    forum: {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage}
   };
 
   const prodAppRouters: Map<string, Koa> = new Map();

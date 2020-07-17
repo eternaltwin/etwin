@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@angular/core";
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import { CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options";
 import { CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options";
+import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
 import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
 import { ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
@@ -17,16 +18,19 @@ import { UserId } from "@eternal-twin/core/lib/user/user-id";
 import { from as rxFrom, Observable } from "rxjs";
 
 import { AUTH_CONTEXT, FORUM } from "../../server/tokens";
+import { ConfigService } from "../config/config.service";
 import { ForumService } from "./forum.service";
 
 @Injectable()
 export class ServerForumService extends ForumService {
   readonly #acx: AuthContext;
+  readonly #config: ForumConfig;
   readonly #forum: CoreForumService;
 
-  constructor(@Inject(AUTH_CONTEXT) acx: AuthContext, @Inject(FORUM) forum: CoreForumService) {
+  constructor(@Inject(AUTH_CONTEXT) acx: AuthContext, config: ConfigService, @Inject(FORUM) forum: CoreForumService) {
     super();
     this.#acx = acx;
+    this.#config = config.forum();
     this.#forum = forum;
   }
 
@@ -34,12 +38,18 @@ export class ServerForumService extends ForumService {
     return rxFrom(this.#forum.getSections(this.#acx));
   }
 
-  getForumSection(idOrKey: ForumSectionId | ForumSectionKey, pageIndex: number): Observable<ForumSection | null> {
-    return rxFrom(this.#forum.getSectionById(this.#acx, idOrKey, {threadOffset: pageIndex * 20, threadLimit: 20}));
+  getForumSection(idOrKey: ForumSectionId | ForumSectionKey, page0: number): Observable<ForumSection | null> {
+    return rxFrom(this.#forum.getSectionById(this.#acx, idOrKey, {
+      threadOffset: page0 * this.#config.threadsPerPage,
+      threadLimit: this.#config.threadsPerPage,
+    }));
   }
 
-  getForumThread(idOrKey: ForumThreadId | ForumThreadKey, pageIndex: number): Observable<ForumThread | null> {
-    return rxFrom(this.#forum.getThreadById(this.#acx, idOrKey, {postOffset: pageIndex * 20, postLimit: 20}));
+  getForumThread(idOrKey: ForumThreadId | ForumThreadKey, page0: number): Observable<ForumThread | null> {
+    return rxFrom(this.#forum.getThreadById(this.#acx, idOrKey, {
+      postOffset: page0 * this.#config.postsPerPage,
+      postLimit: this.#config.postsPerPage,
+    }));
   }
 
   getForumPost(postId: ForumPostId, page0: number): Observable<ForumPost | null> {

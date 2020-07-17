@@ -38,7 +38,7 @@ export async function withTestServer<R>(fn: (server: http.Server) => Promise<R>)
     const hammerfest = new InMemoryHammerfestService();
     const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
     const koaAuth = new KoaAuth(auth);
-    const forum = new PgForumService(db, UUID4_GENERATOR, user, config.forum.postsPerPage, config.forum.threadsPerPage);
+    const forum = new PgForumService(db, UUID4_GENERATOR, user, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
     const api: Api = {auth, forum, koaAuth, user};
 
     const app: Koa = createApiRouter(api);

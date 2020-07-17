@@ -17,10 +17,10 @@ import { ForumThread } from "./forum-thread.js";
 import { GetSectionOptions } from "./get-section-options.js";
 import { GetThreadOptions } from "./get-thread-options.js";
 import { UpdatePostOptions } from "./update-post-options.js";
+import { ForumConfig } from "./forum-config.js";
 
 export interface ForumService {
-  readonly defaultPostsPerPage: number;
-  readonly defaultThreadsPerPage: number;
+  readonly config: Readonly<ForumConfig>;
 
   createOrUpdateSystemSection(key: ForumSectionKey, options: CreateOrUpdateSystemSectionOptions): Promise<ForumSection>;
 
@@ -50,7 +50,11 @@ export interface ForumService {
    * @param options Post creation options. It mainly requires a body for the post.
    * @returns The newly created post.
    */
-  createPost(acx: AuthContext, threadIdOrKey: ForumThreadId | ForumThreadKey, options: CreatePostOptions): Promise<ForumPost>;
+  createPost(
+    acx: AuthContext,
+    threadIdOrKey: ForumThreadId | ForumThreadKey,
+    options: CreatePostOptions,
+  ): Promise<ForumPost>;
 
   /**
    * Retrieves a post using its id.
