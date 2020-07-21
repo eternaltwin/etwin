@@ -394,6 +394,7 @@ export class InMemoryForumService implements ForumService {
     limit: number,
   ): ForumThreadListing {
     const items: ForumThreadMeta[] = [];
+    const lastPostCtime: WeakMap<ForumThreadMeta, Date> = new WeakMap();
     for (const thread of this.threads.values()) {
       if (thread.sectionId !== section.id) {
         continue;
@@ -408,13 +409,23 @@ export class InMemoryForumService implements ForumService {
         isLocked: thread.isLocked,
         posts: {count: this.getPostCount(acx, thread.id)},
       };
+      lastPostCtime.set(item, this.getLastImPost(acx, thread.id).ctime);
       items.push(item);
     }
+
+    items.sort(compare);
+
+    function compare(left: ForumThreadMeta, right: ForumThreadMeta): number {
+      const leftCtime: Date = lastPostCtime.get(left)!;
+      const rightCtime: Date = lastPostCtime.get(right)!;
+      return rightCtime.getTime() - leftCtime.getTime();
+    }
+
     return {
       offset,
       limit,
       count: section.threads.count,
-      items,
+      items: items.slice(offset, offset + limit),
     };
   }
 
@@ -454,6 +465,24 @@ export class InMemoryForumService implements ForumService {
       }
     }
     return count;
+  }
+
+  private getLastImPost(_acx: AuthContext, threadId: ForumThreadId): InMemoryPost {
+    let last: InMemoryPost | undefined;
+    for (const post of this.posts.values()) {
+      if (post.threadId !== threadId) {
+        continue;
+      }
+      if (last === undefined) {
+        last = post;
+      } else if (post.ctime.getTime() > last.ctime.getTime()) {
+        last = post;
+      }
+    }
+    if (last === undefined) {
+      throw new Error("ThreadNotFound");
+    }
+    return last;
   }
 
   private async getPosts(

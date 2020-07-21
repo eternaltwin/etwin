@@ -420,6 +420,96 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
     });
   });
 
+  it("Create a few threads with messages in the main forum section", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+
+      const thread1: ForumThread = await api.forum.createThread(aliceAuth, section.id, {
+        title: "Thread 1",
+        body: "This is the first thread",
+      });
+
+      await delay(10);
+
+      await api.forum.createThread(aliceAuth, section.id, {
+        title: "Thread 2",
+        body: "This is the second thread",
+      });
+
+      await delay(10);
+
+      await api.forum.createPost(aliceAuth, thread1.id, {body: "Reply to thread 1"});
+
+      await delay(10);
+
+      const thread3: ForumThread = await api.forum.createThread(aliceAuth, section.id, {
+        title: "Thread 3",
+        body: "This is the third thread",
+      });
+
+      await delay(10);
+
+      await api.forum.createPost(aliceAuth, thread1.id, {body: "Another reply to thread 1"});
+
+      {
+        const actual: ForumSection | null = await api.forum.getSectionById(aliceAuth, "fr_main", {
+          threadOffset: 0,
+          threadLimit: 2,
+        });
+        const expected: ForumSection = {
+          type: ObjectType.ForumSection,
+          id: section.id,
+          key: "fr_main",
+          displayName: "Forum Général",
+          locale: "fr-FR",
+          ctime: section.ctime,
+          threads: {
+            offset: 0,
+            limit: 2,
+            count: 3,
+            items: [
+              {
+                type: ObjectType.ForumThread,
+                id: thread1.id,
+                key: null,
+                isLocked: false,
+                isPinned: false,
+                ctime: thread1.ctime,
+                title: "Thread 1",
+                posts: {
+                  count: 3,
+                }
+              },
+              {
+                type: ObjectType.ForumThread,
+                id: thread3.id,
+                key: null,
+                isLocked: false,
+                isPinned: false,
+                ctime: thread3.ctime,
+                title: "Thread 3",
+                posts: {
+                  count: 1,
+                }
+              },
+            ],
+          },
+          roleGrants: [],
+          self: {roles: [ForumRole.Administrator]},
+        };
+        assertKryoEqual($ForumSection, actual, expected);
+      }
+    });
+  });
+
   it("Guests can't add moderators", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {

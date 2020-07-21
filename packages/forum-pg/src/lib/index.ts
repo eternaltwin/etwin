@@ -415,10 +415,31 @@ export class PgForumService implements ForumService {
   ): Promise<ForumThreadListing> {
     type Row = Pick<ForumThreadRow, "forum_thread_id" | "key" | "title" | "ctime" | "is_pinned" | "is_locked">;
     const rows: Row[] = await queryable.many(
-      `SELECT forum_thread_id, title, key, ctime, is_pinned, is_locked
-         FROM forum_threads
-         WHERE forum_section_id = $1::UUID`,
-      [section.id],
+      `
+        WITH threads AS (
+          SELECT forum_thread_id,
+            LAST_VALUE(forum_post_id) OVER w AS last_post_id,
+            LAST_VALUE(ctime) OVER w AS last_post_ctime,
+            COUNT(forum_post_id) OVER w as post_count,
+            ROW_NUMBER() OVER w AS rn
+          FROM forum_posts
+          WINDOW w AS (PARTITION BY forum_thread_id ORDER BY ctime ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+        )
+        SELECT forum_thread_id,
+          last_post_id,
+          last_post_ctime,
+          post_count::INT,
+          title,
+          key,
+          ctime,
+          is_pinned,
+          is_locked,
+          forum_section_id
+        FROM threads INNER JOIN forum_threads USING (forum_thread_id)
+        WHERE threads.rn = 1 AND forum_section_id = $1::UUID
+        ORDER BY last_post_ctime DESC
+        LIMIT $2::INT OFFSET $3::INT;`,
+      [section.id, limit, offset],
     );
     const items: ForumThreadMeta[] = [];
     for (const row of rows) {
@@ -430,7 +451,7 @@ export class PgForumService implements ForumService {
         ctime: row.ctime,
         isPinned: row.is_pinned,
         isLocked: row.is_locked,
-        posts: {count: 1},
+        posts: {count: (row as any).post_count},
       };
       items.push(thread);
     }
