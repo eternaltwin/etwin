@@ -43,7 +43,14 @@ export class ForumSectionResolverService implements Resolve<ForumSection | null>
     if (sectionIdOrKey === null) {
       return null;
     }
-    return this.forum.getForumSection(sectionIdOrKey, 0).toPromise();
+    // `tp`: `thread page`
+    const pageStr = route.queryParamMap.get("tp");
+    const page: number = pageStr !== null ? parseInt(pageStr, 10) : 1;
+    if (page > 0) {
+      return this.forum.getForumSection(sectionIdOrKey, page - 1).toPromise();
+    } else {
+      return null;
+    }
   }
 }
 

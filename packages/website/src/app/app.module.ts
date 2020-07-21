@@ -2,11 +2,11 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 
+import { ConfigService } from "../modules/config/config.service";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { HomeView } from "./home/home.component";
 import { SharedModule } from "./shared/shared.module";
-import { ConfigService } from "../modules/config/config.service";
 
 @NgModule({
   imports: [

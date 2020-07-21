@@ -4,6 +4,7 @@ import { CreateOrUpdateSystemSectionOptions } from "./create-or-update-system-se
 import { CreatePostOptions } from "./create-post-options.js";
 import { CreateThreadOptions } from "./create-thread-options.js";
 import { DeletePostOptions } from "./delete-post-options";
+import { ForumConfig } from "./forum-config.js";
 import { ForumPostId } from "./forum-post-id";
 import { ForumPost } from "./forum-post.js";
 import { ForumSectionId } from "./forum-section-id.js";
@@ -17,7 +18,6 @@ import { ForumThread } from "./forum-thread.js";
 import { GetSectionOptions } from "./get-section-options.js";
 import { GetThreadOptions } from "./get-thread-options.js";
 import { UpdatePostOptions } from "./update-post-options.js";
-import { ForumConfig } from "./forum-config.js";
 
 export interface ForumService {
   readonly config: Readonly<ForumConfig>;

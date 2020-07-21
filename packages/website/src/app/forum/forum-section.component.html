@@ -20,7 +20,8 @@
         |
         <etwin-pagination [link]="['', 'forum', 'sections', section.id]"
                           [page1]="floor(section.threads.offset / section.threads.limit) + 1"
-                          [pageCount]="ceil(section.threads.count / section.threads.limit)"></etwin-pagination>
+                          [pageCount]="ceil(section.threads.count / section.threads.limit)"
+                          [param]="'tp'"></etwin-pagination>
         <h2 i18n="Title of the moderator list section (on a section page)@@forum.moderatorsTitle">Moderators</h2>
         <ng-container *ngIf="section.roleGrants.length > 0; else noRoleGrants">
           <ol class="moderator-list">
