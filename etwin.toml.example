@@ -59,8 +59,20 @@ threads_per_page = 20
 # Default forum sections configuration
 # You can define any number of forum sections using `[forum.sections.<key>]` blocks (one block per
 # section), where `<key>` acts as a stable identifier for the section.
-[forum.sections.fr_main]
+[forum.sections.en_main]
 # Name of the section, as it should be displayed to users.
-display_name = "Forum Général"
-# Locale for this section (unused)
+display_name = "Main Forum (en-US)"
+# Locale for this section
+locale = "en-US"
+
+[forum.sections.fr_main]
+display_name = "Forum Général (fr-FR)"
 locale = "fr-FR"
+
+[forum.sections.es_main]
+display_name = "Foro principal (es-SP)"
+locale = "es-SP"
+
+[forum.sections.eo_main]
+display_name = "Ĉefa forumo (eo)"
+locale = "eo"

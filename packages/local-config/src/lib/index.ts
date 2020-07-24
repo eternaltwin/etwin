@@ -67,7 +67,7 @@ export interface ForumConfig {
 
 export interface ForumSectionConfig {
   displayName: string;
-  locale: "fr-FR" | null;
+  locale: "en-US" | "eo" | "es-SP" | "fr-FR" | null;
 }
 
 function parseConfig(input: string): Config {
@@ -166,16 +166,18 @@ function readForumConfig(raw: object): ForumConfig {
   return {postsPerPage, threadsPerPage, sections};
 }
 
+const supportedLocales: ReadonlySet<"en-US" | "eo" | "es-SP" | "fr-FR"> = new Set(["en-US", "eo", "es-SP", "fr-FR"]);
+
 function readForumSectionConfig(raw: unknown, prefix: string): ForumSectionConfig {
   if (typeof raw !== "object" || raw === null) {
     throw new Error(`Expected forum section config to be an object: ${prefix}`);
   }
   const displayName: string = readString(raw, "display_name", `${prefix}.display_name`);
   const locale: string = readString(raw, "locale", `${prefix}.locale`);
-  if (locale !== "fr-FR") {
-    throw new Error("AssertionError: Only `fr-FR` is support currently");
+  if (!supportedLocales.has(locale as any)) {
+    throw new Error(`AssertionError: Only ${[...supportedLocales].join(", ")} locales are allowed`);
   }
-  return {displayName, locale};
+  return {displayName, locale: locale as any};
 }
 
 function readObj(rawObj: object, key: string, fullKey: string): object {
