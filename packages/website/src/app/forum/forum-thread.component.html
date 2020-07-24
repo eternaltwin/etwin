@@ -4,11 +4,10 @@
       <ng-container *ngSwitchCase="true">
         <h1>{{thread.title}}</h1>
         <nav class="breadcrumb">
-          In
           <a href="/">
             Forum
           </a>
-           >
+          /
           <a [routerLink]="['', 'forum', 'sections', thread.section.id]">
             <span class="name">{{thread.section.displayName}}</span>
           </a>
@@ -24,7 +23,7 @@
               <a [routerLink]="['', 'forum', 'threads', thread.id, 'reply']" class="btn primary" i18n="Link to the thread reply (new post) page@@forum.newPostLink">Reply</a>
             </ng-container>
             <ng-template #unauthenticated>
-              <a [routerLink]="['', 'login']" [queryParams]="{next: '/forum/threads/' + thread.id + '/reply'}" class="btn primary" i18n="Link to the thread reply (new post) page for guests (redirect through login)@@forum.newPostLink.guest">Sign in to reply</a>
+              <a [routerLink]="['', 'login']" [queryParams]="{next: '/forum/threads/' + thread.id + '/reply'}" class="btn secondary" i18n="Link to the thread reply (new post) page for guests (redirect through login)@@forum.newPostLink.guest">Sign in to reply</a>
             </ng-template>
           </div>
           <etwin-pagination [link]="['', 'forum', 'threads', thread.id]" [page1]="floor(thread.posts.offset / thread.posts.limit) + 1" [pageCount]="ceil(thread.posts.count / thread.posts.limit)"></etwin-pagination>

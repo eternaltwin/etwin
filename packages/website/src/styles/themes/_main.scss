@@ -306,10 +306,31 @@ label {
 .content {
   input[type=text], input[type=submit], input[type=password], select {
     width: 100%;
-    height: 2.5em;
-    margin-top: 0.3em;
-    padding: 0.5em;
     border: none;
+  }
+
+  input.field, textarea.field {
+    color: $lightWhite;
+    background-color: $darkGrey;
+    padding: .7em;
+    margin: .4em 0 .25em 0;
+    border-radius: .25em;
+    outline: none;
+    box-shadow: inset 0 0 0 1px $lightViolet;  /*Inset shadow, simulates a white border*/
+
+    transition: all .1s;
+
+    &:hover {
+      box-shadow: inset 0 0 0 2px $lightViolet;
+    }
+
+    &:focus, &:active {
+      background-color: $deepViolet;
+    }
+  }
+
+  textarea.field {
+    min-height: 30vh;
   }
 }
 

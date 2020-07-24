@@ -1,4 +1,5 @@
 $colWidth-alt: 72px;
+$desktopBreakpoint: 768px;
 
 .pages {
   $green: #79b102;
@@ -12,6 +13,11 @@ $colWidth-alt: 72px;
     text-transform: none;
     letter-spacing: 0.04em;
     white-space: pre;
+
+    // TODO: Add support for short-form page number
+    //span {
+    //  @media only screen and (max-width: $desktopBreakpoint / 2) { display: none; }
+    //}
   }
   .previous, .next {
     max-width: $colWidth-alt;

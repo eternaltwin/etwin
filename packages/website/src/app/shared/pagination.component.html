@@ -1,7 +1,7 @@
 <div class="actionBox pages multi">
-  <a [routerLink]="link" [queryParams]="getParams(1)" class="btn tertiary first"><img src="/assets/icons/first.png" i18n-alt="Pagination link to the first page@@shared.pagination.first" alt="First"/></a>
-  <a [routerLink]="link" [queryParams]="getParams(page1 > 1 ? page1 - 1 : 1)" class="btn tertiary previous"><img src="/assets/icons/left.png" i18n-alt="Pagination link to the previous page@@shared.pagination.previous" alt="Previous"/></a>
+  <a [routerLink]="link" [queryParams]="getParams(1)" class="btn tertiary icon first"><img src="/assets/icons/first.png" i18n-alt="Pagination link to the first page@@shared.pagination.first" alt="First"/></a>
+  <a [routerLink]="link" [queryParams]="getParams(page1 > 1 ? page1 - 1 : 1)" class="btn tertiary icon previous"><img src="/assets/icons/left.png" i18n-alt="Pagination link to the previous page@@shared.pagination.previous" alt="Previous"/></a>
   <span class="btn tertiary" i18n="Current page label@@shared.pagination.current">Page {{page1}} / {{pageCount}}</span>
-  <a [routerLink]="link" [queryParams]="getParams(page1 < pageCount ? page1 + 1 : pageCount)" class="btn tertiary next"><img src="/assets/icons/right.png" i18n-alt="Pagination link to the next page@@shared.pagination.next" alt="Next"/></a>
-  <a [routerLink]="link" [queryParams]="getParams(pageCount)" class="btn tertiary last"><img src="/assets/icons/last.png" i18n-alt="Pagination link to the last page@@shared.pagination.last" alt="Last"/></a>
+  <a [routerLink]="link" [queryParams]="getParams(page1 < pageCount ? page1 + 1 : pageCount)" class="btn tertiary icon next"><img src="/assets/icons/right.png" i18n-alt="Pagination link to the next page@@shared.pagination.next" alt="Next"/></a>
+  <a [routerLink]="link" [queryParams]="getParams(pageCount)" class="btn tertiary icon last"><img src="/assets/icons/last.png" i18n-alt="Pagination link to the last page@@shared.pagination.last" alt="Last"/></a>
 </div>

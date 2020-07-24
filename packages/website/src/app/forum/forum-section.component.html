@@ -17,7 +17,7 @@
               <a [routerLink]="['', 'forum', 'sections', section.id, 'new']" class="btn primary" i18n="Link to the thread creation page@@forum.newThreadLink">New thread</a>
             </ng-container>
             <ng-template #unauthenticated>
-              <a [routerLink]="['', 'login']" [queryParams]="{next: '/forum/sections/' + section.id + '/new'}" class="btn primary" i18n="Link to the thread creation page for guests (redirect through login)@@forum.newThreadLink.guest">Sign in to create a new thread</a>
+              <a [routerLink]="['', 'login']" [queryParams]="{next: '/forum/sections/' + section.id + '/new'}" class="btn secondary" i18n="Link to the thread creation page for guests (redirect through login)@@forum.newThreadLink.guest">Sign in to create a new thread</a>
             </ng-template>
           </div>
           <etwin-pagination [link]="['', 'forum', 'sections', section.id]"
@@ -25,6 +25,9 @@
                             [pageCount]="ceil(section.threads.count / section.threads.limit)"
                             [param]="'tp'"></etwin-pagination>
         </div>
+
+        <div class="splitter xl"></div>
+
         <div>
           <h2 i18n="Title of the moderator list section (on a section page)@@forum.moderatorsTitle">Moderators</h2>
           <ng-container *ngIf="section.roleGrants.length > 0; else noRoleGrants">
