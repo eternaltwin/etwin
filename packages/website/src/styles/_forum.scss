@@ -71,7 +71,9 @@ etwin-forum-post, .etwin-forum-post {
 
     .time {
       font-size: .7em;
-      color: $lightGrey;
+      line-height: 1.25em;
+      color: #6f6f6f;
+      text-align: right;
     }
   }
 
@@ -88,8 +90,7 @@ etwin-forum-post, .etwin-forum-post {
   }
 }
 
-.content .forum-list, .content .thread-list {
-
+.content .forum-list, .content .section-list, .content .thread-list {
   list-style: none;
   padding-left: 0 !important;
 

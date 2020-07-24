@@ -7,9 +7,12 @@
 >
   <input type="hidden" name="section_id" formControlName="sectionId" required="required" [value]="sectionId"/>
   <input type="hidden" name="user_id" formControlName="userId" required="required" [value]="userId"/>
-  <input type="submit" class="btn primary" name="register"
-         [disabled]="deleteModeratorForm.invalid || pendingSubscription !== null" i18n-value="@@forum.deleteModerator.submit"
-         value="Delete moderator"/>
+  <div class="actionBox">
+    <input type="submit" class="btn primary" name="register"
+           [disabled]="deleteModeratorForm.invalid || pendingSubscription !== null"
+           i18n-value="@@forum.deleteModerator.submit"
+           value="Delete moderator"/>
+  </div>
   <div *ngIf="serverError" class="error" i18n="Error message displayed when the server rejects the moderator deletion@@forum.deleteModerator.unknownError">
     Moderator deletion failure: unknown server error.
   </div>

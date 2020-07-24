@@ -15,7 +15,9 @@
             <span i18n="Content of the thread reply (new post)@@forum.newPost.content">Body</span>
             <textarea name="body" class="field" formControlName="body"></textarea>
           </label>
-          <input type="submit" class="btn primary" name="register" [disabled]="newPostForm.invalid || pendingSubscription !== null" i18n-value="@@forum.newPost.submit" value="Post the reply"/>
+          <div class="actionBox">
+            <input type="submit" class="btn primary" name="register" [disabled]="newPostForm.invalid || pendingSubscription !== null" i18n-value="@@forum.newPost.submit" value="Post the reply"/>
+          </div>
           <div *ngIf="serverError" class="error" i18n="Error message displayed when the server rejects the new post@@forum.newPost.unknownError">
             Post creation failure: unknown server error on reply.
           </div>

@@ -3,14 +3,15 @@ $colWidth-alt: 72px;
 .pages {
   $green: #79b102;
   $orange: #ea7a03;
-  
+
   flex-wrap: nowrap;
-  
+
   .btn > img { padding: 0; }
   .current {
     flex: 4;
     text-transform: none;
     letter-spacing: 0.04em;
+    white-space: pre;
   }
   .previous, .next {
     max-width: $colWidth-alt;

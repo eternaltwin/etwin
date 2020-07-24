@@ -12,10 +12,12 @@
         >
           <input type="hidden" name="post_id" formControlName="postId" required="required" [value]="post.id"/>
           <input type="hidden" name="last_revision_id" formControlName="lastRevisionId" required="required" [value]="post.revisions.items[post.revisions.items.length - 1].id"/>
-          <label>
-            <input type="checkbox" name="hide_post_content" formControlName="hidePostContent" [defaultChecked]="false"/>
-            <span i18n="Label for the checkbox to update the forum post and hide (soft remove) its content@@forum.updatePost.hideContent">Hide message content</span>
-          </label>
+          <div class="box">
+            <label>
+              <input type="checkbox" name="hide_post_content" formControlName="hidePostContent" [defaultChecked]="false"/>
+              <span i18n="Label for the checkbox to update the forum post and hide (soft remove) its content@@forum.updatePost.hideContent">Hide message content</span>
+            </label>
+          </div>
           <label>
             <span i18n="Label to update the moderation warning linked to a post@@forum.updatePost.moderation">Moderation warning</span>
             <textarea name="moderation" class="field" formControlName="moderation"></textarea>
@@ -24,7 +26,9 @@
             <span i18n="Label for the comment explaining why a post was updated@@forum.updatePost.comment">Comment describing the reason of the update</span>
             <input type="text" name="comment" class="field" formControlName="comment"/>
           </label>
-          <input type="submit" class="btn primary" name="register" [disabled]="updatePostForm.invalid || pendingSubscription !== null" i18n-value="@@forum.updatePost.submit" value="Update post"/>
+          <div class="actionBox">
+            <input type="submit" class="btn primary" name="update_post" [disabled]="updatePostForm.invalid || pendingSubscription !== null" i18n-value="@@forum.updatePost.submit" value="Update post"/>
+          </div>
           <div *ngIf="serverError" class="error" i18n="Error message displayed when the server rejects the post update@@forum.deleteModerator.unknownError">
             Post update failure: unknown server error.
           </div>

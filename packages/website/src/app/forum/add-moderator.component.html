@@ -10,10 +10,11 @@
     <span i18n="Label for the new moderator user selection@@forum.addModerator.userLabel">New moderator</span>
     <etwin-user-input name="user_id" formControlName="userId"></etwin-user-input>
   </label>
-  <input type="submit" class="btn primary" name="register"
-         [disabled]="addModeratorForm.invalid || pendingSubscription !== null" i18n-value="@@forum.addModerator.submit"
-         value="Add moderator"/>
-  <div *ngIf="serverError" class="error" i18n="Error message displayed when the server rejects the moderator addition@@forum.addModerator.unknownError">
-    Moderator addition failure: unknown server error.
+  <div class="actionBox">
+    <input type="submit" class="btn primary" name="register"
+           [disabled]="addModeratorForm.invalid || pendingSubscription !== null"
+           i18n-value="@@forum.addModerator.submit"
+           value="Add moderator"/>
   </div>
+  <div *ngIf="serverError" class="error" i18n="Error message displayed when the server rejects the moderator addition@@forum.addModerator.unknownError">Moderator addition failure: unknown server error.</div>
 </form>

@@ -30,7 +30,9 @@
             <span i18n="Content of the first post of the new thread@@forum.newThread.content">Body</span>
             <textarea name="body" class="field" formControlName="body"></textarea>
           </label>
-          <input type="submit" class="btn primary" name="register" [disabled]="newThreadForm.invalid || pendingSubscription !== null" i18n-value="@@forum.newThread.submit" value="Create a new thread"/>
+          <div class="actionBox">
+            <input type="submit" class="btn primary" name="register" [disabled]="newThreadForm.invalid || pendingSubscription !== null" i18n-value="@@forum.newThread.submit" value="Create a new thread"/>
+          </div>
           <div *ngIf="serverError" class="error" i18n="@@forum.newThread.unknownError">
             Thread creation error: unknown server error on creation.
           </div>

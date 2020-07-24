@@ -11,35 +11,39 @@
             </a>
           </li>
         </ol>
-        <div class="btnContainer">
-          <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">
-            <a [routerLink]="['', 'forum', 'sections', section.id, 'new']" class="btn primary" i18n="Link to the thread creation page@@forum.newThreadLink">New thread</a>
-          </ng-container>
-          <ng-template #unauthenticated>
-            <a [routerLink]="['', 'login']" [queryParams]="{next: '/forum/sections/' + section.id + '/new'}" class="btn primary" i18n="Link to the thread creation page for guests (redirect through login)@@forum.newThreadLink.guest">Sign in to create a new thread</a>
-          </ng-template>
+        <div class="box">
+          <div class="actionBox">
+            <ng-container *ngIf="isAuthenticated$ | async; else unauthenticated">
+              <a [routerLink]="['', 'forum', 'sections', section.id, 'new']" class="btn primary" i18n="Link to the thread creation page@@forum.newThreadLink">New thread</a>
+            </ng-container>
+            <ng-template #unauthenticated>
+              <a [routerLink]="['', 'login']" [queryParams]="{next: '/forum/sections/' + section.id + '/new'}" class="btn primary" i18n="Link to the thread creation page for guests (redirect through login)@@forum.newThreadLink.guest">Sign in to create a new thread</a>
+            </ng-template>
+          </div>
           <etwin-pagination [link]="['', 'forum', 'sections', section.id]"
                             [page1]="floor(section.threads.offset / section.threads.limit) + 1"
                             [pageCount]="ceil(section.threads.count / section.threads.limit)"
                             [param]="'tp'"></etwin-pagination>
         </div>
-        <h2 i18n="Title of the moderator list section (on a section page)@@forum.moderatorsTitle">Moderators</h2>
-        <ng-container *ngIf="section.roleGrants.length > 0; else noRoleGrants">
-          <ol class="moderator-list">
-            <li *ngFor="let rg of section.roleGrants">
-              <etwin-user-link [user]="rg.user"></etwin-user-link>
-              <ng-container *ngIf="isAdministrator$ | async">
-                <etwin-delete-moderator [sectionId]="section.id" [userId]="rg.user.id"></etwin-delete-moderator>
-              </ng-container>
-            </li>
-          </ol>
-        </ng-container>
-        <ng-template #noRoleGrants i18n="Message indicating that the thread section moderator list is empty@@forum.noModerators">
-          There are no users with elevated privilege on this forum section. Only administrators can manage this section.
-        </ng-template>
-        <ng-container *ngIf="isAdministrator$ | async">
-          <etwin-add-moderator [sectionId]="section.id"></etwin-add-moderator>
-        </ng-container>
+        <div>
+          <h2 i18n="Title of the moderator list section (on a section page)@@forum.moderatorsTitle">Moderators</h2>
+          <ng-container *ngIf="section.roleGrants.length > 0; else noRoleGrants">
+            <ol class="moderator-list">
+              <li *ngFor="let rg of section.roleGrants">
+                <etwin-user-link [user]="rg.user"></etwin-user-link>
+                <ng-container *ngIf="isAdministrator$ | async">
+                  <etwin-delete-moderator [sectionId]="section.id" [userId]="rg.user.id"></etwin-delete-moderator>
+                </ng-container>
+              </li>
+            </ol>
+          </ng-container>
+          <ng-template #noRoleGrants i18n="Message indicating that the thread section moderator list is empty@@forum.noModerators">
+            There are no users with elevated privilege on this forum section. Only administrators can manage this section.
+          </ng-template>
+          <ng-container *ngIf="isAdministrator$ | async">
+            <etwin-add-moderator [sectionId]="section.id"></etwin-add-moderator>
+          </ng-container>
+        </div>
       </ng-container>
       <ng-container *ngSwitchDefault>
         <h1 i18n="Forum section not found error message@@forum.error.sectionNotFound">Forum section not found</h1>
