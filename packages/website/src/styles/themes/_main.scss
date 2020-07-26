@@ -126,7 +126,7 @@ etwin-main-layout, etwin-small-layout {
       a {
         display: block;
         text-align: center;
-        width: $bannerWidth / 2;
+        max-width: $bannerWidth / 2;
         height: $bannerHeight;
         color: transparent;
         margin: auto;
