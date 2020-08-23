@@ -34,6 +34,9 @@
       "path": "../pg-db/src/lib"
     },
     {
+      "path": "../rest-server/src/lib"
+    },
+    {
       "path": "../user-in-memory/src/lib"
     },
     {
