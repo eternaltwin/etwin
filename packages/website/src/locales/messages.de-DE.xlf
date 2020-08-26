@@ -59,47 +59,47 @@
       <trans-unit id="shared.pagination.first" datatype="html">
         <source>First</source>
         <target state="new">First</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/pagination.component.html</context>
-          <context context-type="linenumber">1</context>
-        </context-group>
         <note priority="1" from="description">Pagination link to the first page</note>
-      </trans-unit>
-      <trans-unit id="shared.pagination.previous" datatype="html">
-        <source>Previous</source>
-        <target state="new">Previous</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/pagination.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
-        <note priority="1" from="description">Pagination link to the previous page</note>
       </trans-unit>
-      <trans-unit id="shared.pagination.current" datatype="html">
-        <source>Page <x id="INTERPOLATION" equiv-text="{{page1}}"/> / <x id="INTERPOLATION_1" equiv-text="{{pageCount}}"/></source>
-        <target state="new">Page <x id="INTERPOLATION" equiv-text="{{page1}}"/> / <x id="INTERPOLATION_1" equiv-text="{{pageCount}}"/></target>
+      <trans-unit id="shared.pagination.previous" datatype="html">
+        <source>Previous</source>
+        <target state="new">Previous</target>
+        <note priority="1" from="description">Pagination link to the previous page</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/pagination.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
-        <note priority="1" from="description">Current page label</note>
       </trans-unit>
-      <trans-unit id="shared.pagination.next" datatype="html">
-        <source>Next</source>
-        <target state="new">Next</target>
+      <trans-unit id="shared.pagination.current" datatype="html">
+        <source>Page <x id="INTERPOLATION" equiv-text="{{page1}}"/> / <x id="INTERPOLATION_1" equiv-text="{{pageCount}}"/></source>
+        <target state="new">Page <x id="INTERPOLATION" equiv-text="{{page1}}"/> / <x id="INTERPOLATION_1" equiv-text="{{pageCount}}"/></target>
+        <note priority="1" from="description">Current page label</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/pagination.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
-        <note priority="1" from="description">Pagination link to the next page</note>
       </trans-unit>
-      <trans-unit id="shared.pagination.last" datatype="html">
-        <source>Last</source>
-        <target state="new">Last</target>
+      <trans-unit id="shared.pagination.next" datatype="html">
+        <source>Next</source>
+        <target state="new">Next</target>
+        <note priority="1" from="description">Pagination link to the next page</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/shared/pagination.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="shared.pagination.last" datatype="html">
+        <source>Last</source>
+        <target state="new">Last</target>
         <note priority="1" from="description">Pagination link to the last page</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/shared/pagination.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="app.loginNav" datatype="html">
         <source>Sign in</source>
@@ -443,7 +443,7 @@
     <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
   </source>
         <target state="translated"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
-      Am 27. März hat Motion Twin <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>eine Mitteilung<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> auf ihrer 
+      Am 27. März hat Motion Twin <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>eine Mitteilung<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> auf ihrer
       Plattform Twinoid bezüglich des Endes von Flash Ende 2020 gepostet. Ihre Spiele werden schrittweise eingestellt basierend auf dem Rückgang der Spielerzahlen.
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       Mit dieser Situation konfrontiert, haben sich einige Spieler dazu entschieden, ein Projekt ins Leben zu rufen, um die Spiele zu retten: Das Projekt Eternal-Twin.
@@ -474,16 +474,21 @@
       </trans-unit>
       <trans-unit id="home.generalWhoAreWe" datatype="html">
         <source>
-    Eternal-Twin is a non-commercial website operate by hobbyists. Its the goal to archive Motion-Twin's games. This
-    means we want to ensure they remain available even if the official website closes. <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/>We are not related to
-    Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.
-  </source>
+    Eternal-Twin is a non-commercial website operate by hobbyists. Its the goal to archive Motion-Twin's games. This means we want to ensure they remain available even if the official website closes.<x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/> We are not related to Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.</source>
         <target state="translated">
     Eternal-Twin ist eine nicht-kommerzielle Webseite betrieben von Bastlern. Ihr Ziel ist es Motion-Twin-Spiele zu archivieren. Das
     bedeutet, wir möchten sicherstellen das die Spiele erreichbar bleiben selbst wenn die offizielle Webseite schließt. Wir gehören nicht zu<x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/>
     Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.
   </target>
         <note priority="1" from="description">Section describing who we are</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/shared/small-layout.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
           <context context-type="linenumber">29</context>
@@ -799,18 +804,17 @@
         <note priority="1" from="description">Title of the web hosting provider section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">3</context>
+          <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
       <trans-unit id="legal.hostingIntro" datatype="html">
-        <source>Eternal-Twin is hosted by
-    OVH. These are their contact details:</source>
+        <source>Eternal-Twin is hosted by OVH. These are their contact details:</source>
         <target state="translated">Eternal-Twin wird gehostet von
     OVH. Dies sind ihre Kontaktdetails:</target>
         <note priority="1" from="description">Introduction paragraph of the web hosting provider section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">4</context>
+          <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
       <trans-unit id="legal.hostingNameLabel" datatype="html">
@@ -837,17 +841,16 @@
         <note priority="1" from="description">Title of the section on cookies</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="legal.cookiesBody" datatype="html">
         <source>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin avoids any non-necessary cookies.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+
     <x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Necessary cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/>
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin uses cookies to support authentication and remember the user's preferred language. Those are
-      first-party cookies required for the website to work. You may still disable them in your browser settings, but
-      this
-      may prevent the website from working.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin uses cookies to support authentication and remember the user's preferred language. Those are first-party cookies required for the website to work. You may still disable them in your browser settings, but this may prevent the website from working.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+
     <x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Other cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>There are no other cookies: no tracking, no analytics, no advertisement.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
   </source>
@@ -858,7 +861,7 @@
         <note priority="1" from="description">Body of the section on cookies</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="legal.personalDataTitle" datatype="html">
@@ -867,20 +870,18 @@
         <note priority="1" from="description">Title of the personal data section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="legal.personalDataBody" datatype="html">
-        <source>Eternal-Twin stores user emails for authentication
-    (sign-in and password recovery). No other personal data is
-    stored. We do not share, sell or analyze any kind of personal data.</source>
+        <source>Eternal-Twin stores user emails for authentication (sign-in and password recovery). No other personal data is stored. We do not share, sell or analyze any kind of personal data.</source>
         <target state="translated">Eternalfest speichert E-Mail-Adressen für Authentifizierung
     (Anmeldung und Password-Wiederherstellung). Keine anderen personenbezogenen Daten werden
     gespeichert. Wir veröffentlichen, verkaufen oder analysieren KEINE personenbezogenen Daten.</target>
         <note priority="1" from="description">Body of the personal data section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.title" datatype="html">
@@ -893,46 +894,43 @@
         <note priority="1" from="description">Title of the games section</note>
       </trans-unit>
       <trans-unit id="games.eternalfestTitle" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></source>
-        <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/></target>
+        <source>Eternalfest</source>
+        <target state="new">Eternalfest</target>
+        <note priority="1" from="description">Title of the Eternalfest game description</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
-          <context context-type="linenumber">3</context>
+          <context context-type="linenumber">18</context>
         </context-group>
-        <note priority="1" from="description">Title of the Eternalfest game description</note>
       </trans-unit>
       <trans-unit id="games.eternalfestDescription" datatype="html">
-        <source>
-    <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> is a reimplementation of <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Hammerfest<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/>. It has both the
-    official levels, and new content!</source>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> is a reimplementation of <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Hammerfest<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/>. It has both the official levels, and new content!</source>
         <target state="new">
     <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> is a reimplementation of <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Hammerfest<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/>. It has both the
     official levels, and new content!</target>
+        <note priority="1" from="description">Description of the Eternalfest game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
-          <context context-type="linenumber">4</context>
+          <context context-type="linenumber">19</context>
         </context-group>
-        <note priority="1" from="description">Description of the Eternalfest game</note>
       </trans-unit>
       <trans-unit id="games.moreTitle" datatype="html">
-        <source>More</source>
+        <source>More to come</source>
         <target state="new">More</target>
+        <note priority="1" from="description">Title of the "more games" section</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
-          <context context-type="linenumber">7</context>
+          <context context-type="linenumber">114</context>
         </context-group>
-        <note priority="1" from="description">Title of the "more games" section</note>
       </trans-unit>
       <trans-unit id="games.moreDescription" datatype="html">
-        <source>This section will be expanded
-    as new games are published online.</source>
+        <source>This section will be expanded as new games are published online.</source>
         <target state="new">This section will be expanded
     as new games are published online.</target>
+        <note priority="1" from="description">Explanation that more games will be added to the list</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
-          <context context-type="linenumber">8</context>
+          <context context-type="linenumber">115</context>
         </context-group>
-        <note priority="1" from="description">Explanation that more games will be added to the list</note>
       </trans-unit>
       <trans-unit id="forum.addModerator.userLabel" datatype="html">
         <source>New moderator</source>
@@ -948,28 +946,26 @@
         <target state="new">Add moderator</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/add-moderator.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.addModerator.unknownError" datatype="html">
-        <source>
-    Moderator addition failure: unknown server error.
-  </source>
+        <source>Moderator addition failure: unknown server error.</source>
         <target state="new">
     Moderator addition failure: unknown server error.
   </target>
+        <note priority="1" from="description">Error message displayed when the server rejects the moderator addition</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/add-moderator.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">19</context>
         </context-group>
-        <note priority="1" from="description">Error message displayed when the server rejects the moderator addition</note>
       </trans-unit>
       <trans-unit id="forum.deleteModerator.submit" datatype="html">
         <source>Delete moderator</source>
         <target state="new">Delete moderator</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/delete-moderator.component.html</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.deleteModerator.unknownError" datatype="html">
@@ -979,15 +975,15 @@
         <target state="new">
     Moderator deletion failure: unknown server error.
   </target>
+        <note priority="1" from="description">Error message displayed when the server rejects the moderator deletion</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/delete-moderator.component.html</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">16</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">32</context>
         </context-group>
-        <note priority="1" from="description">Error message displayed when the server rejects the moderator deletion</note>
       </trans-unit>
       <trans-unit id="forum.homeTitle" datatype="html">
         <source>
@@ -1005,86 +1001,86 @@
       <trans-unit id="forum.newPostLink" datatype="html">
         <source>Reply</source>
         <target state="new">Reply</target>
+        <note priority="1" from="description">Link to the thread reply (new post) page</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-thread.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">23</context>
         </context-group>
-        <note priority="1" from="description">Link to the thread reply (new post) page</note>
       </trans-unit>
       <trans-unit id="forum.newPostLink.guest" datatype="html">
         <source>Sign in to reply</source>
         <target state="new">Sign in to reply</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/forum-thread.component.html</context>
-          <context context-type="linenumber">20</context>
-        </context-group>
         <note priority="1" from="description">Link to the thread reply (new post) page for guests (redirect through login)</note>
-      </trans-unit>
-      <trans-unit id="forum.error.threadNotFound" datatype="html">
-        <source>Forum thread not found</source>
-        <target state="new">Forum thread not found</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-thread.component.html</context>
           <context context-type="linenumber">26</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="forum.error.threadNotFound" datatype="html">
+        <source>Forum thread not found</source>
+        <target state="new">Forum thread not found</target>
+        <note priority="1" from="description">Forum thread not found error message</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/forum/forum-thread.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="linenumber">27</context>
         </context-group>
-        <note priority="1" from="description">Forum thread not found error message</note>
       </trans-unit>
       <trans-unit id="forum.newThreadLink" datatype="html">
         <source>New thread</source>
         <target state="new">New thread</target>
+        <note priority="1" from="description">Link to the thread creation page</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">17</context>
         </context-group>
-        <note priority="1" from="description">Link to the thread creation page</note>
       </trans-unit>
       <trans-unit id="forum.newThreadLink.guest" datatype="html">
         <source>Sign in to create a new thread</source>
         <target state="new">Sign in to create a new thread</target>
+        <note priority="1" from="description">Link to the thread creation page for guests (redirect through login)</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">20</context>
         </context-group>
-        <note priority="1" from="description">Link to the thread creation page for guests (redirect through login)</note>
       </trans-unit>
       <trans-unit id="forum.moderatorsTitle" datatype="html">
         <source>Moderators</source>
         <target state="new">Moderators</target>
+        <note priority="1" from="description">Title of the moderator list section (on a section page)</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="linenumber">32</context>
         </context-group>
-        <note priority="1" from="description">Title of the moderator list section (on a section page)</note>
       </trans-unit>
       <trans-unit id="forum.noModerators" datatype="html">
         <source>
-          There are no users with elevated privilege on this forum section. Only administrators can manage this section.
-        </source>
+            There are no users with elevated privilege on this forum section. Only administrators can manage this section.
+          </source>
         <target state="new">
           There are no users with elevated privilege on this forum section. Only administrators can manage this section.
         </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
-          <context context-type="linenumber">35</context>
-        </context-group>
         <note priority="1" from="description">Message indicating that the thread section moderator list is empty</note>
-      </trans-unit>
-      <trans-unit id="forum.error.sectionNotFound" datatype="html">
-        <source>Forum section not found</source>
-        <target state="new">Forum section not found</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
           <context context-type="linenumber">43</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="forum.error.sectionNotFound" datatype="html">
+        <source>Forum section not found</source>
+        <target state="new">Forum section not found</target>
+        <note priority="1" from="description">Forum section not found error message</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">42</context>
         </context-group>
-        <note priority="1" from="description">Forum section not found error message</note>
       </trans-unit>
       <trans-unit id="forum.newPost.title" datatype="html">
         <source>Post a reply for <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{thread.title}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
@@ -1109,7 +1105,7 @@
         <target state="new">Post the reply</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.newPost.unknownError" datatype="html">
@@ -1119,11 +1115,11 @@
         <target state="new">
             Post creation failure: unknown server error on reply.
           </target>
+        <note priority="1" from="description">Error message displayed when the server rejects the new post</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">21</context>
         </context-group>
-        <note priority="1" from="description">Error message displayed when the server rejects the new post</note>
       </trans-unit>
       <trans-unit id="forum.newThread.title" datatype="html">
         <source>New thread in <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{section.displayName}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
@@ -1193,7 +1189,7 @@
         <target state="new">Create a new thread</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
-          <context context-type="linenumber">33</context>
+          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.newThread.unknownError" datatype="html">
@@ -1205,7 +1201,7 @@
           </target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.post.editLink" datatype="html">
@@ -1238,36 +1234,36 @@
       <trans-unit id="forum.updatePost.hideContent" datatype="html">
         <source>Hide message content</source>
         <target state="new">Hide message content</target>
+        <note priority="1" from="description">Label for the checkbox to update the forum post and hide (soft remove) its content</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">18</context>
         </context-group>
-        <note priority="1" from="description">Label for the checkbox to update the forum post and hide (soft remove) its content</note>
       </trans-unit>
       <trans-unit id="forum.updatePost.moderation" datatype="html">
         <source>Moderation warning</source>
         <target state="new">Moderation warning</target>
+        <note priority="1" from="description">Label to update the moderation warning linked to a post</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">22</context>
         </context-group>
-        <note priority="1" from="description">Label to update the moderation warning linked to a post</note>
       </trans-unit>
       <trans-unit id="forum.updatePost.comment" datatype="html">
         <source>Comment describing the reason of the update</source>
         <target state="new">Comment describing the reason of the update</target>
+        <note priority="1" from="description">Label for the comment explaining why a post was updated</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="linenumber">26</context>
         </context-group>
-        <note priority="1" from="description">Label for the comment explaining why a post was updated</note>
       </trans-unit>
       <trans-unit id="forum.updatePost.submit" datatype="html">
         <source>Update post</source>
         <target state="new">Update post</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
     </body>
