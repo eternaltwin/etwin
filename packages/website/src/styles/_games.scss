@@ -127,24 +127,32 @@ article.tridiv {
     background-repeat:no-repeat; 
     background-color: $color;
     
-    &.ft:after {
-      content:"";
-      position: fixed;
-      width: 100%;
-      height: 100%;
-      background-repeat:no-repeat; 
-      background-image:
-        linear-gradient(165deg, rgba(255,255,255,0) 25%, rgba(255,255,255,.6) 50%, rgba(255,255,255,0) 75%),
-        url("/assets/box_cover_ft.svg");
-      background-size: 300% 300%, 100% 100%;
-      background-position: 15% 0%, center;
+    &.ft {
+      img {
+        width: 100%;
+        height: 100%;
+      }
       
-      transition: background-position .5s;
+      &:before {
+        content:"";
+        position: fixed;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        background-repeat:no-repeat; 
+        background-image:
+          linear-gradient(165deg, rgba(255,255,255,0) 25%, rgba(255,255,255,.6) 50%, rgba(255,255,255,0) 75%),
+          url("/assets/box_cover_ft.svg");
+        background-size: 300% 300%, 100% 100%;
+        background-position: 15% 0%, center;
+        
+        transition: background-position .5s;
+      }
     }
     
     &.rt {
 
-      &:after {
+      &:before {
         content:"";
         position: fixed;
         width: 100%;
@@ -165,63 +173,68 @@ article.tridiv {
       border-radius: 3px;
     }
   }
+}
 
-
-  &:hover, &:active, &:focus, &:focus-within {
-    .face {
-      box-shadow: inset 0 0 8px 0 rgba(255, 255, 255, 0.8);
-      
-      &.ft:hover:after {
-        background-position: 70% 100%, center;
-      }
-    }
+article.game:hover,
+article.game:active,
+article.game:focus,
+article.game:focus-within {
+  .face {
+    box-shadow: inset 0 0 8px 0 rgba(255, 255, 255, 0.8);
     
-    .scene {
-      transform:rotateX(-12deg) rotateY(34deg);
+    &.ft:before {
+      background-position: 70% 100%, center;
     }
+  }
+  
+  .scene {
+    transform:rotateX(-12deg) rotateY(34deg);
   }
 }
 
 #eternalfest {
   $color: #2a2484;
-
-  .face {
-      background-color:$color;
-  }
-  .ft {
-    background-image: url("https://media.senscritique.com/media/000000114006/source_big/Les_Cavernes_de_Hammerfest.gif")
-  }
+  .face {background-color:$color;}
 }
 
 #myhordes {
   $color: #650021;
+  .face {background-color:$color;}
+}
 
-  .face {
-      background-color:$color;
-  }
-  .ft {
-    background-image: url("https://data.twinoid.com/file/9_8956.png")
-  }
+#dinoparc {
+  $color: #d6853d;
+  .face {background-color:$color;}
+}
+
+#dinorpg {
+  $color: #578722;
+  .face {background-color:$color;}
+}
+
+#cafejeux {
+  $color: #403a43;
+  .face {background-color:$color;}
 }
 
 #emush {
   $color: #2e2485;
+  .face {background-color:$color;}
+}
 
-  .face {
-      background-color:$color;
-  }
-  .ft {
-    background-image: url("https://data.twinoid.com/file/520_699a.png")
-  }
+#studioquiz {
+  $color: #5e1da4;
+  .face {background-color:$color;}
 }
 
 #mjrt {
   $color: #e4e4e4;
-
-  .face {
-      background-color:$color;
-  }
-  .ft {
-    background-image: url("https://data.twinoid.com/file/93_1674.png")
-  }
+  .face {background-color:$color;}
 }
+
+#labrute {
+  $color: #a97747;
+  .face {background-color:$color;}
+}
+
+

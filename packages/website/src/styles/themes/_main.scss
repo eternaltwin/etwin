@@ -254,6 +254,10 @@ etwin-main-layout, etwin-small-layout {
     border-left: 2px solid $lightGrey;
     margin: .6em 0;
   }
+  
+  &>h1:first-child {
+    margin-top: .2em;
+  }
 }
 
 
