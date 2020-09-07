@@ -8,8 +8,10 @@ yarn install
 yarn start
 ```
 
-The command above will install the dependencies, compile the website and start it.
+The commands above will install the dependencies, compile the website and start it.
 By default, the website starts with an in-memory backend implementation that does not require a database.
+
+See [DB documentation](./docs/db.md) to install and configure a Postgres database, then run `yarn run db:create` or import a database.
 
 ## Project tasks
 
