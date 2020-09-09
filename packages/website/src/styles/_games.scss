@@ -1,5 +1,8 @@
 /* --- GAMES BOXES --- */
 
+$contentWidth: 1024px;
+$desktopBreakpoint: 768px;
+
 article.game {
   display: flex;
 }
@@ -238,3 +241,16 @@ article.game:focus-within {
 }
 
 
+
+
+
+/* --- MOBILE CONTENT --- */
+
+
+@media only screen and (max-width: $desktopBreakpoint / 2) {
+  
+  article.game {
+    flex-direction: column;
+  }
+
+}
