@@ -46,6 +46,7 @@ import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $UserRef, UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import { renderMarktwin } from "@eternal-twin/marktwin";
+import { Grammar } from "@eternal-twin/marktwin/lib/grammar.js";
 
 interface InMemorySection {
   id: ForumSectionId;
@@ -714,9 +715,21 @@ export class InMemoryForumService implements ForumService {
     if (author.type !== ObjectType.UserForumActor) {
       throw new Error("NotImeplemented: Non-User post author");
     }
+    const mktGrammar: Grammar = {
+      admin: false,
+      depth: 4,
+      emphasis: true,
+      icons: ["etwin"],
+      links: ["http", "https"],
+      mod: true,
+      quote: false,
+      spoiler: false,
+      strikethrough: true,
+      strong: true,
+    };
     const revisionId: ForumPostRevisionId = this.uuidGen.next();
-    const htmlBody: HtmlText | null = body !== null ? renderMarktwin(body) : null;
-    const htmlModBody: HtmlText | null = modBody !== null ? renderMarktwin(modBody) : null;
+    const htmlBody: HtmlText | null = body !== null ? renderMarktwin(mktGrammar, body) : null;
+    const htmlModBody: HtmlText | null = modBody !== null ? renderMarktwin(mktGrammar, modBody) : null;
     const time: number = Date.now();
     const postRevision: ForumPostRevision = {
       type: ObjectType.ForumPostRevision,

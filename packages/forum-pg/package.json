@@ -36,21 +36,21 @@
   },
   "dependencies": {
     "@eternal-twin/core": "^0.1.0",
-    "@eternal-twin/marktwin": "^0.1.1",
+    "@eternal-twin/marktwin": "^0.2.0",
     "@eternal-twin/pg-db": "^0.1.0",
     "kryo": "^0.11.0"
   },
   "devDependencies": {
-    "@eternal-twin/local-config": "^0.1.0",
     "@eternal-twin/auth-pg": "^0.1.0",
+    "@eternal-twin/local-config": "^0.1.0",
     "@eternal-twin/user-test": "^0.1.0",
-    "@types/chai": "^4.2.11",
-    "@types/mocha": "^7.0.2",
-    "@types/node": "^14.0.14",
+    "@types/chai": "^4.2.12",
+    "@types/mocha": "^8.0.3",
+    "@types/node": "^14.11.2",
     "chai": "^4.2.0",
-    "eslint": "^7.4.0",
-    "mocha": "^8.0.1",
-    "typescript": "^3.9.6"
+    "eslint": "^7.10.0",
+    "mocha": "^8.1.3",
+    "typescript": "^4.0.3"
   },
   "type": "module",
   "exports": {

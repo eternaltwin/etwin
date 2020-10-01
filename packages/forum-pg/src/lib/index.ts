@@ -32,6 +32,7 @@ import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section.js";
 import { $ForumThreadId, ForumThreadId } from "@eternal-twin/core/lib/forum/forum-thread-id.js";
 import { ForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key.js";
 import { ForumThreadListing } from "@eternal-twin/core/lib/forum/forum-thread-listing.js";
+import { ForumThreadMetaWithSection } from "@eternal-twin/core/lib/forum/forum-thread-meta-with-section";
 import { ForumThreadMeta } from "@eternal-twin/core/lib/forum/forum-thread-meta.js";
 import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { GetSectionOptions } from "@eternal-twin/core/lib/forum/get-section-options.js";
@@ -51,6 +52,7 @@ import {
   ForumThreadRow,
 } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { renderMarktwin } from "@eternal-twin/marktwin";
+import { Grammar } from "@eternal-twin/marktwin/lib/grammar.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 
 const SYSTEM_AUTH: SystemAuthContext = {
@@ -616,15 +618,18 @@ export class PgForumService implements ForumService {
       return null;
     }
     const revisions = await this.getPostRevisionsTx(queryable, acx, row.forum_post_id, row.revision_count, 0, 100);
-    const thread = await this.getThreadMetaTx(queryable, acx, row.forum_thread_id);
-    if (thread === null) {
+    const threadMeta = await this.getThreadMetaTx(queryable, acx, row.forum_thread_id);
+    if (threadMeta === null) {
       throw new Error("AssertionError: Expected thread to exist");
     }
-    const section = await this.getSectionMetaTx(queryable, acx, thread.sectionId);
-    delete thread.sectionId;
+    const section = await this.getSectionMetaTx(queryable, acx, threadMeta.sectionId);
     if (section === null) {
       throw new Error("AssertionError: Expected section to exist");
     }
+    const thread: ForumThreadMetaWithSection = {
+      ...omit(threadMeta, "sectionId"),
+      section,
+    };
 
     type FirstRevisionRow = Pick<ForumPostRevisionRow, "author_id">;
     const firstRevRow: FirstRevisionRow | undefined = await queryable.oneOrNone(
@@ -653,7 +658,7 @@ export class PgForumService implements ForumService {
       ctime: row.ctime,
       revisions,
       author: {type: ObjectType.UserForumActor, user: author},
-      thread: {...thread, section},
+      thread,
     };
   }
 
@@ -709,9 +714,21 @@ export class PgForumService implements ForumService {
     if (author.type !== ObjectType.UserForumActor) {
       throw new Error("NotImeplemented: Non-User post author");
     }
+    const mktGrammar: Grammar = {
+      admin: false,
+      depth: 4,
+      emphasis: true,
+      icons: ["etwin"],
+      links: ["http", "https"],
+      mod: true,
+      quote: false,
+      spoiler: false,
+      strikethrough: true,
+      strong: true,
+    };
     const revisionId: ForumPostRevisionId = this.uuidGen.next();
-    const htmlBody: HtmlText | null = body !== null ? renderMarktwin(body) : null;
-    const htmlModBody: HtmlText | null = modBody !== null ? renderMarktwin(modBody) : null;
+    const htmlBody: HtmlText | null = body !== null ? renderMarktwin(mktGrammar, body) : null;
+    const htmlModBody: HtmlText | null = modBody !== null ? renderMarktwin(mktGrammar, modBody) : null;
     type Row = Pick<ForumPostRevisionRow, "time">;
     const row: Row = await queryable.one(
       `INSERT INTO forum_post_revisions(
@@ -1183,4 +1200,12 @@ export class PgForumService implements ForumService {
     );
     return row !== undefined;
   }
+}
+
+function omit<T, K extends keyof T>(obj: T, ...keys: K[]): Omit<T, K> {
+  const result: Partial<T> = {...obj};
+  for (const k of keys) {
+    delete result[k];
+  }
+  return result as Omit<T, K>;
 }

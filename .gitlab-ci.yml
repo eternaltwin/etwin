@@ -1,5 +1,5 @@
 # demurgos/node:14
-image: "demurgos/node@sha256:6112dd5193b5d0c6f521f3eb0b4031710899e3866b72b308ae67f83210978e26"
+image: "demurgos/node@sha256:118637667ae52faf6e264abbff3fe72865151ec82acb44bac323aecddd913e45"
 
 services:
   - "postgres:latest"
