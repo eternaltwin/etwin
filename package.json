@@ -7,8 +7,8 @@
     "start": "yarn --cwd packages/website run start",
     "build:production": "yarn --cwd packages/website run prestart",
     "db:create": "yarn --cwd packages/etwin-pg start create",
-    "pretest": "tsc --build ./tsconfig.test.json",
-    "test": "mocha --experimental-wasm-modules \"packages/*/test/**/*.spec.js\""
+    "test:build": "tsc --build ./tsconfig.test.json",
+    "test": "yarn run test:build && mocha --experimental-wasm-modules \"packages/*/test/**/*.spec.js\""
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.3.0",

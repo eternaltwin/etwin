@@ -8,7 +8,9 @@
       "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
     }
   ],
-  "bin": "./bin/etwin.js",
+  "bin": {
+    "etwin": "./bin/etwin.js"
+  },
   "scripts": {
     "app:deps": "tsc --build tsconfig.deps.json",
     "app:serve:browser": "ng serve",
@@ -25,8 +27,8 @@
     "app:prod:build:optimize": "gzipper compress --include \"gif,ico,jpg,png,svg,woff,woff2\" --exclude gz ./app/browser",
     "main:build": "tsc --build ./src/main/tsconfig.json",
     "main:run": "node --experimental-wasm-modules main/main.js",
-    "prestart": "yarn run app:prod:build && yarn run main:build",
-    "start": "yarn run main:run",
+    "build": "yarn run app:prod:build && yarn run main:build",
+    "start": "yarn run build && yarn run main:run",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

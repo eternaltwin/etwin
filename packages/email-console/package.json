@@ -13,22 +13,16 @@
       "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
     }
   ],
-  "private": false,
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
-    "prestart": "tsc --build src/main/tsconfig.json",
-    "start": "node main/main.js"
+    "main:build": "tsc --build src/main/tsconfig.json",
+    "start": "yarn run main:build && node main/main.js"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "pre-commit": {
-    "run": [
-      "lint"
-    ]
   },
   "keywords": [],
   "engines": {

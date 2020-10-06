@@ -20,7 +20,7 @@ before_script:
   - "rustup --version"
   - "cargo --version"
   - "rustc --version"
-  - "yarn install --quiet"
+  - "yarn install --immutable"
   - |
     cat >etwin.toml <<EOL
     [etwin]
@@ -69,7 +69,7 @@ ci:
     - "yarn --cwd packages/email-template-etwin run test"
     - "yarn --cwd packages/email-template-json run test"
     - "yarn --cwd packages/etwin-client-in-memory run test"
-    - "yarn --cwd packages/etwin-pg run prestart"
+    - "yarn --cwd packages/etwin-pg run main:build"
     - "yarn --cwd packages/forum-in-memory run test"
     - "yarn --cwd packages/forum-pg run test"
     - "yarn --cwd packages/hammerfest-http run test"
@@ -85,4 +85,4 @@ ci:
     - "yarn --cwd packages/user-in-memory run test"
     - "yarn --cwd packages/user-pg run test"
     - "yarn --cwd packages/uuid4-generator run test"
-    - 'yarn --cwd packages/website run main:build'
+    - 'yarn --cwd packages/website run build'

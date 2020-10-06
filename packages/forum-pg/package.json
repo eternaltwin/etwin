@@ -13,22 +13,16 @@
       "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
     }
   ],
-  "private": false,
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
-    "pretest": "tsc --build src/test/tsconfig.json",
-    "test": "mocha --experimental-wasm-modules \"test/**/*.spec.js\""
+    "test:build": "tsc --build src/test/tsconfig.json",
+    "test": "yarn run test:build && mocha --experimental-wasm-modules \"test/**/*.spec.js\""
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "pre-commit": {
-    "run": [
-      "lint"
-    ]
   },
   "keywords": [],
   "engines": {
