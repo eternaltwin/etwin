@@ -1,5 +1,5 @@
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { OauthClientService } from "@eternal-twin/oauth-client-http";
+import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import Koa from "koa";
 import koaMount from "koa-mount";

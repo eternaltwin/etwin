@@ -1,6 +1,7 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import {
   $OauthAccessTokenRequest,
   OauthAccessTokenRequest,
@@ -18,7 +19,6 @@ import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
 import { $OauthCode, OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
 import { OauthResponseType } from "@eternal-twin/core/lib/oauth/oauth-response-type.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
-import { OauthClientService } from "@eternal-twin/oauth-client-http";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
@@ -47,7 +47,7 @@ export async function createOauthRouter(api: Api): Promise<Koa> {
   router.use(koaRoute.get("/authorize", grantOauthAuthorization));
 
   async function grantOauthAuthorization(cx: Koa.Context): Promise<void> {
-    // We start by checking for early that may correspond to malicious queries.
+    // We start by checking for early errors that may correspond to malicious queries.
     // If the client id is missing, the client does not exist or there is a
     // mismatch on the `redirect_uri`, then we consider we treat it as a
     // malicious request and display the error on our own website (we do not

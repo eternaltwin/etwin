@@ -2,6 +2,7 @@ import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { AuthService } from "@eternal-twin/core/lib/auth/service";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { ConsoleEmailService } from "@eternal-twin/email-console";
@@ -10,7 +11,7 @@ import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
 import { PgForumService } from "@eternal-twin/forum-pg";
 import { HttpHammerfestService } from "@eternal-twin/hammerfest-http";
 import { ApiType, Config } from "@eternal-twin/local-config";
-import { HttpOauthClientService, OauthClientService } from "@eternal-twin/oauth-client-http";
+import { HttpOauthClientService } from "@eternal-twin/oauth-client-http";
 import { InMemoryOauthProviderService } from "@eternal-twin/oauth-provider-in-memory";
 import { PgOauthProviderService } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
@@ -72,8 +73,14 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   }
 
   const koaAuth = new KoaAuth(auth);
-  const oauthCallbackUri: url.URL = new url.URL(urljoin(config.etwin.externalUri.toString(), "oauth/callback"));
-  const oauthClient = new HttpOauthClientService(config.auth.twinoid.clientId, config.auth.twinoid.secret, oauthCallbackUri);
+  const oauthClient = new HttpOauthClientService(
+    new url.URL("https://twinoid.com/oauth/auth"),
+    new url.URL("https://twinoid.com/oauth/token"),
+    config.auth.twinoid.clientId,
+    config.auth.twinoid.secret,
+    new url.URL(urljoin(config.etwin.externalUri.toString(), "oauth/callback")),
+    secretKeyBytes,
+  );
 
   for (const [key, client] of config.clients) {
     await oauthProvider.createOrUpdateSystemClient(
