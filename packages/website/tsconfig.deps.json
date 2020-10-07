@@ -36,6 +36,12 @@
       "path": "../rest-server/src/lib"
     },
     {
+      "path": "../twinoid-client-http/src/lib"
+    },
+    {
+      "path": "../twinoid-core/src/lib"
+    },
+    {
       "path": "../user-in-memory/src/lib"
     },
     {

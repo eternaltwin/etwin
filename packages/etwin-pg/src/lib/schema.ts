@@ -154,3 +154,20 @@ export interface ForumRoleRevocationRow {
   granted_by: string;
   revoked_by: string;
 }
+
+export interface TwinoidUserRow {
+  server: string;
+
+  user_id: number;
+
+  name: string;
+}
+
+
+export interface TwinoidUserLinkRow {
+  user_id: string;
+
+  twinoid_user_id: number;
+
+  ctime: Date;
+}

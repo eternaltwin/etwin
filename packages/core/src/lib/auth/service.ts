@@ -16,44 +16,44 @@ export interface AuthService {
    * If the email address is unknown, sends a registration email to verify the address and complete the registration.
    * If the email address is known, sends a one-time authentication code to the address.
    *
-   * @param authContext Auth context for the user authentication.
+   * @param acx Auth context for the user authentication.
    * @param options Email address, with optional preferred locale for the email content.
    */
-  registerOrLoginWithEmail(authContext: AuthContext, options: RegisterOrLoginWithEmailOptions): Promise<void>;
+  registerOrLoginWithEmail(acx: AuthContext, options: RegisterOrLoginWithEmailOptions): Promise<void>;
 
   /**
    * Registers a user using an email verification token.
    *
-   * @param authContext
+   * @param acx
    * @param options
    * @returns A reference to the newly created user.
    */
   registerWithVerifiedEmail(
-    authContext: AuthContext,
+    acx: AuthContext,
     options: RegisterWithVerifiedEmailOptions,
   ): Promise<UserAndSession>;
 
   /**
    * Registers a user using a username and password.
    *
-   * @param authContext
+   * @param acx
    * @param options
    * @returns A reference to the newly created user.
    */
   registerWithUsername(
-    authContext: AuthContext,
+    acx: AuthContext,
     options: RegisterWithUsernameOptions,
   ): Promise<UserAndSession>;
 
   /**
    * Authenticates a user using a username and password.
    *
-   * @param authContext
+   * @param acx
    * @param credentials Email or username, and password.
    * @returns A reference to the newly created user.
    */
   loginWithCredentials(
-    authContext: AuthContext,
+    acx: AuthContext,
     credentials: Credentials,
   ): Promise<UserAndSession>;
 
@@ -62,9 +62,16 @@ export interface AuthService {
    *
    * Automatically creates a user if the credentials aren't linked to any user yet.
    */
-  registerOrLoginWithHammerfest(authContext: AuthContext, credentials: HammerfestCredentials): Promise<UserAndSession>;
+  registerOrLoginWithHammerfest(acx: AuthContext, credentials: HammerfestCredentials): Promise<UserAndSession>;
 
-  linkHammerfestUser(authContext: AuthContext, options: LinkHammerfestUserOptions): Promise<void>;
+  /**
+   * Authenticates a user using a Twinoid access token
+   *
+   * Automatically creates an etwin user if the tid user isn't linked to any user yet.
+   */
+  registerOrLoginWithTwinoidOauth(acx: AuthContext, accessToken: OauthAccessTokenKey): Promise<UserAndSession>;
+
+  linkHammerfestUser(acx: AuthContext, options: LinkHammerfestUserOptions): Promise<void>;
 
   /**
    * Authenticate an Oauth client using its credentials
@@ -82,5 +89,5 @@ export interface AuthService {
     token: OauthAccessTokenKey,
   ): Promise<AuthContext>;
 
-  authenticateSession(authContext: AuthContext, sessionId: SessionId): Promise<UserAndSession | null>;
+  authenticateSession(acx: AuthContext, sessionId: SessionId): Promise<UserAndSession | null>;
 }

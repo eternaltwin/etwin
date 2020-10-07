@@ -36,6 +36,8 @@ import {
   InMemoryOauthClient,
   InMemoryOauthProviderService,
 } from "@eternal-twin/oauth-provider-in-memory";
+import { TwinoidClientService } from "@eternal-twin/twinoid-core/src/lib/client.js";
+import { User as TidUser } from "@eternal-twin/twinoid-core/src/lib/user.js";
 import { InMemoryUser, InMemoryUserService } from "@eternal-twin/user-in-memory";
 import jsonWebToken from "jsonwebtoken";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
@@ -63,6 +65,17 @@ interface InMemoryHammerfestUserLink {
   ctime: Date;
 }
 
+interface InMemoryTwinoidUser {
+  id: number;
+  name: string;
+}
+
+interface InMemoryTwinoidUserLink {
+  userId: UserId;
+  tidId: number;
+  ctime: Date;
+}
+
 export class InMemoryAuthService implements AuthService {
   private readonly uuidGen: UuidGenerator;
   private readonly password: PasswordService;
@@ -71,6 +84,7 @@ export class InMemoryAuthService implements AuthService {
   private readonly defaultLocale: LocaleId;
   private readonly tokenSecret: Buffer;
   private readonly hammerfest: HammerfestService;
+  private readonly twinoidClient: TwinoidClientService;
   private readonly user: InMemoryUserService;
   private readonly oauthProvider: InMemoryOauthProviderService;
 
@@ -78,6 +92,8 @@ export class InMemoryAuthService implements AuthService {
   private readonly emailVerifications: Set<EmailVerification>;
   private readonly hammerfestUsers: Set<InMemoryHammerfestUser>;
   private readonly hammerfestUserLinks: Set<InMemoryHammerfestUserLink>;
+  private readonly twinoidUsers: Set<InMemoryTwinoidUser>;
+  private readonly twinoidUserLinks: Set<InMemoryTwinoidUserLink>;
 
   /**
    * Creates a new authentication service.
@@ -88,6 +104,7 @@ export class InMemoryAuthService implements AuthService {
    * @param emailTemplate Email template service to use.
    * @param tokenSecret Secret key used to generated and verify tokens.
    * @param hammerfest Hammerfest service to use.
+   * @param twinoidClient Twinoid API client service to use.
    * @param user User service to use.
    * @param oauthProvider Oauth provider service to use.
    */
@@ -98,6 +115,7 @@ export class InMemoryAuthService implements AuthService {
     emailTemplate: EmailTemplateService,
     tokenSecret: Uint8Array,
     hammerfest: HammerfestService,
+    twinoidClient: TwinoidClientService,
     user: InMemoryUserService,
     oauthProvider: InMemoryOauthProviderService,
   ) {
@@ -107,6 +125,7 @@ export class InMemoryAuthService implements AuthService {
     this.emailTemplate = emailTemplate;
     this.tokenSecret = Buffer.from(tokenSecret);
     this.hammerfest = hammerfest;
+    this.twinoidClient = twinoidClient;
     this.user = user;
     this.oauthProvider = oauthProvider;
     this.defaultLocale = "en-US";
@@ -114,6 +133,8 @@ export class InMemoryAuthService implements AuthService {
     this.emailVerifications = new Set();
     this.hammerfestUsers = new Set();
     this.hammerfestUserLinks = new Set();
+    this.twinoidUsers = new Set();
+    this.twinoidUserLinks = new Set();
   }
 
   /**
@@ -276,6 +297,51 @@ export class InMemoryAuthService implements AuthService {
     return {user, session};
   }
 
+  async registerOrLoginWithTwinoidOauth(acx: AuthContext, at: OauthAccessTokenKey): Promise<UserAndSession> {
+    if (acx.type !== AuthType.Guest) {
+      throw Error("Forbidden: Only guests can authenticate");
+    }
+    const tidUser: Partial<TidUser> = await this.twinoidClient.getMe(at);
+    await this.createOrUpdateTwinoidUser(tidUser);
+
+    let link: InMemoryTwinoidUserLink | undefined;
+    for (const tidLink of this.twinoidUserLinks) {
+      if (tidLink.tidId === tidUser.id) {
+        link = tidLink;
+        break;
+      }
+    }
+
+    let userId: UserId;
+    if (link !== undefined) {
+      userId = link.userId;
+    } else {
+      let displayName: UserDisplayName = tidUser.name!;
+      if (!$UserDisplayName.test(displayName)) {
+        displayName = `tid_${displayName}`;
+        if (!$UserDisplayName.test(displayName)) {
+          displayName = `tid_${tidUser.id}`;
+          if (!$UserDisplayName.test(displayName)) {
+            displayName = "twinoidPlayer";
+          }
+        }
+      }
+      const user = await this.user._createUser(displayName, null, null, null);
+      const newLink: InMemoryTwinoidUserLink = {
+        userId: user.id,
+        tidId: tidUser.id!,
+        ctime: new Date(),
+      };
+      this.twinoidUserLinks.add(newLink);
+      userId = user.id;
+    }
+
+    const session: Session = await this.createSession(userId);
+    const user = await this.getExistingUserById(session.user.id);
+
+    return {user, session};
+  }
+
   async linkHammerfestUser(_acx: AuthContext, _options: LinkHammerfestUserOptions): Promise<void> {
     throw new Error("NotImplemented");
   }
@@ -426,6 +492,20 @@ export class InMemoryAuthService implements AuthService {
       username: hfUserRef.login,
     };
     this.hammerfestUsers.add(hfUser);
+  }
+
+  private async createOrUpdateTwinoidUser(tidUserRef: Partial<TidUser>): Promise<void> {
+    for (const user of this.twinoidUsers) {
+      if (user.id === tidUserRef.id) {
+        user.name = tidUserRef.name!;
+        return;
+      }
+    }
+    const tidUser: InMemoryTwinoidUser = {
+      id: tidUserRef.id!,
+      name: tidUserRef.name!,
+    };
+    this.twinoidUsers.add(tidUser);
   }
 
   private async createEmailVerificationToken(emailAddress: EmailAddress): Promise<string> {

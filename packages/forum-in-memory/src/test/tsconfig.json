@@ -38,6 +38,9 @@
       "path": "../../../password-scrypt/src/lib"
     },
     {
+      "path": "../../../twinoid-client-http/src/lib"
+    },
+    {
       "path": "../../../uuid4-generator/src/lib"
     }
   ]

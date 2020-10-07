@@ -21,10 +21,6 @@
   "workspaces": {
     "packages": [
       "packages/*"
-    ],
-    "nohoist": [
-      "**/@angular/**",
-      "**/@angular-devkit/**"
     ]
   }
 }

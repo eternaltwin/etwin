@@ -44,6 +44,8 @@
     "@eternal-twin/hammerfest-http": "^0.1.0",
     "@eternal-twin/local-config": "^0.1.0",
     "@eternal-twin/oauth-client-http": "^0.1.0",
+    "@eternal-twin/twinoid-client-http": "^0.1.0",
+    "@eternal-twin/twinoid-core": "^0.1.0",
     "@koa/cors": "^3.1.0",
     "@nguniversal/common": "^10.0.2",
     "@types/accept-language-parser": "^1.5.1",

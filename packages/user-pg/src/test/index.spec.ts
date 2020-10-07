@@ -6,6 +6,7 @@ import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
+import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import { Api, testUserService } from "@eternal-twin/user-test";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
@@ -32,7 +33,8 @@ async function withPgUserService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const password = new ScryptPasswordService();
     const user = new PgUserService(db, secretKeyStr);
     const hammerfest = new InMemoryHammerfestService();
-    const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
+    const twinoidClient = new HttpTwinoidClientService();
+    const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest, twinoidClient);
     return fn({auth, user});
   });
 }

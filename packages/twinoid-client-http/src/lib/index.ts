@@ -1,14 +1,14 @@
-import { TwinoidApiClient } from "@eternal-twin/twinoid-core";
 import { AccessToken } from "@eternal-twin/twinoid-core/lib/access-token.js";
+import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
 import { User } from "@eternal-twin/twinoid-core/lib/user.js";
 import superagent from "superagent";
 import url from "url";
 
-export class HttpTwinoidApiClient implements TwinoidApiClient {
+export class HttpTwinoidClientService implements TwinoidClientService {
   private readonly agent: superagent.SuperAgent<superagent.SuperAgentRequest>;
   private readonly apiBaseUri: string;
 
-  constructor(apiBaseUri: string = "http://twinoid.com/graph") {
+  constructor(apiBaseUri: string = "https://twinoid.com/graph") {
     this.agent = superagent.agent();
     this.apiBaseUri = apiBaseUri;
   }
@@ -16,7 +16,7 @@ export class HttpTwinoidApiClient implements TwinoidApiClient {
   async getMe(at: AccessToken): Promise<Partial<User>> {
     const uri: url.URL = this.resolveUri(["me"]);
     uri.searchParams.set("access_token", at);
-    const rawResult: unknown = this.agent.get(uri.toString()).send();
+    const rawResult: unknown = (await this.agent.get(uri.toString()).send()).body;
     if (typeof rawResult !== "object" || rawResult === null) {
       throw new Error("InvalidResultType");
     }

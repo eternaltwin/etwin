@@ -36,6 +36,8 @@
     "@eternal-twin/auth-in-memory": "^0.1.0",
     "@eternal-twin/auth-pg": "^0.1.0",
     "@eternal-twin/local-config": "^0.1.0",
+    "@eternal-twin/twinoid-client-http": "^0.1.0",
+    "@eternal-twin/user-test": "^0.1.0",
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",
     "@types/node": "^14.11.2",

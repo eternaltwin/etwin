@@ -1568,6 +1568,8 @@ __metadata:
     "@eternal-twin/email-template-json": ^0.1.0
     "@eternal-twin/hammerfest-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
+    "@eternal-twin/twinoid-client-http": ^0.1.0
+    "@eternal-twin/twinoid-core": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/jsonwebtoken": ^8.5.0
     "@types/mocha": ^8.0.3
@@ -1592,6 +1594,7 @@ __metadata:
     "@eternal-twin/hammerfest-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/pg-db": ^0.1.0
+    "@eternal-twin/twinoid-client-http": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/jsonwebtoken": ^8.5.0
     "@types/mocha": ^8.0.3
@@ -1774,10 +1777,11 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": ^0.1.0
     "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/forum-test": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/pg-db": ^0.1.0
-    "@eternal-twin/user-test": ^0.1.0
+    "@eternal-twin/twinoid-client-http": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/mocha": ^8.0.3
     "@types/node": ^14.11.2
@@ -1795,10 +1799,11 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": ^0.1.0
     "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/forum-test": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/pg-db": ^0.1.0
-    "@eternal-twin/user-test": ^0.1.0
+    "@eternal-twin/twinoid-client-http": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/mocha": ^8.0.3
     "@types/node": ^14.11.2
@@ -1810,7 +1815,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/forum-test@workspace:packages/forum-test":
+"@eternal-twin/forum-test@^0.1.0, @eternal-twin/forum-test@workspace:packages/forum-test":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/forum-test@workspace:packages/forum-test"
   dependencies:
@@ -2047,7 +2052,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/twinoid-client-http@workspace:packages/twinoid-client-http":
+"@eternal-twin/twinoid-client-http@^0.1.0, @eternal-twin/twinoid-client-http@workspace:packages/twinoid-client-http":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/twinoid-client-http@workspace:packages/twinoid-client-http"
   dependencies:
@@ -2087,6 +2092,8 @@ __metadata:
     "@eternal-twin/auth-pg": ^0.1.0
     "@eternal-twin/core": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
+    "@eternal-twin/twinoid-client-http": ^0.1.0
+    "@eternal-twin/user-test": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/mocha": ^8.0.3
     "@types/node": ^14.11.2
@@ -2106,6 +2113,7 @@ __metadata:
     "@eternal-twin/core": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/pg-db": ^0.1.0
+    "@eternal-twin/twinoid-client-http": ^0.1.0
     "@eternal-twin/user-test": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/mocha": ^8.0.3
@@ -2174,6 +2182,8 @@ __metadata:
     "@eternal-twin/hammerfest-http": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/oauth-client-http": ^0.1.0
+    "@eternal-twin/twinoid-client-http": ^0.1.0
+    "@eternal-twin/twinoid-core": ^0.1.0
     "@koa/cors": ^3.1.0
     "@nguniversal/builders": ^10.1.0
     "@nguniversal/common": ^10.0.2

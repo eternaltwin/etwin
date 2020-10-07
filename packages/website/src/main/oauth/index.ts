@@ -1,6 +1,10 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { $AuthContext,AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
+import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import {
   $OauthAccessTokenRequest,
@@ -19,15 +23,16 @@ import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
 import { $OauthCode, OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
 import { OauthResponseType } from "@eternal-twin/core/lib/oauth/oauth-response-type.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
-import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
+import { KoaAuth, SESSION_COOKIE } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
+import { TwinoidClientService } from "@eternal-twin/twinoid-core/src/lib/client.js";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import koaRoute from "koa-route";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
-import { QsValueReader } from "kryo-qs/lib/qs-value-reader.js";
-import { QsValueWriter } from "kryo-qs/lib/qs-value-writer.js";
+import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader.js";
+import { QS_VALUE_WRITER } from "kryo-qs/lib/qs-value-writer.js";
 import querystring from "querystring";
 import url from "url";
 
@@ -36,10 +41,13 @@ export interface Api {
   oauthClient: OauthClientService;
   oauthProvider: OauthProviderService;
   koaAuth: KoaAuth;
+  twinoidClient: TwinoidClientService;
 }
 
-const QS_VALUE_READER = new QsValueReader();
-const QS_VALUE_WRITER = new QsValueWriter();
+const GUEST_ACX: GuestAuthContext = {
+  type: AuthType.Guest,
+  scope: AuthScope.Default,
+};
 
 export async function createOauthRouter(api: Api): Promise<Koa> {
   const router: Koa = new Koa();
@@ -138,6 +146,49 @@ export async function createOauthRouter(api: Api): Promise<Koa> {
       }
     }
     cx.response.body = $OauthAccessToken.write(JSON_VALUE_WRITER, accessToken);
+  }
+
+  router.use(koaRoute.get("/callback", onAuthorizationGrant));
+
+  async function onAuthorizationGrant(cx: Koa.Context): Promise<void> {
+    if (cx.request.query.error !== undefined) {
+      cx.response.body = {error: cx.request.query.error};
+    }
+    const code: unknown = cx.request.query.code;
+    const state: unknown = cx.request.query.state;
+    if (typeof code !== "string" || typeof state !== "string") {
+      cx.response.body = {error: "InvalidRequest: Both `code` and `state` are required."};
+      return;
+    }
+
+    let accessToken: OauthAccessToken;
+    try {
+      accessToken = await api.oauthClient.getAccessToken(code);
+    } catch (e) {
+      if (e.status === 401 && e.response.body && e.response.body && e.response.body.error === "Unauthorized") {
+        cx.response.body = {
+          error: "Unauthorized",
+          cause: e.response.body.cause === "CodeExpiredError" ? "CodeExpiredError" : "AuthorizationServerError",
+        };
+        cx.response.status = 401;
+      } else {
+        console.error(e);
+        cx.response.status = 503;
+      }
+      return;
+    }
+
+    const {user, session}: UserAndSession = await api.auth.registerOrLoginWithTwinoidOauth(GUEST_ACX, accessToken.accessToken);
+    cx.cookies.set(SESSION_COOKIE, session.id);
+    const auth: UserAuthContext = {
+      type: AuthType.User,
+      scope: AuthScope.Default,
+      user,
+      isAdministrator: user.isAdministrator,
+    };
+    cx.response.body = $AuthContext.write(JSON_VALUE_WRITER, auth);
+
+    cx.redirect("/");
   }
 
   return router;

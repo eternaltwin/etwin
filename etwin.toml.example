@@ -44,9 +44,11 @@ callback_uri = "http://localhost:50313/oauth/callback"
 # Secret key for this client.
 secret = "eternalfest_secret"
 
-# Twinoid authentication configuration (unused)
+# Twinoid authentication configuration
 [auth.twinoid]
+# Client ID provided by Twinoid
 client_id = "380"
+# Client secret provided by Twinoid
 secret = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 # Forum configuration

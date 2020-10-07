@@ -1,10 +1,10 @@
 import chai from "chai";
 
-import { HttpTwinoidApiClient } from "../lib/index.js";
+import { HttpTwinoidClientService } from "../lib/index.js";
 
 describe("HttpTwinoidApiClient", () => {
   it("exists", async () => {
-    const twinoid = new HttpTwinoidApiClient();
+    const twinoid = new HttpTwinoidClientService();
     chai.assert.isDefined(twinoid);
   });
 });

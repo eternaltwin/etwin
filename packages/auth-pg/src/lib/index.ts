@@ -33,16 +33,17 @@ import {
   OauthAccessTokenRow,
   OauthClientRow,
   SessionRow,
+  TwinoidUserLinkRow,
   UserRow,
 } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
+import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
+import { User as TidUser } from "@eternal-twin/twinoid-core/lib/user.js";
 import jsonWebToken from "jsonwebtoken";
-import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
+import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
 
 import { $EmailRegistrationJwt, EmailRegistrationJwt } from "./email-registration-jwt.js";
-
-const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
 
 export class PgAuthService implements AuthService {
   private readonly database: Database;
@@ -54,6 +55,7 @@ export class PgAuthService implements AuthService {
   private readonly defaultLocale: LocaleId;
   private readonly tokenSecret: Buffer;
   private readonly hammerfest: HammerfestService;
+  private readonly twinoidClient: TwinoidClientService;
 
   /**
    * Creates a new authentication service.
@@ -66,6 +68,7 @@ export class PgAuthService implements AuthService {
    * @param emailTemplate Email template service to use.
    * @param tokenSecret Secret key used to generated and verify tokens.
    * @param hammerfest Hammerfest service to use.
+   * @param twinoidClient Twinoid API service to use.
    */
   constructor(
     database: Database,
@@ -76,6 +79,7 @@ export class PgAuthService implements AuthService {
     emailTemplate: EmailTemplateService,
     tokenSecret: Uint8Array,
     hammerfest: HammerfestService,
+    twinoidClient: TwinoidClientService,
   ) {
     this.database = database;
     this.dbSecret = dbSecret;
@@ -85,6 +89,7 @@ export class PgAuthService implements AuthService {
     this.emailTemplate = emailTemplate;
     this.tokenSecret = Buffer.from(tokenSecret);
     this.hammerfest = hammerfest;
+    this.twinoidClient = twinoidClient;
     this.defaultLocale = "en-US";
   }
 
@@ -143,6 +148,15 @@ export class PgAuthService implements AuthService {
     }
     return await this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       return this.registerOrLoginWithHammerfestTx(q, acx, credentials);
+    });
+  }
+
+  async registerOrLoginWithTwinoidOauth(acx: AuthContext, at: OauthAccessTokenKey): Promise<UserAndSession> {
+    if (acx.type !== AuthType.Guest) {
+      throw Error("Forbidden: Only guests can authenticate");
+    }
+    return await this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+      return this.registerOrLoginWithTwinoidOauthTx(q, acx, at);
     });
   }
 
@@ -462,6 +476,60 @@ export class PgAuthService implements AuthService {
     return {user, session};
   }
 
+
+  private async registerOrLoginWithTwinoidOauthTx(
+    queryable: Queryable,
+    acx: AuthContext,
+    at: OauthAccessTokenKey,
+  ): Promise<UserAndSession> {
+    if (acx.type !== AuthType.Guest) {
+      throw Error("Forbidden: Only guests can authenticate");
+    }
+    const tidUser: Partial<TidUser> = await this.twinoidClient.getMe(at);
+    await this.createOrUpdateTwinoidUser(queryable, tidUser);
+    type LinkRow = Pick<TwinoidUserLinkRow, "user_id">;
+    const linkRow: LinkRow | undefined = await queryable.oneOrNone(
+      `
+      SELECT user_id
+      FROM twinoid_user_links
+      WHERE twinoid_user_id = $1::INT;`,
+      [tidUser.id],
+    );
+    let userId: UserId;
+    if (linkRow !== undefined) {
+      userId = linkRow.user_id;
+    } else {
+      let displayName: UserDisplayName = tidUser.name!;
+      if (!$UserDisplayName.test(displayName)) {
+        displayName = `tid_${displayName}`;
+        if (!$UserDisplayName.test(displayName)) {
+          displayName = `tid_${tidUser.id}`;
+          if (!$UserDisplayName.test(displayName)) {
+            displayName = "twinoidPlayer";
+          }
+        }
+      }
+      const user = await this.createUser(queryable, displayName, null, null, null);
+      await queryable.countOne(
+        `
+        INSERT
+        INTO twinoid_user_links(
+          user_id, twinoid_user_id, ctime
+        )
+        VALUES (
+          $1::UUID, $2::INT, NOW()
+        );`,
+        [user.id, tidUser.id],
+      );
+      userId = user.id;
+    }
+
+    const session: Session = await this.createSession(queryable, userId);
+    const user = await this.getExistingUserById(queryable, session.user.id);
+
+    return {user, session};
+  }
+
   private async createUser(
     queryable: Queryable,
     displayName: UserDisplayName,
@@ -608,6 +676,24 @@ export class PgAuthService implements AuthService {
         hfUserRef.server,
         hfUserRef.id,
         hfUserRef.login,
+      ],
+    );
+  }
+
+  private async createOrUpdateTwinoidUser(queryable: Queryable, tidUserRef: Partial<TidUser>): Promise<void> {
+    await queryable.countOne(
+      `
+      INSERT INTO twinoid_users(
+        user_id, name
+      )
+      VALUES (
+        $1::INT, $2::VARCHAR
+      )
+      ON CONFLICT (user_id)
+        DO UPDATE SET name = $2::VARCHAR;`,
+      [
+        tidUserRef.id,
+        tidUserRef.name,
       ],
     );
   }

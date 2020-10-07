@@ -24,6 +24,9 @@
       "path": "../../../pg-db/src/lib"
     },
     {
+      "path": "../../../twinoid-core/src/lib"
+    },
+    {
       "path": "../../../user-in-memory/src/lib"
     }
   ]

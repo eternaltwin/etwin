@@ -751,6 +751,10 @@
           <context context-type="sourcefile">../app/auth/login/login.component.html</context>
           <context context-type="linenumber">25</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/auth/login/login-twinoid.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="login.method.hammerfest" datatype="html">
         <source>Sign in with Hammerfest</source>
@@ -762,10 +766,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
           <context context-type="linenumber">10</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-twinoid.component.html</context>
-          <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.usernameOrEmail" datatype="html">

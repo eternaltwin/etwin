@@ -7,6 +7,7 @@ import { Config } from "@eternal-twin/local-config";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
+import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import { PgUserService } from "@eternal-twin/user-pg";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 
@@ -29,7 +30,8 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const password = new ScryptPasswordService();
   const user = new PgUserService(db, secretKeyStr);
   const hammerfest = new HttpHammerfestService();
-  const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest);
+  const twinoidClient = new HttpTwinoidClientService();
+  const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest, twinoidClient);
   const koaAuth = new KoaAuth(auth);
   const forum = new PgForumService(db, UUID4_GENERATOR, user, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
 

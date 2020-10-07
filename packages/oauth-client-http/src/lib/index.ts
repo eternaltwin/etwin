@@ -59,6 +59,7 @@ export class HttpOauthClientService implements OauthClientService {
     try {
       rawRes = await superagent.post(this.grantUri.toString())
         .set("Authorization", this.getAuthorizationHeader())
+        .type("application/x-www-form-urlencoded")
         .send(rawReq);
     } catch (err) {
       switch (err.status) {
@@ -70,11 +71,27 @@ export class HttpOauthClientService implements OauthClientService {
           throw err;
       }
     }
+    // Some OAuth providers (e.g. Twinoid) fail to set the response content-type to `application/json` despite senging
+    // a JSON response. This prevents superagent from parsing the body automatically. The code below tries to parse
+    // the response as JSON even if the content-type is `text/html`.
+    let parsedBody: object | undefined;
+    if (rawRes.type === "application/json") {
+      parsedBody = rawRes.body;
+    } else if (rawRes.type === "text/html") {
+      try {
+        parsedBody = JSON.parse(rawRes.text);
+      } catch {
+        // Ignore parse error, it just means that the response was really not JSON
+      }
+    }
+    if (parsedBody === undefined) {
+      throw new Error("UnexpectedGrantUriResponse: Failed to parse response");
+    }
     let res: OauthAccessToken;
     try {
-      res = $OauthAccessToken.read(JSON_VALUE_READER, rawRes.body);
+      res = $OauthAccessToken.read(JSON_VALUE_READER, parsedBody);
     } catch (err) {
-      throw new Error("UnexpectedGrantUriResponse");
+      throw new Error(`UnexpectedGrantUriResponse: ${JSON.stringify(parsedBody)}`);
     }
     return res;
   }
@@ -97,6 +114,7 @@ export class HttpOauthClientService implements OauthClientService {
   private getAuthorizationHeader(): string {
     const credentials: string = `${this.clientId}:${this.clientSecret}`;
     const token: string = Buffer.from(credentials).toString("base64");
-    return authHeader.format({scheme: "Basic", token});
+    const header: string = authHeader.format({scheme: "Basic", token});
+    return header;
   }
 }
