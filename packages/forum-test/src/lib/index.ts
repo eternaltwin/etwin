@@ -223,6 +223,64 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
     });
   });
 
+  it("Create two sections but post a thread in only one of them", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const section: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "fr_main",
+        {
+          displayName: "Forum Général",
+          locale: "fr-FR",
+        },
+      );
+      const enSection: ForumSection = await api.forum.createOrUpdateSystemSection(
+        "en_main",
+        {
+          displayName: "Main Forum",
+          locale: "en-US",
+        },
+      );
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+
+      await api.forum.createThread(aliceAuth, section.id, {
+        title: "Hello",
+        body: "**First** discussion thread",
+      });
+      {
+        const actual: ForumSectionListing = await api.forum.getSections(aliceAuth);
+        const expected: ForumSectionListing = {
+          items: [
+            {
+              type: ObjectType.ForumSection,
+              id: section.id,
+              key: "fr_main",
+              displayName: "Forum Général",
+              locale: "fr-FR",
+              ctime: section.ctime,
+              threads: {
+                count: 1,
+              },
+              self: {roles: [ForumRole.Administrator]},
+            },
+            {
+              type: ObjectType.ForumSection,
+              id: enSection.id,
+              key: "en_main",
+              displayName: "Main Forum",
+              locale: "en-US",
+              ctime: enSection.ctime,
+              threads: {
+                count: 0,
+              },
+              self: {roles: [ForumRole.Administrator]},
+            },
+          ],
+        };
+        assertKryoEqual($ForumSectionListing, actual, expected);
+      }
+    });
+  });
+
   it("Create a thread in the main forum section and post 10 messages", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {

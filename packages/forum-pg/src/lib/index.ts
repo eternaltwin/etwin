@@ -300,20 +300,17 @@ export class PgForumService implements ForumService {
       Pick<ForumSectionRow, "forum_section_id" | "key" | "ctime" | "display_name" | "locale">
       & {thread_count: number};
     const rows: Row[] = await queryable.many(
-      `WITH section AS (
-        SELECT forum_section_id, key, ctime, display_name, locale
-        FROM forum_sections
-      ),
-           thread_count AS (
-             SELECT COUNT(*)::INT AS thread_count
-             FROM forum_threads, section
-             WHERE forum_threads.forum_section_id = section.forum_section_id
+      `WITH thread_counts AS (
+             SELECT forum_section_id, COUNT(forum_thread_id)::INT AS thread_count
+             FROM forum_sections LEFT OUTER JOIN forum_threads USING(forum_section_id)
+             GROUP BY forum_section_id
            )
          SELECT forum_section_id, key, ctime, display_name, locale, thread_count
-         FROM section, thread_count;
+         FROM thread_counts INNER JOIN forum_sections USING (forum_section_id);
       `,
       [],
     );
+
     const items: ForumSectionMeta[] = [];
     for (const row of rows) {
       const self = await this.getSectionSelfTx(queryable, acx, row.forum_section_id);
@@ -415,7 +412,8 @@ export class PgForumService implements ForumService {
     offset: number,
     limit: number,
   ): Promise<ForumThreadListing> {
-    type Row = Pick<ForumThreadRow, "forum_thread_id" | "key" | "title" | "ctime" | "is_pinned" | "is_locked">;
+    type Row = Pick<ForumThreadRow, "forum_thread_id" | "key" | "title" | "ctime" | "is_pinned" | "is_locked">
+       & {post_count: number};
     const rows: Row[] = await queryable.many(
       `
         WITH threads AS (
@@ -453,7 +451,7 @@ export class PgForumService implements ForumService {
         ctime: row.ctime,
         isPinned: row.is_pinned,
         isLocked: row.is_locked,
-        posts: {count: (row as any).post_count},
+        posts: {count: row.post_count},
       };
       items.push(thread);
     }

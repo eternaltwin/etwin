@@ -67,10 +67,6 @@ display_name = "Main Forum (en-US)"
 # Locale for this section
 locale = "en-US"
 
-[forum.sections.fr_main]
-display_name = "Forum Général (fr-FR)"
-locale = "fr-FR"
-
 [forum.sections.es_main]
 display_name = "Foro principal (es-SP)"
 locale = "es-SP"
@@ -78,3 +74,7 @@ locale = "es-SP"
 [forum.sections.eo_main]
 display_name = "Ĉefa forumo (eo)"
 locale = "eo"
+
+[forum.sections.fr_main]
+display_name = "Forum Général (fr-FR)"
+locale = "fr-FR"
