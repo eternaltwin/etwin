@@ -1,11 +1,17 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
+import { HammerfestForumTheme } from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme";
+import { HammerfestForumThemePage } from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-page";
+import { HammerfestForumThreadPage } from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-page";
+import { HammerfestGodChild } from "@eternal-twin/core/lib/hammerfest/hammerfest-god-child";
+import { HammerfestItemCounts } from "@eternal-twin/core/lib/hammerfest/hammerfest-item-counts";
 import { HammerfestLogin } from "@eternal-twin/core/lib/hammerfest/hammerfest-login.js";
+import { HammerfestProfile } from "@eternal-twin/core/lib/hammerfest/hammerfest-profile";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
+import { HammerfestShop } from "@eternal-twin/core/lib/hammerfest/hammerfest-shop";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
 import { Password } from "@eternal-twin/core/lib/password/password.js";
 
@@ -42,7 +48,7 @@ export class InMemoryHammerfestClientService implements HammerfestClientService 
     ]);
   }
 
-  async createSession(_auth: AuthContext, credentials: HammerfestCredentials): Promise<HammerfestSession> {
+  async createSession(credentials: HammerfestCredentials): Promise<HammerfestSession> {
     const srv = this.getServer(credentials.server);
     for (const user of srv.users.values()) {
       if (user.username === credentials.login) {
@@ -73,7 +79,35 @@ export class InMemoryHammerfestClientService implements HammerfestClientService 
     throw new Error("UserNotFound");
   }
 
-  testSession(_auth: AuthContext, _server: HammerfestServer, _key: HammerfestSessionKey): Promise<HammerfestSession> {
+  async testSession(_server: HammerfestServer, _key: HammerfestSessionKey): Promise<HammerfestSession> {
+    throw new Error("NotImplemented");
+  }
+
+  async getProfileById(_session: HammerfestSession | null, _server: HammerfestServer, _hfUserId: number): Promise<HammerfestProfile> {
+    throw new Error("NotImplemented");
+  }
+
+  async getOwnItems(_session: HammerfestSession): Promise<HammerfestItemCounts> {
+    throw new Error("NotImplemented");
+  }
+
+  async getOwnGodChildren(_session: HammerfestSession): Promise<HammerfestGodChild[]> {
+    throw new Error("NotImplemented");
+  }
+
+  async getOwnShop(_session: HammerfestSession): Promise<HammerfestShop> {
+    throw new Error("NotImplemented");
+  }
+
+  async getForumThemes(_session: HammerfestSession | null, _server: HammerfestServer): Promise<HammerfestForumTheme[]> {
+    throw new Error("NotImplemented");
+  }
+
+  async getForumThemePage(_session: HammerfestSession | null, _server: HammerfestServer, _themeId: string, _page1: number): Promise<HammerfestForumThemePage> {
+    throw new Error("NotImplemented");
+  }
+
+  async getForumThreadPage(_session: HammerfestSession | null, _server: HammerfestServer, _themeId: string, _page1: number): Promise<HammerfestForumThreadPage> {
     throw new Error("NotImplemented");
   }
 

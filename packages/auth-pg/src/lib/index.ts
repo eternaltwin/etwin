@@ -433,7 +433,7 @@ export class PgAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    const hfSession: HammerfestSession = await this.hammerfest.createSession(acx, credentials);
+    const hfSession: HammerfestSession = await this.hammerfest.createSession(credentials);
     const hfUser: HammerfestUserRef = hfSession.user;
     await this.createOrUpdateHammerfestUser(queryable, hfUser);
     type LinkRow = Pick<HammerfestUserLinkRow, "user_id">;
