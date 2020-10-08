@@ -12,7 +12,7 @@ export interface HammerfestSession {
   user: HammerfestUserRef;
 }
 
-export const $CreateSessionOptions: RecordIoType<HammerfestSession> = new RecordType<HammerfestSession>({
+export const $HammerfestSession: RecordIoType<HammerfestSession> = new RecordType<HammerfestSession>({
   properties: {
     ctime: {type: $Date},
     atime: {type: $Date},

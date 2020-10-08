@@ -10,7 +10,12 @@ import { $OauthTokenType, OauthTokenType } from "./oauth-token-type.js";
 export interface OauthAccessToken {
   accessToken: OauthAccessTokenKey;
   refreshToken?: OauthRefreshTokenKey;
+
+  /**
+   * Duration when this token will expire, in seconds.
+   */
   expiresIn: number;
+
   tokenType: OauthTokenType.Bearer;
 }
 

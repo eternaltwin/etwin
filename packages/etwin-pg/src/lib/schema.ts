@@ -162,11 +162,59 @@ export interface TwinoidUserRow {
   name: string;
 }
 
-
 export interface TwinoidUserLinkRow {
   user_id: string;
 
   twinoid_user_id: string;
 
   ctime: Date;
+}
+
+export interface HammerfestSessionRow {
+  hammerfest_server: PgHammerfestServer;
+  hammerfest_session_key: string;
+  hammerfest_user_id: string;
+  ctime: Date;
+  atime: Date;
+}
+
+export interface OldHammerfestSessionRow {
+  hammerfest_server: PgHammerfestServer;
+  hammerfest_session_key: string;
+  hammerfest_user_id: string;
+  ctime: Date;
+  atime: Date;
+  dtime: Date;
+}
+
+export interface TwinoidAccessTokenRow {
+  twinoid_access_token: string;
+  twinoid_user_id: string;
+  ctime: Date;
+  atime: Date;
+  expiration_time: Date;
+}
+
+export interface OldTwinoidAccessTokenRow {
+  twinoid_access_token: string;
+  twinoid_user_id: string;
+  ctime: Date;
+  atime: Date;
+  dtime: Date;
+  expiration_time: Date;
+}
+
+export interface TwinoidRefreshTokenRow {
+  twinoid_refresh_token: string;
+  twinoid_user_id: string;
+  ctime: Date;
+  atime: Date;
+}
+
+export interface OldTwinoidRefreshTokenRow {
+  twinoid_refresh_token: string;
+  twinoid_user_id: string;
+  ctime: Date;
+  atime: Date;
+  dtime: Date;
 }

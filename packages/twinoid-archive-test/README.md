@@ -1,3 +1,3 @@
-# Hammerfest service test package
+# TwinoidArchiveService test package
 
-Implementation-independent tests for the Hammerfest service.
+Implementation-independent tests for the `TwinoidArchiveService`.

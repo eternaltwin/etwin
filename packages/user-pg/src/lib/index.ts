@@ -48,7 +48,7 @@ export class PgUserService implements UserService {
         | "email_address" | "username"> & {has_password: boolean};
       const row: Row | undefined = await queryable.oneOrNone(
         `SELECT user_id, display_name, is_administrator, ctime,
-         pgp_sym_decrypt(email_address, $1::TEXT) as email_address, username, password IS NOT NULL as has_password
+         pgp_sym_decrypt(email_address, $1::TEXT) AS email_address, username, password IS NOT NULL AS has_password
          FROM users
          WHERE users.user_id = $2::UUID;`,
         [this.dbSecret, id],

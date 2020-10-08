@@ -1,3 +1,3 @@
-# Hammerfest service test package
+# `HammerfestArchiveService` test package
 
-Implementation-independent tests for the Hammerfest service.
+Implementation-independent tests for the `HammerfestArchiveService`.
