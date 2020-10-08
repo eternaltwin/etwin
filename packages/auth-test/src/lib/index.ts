@@ -10,13 +10,13 @@ import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
-import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
+import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
 import chai from "chai";
 
 export interface Api {
   auth: AuthService;
   email: InMemoryEmailService;
-  hammerfest: InMemoryHammerfestService;
+  hammerfestClient: InMemoryHammerfestClientService;
 }
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};
@@ -142,7 +142,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
   it("Registers a user with Hammerfest", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
-      api.hammerfest.createUser("hammerfest.fr", 123, "alice", Buffer.from("aaaaa"));
+      api.hammerfestClient.createUser("hammerfest.fr", 123, "alice", Buffer.from("aaaaa"));
 
       const credentials: HammerfestCredentials = {
         server: "hammerfest.fr",

@@ -8,12 +8,11 @@ export interface UserService {
   /**
    * Retrieve the user corresponding to the provided user ID.
    *
-   * @param clientSecret The client secret key
-   * @param authToken User auth token.
-   * @param userId ID of the user to retrieve.
+   * @param acx The client secret key
+   * @param id ID of the user to retrieve.
    * @returns User data, or `null` if the user is not found.
    */
-  getUserById(authContext: AuthContext, id: UserId): Promise<User | CompleteUser | null>;
+  getUserById(acx: AuthContext, id: UserId): Promise<User | CompleteUser | null>;
 
-  getUserRefById(authContext: AuthContext, id: UserId): Promise<UserRef | null>;
+  getUserRefById(acx: AuthContext, id: UserId): Promise<UserRef | null>;
 }

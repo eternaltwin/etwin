@@ -1,8 +1,8 @@
 {
-  "name": "@eternal-twin/hammerfest-in-memory",
+  "name": "@eternal-twin/hammerfest-client-in-memory",
   "version": "0.1.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
-  "description": "Eternal-Twin `HammerfestService` in-memory implementation",
+  "description": "Eternal-Twin `HammerfestClientService` in-memory implementation",
   "repository": {
     "type": "git",
     "url": "git://gitlab.com:eternal-twin/etwin-api.git"

@@ -22,6 +22,12 @@
       "path": "packages/forum-pg/src/test"
     },
     {
+      "path": "packages/hammerfest-client-http/src/test"
+    },
+    {
+      "path": "packages/hammerfest-client-in-memory/src/test"
+    },
+    {
       "path": "packages/oauth-provider-in-memory/src/test"
     },
     {

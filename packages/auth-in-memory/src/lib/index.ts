@@ -17,13 +17,13 @@ import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator";
 import { EmailTemplateService } from "@eternal-twin/core/lib/email-template/service.js";
 import { $EmailAddress, EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
 import { EmailService } from "@eternal-twin/core/lib/email/service.js";
+import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { HammerfestLogin } from "@eternal-twin/core/lib/hammerfest/hammerfest-login";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
 import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
@@ -83,7 +83,7 @@ export class InMemoryAuthService implements AuthService {
   private readonly emailTemplate: EmailTemplateService;
   private readonly defaultLocale: LocaleId;
   private readonly tokenSecret: Buffer;
-  private readonly hammerfest: HammerfestService;
+  private readonly hammerfest: HammerfestClientService;
   private readonly twinoidClient: TwinoidClientService;
   private readonly user: InMemoryUserService;
   private readonly oauthProvider: InMemoryOauthProviderService;
@@ -114,7 +114,7 @@ export class InMemoryAuthService implements AuthService {
     email: EmailService,
     emailTemplate: EmailTemplateService,
     tokenSecret: Uint8Array,
-    hammerfest: HammerfestService,
+    hammerfest: HammerfestClientService,
     twinoidClient: TwinoidClientService,
     user: InMemoryUserService,
     oauthProvider: InMemoryOauthProviderService,

@@ -9,7 +9,7 @@ import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
 import { PgForumService } from "@eternal-twin/forum-pg";
-import { HttpHammerfestService } from "@eternal-twin/hammerfest-http";
+import { HttpHammerfestClientService } from "@eternal-twin/hammerfest-client-http";
 import { ApiType, Config } from "@eternal-twin/local-config";
 import { HttpOauthClientService } from "@eternal-twin/oauth-client-http";
 import { InMemoryOauthProviderService } from "@eternal-twin/oauth-provider-in-memory";
@@ -41,7 +41,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   const email = new ConsoleEmailService();
   const emailTemplate = new EtwinEmailTemplateService(new url.URL(config.etwin.externalUri.toString()));
   const password = new ScryptPasswordService();
-  const hammerfest = new HttpHammerfestService();
+  const hammerfest = new HttpHammerfestClientService();
   const twinoidClient = new HttpTwinoidClientService();
 
   let auth: AuthService;

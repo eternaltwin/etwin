@@ -5,16 +5,16 @@ import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import chai from "chai";
 
-import { InMemoryHammerfestService } from "../lib/index.js";
+import { InMemoryHammerfestClientService } from "../lib/index.js";
 
 const GUEST_AUTH: GuestAuthContext = {
   type: AuthType.Guest,
   scope: AuthScope.Default,
 };
 
-describe("InMemoryHammerfestService", () => {
+describe("InMemoryHammerfestClientService", () => {
   it("createSession", async () => {
-    const hammerfest = new InMemoryHammerfestService();
+    const hammerfest = new InMemoryHammerfestClientService();
 
     hammerfest.createUser("hammerfest.fr", 123, "alice", Buffer.from("aaaaa"));
 

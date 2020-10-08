@@ -1566,7 +1566,7 @@ __metadata:
     "@eternal-twin/core": ^0.1.0
     "@eternal-twin/email-in-memory": ^0.1.0
     "@eternal-twin/email-template-json": ^0.1.0
-    "@eternal-twin/hammerfest-in-memory": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/twinoid-client-http": ^0.1.0
     "@eternal-twin/twinoid-core": ^0.1.0
@@ -1591,7 +1591,7 @@ __metadata:
     "@eternal-twin/core": ^0.1.0
     "@eternal-twin/email-in-memory": ^0.1.0
     "@eternal-twin/email-template-json": ^0.1.0
-    "@eternal-twin/hammerfest-in-memory": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/pg-db": ^0.1.0
     "@eternal-twin/twinoid-client-http": ^0.1.0
@@ -1614,7 +1614,7 @@ __metadata:
   dependencies:
     "@eternal-twin/core": ^0.1.0
     "@eternal-twin/email-in-memory": ^0.1.0
-    "@eternal-twin/hammerfest-in-memory": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/mocha": ^8.0.3
     "@types/node": ^14.11.2
@@ -1833,9 +1833,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/hammerfest-http@^0.1.0, @eternal-twin/hammerfest-http@workspace:packages/hammerfest-http":
+"@eternal-twin/hammerfest-client-http@^0.1.0, @eternal-twin/hammerfest-client-http@workspace:packages/hammerfest-client-http":
   version: 0.0.0-use.local
-  resolution: "@eternal-twin/hammerfest-http@workspace:packages/hammerfest-http"
+  resolution: "@eternal-twin/hammerfest-client-http@workspace:packages/hammerfest-client-http"
   dependencies:
     "@eternal-twin/core": ^0.1.0
     "@eternalfest/hammerfest-api": ^0.4.1
@@ -1849,9 +1849,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/hammerfest-in-memory@^0.1.0, @eternal-twin/hammerfest-in-memory@workspace:packages/hammerfest-in-memory":
+"@eternal-twin/hammerfest-client-in-memory@^0.1.0, @eternal-twin/hammerfest-client-in-memory@workspace:packages/hammerfest-client-in-memory":
   version: 0.0.0-use.local
-  resolution: "@eternal-twin/hammerfest-in-memory@workspace:packages/hammerfest-in-memory"
+  resolution: "@eternal-twin/hammerfest-client-in-memory@workspace:packages/hammerfest-client-in-memory"
   dependencies:
     "@eternal-twin/core": ^0.1.0
     "@types/chai": ^4.2.12
@@ -2017,8 +2017,8 @@ __metadata:
     "@eternal-twin/core": ^0.1.0
     "@eternal-twin/etwin-client-in-memory": ^0.1.0
     "@eternal-twin/forum-pg": ^0.1.0
-    "@eternal-twin/hammerfest-http": ^0.1.0
-    "@eternal-twin/hammerfest-in-memory": ^0.1.0
+    "@eternal-twin/hammerfest-client-http": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
     "@eternal-twin/user-pg": ^0.1.0
     "@eternal-twin/uuid4-generator": ^0.1.0
     "@koa/cors": ^3.1.0
@@ -2179,7 +2179,7 @@ __metadata:
     "@angular/router": ~10.1.4
     "@eternal-twin/email-console": ^0.1.0
     "@eternal-twin/email-template-etwin": ^0.1.0
-    "@eternal-twin/hammerfest-http": ^0.1.0
+    "@eternal-twin/hammerfest-client-http": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/oauth-client-http": ^0.1.0
     "@eternal-twin/twinoid-client-http": ^0.1.0

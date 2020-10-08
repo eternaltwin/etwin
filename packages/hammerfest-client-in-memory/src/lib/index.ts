@@ -1,12 +1,12 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { HammerfestLogin } from "@eternal-twin/core/lib/hammerfest/hammerfest-login.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { Password } from "@eternal-twin/core/lib/password/password.js";
 
 interface InMemoryServer {
@@ -31,7 +31,7 @@ function makeSessionKey(): HammerfestSessionKey {
   return key;
 }
 
-export class InMemoryHammerfestService implements HammerfestService {
+export class InMemoryHammerfestClientService implements HammerfestClientService {
   private readonly servers: Map<HammerfestServer, InMemoryServer>;
 
   constructor() {

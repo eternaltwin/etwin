@@ -2,7 +2,7 @@ import { Api, testAuthService } from "@eternal-twin/auth-test";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/index.js";
-import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
+import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
@@ -30,10 +30,10 @@ async function withPgAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
     const password = new ScryptPasswordService();
-    const hammerfest = new InMemoryHammerfestService();
+    const hammerfestClient = new InMemoryHammerfestClientService();
     const twinoidClient = new HttpTwinoidClientService();
-    const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest, twinoidClient);
-    return fn({auth, email, hammerfest});
+    const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfestClient, twinoidClient);
+    return fn({auth, email, hammerfestClient});
   });
 }
 

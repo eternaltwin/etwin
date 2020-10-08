@@ -1,13 +1,13 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import hfApi from "@eternalfest/hammerfest-api";
 
-export class HttpHammerfestService implements HammerfestService {
+export class HttpHammerfestClientService implements HammerfestClientService {
   private readonly servers: Map<HammerfestServer, string>;
 
   constructor() {

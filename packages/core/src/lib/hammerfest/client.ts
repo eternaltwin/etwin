@@ -4,7 +4,7 @@ import { HammerfestServer } from "./hammerfest-server";
 import { HammerfestSession } from "./hammerfest-session";
 import { HammerfestSessionKey } from "./hammerfest-session-key";
 
-export interface HammerfestService {
+export interface HammerfestClientService {
   /**
    * Create a new Hammerfest session from credentials.
    *
