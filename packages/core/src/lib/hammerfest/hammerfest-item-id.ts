@@ -9,5 +9,5 @@ export const $HammerfestItemId: Ucs2StringType = new Ucs2StringType({
   minLength: 1,
   maxLength: 4,
   trimmed: true,
-  pattern: /^\d{4}$/,
+  pattern: /^0|[1-9]\d{0,3}$/,
 });

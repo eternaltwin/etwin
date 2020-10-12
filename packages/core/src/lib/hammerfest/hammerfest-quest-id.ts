@@ -9,5 +9,5 @@ export const $HammerfestQuestId: Ucs2StringType = new Ucs2StringType({
   minLength: 1,
   maxLength: 2,
   trimmed: true,
-  pattern: /^\d{2}$/,
+  pattern: /^\d{1,2}$/,
 });

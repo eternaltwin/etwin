@@ -3,6 +3,7 @@ import { HammerfestForumThemeId } from "./hammerfest-forum-theme-id.js";
 import { HammerfestForumThemePage } from "./hammerfest-forum-theme-page.js";
 import { HammerfestForumTheme } from "./hammerfest-forum-theme.js";
 import { HammerfestForumThreadPage } from "./hammerfest-forum-thread-page.js";
+import { HammerfestGetProfileByIdOptions } from "./hammerfest-get-profile-by-id-options.js";
 import { HammerfestGodChild } from "./hammerfest-god-child.js";
 import { HammerfestItemCounts } from "./hammerfest-item-counts.js";
 import { HammerfestProfile } from "./hammerfest-profile.js";
@@ -10,7 +11,6 @@ import { HammerfestServer } from "./hammerfest-server.js";
 import { HammerfestSessionKey } from "./hammerfest-session-key.js";
 import { HammerfestSession } from "./hammerfest-session.js";
 import { HammerfestShop } from "./hammerfest-shop.js";
-import { HammerfestUserId } from "./hammerfest-user-id.js";
 
 export interface HammerfestClientService {
   /**
@@ -32,7 +32,7 @@ export interface HammerfestClientService {
    */
   testSession(server: HammerfestServer, key: HammerfestSessionKey): Promise<HammerfestSession>;
 
-  getProfileById(session: HammerfestSession | null, server: HammerfestServer, hfUserId: HammerfestUserId): Promise<HammerfestProfile>;
+  getProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile>;
 
   getOwnItems(session: HammerfestSession): Promise<HammerfestItemCounts>;
 

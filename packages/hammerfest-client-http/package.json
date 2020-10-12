@@ -26,11 +26,14 @@
   },
   "keywords": [],
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=14.13.1"
   },
   "dependencies": {
     "@eternal-twin/core": "^0.1.0",
-    "@eternalfest/hammerfest-api": "^0.4.1"
+    "@eternalfest/hammerfest-api": "^0.4.1",
+    "domhandler": "^3.3.0",
+    "domutils": "^2.4.2",
+    "htmlparser2": "^5.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.12",
@@ -38,6 +41,8 @@
     "@types/node": "^14.11.2",
     "chai": "^4.2.0",
     "eslint": "^7.10.0",
+    "furi": "^2.0.0",
+    "kryo-json": "^0.11.0",
     "mocha": "^8.1.3",
     "typescript": "^4.0.3"
   },

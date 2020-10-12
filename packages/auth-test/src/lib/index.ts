@@ -142,7 +142,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
   it("Registers a user with Hammerfest", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
-      api.hammerfestClient.createUser("hammerfest.fr", 123, "alice", Buffer.from("aaaaa"));
+      api.hammerfestClient.createUser("hammerfest.fr", "123", "alice", Buffer.from("aaaaa"));
 
       const credentials: HammerfestCredentials = {
         server: "hammerfest.fr",

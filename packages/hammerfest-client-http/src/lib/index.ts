@@ -4,6 +4,7 @@ import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerf
 import { HammerfestForumThemePage } from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-page.js";
 import { HammerfestForumTheme } from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme.js";
 import { HammerfestForumThreadPage } from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-page.js";
+import { HammerfestGetProfileByIdOptions } from "@eternal-twin/core/lib/hammerfest/hammerfest-get-profile-by-id-options.js";
 import { HammerfestGodChild } from "@eternal-twin/core/lib/hammerfest/hammerfest-god-child.js";
 import { HammerfestItemCounts } from "@eternal-twin/core/lib/hammerfest/hammerfest-item-counts.js";
 import { HammerfestProfile } from "@eternal-twin/core/lib/hammerfest/hammerfest-profile.js";
@@ -40,7 +41,7 @@ export class HttpHammerfestClientService implements HammerfestClientService {
       user: {
         type: ObjectType.HammerfestUser,
         server: credentials.server,
-        id: parseInt(userId),
+        id: userId,
         login: credentials.login,
       },
     };
@@ -54,7 +55,7 @@ export class HttpHammerfestClientService implements HammerfestClientService {
     throw new Error("NotImplemented");
   }
 
-  async getProfileById(_session: HammerfestSession | null, _server: HammerfestServer, _hfUserId: number): Promise<HammerfestProfile> {
+  async getProfileById(_session: HammerfestSession | null, _options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile> {
     throw new Error("NotImplemented");
   }
 

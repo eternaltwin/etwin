@@ -13,7 +13,7 @@ import { $HammerfestLevel, HammerfestLevel } from "./hammerfest-level.js";
 import { $HammerfestQuestStatusMap, HammerfestQuestStatusMap } from "./hammerfest-quest-status-map.js";
 import { $HammerfestRank, HammerfestRank } from "./hammerfest-rank.js";
 import { $HammerfestScore, HammerfestScore } from "./hammerfest-score.js";
-import { $HammerfestUserRef, HammerfestUserRef } from "./hammerfest-user-ref";
+import { $HammerfestUserRef, HammerfestUserRef } from "./hammerfest-user-ref.js";
 
 export interface HammerfestProfile {
   user: HammerfestUserRef;

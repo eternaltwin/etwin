@@ -8,7 +8,7 @@ describe("InMemoryHammerfestClientService", () => {
   it("createSession", async () => {
     const hammerfest = new InMemoryHammerfestClientService();
 
-    hammerfest.createUser("hammerfest.fr", 123, "alice", Buffer.from("aaaaa"));
+    hammerfest.createUser("hammerfest.fr", "123", "alice", Buffer.from("aaaaa"));
 
     {
       const actual: HammerfestSession = await hammerfest.createSession(
@@ -18,7 +18,7 @@ describe("InMemoryHammerfestClientService", () => {
         ctime: actual.ctime,
         atime: actual.ctime,
         key: actual.key,
-        user: {type: ObjectType.HammerfestUser, server: "hammerfest.fr", id: 123, login: "alice"},
+        user: {type: ObjectType.HammerfestUser, server: "hammerfest.fr", id: "123", login: "alice"},
       };
       chai.assert.deepEqual(actual, expected);
     }
