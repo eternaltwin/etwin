@@ -17,6 +17,8 @@
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
+    "main:build": "tsc --build src/main/tsconfig.json",
+    "start": "yarn run main:build && node --unhandled-rejections=strict main/main.js",
     "test:build": "tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha \"test/**/*.spec.js\""
   },
@@ -30,10 +32,13 @@
   },
   "dependencies": {
     "@eternal-twin/core": "^0.1.0",
-    "@eternalfest/hammerfest-api": "^0.4.1",
+    "@types/cookiejar": "^2.1.1",
+    "@types/superagent": "^4.1.10",
+    "cookiejar": "^2.1.2",
     "domhandler": "^3.3.0",
     "domutils": "^2.4.2",
-    "htmlparser2": "^5.0.0"
+    "htmlparser2": "^5.0.0",
+    "superagent": "^6.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.12",
@@ -42,6 +47,7 @@
     "chai": "^4.2.0",
     "eslint": "^7.10.0",
     "furi": "^2.0.0",
+    "kryo": "^0.11.0",
     "kryo-json": "^0.11.0",
     "mocha": "^8.1.3",
     "typescript": "^4.0.3"

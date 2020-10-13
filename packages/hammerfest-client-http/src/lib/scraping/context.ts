@@ -4,6 +4,8 @@ import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-u
 import { Element, Node } from "domhandler";
 import domutils from "domutils";
 
+import { ScrapeError } from "../errors/scrape-error.js";
+
 const USER_URI: RegExp = /^\/user\.html\/([1-9]\d{0,8})$/;
 
 export interface HammerfestContext {
@@ -24,13 +26,13 @@ export interface HammerfestPlayerInfo {
 export function scrapeContext(root: Node[]): HammerfestContext {
   const topBar: Element | null = domutils.findOne((e: Element): boolean => e.name === "div" && e.attribs["class"] === "topMainBar", root);
   if (topBar === null) {
-    throw new Error("ScrapeError: TopBarNotFound");
+    throw new ScrapeError("TopBarNotFound");
   }
   const playerInfo: Element | null = domutils.findOne((e: Element): boolean => e.name === "div" && e.attribs["class"] === "playerInfo", topBar.children, false);
   if (playerInfo === null) {
     const enterButton: Element | null = domutils.findOne(e => e.name === "span" && e.attribs["class"] === "enter", topBar.children, true);
     if (enterButton === null) {
-      throw new Error("ScrapeError: SignInButtonNotFound");
+      throw new ScrapeError("SignInButtonNotFound");
     }
     const enterText: string = domutils.getText(enterButton);
     let server: HammerfestServer;
@@ -45,7 +47,7 @@ export function scrapeContext(root: Node[]): HammerfestContext {
         server = "hammerfest.es";
         break;
       default:
-        throw new Error("ScrapeError: UnexpectedSignInText");
+        throw new ScrapeError("UnexpectedSignInText");
     }
     return {server, self: null};
   }
@@ -77,12 +79,12 @@ export function scrapeContext(root: Node[]): HammerfestContext {
           server = "hammerfest.es";
           break;
         default:
-          throw new Error(`ScrapeError: UnexpectedShopTitle: ${JSON.stringify(shopTitle)}`);
+          throw new ScrapeError(`UnexpectedShopTitle: ${JSON.stringify(shopTitle)}`);
       }
     }
   }
   if (server === undefined || id === undefined || login === undefined) {
-    throw new Error("ScrapeError: MissingTopBarFields");
+    throw new ScrapeError("MissingTopBarFields");
   }
   return {server, self: {id, login}};
 }
