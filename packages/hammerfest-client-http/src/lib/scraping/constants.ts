@@ -2,6 +2,18 @@ import { HammerfestQuestId } from "@eternal-twin/core/lib/hammerfest/hammerfest-
 import { HammerfestQuestName } from "@eternal-twin/core/lib/hammerfest/hammerfest-quest-name.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 
+export const SIGNIN_TO_SERVER: ReadonlyMap<string, HammerfestServer> = new Map([
+  ["Login", "hfest.net"],
+  ["Entrer", "hammerfest.fr"],
+  ["Entrar", "hammerfest.es"],
+]);
+
+export const EVNI_HEADER_TO_SERVER: ReadonlyMap<string, HammerfestServer> = new Map([
+  ["Oops!", "hfest.net"],
+  ["Ooops !", "hammerfest.fr"],
+  ["¡Ay!", "hammerfest.es"],
+]);
+
 export const QUEST_NAME_TO_QUEST_ID: ReadonlyMap<HammerfestServer, ReadonlyMap<HammerfestQuestName, HammerfestQuestId>> = new Map([
   [
     "hfest.net",

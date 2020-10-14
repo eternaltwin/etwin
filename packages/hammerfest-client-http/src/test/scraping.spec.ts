@@ -13,12 +13,18 @@ import { CaseStyle } from "kryo";
 import { JSON_READER } from "kryo-json/lib/json-reader.js";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 import { $Boolean } from "kryo/lib/boolean.js";
+import { LiteralType } from "kryo/lib/literal.js";
 import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
 import url from "url";
 
-import { HammerfestContext, HammerfestPlayerInfo } from "../lib/scraping/context.js";
+import {
+  EvniHammerfestContext,
+  HammerfestContext,
+  HammerfestPlayerInfo,
+  OkHammerfestContext
+} from "../lib/scraping/context.js";
 import { HammerfestLoginPage, scrapeLogin } from "../lib/scraping/login.js";
 import { HammerfestPlayPage, scrapePlay } from "../lib/scraping/play.js";
 import { scrapeProfile } from "../lib/scraping/profile.js";
@@ -34,13 +40,26 @@ const $HammerfestPlayerInfo: RecordIoType<HammerfestPlayerInfo> = new RecordType
   changeCase: CaseStyle.SnakeCase,
 });
 
-const $HammerfestContext: RecordIoType<HammerfestContext> = new RecordType<HammerfestContext>({
+const $OkHammerfestContext: RecordIoType<OkHammerfestContext> = new RecordType<OkHammerfestContext>({
   properties: {
+    evni: {type: new LiteralType({type: $Boolean, value: false})},
     server: {type: $HammerfestServer},
     self: {type: new TryUnionType({variants: [$Null, $HammerfestPlayerInfo]})},
   },
   changeCase: CaseStyle.SnakeCase,
 });
+
+const $EvniHammerfestContext: RecordIoType<EvniHammerfestContext> = new RecordType<EvniHammerfestContext>({
+  properties: {
+    evni: {type: new LiteralType({type: $Boolean, value: true})},
+    server: {type: $HammerfestServer},
+  },
+  changeCase: CaseStyle.SnakeCase,
+});
+
+const $HammerfestContext: TryUnionType<HammerfestContext> = new TryUnionType({variants: [$OkHammerfestContext, $EvniHammerfestContext]});
+
+const $NullableHammerfestProfile: TryUnionType<HammerfestProfile | null> = new TryUnionType({variants: [$Null, $HammerfestProfile]});
 
 const $HammerfestLoginPage: RecordIoType<HammerfestLoginPage> = new RecordType<HammerfestLoginPage>({
   properties: {
@@ -116,20 +135,20 @@ describe("scraping", () => {
         const input: string = await fs.promises.readFile(testItem.inputUri, {encoding: "utf-8"});
         const optionsJson: string = await fs.promises.readFile(testItem.optionsUri, {encoding: "utf-8"});
         const options: HammerfestGetProfileByIdOptions = $HammerfestGetProfileByIdOptions.read(JSON_READER, optionsJson);
-        const actual: HammerfestProfile = await scrapeProfile(input, options);
-        const testErr: Error | undefined = $HammerfestProfile.testError!(actual);
+        const actual: HammerfestProfile | null = await scrapeProfile(input, options);
+        const testErr: Error | undefined = $NullableHammerfestProfile.testError!(actual);
         try {
           chai.assert.isUndefined(testErr, "Invalid");
         } catch (err) {
           console.error(testErr!.toString());
           throw err;
         }
-        const actualJson: string = `${JSON.stringify($HammerfestProfile.write(JSON_VALUE_WRITER, actual), null, 2)}\n`;
+        const actualJson: string = `${JSON.stringify($NullableHammerfestProfile.write(JSON_VALUE_WRITER, actual), null, 2)}\n`;
         await fs.promises.writeFile(testItem.actualUri, actualJson, {encoding: "utf-8"});
         const expectedJson: string = await fs.promises.readFile(testItem.expectedUri, {encoding: "utf-8"});
-        const expected: HammerfestProfile = $HammerfestProfile.read(JSON_READER, expectedJson);
+        const expected: HammerfestProfile | null = $NullableHammerfestProfile.read(JSON_READER, expectedJson);
         try {
-          chai.assert.isTrue($HammerfestProfile.equals(actual, expected));
+          chai.assert.isTrue($NullableHammerfestProfile.equals(actual, expected));
         } catch (err) {
           chai.assert.deepEqual(actualJson, expectedJson);
           throw err;

@@ -1,8 +1,8 @@
 {
-  "name": "@eternal-twin/user-test",
+  "name": "@eternal-twin/hammerfest-test",
   "version": "0.1.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
-  "description": "Implementation-independent tests for Eternal-Twin's `UserService`",
+  "description": "Implementation-independent tests for Eternal-Twin's `HammerfestService`",
   "repository": {
     "type": "git",
     "url": "git://gitlab.com:eternal-twin/etwin-api.git"
@@ -31,6 +31,7 @@
     "kryo": "^0.11.0"
   },
   "devDependencies": {
+    "@eternal-twin/auth-pg": "^0.1.0",
     "@eternal-twin/local-config": "^0.1.0",
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",

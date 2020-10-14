@@ -6,7 +6,7 @@ async function main() {
   const {username, password}: Credentials = await promptCredentials();
   const s = await hammefestClient.createSession({
     server: "hammerfest.fr",
-    login: username,
+    username: username,
     password: Buffer.from(password)
   });
   console.log(s);

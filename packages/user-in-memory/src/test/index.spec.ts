@@ -21,10 +21,10 @@ async function withPgUserService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
   const password = new ScryptPasswordService();
   const user = new InMemoryUserService(UUID4_GENERATOR);
-  const hammerfest = new InMemoryHammerfestClientService();
+  const hammerfestClient = new InMemoryHammerfestClientService();
   const twinoidClient = new HttpTwinoidClientService();
   const oauthProvider = new InMemoryOauthProviderService(UUID4_GENERATOR, password, secretKeyBytes);
-  const auth = new InMemoryAuthService(UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest, twinoidClient, user, oauthProvider);
+  const auth = new InMemoryAuthService(UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfestClient, twinoidClient, user, oauthProvider);
   return fn({auth, user});
 }
 

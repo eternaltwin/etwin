@@ -1,5 +1,6 @@
 {
   "context": {
+    "evni": false,
     "server": "hammerfest.fr",
     "self": null
   },

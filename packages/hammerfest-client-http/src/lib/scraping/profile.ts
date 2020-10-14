@@ -20,9 +20,12 @@ import { parseHtml } from "./parse-html.js";
 
 const ITEM_URI: RegExp = /^\/img\/items\/small\/(a|\d{0,4})\.gif$/;
 
-export async function scrapeProfile(html: string, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile> {
+export async function scrapeProfile(html: string, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile | null> {
   const root: Node[] = await parseHtml(html);
   const cx: HammerfestContext = scrapeContext(root);
+  if (cx.evni) {
+    return null;
+  }
   const profileDataList: Element | null = domutils.findOne((e: Element): boolean => e.name === "dl" && e.attribs["class"] === "profile", root);
   if (profileDataList === null) {
     throw new ScrapeError("ProfileDataNotFound");

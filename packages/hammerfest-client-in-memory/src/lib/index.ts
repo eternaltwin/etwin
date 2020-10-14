@@ -100,8 +100,30 @@ export class InMemoryHammerfestClientService implements HammerfestClientService 
     };
   }
 
-  async getProfileById(_session: HammerfestSession | null, _options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile> {
-    throw new Error("NotImplemented");
+  async getProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile | null> {
+    const srv = this.getServer(options.server);
+    const self: InMemoryUser | undefined = session !== null ? srv.sessions.get(session.key) : undefined;
+    const user: InMemoryUser | undefined = srv.users.get(options.userId);
+    if (user === undefined) {
+      return null;
+    }
+    return {
+      user: {
+        type: ObjectType.HammerfestUser,
+        server: "hammerfest.fr",
+        id: user.id,
+        username: user.username,
+      },
+      email: self !== undefined ? null : undefined,
+      bestScore: 0,
+      bestLevel: 0,
+      hasCarrot: false,
+      seasonScore: 0,
+      rank: 4,
+      items: [],
+      hallOfFame: null,
+      quests: new Map(),
+    };
   }
 
   async getOwnItems(_session: HammerfestSession): Promise<HammerfestItemCounts> {

@@ -94,6 +94,9 @@ export class HttpHammerfestClientService implements HammerfestClientService {
           throw new UnexpectedStatusCode(playRes.status, new Set([200]), "GET", playUri);
         }
         const play = await scrapePlay(playRes.text);
+        if (play.context.evni) {
+          throw new Error("EvniOnLoginRedirection");
+        }
         if (play.context.self === null) {
           throw new Error("ImmediatelyRevokedSession");
         }
@@ -146,6 +149,9 @@ export class HttpHammerfestClientService implements HammerfestClientService {
       throw new UnexpectedStatusCode(playRes.status, new Set([200]), "GET", playUri);
     }
     const play = await scrapePlay(playRes.text);
+    if (play.context.evni) {
+      throw new Error("Evni");
+    }
     if (play.context.self === null) {
       return null;
     }
@@ -166,11 +172,11 @@ export class HttpHammerfestClientService implements HammerfestClientService {
     return session;
   }
 
-  async getProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile> {
+  async getProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile | null> {
     return callHammerfest(options.server, TIMEOUT, () => this.innerGetProfileById(session, options, TIMEOUT));
   }
 
-  async innerGetProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions, timeout: number): Promise<HammerfestProfile> {
+  async innerGetProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions, timeout: number): Promise<HammerfestProfile | null> {
     const agent = superagent.agent();
     const userUri = this.uri.user(options.server, options.userId);
     if (session !== null) {

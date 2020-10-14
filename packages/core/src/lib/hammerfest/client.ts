@@ -32,7 +32,7 @@ export interface HammerfestClientService {
    */
   testSession(server: HammerfestServer, key: HammerfestSessionKey): Promise<HammerfestSession | null>;
 
-  getProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile>;
+  getProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile | null>;
 
   getOwnItems(session: HammerfestSession): Promise<HammerfestItemCounts>;
 
