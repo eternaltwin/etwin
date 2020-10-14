@@ -7,13 +7,13 @@ import { HammerfestForumThreadPage } from "@eternal-twin/core/lib/hammerfest/ham
 import { HammerfestGetProfileByIdOptions } from "@eternal-twin/core/lib/hammerfest/hammerfest-get-profile-by-id-options.js";
 import { HammerfestGodChild } from "@eternal-twin/core/lib/hammerfest/hammerfest-god-child";
 import { HammerfestItemCounts } from "@eternal-twin/core/lib/hammerfest/hammerfest-item-counts";
-import { HammerfestLogin } from "@eternal-twin/core/lib/hammerfest/hammerfest-login.js";
 import { HammerfestProfile } from "@eternal-twin/core/lib/hammerfest/hammerfest-profile";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestShop } from "@eternal-twin/core/lib/hammerfest/hammerfest-shop";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";
 import { Password } from "@eternal-twin/core/lib/password/password.js";
 
 interface InMemoryServer {
@@ -24,7 +24,7 @@ interface InMemoryServer {
 
 interface InMemoryUser {
   id: HammerfestUserId;
-  username: HammerfestLogin;
+  username: HammerfestUsername;
   password: Password;
   session: HammerfestSessionKey | null;
 }
@@ -52,7 +52,7 @@ export class InMemoryHammerfestClientService implements HammerfestClientService 
   async createSession(credentials: HammerfestCredentials): Promise<HammerfestSession> {
     const srv = this.getServer(credentials.server);
     for (const user of srv.users.values()) {
-      if (user.username === credentials.login) {
+      if (user.username === credentials.username) {
         if (Buffer.from(user.password).toString("hex") !== Buffer.from(credentials.password).toString("hex")) {
           throw new Error("BadPassword");
         }
@@ -71,7 +71,7 @@ export class InMemoryHammerfestClientService implements HammerfestClientService 
             type: ObjectType.HammerfestUser,
             server: credentials.server,
             id: user.id,
-            login: user.username,
+            username: user.username,
           },
         };
         return apiSession;
@@ -95,7 +95,7 @@ export class InMemoryHammerfestClientService implements HammerfestClientService 
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: user.id,
-        login: user.username,
+        username: user.username,
       },
     };
   }
@@ -131,7 +131,7 @@ export class InMemoryHammerfestClientService implements HammerfestClientService 
   public createUser(
     server: HammerfestServer,
     id: HammerfestUserId,
-    username: HammerfestLogin,
+    username: HammerfestUsername,
     password: Password,
   ): void {
     const srv = this.getServer(server);

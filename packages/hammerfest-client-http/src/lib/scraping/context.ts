@@ -1,6 +1,6 @@
-import { HammerfestLogin } from "@eternal-twin/core/lib/hammerfest/hammerfest-login.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";
 import { Element, Node } from "domhandler";
 import domutils from "domutils";
 
@@ -15,7 +15,7 @@ export interface HammerfestContext {
 
 export interface HammerfestPlayerInfo {
   id: HammerfestUserId;
-  login: HammerfestLogin;
+  username: HammerfestUsername;
 }
 
 /**
@@ -54,7 +54,7 @@ export function scrapeContext(root: Node[]): HammerfestContext {
   const links: Element[] = domutils.findAll(e => e.name === "a", playerInfo.children);
   let server: HammerfestServer | undefined;
   let id: HammerfestUserId | undefined;
-  let login: HammerfestLogin | undefined;
+  let username: HammerfestUsername | undefined;
   for (const link of links) {
     const href: string | undefined = link.attribs["href"];
     if (href === undefined) {
@@ -63,7 +63,7 @@ export function scrapeContext(root: Node[]): HammerfestContext {
     const userMatch = USER_URI.exec(href);
     if (userMatch !== null) {
       id = userMatch[1];
-      login = domutils.getText(link).trim();
+      username = domutils.getText(link).trim();
       continue;
     }
     if (href === "/shop.html" && server === undefined) {
@@ -83,8 +83,8 @@ export function scrapeContext(root: Node[]): HammerfestContext {
       }
     }
   }
-  if (server === undefined || id === undefined || login === undefined) {
+  if (server === undefined || id === undefined || username === undefined) {
     throw new ScrapeError("MissingTopBarFields");
   }
-  return {server, self: {id, login}};
+  return {server, self: {id, username}};
 }

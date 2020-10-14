@@ -3,9 +3,9 @@ import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
-import { $HammerfestLogin, HammerfestLogin } from "./hammerfest-login.js";
 import { $HammerfestServer, HammerfestServer } from "./hammerfest-server.js";
 import { $HammerfestUserId, HammerfestUserId } from "./hammerfest-user-id.js";
+import { $HammerfestUsername, HammerfestUsername } from "./hammerfest-username.js";
 
 /**
  * A reference uniquely identifying a Hammerfest user.
@@ -14,7 +14,7 @@ export interface HammerfestUserRef {
   type: ObjectType.HammerfestUser;
   server: HammerfestServer;
   id: HammerfestUserId;
-  login: HammerfestLogin;
+  username: HammerfestUsername;
 }
 
 export const $HammerfestUserRef: RecordIoType<HammerfestUserRef> = new RecordType<HammerfestUserRef>({
@@ -22,7 +22,7 @@ export const $HammerfestUserRef: RecordIoType<HammerfestUserRef> = new RecordTyp
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.HammerfestUser})},
     server: {type: $HammerfestServer},
     id: {type: $HammerfestUserId},
-    login: {type: $HammerfestLogin},
+    username: {type: $HammerfestUsername},
   },
   changeCase: CaseStyle.SnakeCase,
 });

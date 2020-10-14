@@ -19,11 +19,11 @@ import { $EmailAddress, EmailAddress } from "@eternal-twin/core/lib/email/email-
 import { EmailService } from "@eternal-twin/core/lib/email/service.js";
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
-import { HammerfestLogin } from "@eternal-twin/core/lib/hammerfest/hammerfest-login";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
 import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
+import { HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username";
 import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
@@ -55,7 +55,7 @@ interface EmailVerification {
 interface InMemoryHammerfestUser {
   server: HammerfestServer;
   id: HammerfestUserId;
-  username: HammerfestLogin;
+  username: HammerfestUsername;
 }
 
 interface InMemoryHammerfestUserLink {
@@ -273,7 +273,7 @@ export class InMemoryAuthService implements AuthService {
     if (link !== undefined) {
       userId = link.userId;
     } else {
-      let displayName: UserDisplayName = hfUser.login;
+      let displayName: UserDisplayName = hfUser.username;
       if (!$UserDisplayName.test(displayName)) {
         displayName = `hf_${displayName}`;
         if (!$UserDisplayName.test(displayName)) {
@@ -482,14 +482,14 @@ export class InMemoryAuthService implements AuthService {
   private async createOrUpdateHammerfestUser(hfUserRef: HammerfestUserRef): Promise<void> {
     for (const user of this.hammerfestUsers) {
       if (user.server === hfUserRef.server && user.id === hfUserRef.id) {
-        user.username = hfUserRef.login;
+        user.username = hfUserRef.username;
         return;
       }
     }
     const hfUser: InMemoryHammerfestUser = {
       server: hfUserRef.server,
       id: hfUserRef.id,
-      username: hfUserRef.login,
+      username: hfUserRef.username,
     };
     this.hammerfestUsers.add(hfUser);
   }

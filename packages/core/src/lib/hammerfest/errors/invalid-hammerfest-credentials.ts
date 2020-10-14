@@ -3,20 +3,20 @@ import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { $Ucs2String } from "kryo/lib/ucs2-string.js";
 
-import { $HammerfestLogin, HammerfestLogin } from "../hammerfest-login.js";
 import { $HammerfestServer, HammerfestServer } from "../hammerfest-server.js";
+import { $HammerfestUsername, HammerfestUsername } from "../hammerfest-username.js";
 
 export interface InvalidHammerfestCredentials {
   name: "InvalidHammerfestCredentials";
   server: HammerfestServer;
-  login: HammerfestLogin;
+  username: HammerfestUsername;
 }
 
 export const $InvalidHammerfestCredentials: RecordIoType<InvalidHammerfestCredentials> = new RecordType<InvalidHammerfestCredentials>({
   properties: {
     name: {type: new LiteralType({type: $Ucs2String, value: "InvalidHammerfestCredentials"})},
     server: {type: $HammerfestServer},
-    login: {type: $HammerfestLogin},
+    username: {type: $HammerfestUsername},
   },
   changeCase: CaseStyle.SnakeCase,
 });
@@ -24,13 +24,13 @@ export const $InvalidHammerfestCredentials: RecordIoType<InvalidHammerfestCreden
 export class InvalidHammerfestCredentialsError extends Error implements InvalidHammerfestCredentials {
   public name: "InvalidHammerfestCredentials";
   public server: HammerfestServer;
-  public login: HammerfestLogin;
+  public username: HammerfestUsername;
 
   public constructor(options: Omit<InvalidHammerfestCredentials, "name">) {
-    const message: string = `Server: ${options.server}, username: ${JSON.stringify(options.login)}`;
+    const message: string = `Server: ${options.server}, username: ${JSON.stringify(options.username)}`;
     super(message);
     this.name = "InvalidHammerfestCredentials";
     this.server = options.server;
-    this.login = options.login;
+    this.username = options.username;
   }
 }

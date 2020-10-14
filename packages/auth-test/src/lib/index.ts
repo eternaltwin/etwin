@@ -146,7 +146,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
 
       const credentials: HammerfestCredentials = {
         server: "hammerfest.fr",
-        login: "alice",
+        username: "alice",
         password: Buffer.from("aaaaa"),
       };
       const actual: UserAndSession = await api.auth.registerOrLoginWithHammerfest(GUEST_AUTH, credentials);

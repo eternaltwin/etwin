@@ -5,11 +5,11 @@ import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $HammerfestForumRole, HammerfestForumRole } from "./hammerfest-forum-role.js";
-import { $HammerfestLogin } from "./hammerfest-login.js";
 import { $HammerfestRank, HammerfestRank } from "./hammerfest-rank.js";
 import { $HammerfestServer } from "./hammerfest-server.js";
 import { $HammerfestUserId } from "./hammerfest-user-id.js";
 import { HammerfestUserRef } from "./hammerfest-user-ref";
+import { $HammerfestUsername } from "./hammerfest-username.js";
 
 /**
  * A reference uniquely identifying a Hammerfest user.
@@ -25,7 +25,7 @@ export const $HammerfestForumPostAuthor: RecordIoType<HammerfestForumPostAuthor>
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.HammerfestUser})},
     server: {type: $HammerfestServer},
     id: {type: $HammerfestUserId},
-    login: {type: $HammerfestLogin},
+    username: {type: $HammerfestUsername},
     hasCarrot: {type: $Boolean},
     rank: {type: $HammerfestRank},
     role: {type: $HammerfestForumRole},

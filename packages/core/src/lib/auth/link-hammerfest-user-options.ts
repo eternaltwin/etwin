@@ -2,8 +2,8 @@ import { CaseStyle } from "kryo";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { $Ucs2String } from "kryo/lib/ucs2-string.js";
 
-import { $HammerfestLogin, HammerfestLogin } from "../hammerfest/hammerfest-login.js";
 import { $HammerfestServer, HammerfestServer } from "../hammerfest/hammerfest-server.js";
+import { $HammerfestUsername, HammerfestUsername } from "../hammerfest/hammerfest-username.js";
 import { $UserId, UserId } from "../user/user-id.js";
 
 export interface LinkHammerfestUserOptions {
@@ -20,7 +20,7 @@ export interface LinkHammerfestUserOptions {
   /**
    * Login for the Hammerfest user.
    */
-  hammerfestLogin: HammerfestLogin;
+  hammerfestUsername: HammerfestUsername;
 
   /**
    * Password for the Hammerfest user.
@@ -32,7 +32,7 @@ export const $LinkHammerfestUserOptions: RecordIoType<LinkHammerfestUserOptions>
   properties: {
     userId: {type: $UserId},
     hammerfestServer: {type: $HammerfestServer},
-    hammerfestLogin: {type: $HammerfestLogin},
+    hammerfestUsername: {type: $HammerfestUsername},
     hammerfestPassword: {type: $Ucs2String},
   },
   changeCase: CaseStyle.SnakeCase,

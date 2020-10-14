@@ -1,11 +1,11 @@
 import { Ucs2StringType } from "kryo/lib/ucs2-string.js";
 
 /**
- * A Hammerfest login / username.
+ * A Hammerfest username.
  */
-export type HammerfestLogin = string;
+export type HammerfestUsername = string;
 
-export const $HammerfestLogin: Ucs2StringType = new Ucs2StringType({
+export const $HammerfestUsername: Ucs2StringType = new Ucs2StringType({
   trimmed: true,
   minLength: 1,
   maxLength: 12,

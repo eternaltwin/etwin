@@ -2,10 +2,10 @@ import {
   $HammerfestGetProfileByIdOptions,
   HammerfestGetProfileByIdOptions
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-get-profile-by-id-options.js";
-import { $HammerfestLogin } from "@eternal-twin/core/lib/hammerfest/hammerfest-login.js";
 import { $HammerfestProfile, HammerfestProfile } from "@eternal-twin/core/lib/hammerfest/hammerfest-profile.js";
 import { $HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { $HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { $HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";
 import chai from "chai";
 import fs from "fs";
 import furi from "furi";
@@ -29,7 +29,7 @@ const SCRAPING_DIR: furi.Furi = furi.join(PACKAGE_ROOT, ["test-resources", "scra
 const $HammerfestPlayerInfo: RecordIoType<HammerfestPlayerInfo> = new RecordType<HammerfestPlayerInfo>({
   properties: {
     id: {type: $HammerfestUserId},
-    login: {type: $HammerfestLogin},
+    username: {type: $HammerfestUsername},
   },
   changeCase: CaseStyle.SnakeCase,
 });

@@ -10,12 +10,12 @@ import { HammerfestForumThreadPage } from "@eternal-twin/core/lib/hammerfest/ham
 import { HammerfestGetProfileByIdOptions } from "@eternal-twin/core/lib/hammerfest/hammerfest-get-profile-by-id-options.js";
 import { HammerfestGodChild } from "@eternal-twin/core/lib/hammerfest/hammerfest-god-child.js";
 import { HammerfestItemCounts } from "@eternal-twin/core/lib/hammerfest/hammerfest-item-counts.js";
-import { $HammerfestLogin } from "@eternal-twin/core/lib/hammerfest/hammerfest-login.js";
 import { HammerfestProfile } from "@eternal-twin/core/lib/hammerfest/hammerfest-profile.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestShop } from "@eternal-twin/core/lib/hammerfest/hammerfest-shop.js";
+import { $HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";
 import { $Password } from "@eternal-twin/core/lib/password/password.js";
 import { Cookie, CookieAccessInfo } from "cookiejar";
 import { performance } from "perf_hooks";
@@ -62,8 +62,8 @@ export class HttpHammerfestClientService implements HammerfestClientService {
   }
 
   private async innerCreateSession(credentials: HammerfestCredentials, timeout: number): Promise<HammerfestSession> {
-    if (!$HammerfestLogin.test(credentials.login) || !$Password.test(credentials.password)) {
-      throw new InvalidHammerfestCredentialsError({server: credentials.server, login: credentials.login});
+    if (!$HammerfestUsername.test(credentials.username) || !$Password.test(credentials.password)) {
+      throw new InvalidHammerfestCredentialsError({server: credentials.server, username: credentials.username});
     }
 
     const loginUri = this.uri.login(credentials.server);
@@ -76,7 +76,7 @@ export class HttpHammerfestClientService implements HammerfestClientService {
       .timeout(timeout)
       .redirects(0)
       .ok(() => true)
-      .send({login: credentials.login, pass: passwordStr});
+      .send({login: credentials.username, pass: passwordStr});
 
     switch (loginRes.status) {
       case 302: {
@@ -108,7 +108,7 @@ export class HttpHammerfestClientService implements HammerfestClientService {
             type: ObjectType.HammerfestUser,
             server: play.context.server,
             id: play.context.self.id,
-            login: play.context.self.login,
+            username: play.context.self.username,
           },
         };
         return session;
@@ -116,7 +116,7 @@ export class HttpHammerfestClientService implements HammerfestClientService {
       case 200: {
         const loginPage = await scrapeLogin(loginRes.text);
         if (loginPage.isError) {
-          throw new InvalidHammerfestCredentialsError({server: credentials.server, login: credentials.login});
+          throw new InvalidHammerfestCredentialsError({server: credentials.server, username: credentials.username});
         }
         throw new Error("UnexpectedLoginResponse");
       }
@@ -160,7 +160,7 @@ export class HttpHammerfestClientService implements HammerfestClientService {
         type: ObjectType.HammerfestUser,
         server: play.context.server,
         id: play.context.self.id,
-        login: play.context.self.login,
+        username: play.context.self.username,
       },
     };
     return session;

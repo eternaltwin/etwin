@@ -448,7 +448,7 @@ export class PgAuthService implements AuthService {
     if (linkRow !== undefined) {
       userId = linkRow.user_id;
     } else {
-      let displayName: UserDisplayName = hfUser.login;
+      let displayName: UserDisplayName = hfUser.username;
       if (!$UserDisplayName.test(displayName)) {
         displayName = `hf_${displayName}`;
         if (!$UserDisplayName.test(displayName)) {
@@ -675,7 +675,7 @@ export class PgAuthService implements AuthService {
       [
         hfUserRef.server,
         hfUserRef.id,
-        hfUserRef.login,
+        hfUserRef.username,
       ],
     );
   }

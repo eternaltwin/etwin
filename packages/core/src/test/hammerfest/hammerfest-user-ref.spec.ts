@@ -14,13 +14,13 @@ describe("HammerfestUserRef", function () {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "127",
-        login: "elseabora",
+        username: "elseabora",
       },
       io: [
         {
           writer: JSON_WRITER,
           reader: JSON_READER,
-          raw: "{\"type\":\"HammerfestUser\",\"server\":\"hammerfest.fr\",\"id\":\"127\",\"login\":\"elseabora\"}",
+          raw: "{\"type\":\"HammerfestUser\",\"server\":\"hammerfest.fr\",\"id\":\"127\",\"username\":\"elseabora\"}",
         },
         {
           reader: JSON_VALUE_READER,
@@ -28,7 +28,7 @@ describe("HammerfestUserRef", function () {
             type: "HammerfestUser",
             server: "hammerfest.fr",
             id: "127",
-            login: "elseabora",
+            username: "elseabora",
           },
         },
       ],

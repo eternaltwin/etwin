@@ -2,8 +2,8 @@ import { DOCUMENT } from "@angular/common";
 import { Component, Inject, OnDestroy } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { HammerfestLogin } from "@eternal-twin/core/lib/hammerfest/hammerfest-login";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
+import { HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username";
 import { Subscription } from "rxjs";
 import { first as rxFirst } from "rxjs/operators";
 
@@ -19,7 +19,7 @@ const TEXT_ENCODER: TextEncoder = new TextEncoder();
 export class LoginHammerfestComponent implements OnDestroy {
   public readonly loginForm: FormGroup;
   public readonly server: FormControl;
-  public readonly login: FormControl;
+  public readonly username: FormControl;
   public readonly password: FormControl;
 
   private readonly auth: AuthService;
@@ -41,7 +41,7 @@ export class LoginHammerfestComponent implements OnDestroy {
     this.nextUri = undefined;
 
     this.server = new FormControl("hammerfest.fr");
-    this.login = new FormControl(
+    this.username = new FormControl(
       "",
       [Validators.required],
     );
@@ -51,7 +51,7 @@ export class LoginHammerfestComponent implements OnDestroy {
     );
     this.loginForm = new FormGroup({
       server: this.server,
-      login: this.login,
+      username: this.username,
       password: this.password,
     });
     this.pendingSubscription = null;
@@ -65,10 +65,10 @@ export class LoginHammerfestComponent implements OnDestroy {
     }
     const model: any = this.loginForm.getRawValue();
     const server: HammerfestServer = model.server;
-    const login: HammerfestLogin = model.login;
+    const username: HammerfestUsername = model.username;
     const passwordStr: string = model.password;
     const password: Uint8Array = TEXT_ENCODER.encode(passwordStr);
-    const authResult$ = this.auth.loginWithHammerfestCredentials({server, login, password});
+    const authResult$ = this.auth.loginWithHammerfestCredentials({server, username, password});
     this.serverError = null;
     const subscription: Subscription = authResult$.subscribe({
       next: (): void => {

@@ -12,13 +12,13 @@ describe("InMemoryHammerfestClientService", () => {
 
     {
       const actual: HammerfestSession = await hammerfest.createSession(
-        {server: "hammerfest.fr", login: "alice", password: Buffer.from("aaaaa")},
+        {server: "hammerfest.fr", username: "alice", password: Buffer.from("aaaaa")},
       );
       const expected: HammerfestSession = {
         ctime: actual.ctime,
         atime: actual.ctime,
         key: actual.key,
-        user: {type: ObjectType.HammerfestUser, server: "hammerfest.fr", id: "123", login: "alice"},
+        user: {type: ObjectType.HammerfestUser, server: "hammerfest.fr", id: "123", username: "alice"},
       };
       chai.assert.deepEqual(actual, expected);
     }

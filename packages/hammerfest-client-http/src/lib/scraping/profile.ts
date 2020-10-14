@@ -34,7 +34,7 @@ export async function scrapeProfile(html: string, options: HammerfestGetProfileB
   }
   const isLoggedIn = cx.self !== null;
   let dataIndex: number = 0;
-  const login: string = domutils.getText(profileData[dataIndex++]).trim();
+  const username: string = domutils.getText(profileData[dataIndex++]).trim();
   let email: NullableEmailAddress | undefined;
   if (hasEmail) {
     email = domutils.getText(profileData[dataIndex++]).trim();
@@ -114,7 +114,7 @@ export async function scrapeProfile(html: string, options: HammerfestGetProfileB
       type: ObjectType.HammerfestUser,
       server: cx.server,
       id: options.userId,
-      login,
+      username,
     },
     email,
     bestScore,

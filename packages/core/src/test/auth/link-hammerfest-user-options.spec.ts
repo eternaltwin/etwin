@@ -11,14 +11,14 @@ describe("LinkHammerfestUserOptions", function () {
       value: {
         userId: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
         hammerfestServer: "hammerfest.fr",
-        hammerfestLogin: "Alice",
+        hammerfestUsername: "Alice",
         hammerfestPassword: "AAA",
       },
       io: [
         {
           writer: JSON_WRITER,
           reader: JSON_READER,
-          raw: "{\"user_id\":\"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee\",\"hammerfest_server\":\"hammerfest.fr\",\"hammerfest_login\":\"Alice\",\"hammerfest_password\":\"AAA\"}",
+          raw: "{\"user_id\":\"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee\",\"hammerfest_server\":\"hammerfest.fr\",\"hammerfest_username\":\"Alice\",\"hammerfest_password\":\"AAA\"}",
         },
       ],
     },
