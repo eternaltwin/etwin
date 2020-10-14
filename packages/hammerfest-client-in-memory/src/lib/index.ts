@@ -80,8 +80,24 @@ export class InMemoryHammerfestClientService implements HammerfestClientService 
     throw new Error("UserNotFound");
   }
 
-  async testSession(_server: HammerfestServer, _key: HammerfestSessionKey): Promise<HammerfestSession> {
-    throw new Error("NotImplemented");
+  async testSession(server: HammerfestServer, key: HammerfestSessionKey): Promise<HammerfestSession | null> {
+    const srv = this.getServer(server);
+    const user: InMemoryUser | undefined = srv.sessions.get(key);
+    if (user === undefined) {
+      return null;
+    }
+    const ctime = new Date();
+    return {
+      ctime,
+      atime: ctime,
+      key,
+      user: {
+        type: ObjectType.HammerfestUser,
+        server: "hammerfest.fr",
+        id: user.id,
+        login: user.username,
+      },
+    };
   }
 
   async getProfileById(_session: HammerfestSession | null, _options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile> {

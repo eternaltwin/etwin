@@ -10,6 +10,8 @@ async function main() {
     password: Buffer.from(password)
   });
   console.log(s);
+  const profile = await hammefestClient.getProfileById(s, {server: "hammerfest.fr", userId: s.user.id});
+  console.log(profile);
 }
 
 main();

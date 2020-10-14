@@ -26,7 +26,29 @@ import { UnexpectedHammerfestLoginRedirection } from "./errors/unexpected-hammer
 import { UnexpectedStatusCode } from "./errors/unexpected-status-code.js";
 import { scrapeLogin } from "./scraping/login.js";
 import { scrapePlay } from "./scraping/play.js";
+import { scrapeProfile } from "./scraping/profile.js";
 import { HammerfestUri } from "./uri.js";
+
+const TIMEOUT: number = 5000;
+
+async function callHammerfest<T>(server: HammerfestServer, timeout: number, fn: () => Promise<T>): Promise<T> {
+  try {
+    return await fn();
+  } catch (e) {
+    if (
+      (e instanceof HammerfestTimeoutError)
+      || (e instanceof HammerfestUnknownError)
+      || (e instanceof InvalidHammerfestCredentialsError)
+    ) {
+      throw e;
+    } else {
+      if (e.errno === "ETIME" || e.errno === "ETIMEDOUT") {
+        throw new HammerfestTimeoutError({server, timeout});
+      }
+      throw new HammerfestUnknownError({server, cause: e});
+    }
+  }
+}
 
 export class HttpHammerfestClientService implements HammerfestClientService {
   private readonly uri: HammerfestUri;
@@ -36,23 +58,7 @@ export class HttpHammerfestClientService implements HammerfestClientService {
   }
 
   public async createSession(credentials: HammerfestCredentials): Promise<HammerfestSession> {
-    const TIMEOUT: number = 5000;
-    try {
-      return await this.innerCreateSession(credentials, TIMEOUT);
-    } catch (e) {
-      if (
-        (e instanceof HammerfestTimeoutError)
-        || (e instanceof HammerfestUnknownError)
-        || (e instanceof InvalidHammerfestCredentialsError)
-      ) {
-        throw e;
-      } else {
-        if (e.errno === "ETIME" || e.errno === "ETIMEDOUT") {
-          throw new HammerfestTimeoutError({server: credentials.server, timeout: TIMEOUT});
-        }
-        throw new HammerfestUnknownError({server: credentials.server, cause: e});
-      }
-    }
+    return callHammerfest(credentials.server, TIMEOUT, () => this.innerCreateSession(credentials, TIMEOUT));
   }
 
   private async innerCreateSession(credentials: HammerfestCredentials, timeout: number): Promise<HammerfestSession> {
@@ -85,7 +91,7 @@ export class HttpHammerfestClientService implements HammerfestClientService {
         const playUri = this.uri.play(credentials.server);
         const playRes = await agent.get(playUri.toString()).timeout(remainingTime);
         if (playRes.status !== 200) {
-          throw new UnexpectedStatusCode(playRes.status, new Set([200, 302]), "GET", playUri);
+          throw new UnexpectedStatusCode(playRes.status, new Set([200]), "GET", playUri);
         }
         const play = await scrapePlay(playRes.text);
         if (play.context.self === null) {
@@ -120,14 +126,62 @@ export class HttpHammerfestClientService implements HammerfestClientService {
   }
 
   public async testSession(
-    _server: HammerfestServer,
-    _key: HammerfestSessionKey,
-  ): Promise<HammerfestSession> {
-    throw new Error("NotImplemented");
+    server: HammerfestServer,
+    key: HammerfestSessionKey,
+  ): Promise<HammerfestSession | null> {
+    return callHammerfest(server, TIMEOUT, () => this.innerTestSession(server, key, TIMEOUT));
   }
 
-  async getProfileById(_session: HammerfestSession | null, _options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile> {
-    throw new Error("NotImplemented");
+  public async innerTestSession(
+    server: HammerfestServer,
+    key: HammerfestSessionKey,
+    timeout: number,
+  ): Promise<HammerfestSession | null> {
+    const ctime = new Date();
+    const agent = superagent.agent();
+    const playUri = this.uri.play(server);
+    agent.jar.setCookie(new Cookie(`SID=${key}`, playUri.host));
+    const playRes = await agent.get(playUri.toString()).timeout(timeout);
+    if (playRes.status !== 200) {
+      throw new UnexpectedStatusCode(playRes.status, new Set([200]), "GET", playUri);
+    }
+    const play = await scrapePlay(playRes.text);
+    if (play.context.self === null) {
+      return null;
+    }
+    if (play.context.server !== server) {
+      throw new Error(`UnexpectedServer: actual: ${play.context.server}, expected: ${server}`);
+    }
+    const session: HammerfestSession = {
+      ctime,
+      atime: ctime,
+      key,
+      user: {
+        type: ObjectType.HammerfestUser,
+        server: play.context.server,
+        id: play.context.self.id,
+        login: play.context.self.login,
+      },
+    };
+    return session;
+  }
+
+  async getProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile> {
+    return callHammerfest(options.server, TIMEOUT, () => this.innerGetProfileById(session, options, TIMEOUT));
+  }
+
+  async innerGetProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions, timeout: number): Promise<HammerfestProfile> {
+    const agent = superagent.agent();
+    const userUri = this.uri.user(options.server, options.userId);
+    if (session !== null) {
+      agent.jar.setCookie(new Cookie(`SID=${session.key}`, userUri.host));
+    }
+    const userRes = await agent.get(userUri.toString()).timeout(timeout);
+    if (userRes.status !== 200) {
+      throw new UnexpectedStatusCode(userRes.status, new Set([200]), "GET", userUri);
+    }
+    const profile = await scrapeProfile(userRes.text, options);
+    return profile;
   }
 
   async getOwnItems(_session: HammerfestSession): Promise<HammerfestItemCounts> {

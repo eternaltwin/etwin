@@ -1,4 +1,5 @@
-import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
+import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
+import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
 import url from "url";
 
 export class HammerfestUri {
@@ -21,6 +22,12 @@ export class HammerfestUri {
   play(server: HammerfestServer): url.URL {
     const uri: url.URL = new url.URL(this.getServer(server));
     uri.pathname = "/play.html";
+    return uri;
+  }
+
+  user(server: HammerfestServer, userId: HammerfestUserId): url.URL {
+    const uri: url.URL = new url.URL(this.getServer(server));
+    uri.pathname = `/user.html/${userId}`;
     return uri;
   }
 

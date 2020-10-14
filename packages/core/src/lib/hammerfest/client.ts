@@ -30,7 +30,7 @@ export interface HammerfestClientService {
    * @returns Updated session if still valid
    * @throws Unspecified error on expired session or unreachable server.
    */
-  testSession(server: HammerfestServer, key: HammerfestSessionKey): Promise<HammerfestSession>;
+  testSession(server: HammerfestServer, key: HammerfestSessionKey): Promise<HammerfestSession | null>;
 
   getProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile>;
 
