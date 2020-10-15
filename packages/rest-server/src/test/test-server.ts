@@ -4,6 +4,7 @@ import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg";
 import { PgForumService } from "@eternal-twin/forum-pg";
 import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
+import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
@@ -17,7 +18,12 @@ import url from "url";
 import { KoaAuth } from "../lib/helpers/koa-auth.js";
 import { Api, createApiRouter } from "../lib/index.js";
 
-export async function withTestServer<R>(fn: (server: http.Server) => Promise<R>): Promise<R> {
+export interface TestServer {
+  hammerfestClient: InMemoryHammerfestClientService,
+  server: http.Server,
+}
+
+export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>): Promise<R> {
   const config = await getLocalConfig();
   const dbConfig: DbConfig = {
     host: config.db.host,
@@ -36,12 +42,13 @@ export async function withTestServer<R>(fn: (server: http.Server) => Promise<R>)
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
     const password = new ScryptPasswordService();
     const user = new PgUserService(db, secretKeyStr);
-    const hammerfest = new InMemoryHammerfestClientService();
+    const hammerfestClient = new InMemoryHammerfestClientService();
+    const hammerfest = new InMemoryHammerfestService(hammerfestClient);
     const twinoidClient = new HttpTwinoidClientService();
-    const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest, twinoidClient);
+    const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfestClient, twinoidClient);
     const koaAuth = new KoaAuth(auth);
     const forum = new PgForumService(db, UUID4_GENERATOR, user, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
-    const api: Api = {auth, forum, koaAuth, user};
+    const api: Api = {auth, forum, hammerfest, koaAuth, user};
 
     const app: Koa = createApiRouter(api);
 
@@ -61,7 +68,7 @@ export async function withTestServer<R>(fn: (server: http.Server) => Promise<R>)
 
         let result: R;
         try {
-          result = await fn(server);
+          result = await fn({hammerfestClient, server});
         } catch (err) {
           await closeServer();
           reject(err);

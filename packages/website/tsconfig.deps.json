@@ -21,6 +21,12 @@
       "path": "../forum-pg/src/lib"
     },
     {
+      "path": "../hammerfest-client-http/src/lib"
+    },
+    {
+      "path": "../hammerfest-in-memory/src/lib"
+    },
+    {
       "path": "../oauth-provider-in-memory/src/lib"
     },
     {

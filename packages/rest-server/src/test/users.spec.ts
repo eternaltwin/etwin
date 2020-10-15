@@ -13,7 +13,7 @@ chai.use(chaiHttp);
 describe("/users", () => {
   it("should create two users and retrieve them", async function (this: Mocha.Context) {
     this.timeout(30000);
-    return withTestServer(async server => {
+    return withTestServer(async ({server}) => {
       const guestAgent: TestAgent = new TestAgent(chai.request.agent(server));
       const {alice, aliceAgent, bob, bobAgent} = await populateUsers(server);
       {

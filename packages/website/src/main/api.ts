@@ -1,7 +1,8 @@
 import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
-import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
@@ -10,6 +11,7 @@ import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
 import { PgForumService } from "@eternal-twin/forum-pg";
 import { HttpHammerfestClientService } from "@eternal-twin/hammerfest-client-http";
+import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
 import { ApiType, Config } from "@eternal-twin/local-config";
 import { HttpOauthClientService } from "@eternal-twin/oauth-client-http";
 import { InMemoryOauthProviderService } from "@eternal-twin/oauth-provider-in-memory";
@@ -27,8 +29,9 @@ import urljoin from "url-join";
 
 export interface Api {
   auth: AuthService;
-  koaAuth: KoaAuth;
   forum: ForumService;
+  hammerfest: HammerfestService;
+  koaAuth: KoaAuth;
   oauthClient: OauthClientService;
   oauthProvider: OauthProviderService;
   twinoidClient: TwinoidClientService;
@@ -41,7 +44,8 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   const email = new ConsoleEmailService();
   const emailTemplate = new EtwinEmailTemplateService(new url.URL(config.etwin.externalUri.toString()));
   const password = new ScryptPasswordService();
-  const hammerfest = new HttpHammerfestClientService();
+  const hammerfestClient = new HttpHammerfestClientService();
+  const hammerfest = new InMemoryHammerfestService(hammerfestClient);
   const twinoidClient = new HttpTwinoidClientService();
 
   let auth: AuthService;
@@ -55,7 +59,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     user = imUser;
     const imOauthProvider = new InMemoryOauthProviderService(UUID4_GENERATOR, password, secretKeyBytes);
     oauthProvider = imOauthProvider;
-    auth = new InMemoryAuthService(UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest, twinoidClient, imUser, imOauthProvider);
+    auth = new InMemoryAuthService(UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfestClient, twinoidClient, imUser, imOauthProvider);
     forum = new InMemoryForumService(UUID4_GENERATOR, user, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
     teardown = async function(): Promise<void> {};
   } else {
@@ -68,7 +72,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     });
     const db = new Database(pool);
     user = new PgUserService(db, secretKeyStr);
-    auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest, twinoidClient);
+    auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfestClient, twinoidClient);
     oauthProvider = new PgOauthProviderService(db, UUID4_GENERATOR, password, secretKeyStr, secretKeyBytes);
     forum = new PgForumService(db, UUID4_GENERATOR, user, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
     teardown = async function(): Promise<void> {
@@ -108,7 +112,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     );
   }
 
-  const api: Api = {auth, koaAuth, forum, oauthClient, oauthProvider, twinoidClient, user};
+  const api: Api = {auth, forum, hammerfest, koaAuth, oauthClient, oauthProvider, twinoidClient, user};
 
   return {api, teardown};
 }

@@ -3,6 +3,7 @@ import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { PgForumService } from "@eternal-twin/forum-pg";
 import { HttpHammerfestClientService } from "@eternal-twin/hammerfest-client-http";
+import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
 import { Config } from "@eternal-twin/local-config";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
@@ -29,23 +30,12 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const emailTemplate = new EtwinEmailTemplateService(config.etwin.externalUri);
   const password = new ScryptPasswordService();
   const user = new PgUserService(db, secretKeyStr);
-  const hammerfest = new HttpHammerfestClientService();
+  const hammerfestClient = new HttpHammerfestClientService();
+  const hammerfest = new InMemoryHammerfestService(hammerfestClient);
   const twinoidClient = new HttpTwinoidClientService();
-  const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfest, twinoidClient);
+  const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfestClient, twinoidClient);
   const koaAuth = new KoaAuth(auth);
   const forum = new PgForumService(db, UUID4_GENERATOR, user, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
-
-  // for (const [key, client] of config.clients) {
-  //   await oauthProvider.createOrUpdateSystemClient(
-  //     key,
-  //     {
-  //       displayName: client.displayName,
-  //       appUri: client.appUri.toString(),
-  //       callbackUri: client.callbackUri.toString(),
-  //       secret: Buffer.from(client.secret),
-  //     }
-  //   );
-  // }
 
   for (const [key, section] of config.forum.sections) {
     await forum.createOrUpdateSystemSection(
@@ -57,7 +47,7 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
     );
   }
 
-  const api: Api = {auth, koaAuth, forum, user};
+  const api: Api = {auth, forum, hammerfest, koaAuth, user};
 
   async function teardown(): Promise<void> {
     await teardownPool();

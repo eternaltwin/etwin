@@ -19,7 +19,7 @@
   </label>
   <label>
     <span i18n="Hammerfest username address field label@@login.hammfestUsername">Hammerfest username</span>
-    <input type="text" name="login" class="field" formControlName="login" required="required"/>
+    <input type="text" name="username" class="field" formControlName="username" required="required"/>
     <div *ngIf="username.invalid && (username.dirty || username.touched)" class="error">
       <div *ngIf="username.errors?.required" i18n="@@login.hammerfestUsernameRequired">
         The username is required.

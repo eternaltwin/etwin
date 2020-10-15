@@ -17,7 +17,7 @@ chai.use(chaiHttp);
 describe("/auth", () => {
   it("should return a guest auth context when unauthenticated", async function (this: Mocha.Context) {
     this.timeout(30000);
-    return withTestServer(async server => {
+    return withTestServer(async ({server}) => {
       const agent: TestAgent = new TestAgent(chai.request.agent(server));
       {
         const actual: AuthContext = await agent.get("/auth/self", $AuthContext);
@@ -32,7 +32,7 @@ describe("/auth", () => {
 
   it("should register a user and retrieve the automatic auth", async function (this: Mocha.Context) {
     this.timeout(30000);
-    return withTestServer(async server => {
+    return withTestServer(async ({server}) => {
       const agent: TestAgent = new TestAgent(chai.request.agent(server));
       const actualUser: UserRef = await agent.post(
         "/users",
@@ -72,7 +72,7 @@ describe("/auth", () => {
 
   it("should register a user and authenticate back", async function (this: Mocha.Context) {
     this.timeout(30000);
-    return withTestServer(async server => {
+    return withTestServer(async ({server}) => {
       let user: User;
       {
         const agent: TestAgent = new TestAgent(chai.request.agent(server));
@@ -119,7 +119,7 @@ describe("/auth", () => {
 
   it("should register a user and sign out", async function (this: Mocha.Context) {
     this.timeout(30000);
-    return withTestServer(async server => {
+    return withTestServer(async ({server}) => {
       const agent: TestAgent = new TestAgent(chai.request.agent(server));
       const actualUser: UserRef = await agent.post(
         "/users",

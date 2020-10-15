@@ -1873,7 +1873,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/hammerfest-in-memory@workspace:packages/hammerfest-in-memory":
+"@eternal-twin/hammerfest-in-memory@^0.1.0, @eternal-twin/hammerfest-in-memory@workspace:packages/hammerfest-in-memory":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/hammerfest-in-memory@workspace:packages/hammerfest-in-memory"
   dependencies:
@@ -2063,6 +2063,7 @@ __metadata:
     "@eternal-twin/forum-pg": ^0.1.0
     "@eternal-twin/hammerfest-client-http": ^0.1.0
     "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
+    "@eternal-twin/hammerfest-in-memory": ^0.1.0
     "@eternal-twin/user-pg": ^0.1.0
     "@eternal-twin/uuid4-generator": ^0.1.0
     "@koa/cors": ^3.1.0
@@ -2223,6 +2224,7 @@ __metadata:
     "@eternal-twin/email-console": ^0.1.0
     "@eternal-twin/email-template-etwin": ^0.1.0
     "@eternal-twin/hammerfest-client-http": ^0.1.0
+    "@eternal-twin/hammerfest-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/oauth-client-http": ^0.1.0
     "@eternal-twin/twinoid-client-http": ^0.1.0

@@ -1,5 +1,6 @@
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import Koa from "koa";
 import koaMount from "koa-mount";
@@ -7,14 +8,16 @@ import koaMount from "koa-mount";
 import { createAuthRouter } from "./auth.js";
 import { createConfigRouter } from "./config.js";
 import { createForumRouter } from "./forum.js";
+import { createHammerfestRouter } from "./hammerfest.js";
 import { KoaAuth } from "./helpers/koa-auth.js";
 import { createUsersRouter } from "./users.js";
 
 export interface Api {
   auth: AuthService;
+  forum: ForumService;
+  hammerfest: HammerfestService;
   koaAuth: KoaAuth;
   user: UserService;
-  forum: ForumService;
 }
 
 export function createApiRouter(api: Api): Koa {
@@ -28,6 +31,9 @@ export function createApiRouter(api: Api): Koa {
   const forum = createForumRouter(api);
   router.use(koaMount("/forum", forum.routes()));
   router.use(koaMount("/forum", forum.allowedMethods()));
+  const hammerfest = createHammerfestRouter(api);
+  router.use(koaMount("/hammerfest", hammerfest.routes()));
+  router.use(koaMount("/hammerfest", hammerfest.allowedMethods()));
 
   router.use((ctx: Koa.Context) => {
     ctx.response.status = 404;
