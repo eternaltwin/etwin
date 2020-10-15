@@ -1,11 +1,11 @@
-import { AuthContext } from "../auth/auth-context";
-import { HammerfestServer } from "./hammerfest-server";
-import { HammerfestUserId } from "./hammerfest-user-id";
-import { HammerfestUserRef } from "./hammerfest-user-ref";
+import { AuthContext } from "../auth/auth-context.js";
+import { HammerfestServer } from "./hammerfest-server.js";
+import { HammerfestUserId } from "./hammerfest-user-id.js";
+import { HammerfestUserRef } from "./hammerfest-user-ref.js";
 
 export interface HammerfestService {
   /**
-   * Tests if a session key is still valid.
+   * Retrieves an Hammerfest user by id.
    *
    * @param acx Authentification context for this action
    * @param hfServer Hammerfest server for this user

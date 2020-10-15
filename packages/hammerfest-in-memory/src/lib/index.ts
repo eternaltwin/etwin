@@ -1,6 +1,7 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
+import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
 import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 
@@ -11,7 +12,7 @@ export class InMemoryHammerfestService implements HammerfestService {
     this.hammerfestClient = hammerfestClient;
   }
 
-  async getUserById(_acx: AuthContext, server: HammerfestServer, userId: string): Promise<HammerfestUserRef | null> {
+  async getUserById(_acx: AuthContext, server: HammerfestServer, userId: HammerfestUserId): Promise<HammerfestUserRef | null> {
     const profile = await this.hammerfestClient.getProfileById(null, {server, userId});
     return profile !== null ? profile.user : null;
   }

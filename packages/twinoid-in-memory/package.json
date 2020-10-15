@@ -1,8 +1,8 @@
 {
-  "name": "@eternal-twin/hammerfest-test",
+  "name": "@eternal-twin/twinoid-in-memory",
   "version": "0.1.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
-  "description": "Implementation-independent tests for Eternal-Twin's `HammerfestService`",
+  "description": "Eternal-Twin `TwinoidService` in-memory implementation",
   "repository": {
     "type": "git",
     "url": "git://gitlab.com:eternal-twin/etwin-api.git"
@@ -16,7 +16,9 @@
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
-    "build": "tsc --build src/lib/tsconfig.json"
+    "build": "tsc --build src/lib/tsconfig.json",
+    "test:build": "tsc --build src/test/tsconfig.json",
+    "test": "yarn run test:build && mocha \"test/**/*.spec.js\""
   },
   "publishConfig": {
     "access": "public",
@@ -27,12 +29,9 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@eternal-twin/core": "^0.1.0",
-    "@eternal-twin/hammerfest-client-in-memory": "^0.1.0",
-    "kryo": "^0.11.0"
+    "@eternal-twin/core": "^0.1.0"
   },
   "devDependencies": {
-    "@eternal-twin/local-config": "^0.1.0",
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",
     "@types/node": "^14.11.2",

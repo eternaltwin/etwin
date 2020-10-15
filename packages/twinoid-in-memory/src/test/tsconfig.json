@@ -1,21 +1,17 @@
 {
   "extends": "../../../../tsconfig.json",
   "compilerOptions": {
-    "composite": true,
     "noEmit": false,
     "rootDir": ".",
-    "outDir": "../../lib"
+    "outDir": "../../test"
   },
   "include": [
-    "./**/*.ts"
+    "**/*.ts"
   ],
   "exclude": [],
   "references": [
     {
-      "path": "../../../core/src/lib"
-    },
-    {
-      "path": "../../../hammerfest-client-in-memory/src/lib"
+      "path": "../lib"
     }
   ]
 }
