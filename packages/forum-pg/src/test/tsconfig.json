@@ -14,13 +14,10 @@
       "path": "../lib"
     },
     {
-      "path": "../../../etwin-pg/src/lib"
+      "path": "../../../auth-pg/src/lib"
     },
     {
       "path": "../../../email-in-memory/src/lib"
-    },
-    {
-      "path": "../../../hammerfest-client-in-memory/src/lib"
     },
     {
       "path": "../../../email-template-json/src/lib"
@@ -29,10 +26,10 @@
       "path": "../../../forum-test/src/lib"
     },
     {
-      "path": "../../../local-config/src/lib"
+      "path": "../../../hammerfest-client-in-memory/src/lib"
     },
     {
-      "path": "../../../auth-pg/src/lib"
+      "path": "../../../local-config/src/lib"
     },
     {
       "path": "../../../password-scrypt/src/lib"

@@ -11,7 +11,6 @@ import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import { User } from "@eternal-twin/core/lib/user/user.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
-import { UuidHex } from "kryo/lib/uuid-hex.js";
 
 export interface InMemoryUser {
   id: UserId;
@@ -80,7 +79,7 @@ export class InMemoryUserService implements UserService {
     username: Username | null,
     passwordHash: PasswordHash | null,
   ): Promise<InMemoryUser> {
-    const userId: UuidHex = this.uuidGen.next();
+    const userId: UserId = this.uuidGen.next();
     const time: number = Date.now();
     const inMemoryUser: InMemoryUser = {
       id: userId,

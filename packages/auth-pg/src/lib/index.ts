@@ -29,13 +29,12 @@ import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/u
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
 import {
-  HammerfestUserLinkRow,
   OauthAccessTokenRow,
   OauthClientRow,
   SessionRow,
-  TwinoidUserLinkRow,
   UserRow,
 } from "@eternal-twin/etwin-pg/lib/schema.js";
+import { PgLinkService } from "@eternal-twin/link-pg";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
 import { User as TidUser } from "@eternal-twin/twinoid-core/lib/user.js";
@@ -52,9 +51,10 @@ export class PgAuthService implements AuthService {
   private readonly password: PasswordService;
   private readonly email: EmailService;
   private readonly emailTemplate: EmailTemplateService;
+  private readonly link: PgLinkService;
   private readonly defaultLocale: LocaleId;
   private readonly tokenSecret: Buffer;
-  private readonly hammerfest: HammerfestClientService;
+  private readonly hammerfestClient: HammerfestClientService;
   private readonly twinoidClient: TwinoidClientService;
 
   /**
@@ -66,20 +66,22 @@ export class PgAuthService implements AuthService {
    * @param password Password service to use.
    * @param email Email service to use.
    * @param emailTemplate Email template service to use.
+   * @param link Link service to use.
    * @param tokenSecret Secret key used to generated and verify tokens.
-   * @param hammerfest Hammerfest service to use.
+   * @param hammerfestClient Hammerfest service to use.
    * @param twinoidClient Twinoid API service to use.
    */
   constructor(
     database: Database,
     dbSecret: string,
-    uuidGen: UuidGenerator,
-    password: PasswordService,
     email: EmailService,
     emailTemplate: EmailTemplateService,
+    hammerfestClient: HammerfestClientService,
+    link: PgLinkService,
+    password: PasswordService,
     tokenSecret: Uint8Array,
-    hammerfest: HammerfestClientService,
     twinoidClient: TwinoidClientService,
+    uuidGen: UuidGenerator,
   ) {
     this.database = database;
     this.dbSecret = dbSecret;
@@ -87,8 +89,9 @@ export class PgAuthService implements AuthService {
     this.password = password;
     this.email = email;
     this.emailTemplate = emailTemplate;
+    this.link = link;
     this.tokenSecret = Buffer.from(tokenSecret);
-    this.hammerfest = hammerfest;
+    this.hammerfestClient = hammerfestClient;
     this.twinoidClient = twinoidClient;
     this.defaultLocale = "en-US";
   }
@@ -433,20 +436,13 @@ export class PgAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    const hfSession: HammerfestSession = await this.hammerfest.createSession(credentials);
+    const hfSession: HammerfestSession = await this.hammerfestClient.createSession(credentials);
     const hfUser: HammerfestUserRef = hfSession.user;
     await this.createOrUpdateHammerfestUser(queryable, hfUser);
-    type LinkRow = Pick<HammerfestUserLinkRow, "user_id">;
-    const linkRow: LinkRow | undefined = await queryable.oneOrNone(
-      `
-      SELECT user_id
-      FROM hammerfest_user_links
-      WHERE hammerfest_server = $1::VARCHAR AND hammerfest_user_id = $2::INT;`,
-      [hfUser.server, hfUser.id],
-    );
+    const link = await this.link.getLinkFromHammerfestTx(queryable, hfUser.server, hfUser.id);
     let userId: UserId;
-    if (linkRow !== undefined) {
-      userId = linkRow.user_id;
+    if (link.current !== null) {
+      userId = link.current.user.id;
     } else {
       let displayName: UserDisplayName = hfUser.username;
       if (!$UserDisplayName.test(displayName)) {
@@ -456,17 +452,7 @@ export class PgAuthService implements AuthService {
         }
       }
       const user = await this.createUser(queryable, displayName, null, null, null);
-      await queryable.countOne(
-        `
-        INSERT
-        INTO hammerfest_user_links(
-          user_id, hammerfest_server, hammerfest_user_id, ctime
-        )
-        VALUES (
-          $1::UUID, $2::VARCHAR, $3::INT, NOW()
-        );`,
-        [user.id, hfUser.server, hfUser.id],
-      );
+      await this.link.linkToHammerfestTx(queryable, user.id, hfUser.server, hfUser.id);
       userId = user.id;
     }
 
@@ -487,17 +473,10 @@ export class PgAuthService implements AuthService {
     }
     const tidUser: Partial<TidUser> = await this.twinoidClient.getMe(at);
     await this.createOrUpdateTwinoidUser(queryable, tidUser);
-    type LinkRow = Pick<TwinoidUserLinkRow, "user_id">;
-    const linkRow: LinkRow | undefined = await queryable.oneOrNone(
-      `
-      SELECT user_id
-      FROM twinoid_user_links
-      WHERE twinoid_user_id = $1::INT;`,
-      [tidUser.id],
-    );
+    const link = await this.link.getLinkFromTwinoidTx(queryable, tidUser.id!.toString(10));
     let userId: UserId;
-    if (linkRow !== undefined) {
-      userId = linkRow.user_id;
+    if (link.current !== null) {
+      userId = link.current.user.id;
     } else {
       let displayName: UserDisplayName = tidUser.name!;
       if (!$UserDisplayName.test(displayName)) {
@@ -510,17 +489,7 @@ export class PgAuthService implements AuthService {
         }
       }
       const user = await this.createUser(queryable, displayName, null, null, null);
-      await queryable.countOne(
-        `
-        INSERT
-        INTO twinoid_user_links(
-          user_id, twinoid_user_id, ctime
-        )
-        VALUES (
-          $1::UUID, $2::INT, NOW()
-        );`,
-        [user.id, tidUser.id],
-      );
+      await this.link.linkToTwinoidTx(queryable, user.id, tidUser.id!.toString(10));
       userId = user.id;
     }
 
@@ -665,12 +634,12 @@ export class PgAuthService implements AuthService {
     await queryable.countOne(
       `
       INSERT INTO hammerfest_users(
-        server, user_id, username
+        hammerfest_server, hammerfest_user_id, username
       )
       VALUES (
-        $1::VARCHAR, $2::INT, $3::VARCHAR
+        $1::HAMMERFEST_SERVER, $2::HAMMERFEST_USER_ID, $3::VARCHAR
       )
-      ON CONFLICT (server, user_id)
+      ON CONFLICT (hammerfest_server, hammerfest_user_id)
         DO UPDATE SET username = $3::VARCHAR;`,
       [
         hfUserRef.server,
@@ -684,12 +653,12 @@ export class PgAuthService implements AuthService {
     await queryable.countOne(
       `
       INSERT INTO twinoid_users(
-        user_id, name
+        twinoid_user_id, name
       )
       VALUES (
         $1::INT, $2::VARCHAR
       )
-      ON CONFLICT (user_id)
+      ON CONFLICT (twinoid_user_id)
         DO UPDATE SET name = $2::VARCHAR;`,
       [
         tidUserRef.id,

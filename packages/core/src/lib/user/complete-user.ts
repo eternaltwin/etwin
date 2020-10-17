@@ -6,6 +6,7 @@ import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $NullableEmailAddress, NullableEmailAddress } from "../email/email-address.js";
+import { $VersionedLinks, VersionedLinks } from "../link/versioned-links.js";
 import { $UserDisplayName, UserDisplayName } from "./user-display-name.js";
 import { $UserId, UserId } from "./user-id.js";
 import { $NullableUsername, NullableUsername } from "./username.js";
@@ -22,6 +23,8 @@ export interface CompleteUser {
 
   isAdministrator: boolean;
 
+  links?: VersionedLinks;
+
   ctime: Date;
 
   username: NullableUsername;
@@ -37,6 +40,7 @@ export const $CompleteUser: RecordIoType<CompleteUser> = new RecordType<Complete
     id: {type: $UserId},
     displayName: {type: $UserDisplayName},
     isAdministrator: {type: $Boolean},
+    links: {type: $VersionedLinks, optional: true},
     ctime: {type: $Date},
     username: {type: $NullableUsername},
     emailAddress: {type: $NullableEmailAddress},

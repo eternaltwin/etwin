@@ -1,3 +1,5 @@
+export type PgHammerfestServer = "hammerfest.es" | "hammerfest.fr" | "hfest.net";
+
 export interface UserRow {
   user_id: string;
 
@@ -36,20 +38,19 @@ export interface SessionRow {
 }
 
 export interface HammerfestUserRow {
-  server: string;
+  hammerfest_server: PgHammerfestServer;
 
-  user_id: number;
+  hammerfest_user_id: string;
 
-  username: string | null;
+  username: string;
 }
-
 
 export interface HammerfestUserLinkRow {
   user_id: string;
 
-  hammerfest_server: string;
+  hammerfest_server: PgHammerfestServer;
 
-  hammerfest_user_id: number;
+  hammerfest_user_id: string;
 
   ctime: Date;
 }
@@ -158,7 +159,7 @@ export interface ForumRoleRevocationRow {
 export interface TwinoidUserRow {
   server: string;
 
-  user_id: number;
+  user_id: string;
 
   name: string;
 }
@@ -167,7 +168,7 @@ export interface TwinoidUserRow {
 export interface TwinoidUserLinkRow {
   user_id: string;
 
-  twinoid_user_id: number;
+  twinoid_user_id: string;
 
   ctime: Date;
 }

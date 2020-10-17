@@ -1567,9 +1567,14 @@ __metadata:
     "@eternal-twin/email-in-memory": ^0.1.0
     "@eternal-twin/email-template-json": ^0.1.0
     "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
+    "@eternal-twin/link-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
+    "@eternal-twin/oauth-provider-in-memory": ^0.1.0
+    "@eternal-twin/password-scrypt": ^0.1.0
     "@eternal-twin/twinoid-client-http": ^0.1.0
     "@eternal-twin/twinoid-core": ^0.1.0
+    "@eternal-twin/user-in-memory": ^0.1.0
+    "@eternal-twin/uuid4-generator": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/jsonwebtoken": ^8.5.0
     "@types/mocha": ^8.0.3
@@ -1578,6 +1583,7 @@ __metadata:
     eslint: ^7.10.0
     jsonwebtoken: ^8.5.1
     kryo: ^0.11.0
+    kryo-json: ^0.11.0
     mocha: ^8.1.3
     typescript: ^4.0.3
   languageName: unknown
@@ -1591,10 +1597,16 @@ __metadata:
     "@eternal-twin/core": ^0.1.0
     "@eternal-twin/email-in-memory": ^0.1.0
     "@eternal-twin/email-template-json": ^0.1.0
+    "@eternal-twin/etwin-pg": ^0.1.0
     "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
+    "@eternal-twin/link-pg": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
+    "@eternal-twin/password-scrypt": ^0.1.0
     "@eternal-twin/pg-db": ^0.1.0
     "@eternal-twin/twinoid-client-http": ^0.1.0
+    "@eternal-twin/twinoid-core": ^0.1.0
+    "@eternal-twin/user-pg": ^0.1.0
+    "@eternal-twin/uuid4-generator": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/jsonwebtoken": ^8.5.0
     "@types/mocha": ^8.0.3
@@ -1603,6 +1615,7 @@ __metadata:
     eslint: ^7.10.0
     jsonwebtoken: ^8.5.1
     kryo: ^0.11.0
+    kryo-json: ^0.11.0
     mocha: ^8.1.3
     typescript: ^4.0.3
   languageName: unknown
@@ -1749,11 +1762,12 @@ __metadata:
     eslint: ^7.10.0
     eslint-plugin-simple-import-sort: ^5.0.3
     mocha: ^8.1.3
+    rimraf: ^3.0.2
     typescript: ^4.0.3
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/etwin-pg@workspace:packages/etwin-pg":
+"@eternal-twin/etwin-pg@^0.1.0, @eternal-twin/etwin-pg@workspace:packages/etwin-pg":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/etwin-pg@workspace:packages/etwin-pg"
   dependencies:
@@ -1775,19 +1789,25 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@eternal-twin/forum-in-memory@workspace:packages/forum-in-memory"
   dependencies:
-    "@eternal-twin/auth-pg": ^0.1.0
+    "@eternal-twin/auth-in-memory": ^0.1.0
     "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/email-in-memory": ^0.1.0
+    "@eternal-twin/email-template-json": ^0.1.0
     "@eternal-twin/forum-test": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
+    "@eternal-twin/link-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/marktwin": ^0.2.0
-    "@eternal-twin/pg-db": ^0.1.0
+    "@eternal-twin/oauth-provider-in-memory": ^0.1.0
+    "@eternal-twin/password-scrypt": ^0.1.0
     "@eternal-twin/twinoid-client-http": ^0.1.0
+    "@eternal-twin/user-in-memory": ^0.1.0
+    "@eternal-twin/uuid4-generator": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/mocha": ^8.0.3
     "@types/node": ^14.11.2
     chai: ^4.2.0
     eslint: ^7.10.0
-    kryo: ^0.11.0
     mocha: ^8.1.3
     typescript: ^4.0.3
   languageName: unknown
@@ -1799,17 +1819,23 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": ^0.1.0
     "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/email-in-memory": ^0.1.0
+    "@eternal-twin/email-template-json": ^0.1.0
+    "@eternal-twin/etwin-pg": ^0.1.0
     "@eternal-twin/forum-test": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/marktwin": ^0.2.0
+    "@eternal-twin/password-scrypt": ^0.1.0
     "@eternal-twin/pg-db": ^0.1.0
     "@eternal-twin/twinoid-client-http": ^0.1.0
+    "@eternal-twin/user-pg": ^0.1.0
+    "@eternal-twin/uuid4-generator": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/mocha": ^8.0.3
     "@types/node": ^14.11.2
     chai: ^4.2.0
     eslint: ^7.10.0
-    kryo: ^0.11.0
     mocha: ^8.1.3
     typescript: ^4.0.3
   languageName: unknown
@@ -1819,9 +1845,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@eternal-twin/forum-test@workspace:packages/forum-test"
   dependencies:
-    "@eternal-twin/auth-pg": ^0.1.0
     "@eternal-twin/core": ^0.1.0
-    "@eternal-twin/local-config": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/mocha": ^8.0.3
     "@types/node": ^14.11.2
@@ -1908,6 +1932,77 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@eternal-twin/link-in-memory@^0.1.0, @eternal-twin/link-in-memory@workspace:packages/link-in-memory":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/link-in-memory@workspace:packages/link-in-memory"
+  dependencies:
+    "@eternal-twin/auth-in-memory": ^0.1.0
+    "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/email-in-memory": ^0.1.0
+    "@eternal-twin/email-template-json": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
+    "@eternal-twin/link-test": ^0.1.0
+    "@eternal-twin/local-config": ^0.1.0
+    "@eternal-twin/oauth-provider-in-memory": ^0.1.0
+    "@eternal-twin/password-scrypt": ^0.1.0
+    "@eternal-twin/twinoid-client-http": ^0.1.0
+    "@eternal-twin/user-in-memory": ^0.1.0
+    "@eternal-twin/uuid4-generator": ^0.1.0
+    "@types/chai": ^4.2.12
+    "@types/mocha": ^8.0.3
+    "@types/node": ^14.11.2
+    chai: ^4.2.0
+    eslint: ^7.10.0
+    kryo: ^0.11.0
+    mocha: ^8.1.3
+    typescript: ^4.0.3
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/link-pg@^0.1.0, @eternal-twin/link-pg@workspace:packages/link-pg":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/link-pg@workspace:packages/link-pg"
+  dependencies:
+    "@eternal-twin/auth-pg": ^0.1.0
+    "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/email-in-memory": ^0.1.0
+    "@eternal-twin/email-template-json": ^0.1.0
+    "@eternal-twin/etwin-pg": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
+    "@eternal-twin/link-test": ^0.1.0
+    "@eternal-twin/local-config": ^0.1.0
+    "@eternal-twin/password-scrypt": ^0.1.0
+    "@eternal-twin/pg-db": ^0.1.0
+    "@eternal-twin/twinoid-client-http": ^0.1.0
+    "@eternal-twin/user-pg": ^0.1.0
+    "@eternal-twin/uuid4-generator": ^0.1.0
+    "@types/chai": ^4.2.12
+    "@types/mocha": ^8.0.3
+    "@types/node": ^14.11.2
+    chai: ^4.2.0
+    eslint: ^7.10.0
+    kryo-json: ^0.11.0
+    mocha: ^8.1.3
+    typescript: ^4.0.3
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/link-test@^0.1.0, @eternal-twin/link-test@workspace:packages/link-test":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/link-test@workspace:packages/link-test"
+  dependencies:
+    "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/local-config": ^0.1.0
+    "@types/chai": ^4.2.12
+    "@types/mocha": ^8.0.3
+    "@types/node": ^14.11.2
+    chai: ^4.2.0
+    eslint: ^7.10.0
+    mocha: ^8.1.3
+    typescript: ^4.0.3
+  languageName: unknown
+  linkType: soft
+
 "@eternal-twin/local-config@^0.1.0, @eternal-twin/local-config@workspace:packages/local-config":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/local-config@workspace:packages/local-config"
@@ -1958,7 +2053,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/oauth-provider-in-memory@workspace:packages/oauth-provider-in-memory":
+"@eternal-twin/oauth-provider-in-memory@^0.1.0, @eternal-twin/oauth-provider-in-memory@workspace:packages/oauth-provider-in-memory":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/oauth-provider-in-memory@workspace:packages/oauth-provider-in-memory"
   dependencies:
@@ -2021,7 +2116,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/password-scrypt@workspace:packages/password-scrypt":
+"@eternal-twin/password-scrypt@^0.1.0, @eternal-twin/password-scrypt@workspace:packages/password-scrypt":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/password-scrypt@workspace:packages/password-scrypt"
   dependencies:
@@ -2059,11 +2154,19 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": ^0.1.0
     "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/email-in-memory": ^0.1.0
+    "@eternal-twin/email-template-json": ^0.1.0
     "@eternal-twin/etwin-client-in-memory": ^0.1.0
+    "@eternal-twin/etwin-pg": ^0.1.0
     "@eternal-twin/forum-pg": ^0.1.0
     "@eternal-twin/hammerfest-client-http": ^0.1.0
     "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
     "@eternal-twin/hammerfest-in-memory": ^0.1.0
+    "@eternal-twin/link-pg": ^0.1.0
+    "@eternal-twin/local-config": ^0.1.0
+    "@eternal-twin/password-scrypt": ^0.1.0
+    "@eternal-twin/pg-db": ^0.1.0
+    "@eternal-twin/twinoid-client-http": ^0.1.0
     "@eternal-twin/user-pg": ^0.1.0
     "@eternal-twin/uuid4-generator": ^0.1.0
     "@koa/cors": ^3.1.0
@@ -2144,22 +2247,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/user-in-memory@workspace:packages/user-in-memory":
+"@eternal-twin/user-in-memory@^0.1.0, @eternal-twin/user-in-memory@workspace:packages/user-in-memory":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/user-in-memory@workspace:packages/user-in-memory"
   dependencies:
     "@eternal-twin/auth-in-memory": ^0.1.0
-    "@eternal-twin/auth-pg": ^0.1.0
     "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/email-in-memory": ^0.1.0
+    "@eternal-twin/email-template-json": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
+    "@eternal-twin/link-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
+    "@eternal-twin/oauth-provider-in-memory": ^0.1.0
+    "@eternal-twin/password-scrypt": ^0.1.0
     "@eternal-twin/twinoid-client-http": ^0.1.0
     "@eternal-twin/user-test": ^0.1.0
+    "@eternal-twin/uuid4-generator": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/mocha": ^8.0.3
     "@types/node": ^14.11.2
     chai: ^4.2.0
     eslint: ^7.10.0
-    kryo: ^0.11.0
     mocha: ^8.1.3
     typescript: ^4.0.3
   languageName: unknown
@@ -2171,16 +2279,22 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": ^0.1.0
     "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/email-in-memory": ^0.1.0
+    "@eternal-twin/email-template-json": ^0.1.0
+    "@eternal-twin/etwin-pg": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
+    "@eternal-twin/link-pg": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
+    "@eternal-twin/password-scrypt": ^0.1.0
     "@eternal-twin/pg-db": ^0.1.0
     "@eternal-twin/twinoid-client-http": ^0.1.0
     "@eternal-twin/user-test": ^0.1.0
+    "@eternal-twin/uuid4-generator": ^0.1.0
     "@types/chai": ^4.2.12
     "@types/mocha": ^8.0.3
     "@types/node": ^14.11.2
     chai: ^4.2.0
     eslint: ^7.10.0
-    kryo: ^0.11.0
     mocha: ^8.1.3
     typescript: ^4.0.3
   languageName: unknown
@@ -2197,7 +2311,6 @@ __metadata:
     "@types/node": ^14.11.2
     chai: ^4.2.0
     eslint: ^7.10.0
-    kryo: ^0.11.0
     mocha: ^8.1.3
     typescript: ^4.0.3
   languageName: unknown
@@ -2240,6 +2353,8 @@ __metadata:
     "@eternal-twin/email-template-etwin": ^0.1.0
     "@eternal-twin/hammerfest-client-http": ^0.1.0
     "@eternal-twin/hammerfest-in-memory": ^0.1.0
+    "@eternal-twin/link-in-memory": ^0.1.0
+    "@eternal-twin/link-pg": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/oauth-client-http": ^0.1.0
     "@eternal-twin/twinoid-client-http": ^0.1.0

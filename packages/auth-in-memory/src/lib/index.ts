@@ -24,6 +24,8 @@ import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
 import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
 import { HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username";
+import { LinkService } from "@eternal-twin/core/lib/link/service.js";
+import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
@@ -58,83 +60,71 @@ interface InMemoryHammerfestUser {
   username: HammerfestUsername;
 }
 
-interface InMemoryHammerfestUserLink {
-  userId: UserId;
-  hfServer: HammerfestServer;
-  hfId: HammerfestUserId;
-  ctime: Date;
-}
-
 interface InMemoryTwinoidUser {
   id: number;
   name: string;
 }
 
-interface InMemoryTwinoidUserLink {
-  userId: UserId;
-  tidId: number;
-  ctime: Date;
-}
-
 export class InMemoryAuthService implements AuthService {
-  private readonly uuidGen: UuidGenerator;
-  private readonly password: PasswordService;
   private readonly email: EmailService;
   private readonly emailTemplate: EmailTemplateService;
-  private readonly defaultLocale: LocaleId;
-  private readonly tokenSecret: Buffer;
   private readonly hammerfest: HammerfestClientService;
+  private readonly link: LinkService;
+  private readonly oauthProvider: InMemoryOauthProviderService;
+  private readonly password: PasswordService;
+  private readonly tokenSecret: Buffer;
   private readonly twinoidClient: TwinoidClientService;
   private readonly user: InMemoryUserService;
-  private readonly oauthProvider: InMemoryOauthProviderService;
+  private readonly uuidGen: UuidGenerator;
+
+  private readonly defaultLocale: LocaleId;
 
   private readonly sessions: Map<SessionId, Session>;
   private readonly emailVerifications: Set<EmailVerification>;
   private readonly hammerfestUsers: Set<InMemoryHammerfestUser>;
-  private readonly hammerfestUserLinks: Set<InMemoryHammerfestUserLink>;
   private readonly twinoidUsers: Set<InMemoryTwinoidUser>;
-  private readonly twinoidUserLinks: Set<InMemoryTwinoidUserLink>;
 
   /**
    * Creates a new authentication service.
    *
-   * @param uuidGen UUID generator to use.
-   * @param password Password service to use.
    * @param email Email service to use.
    * @param emailTemplate Email template service to use.
-   * @param tokenSecret Secret key used to generated and verify tokens.
    * @param hammerfest Hammerfest service to use.
+   * @param link Link service to use.
+   * @param oauthProvider Oauth provider service to use.
+   * @param password Password service to use.
+   * @param tokenSecret Secret key used to generated and verify tokens.
    * @param twinoidClient Twinoid API client service to use.
    * @param user User service to use.
-   * @param oauthProvider Oauth provider service to use.
+   * @param uuidGen UUID generator to use.
    */
   constructor(
-    uuidGen: UuidGenerator,
-    password: PasswordService,
     email: EmailService,
     emailTemplate: EmailTemplateService,
-    tokenSecret: Uint8Array,
     hammerfest: HammerfestClientService,
+    link: LinkService,
+    oauthProvider: InMemoryOauthProviderService,
+    password: PasswordService,
+    tokenSecret: Uint8Array,
     twinoidClient: TwinoidClientService,
     user: InMemoryUserService,
-    oauthProvider: InMemoryOauthProviderService,
+    uuidGen: UuidGenerator,
   ) {
-    this.uuidGen = uuidGen;
-    this.password = password;
     this.email = email;
     this.emailTemplate = emailTemplate;
-    this.tokenSecret = Buffer.from(tokenSecret);
     this.hammerfest = hammerfest;
+    this.link = link;
+    this.oauthProvider = oauthProvider;
+    this.password = password;
+    this.tokenSecret = Buffer.from(tokenSecret);
     this.twinoidClient = twinoidClient;
     this.user = user;
-    this.oauthProvider = oauthProvider;
+    this.uuidGen = uuidGen;
     this.defaultLocale = "en-US";
     this.sessions = new Map();
     this.emailVerifications = new Set();
     this.hammerfestUsers = new Set();
-    this.hammerfestUserLinks = new Set();
     this.twinoidUsers = new Set();
-    this.twinoidUserLinks = new Set();
   }
 
   /**
@@ -174,7 +164,12 @@ export class InMemoryAuthService implements AuthService {
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
     const imUser: InMemoryUser = await this.user._createUser(displayName, email, null, passwordHash);
-    const user: User = {type: ObjectType.User, id: imUser.id, displayName: imUser.displayName, isAdministrator: imUser.isAdministrator};
+    const user: User = {
+      type: ObjectType.User,
+      id: imUser.id,
+      displayName: imUser.displayName,
+      isAdministrator: imUser.isAdministrator,
+    };
 
     try {
       await this.createValidatedEmailVerification(user.id, email, new Date(emailJwt.issuedAt * 1000));
@@ -201,7 +196,12 @@ export class InMemoryAuthService implements AuthService {
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
     const imUser: InMemoryUser = await this.user._createUser(displayName, null, username, passwordHash);
-    const user: User = {type: ObjectType.User, id: imUser.id, displayName: imUser.displayName, isAdministrator: imUser.isAdministrator};
+    const user: User = {
+      type: ObjectType.User,
+      id: imUser.id,
+      displayName: imUser.displayName,
+      isAdministrator: imUser.isAdministrator,
+    };
 
     const session: Session = await this.createSession(user.id);
 
@@ -245,7 +245,12 @@ export class InMemoryAuthService implements AuthService {
     }
 
     const session: Session = await this.createSession(imUser.id);
-    const user: User = {type: ObjectType.User, id: imUser.id, displayName: imUser.displayName, isAdministrator: imUser.isAdministrator};
+    const user: User = {
+      type: ObjectType.User,
+      id: imUser.id,
+      displayName: imUser.displayName,
+      isAdministrator: imUser.isAdministrator,
+    };
 
     return {user, session};
   }
@@ -261,17 +266,11 @@ export class InMemoryAuthService implements AuthService {
     const hfUser: HammerfestUserRef = hfSession.user;
     await this.createOrUpdateHammerfestUser(hfUser);
 
-    let link: InMemoryHammerfestUserLink | undefined;
-    for (const hfLink of this.hammerfestUserLinks) {
-      if (hfLink.hfServer === hfUser.server && hfLink.hfId === hfUser.id) {
-        link = hfLink;
-        break;
-      }
-    }
+    const link: VersionedEtwinLink = await this.link.getLinkFromHammerfest(hfUser.server, hfUser.id);
 
     let userId: UserId;
-    if (link !== undefined) {
-      userId = link.userId;
+    if (link.current !== null) {
+      userId = link.current.user.id;
     } else {
       let displayName: UserDisplayName = hfUser.username;
       if (!$UserDisplayName.test(displayName)) {
@@ -281,13 +280,7 @@ export class InMemoryAuthService implements AuthService {
         }
       }
       const user = await this.user._createUser(displayName, null, null, null);
-      const newLink: InMemoryHammerfestUserLink = {
-        userId: user.id,
-        hfServer: hfUser.server,
-        hfId: hfUser.id,
-        ctime: new Date(),
-      };
-      this.hammerfestUserLinks.add(newLink);
+      await this.link.linkToHammerfest(user.id, hfUser.server, hfUser.id);
       userId = user.id;
     }
 
@@ -304,17 +297,11 @@ export class InMemoryAuthService implements AuthService {
     const tidUser: Partial<TidUser> = await this.twinoidClient.getMe(at);
     await this.createOrUpdateTwinoidUser(tidUser);
 
-    let link: InMemoryTwinoidUserLink | undefined;
-    for (const tidLink of this.twinoidUserLinks) {
-      if (tidLink.tidId === tidUser.id) {
-        link = tidLink;
-        break;
-      }
-    }
+    const link: VersionedEtwinLink = await this.link.getLinkFromTwinoid(tidUser.id!.toString(10));
 
     let userId: UserId;
-    if (link !== undefined) {
-      userId = link.userId;
+    if (link.current !== null) {
+      userId = link.current.user.id;
     } else {
       let displayName: UserDisplayName = tidUser.name!;
       if (!$UserDisplayName.test(displayName)) {
@@ -327,12 +314,7 @@ export class InMemoryAuthService implements AuthService {
         }
       }
       const user = await this.user._createUser(displayName, null, null, null);
-      const newLink: InMemoryTwinoidUserLink = {
-        userId: user.id,
-        tidId: tidUser.id!,
-        ctime: new Date(),
-      };
-      this.twinoidUserLinks.add(newLink);
+      await this.link.linkToTwinoid(user.id, tidUser.id!.toString(10));
       userId = user.id;
     }
 

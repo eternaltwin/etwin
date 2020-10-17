@@ -43,6 +43,8 @@
     "@eternal-twin/email-template-etwin": "^0.1.0",
     "@eternal-twin/hammerfest-client-http": "^0.1.0",
     "@eternal-twin/hammerfest-in-memory": "^0.1.0",
+    "@eternal-twin/link-in-memory": "^0.1.0",
+    "@eternal-twin/link-pg": "^0.1.0",
     "@eternal-twin/local-config": "^0.1.0",
     "@eternal-twin/oauth-client-http": "^0.1.0",
     "@eternal-twin/twinoid-client-http": "^0.1.0",

@@ -17,16 +17,13 @@
       "path": "../../../auth-test/src/lib"
     },
     {
-      "path": "../../../etwin-pg/src/lib"
-    },
-    {
       "path": "../../../email-in-memory/src/lib"
     },
     {
-      "path": "../../../hammerfest-client-in-memory/src/lib"
+      "path": "../../../email-template-json/src/lib"
     },
     {
-      "path": "../../../email-template-json/src/lib"
+      "path": "../../../hammerfest-client-in-memory/src/lib"
     },
     {
       "path": "../../../local-config/src/lib"
@@ -36,6 +33,9 @@
     },
     {
       "path": "../../../twinoid-client-http/src/lib"
+    },
+    {
+      "path": "../../../user-pg/src/lib"
     },
     {
       "path": "../../../uuid4-generator/src/lib"

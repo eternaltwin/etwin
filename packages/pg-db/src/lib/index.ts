@@ -79,7 +79,7 @@ export interface Queryable extends SimpleQueryable {
  */
 export function deriveQueryable(simple: SimpleQueryable): Queryable {
   return {
-    query: async (query: string, values: any[]) => simple.query(query, values),
+    query: async (query: string, values: any[]) => checkedQuery(simple, query, values),
     oneOrNone: async <R>(query: string, values: any[]): Promise<R | undefined> => oneOrNone<R>(simple, query, values),
     one: async (query: string, values: any[]) => one(simple, query, values),
     countOne: async (query: string, values: any[]) => countOne(simple, query, values),
@@ -88,8 +88,17 @@ export function deriveQueryable(simple: SimpleQueryable): Queryable {
   };
 }
 
+async function checkedQuery(simple: SimpleQueryable, query: string, values: readonly unknown[]): Promise<any> {
+  try {
+    return await simple.query(query, values);
+  } catch (e) {
+    Error.captureStackTrace(e);
+    throw e;
+  }
+}
+
 async function oneOrNone<T>(simple: SimpleQueryable, query: string, values: readonly unknown[]): Promise<T | undefined> {
-  const result: pg.QueryResult = await simple.query(query, values);
+  const result: pg.QueryResult = await checkedQuery(simple, query, values);
 
   switch (result.rows.length) {
     case 0:
@@ -102,7 +111,7 @@ async function oneOrNone<T>(simple: SimpleQueryable, query: string, values: read
 }
 
 async function one<T>(simple: SimpleQueryable, query: string, values: readonly unknown[]): Promise<T> {
-  const result: pg.QueryResult = await simple.query(query, values);
+  const result: pg.QueryResult = await checkedQuery(simple, query, values);
   if (result.rows.length !== 1) {
     throw new Error(`AssertionError: Expected exactly one row, got ${result.rows.length}`);
   }
@@ -110,21 +119,21 @@ async function one<T>(simple: SimpleQueryable, query: string, values: readonly u
 }
 
 async function countOne(simple: SimpleQueryable, query: string, values: readonly unknown[]): Promise<void> {
-  const result: pg.QueryResult = await simple.query(query, values);
+  const result: pg.QueryResult = await checkedQuery(simple, query, values);
   if (result.rowCount !== 1) {
     throw new Error(`AssertionError: Expected query to touch 1 row, got ${result.rowCount}`);
   }
 }
 
 async function countOneOrNone(simple: SimpleQueryable, query: string, values: readonly unknown[]): Promise<void> {
-  const result: pg.QueryResult = await simple.query(query, values);
+  const result: pg.QueryResult = await checkedQuery(simple, query, values);
   if (result.rowCount > 1) {
     throw new Error(`AssertionError: Expected query to touch 0 or 1 row, got ${result.rowCount}`);
   }
 }
 
 async function many<T>(simple: SimpleQueryable, query: string, values: readonly unknown[]): Promise<T[]> {
-  const result: pg.QueryResult = await simple.query(query, values);
+  const result: pg.QueryResult = await checkedQuery(simple, query, values);
   return result.rows;
 }
 
@@ -176,8 +185,8 @@ export class Database implements Queryable {
     return new Database(new pg.Pool(dbConfig));
   }
 
-  public async query(queryText: string, params: readonly unknown[]): Promise<pg.QueryResult> {
-    return this.pool.query(queryText, params as any[]);
+  public async query(queryText: string, values: readonly unknown[]): Promise<pg.QueryResult> {
+    return checkedQuery(this.pool, queryText, values);
   }
 
   public async oneOrNone<T>(query: string, values: any[]): Promise<T | undefined> {
@@ -185,11 +194,7 @@ export class Database implements Queryable {
   }
 
   public async one<T>(query: string, values: any[]): Promise<T> {
-    const result: T | undefined = await oneOrNone<T>(this.pool, query, values);
-    if (result === undefined) {
-      throw new Error("Expected exactly one affected row");
-    }
-    return result;
+    return one(this.pool, query, values);
   }
 
   public async countOne(query: string, values: any[]): Promise<void> {

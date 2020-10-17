@@ -32,10 +32,10 @@
     "@eternal-twin/core": "^0.1.0",
     "@eternal-twin/email-in-memory": "^0.1.0",
     "@eternal-twin/hammerfest-client-in-memory": "^0.1.0",
+    "@types/chai": "^4.2.12",
     "chai": "^4.2.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",
     "@types/node": "^14.11.2",
     "eslint": "^7.10.0",

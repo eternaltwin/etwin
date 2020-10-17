@@ -23,22 +23,28 @@
       "path": "../../../email-template-json/src/lib"
     },
     {
-      "path": "../../../etwin-pg/src/lib"
-    },
-    {
       "path": "../../../forum-test/src/lib"
     },
     {
       "path": "../../../hammerfest-client-in-memory/src/lib"
     },
     {
+      "path": "../../../link-in-memory/src/lib"
+    },
+    {
       "path": "../../../local-config/src/lib"
+    },
+    {
+      "path": "../../../oauth-provider-in-memory/src/lib"
     },
     {
       "path": "../../../password-scrypt/src/lib"
     },
     {
       "path": "../../../twinoid-client-http/src/lib"
+    },
+    {
+      "path": "../../../user-in-memory/src/lib"
     },
     {
       "path": "../../../uuid4-generator/src/lib"

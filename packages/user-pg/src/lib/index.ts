@@ -88,7 +88,7 @@ export class PgUserService implements UserService {
     }
   }
 
-  private async getUserRefByIdTx(
+  public async getUserRefByIdTx(
     queryable: Queryable,
     _acx: AuthContext,
     id: UserId,

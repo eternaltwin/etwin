@@ -28,6 +28,12 @@
       "path": "packages/hammerfest-client-in-memory/src/test"
     },
     {
+      "path": "packages/link-in-memory/src/test"
+    },
+    {
+      "path": "packages/link-pg/src/test"
+    },
+    {
       "path": "packages/oauth-provider-in-memory/src/test"
     },
     {
@@ -35,6 +41,9 @@
     },
     {
       "path": "packages/password-scrypt/src/test"
+    },
+    {
+      "path": "packages/rest-server/src/test"
     },
     {
       "path": "packages/user-in-memory/src/test"
