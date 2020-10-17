@@ -1,5 +1,6 @@
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import Koa from "koa";
@@ -16,6 +17,7 @@ export interface Api {
   auth: AuthService;
   forum: ForumService;
   hammerfest: HammerfestService;
+  hammerfestClient: HammerfestClientService;
   koaAuth: KoaAuth;
   user: UserService;
 }

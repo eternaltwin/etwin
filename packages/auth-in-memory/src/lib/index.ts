@@ -10,6 +10,7 @@ import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/re
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
 import { Session } from "@eternal-twin/core/lib/auth/session.js";
+import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
@@ -19,11 +20,9 @@ import { $EmailAddress, EmailAddress } from "@eternal-twin/core/lib/email/email-
 import { EmailService } from "@eternal-twin/core/lib/email/service.js";
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
-import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
-import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
 import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
-import { HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username";
+import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
@@ -54,21 +53,18 @@ interface EmailVerification {
   validationTime: Date;
 }
 
-interface InMemoryHammerfestUser {
-  server: HammerfestServer;
-  id: HammerfestUserId;
-  username: HammerfestUsername;
-}
-
 interface InMemoryTwinoidUser {
   id: number;
   name: string;
 }
 
+const SYSTEM_AUTH: SystemAuthContext = {type: AuthType.System, scope: AuthScope.Default};
+
 export class InMemoryAuthService implements AuthService {
   private readonly email: EmailService;
   private readonly emailTemplate: EmailTemplateService;
-  private readonly hammerfest: HammerfestClientService;
+  private readonly hammerfest: HammerfestService;
+  private readonly hammerfestClient: HammerfestClientService;
   private readonly link: LinkService;
   private readonly oauthProvider: InMemoryOauthProviderService;
   private readonly password: PasswordService;
@@ -81,7 +77,6 @@ export class InMemoryAuthService implements AuthService {
 
   private readonly sessions: Map<SessionId, Session>;
   private readonly emailVerifications: Set<EmailVerification>;
-  private readonly hammerfestUsers: Set<InMemoryHammerfestUser>;
   private readonly twinoidUsers: Set<InMemoryTwinoidUser>;
 
   /**
@@ -90,6 +85,7 @@ export class InMemoryAuthService implements AuthService {
    * @param email Email service to use.
    * @param emailTemplate Email template service to use.
    * @param hammerfest Hammerfest service to use.
+   * @param hammerfestClient Hammerfest client service to use.
    * @param link Link service to use.
    * @param oauthProvider Oauth provider service to use.
    * @param password Password service to use.
@@ -101,7 +97,8 @@ export class InMemoryAuthService implements AuthService {
   constructor(
     email: EmailService,
     emailTemplate: EmailTemplateService,
-    hammerfest: HammerfestClientService,
+    hammerfest: HammerfestService,
+    hammerfestClient: HammerfestClientService,
     link: LinkService,
     oauthProvider: InMemoryOauthProviderService,
     password: PasswordService,
@@ -113,6 +110,7 @@ export class InMemoryAuthService implements AuthService {
     this.email = email;
     this.emailTemplate = emailTemplate;
     this.hammerfest = hammerfest;
+    this.hammerfestClient = hammerfestClient;
     this.link = link;
     this.oauthProvider = oauthProvider;
     this.password = password;
@@ -123,7 +121,6 @@ export class InMemoryAuthService implements AuthService {
     this.defaultLocale = "en-US";
     this.sessions = new Map();
     this.emailVerifications = new Set();
-    this.hammerfestUsers = new Set();
     this.twinoidUsers = new Set();
   }
 
@@ -262,9 +259,9 @@ export class InMemoryAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    const hfSession: HammerfestSession = await this.hammerfest.createSession(credentials);
+    const hfSession: HammerfestSession = await this.hammerfestClient.createSession(credentials);
     const hfUser: HammerfestUserRef = hfSession.user;
-    await this.createOrUpdateHammerfestUser(hfUser);
+    await this.hammerfest.createOrUpdateUserRef(SYSTEM_AUTH, hfUser);
 
     const link: VersionedEtwinLink = await this.link.getLinkFromHammerfest(hfUser.server, hfUser.id);
 
@@ -459,21 +456,6 @@ export class InMemoryAuthService implements AuthService {
       displayName: user.displayName,
       isAdministrator: user.isAdministrator,
     };
-  }
-
-  private async createOrUpdateHammerfestUser(hfUserRef: HammerfestUserRef): Promise<void> {
-    for (const user of this.hammerfestUsers) {
-      if (user.server === hfUserRef.server && user.id === hfUserRef.id) {
-        user.username = hfUserRef.username;
-        return;
-      }
-    }
-    const hfUser: InMemoryHammerfestUser = {
-      server: hfUserRef.server,
-      id: hfUserRef.id,
-      username: hfUserRef.username,
-    };
-    this.hammerfestUsers.add(hfUser);
   }
 
   private async createOrUpdateTwinoidUser(tidUserRef: Partial<TidUser>): Promise<void> {

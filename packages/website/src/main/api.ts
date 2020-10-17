@@ -2,6 +2,7 @@ import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
@@ -13,6 +14,7 @@ import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
 import { PgForumService } from "@eternal-twin/forum-pg";
 import { HttpHammerfestClientService } from "@eternal-twin/hammerfest-client-http";
 import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
+import { PgHammerfestService } from "@eternal-twin/hammerfest-pg";
 import { InMemoryLinkService } from "@eternal-twin/link-in-memory";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { ApiType, Config } from "@eternal-twin/local-config";
@@ -34,6 +36,7 @@ export interface Api {
   auth: AuthService;
   forum: ForumService;
   hammerfest: HammerfestService;
+  hammerfestClient: HammerfestClientService;
   koaAuth: KoaAuth;
   oauthClient: OauthClientService;
   oauthProvider: OauthProviderService;
@@ -48,11 +51,11 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   const emailTemplate = new EtwinEmailTemplateService(new url.URL(config.etwin.externalUri.toString()));
   const password = new ScryptPasswordService();
   const hammerfestClient = new HttpHammerfestClientService();
-  const hammerfest = new InMemoryHammerfestService(hammerfestClient);
   const twinoidClient = new HttpTwinoidClientService();
 
   let auth: AuthService;
   let forum: ForumService;
+  let hammerfest: HammerfestService;
   let link: LinkService;
   let oauthProvider: OauthProviderService;
   let user: UserService;
@@ -63,8 +66,9 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     user = imUser;
     const imOauthProvider = new InMemoryOauthProviderService(UUID4_GENERATOR, password, secretKeyBytes);
     oauthProvider = imOauthProvider;
+    hammerfest = new InMemoryHammerfestService();
     link = new InMemoryLinkService(imUser);
-    auth = new InMemoryAuthService(email, emailTemplate, hammerfestClient, link, imOauthProvider, password, secretKeyBytes, twinoidClient, imUser, UUID4_GENERATOR);
+    auth = new InMemoryAuthService(email, emailTemplate, hammerfest, hammerfestClient, link, imOauthProvider, password, secretKeyBytes, twinoidClient, imUser, UUID4_GENERATOR);
     forum = new InMemoryForumService(UUID4_GENERATOR, user, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
     teardown = async function(): Promise<void> {};
   } else {
@@ -80,6 +84,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     user = pgUser;
     const pgLink = new PgLinkService(db, pgUser);
     link = pgLink;
+    hammerfest = new PgHammerfestService(db);
     auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestClient, pgLink, password, secretKeyBytes, twinoidClient, UUID4_GENERATOR);
     oauthProvider = new PgOauthProviderService(db, UUID4_GENERATOR, password, secretKeyStr, secretKeyBytes);
     forum = new PgForumService(db, UUID4_GENERATOR, user, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
@@ -120,7 +125,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     );
   }
 
-  const api: Api = {auth, forum, hammerfest, koaAuth, oauthClient, oauthProvider, twinoidClient, user};
+  const api: Api = {auth, forum, hammerfest, hammerfestClient, koaAuth, oauthClient, oauthProvider, twinoidClient, user};
 
   return {api, teardown};
 }

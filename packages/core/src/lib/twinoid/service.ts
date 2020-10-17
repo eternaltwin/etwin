@@ -11,4 +11,8 @@ export interface TwinoidService {
    * @returns Twinoid profile or null if not found
    */
   getUserById(acx: AuthContext, tidId: TwinoidUserId): Promise<TwinoidUserRef | null>;
+
+  getUserRefById(acx: AuthContext, tidId: TwinoidUserId): Promise<TwinoidUserRef | null>;
+
+  createOrUpdateUserRef(acx: AuthContext, ref: TwinoidUserRef): Promise<TwinoidUserRef>;
 }

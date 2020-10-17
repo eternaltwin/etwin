@@ -38,6 +38,7 @@
     "@eternal-twin/email-in-memory": "^0.1.0",
     "@eternal-twin/email-template-json": "^0.1.0",
     "@eternal-twin/hammerfest-client-in-memory": "^0.1.0",
+    "@eternal-twin/hammerfest-in-memory": "^0.1.0",
     "@eternal-twin/link-test": "^0.1.0",
     "@eternal-twin/local-config": "^0.1.0",
     "@eternal-twin/oauth-provider-in-memory": "^0.1.0",

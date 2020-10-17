@@ -27,6 +27,9 @@
       "path": "../hammerfest-in-memory/src/lib"
     },
     {
+      "path": "../hammerfest-pg/src/lib"
+    },
+    {
       "path": "../link-in-memory/src/lib"
     },
     {

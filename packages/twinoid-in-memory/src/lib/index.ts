@@ -3,10 +3,9 @@ import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { TwinoidUserDisplayName } from "@eternal-twin/core/lib/twinoid/twinoid-user-display-name.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
-import { TwinoidUserRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-ref.js";
+import { $TwinoidUserRef, TwinoidUserRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-ref.js";
 
 interface InMemoryServer {
-  isAvailable: boolean;
   users: Map<TwinoidUserId, InMemoryUser>;
 }
 
@@ -20,35 +19,33 @@ export class InMemoryTwinoidService implements TwinoidService {
 
   constructor() {
     this.server = {
-      isAvailable: true,
       users: new Map(),
     };
   }
 
-  async getUserById(_acx: AuthContext, userId: TwinoidUserId): Promise<TwinoidUserRef | null> {
+  public async getUserById(acx: AuthContext, tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
+    return this.getUserRefById(acx, tidUserId);
+  }
+
+  public async getUserRefById(_acx: AuthContext, tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
     const srv = this.getServer();
-    const user: InMemoryUser | undefined = srv.users.get(userId);
+    const user: InMemoryUser | undefined = srv.users.get(tidUserId);
     if (user === undefined) {
       return null;
     }
     return {type: ObjectType.TwinoidUser, id: user.id, displayName: user.displayName};
   }
 
-  public createUser(
-    id: TwinoidUserId,
-    displayName: TwinoidUserDisplayName,
-  ): void {
+  public async createOrUpdateUserRef(_acx: AuthContext, ref: TwinoidUserRef): Promise<TwinoidUserRef> {
     const srv = this.getServer();
-    if (srv.users.has(id)) {
+    if (srv.users.has(ref.id)) {
       throw new Error("AssertionError: User id conflict");
     }
-    srv.users.set(id, {id, displayName});
+    srv.users.set(ref.id, {id: ref.id, displayName: ref.displayName});
+    return $TwinoidUserRef.clone(ref);
   }
 
   private getServer(): InMemoryServer {
-    if (!this.server.isAvailable) {
-      throw new Error("ConnectionError");
-    }
     return this.server;
   }
 }

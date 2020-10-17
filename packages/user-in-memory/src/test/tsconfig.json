@@ -23,6 +23,9 @@
       "path": "../../../email-template-json/src/lib"
     },
     {
+      "path": "../../../hammerfest-in-memory/src/lib"
+    },
+    {
       "path": "../../../hammerfest-client-in-memory/src/lib"
     },
     {

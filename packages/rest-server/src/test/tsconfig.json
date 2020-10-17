@@ -35,7 +35,7 @@
       "path": "../../../hammerfest-client-in-memory/src/lib"
     },
     {
-      "path": "../../../hammerfest-in-memory/src/lib"
+      "path": "../../../hammerfest-pg/src/lib"
     },
     {
       "path": "../../../link-pg/src/lib"

@@ -1,8 +1,8 @@
 {
-  "name": "@eternal-twin/auth-in-memory",
+  "name": "@eternal-twin/hammerfest-pg",
   "version": "0.1.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
-  "description": "Eternal-Twin `AuthService` in-memory implementation",
+  "description": "Eternal-Twin `HammerfestService` Postgres implementation",
   "repository": {
     "type": "git",
     "url": "git://gitlab.com:eternal-twin/etwin-api.git"
@@ -30,25 +30,13 @@
   },
   "dependencies": {
     "@eternal-twin/core": "^0.1.0",
-    "@eternal-twin/oauth-provider-in-memory": "^0.1.0",
-    "@eternal-twin/twinoid-core": "^0.1.0",
-    "@eternal-twin/user-in-memory": "^0.1.0",
-    "@types/jsonwebtoken": "^8.5.0",
-    "jsonwebtoken": "^8.5.1",
-    "kryo": "^0.11.0",
-    "kryo-json": "^0.11.0"
+    "@eternal-twin/etwin-pg": "^0.1.0",
+    "@eternal-twin/pg-db": "^0.1.0"
   },
   "devDependencies": {
-    "@eternal-twin/auth-test": "^0.1.0",
-    "@eternal-twin/email-in-memory": "^0.1.0",
-    "@eternal-twin/email-template-json": "^0.1.0",
     "@eternal-twin/hammerfest-client-in-memory": "^0.1.0",
-    "@eternal-twin/hammerfest-in-memory": "^0.1.0",
-    "@eternal-twin/link-in-memory": "^0.1.0",
+    "@eternal-twin/hammerfest-test": "^0.1.0",
     "@eternal-twin/local-config": "^0.1.0",
-    "@eternal-twin/password-scrypt": "^0.1.0",
-    "@eternal-twin/twinoid-client-http": "^0.1.0",
-    "@eternal-twin/uuid4-generator": "^0.1.0",
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",
     "@types/node": "^14.11.2",

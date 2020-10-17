@@ -5,7 +5,7 @@ import { InMemoryHammerfestService } from "../lib/index.js";
 
 async function withInMemoryHammerfestService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const hammerfestClient = new InMemoryHammerfestClientService();
-  const hammerfest = new InMemoryHammerfestService(hammerfestClient);
+  const hammerfest = new InMemoryHammerfestService();
   return fn({hammerfest, hammerfestClient});
 }
 
