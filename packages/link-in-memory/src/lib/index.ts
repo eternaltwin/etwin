@@ -1,7 +1,7 @@
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
 import { EtwinLink } from "@eternal-twin/core/lib/link/etwin-link.js";
@@ -12,9 +12,10 @@ import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-
 import { VersionedHammerfestLink } from "@eternal-twin/core/lib/link/versioned-hammerfest-link.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
+import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
+import { UserService } from "@eternal-twin/core/lib/user/service";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import { InMemoryUserService } from "@eternal-twin/user-in-memory";
 import { $Date } from "kryo/lib/date.js";
 
 interface InMemoryBaseLink {
@@ -38,11 +39,15 @@ const GUEST_AUTH_CONTEXT: GuestAuthContext = {
 };
 
 export class InMemoryLinkService implements LinkService {
-  private readonly user: InMemoryUserService;
+  private readonly hammerfestArchive: HammerfestArchiveService;
+  private readonly twinoidArchive: TwinoidArchiveService;
+  private readonly user: UserService;
   private readonly hammerfestUserLinks: Set<InMemoryHammerfestUserLink>;
   private readonly twinoidUserLinks: Set<InMemoryTwinoidUserLink>;
 
-  public constructor(user: InMemoryUserService) {
+  public constructor(hammerfestArchive: HammerfestArchiveService, twinoidArchive: TwinoidArchiveService, user: UserService) {
+    this.hammerfestArchive = hammerfestArchive;
+    this.twinoidArchive = twinoidArchive;
     this.user = user;
     this.hammerfestUserLinks = new Set();
     this.twinoidUserLinks = new Set();
@@ -173,7 +178,6 @@ export class InMemoryLinkService implements LinkService {
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-
     return {
       link: {
         time: $Date.clone(imLink.linkedAt),
@@ -189,18 +193,17 @@ export class InMemoryLinkService implements LinkService {
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
+    const user = await this.hammerfestArchive.getUserRefById(GUEST_AUTH_CONTEXT, imLink.hfServer, imLink.hfUserId);
+    if (user === null) {
+      throw new Error("AssertionError: Expected Hammerfest user to exist");
+    }
     return {
       link: {
         time: $Date.clone(imLink.linkedAt),
         user: linkedBy,
       },
       unlink: null,
-      user: {
-        type: ObjectType.HammerfestUser,
-        server: imLink.hfServer,
-        id: imLink.hfUserId,
-        username: "undefined",
-      },
+      user,
     };
   }
 
@@ -209,17 +212,17 @@ export class InMemoryLinkService implements LinkService {
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
+    const user = await this.twinoidArchive.getUserRefById(GUEST_AUTH_CONTEXT, imLink.tidUserId);
+    if (user === null) {
+      throw new Error("AssertionError: Expected Twinoid user to exist");
+    }
     return {
       link: {
         time: $Date.clone(imLink.linkedAt),
         user: linkedBy,
       },
       unlink: null,
-      user: {
-        type: ObjectType.TwinoidUser,
-        id: imLink.tidUserId,
-        displayName: "undefined",
-      },
+      user,
     };
   }
 }

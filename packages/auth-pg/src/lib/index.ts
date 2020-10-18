@@ -10,6 +10,7 @@ import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/re
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
 import { Session } from "@eternal-twin/core/lib/auth/session.js";
+import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
@@ -34,8 +35,10 @@ import {
   SessionRow,
   UserRow,
 } from "@eternal-twin/etwin-pg/lib/schema.js";
+import { PgHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-pg";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
+import { PgTwinoidArchiveService } from "@eternal-twin/twinoid-archive-pg";
 import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
 import { User as TidUser } from "@eternal-twin/twinoid-core/lib/user.js";
 import jsonWebToken from "jsonwebtoken";
@@ -44,18 +47,23 @@ import { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
 
 import { $EmailRegistrationJwt, EmailRegistrationJwt } from "./email-registration-jwt.js";
 
+const SYSTEM_AUTH: SystemAuthContext = {type: AuthType.System, scope: AuthScope.Default};
+
 export class PgAuthService implements AuthService {
   private readonly database: Database;
   private readonly dbSecret: string;
-  private readonly uuidGen: UuidGenerator;
-  private readonly password: PasswordService;
   private readonly email: EmailService;
   private readonly emailTemplate: EmailTemplateService;
-  private readonly link: PgLinkService;
-  private readonly defaultLocale: LocaleId;
-  private readonly tokenSecret: Buffer;
+  private readonly hammerfestArchive: PgHammerfestArchiveService;
   private readonly hammerfestClient: HammerfestClientService;
+  private readonly link: PgLinkService;
+  private readonly password: PasswordService;
+  private readonly tokenSecret: Buffer;
+  private readonly twinoidArchive: PgTwinoidArchiveService;
   private readonly twinoidClient: TwinoidClientService;
+  private readonly uuidGen: UuidGenerator;
+
+  private readonly defaultLocale: LocaleId;
 
   /**
    * Creates a new authentication service.
@@ -63,36 +71,42 @@ export class PgAuthService implements AuthService {
    * @param database Email service to use.
    * @param dbSecret Key used to access encrypted columns in the database.
    * @param uuidGen UUID generator to use.
-   * @param password Password service to use.
    * @param email Email service to use.
    * @param emailTemplate Email template service to use.
+   * @param hammerfestArchive Hammerfest archive service to use.
+   * @param hammerfestClient Hammerfest client service to use.
    * @param link Link service to use.
+   * @param password Password service to use.
    * @param tokenSecret Secret key used to generated and verify tokens.
-   * @param hammerfestClient Hammerfest service to use.
-   * @param twinoidClient Twinoid API service to use.
+   * @param twinoidArchive Twinoid archive service to use.
+   * @param twinoidClient Twinoid client service to use.
    */
   constructor(
     database: Database,
     dbSecret: string,
     email: EmailService,
     emailTemplate: EmailTemplateService,
+    hammerfestArchive: PgHammerfestArchiveService,
     hammerfestClient: HammerfestClientService,
     link: PgLinkService,
     password: PasswordService,
     tokenSecret: Uint8Array,
+    twinoidArchive: PgTwinoidArchiveService,
     twinoidClient: TwinoidClientService,
     uuidGen: UuidGenerator,
   ) {
     this.database = database;
     this.dbSecret = dbSecret;
-    this.uuidGen = uuidGen;
-    this.password = password;
     this.email = email;
     this.emailTemplate = emailTemplate;
-    this.link = link;
-    this.tokenSecret = Buffer.from(tokenSecret);
+    this.hammerfestArchive = hammerfestArchive;
     this.hammerfestClient = hammerfestClient;
+    this.link = link;
+    this.password = password;
+    this.tokenSecret = Buffer.from(tokenSecret);
+    this.twinoidArchive = twinoidArchive;
     this.twinoidClient = twinoidClient;
+    this.uuidGen = uuidGen;
     this.defaultLocale = "en-US";
   }
 
@@ -438,7 +452,7 @@ export class PgAuthService implements AuthService {
     }
     const hfSession: HammerfestSession = await this.hammerfestClient.createSession(credentials);
     const hfUser: HammerfestUserRef = hfSession.user;
-    await this.createOrUpdateHammerfestUser(queryable, hfUser);
+    await this.hammerfestArchive.createOrUpdateUserRefTx(queryable, SYSTEM_AUTH, hfUser);
     const link = await this.link.getLinkFromHammerfestTx(queryable, hfUser.server, hfUser.id);
     let userId: UserId;
     if (link.current !== null) {
@@ -472,7 +486,7 @@ export class PgAuthService implements AuthService {
       throw Error("Forbidden: Only guests can authenticate");
     }
     const tidUser: Partial<TidUser> = await this.twinoidClient.getMe(at);
-    await this.createOrUpdateTwinoidUser(queryable, tidUser);
+    await this.twinoidArchive.createOrUpdateUserRef(SYSTEM_AUTH, {type: ObjectType.TwinoidUser, id: tidUser.id!.toString(10), displayName: tidUser.name!});
     const link = await this.link.getLinkFromTwinoidTx(queryable, tidUser.id!.toString(10));
     let userId: UserId;
     if (link.current !== null) {
@@ -628,43 +642,6 @@ export class PgAuthService implements AuthService {
       displayName: row.display_name,
       isAdministrator: row.is_administrator,
     };
-  }
-
-  private async createOrUpdateHammerfestUser(queryable: Queryable, hfUserRef: HammerfestUserRef): Promise<void> {
-    await queryable.countOne(
-      `
-      INSERT INTO hammerfest_users(
-        hammerfest_server, hammerfest_user_id, username
-      )
-      VALUES (
-        $1::HAMMERFEST_SERVER, $2::HAMMERFEST_USER_ID, $3::VARCHAR
-      )
-      ON CONFLICT (hammerfest_server, hammerfest_user_id)
-        DO UPDATE SET username = $3::VARCHAR;`,
-      [
-        hfUserRef.server,
-        hfUserRef.id,
-        hfUserRef.username,
-      ],
-    );
-  }
-
-  private async createOrUpdateTwinoidUser(queryable: Queryable, tidUserRef: Partial<TidUser>): Promise<void> {
-    await queryable.countOne(
-      `
-      INSERT INTO twinoid_users(
-        twinoid_user_id, name
-      )
-      VALUES (
-        $1::INT, $2::VARCHAR
-      )
-      ON CONFLICT (twinoid_user_id)
-        DO UPDATE SET name = $2::VARCHAR;`,
-      [
-        tidUserRef.id,
-        tidUserRef.name,
-      ],
-    );
   }
 
   private async createEmailVerificationToken(emailAddress: EmailAddress): Promise<string> {

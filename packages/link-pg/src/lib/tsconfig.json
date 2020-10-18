@@ -18,7 +18,13 @@
       "path": "../../../etwin-pg/src/lib"
     },
     {
+      "path": "../../../hammerfest-archive-pg/src/lib"
+    },
+    {
       "path": "../../../pg-db/src/lib"
+    },
+    {
+      "path": "../../../twinoid-archive-pg/src/lib"
     },
     {
       "path": "../../../user-pg/src/lib"

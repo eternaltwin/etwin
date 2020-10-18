@@ -31,8 +31,10 @@
   "dependencies": {
     "@eternal-twin/core": "^0.1.0",
     "@eternal-twin/etwin-pg": "^0.1.0",
+    "@eternal-twin/hammerfest-archive-pg": "^0.1.0",
     "@eternal-twin/link-pg": "^0.1.0",
     "@eternal-twin/pg-db": "^0.1.0",
+    "@eternal-twin/twinoid-archive-pg": "^0.1.0",
     "@eternal-twin/twinoid-core": "^0.1.0",
     "@types/jsonwebtoken": "^8.5.0",
     "jsonwebtoken": "^8.5.1",

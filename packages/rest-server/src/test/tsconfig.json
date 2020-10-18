@@ -32,10 +32,10 @@
       "path": "../../../forum-pg/src/lib"
     },
     {
-      "path": "../../../hammerfest-client-in-memory/src/lib"
+      "path": "../../../hammerfest-archive-pg/src/lib"
     },
     {
-      "path": "../../../hammerfest-archive-pg/src/lib"
+      "path": "../../../hammerfest-client-in-memory/src/lib"
     },
     {
       "path": "../../../link-pg/src/lib"
@@ -48,6 +48,9 @@
     },
     {
       "path": "../../../pg-db/src/lib"
+    },
+    {
+      "path": "../../../twinoid-archive-pg/src/lib"
     },
     {
       "path": "../../../twinoid-client-http/src/lib"

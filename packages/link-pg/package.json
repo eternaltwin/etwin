@@ -31,9 +31,10 @@
   "dependencies": {
     "@eternal-twin/core": "^0.1.0",
     "@eternal-twin/etwin-pg": "^0.1.0",
+    "@eternal-twin/hammerfest-archive-pg": "^0.1.0",
     "@eternal-twin/pg-db": "^0.1.0",
-    "@eternal-twin/user-pg": "^0.1.0",
-    "kryo-json": "^0.11.0"
+    "@eternal-twin/twinoid-archive-pg": "^0.1.0",
+    "@eternal-twin/user-pg": "^0.1.0"
   },
   "devDependencies": {
     "@eternal-twin/auth-pg": "^0.1.0",

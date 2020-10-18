@@ -2,13 +2,16 @@ import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/core/lib/auth/register-or-login-with-email-options.js";
-import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
-import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/register-with-verified-email-options";
+import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
+import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/register-with-verified-email-options.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
-import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
+import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
+import { LinkService } from "@eternal-twin/core/lib/link/service.js";
+import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
+import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
 import chai from "chai";
@@ -17,6 +20,7 @@ export interface Api {
   auth: AuthService;
   email: InMemoryEmailService;
   hammerfestClient: InMemoryHammerfestClientService;
+  link: LinkService;
 }
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};
@@ -149,24 +153,87 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
         username: "alice",
         password: Buffer.from("aaaaa"),
       };
-      const actual: UserAndSession = await api.auth.registerOrLoginWithHammerfest(GUEST_AUTH, credentials);
+      const userAndSession: UserAndSession = await api.auth.registerOrLoginWithHammerfest(GUEST_AUTH, credentials);
       {
         const expected: UserAndSession = {
           user: {
             type: ObjectType.User,
-            id: actual.user.id,
+            id: userAndSession.user.id,
             displayName: "alice",
             isAdministrator: true,
           },
           session: {
-            id: actual.session.id,
+            id: userAndSession.session.id,
             user: {
               type: ObjectType.User,
-              id: actual.user.id,
+              id: userAndSession.user.id,
               displayName: "alice",
             },
-            ctime: actual.session.ctime,
-            atime: actual.session.ctime,
+            ctime: userAndSession.session.ctime,
+            atime: userAndSession.session.ctime,
+          },
+        };
+        chai.assert.deepEqual(userAndSession, expected);
+      }
+      {
+        // Hammerfest is linked to Eternal-Twin
+        const actual: VersionedEtwinLink = await api.link.getLinkFromHammerfest("hammerfest.fr", "123");
+        const expected: VersionedEtwinLink = {
+          current: {
+            link: {
+              time: actual.current!.link.time,
+              user: {
+                type: ObjectType.User,
+                id: userAndSession.user.id,
+                displayName: "alice",
+              },
+            },
+            unlink: null,
+            user: {
+              type: ObjectType.User,
+              id: userAndSession.user.id,
+              displayName: "alice",
+            }
+          },
+          old: [],
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+      {
+        // Eternal-Twin is linked to Hammerfest
+        const actual: VersionedLinks = await api.link.getVersionedLinks(userAndSession.user.id);
+        const expected: VersionedLinks = {
+          hammerfestEs: {
+            current: null,
+            old: [],
+          },
+          hammerfestFr: {
+            current: {
+              link: {
+                time: actual.hammerfestFr.current!.link.time,
+                user: {
+                  type: ObjectType.User,
+                  id: userAndSession.user.id,
+                  displayName: "alice",
+                },
+              },
+              unlink: null,
+              user: {
+                type: ObjectType.HammerfestUser,
+                server: "hammerfest.fr",
+                id: "123",
+                username: "alice",
+              }
+            },
+            old: [],
+          },
+          hfestNet: {
+            current: null,
+            old: [],
+          },
+          twinoid: {
+            current: null,
+            old: [],
           },
         };
         chai.assert.deepEqual(actual, expected);

@@ -18,7 +18,7 @@ const SYSTEM_AUTH: SystemAuthContext = {type: AuthType.System, scope: AuthScope.
 
 export interface Api {
   koaAuth: KoaAuth;
-  hammerfest: HammerfestArchiveService;
+  hammerfestArchive: HammerfestArchiveService;
   hammerfestClient: HammerfestClientService;
 }
 
@@ -48,11 +48,11 @@ export function createHammerfestRouter(api: Api): Router {
   }
 
   async function getOrCreateUserById(auth: AuthContext, server: HammerfestServer, userId: HammerfestUserId): Promise<HammerfestUserRef | null> {
-    let user: HammerfestUserRef | null = await api.hammerfest.getUserById(auth, server, userId);
+    let user: HammerfestUserRef | null = await api.hammerfestArchive.getUserById(auth, server, userId);
     if (user === null) {
       const profile: HammerfestProfile | null = await api.hammerfestClient.getProfileById(null, {server, userId});
       if (profile !== null) {
-        user = await api.hammerfest.createOrUpdateUserRef(SYSTEM_AUTH, profile.user);
+        user = await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, profile.user);
       }
     }
     return user;

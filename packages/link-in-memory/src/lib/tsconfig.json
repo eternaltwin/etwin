@@ -13,9 +13,6 @@
   "references": [
     {
       "path": "../../../core/src/lib"
-    },
-    {
-      "path": "../../../user-in-memory/src/lib"
     }
   ]
 }
