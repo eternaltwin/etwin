@@ -1,20 +1,24 @@
 {
   "extends": "../../../../tsconfig.json",
   "compilerOptions": {
+    "composite": true,
     "noEmit": false,
     "rootDir": ".",
-    "outDir": "../../test"
+    "outDir": "../../lib"
   },
   "include": [
-    "**/*.ts"
+    "./**/*.ts"
   ],
   "exclude": [],
   "references": [
     {
-      "path": "../lib"
+      "path": "../../../core/src/lib"
     },
     {
-      "path": "../../../twinoid-archive-test/src/lib"
+      "path": "../../../etwin-pg/src/lib"
+    },
+    {
+      "path": "../../../pg-db/src/lib"
     }
   ]
 }

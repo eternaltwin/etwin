@@ -157,9 +157,7 @@ export interface ForumRoleRevocationRow {
 }
 
 export interface TwinoidUserRow {
-  server: string;
-
-  user_id: string;
+  twinoid_user_id: string;
 
   name: string;
 }

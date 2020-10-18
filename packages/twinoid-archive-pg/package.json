@@ -1,8 +1,8 @@
 {
-  "name": "@eternal-twin/twinoid-archive-in-memory",
+  "name": "@eternal-twin/twinoid-archive-pg",
   "version": "0.1.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
-  "description": "Eternal-Twin `TwinoidArchiveService` in-memory implementation",
+  "description": "Eternal-Twin `TwinoidArchiveService` Postgres implementation",
   "repository": {
     "type": "git",
     "url": "git://gitlab.com:eternal-twin/etwin-api.git"
@@ -29,9 +29,12 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@eternal-twin/core": "^0.1.0"
+    "@eternal-twin/core": "^0.1.0",
+    "@eternal-twin/etwin-pg": "^0.1.0",
+    "@eternal-twin/pg-db": "^0.1.0"
   },
   "devDependencies": {
+    "@eternal-twin/local-config": "^0.1.0",
     "@eternal-twin/twinoid-archive-test": "^0.1.0",
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",
