@@ -2,8 +2,8 @@ import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
@@ -12,9 +12,9 @@ import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
 import { PgForumService } from "@eternal-twin/forum-pg";
+import { InMemoryHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-in-memory";
+import { PgHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-pg";
 import { HttpHammerfestClientService } from "@eternal-twin/hammerfest-client-http";
-import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
-import { PgHammerfestService } from "@eternal-twin/hammerfest-pg";
 import { InMemoryLinkService } from "@eternal-twin/link-in-memory";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { ApiType, Config } from "@eternal-twin/local-config";
@@ -35,7 +35,7 @@ import urljoin from "url-join";
 export interface Api {
   auth: AuthService;
   forum: ForumService;
-  hammerfest: HammerfestService;
+  hammerfest: HammerfestArchiveService;
   hammerfestClient: HammerfestClientService;
   koaAuth: KoaAuth;
   oauthClient: OauthClientService;
@@ -55,7 +55,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
 
   let auth: AuthService;
   let forum: ForumService;
-  let hammerfest: HammerfestService;
+  let hammerfest: HammerfestArchiveService;
   let link: LinkService;
   let oauthProvider: OauthProviderService;
   let user: UserService;
@@ -66,7 +66,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     user = imUser;
     const imOauthProvider = new InMemoryOauthProviderService(UUID4_GENERATOR, password, secretKeyBytes);
     oauthProvider = imOauthProvider;
-    hammerfest = new InMemoryHammerfestService();
+    hammerfest = new InMemoryHammerfestArchiveService();
     link = new InMemoryLinkService(imUser);
     auth = new InMemoryAuthService(email, emailTemplate, hammerfest, hammerfestClient, link, imOauthProvider, password, secretKeyBytes, twinoidClient, imUser, UUID4_GENERATOR);
     forum = new InMemoryForumService(UUID4_GENERATOR, user, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
@@ -84,7 +84,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     user = pgUser;
     const pgLink = new PgLinkService(db, pgUser);
     link = pgLink;
-    hammerfest = new PgHammerfestService(db);
+    hammerfest = new PgHammerfestArchiveService(db);
     auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestClient, pgLink, password, secretKeyBytes, twinoidClient, UUID4_GENERATOR);
     oauthProvider = new PgOauthProviderService(db, UUID4_GENERATOR, password, secretKeyStr, secretKeyBytes);
     forum = new PgForumService(db, UUID4_GENERATOR, user, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});

@@ -2,8 +2,8 @@ import { PgAuthService } from "@eternal-twin/auth-pg";
 import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { PgForumService } from "@eternal-twin/forum-pg";
+import { InMemoryHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-in-memory";
 import { HttpHammerfestClientService } from "@eternal-twin/hammerfest-client-http";
-import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
 import { Config } from "@eternal-twin/local-config";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
@@ -31,7 +31,7 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const password = new ScryptPasswordService();
   const user = new PgUserService(db, secretKeyStr);
   const hammerfestClient = new HttpHammerfestClientService();
-  const hammerfest = new InMemoryHammerfestService(hammerfestClient);
+  const hammerfest = new InMemoryHammerfestArchiveService(hammerfestClient);
   const twinoidClient = new HttpTwinoidClientService();
   const auth = new PgAuthService(db, secretKeyStr, UUID4_GENERATOR, password, email, emailTemplate, secretKeyBytes, hammerfestClient, twinoidClient);
   const koaAuth = new KoaAuth(auth);

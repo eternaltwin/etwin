@@ -3,8 +3,8 @@ import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg";
 import { PgForumService } from "@eternal-twin/forum-pg";
+import { PgHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-pg";
 import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
-import { PgHammerfestService } from "@eternal-twin/hammerfest-pg";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
@@ -45,7 +45,7 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const user = new PgUserService(db, secretKeyStr);
     const link = new PgLinkService(db, user);
     const hammerfestClient = new InMemoryHammerfestClientService();
-    const hammerfest = new PgHammerfestService(db);
+    const hammerfest = new PgHammerfestArchiveService(db);
     const twinoidClient = new HttpTwinoidClientService();
     const auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestClient, link, password, secretKeyBytes, twinoidClient, UUID4_GENERATOR);
     const koaAuth = new KoaAuth(auth);

@@ -24,10 +24,10 @@
       "path": "../hammerfest-client-http/src/lib"
     },
     {
-      "path": "../hammerfest-in-memory/src/lib"
+      "path": "../hammerfest-archive-in-memory/src/lib"
     },
     {
-      "path": "../hammerfest-pg/src/lib"
+      "path": "../hammerfest-archive-pg/src/lib"
     },
     {
       "path": "../link-in-memory/src/lib"

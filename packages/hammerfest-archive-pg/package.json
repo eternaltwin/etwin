@@ -1,8 +1,8 @@
 {
-  "name": "@eternal-twin/hammerfest-pg",
+  "name": "@eternal-twin/hammerfest-archive-pg",
   "version": "0.1.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
-  "description": "Eternal-Twin `HammerfestService` Postgres implementation",
+  "description": "Eternal-Twin `HammerfestArchiveService` Postgres implementation",
   "repository": {
     "type": "git",
     "url": "git://gitlab.com:eternal-twin/etwin-api.git"
@@ -34,8 +34,8 @@
     "@eternal-twin/pg-db": "^0.1.0"
   },
   "devDependencies": {
+    "@eternal-twin/hammerfest-archive-test": "^0.1.0",
     "@eternal-twin/hammerfest-client-in-memory": "^0.1.0",
-    "@eternal-twin/hammerfest-test": "^0.1.0",
     "@eternal-twin/local-config": "^0.1.0",
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",

@@ -2,8 +2,8 @@ import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { Api,testForumService } from "@eternal-twin/forum-test";
+import { InMemoryHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-in-memory";
 import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
-import { InMemoryHammerfestService } from "@eternal-twin/hammerfest-in-memory";
 import { InMemoryLinkService } from "@eternal-twin/link-in-memory";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { InMemoryOauthProviderService } from "@eternal-twin/oauth-provider-in-memory";
@@ -23,7 +23,7 @@ async function withInMemoryForumService<R>(fn: (api: Api) => Promise<R>): Promis
   const email = new InMemoryEmailService();
   const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
   const password = new ScryptPasswordService();
-  const hammerfest = new InMemoryHammerfestService();
+  const hammerfest = new InMemoryHammerfestArchiveService();
   const hammerfestClient = new InMemoryHammerfestClientService();
   const twinoidClient = new HttpTwinoidClientService();
   const user = new InMemoryUserService(UUID4_GENERATOR);

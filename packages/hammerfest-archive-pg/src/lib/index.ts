@@ -1,13 +1,13 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
 import { $HammerfestUserRef,HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { HammerfestUserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 
-export class PgHammerfestService implements HammerfestService {
+export class PgHammerfestArchiveService implements HammerfestArchiveService {
   private readonly database: Database;
 
   constructor(database: Database) {

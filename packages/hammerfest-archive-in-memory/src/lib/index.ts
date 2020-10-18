@@ -1,10 +1,10 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
 import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
 import { HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 
 interface InMemoryHammerfestUser {
   server: HammerfestServer;
@@ -16,7 +16,7 @@ interface InMemoryHammerfestDataByServer {
   users: Map<HammerfestUserId, InMemoryHammerfestUser>;
 }
 
-export class InMemoryHammerfestService implements HammerfestService {
+export class InMemoryHammerfestArchiveService implements HammerfestArchiveService {
   private readonly servers: Map<HammerfestServer, InMemoryHammerfestDataByServer>;
 
   constructor() {

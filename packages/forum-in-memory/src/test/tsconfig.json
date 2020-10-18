@@ -26,7 +26,7 @@
       "path": "../../../forum-test/src/lib"
     },
     {
-      "path": "../../../hammerfest-in-memory/src/lib"
+      "path": "../../../hammerfest-archive-in-memory/src/lib"
     },
     {
       "path": "../../../hammerfest-client-in-memory/src/lib"

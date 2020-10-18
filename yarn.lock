@@ -1566,8 +1566,8 @@ __metadata:
     "@eternal-twin/core": ^0.1.0
     "@eternal-twin/email-in-memory": ^0.1.0
     "@eternal-twin/email-template-json": ^0.1.0
+    "@eternal-twin/hammerfest-archive-in-memory": ^0.1.0
     "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
-    "@eternal-twin/hammerfest-in-memory": ^0.1.0
     "@eternal-twin/link-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/oauth-provider-in-memory": ^0.1.0
@@ -1795,8 +1795,8 @@ __metadata:
     "@eternal-twin/email-in-memory": ^0.1.0
     "@eternal-twin/email-template-json": ^0.1.0
     "@eternal-twin/forum-test": ^0.1.0
+    "@eternal-twin/hammerfest-archive-in-memory": ^0.1.0
     "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
-    "@eternal-twin/hammerfest-in-memory": ^0.1.0
     "@eternal-twin/link-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/marktwin": ^0.2.0
@@ -1859,6 +1859,61 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@eternal-twin/hammerfest-archive-in-memory@^0.1.0, @eternal-twin/hammerfest-archive-in-memory@workspace:packages/hammerfest-archive-in-memory":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/hammerfest-archive-in-memory@workspace:packages/hammerfest-archive-in-memory"
+  dependencies:
+    "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/hammerfest-archive-test": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
+    "@types/chai": ^4.2.12
+    "@types/mocha": ^8.0.3
+    "@types/node": ^14.11.2
+    chai: ^4.2.0
+    eslint: ^7.10.0
+    mocha: ^8.1.3
+    typescript: ^4.0.3
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/hammerfest-archive-pg@^0.1.0, @eternal-twin/hammerfest-archive-pg@workspace:packages/hammerfest-archive-pg":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/hammerfest-archive-pg@workspace:packages/hammerfest-archive-pg"
+  dependencies:
+    "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/etwin-pg": ^0.1.0
+    "@eternal-twin/hammerfest-archive-test": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
+    "@eternal-twin/local-config": ^0.1.0
+    "@eternal-twin/pg-db": ^0.1.0
+    "@types/chai": ^4.2.12
+    "@types/mocha": ^8.0.3
+    "@types/node": ^14.11.2
+    chai: ^4.2.0
+    eslint: ^7.10.0
+    mocha: ^8.1.3
+    typescript: ^4.0.3
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/hammerfest-archive-test@^0.1.0, @eternal-twin/hammerfest-archive-test@workspace:packages/hammerfest-archive-test":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/hammerfest-archive-test@workspace:packages/hammerfest-archive-test"
+  dependencies:
+    "@eternal-twin/core": ^0.1.0
+    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
+    "@eternal-twin/local-config": ^0.1.0
+    "@types/chai": ^4.2.12
+    "@types/mocha": ^8.0.3
+    "@types/node": ^14.11.2
+    chai: ^4.2.0
+    eslint: ^7.10.0
+    kryo: ^0.11.0
+    mocha: ^8.1.3
+    typescript: ^4.0.3
+  languageName: unknown
+  linkType: soft
+
 "@eternal-twin/hammerfest-client-http@^0.1.0, @eternal-twin/hammerfest-client-http@workspace:packages/hammerfest-client-http":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/hammerfest-client-http@workspace:packages/hammerfest-client-http"
@@ -1899,61 +1954,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/hammerfest-in-memory@^0.1.0, @eternal-twin/hammerfest-in-memory@workspace:packages/hammerfest-in-memory":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/hammerfest-in-memory@workspace:packages/hammerfest-in-memory"
-  dependencies:
-    "@eternal-twin/core": ^0.1.0
-    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
-    "@eternal-twin/hammerfest-test": ^0.1.0
-    "@types/chai": ^4.2.12
-    "@types/mocha": ^8.0.3
-    "@types/node": ^14.11.2
-    chai: ^4.2.0
-    eslint: ^7.10.0
-    mocha: ^8.1.3
-    typescript: ^4.0.3
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/hammerfest-pg@^0.1.0, @eternal-twin/hammerfest-pg@workspace:packages/hammerfest-pg":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/hammerfest-pg@workspace:packages/hammerfest-pg"
-  dependencies:
-    "@eternal-twin/core": ^0.1.0
-    "@eternal-twin/etwin-pg": ^0.1.0
-    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
-    "@eternal-twin/hammerfest-test": ^0.1.0
-    "@eternal-twin/local-config": ^0.1.0
-    "@eternal-twin/pg-db": ^0.1.0
-    "@types/chai": ^4.2.12
-    "@types/mocha": ^8.0.3
-    "@types/node": ^14.11.2
-    chai: ^4.2.0
-    eslint: ^7.10.0
-    mocha: ^8.1.3
-    typescript: ^4.0.3
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/hammerfest-test@^0.1.0, @eternal-twin/hammerfest-test@workspace:packages/hammerfest-test":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/hammerfest-test@workspace:packages/hammerfest-test"
-  dependencies:
-    "@eternal-twin/core": ^0.1.0
-    "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
-    "@eternal-twin/local-config": ^0.1.0
-    "@types/chai": ^4.2.12
-    "@types/mocha": ^8.0.3
-    "@types/node": ^14.11.2
-    chai: ^4.2.0
-    eslint: ^7.10.0
-    kryo: ^0.11.0
-    mocha: ^8.1.3
-    typescript: ^4.0.3
-  languageName: unknown
-  linkType: soft
-
 "@eternal-twin/link-in-memory@^0.1.0, @eternal-twin/link-in-memory@workspace:packages/link-in-memory":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/link-in-memory@workspace:packages/link-in-memory"
@@ -1962,8 +1962,8 @@ __metadata:
     "@eternal-twin/core": ^0.1.0
     "@eternal-twin/email-in-memory": ^0.1.0
     "@eternal-twin/email-template-json": ^0.1.0
+    "@eternal-twin/hammerfest-archive-in-memory": ^0.1.0
     "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
-    "@eternal-twin/hammerfest-in-memory": ^0.1.0
     "@eternal-twin/link-test": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/oauth-provider-in-memory": ^0.1.0
@@ -2182,9 +2182,9 @@ __metadata:
     "@eternal-twin/etwin-client-in-memory": ^0.1.0
     "@eternal-twin/etwin-pg": ^0.1.0
     "@eternal-twin/forum-pg": ^0.1.0
+    "@eternal-twin/hammerfest-archive-pg": ^0.1.0
     "@eternal-twin/hammerfest-client-http": ^0.1.0
     "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
-    "@eternal-twin/hammerfest-pg": ^0.1.0
     "@eternal-twin/link-pg": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/password-scrypt": ^0.1.0
@@ -2278,8 +2278,8 @@ __metadata:
     "@eternal-twin/core": ^0.1.0
     "@eternal-twin/email-in-memory": ^0.1.0
     "@eternal-twin/email-template-json": ^0.1.0
+    "@eternal-twin/hammerfest-archive-in-memory": ^0.1.0
     "@eternal-twin/hammerfest-client-in-memory": ^0.1.0
-    "@eternal-twin/hammerfest-in-memory": ^0.1.0
     "@eternal-twin/link-in-memory": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0
     "@eternal-twin/oauth-provider-in-memory": ^0.1.0
@@ -2375,9 +2375,9 @@ __metadata:
     "@angular/router": ~10.1.4
     "@eternal-twin/email-console": ^0.1.0
     "@eternal-twin/email-template-etwin": ^0.1.0
+    "@eternal-twin/hammerfest-archive-in-memory": ^0.1.0
+    "@eternal-twin/hammerfest-archive-pg": ^0.1.0
     "@eternal-twin/hammerfest-client-http": ^0.1.0
-    "@eternal-twin/hammerfest-in-memory": ^0.1.0
-    "@eternal-twin/hammerfest-pg": ^0.1.0
     "@eternal-twin/link-in-memory": ^0.1.0
     "@eternal-twin/link-pg": ^0.1.0
     "@eternal-twin/local-config": ^0.1.0

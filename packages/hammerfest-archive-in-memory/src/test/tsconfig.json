@@ -17,10 +17,7 @@
       "path": "../../../hammerfest-client-in-memory/src/lib"
     },
     {
-      "path": "../../../hammerfest-test/src/lib"
-    },
-    {
-      "path": "../../../local-config/src/lib"
+      "path": "../../../hammerfest-archive-test/src/lib"
     }
   ]
 }

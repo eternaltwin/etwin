@@ -3,7 +3,7 @@ import { HammerfestServer } from "./hammerfest-server.js";
 import { HammerfestUserId } from "./hammerfest-user-id.js";
 import { HammerfestUserRef } from "./hammerfest-user-ref.js";
 
-export interface HammerfestService {
+export interface HammerfestArchiveService {
   /**
    * Retrieves an Hammerfest user by id.
    *

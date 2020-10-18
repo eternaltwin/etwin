@@ -18,11 +18,11 @@ import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator";
 import { EmailTemplateService } from "@eternal-twin/core/lib/email-template/service.js";
 import { $EmailAddress, EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
 import { EmailService } from "@eternal-twin/core/lib/email/service.js";
+import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
@@ -63,7 +63,7 @@ const SYSTEM_AUTH: SystemAuthContext = {type: AuthType.System, scope: AuthScope.
 export class InMemoryAuthService implements AuthService {
   private readonly email: EmailService;
   private readonly emailTemplate: EmailTemplateService;
-  private readonly hammerfest: HammerfestService;
+  private readonly hammerfest: HammerfestArchiveService;
   private readonly hammerfestClient: HammerfestClientService;
   private readonly link: LinkService;
   private readonly oauthProvider: InMemoryOauthProviderService;
@@ -97,7 +97,7 @@ export class InMemoryAuthService implements AuthService {
   constructor(
     email: EmailService,
     emailTemplate: EmailTemplateService,
-    hammerfest: HammerfestService,
+    hammerfest: HammerfestArchiveService,
     hammerfestClient: HammerfestClientService,
     link: LinkService,
     oauthProvider: InMemoryOauthProviderService,
