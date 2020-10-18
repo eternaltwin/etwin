@@ -1,8 +1,8 @@
 {
-  "name": "@eternal-twin/twinoid-in-memory",
+  "name": "@eternal-twin/twinoid-archive-in-memory",
   "version": "0.1.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
-  "description": "Eternal-Twin `TwinoidService` in-memory implementation",
+  "description": "Eternal-Twin `TwinoidArchiveService` in-memory implementation",
   "repository": {
     "type": "git",
     "url": "git://gitlab.com:eternal-twin/etwin-api.git"

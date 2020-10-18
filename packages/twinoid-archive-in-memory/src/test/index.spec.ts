@@ -6,14 +6,14 @@ import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { TwinoidUserRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-ref.js";
 import chai from "chai";
 
-import { InMemoryTwinoidService } from "../lib/index.js";
+import { InMemoryTwinoidArchiveService } from "../lib/index.js";
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};
 const SYSTEM_AUTH: SystemAuthContext = {type: AuthType.System, scope: AuthScope.Default};
 
-describe("InMemoryTwinoidService", () => {
+describe("InMemoryTwinoidArchiveService", () => {
   it("retrieve an existing user", async () => {
-    const twinoid = new InMemoryTwinoidService();
+    const twinoid = new InMemoryTwinoidArchiveService();
     await twinoid.createOrUpdateUserRef(SYSTEM_AUTH, {type: ObjectType.TwinoidUser, id: "123", displayName: "alice"});
 
     {
@@ -27,7 +27,7 @@ describe("InMemoryTwinoidService", () => {
     }
   });
   it("do not retrieve a missing user", async () => {
-    const twinoid = new InMemoryTwinoidService();
+    const twinoid = new InMemoryTwinoidArchiveService();
     await twinoid.createOrUpdateUserRef(SYSTEM_AUTH, {type: ObjectType.TwinoidUser, id: "123", displayName: "alice"});
 
     {

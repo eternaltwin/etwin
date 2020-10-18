@@ -2,7 +2,7 @@ import { AuthContext } from "../auth/auth-context.js";
 import { TwinoidUserId } from "./twinoid-user-id.js";
 import { TwinoidUserRef } from "./twinoid-user-ref.js";
 
-export interface TwinoidService {
+export interface TwinoidArchiveService {
   /**
    * Retrieves a Twinoid user by id.
    *

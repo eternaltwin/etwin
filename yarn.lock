@@ -2223,6 +2223,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@eternal-twin/twinoid-archive-in-memory@workspace:packages/twinoid-archive-in-memory":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/twinoid-archive-in-memory@workspace:packages/twinoid-archive-in-memory"
+  dependencies:
+    "@eternal-twin/core": ^0.1.0
+    "@types/chai": ^4.2.12
+    "@types/mocha": ^8.0.3
+    "@types/node": ^14.11.2
+    chai: ^4.2.0
+    eslint: ^7.10.0
+    mocha: ^8.1.3
+    typescript: ^4.0.3
+  languageName: unknown
+  linkType: soft
+
 "@eternal-twin/twinoid-client-http@^0.1.0, @eternal-twin/twinoid-client-http@workspace:packages/twinoid-client-http":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/twinoid-client-http@workspace:packages/twinoid-client-http"
@@ -2250,21 +2265,6 @@ __metadata:
     kryo: ^0.11.0
     kryo-json: ^0.11.0
     kryo-testing: ^0.11.0
-    mocha: ^8.1.3
-    typescript: ^4.0.3
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/twinoid-in-memory@workspace:packages/twinoid-in-memory":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/twinoid-in-memory@workspace:packages/twinoid-in-memory"
-  dependencies:
-    "@eternal-twin/core": ^0.1.0
-    "@types/chai": ^4.2.12
-    "@types/mocha": ^8.0.3
-    "@types/node": ^14.11.2
-    chai: ^4.2.0
-    eslint: ^7.10.0
     mocha: ^8.1.3
     typescript: ^4.0.3
   languageName: unknown

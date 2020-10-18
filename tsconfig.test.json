@@ -52,6 +52,9 @@
       "path": "packages/rest-server/src/test"
     },
     {
+      "path": "packages/twinoid-archive-in-memory/src/test"
+    },
+    {
       "path": "packages/user-in-memory/src/test"
     },
     {

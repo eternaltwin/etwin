@@ -1,6 +1,6 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
+import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { TwinoidUserDisplayName } from "@eternal-twin/core/lib/twinoid/twinoid-user-display-name.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
 import { $TwinoidUserRef, TwinoidUserRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-ref.js";
@@ -14,7 +14,7 @@ interface InMemoryUser {
   displayName: TwinoidUserDisplayName;
 }
 
-export class InMemoryTwinoidService implements TwinoidService {
+export class InMemoryTwinoidArchiveService implements TwinoidArchiveService {
   private readonly server: InMemoryServer;
 
   constructor() {
