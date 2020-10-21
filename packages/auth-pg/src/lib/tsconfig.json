@@ -18,16 +18,7 @@
       "path": "../../../etwin-pg/src/lib"
     },
     {
-      "path": "../../../hammerfest-archive-pg/src/lib"
-    },
-    {
-      "path": "../../../link-pg/src/lib"
-    },
-    {
       "path": "../../../pg-db/src/lib"
-    },
-    {
-      "path": "../../../twinoid-archive-pg/src/lib"
     },
     {
       "path": "../../../twinoid-core/src/lib"

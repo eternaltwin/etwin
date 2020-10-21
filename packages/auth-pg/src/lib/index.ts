@@ -2,7 +2,6 @@ import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { Credentials } from "@eternal-twin/core/lib/auth/credentials";
-import { LinkHammerfestUserOptions } from "@eternal-twin/core/lib/auth/link-hammerfest-user-options.js";
 import { $Login, Login } from "@eternal-twin/core/lib/auth/login.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/core/lib/auth/register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
@@ -18,13 +17,17 @@ import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator";
 import { EmailTemplateService } from "@eternal-twin/core/lib/email-template/service.js";
 import { $EmailAddress, EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
 import { EmailService } from "@eternal-twin/core/lib/email/service.js";
+import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
+import { LinkService } from "@eternal-twin/core/lib/link/service";
+import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
+import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive";
 import { User } from "@eternal-twin/core/lib/user/user";
 import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
@@ -35,10 +38,7 @@ import {
   SessionRow,
   UserRow,
 } from "@eternal-twin/etwin-pg/lib/schema.js";
-import { PgHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-pg";
-import { PgLinkService } from "@eternal-twin/link-pg";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
-import { PgTwinoidArchiveService } from "@eternal-twin/twinoid-archive-pg";
 import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
 import { User as TidUser } from "@eternal-twin/twinoid-core/lib/user.js";
 import jsonWebToken from "jsonwebtoken";
@@ -54,12 +54,12 @@ export class PgAuthService implements AuthService {
   private readonly dbSecret: string;
   private readonly email: EmailService;
   private readonly emailTemplate: EmailTemplateService;
-  private readonly hammerfestArchive: PgHammerfestArchiveService;
+  private readonly hammerfestArchive: HammerfestArchiveService;
   private readonly hammerfestClient: HammerfestClientService;
-  private readonly link: PgLinkService;
+  private readonly link: LinkService;
   private readonly password: PasswordService;
   private readonly tokenSecret: Buffer;
-  private readonly twinoidArchive: PgTwinoidArchiveService;
+  private readonly twinoidArchive: TwinoidArchiveService;
   private readonly twinoidClient: TwinoidClientService;
   private readonly uuidGen: UuidGenerator;
 
@@ -86,12 +86,12 @@ export class PgAuthService implements AuthService {
     dbSecret: string,
     email: EmailService,
     emailTemplate: EmailTemplateService,
-    hammerfestArchive: PgHammerfestArchiveService,
+    hammerfestArchive: HammerfestArchiveService,
     hammerfestClient: HammerfestClientService,
-    link: PgLinkService,
+    link: LinkService,
     password: PasswordService,
     tokenSecret: Uint8Array,
-    twinoidArchive: PgTwinoidArchiveService,
+    twinoidArchive: TwinoidArchiveService,
     twinoidClient: TwinoidClientService,
     uuidGen: UuidGenerator,
   ) {
@@ -163,22 +163,77 @@ export class PgAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    return await this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
-      return this.registerOrLoginWithHammerfestTx(q, acx, credentials);
+    const hfSession: HammerfestSession = await this.hammerfestClient.createSession(credentials);
+    const link: VersionedEtwinLink = await this.link.getLinkFromHammerfest(hfSession.user.server, hfSession.user.id);
+    let userId: UserId;
+    if (link.current !== null) {
+      // TODO: Check that the user is active, otherwise unlink and create a new user
+      userId = link.current.user.id;
+    } else {
+      const displayName = hammerfestToUserDisplayName(hfSession.user);
+      const user = await this.database.transaction(TransactionMode.ReadWrite, q => this.createUserTx(q, displayName, null, null, null));
+      try {
+        await this.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, hfSession.user);
+        await this.link.linkToHammerfest(user.id, hfSession.user.server, hfSession.user.id);
+      } catch (e) {
+        // Delete user because without a link it is impossible to authenticate as this user.
+        // If the exception comes from `hammerfestArchive.createOrUpdateUseRef`, the changes are fully reverted.
+        // If the exception comes from `link.linkToHammerfest`, the archived user remains: it's OK (no link is created).
+        // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
+        // any issues.
+        await this.hardDeleteUserRw(this.database, user.id);
+        throw e;
+      }
+      userId = user.id;
+    }
+    const result: UserAndSession = await this.database.transaction(TransactionMode.ReadWrite, async queryable => {
+      const session: Session = await this.createSession(queryable, userId);
+      const user = await this.getExistingUserById(queryable, session.user.id);
+      return {user, session};
     });
+    // At this point the authentication is complete, we may still use the Hammerfest session to improve our archive but
+    // errors should not prevent the authentication.
+    // try {
+    //   this.hammerfest.archiveSession(hfSession)
+    // } catch (e) {
+    //   console.warn(e);
+    // }
+    return result;
   }
 
   async registerOrLoginWithTwinoidOauth(acx: AuthContext, at: OauthAccessTokenKey): Promise<UserAndSession> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    return await this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
-      return this.registerOrLoginWithTwinoidOauthTx(q, acx, at);
+    const tidUser: Pick<TidUser, "id" | "name"> = await this.twinoidClient.getMe(at);
+    const link: VersionedEtwinLink = await this.link.getLinkFromTwinoid(tidUser.id.toString(10));
+    let userId: UserId;
+    if (link.current !== null) {
+      // TODO: Check that the user is active, otherwise unlink and create a new user
+      userId = link.current.user.id;
+    } else {
+      const displayName = twinoidToUserDisplayName(tidUser);
+      const user = await this.database.transaction(TransactionMode.ReadWrite, q => this.createUserTx(q, displayName, null, null, null));
+      try {
+        await this.twinoidArchive.createOrUpdateUserRef(SYSTEM_AUTH, {type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
+        await this.link.linkToTwinoid(user.id, tidUser.id.toString(10));
+      } catch (e) {
+        // Delete user because without a link it is impossible to authenticate as this user.
+        // If the exception comes from `twinoidArchive.createOrUpdateUseRef`, the changes are fully reverted.
+        // If the exception comes from `link.linkToTwinoid`, the archived user remains: it's OK (no link is created).
+        // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
+        // any issues.
+        await this.hardDeleteUserRw(this.database, user.id);
+        throw e;
+      }
+      userId = user.id;
+    }
+    const result: UserAndSession = await this.database.transaction(TransactionMode.ReadWrite, async queryable => {
+      const session: Session = await this.createSession(queryable, userId);
+      const user = await this.getExistingUserById(queryable, session.user.id);
+      return {user, session};
     });
-  }
-
-  async linkHammerfestUser(_acx: AuthContext, _options: LinkHammerfestUserOptions): Promise<void> {
-    throw new Error("NotImplemented");
+    return result;
   }
 
   async authenticateSession(acx: AuthContext, sessionId: string): Promise<UserAndSession | null> {
@@ -338,7 +393,7 @@ export class PgAuthService implements AuthService {
 
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const user: User = await this.createUser(queryable, displayName, email, null, passwordHash);
+    const user: User = await this.createUserTx(queryable, displayName, email, null, passwordHash);
 
     try {
       await this.createValidatedEmailVerification(queryable, user.id, email, new Date(emailJwt.issuedAt * 1000));
@@ -375,7 +430,7 @@ export class PgAuthService implements AuthService {
 
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const user: User = await this.createUser(queryable, displayName, null, username, passwordHash);
+    const user: User = await this.createUserTx(queryable, displayName, null, username, passwordHash);
 
     const session: Session = await this.createSession(queryable, user.id);
 
@@ -442,78 +497,7 @@ export class PgAuthService implements AuthService {
     return {user, session};
   }
 
-  private async registerOrLoginWithHammerfestTx(
-    queryable: Queryable,
-    acx: AuthContext,
-    credentials: HammerfestCredentials,
-  ): Promise<UserAndSession> {
-    if (acx.type !== AuthType.Guest) {
-      throw Error("Forbidden: Only guests can authenticate");
-    }
-    const hfSession: HammerfestSession = await this.hammerfestClient.createSession(credentials);
-    const hfUser: HammerfestUserRef = hfSession.user;
-    await this.hammerfestArchive.createOrUpdateUserRefTx(queryable, SYSTEM_AUTH, hfUser);
-    const link = await this.link.getLinkFromHammerfestTx(queryable, hfUser.server, hfUser.id);
-    let userId: UserId;
-    if (link.current !== null) {
-      userId = link.current.user.id;
-    } else {
-      let displayName: UserDisplayName = hfUser.username;
-      if (!$UserDisplayName.test(displayName)) {
-        displayName = `hf_${displayName}`;
-        if (!$UserDisplayName.test(displayName)) {
-          displayName = "hammerfestPlayer";
-        }
-      }
-      const user = await this.createUser(queryable, displayName, null, null, null);
-      await this.link.linkToHammerfestTx(queryable, user.id, hfUser.server, hfUser.id);
-      userId = user.id;
-    }
-
-    const session: Session = await this.createSession(queryable, userId);
-    const user = await this.getExistingUserById(queryable, session.user.id);
-
-    return {user, session};
-  }
-
-
-  private async registerOrLoginWithTwinoidOauthTx(
-    queryable: Queryable,
-    acx: AuthContext,
-    at: OauthAccessTokenKey,
-  ): Promise<UserAndSession> {
-    if (acx.type !== AuthType.Guest) {
-      throw Error("Forbidden: Only guests can authenticate");
-    }
-    const tidUser: Partial<TidUser> = await this.twinoidClient.getMe(at);
-    await this.twinoidArchive.createOrUpdateUserRef(SYSTEM_AUTH, {type: ObjectType.TwinoidUser, id: tidUser.id!.toString(10), displayName: tidUser.name!});
-    const link = await this.link.getLinkFromTwinoidTx(queryable, tidUser.id!.toString(10));
-    let userId: UserId;
-    if (link.current !== null) {
-      userId = link.current.user.id;
-    } else {
-      let displayName: UserDisplayName = tidUser.name!;
-      if (!$UserDisplayName.test(displayName)) {
-        displayName = `tid_${displayName}`;
-        if (!$UserDisplayName.test(displayName)) {
-          displayName = `tid_${tidUser.id}`;
-          if (!$UserDisplayName.test(displayName)) {
-            displayName = "twinoidPlayer";
-          }
-        }
-      }
-      const user = await this.createUser(queryable, displayName, null, null, null);
-      await this.link.linkToTwinoidTx(queryable, user.id, tidUser.id!.toString(10));
-      userId = user.id;
-    }
-
-    const session: Session = await this.createSession(queryable, userId);
-    const user = await this.getExistingUserById(queryable, session.user.id);
-
-    return {user, session};
-  }
-
-  private async createUser(
+  private async createUserTx(
     queryable: Queryable,
     displayName: UserDisplayName,
     emailAddress: EmailAddress | null,
@@ -558,6 +542,17 @@ export class PgAuthService implements AuthService {
       displayName: userRow.display_name,
       isAdministrator: userRow.is_administrator,
     };
+  }
+
+  private async hardDeleteUserRw(
+    queryable: Queryable,
+    userId: UserId,
+  ): Promise<void> {
+    await queryable.countOneOrNone(
+      `
+      DELETE FROM users WHERE user_id = $1::UUID;`,
+      [userId],
+    );
   }
 
   private async createValidatedEmailVerification(
@@ -670,3 +665,43 @@ export class PgAuthService implements AuthService {
     return $EmailRegistrationJwt.read(JSON_VALUE_READER, tokenObj);
   }
 }
+
+function hammerfestToUserDisplayName(hfUser: Readonly<Pick<HammerfestUserRef, "username" | "id">>): UserDisplayName {
+  const candidates: string[] = [
+    hfUser.username,
+    `hf_${hfUser.username}`,
+    `hf_${hfUser.id}`,
+    "hammerfestPlayer",
+  ];
+  for (const candidate of candidates) {
+    if ($UserDisplayName.test(candidate)) {
+      return candidate;
+    }
+  }
+  throw new Error("AssertionError: Failed to derive user display name from Hammerfest");
+}
+
+function twinoidToUserDisplayName(tidUser: Readonly<Pick<TidUser, "id" | "name">>): UserDisplayName {
+  const candidates: string[] = [
+    tidUser.name,
+    `tid_${tidUser.name}`,
+    `tid_${tidUser.id.toString(10)}`,
+    "twinoidPlayer",
+  ];
+
+  for (const candidate of candidates) {
+    if ($UserDisplayName.test(candidate)) {
+      return candidate;
+    }
+  }
+  throw new Error("AssertionError: Failed to derive user display name from Twinoid");
+}
+
+// function userToAuthContext(user: Readonly<User>): UserAuthContext {
+//   return {
+//     type: AuthType.User,
+//     user: $UserRef.clone(user),
+//     scope: AuthScope.Default,
+//     isAdministrator: user.isAdministrator,
+//   };
+// }

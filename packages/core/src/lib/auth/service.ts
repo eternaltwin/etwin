@@ -2,7 +2,6 @@ import { HammerfestCredentials } from "../hammerfest/hammerfest-credentials.js";
 import { OauthAccessTokenKey } from "../oauth/oauth-access-token-key.js";
 import { AuthContext } from "./auth-context.js";
 import { Credentials } from "./credentials.js";
-import { LinkHammerfestUserOptions } from "./link-hammerfest-user-options.js";
 import { RegisterOrLoginWithEmailOptions } from "./register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "./register-with-username-options.js";
 import { RegisterWithVerifiedEmailOptions } from "./register-with-verified-email-options.js";
@@ -70,8 +69,6 @@ export interface AuthService {
    * Automatically creates an etwin user if the tid user isn't linked to any user yet.
    */
   registerOrLoginWithTwinoidOauth(acx: AuthContext, accessToken: OauthAccessTokenKey): Promise<UserAndSession>;
-
-  linkHammerfestUser(acx: AuthContext, options: LinkHammerfestUserOptions): Promise<void>;
 
   /**
    * Authenticate an Oauth client using its credentials

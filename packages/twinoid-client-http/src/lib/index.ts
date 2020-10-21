@@ -13,7 +13,7 @@ export class HttpTwinoidClientService implements TwinoidClientService {
     this.apiBaseUri = apiBaseUri;
   }
 
-  async getMe(at: AccessToken): Promise<Partial<User>> {
+  async getMe(at: AccessToken): Promise<Pick<User, "id" | "name"> & Partial<User>> {
     const uri: url.URL = this.resolveUri(["me"]);
     uri.searchParams.set("access_token", at);
     const rawResult: unknown = (await this.agent.get(uri.toString()).send()).body;
@@ -23,7 +23,7 @@ export class HttpTwinoidClientService implements TwinoidClientService {
     if (Reflect.get(rawResult, "id") === undefined && Reflect.get(rawResult, "name") === undefined) {
       throw new Error("Missing fields: id, name");
     }
-    return rawResult;
+    return rawResult as Pick<User, "id" | "name"> & Partial<User>;
   }
 
   async getUser(_at: AccessToken, _id: number): Promise<User | null> {
