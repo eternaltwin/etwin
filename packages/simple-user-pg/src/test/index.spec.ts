@@ -8,13 +8,13 @@ import { PgLinkService } from "@eternal-twin/link-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
+import { Api, testUserService } from "@eternal-twin/simple-user-test";
 import { PgTwinoidArchiveService } from "@eternal-twin/twinoid-archive-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
-import { Api, testUserService } from "@eternal-twin/user-test";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 
-import { PgUserService } from "../lib/index.js";
+import { PgSimpleUserService } from "../lib/index.js";
 
 async function withPgUserService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const config = await getLocalConfig();
@@ -34,7 +34,7 @@ async function withPgUserService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
     const password = new ScryptPasswordService();
-    const user = new PgUserService(db, secretKeyStr);
+    const user = new PgSimpleUserService(db, secretKeyStr);
     const hammerfestArchive = new PgHammerfestArchiveService(db);
     const twinoidArchive = new PgTwinoidArchiveService(db);
     const link = new PgLinkService(db, hammerfestArchive, twinoidArchive, user);
@@ -45,6 +45,6 @@ async function withPgUserService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   });
 }
 
-describe("PgUserService", function () {
+describe("PgSimpleUserService", function () {
   testUserService(withPgUserService);
 });

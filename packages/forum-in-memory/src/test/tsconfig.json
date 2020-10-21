@@ -50,7 +50,7 @@
       "path": "../../../twinoid-client-http/src/lib"
     },
     {
-      "path": "../../../user-in-memory/src/lib"
+      "path": "../../../simple-user-in-memory/src/lib"
     },
     {
       "path": "../../../uuid4-generator/src/lib"

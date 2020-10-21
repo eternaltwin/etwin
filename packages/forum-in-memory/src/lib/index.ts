@@ -42,8 +42,8 @@ import { ShortForumPostRevisionListing } from "@eternal-twin/core/lib/forum/shor
 import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js";
 import { UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options.js";
 import { UserForumActor } from "@eternal-twin/core/lib/forum/user-forum-actor.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { $ShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
+import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { renderMarktwin } from "@eternal-twin/marktwin";
 import { Grammar } from "@eternal-twin/marktwin/lib/grammar.js";
@@ -83,14 +83,14 @@ const SYSTEM_AUTH: SystemAuthContext = {
 
 export class InMemoryForumService implements ForumService {
   private readonly uuidGen: UuidGenerator;
-  private readonly user: UserService;
+  private readonly user: SimpleUserService;
   private readonly sections: Map<ForumSectionId, InMemorySection>;
   private readonly threads: Map<ForumThreadId, InMemoryThread>;
   private readonly posts: Map<ForumPostId, InMemoryPost>;
 
   readonly config: Readonly<ForumConfig>;
 
-  constructor(uuidGen: UuidGenerator, user: UserService, config: Readonly<ForumConfig>) {
+  constructor(uuidGen: UuidGenerator, user: SimpleUserService, config: Readonly<ForumConfig>) {
     this.uuidGen = uuidGen;
     this.user = user;
     this.config = {postsPerPage: config.postsPerPage, threadsPerPage: config.threadsPerPage};

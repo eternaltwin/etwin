@@ -39,7 +39,7 @@
       "path": "../../../oauth-provider-pg/src/lib"
     },
     {
-      "path": "../../../user-pg/src/lib"
+      "path": "../../../simple-user-pg/src/lib"
     },
     {
       "path": "../../../rest-server/src/lib"

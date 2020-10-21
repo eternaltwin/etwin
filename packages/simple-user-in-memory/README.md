@@ -1,6 +1,6 @@
-# Eternal-Twin in-memory user service
+# Eternal-Twin in-memory `SimpleUserService`
 
-`UserService` in-memory implementation: all the data is stored in RAM.
+`SimpleUserService` in-memory implementation: all the data is stored in RAM.
 
 It is intended for local development only in situations where using a Postgres database is not possible.
 

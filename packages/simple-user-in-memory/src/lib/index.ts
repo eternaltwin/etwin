@@ -5,8 +5,8 @@ import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
 import { EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
+import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { User } from "@eternal-twin/core/lib/user/user.js";
@@ -26,7 +26,7 @@ export interface InMemoryUser {
   isAdministrator: boolean,
 }
 
-export class InMemoryUserService implements UserService {
+export class InMemorySimpleUserService implements SimpleUserService {
   private readonly uuidGen: UuidGenerator;
   private readonly users: Map<UserId, InMemoryUser>;
 

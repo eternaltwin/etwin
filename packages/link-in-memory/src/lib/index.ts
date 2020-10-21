@@ -14,7 +14,7 @@ import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
-import { UserService } from "@eternal-twin/core/lib/user/service";
+import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Date } from "kryo/lib/date.js";
 
@@ -41,11 +41,11 @@ const GUEST_AUTH_CONTEXT: GuestAuthContext = {
 export class InMemoryLinkService implements LinkService {
   private readonly hammerfestArchive: HammerfestArchiveService;
   private readonly twinoidArchive: TwinoidArchiveService;
-  private readonly user: UserService;
+  private readonly user: SimpleUserService;
   private readonly hammerfestUserLinks: Set<InMemoryHammerfestUserLink>;
   private readonly twinoidUserLinks: Set<InMemoryTwinoidUserLink>;
 
-  public constructor(hammerfestArchive: HammerfestArchiveService, twinoidArchive: TwinoidArchiveService, user: UserService) {
+  public constructor(hammerfestArchive: HammerfestArchiveService, twinoidArchive: TwinoidArchiveService, user: SimpleUserService) {
     this.hammerfestArchive = hammerfestArchive;
     this.twinoidArchive = twinoidArchive;
     this.user = user;

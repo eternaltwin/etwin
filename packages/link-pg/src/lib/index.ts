@@ -14,7 +14,7 @@ import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import {
   HammerfestUserLinkRow,
@@ -31,13 +31,13 @@ export class PgLinkService implements LinkService {
   private readonly database: Database;
   private readonly hammerfestArchive: HammerfestArchiveService;
   private readonly twinoidArchive: TwinoidArchiveService;
-  private readonly user: UserService;
+  private readonly user: SimpleUserService;
 
   constructor(
     database: Database,
     hammerfestArchive: HammerfestArchiveService,
     twinoidArchive: TwinoidArchiveService,
-    user: UserService,
+    user: SimpleUserService,
   ) {
     this.database = database;
     this.hammerfestArchive = hammerfestArchive;

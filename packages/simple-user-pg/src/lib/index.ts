@@ -2,14 +2,14 @@ import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
+import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { User } from "@eternal-twin/core/lib/user/user.js";
 import { UserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 
-export class PgUserService implements UserService {
+export class PgSimpleUserService implements SimpleUserService {
   private readonly database: Database;
   private readonly dbSecret: string;
 

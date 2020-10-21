@@ -4,7 +4,7 @@ import { ShortUser } from "./short-user.js";
 import { UserId } from "./user-id.js";
 import { User } from "./user.js";
 
-export interface UserService {
+export interface SimpleUserService {
   /**
    * Retrieve the user corresponding to the provided user ID.
    *

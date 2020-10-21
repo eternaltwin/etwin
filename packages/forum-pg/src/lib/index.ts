@@ -41,8 +41,8 @@ import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js";
 import { UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options.js";
 import { UserForumActor } from "@eternal-twin/core/lib/forum/user-forum-actor.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { $ShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
+import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id";
 import {
   ForumPostRevisionRow,
@@ -63,13 +63,13 @@ const SYSTEM_AUTH: SystemAuthContext = {
 export class PgForumService implements ForumService {
   private readonly database: Database;
   private readonly uuidGen: UuidGenerator;
-  private readonly user: UserService;
+  private readonly user: SimpleUserService;
   public readonly config: Readonly<ForumConfig>;
 
   constructor(
     database: Database,
     uuidGen: UuidGenerator,
-    user: UserService,
+    user: SimpleUserService,
     config: Readonly<ForumConfig>,
   ) {
     this.database = database;

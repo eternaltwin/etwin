@@ -52,6 +52,12 @@
       "path": "packages/rest-server/src/test"
     },
     {
+      "path": "packages/simple-user-in-memory/src/test"
+    },
+    {
+      "path": "packages/simple-user-pg/src/test"
+    },
+    {
       "path": "packages/token-in-memory/src/test"
     },
     {
@@ -62,12 +68,6 @@
     },
     {
       "path": "packages/twinoid-archive-pg/src/test"
-    },
-    {
-      "path": "packages/user-in-memory/src/test"
-    },
-    {
-      "path": "packages/user-pg/src/test"
     },
     {
       "path": "packages/uuid4-generator/src/test"

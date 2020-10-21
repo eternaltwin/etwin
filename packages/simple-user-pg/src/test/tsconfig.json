@@ -44,7 +44,7 @@
       "path": "../../../twinoid-client-http/src/lib"
     },
     {
-      "path": "../../../user-test/src/lib"
+      "path": "../../../simple-user-test/src/lib"
     },
     {
       "path": "../../../uuid4-generator/src/lib"

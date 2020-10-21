@@ -13,7 +13,7 @@ import {
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { $UserId, UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $User, User } from "@eternal-twin/core/lib/user/user.js";
 import Koa from "koa";
@@ -34,7 +34,7 @@ const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Def
 export interface Api {
   auth: AuthService;
   koaAuth: KoaAuth;
-  user: UserService;
+  simpleUser: SimpleUserService;
 }
 
 type CreateUserBody = RegisterWithVerifiedEmailOptions | RegisterWithUsernameOptions;
@@ -82,7 +82,7 @@ export function createUsersRouter(api: Api): Koa {
       return;
     }
     const userId: UserId = rawUserId;
-    const user: User | CompleteUser | null = await api.user.getUserById(auth, userId);
+    const user: User | CompleteUser | null = await api.simpleUser.getUserById(auth, userId);
     if (user === null) {
       cx.response.status = 404;
       cx.response.body = {error: "UserNotFound"};

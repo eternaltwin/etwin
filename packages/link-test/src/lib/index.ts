@@ -1,21 +1,21 @@
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
-import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
+import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
-import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
-import { LinkService } from "@eternal-twin/core/lib/link/service";
-import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links";
-import { UserService } from "@eternal-twin/core/lib/user/service";
-import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name";
-import { Username } from "@eternal-twin/core/lib/user/username";
+import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
+import { LinkService } from "@eternal-twin/core/lib/link/service.js";
+import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
+import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
+import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
+import { Username } from "@eternal-twin/core/lib/user/username.js";
 import chai from "chai";
 
 export interface Api {
   auth: AuthService;
   link: LinkService;
-  user: UserService;
+  user: SimpleUserService;
 }
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};

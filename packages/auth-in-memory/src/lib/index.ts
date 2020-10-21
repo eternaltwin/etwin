@@ -37,9 +37,9 @@ import {
   InMemoryOauthClient,
   InMemoryOauthProviderService,
 } from "@eternal-twin/oauth-provider-in-memory";
+import { InMemorySimpleUserService,InMemoryUser } from "@eternal-twin/simple-user-in-memory";
 import { TwinoidClientService } from "@eternal-twin/twinoid-core/src/lib/client.js";
 import { User as TidUser } from "@eternal-twin/twinoid-core/src/lib/user.js";
-import { InMemoryUser, InMemoryUserService } from "@eternal-twin/user-in-memory";
 import jsonWebToken from "jsonwebtoken";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { UuidHex } from "kryo/lib/uuid-hex.js";
@@ -64,7 +64,7 @@ export class InMemoryAuthService implements AuthService {
   private readonly tokenSecret: Buffer;
   private readonly twinoidArchive: TwinoidArchiveService;
   private readonly twinoidClient: TwinoidClientService;
-  private readonly user: InMemoryUserService;
+  private readonly user: InMemorySimpleUserService;
   private readonly uuidGen: UuidGenerator;
 
   private readonly defaultLocale: LocaleId;
@@ -99,7 +99,7 @@ export class InMemoryAuthService implements AuthService {
     tokenSecret: Uint8Array,
     twinoidArchive: TwinoidArchiveService,
     twinoidClient: TwinoidClientService,
-    user: InMemoryUserService,
+    user: InMemorySimpleUserService,
     uuidGen: UuidGenerator,
   ) {
     this.email = email;

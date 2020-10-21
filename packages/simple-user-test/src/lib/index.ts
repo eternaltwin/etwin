@@ -7,8 +7,8 @@ import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js"
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { NullableShortUser } from "@eternal-twin/core/lib/user/short-user.js";
+import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { User } from "@eternal-twin/core/lib/user/user.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
@@ -16,7 +16,7 @@ import chai from "chai";
 
 export interface Api {
   auth: AuthService;
-  user: UserService;
+  user: SimpleUserService;
 }
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};

@@ -9,9 +9,9 @@ import { PgLinkService } from "@eternal-twin/link-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
+import { PgSimpleUserService } from "@eternal-twin/simple-user-pg";
 import { PgTwinoidArchiveService } from "@eternal-twin/twinoid-archive-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
-import { PgUserService } from "@eternal-twin/user-pg";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 
@@ -35,7 +35,7 @@ async function withPgForumService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
     const password = new ScryptPasswordService();
-    const user = new PgUserService(db, secretKeyStr);
+    const user = new PgSimpleUserService(db, secretKeyStr);
     const hammerfestArchive = new PgHammerfestArchiveService(db);
     const twinoidArchive = new PgTwinoidArchiveService(db);
     const link = new PgLinkService(db, hammerfestArchive, twinoidArchive, user);
