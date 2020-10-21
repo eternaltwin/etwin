@@ -1,4 +1,3 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
@@ -13,15 +12,15 @@ export class PgTwinoidArchiveService implements TwinoidArchiveService {
     this.database = database;
   }
 
-  async getUserById(acx: AuthContext, tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
-    return this.getUserRefById(acx, tidUserId);
+  async getUserById(tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
+    return this.getUserRefById(tidUserId);
   }
 
-  async getUserRefById(acx: AuthContext, tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
-    return this.database.transaction(TransactionMode.ReadOnly, q => this.getUserRefByIdTx(q, acx, tidUserId));
+  async getUserRefById(tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
+    return this.database.transaction(TransactionMode.ReadOnly, q => this.getUserRefByIdTx(q, tidUserId));
   }
 
-  async getUserRefByIdTx(queryable: Queryable, _acx: AuthContext, tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
+  async getUserRefByIdTx(queryable: Queryable, tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
     type Row = Pick<TwinoidUserRow, "twinoid_user_id" | "name">;
     const row: Row | undefined = await queryable.oneOrNone(
       `
@@ -40,11 +39,11 @@ export class PgTwinoidArchiveService implements TwinoidArchiveService {
     };
   }
 
-  async createOrUpdateUserRef(acx: AuthContext, ref: TwinoidUserRef): Promise<TwinoidUserRef> {
-    return this.database.transaction(TransactionMode.ReadWrite, q => this.createOrUpdateUserRefTx(q, acx, ref));
+  async createOrUpdateUserRef(ref: TwinoidUserRef): Promise<TwinoidUserRef> {
+    return this.database.transaction(TransactionMode.ReadWrite, q => this.createOrUpdateUserRefTx(q, ref));
   }
 
-  async createOrUpdateUserRefTx(queryable: Queryable, _acx: AuthContext, ref: TwinoidUserRef): Promise<TwinoidUserRef> {
+  async createOrUpdateUserRefTx(queryable: Queryable, ref: TwinoidUserRef): Promise<TwinoidUserRef> {
     await queryable.countOne(
       `
         INSERT INTO twinoid_users(twinoid_user_id, name)

@@ -10,7 +10,6 @@ import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/re
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
 import { Session } from "@eternal-twin/core/lib/auth/session.js";
-import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
@@ -53,8 +52,6 @@ interface EmailVerification {
   ctime: Date;
   validationTime: Date;
 }
-
-const SYSTEM_AUTH: SystemAuthContext = {type: AuthType.System, scope: AuthScope.Default};
 
 export class InMemoryAuthService implements AuthService {
   private readonly email: EmailService;
@@ -259,7 +256,7 @@ export class InMemoryAuthService implements AuthService {
     }
     const hfSession: HammerfestSession = await this.hammerfestClient.createSession(credentials);
     const hfUser: HammerfestUserRef = hfSession.user;
-    await this.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, hfUser);
+    await this.hammerfestArchive.createOrUpdateUserRef(hfUser);
 
     const link: VersionedEtwinLink = await this.link.getLinkFromHammerfest(hfUser.server, hfUser.id);
 
@@ -290,7 +287,7 @@ export class InMemoryAuthService implements AuthService {
       throw Error("Forbidden: Only guests can authenticate");
     }
     const tidUser: Partial<TidUser> = await this.twinoidClient.getMe(at);
-    await this.twinoidArchive.createOrUpdateUserRef(SYSTEM_AUTH, {type: ObjectType.TwinoidUser, id: tidUser.id!.toString(10), displayName: tidUser.name!});
+    await this.twinoidArchive.createOrUpdateUserRef({type: ObjectType.TwinoidUser, id: tidUser.id!.toString(10), displayName: tidUser.name!});
 
     const link: VersionedEtwinLink = await this.link.getLinkFromTwinoid(tidUser.id!.toString(10));
 

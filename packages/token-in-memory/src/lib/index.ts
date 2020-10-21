@@ -1,6 +1,3 @@
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
@@ -51,8 +48,6 @@ interface ImRefreshTokens {
   byKey: Map<OauthRefreshTokenKey, ImRefreshToken>
   byUserId: Map<TwinoidUserId, ImRefreshToken>
 }
-
-const SYSTEM_AUTH: SystemAuthContext = {type: AuthType.System, scope: AuthScope.Default};
 
 export class InMemoryTokenService implements TokenService {
   private readonly hammerfestArchive: HammerfestArchiveService;
@@ -182,7 +177,7 @@ export class InMemoryTokenService implements TokenService {
         session = oldSession;
       }
     }
-    const user = await this.hammerfestArchive.getUserRefById(SYSTEM_AUTH, hfServer, session.hfUserId);
+    const user = await this.hammerfestArchive.getUserRefById(hfServer, session.hfUserId);
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -208,7 +203,7 @@ export class InMemoryTokenService implements TokenService {
     if (session === undefined) {
       return null;
     }
-    const user = await this.hammerfestArchive.getUserRefById(SYSTEM_AUTH, hfServer, session.hfUserId);
+    const user = await this.hammerfestArchive.getUserRefById(hfServer, session.hfUserId);
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }

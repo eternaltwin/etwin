@@ -1,4 +1,3 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
@@ -27,11 +26,11 @@ export class InMemoryHammerfestArchiveService implements HammerfestArchiveServic
     ]);
   }
 
-  async getUserById(acx: AuthContext, server: HammerfestServer, userId: HammerfestUserId): Promise<HammerfestUserRef | null> {
-    return this.getUserRefById(acx, server, userId);
+  async getUserById(server: HammerfestServer, userId: HammerfestUserId): Promise<HammerfestUserRef | null> {
+    return this.getUserRefById(server, userId);
   }
 
-  async getUserRefById(_acx: AuthContext, hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<HammerfestUserRef | null> {
+  async getUserRefById(hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<HammerfestUserRef | null> {
     const server = this.getImServerData(hfServer);
     const user: InMemoryHammerfestUser | undefined = server.users.get(hfUserId);
     if (user === undefined) {
@@ -45,7 +44,7 @@ export class InMemoryHammerfestArchiveService implements HammerfestArchiveServic
     };
   }
 
-  async createOrUpdateUserRef(_acx: AuthContext, ref: HammerfestUserRef): Promise<HammerfestUserRef> {
+  async createOrUpdateUserRef(ref: HammerfestUserRef): Promise<HammerfestUserRef> {
     const server = this.getImServerData(ref.server);
     let user: InMemoryHammerfestUser | undefined = server.users.get(ref.id);
     if (user === undefined) {

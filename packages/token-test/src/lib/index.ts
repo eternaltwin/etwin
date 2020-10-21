@@ -1,6 +1,3 @@
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
@@ -13,8 +10,6 @@ export interface Api {
   token: TokenService;
 }
 
-const SYSTEM_AUTH: SystemAuthContext = {type: AuthType.System, scope: AuthScope.Default};
-
 export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => Promise<void>) {
   it("Touches a Hammerfest session", async function (this: Mocha.Context) {
     this.timeout(30000);
@@ -25,7 +20,7 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, alice);
+      await api.hammerfestArchive.createOrUpdateUserRef(alice);
       {
         const actual: HammerfestSession = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
         const expected: HammerfestSession = {
@@ -48,7 +43,7 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, alice);
+      await api.hammerfestArchive.createOrUpdateUserRef(alice);
       const session = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await timeout(1000);
       {
@@ -81,7 +76,7 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, alice);
+      await api.hammerfestArchive.createOrUpdateUserRef(alice);
       {
         const actual: HammerfestSession | null = await api.token.getHammerfest("hammerfest.fr", "1");
         chai.assert.isNull(actual);
@@ -98,7 +93,7 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, alice);
+      await api.hammerfestArchive.createOrUpdateUserRef(alice);
       await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await api.token.revokeHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa");
       {
@@ -117,7 +112,7 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, alice);
+      await api.hammerfestArchive.createOrUpdateUserRef(alice);
       const session = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await timeout(1000);
       {
@@ -144,7 +139,7 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, alice);
+      await api.hammerfestArchive.createOrUpdateUserRef(alice);
       const firstSession = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await api.token.revokeHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa");
       await timeout(1000);
@@ -182,14 +177,14 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, alice);
+      await api.hammerfestArchive.createOrUpdateUserRef(alice);
       const bob: HammerfestUserRef = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "2",
         username: "bob",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, bob);
+      await api.hammerfestArchive.createOrUpdateUserRef(bob);
       const firstSession = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await api.token.revokeHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa");
       await timeout(1000);
@@ -231,14 +226,14 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, alice);
+      await api.hammerfestArchive.createOrUpdateUserRef(alice);
       const bob: HammerfestUserRef = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "2",
         username: "bob",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, bob);
+      await api.hammerfestArchive.createOrUpdateUserRef(bob);
       const firstSession = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await timeout(1000);
       const secondSession: HammerfestSession = await api.token.touchHammerfest(bob.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", bob.id);

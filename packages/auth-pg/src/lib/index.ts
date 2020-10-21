@@ -9,7 +9,6 @@ import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/re
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
 import { Session } from "@eternal-twin/core/lib/auth/session.js";
-import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
@@ -46,8 +45,6 @@ import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
 
 import { $EmailRegistrationJwt, EmailRegistrationJwt } from "./email-registration-jwt.js";
-
-const SYSTEM_AUTH: SystemAuthContext = {type: AuthType.System, scope: AuthScope.Default};
 
 export class PgAuthService implements AuthService {
   private readonly database: Database;
@@ -173,7 +170,7 @@ export class PgAuthService implements AuthService {
       const displayName = hammerfestToUserDisplayName(hfSession.user);
       const user = await this.database.transaction(TransactionMode.ReadWrite, q => this.createUserTx(q, displayName, null, null, null));
       try {
-        await this.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, hfSession.user);
+        await this.hammerfestArchive.createOrUpdateUserRef(hfSession.user);
         await this.link.linkToHammerfest(user.id, hfSession.user.server, hfSession.user.id);
       } catch (e) {
         // Delete user because without a link it is impossible to authenticate as this user.
@@ -215,7 +212,7 @@ export class PgAuthService implements AuthService {
       const displayName = twinoidToUserDisplayName(tidUser);
       const user = await this.database.transaction(TransactionMode.ReadWrite, q => this.createUserTx(q, displayName, null, null, null));
       try {
-        await this.twinoidArchive.createOrUpdateUserRef(SYSTEM_AUTH, {type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
+        await this.twinoidArchive.createOrUpdateUserRef({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
         await this.link.linkToTwinoid(user.id, tidUser.id.toString(10));
       } catch (e) {
         // Delete user because without a link it is impossible to authenticate as this user.

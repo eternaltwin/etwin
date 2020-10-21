@@ -141,7 +141,7 @@ export class PgLinkService implements LinkService {
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.hammerfestArchive.getUserRefByIdTx(queryable, GUEST_AUTH_CONTEXT, row.hammerfest_server, row.hammerfest_user_id);
+    const user = await this.hammerfestArchive.getUserRefByIdTx(queryable, row.hammerfest_server, row.hammerfest_user_id);
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -180,7 +180,7 @@ export class PgLinkService implements LinkService {
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.twinoidArchive.getUserRefByIdTx(queryable, GUEST_AUTH_CONTEXT, row.twinoid_user_id);
+    const user = await this.twinoidArchive.getUserRefByIdTx(queryable, row.twinoid_user_id);
     if (user === null) {
       throw new Error("AssertionError: Expected Twinoid user to exist");
     }
@@ -218,7 +218,7 @@ export class PgLinkService implements LinkService {
         [userId],
       );
       for (const row of rows) {
-        const user = await this.hammerfestArchive.getUserRefByIdTx(queryable, GUEST_AUTH_CONTEXT, row.hammerfest_server, row.hammerfest_user_id);
+        const user = await this.hammerfestArchive.getUserRefByIdTx(queryable, row.hammerfest_server, row.hammerfest_user_id);
         if (user === null) {
           throw new Error("AssertionError: Expected Hammerfest user to exist");
         }
@@ -254,7 +254,7 @@ export class PgLinkService implements LinkService {
         [userId],
       );
       if (row !== undefined) {
-        const user = await this.twinoidArchive.getUserRefByIdTx(queryable, GUEST_AUTH_CONTEXT, row.twinoid_user_id);
+        const user = await this.twinoidArchive.getUserRefByIdTx(queryable, row.twinoid_user_id);
         if (user === null) {
           throw new Error("AssertionError: Expected Twinoid user to exist");
         }

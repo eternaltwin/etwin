@@ -1,6 +1,3 @@
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
@@ -17,8 +14,6 @@ import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js
 import { TwinoidAccessTokenRow, TwinoidRefreshTokenRow } from "@eternal-twin/etwin-pg/lib/schema";
 import { HammerfestSessionRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
-
-const SYSTEM_AUTH: SystemAuthContext = {type: AuthType.System, scope: AuthScope.Default};
 
 export class PgTokenService implements TokenService {
   private readonly database: Database;
@@ -228,7 +223,7 @@ export class PgTokenService implements TokenService {
     if (row === undefined) {
       return null;
     }
-    const user = await this.hammerfestArchive.getUserRefById(SYSTEM_AUTH, hfServer, hfUserId);
+    const user = await this.hammerfestArchive.getUserRefById(hfServer, hfUserId);
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -274,7 +269,7 @@ export class PgTokenService implements TokenService {
         hfUserId,
       ],
     );
-    const user = await this.hammerfestArchive.getUserRefById(SYSTEM_AUTH, hfServer, row.hammerfest_user_id);
+    const user = await this.hammerfestArchive.getUserRefById(hfServer, row.hammerfest_user_id);
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }

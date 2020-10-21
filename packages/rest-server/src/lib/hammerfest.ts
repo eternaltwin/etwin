@@ -1,7 +1,4 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestProfile } from "@eternal-twin/core/lib/hammerfest/hammerfest-profile.js";
@@ -13,8 +10,6 @@ import Router from "koa-router";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 
 import { KoaAuth } from "./helpers/koa-auth.js";
-
-const SYSTEM_AUTH: SystemAuthContext = {type: AuthType.System, scope: AuthScope.Default};
 
 export interface Api {
   koaAuth: KoaAuth;
@@ -47,12 +42,12 @@ export function createHammerfestRouter(api: Api): Router {
     cx.response.body = $HammerfestUserRef.write(JSON_VALUE_WRITER, hfUser);
   }
 
-  async function getOrCreateUserById(auth: AuthContext, server: HammerfestServer, userId: HammerfestUserId): Promise<HammerfestUserRef | null> {
-    let user: HammerfestUserRef | null = await api.hammerfestArchive.getUserById(auth, server, userId);
+  async function getOrCreateUserById(_auth: AuthContext, server: HammerfestServer, userId: HammerfestUserId): Promise<HammerfestUserRef | null> {
+    let user: HammerfestUserRef | null = await api.hammerfestArchive.getUserById(server, userId);
     if (user === null) {
       const profile: HammerfestProfile | null = await api.hammerfestClient.getProfileById(null, {server, userId});
       if (profile !== null) {
-        user = await api.hammerfestArchive.createOrUpdateUserRef(SYSTEM_AUTH, profile.user);
+        user = await api.hammerfestArchive.createOrUpdateUserRef(profile.user);
       }
     }
     return user;

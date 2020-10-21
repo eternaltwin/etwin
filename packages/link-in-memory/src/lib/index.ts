@@ -193,7 +193,7 @@ export class InMemoryLinkService implements LinkService {
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.hammerfestArchive.getUserRefById(GUEST_AUTH_CONTEXT, imLink.hfServer, imLink.hfUserId);
+    const user = await this.hammerfestArchive.getUserRefById(imLink.hfServer, imLink.hfUserId);
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -212,7 +212,7 @@ export class InMemoryLinkService implements LinkService {
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.twinoidArchive.getUserRefById(GUEST_AUTH_CONTEXT, imLink.tidUserId);
+    const user = await this.twinoidArchive.getUserRefById(imLink.tidUserId);
     if (user === null) {
       throw new Error("AssertionError: Expected Twinoid user to exist");
     }

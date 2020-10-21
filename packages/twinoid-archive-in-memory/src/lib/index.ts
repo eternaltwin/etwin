@@ -1,4 +1,3 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { TwinoidUserDisplayName } from "@eternal-twin/core/lib/twinoid/twinoid-user-display-name.js";
@@ -23,11 +22,11 @@ export class InMemoryTwinoidArchiveService implements TwinoidArchiveService {
     };
   }
 
-  public async getUserById(acx: AuthContext, tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
-    return this.getUserRefById(acx, tidUserId);
+  public async getUserById(tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
+    return this.getUserRefById(tidUserId);
   }
 
-  public async getUserRefById(_acx: AuthContext, tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
+  public async getUserRefById(tidUserId: TwinoidUserId): Promise<TwinoidUserRef | null> {
     const srv = this.getServer();
     const user: InMemoryUser | undefined = srv.users.get(tidUserId);
     if (user === undefined) {
@@ -36,7 +35,7 @@ export class InMemoryTwinoidArchiveService implements TwinoidArchiveService {
     return {type: ObjectType.TwinoidUser, id: user.id, displayName: user.displayName};
   }
 
-  public async createOrUpdateUserRef(_acx: AuthContext, ref: TwinoidUserRef): Promise<TwinoidUserRef> {
+  public async createOrUpdateUserRef(ref: TwinoidUserRef): Promise<TwinoidUserRef> {
     const srv = this.getServer();
     if (srv.users.has(ref.id)) {
       throw new Error("AssertionError: User id conflict");

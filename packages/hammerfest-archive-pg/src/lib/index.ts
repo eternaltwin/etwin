@@ -1,4 +1,3 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
@@ -14,15 +13,15 @@ export class PgHammerfestArchiveService implements HammerfestArchiveService {
     this.database = database;
   }
 
-  async getUserById(acx: AuthContext, server: HammerfestServer, userId: HammerfestUserId): Promise<HammerfestUserRef | null> {
-    return this.getUserRefById(acx, server, userId);
+  async getUserById(server: HammerfestServer, userId: HammerfestUserId): Promise<HammerfestUserRef | null> {
+    return this.getUserRefById(server, userId);
   }
 
-  async getUserRefById(acx: AuthContext, hfServer: HammerfestServer, hfId: HammerfestUserId): Promise<HammerfestUserRef | null> {
-    return this.database.transaction(TransactionMode.ReadOnly, q => this.getUserRefByIdTx(q, acx, hfServer, hfId));
+  async getUserRefById(hfServer: HammerfestServer, hfId: HammerfestUserId): Promise<HammerfestUserRef | null> {
+    return this.database.transaction(TransactionMode.ReadOnly, q => this.getUserRefByIdTx(q, hfServer, hfId));
   }
 
-  async getUserRefByIdTx(queryable: Queryable, _acx: AuthContext, hfServer: HammerfestServer, hfId: HammerfestUserId): Promise<HammerfestUserRef | null> {
+  async getUserRefByIdTx(queryable: Queryable, hfServer: HammerfestServer, hfId: HammerfestUserId): Promise<HammerfestUserRef | null> {
     type Row = Pick<HammerfestUserRow, "hammerfest_server" | "hammerfest_user_id" | "username">;
     const row: Row | undefined = await queryable.oneOrNone(
       `
@@ -42,11 +41,11 @@ export class PgHammerfestArchiveService implements HammerfestArchiveService {
     };
   }
 
-  async createOrUpdateUserRef(acx: AuthContext, ref: HammerfestUserRef): Promise<HammerfestUserRef> {
-    return this.database.transaction(TransactionMode.ReadWrite, q => this.createOrUpdateUserRefTx(q, acx, ref));
+  async createOrUpdateUserRef(ref: HammerfestUserRef): Promise<HammerfestUserRef> {
+    return this.database.transaction(TransactionMode.ReadWrite, q => this.createOrUpdateUserRefTx(q, ref));
   }
 
-  async createOrUpdateUserRefTx(queryable: Queryable, _acx: AuthContext, ref: HammerfestUserRef): Promise<HammerfestUserRef> {
+  async createOrUpdateUserRefTx(queryable: Queryable, ref: HammerfestUserRef): Promise<HammerfestUserRef> {
     await queryable.countOne(
       `
         INSERT INTO hammerfest_users(hammerfest_server, hammerfest_user_id, username)
