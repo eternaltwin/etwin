@@ -9,7 +9,7 @@ interface Api {
   auth: AuthService;
   forum: ForumService;
   koaAuth: KoaAuth;
-  simpleUser: SimpleUserService;
+  user: UserService;
 }
 
 export interface ServerAppConfig {

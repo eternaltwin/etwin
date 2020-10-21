@@ -1,36 +1,34 @@
 import { CaseStyle } from "kryo";
+import { $Boolean } from "kryo/lib/boolean.js";
 import { LiteralType } from "kryo/lib/literal.js";
-import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
-import { TryUnionType } from "kryo/lib/try-union.js";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $UserDisplayNameVersions, UserDisplayNameVersions } from "./user-display-name-versions.js";
 import { $UserId, UserId } from "./user-id.js";
 
 /**
- * Represents a reference to an Eternal-Twin user, with enough to display it.
+ * Represents an Eternal-Twin simple user (without private data).
+ *
+ * As a simple user, it only has data directly associated with this user.
+ * See `User` for a variant combining data from multiple sources (linked users, forum roles, profile events, etc.).
  */
-export interface ShortUser {
+export interface SimpleUser {
   type: ObjectType.User;
 
   id: UserId;
 
   displayName: UserDisplayNameVersions;
+
+  isAdministrator: boolean;
 }
 
-export const $ShortUser: RecordIoType<ShortUser> = new RecordType<ShortUser>({
+export const $SimpleUser: RecordIoType<SimpleUser> = new RecordType<SimpleUser>({
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.User})},
     id: {type: $UserId},
     displayName: {type: $UserDisplayNameVersions},
+    isAdministrator: {type: $Boolean},
   },
   changeCase: CaseStyle.SnakeCase,
 });
-
-/**
- * A short user that may be null.
- */
-export type NullableShortUser = null | ShortUser;
-
-export const $NullableShortUser: TryUnionType<NullableShortUser> = new TryUnionType({variants: [$Null, $ShortUser]});

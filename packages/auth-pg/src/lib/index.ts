@@ -1,7 +1,7 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { Credentials } from "@eternal-twin/core/lib/auth/credentials";
+import { Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
 import { $Login, Login } from "@eternal-twin/core/lib/auth/login.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/core/lib/auth/register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
@@ -12,7 +12,7 @@ import { Session } from "@eternal-twin/core/lib/auth/session.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator";
+import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
 import { EmailTemplateService } from "@eternal-twin/core/lib/email-template/service.js";
 import { $EmailAddress, EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
 import { EmailService } from "@eternal-twin/core/lib/email/service.js";
@@ -21,13 +21,13 @@ import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/clien
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
-import { LinkService } from "@eternal-twin/core/lib/link/service";
+import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
-import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive";
-import { User } from "@eternal-twin/core/lib/user/user";
+import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
+import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
@@ -243,7 +243,7 @@ export class PgAuthService implements AuthService {
         return null;
       }
 
-      const user: User = await this.getExistingUserById(q, session.user.id);
+      const user: SimpleUser = await this.getExistingUserById(q, session.user.id);
 
       return {user, session};
     });
@@ -305,7 +305,7 @@ export class PgAuthService implements AuthService {
       user: {
         type: ObjectType.User,
         id: row.user_id,
-        displayName: row.user_display_name,
+        displayName: {current: {value: row.user_display_name}},
       }
     };
   }
@@ -390,7 +390,7 @@ export class PgAuthService implements AuthService {
 
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const user: User = await this.createUserTx(queryable, displayName, email, null, passwordHash);
+    const user: SimpleUser = await this.createUserTx(queryable, displayName, email, null, passwordHash);
 
     try {
       await this.createValidatedEmailVerification(queryable, user.id, email, new Date(emailJwt.issuedAt * 1000));
@@ -427,7 +427,7 @@ export class PgAuthService implements AuthService {
 
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const user: User = await this.createUserTx(queryable, displayName, null, username, passwordHash);
+    const user: SimpleUser = await this.createUserTx(queryable, displayName, null, username, passwordHash);
 
     const session: Session = await this.createSession(queryable, user.id);
 
@@ -500,7 +500,7 @@ export class PgAuthService implements AuthService {
     emailAddress: EmailAddress | null,
     username: Username | null,
     passwordHash: PasswordHash | null,
-  ): Promise<User> {
+  ): Promise<SimpleUser> {
     if (!$UserDisplayName.test(displayName)) {
       throw new Error("InvalidDisplayName");
     } else if (username !== null && !$Username.test(username)) {
@@ -536,7 +536,7 @@ export class PgAuthService implements AuthService {
     return {
       type: ObjectType.User,
       id: userRow.user_id,
-      displayName: userRow.display_name,
+      displayName: {current: {value: userRow.display_name}},
       isAdministrator: userRow.is_administrator,
     };
   }
@@ -589,7 +589,7 @@ export class PgAuthService implements AuthService {
 
     return {
       id: sessionId,
-      user: {type: ObjectType.User, id: userId, displayName: row.display_name},
+      user: {type: ObjectType.User, id: userId, displayName: {current: {value: row.display_name}}},
       ctime: row.ctime,
       atime: row.ctime,
     };
@@ -613,13 +613,13 @@ export class PgAuthService implements AuthService {
 
     return {
       id: sessionId,
-      user: {type: ObjectType.User, id: row.user_id, displayName: row.display_name},
+      user: {type: ObjectType.User, id: row.user_id, displayName: {current: {value: row.display_name}}},
       ctime: row.ctime,
       atime: row.atime,
     };
   }
 
-  private async getExistingUserById(queryable: Queryable, userId: UserId): Promise<User> {
+  private async getExistingUserById(queryable: Queryable, userId: UserId): Promise<SimpleUser> {
     type Row = Pick<UserRow, "user_id" | "display_name" | "is_administrator">;
     const row: Row = await queryable.one(
       `
@@ -631,7 +631,7 @@ export class PgAuthService implements AuthService {
     return {
       type: ObjectType.User,
       id: row.user_id,
-      displayName: row.display_name,
+      displayName: {current: {value: row.display_name}},
       isAdministrator: row.is_administrator,
     };
   }

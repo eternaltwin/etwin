@@ -6,18 +6,14 @@ import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $NullableEmailAddress, NullableEmailAddress } from "../email/email-address.js";
-import { $VersionedLinks, VersionedLinks } from "../link/versioned-links.js";
 import { $UserDisplayNameVersions, UserDisplayNameVersions } from "./user-display-name-versions.js";
 import { $UserId, UserId } from "./user-id.js";
 import { $NullableUsername, NullableUsername } from "./username.js";
 
 /**
- * Main user interface.
- *
- * Aggregates data from multiple services to present the full user.
- * Includes private data.
+ * Represents an Eternal-Twin user (including private data).
  */
-export interface CompleteUser {
+export interface CompleteSimpleUser {
   type: ObjectType.User;
 
   id: UserId;
@@ -25,8 +21,6 @@ export interface CompleteUser {
   displayName: UserDisplayNameVersions;
 
   isAdministrator: boolean;
-
-  links: VersionedLinks;
 
   ctime: Date;
 
@@ -37,13 +31,12 @@ export interface CompleteUser {
   hasPassword: boolean;
 }
 
-export const $CompleteUser: RecordIoType<CompleteUser> = new RecordType<CompleteUser>({
+export const $CompleteSimpleUser: RecordIoType<CompleteSimpleUser> = new RecordType<CompleteSimpleUser>({
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.User})},
     id: {type: $UserId},
     displayName: {type: $UserDisplayNameVersions},
     isAdministrator: {type: $Boolean},
-    links: {type: $VersionedLinks},
     ctime: {type: $Date},
     username: {type: $NullableUsername},
     emailAddress: {type: $NullableEmailAddress},

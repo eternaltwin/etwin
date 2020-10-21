@@ -14,7 +14,7 @@
         <form>
           <label>
             <span>New display name</span>
-            <input type="text" name="display_name" class="field" required="required" [value]="user.displayName"/>
+            <input type="text" name="display_name" class="field" required="required" [value]="user.displayName.current.value"/>
           </label>
           <input type="submit" class="btn primary" value="Update my display name" disabled="disabled"/>
         </form>

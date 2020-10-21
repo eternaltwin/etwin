@@ -170,11 +170,11 @@ export class InMemoryLinkService implements LinkService {
   }
 
   private async toEtwinLink(imLink: InMemoryBaseLink): Promise<EtwinLink> {
-    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, imLink.linkedBy);
+    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, imLink.userId);
+    const user = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.userId});
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -189,7 +189,7 @@ export class InMemoryLinkService implements LinkService {
   }
 
   private async toHammerfestLink(imLink: InMemoryHammerfestUserLink): Promise<HammerfestLink> {
-    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, imLink.linkedBy);
+    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -208,7 +208,7 @@ export class InMemoryLinkService implements LinkService {
   }
 
   private async toTwinoidLink(imLink: InMemoryTwinoidUserLink): Promise<TwinoidLink> {
-    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, imLink.linkedBy);
+    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }

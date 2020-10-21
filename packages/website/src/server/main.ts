@@ -17,7 +17,7 @@ import { AppServerModule } from "../app/app.server.module";
 import { ROUTES } from "../routes";
 import { Api, ServerAppConfig } from "./config";
 import { NgKoaEngine } from "./ng-koa-engine";
-import { AUTH_CONTEXT, CONFIG, FORUM, SIMPLE_USER } from "./tokens";
+import { AUTH_CONTEXT, CONFIG, FORUM, USER } from "./tokens";
 
 const GUEST_AUTH_CONTEXT: AuthContext = Object.freeze({
   type: AuthType.Guest,
@@ -78,7 +78,7 @@ export async function app(options?: Partial<ServerAppConfig>) {
     providers.push({provide: APP_BASE_HREF, useValue: config.externalUri.toString()});
   }
   providers.push({provide: FORUM, useValue: config.api.forum});
-  providers.push({provide: SIMPLE_USER, useValue: config.api.simpleUser});
+  providers.push({provide: USER, useValue: config.api.user});
   providers.push({provide: CONFIG, useValue: {forum: config.forum}});
 
   const engine: NgKoaEngine = await NgKoaEngine.create({

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
-import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
+import { MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user";
 import { User } from "@eternal-twin/core/lib/user/user";
 import { NEVER as RX_NEVER, Observable } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
@@ -16,7 +16,7 @@ const USER_NOT_FOUND: unique symbol = Symbol("USER_NOT_FOUND");
 export class UserViewComponent implements OnInit {
   private readonly route: ActivatedRoute;
 
-  public user$: Observable<User | CompleteUser | typeof USER_NOT_FOUND>;
+  public user$: Observable<MaybeCompleteUser | typeof USER_NOT_FOUND>;
   public readonly ObjectType = ObjectType;
   public readonly USER_NOT_FOUND = USER_NOT_FOUND;
 
@@ -29,7 +29,7 @@ export class UserViewComponent implements OnInit {
 
   ngOnInit(): void {
     interface RouteData {
-      user: User | CompleteUser | null;
+      user: MaybeCompleteUser | null;
     }
 
     const routeData$: Observable<RouteData> = this.route.data as any;

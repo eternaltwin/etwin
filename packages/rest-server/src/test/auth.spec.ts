@@ -5,7 +5,7 @@ import { $Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
 import { $RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
-import { $User, User } from "@eternal-twin/core/lib/user/user.js";
+import { $SimpleUser, SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import chai from "chai";
 import chaiHttp from "chai-http";
 
@@ -42,13 +42,13 @@ describe("/auth", () => {
           displayName: "Alice",
           password: Buffer.from("aaaaa"),
         },
-        $User,
+        $SimpleUser,
       );
       {
-        const expected: User = {
+        const expected: SimpleUser = {
           type: ObjectType.User,
           id: actualUser.id,
-          displayName: "Alice",
+          displayName: {current: {value: "Alice"}},
           isAdministrator: true,
         };
         chai.assert.deepEqual(actualUser, expected);
@@ -61,7 +61,7 @@ describe("/auth", () => {
           user: {
             type: ObjectType.User,
             id: actualUser.id,
-            displayName: "Alice",
+            displayName: {current: {value: "Alice"}},
           },
           isAdministrator: true,
         };
@@ -73,7 +73,7 @@ describe("/auth", () => {
   it("should register a user and authenticate back", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withTestServer(async ({server}) => {
-      let user: User;
+      let user: SimpleUser;
       {
         const agent: TestAgent = new TestAgent(chai.request.agent(server));
         user = await agent.post(
@@ -84,7 +84,7 @@ describe("/auth", () => {
             displayName: "Alice",
             password: Buffer.from("aaaaa"),
           },
-          $User,
+          $SimpleUser,
         );
       }
       const agent: TestAgent = new TestAgent(chai.request.agent(server));
@@ -97,19 +97,19 @@ describe("/auth", () => {
         chai.assert.deepEqual(actual, expected);
       }
       {
-        const actual: User = await agent.put(
+        const actual: SimpleUser = await agent.put(
           "/auth/self?method=Etwin",
           $Credentials,
           {
             login: "alice",
             password: Buffer.from("aaaaa"),
           },
-          $User,
+          $SimpleUser,
         );
-        const expected: User = {
+        const expected: SimpleUser = {
           type: ObjectType.User,
           id: user.id,
-          displayName: "Alice",
+          displayName: {current: {value: "Alice"}},
           isAdministrator: true,
         };
         chai.assert.deepEqual(actual, expected);
@@ -129,13 +129,13 @@ describe("/auth", () => {
           displayName: "Alice",
           password: Buffer.from("aaaaa"),
         },
-        $User,
+        $SimpleUser,
       );
       {
-        const expected: User = {
+        const expected: SimpleUser = {
           type: ObjectType.User,
           id: actualUser.id,
-          displayName: "Alice",
+          displayName: {current: {value: "Alice"}},
           isAdministrator: true,
         };
         chai.assert.deepEqual(actualUser, expected);
@@ -148,7 +148,7 @@ describe("/auth", () => {
           user: {
             type: ObjectType.User,
             id: actualUser.id,
-            displayName: "Alice",
+            displayName: {current: {value: "Alice"}},
           },
           isAdministrator: true,
         };

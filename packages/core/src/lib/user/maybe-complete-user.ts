@@ -1,6 +1,7 @@
-import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
-import { $User, User } from "@eternal-twin/core/lib/user/user.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
+
+import { $CompleteUser, CompleteUser } from "./complete-user.js";
+import { $User, User } from "./user.js";
 
 export type MaybeCompleteUser = CompleteUser | User;
 

@@ -3,7 +3,7 @@ import { Resolve, Router, RouterModule, Routes } from "@angular/router";
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
 import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
-import { User } from "@eternal-twin/core/lib/user/user";
+import { MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user";
 import { Observable, of as rxOf, throwError as rxThrowError } from "rxjs";
 import { catchError as rxCatchError } from "rxjs/internal/operators/catchError";
 import { first as rxFirst, map as rxMap, switchMap as rxSwitchMap } from "rxjs/operators";
@@ -31,11 +31,11 @@ export class UserResolverService implements Resolve<CompleteUser | null> {
         }
         return this.user.getUserById(curUser.user.id);
       }),
-      rxMap((user: User | CompleteUser | null): CompleteUser => {
-        if (user === null || !$CompleteUser.test(user as any)) {
+      rxMap((user: MaybeCompleteUser | null): CompleteUser => {
+        if (user === null || !$CompleteUser.test(user)) {
           throw new Error("AssertionError: Retrieving the current user should yield a complete user");
         }
-        return user as CompleteUser;
+        return user;
       }),
       rxCatchError((err: Error): Observable<null> => {
         return rxOf(null);

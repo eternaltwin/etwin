@@ -1,13 +1,11 @@
 import { Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
-import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
-import { User } from "@eternal-twin/core/lib/user/user";
+import { $MaybeCompleteUser, MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user";
 import { UserId } from "@eternal-twin/core/lib/user/user-id";
 import { Observable, of as rxOf } from "rxjs";
 import { catchError as rxCatchError } from "rxjs/operators";
 
 import { RestService } from "../rest/rest.service";
-import { $MaybeCompleteUser } from "./maybe-complete-user";
 import { UserService } from "./user.service";
 
 @Injectable()
@@ -19,7 +17,7 @@ export class BrowserUserService extends UserService {
     this.rest = rest;
   }
 
-  getUserById(userId: UserId): Observable<User | CompleteUser | null> {
+  getUserById(userId: UserId): Observable<MaybeCompleteUser | null> {
     return this.rest.get(["users", userId], {resType: $MaybeCompleteUser})
       .pipe(
         rxCatchError((err: Error): Observable<null> => {

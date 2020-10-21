@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { $Date } from "kryo/lib/date";
+import { $Date } from "kryo/lib/date.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $HammerfestServer, HammerfestServer } from "./hammerfest-server.js";

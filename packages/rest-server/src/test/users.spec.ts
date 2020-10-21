@@ -1,6 +1,6 @@
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
-import { $User, User } from "@eternal-twin/core/lib/user/user.js";
+import { $CompleteSimpleUser, CompleteSimpleUser } from "@eternal-twin/core/lib/user/complete-simple-user.js";
+import { $SimpleUser, SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import chai from "chai";
 import chaiHttp from "chai-http";
 
@@ -17,11 +17,11 @@ describe("/users", () => {
       const guestAgent: TestAgent = new TestAgent(chai.request.agent(server));
       const {alice, aliceAgent, bob, bobAgent} = await populateUsers(server);
       {
-        const actual: CompleteUser = await aliceAgent.get(`/users/${alice.id}`, $CompleteUser);
-        const expected: CompleteUser = {
+        const actual: CompleteSimpleUser = await aliceAgent.get(`/users/${alice.id}`, $CompleteSimpleUser);
+        const expected: CompleteSimpleUser = {
           type: ObjectType.User,
           id: alice.id,
-          displayName: "Alice",
+          displayName: {current: {value: "Alice"}},
           isAdministrator: true,
           ctime: actual.ctime,
           username: "alice",
@@ -31,31 +31,31 @@ describe("/users", () => {
         chai.assert.deepEqual(actual, expected);
       }
       {
-        const actual: User = await bobAgent.get(`/users/${alice.id}`, $User);
-        const expected: User = {
+        const actual: SimpleUser = await bobAgent.get(`/users/${alice.id}`, $SimpleUser);
+        const expected: SimpleUser = {
           type: ObjectType.User,
           id: alice.id,
-          displayName: "Alice",
+          displayName: {current: {value: "Alice"}},
           isAdministrator: true,
         };
         chai.assert.deepEqual(actual, expected);
       }
       {
-        const actual: User = await guestAgent.get(`/users/${alice.id}`, $User);
-        const expected: User = {
+        const actual: SimpleUser = await guestAgent.get(`/users/${alice.id}`, $SimpleUser);
+        const expected: SimpleUser = {
           type: ObjectType.User,
           id: alice.id,
-          displayName: "Alice",
+          displayName: {current: {value: "Alice"}},
           isAdministrator: true,
         };
         chai.assert.deepEqual(actual, expected);
       }
       {
-        const actual: CompleteUser = await aliceAgent.get(`/users/${bob.id}`, $CompleteUser);
-        const expected: CompleteUser = {
+        const actual: CompleteSimpleUser = await aliceAgent.get(`/users/${bob.id}`, $CompleteSimpleUser);
+        const expected: CompleteSimpleUser = {
           type: ObjectType.User,
           id: bob.id,
-          displayName: "Bob",
+          displayName: {current: {value: "Bob"}},
           isAdministrator: false,
           ctime: actual.ctime,
           username: "bob",
@@ -65,11 +65,11 @@ describe("/users", () => {
         chai.assert.deepEqual(actual, expected);
       }
       {
-        const actual: CompleteUser = await bobAgent.get(`/users/${bob.id}`, $CompleteUser);
-        const expected: CompleteUser = {
+        const actual: CompleteSimpleUser = await bobAgent.get(`/users/${bob.id}`, $CompleteSimpleUser);
+        const expected: CompleteSimpleUser = {
           type: ObjectType.User,
           id: bob.id,
-          displayName: "Bob",
+          displayName: {current: {value: "Bob"}},
           isAdministrator: false,
           ctime: actual.ctime,
           username: "bob",
@@ -79,11 +79,11 @@ describe("/users", () => {
         chai.assert.deepEqual(actual, expected);
       }
       {
-        const actual: User = await guestAgent.get(`/users/${bob.id}`, $User);
-        const expected: User = {
+        const actual: SimpleUser = await guestAgent.get(`/users/${bob.id}`, $SimpleUser);
+        const expected: SimpleUser = {
           type: ObjectType.User,
           id: bob.id,
-          displayName: "Bob",
+          displayName: {current: {value: "Bob"}},
           isAdministrator: false,
         };
         chai.assert.deepEqual(actual, expected);

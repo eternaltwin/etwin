@@ -181,7 +181,7 @@ export class InMemoryForumService implements ForumService {
     if (section === null) {
       throw new Error("AssertionError: Expected section to exist");
     }
-    const author: ShortUser | null = await this.user.getShortUserById(acx, imPost.authorId);
+    const author: ShortUser | null = await this.user.getShortUserById(acx, {id: imPost.authorId});
     if (author === null) {
       throw new Error("AssertionError: Expected author to exist");
     }
@@ -497,7 +497,7 @@ export class InMemoryForumService implements ForumService {
       if (post.threadId !== thread.id) {
         continue;
       }
-      const author: ShortUser | null = await this.user.getShortUserById(acx, post.authorId);
+      const author: ShortUser | null = await this.user.getShortUserById(acx, {id: post.authorId});
       if (author === null) {
         throw new Error("AssertionError: Expected author to exist");
       }
@@ -761,7 +761,7 @@ export class InMemoryForumService implements ForumService {
         return;
       }
     }
-    const user: ShortUser | null = await this.user.getShortUserById(acx, userId);
+    const user: ShortUser | null = await this.user.getShortUserById(acx, {id: userId});
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }

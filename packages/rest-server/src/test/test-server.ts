@@ -1,5 +1,6 @@
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
+import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg";
@@ -44,7 +45,7 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
     const password = new ScryptPasswordService();
-    const simpleUser = new PgSimpleUserService(db, secretKeyStr);
+    const simpleUser = new PgSimpleUserService({database: db, databaseSecret: secretKeyStr});
     const hammerfestClient = new InMemoryHammerfestClientService();
     const hammerfestArchive = new PgHammerfestArchiveService(db);
     const twinoidClient = new HttpTwinoidClientService();
@@ -54,7 +55,8 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, secretKeyBytes, twinoidArchive, twinoidClient, UUID4_GENERATOR);
     const koaAuth = new KoaAuth(auth);
     const forum = new PgForumService(db, UUID4_GENERATOR, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
-    const api: Api = {auth, forum, hammerfest, koaAuth, simpleUser};
+    const user = new UserService({link, simpleUser});
+    const api: Api = {auth, forum, hammerfest, koaAuth, user};
 
     const app: Koa = createApiRouter(api);
 

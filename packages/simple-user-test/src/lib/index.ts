@@ -6,11 +6,12 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
+import { CompleteSimpleUser } from "@eternal-twin/core/lib/user/complete-simple-user.js";
+import { MaybeCompleteSimpleUser } from "@eternal-twin/core/lib/user/maybe-complete-simple-user.js";
 import { NullableShortUser } from "@eternal-twin/core/lib/user/short-user.js";
+import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
-import { User } from "@eternal-twin/core/lib/user/user.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
 import chai from "chai";
 
@@ -47,12 +48,12 @@ export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Pr
     return withApi(async (api: Api): Promise<void> => {
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       {
-        const actual: NullableShortUser = await api.user.getShortUserById(aliceAuth, aliceAuth.user.id);
+        const actual: NullableShortUser = await api.user.getShortUserById(aliceAuth, {id: aliceAuth.user.id});
         chai.assert.isNotNull(actual);
         const expected: NullableShortUser = {
           type: ObjectType.User,
           id: actual!.id,
-          displayName: "Alice",
+          displayName: {current: {value: "Alice"}},
         };
         chai.assert.deepEqual(actual, expected);
       }
@@ -64,15 +65,15 @@ export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Pr
     return withApi(async (api: Api): Promise<void> => {
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       {
-        const actual: User | CompleteUser | null = await api.user.getUserById(aliceAuth, aliceAuth.user.id);
+        const actual: MaybeCompleteSimpleUser | null = await api.user.getUserById(aliceAuth, {id: aliceAuth.user.id});
         chai.assert.isNotNull(actual);
-        chai.assert.instanceOf((actual as CompleteUser).ctime, Date);
-        const expected: CompleteUser = {
+        chai.assert.instanceOf((actual as CompleteSimpleUser).ctime, Date);
+        const expected: CompleteSimpleUser = {
           type: ObjectType.User,
           id: actual!.id,
-          displayName: "Alice",
+          displayName: {current: {value: "Alice"}},
           isAdministrator: true,
-          ctime: (actual as CompleteUser).ctime,
+          ctime: (actual as CompleteSimpleUser).ctime,
           username: "alice",
           emailAddress: null,
           hasPassword: true,
@@ -88,12 +89,12 @@ export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Pr
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
       {
-        const actual: User | CompleteUser | null = await api.user.getUserById(bobAuth, aliceAuth.user.id);
+        const actual: MaybeCompleteSimpleUser | null = await api.user.getUserById(bobAuth, {id: aliceAuth.user.id});
         chai.assert.isNotNull(actual);
-        const expected: User = {
+        const expected: SimpleUser = {
           type: ObjectType.User,
           id: actual!.id,
-          displayName: "Alice",
+          displayName: {current: {value: "Alice"}},
           isAdministrator: true,
         };
         chai.assert.deepEqual(actual, expected);

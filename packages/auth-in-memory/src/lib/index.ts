@@ -28,9 +28,9 @@ import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-t
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
+import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import { User } from "@eternal-twin/core/lib/user/user.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
 import {
   InMemoryAccessToken,
@@ -156,10 +156,10 @@ export class InMemoryAuthService implements AuthService {
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
     const imUser: InMemoryUser = await this.user._createUser(displayName, email, null, passwordHash);
-    const user: User = {
+    const user: SimpleUser = {
       type: ObjectType.User,
       id: imUser.id,
-      displayName: imUser.displayName,
+      displayName: {current: {value: imUser.displayName}},
       isAdministrator: imUser.isAdministrator,
     };
 
@@ -188,10 +188,10 @@ export class InMemoryAuthService implements AuthService {
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
     const imUser: InMemoryUser = await this.user._createUser(displayName, null, username, passwordHash);
-    const user: User = {
+    const user: SimpleUser = {
       type: ObjectType.User,
       id: imUser.id,
-      displayName: imUser.displayName,
+      displayName: {current: {value: imUser.displayName}},
       isAdministrator: imUser.isAdministrator,
     };
 
@@ -237,10 +237,10 @@ export class InMemoryAuthService implements AuthService {
     }
 
     const session: Session = await this.createSession(imUser.id);
-    const user: User = {
+    const user: SimpleUser = {
       type: ObjectType.User,
       id: imUser.id,
-      displayName: imUser.displayName,
+      displayName: {current: {value: imUser.displayName}},
       isAdministrator: imUser.isAdministrator,
     };
 
@@ -329,7 +329,7 @@ export class InMemoryAuthService implements AuthService {
       return null;
     }
 
-    const user: User = await this.getExistingUserById(session.user.id);
+    const user: SimpleUser = await this.getExistingUserById(session.user.id);
 
     return {user, session};
   }
@@ -417,9 +417,9 @@ export class InMemoryAuthService implements AuthService {
   }
 
   private async createSession(userId: UserId): Promise<Session> {
-    const user: User | null = await this.user.getUserById(
+    const user: SimpleUser | null = await this.user.getUserById(
       {type: AuthType.System, scope: AuthScope.Default},
-      userId,
+      {id: userId},
     );
     if (user === null) {
       throw new Error("UserNotFound");
@@ -438,8 +438,8 @@ export class InMemoryAuthService implements AuthService {
     return session;
   }
 
-  private async getExistingUserById(userId: UserId): Promise<User> {
-    const user: User | null = await this.user.getUserById({type: AuthType.System, scope: AuthScope.Default}, userId);
+  private async getExistingUserById(userId: UserId): Promise<SimpleUser> {
+    const user: SimpleUser | null = await this.user.getUserById({type: AuthType.System, scope: AuthScope.Default}, {id: userId});
 
     if (user === null) {
       throw new Error(`AssertionError: Expected user to exist for id ${userId}`);

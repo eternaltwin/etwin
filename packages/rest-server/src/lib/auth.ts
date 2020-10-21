@@ -11,7 +11,8 @@ import {
   $HammerfestCredentials,
   HammerfestCredentials,
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
-import { $User } from "@eternal-twin/core/lib/user/user.js";
+import { $MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user.js";
+import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
@@ -29,6 +30,7 @@ const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Def
 export interface Api {
   auth: AuthService;
   koaAuth: KoaAuth;
+  user: UserService;
 }
 
 export function createAuthRouter(api: Api): Koa {
@@ -76,14 +78,22 @@ export function createAuthRouter(api: Api): Koa {
     const credentials: Credentials = $Credentials.read(JSON_VALUE_READER, cx.request.body);
     const result: UserAndSession = await api.auth.loginWithCredentials(GUEST_AUTH, credentials);
     cx.cookies.set(SESSION_COOKIE, result.session.id);
-    cx.response.body = $User.write(JSON_VALUE_WRITER, result.user);
+    const user = await api.user.getUserById(
+      {type: AuthType.User, user: result.user, isAdministrator: result.user.isAdministrator, scope: AuthScope.Default},
+      {id: result.user.id},
+    );
+    cx.response.body = $MaybeCompleteUser.write(JSON_VALUE_WRITER, user!);
   }
 
   async function createSessionWithHammerfestCredentials(cx: Koa.Context): Promise<void> {
     const credentials: HammerfestCredentials = $HammerfestCredentials.read(JSON_VALUE_READER, cx.request.body);
     const result: UserAndSession = await api.auth.registerOrLoginWithHammerfest(GUEST_AUTH, credentials);
     cx.cookies.set(SESSION_COOKIE, result.session.id);
-    cx.response.body = $User.write(JSON_VALUE_WRITER, result.user);
+    const user = await api.user.getUserById(
+      {type: AuthType.User, user: result.user, isAdministrator: result.user.isAdministrator, scope: AuthScope.Default},
+      {id: result.user.id},
+    );
+    cx.response.body = $MaybeCompleteUser.write(JSON_VALUE_WRITER, user!);
   }
 
   async function createSessionWithTwinoidCredentials(cx: Koa.Context): Promise<void> {

@@ -1,6 +1,6 @@
 import { $RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
+import { $SimpleUser, SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
-import { $User, User } from "@eternal-twin/core/lib/user/user.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
 import chai from "chai";
 import http from "http";
@@ -8,16 +8,16 @@ import http from "http";
 import { TestAgent } from "../test-agent.js";
 
 export interface PopulatedUsers {
-  alice: User;
+  alice: SimpleUser;
   aliceAgent: TestAgent;
-  bob: User;
+  bob: SimpleUser;
   bobAgent: TestAgent;
-  charlie: User;
+  charlie: SimpleUser;
   charlieAgent: TestAgent;
 }
 
 export interface UserAndAgent {
-  user: User;
+  user: SimpleUser;
   agent: TestAgent;
 }
 
@@ -42,7 +42,7 @@ export async function createUserAndAgent(
   passwordStr: string,
 ): Promise<UserAndAgent> {
   const agent: TestAgent = new TestAgent(chai.request.agent(server));
-  const user: User = await agent.post(
+  const user: SimpleUser = await agent.post(
     "/users",
     $RegisterWithUsernameOptions,
     {
@@ -50,7 +50,7 @@ export async function createUserAndAgent(
       displayName,
       password: Buffer.from(passwordStr),
     },
-    $User,
+    $SimpleUser,
   );
   return {user, agent};
 }

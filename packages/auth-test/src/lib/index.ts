@@ -57,7 +57,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
           user: {
             type: ObjectType.User,
             id: actual.user.id,
-            displayName: "Alice",
+            displayName: {current: {value: "Alice"}},
             isAdministrator: true,
           },
           session: {
@@ -65,7 +65,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
             user: {
               type: ObjectType.User,
               id: actual.user.id,
-              displayName: "Alice",
+              displayName: {current: {value: "Alice"}},
             },
             ctime: actual.session.ctime,
             atime: actual.session.ctime,
@@ -90,7 +90,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
           user: {
             type: ObjectType.User,
             id: actual.user.id,
-            displayName: "Alice",
+            displayName: {current: {value: "Alice"}},
             isAdministrator: true,
           },
           session: {
@@ -98,7 +98,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
             user: {
               type: ObjectType.User,
               id: actual.user.id,
-              displayName: "Alice",
+              displayName: {current: {value: "Alice"}},
             },
             ctime: actual.session.ctime,
             atime: actual.session.ctime,
@@ -118,13 +118,16 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
         password: Buffer.from("aaaaa"),
       };
       await api.auth.registerWithUsername(GUEST_AUTH, usernameOptions);
-      const actual: UserAndSession = await api.auth.loginWithCredentials(GUEST_AUTH, {login: "alice", password: Buffer.from("aaaaa")});
+      const actual: UserAndSession = await api.auth.loginWithCredentials(GUEST_AUTH, {
+        login: "alice",
+        password: Buffer.from("aaaaa")
+      });
       {
         const expected: UserAndSession = {
           user: {
             type: ObjectType.User,
             id: actual.user.id,
-            displayName: "Alice",
+            displayName: {current: {value: "Alice"}},
             isAdministrator: true,
           },
           session: {
@@ -132,7 +135,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
             user: {
               type: ObjectType.User,
               id: actual.user.id,
-              displayName: "Alice",
+              displayName: {current: {value: "Alice"}},
             },
             ctime: actual.session.ctime,
             atime: actual.session.ctime,
@@ -159,7 +162,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
           user: {
             type: ObjectType.User,
             id: userAndSession.user.id,
-            displayName: "alice",
+            displayName: {current: {value: "alice"}},
             isAdministrator: true,
           },
           session: {
@@ -167,7 +170,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
             user: {
               type: ObjectType.User,
               id: userAndSession.user.id,
-              displayName: "alice",
+              displayName: {current: {value: "alice"}},
             },
             ctime: userAndSession.session.ctime,
             atime: userAndSession.session.ctime,
@@ -185,14 +188,14 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
               user: {
                 type: ObjectType.User,
                 id: userAndSession.user.id,
-                displayName: "alice",
+                displayName: {current: {value: "alice"}},
               },
             },
             unlink: null,
             user: {
               type: ObjectType.User,
               id: userAndSession.user.id,
-              displayName: "alice",
+              displayName: {current: {value: "alice"}},
             }
           },
           old: [],
@@ -214,7 +217,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
                 user: {
                   type: ObjectType.User,
                   id: userAndSession.user.id,
-                  displayName: "alice",
+                  displayName: {current: {value: "alice"}},
                 },
               },
               unlink: null,

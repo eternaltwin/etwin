@@ -5,31 +5,33 @@ import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $VersionedLinks, VersionedLinks } from "../link/versioned-links.js";
-import { $UserDisplayName, UserDisplayName } from "./user-display-name.js";
+import { $UserDisplayNameVersions, UserDisplayNameVersions } from "./user-display-name-versions.js";
 import { $UserId, UserId } from "./user-id.js";
 
 /**
- * Represents an Eternal-Twin user (without private data).
+ * Main user interface.
+ *
+ * Aggregates data from multiple services to present the full user.
  */
 export interface User {
   type: ObjectType.User;
 
   id: UserId;
 
-  displayName: UserDisplayName;
+  displayName: UserDisplayNameVersions;
 
   isAdministrator: boolean;
 
-  links?: VersionedLinks;
+  links: VersionedLinks;
 }
 
 export const $User: RecordIoType<User> = new RecordType<User>({
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.User})},
     id: {type: $UserId},
-    displayName: {type: $UserDisplayName},
+    displayName: {type: $UserDisplayNameVersions},
     isAdministrator: {type: $Boolean},
-    links: {type: $VersionedLinks, optional: true},
+    links: {type: $VersionedLinks},
   },
   changeCase: CaseStyle.SnakeCase,
 });

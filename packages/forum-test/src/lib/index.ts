@@ -970,7 +970,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
             user: {
               type: ObjectType.User,
               id: bobAuth.user.id,
-              displayName: "Bob",
+              displayName: {current: {value: "Bob"}},
             },
           },
           thread: {
@@ -1007,7 +1007,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: bobAuth.user.id,
-                    displayName: "Bob",
+                    displayName: {current: {value: "Bob"}},
                   },
                 },
                 content: {
@@ -1026,7 +1026,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: aliceAuth.user.id,
-                    displayName: "Alice",
+                    displayName: {current: {value: "Alice"}},
                   },
                 },
                 content: null,
@@ -1219,7 +1219,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
             user: {
               type: ObjectType.User,
               id: bobAuth.user.id,
-              displayName: "Bob",
+              displayName: {current: {value: "Bob"}},
             },
           },
           thread: {
@@ -1256,7 +1256,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: bobAuth.user.id,
-                    displayName: "Bob",
+                    displayName: {current: {value: "Bob"}},
                   },
                 },
                 content: {
@@ -1275,7 +1275,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: aliceAuth.user.id,
-                    displayName: "Alice",
+                    displayName: {current: {value: "Alice"}},
                   },
                 },
                 content: {
@@ -1297,7 +1297,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: aliceAuth.user.id,
-                    displayName: "Alice",
+                    displayName: {current: {value: "Alice"}},
                   },
                 },
                 content: {
@@ -1319,7 +1319,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: aliceAuth.user.id,
-                    displayName: "Alice",
+                    displayName: {current: {value: "Alice"}},
                   },
                 },
                 content: {
@@ -1338,7 +1338,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: aliceAuth.user.id,
-                    displayName: "Alice",
+                    displayName: {current: {value: "Alice"}},
                   },
                 },
                 content: {
@@ -1410,7 +1410,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
             user: {
               type: ObjectType.User,
               id: bobAuth.user.id,
-              displayName: "Bob",
+              displayName: {current: {value: "Bob"}},
             },
           },
           thread: {
@@ -1447,7 +1447,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: bobAuth.user.id,
-                    displayName: "Bob",
+                    displayName: {current: {value: "Bob"}},
                   },
                 },
                 content: {
@@ -1466,7 +1466,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: charlieAuth.user.id,
-                    displayName: "Charlie",
+                    displayName: {current: {value: "Charlie"}},
                   },
                 },
                 content: {
@@ -1488,7 +1488,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: charlieAuth.user.id,
-                    displayName: "Charlie",
+                    displayName: {current: {value: "Charlie"}},
                   },
                 },
                 content: {
@@ -1510,7 +1510,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: charlieAuth.user.id,
-                    displayName: "Charlie",
+                    displayName: {current: {value: "Charlie"}},
                   },
                 },
                 content: {
@@ -1529,7 +1529,7 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
                   user: {
                     type: ObjectType.User,
                     id: charlieAuth.user.id,
-                    displayName: "Charlie",
+                    displayName: {current: {value: "Charlie"}},
                   },
                 },
                 content: {

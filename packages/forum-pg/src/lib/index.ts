@@ -477,8 +477,8 @@ export class PgForumService implements ForumService {
     );
     const items: ForumRoleGrant[] = [];
     for (const row of rows) {
-      const user: ShortUser | null = await this.user.getShortUserById(acx, row.user_id);
-      const grantedBy: ShortUser | null = await this.user.getShortUserById(acx, row.granted_by);
+      const user: ShortUser | null = await this.user.getShortUserById(acx, {id: row.user_id});
+      const grantedBy: ShortUser | null = await this.user.getShortUserById(acx, {id: row.granted_by});
       if (user === null || grantedBy === null) {
         throw new Error("AssertionError: Expected `user` and `grantedBy` to exist");
       }
@@ -645,7 +645,7 @@ export class PgForumService implements ForumService {
     if (firstRevRow === undefined) {
       throw new Error("AssertionError: Expected author to exist");
     }
-    const author: ShortUser | null = await this.user.getShortUserById(acx, firstRevRow.author_id);
+    const author: ShortUser | null = await this.user.getShortUserById(acx, {id: firstRevRow.author_id});
     if (author === null) {
       throw new Error("AssertionError: Expected author to exist");
     }
@@ -930,11 +930,11 @@ export class PgForumService implements ForumService {
           html: row.latest_revision_html_mod_body,
         };
       }
-      const firstRevAuthor: ShortUser | null = await this.user.getShortUserById(acx, row.first_revision_author_id);
+      const firstRevAuthor: ShortUser | null = await this.user.getShortUserById(acx, {id: row.first_revision_author_id});
       if (firstRevAuthor === null) {
         throw new Error("AssertionError: Null author");
       }
-      const lastRevAuthor: ShortUser | null = await this.user.getShortUserById(acx, row.latest_revision_author_id);
+      const lastRevAuthor: ShortUser | null = await this.user.getShortUserById(acx, {id: row.latest_revision_author_id});
       if (lastRevAuthor === null) {
         throw new Error("AssertionError: Null author");
       }
@@ -1049,7 +1049,7 @@ export class PgForumService implements ForumService {
           html: row._html_mod_body,
         };
       }
-      const author: ShortUser | null = await this.user.getShortUserById(acx, row.author_id);
+      const author: ShortUser | null = await this.user.getShortUserById(acx, {id: row.author_id});
       if (author === null) {
         throw new Error("AssertionError: Expected author to exist");
       }

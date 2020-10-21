@@ -13,7 +13,7 @@ import {
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
-import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
+import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { $UserId, UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $User, User } from "@eternal-twin/core/lib/user/user.js";
 import Koa from "koa";
@@ -34,7 +34,7 @@ const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Def
 export interface Api {
   auth: AuthService;
   koaAuth: KoaAuth;
-  simpleUser: SimpleUserService;
+  user: UserService;
 }
 
 type CreateUserBody = RegisterWithVerifiedEmailOptions | RegisterWithUsernameOptions;
@@ -69,7 +69,28 @@ export function createUsersRouter(api: Api): Koa {
       }
     }
     cx.cookies.set(SESSION_COOKIE, userAndSession.session.id);
-    cx.response.body = $User.write(JSON_VALUE_WRITER, userAndSession.user);
+    const user: User = {
+      ...userAndSession.user,
+      links: {
+        hammerfestEs: {
+          current: null,
+          old: [],
+        },
+        hammerfestFr: {
+          current: null,
+          old: [],
+        },
+        hfestNet: {
+          current: null,
+          old: [],
+        },
+        twinoid: {
+          current: null,
+          old: [],
+        },
+      }
+    };
+    cx.response.body = $User.write(JSON_VALUE_WRITER, user);
   }
 
   router.use(koaRoute.get("/:user_id", getUserById));
@@ -82,14 +103,14 @@ export function createUsersRouter(api: Api): Koa {
       return;
     }
     const userId: UserId = rawUserId;
-    const user: User | CompleteUser | null = await api.simpleUser.getUserById(auth, userId);
+    const user: CompleteUser | User | null = await api.user.getUserById(auth, {id: userId});
     if (user === null) {
       cx.response.status = 404;
       cx.response.body = {error: "UserNotFound"};
       return;
     }
-    if ($CompleteUser.test(user as any)) {
-      cx.response.body = $CompleteUser.write(JSON_VALUE_WRITER, user as CompleteUser);
+    if ($CompleteUser.test(user)) {
+      cx.response.body = $CompleteUser.write(JSON_VALUE_WRITER, user);
     } else {
       cx.response.body = $User.write(JSON_VALUE_WRITER, user);
     }
