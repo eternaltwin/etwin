@@ -4,7 +4,7 @@ import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $Url, Url } from "../core/url.js";
-import { $NullableUserRef, NullableUserRef } from "../user/user-ref";
+import { $NullableShortUser, NullableShortUser } from "../user/short-user";
 import { $OauthClientDisplayName, OauthClientDisplayName } from "./oauth-client-display-name.js";
 import { $OauthClientId, OauthClientId } from "./oauth-client-id.js";
 import { $NullableOauthClientKey, NullableOauthClientKey } from "./oauth-client-key";
@@ -16,7 +16,7 @@ export interface OauthClient {
   displayName: OauthClientDisplayName;
   appUri: Url;
   callbackUri: Url;
-  owner: NullableUserRef;
+  owner: NullableShortUser;
 }
 
 export const $OauthClient: RecordIoType<OauthClient> = new RecordType<OauthClient>({
@@ -27,7 +27,7 @@ export const $OauthClient: RecordIoType<OauthClient> = new RecordType<OauthClien
     displayName: {type: $OauthClientDisplayName},
     appUri: {type: $Url},
     callbackUri: {type: $Url},
-    owner: {type: $NullableUserRef},
+    owner: {type: $NullableShortUser},
   },
   changeCase: CaseStyle.SnakeCase,
 });

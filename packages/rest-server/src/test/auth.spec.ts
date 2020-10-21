@@ -4,7 +4,7 @@ import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { $Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
 import { $RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
+import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { $User, User } from "@eternal-twin/core/lib/user/user.js";
 import chai from "chai";
 import chaiHttp from "chai-http";
@@ -34,7 +34,7 @@ describe("/auth", () => {
     this.timeout(30000);
     return withTestServer(async ({server}) => {
       const agent: TestAgent = new TestAgent(chai.request.agent(server));
-      const actualUser: UserRef = await agent.post(
+      const actualUser: ShortUser = await agent.post(
         "/users",
         $RegisterWithUsernameOptions,
         {
@@ -121,7 +121,7 @@ describe("/auth", () => {
     this.timeout(30000);
     return withTestServer(async ({server}) => {
       const agent: TestAgent = new TestAgent(chai.request.agent(server));
-      const actualUser: UserRef = await agent.post(
+      const actualUser: ShortUser = await agent.post(
         "/users",
         $RegisterWithUsernameOptions,
         {

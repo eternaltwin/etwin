@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
-import { $UserRef, UserRef } from "../user/user-ref.js";
+import { $ShortUser, ShortUser } from "../user/short-user.js";
 import { $LinkAction, LinkAction } from "./link-action.js";
 
 /**
@@ -10,14 +10,14 @@ import { $LinkAction, LinkAction } from "./link-action.js";
 export interface OldEtwinLink {
   link: LinkAction;
   unlink: LinkAction;
-  user: UserRef;
+  user: ShortUser;
 }
 
 export const $OldEtwinLink: RecordIoType<OldEtwinLink> = new RecordType<OldEtwinLink>({
   properties: {
     link: {type: $LinkAction},
     unlink: {type: $LinkAction},
-    user: {type: $UserRef},
+    user: {type: $ShortUser},
   },
   changeCase: CaseStyle.SnakeCase,
 });

@@ -1,17 +1,17 @@
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
-import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
+import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
-import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
+import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
-import { UserService } from "@eternal-twin/core/lib/user/service";
-import { User } from "@eternal-twin/core/lib/user/user";
-import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name";
-import { NullableUserRef } from "@eternal-twin/core/lib/user/user-ref";
-import { Username } from "@eternal-twin/core/lib/user/username";
+import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
+import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { NullableShortUser } from "@eternal-twin/core/lib/user/short-user.js";
+import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
+import { User } from "@eternal-twin/core/lib/user/user.js";
+import { Username } from "@eternal-twin/core/lib/user/username.js";
 import chai from "chai";
 
 export interface Api {
@@ -47,9 +47,9 @@ export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Pr
     return withApi(async (api: Api): Promise<void> => {
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       {
-        const actual: NullableUserRef = await api.user.getUserRefById(aliceAuth, aliceAuth.user.id);
+        const actual: NullableShortUser = await api.user.getShortUserById(aliceAuth, aliceAuth.user.id);
         chai.assert.isNotNull(actual);
-        const expected: NullableUserRef = {
+        const expected: NullableShortUser = {
           type: ObjectType.User,
           id: actual!.id,
           displayName: "Alice",

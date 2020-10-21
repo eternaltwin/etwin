@@ -19,8 +19,8 @@ import { OauthTokenType } from "@eternal-twin/core/lib/oauth/oauth-token-type.js
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
+import { NullableShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import { NullableUserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import jsonWebToken from "jsonwebtoken";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
@@ -34,7 +34,7 @@ export interface InMemoryOauthClient {
   displayName: ValueWithChanges<OauthClientDisplayName>;
   appUri: ValueWithChanges<Url>;
   callbackUri: ValueWithChanges<Url>;
-  owner: NullableUserRef;
+  owner: NullableShortUser;
   passwordHash: ValueWithChanges<Uint8Array>;
 }
 

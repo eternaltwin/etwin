@@ -66,7 +66,7 @@ export class PgLinkService implements LinkService {
         old: [],
       };
     }
-    const user = await this.user.getUserRefById(GUEST_AUTH_CONTEXT, row.user_id);
+    const user = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, row.user_id);
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -101,7 +101,7 @@ export class PgLinkService implements LinkService {
         old: [],
       };
     }
-    const user = await this.user.getUserRefById(GUEST_AUTH_CONTEXT, row.user_id);
+    const user = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, row.user_id);
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -137,7 +137,7 @@ export class PgLinkService implements LinkService {
       `,
       [userId],
     );
-    const linkedBy = await this.user.getUserRefById(GUEST_AUTH_CONTEXT, userId);
+    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, userId);
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -176,7 +176,7 @@ export class PgLinkService implements LinkService {
       `,
       [userId],
     );
-    const linkedBy = await this.user.getUserRefById(GUEST_AUTH_CONTEXT, userId);
+    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, userId);
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -199,7 +199,7 @@ export class PgLinkService implements LinkService {
   }
 
   private async getVersionedLinksTx(queryable: Queryable, userId: UserId): Promise<VersionedLinks> {
-    const linkedBy = await this.user.getUserRefById(GUEST_AUTH_CONTEXT, userId);
+    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, userId);
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }

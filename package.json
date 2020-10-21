@@ -5,7 +5,7 @@
     "lint": "eslint \"packages/*/src/**/*.ts\"",
     "format": "eslint --fix \"packages/*/src/**/*.ts\"",
     "start": "cd packages/website && yarn run start",
-    "clean": "rimraf \"packages/*/@(lib|main|test)\"",
+    "clean": "rimraf \"packages/*/@(lib|main|test)\" \"packages/website/app/@(browser|server)\"",
     "build:production": "cd packages/website && yarn run build",
     "db:create": "cd packages/etwin-pg && yarn run start create",
     "test:build": "tsc --build ./tsconfig.test.json",

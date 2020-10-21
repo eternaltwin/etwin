@@ -697,7 +697,7 @@ function twinoidToUserDisplayName(tidUser: Readonly<Pick<TidUser, "id" | "name">
 // function userToAuthContext(user: Readonly<User>): UserAuthContext {
 //   return {
 //     type: AuthType.User,
-//     user: $UserRef.clone(user),
+//     user: $ShortUser.clone(user),
 //     scope: AuthScope.Default,
 //     isAdministrator: user.isAdministrator,
 //   };

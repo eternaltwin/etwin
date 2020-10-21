@@ -43,8 +43,8 @@ import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js
 import { UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options.js";
 import { UserForumActor } from "@eternal-twin/core/lib/forum/user-forum-actor.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { $ShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import { $UserRef, UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import { renderMarktwin } from "@eternal-twin/marktwin";
 import { Grammar } from "@eternal-twin/marktwin/lib/grammar.js";
 
@@ -181,7 +181,7 @@ export class InMemoryForumService implements ForumService {
     if (section === null) {
       throw new Error("AssertionError: Expected section to exist");
     }
-    const author: UserRef | null = await this.user.getUserRefById(acx, imPost.authorId);
+    const author: ShortUser | null = await this.user.getShortUserById(acx, imPost.authorId);
     if (author === null) {
       throw new Error("AssertionError: Expected author to exist");
     }
@@ -497,7 +497,7 @@ export class InMemoryForumService implements ForumService {
       if (post.threadId !== thread.id) {
         continue;
       }
-      const author: UserRef | null = await this.user.getUserRefById(acx, post.authorId);
+      const author: ShortUser | null = await this.user.getShortUserById(acx, post.authorId);
       if (author === null) {
         throw new Error("AssertionError: Expected author to exist");
       }
@@ -575,7 +575,7 @@ export class InMemoryForumService implements ForumService {
     if (this.getImThread(acx, threadId) === null) {
       throw new Error("ThreadNotFound");
     }
-    const author: UserForumActor = {type: ObjectType.UserForumActor, user: $UserRef.clone(acx.user)};
+    const author: UserForumActor = {type: ObjectType.UserForumActor, user: $ShortUser.clone(acx.user)};
     const revision = await this.createPostRevisionSync(acx, author, options.body, null, null);
     const postId: ForumPostId = this.uuidGen.next();
     const post: InMemoryPost = {
@@ -648,7 +648,7 @@ export class InMemoryForumService implements ForumService {
 
     const author: UserForumActor = {
       type: ObjectType.UserForumActor,
-      user: $UserRef.clone(acx.user),
+      user: $ShortUser.clone(acx.user),
     };
     const revision = this.createPostRevisionSync(acx, author, newBody, newModBody, options.comment);
     imPost.revisions.push(revision);
@@ -761,11 +761,11 @@ export class InMemoryForumService implements ForumService {
         return;
       }
     }
-    const user: UserRef | null = await this.user.getUserRefById(acx, userId);
+    const user: ShortUser | null = await this.user.getShortUserById(acx, userId);
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const granter: UserRef = $UserRef.clone(acx.user);
+    const granter: ShortUser = $ShortUser.clone(acx.user);
     const newGrant: ForumRoleGrant = {
       role: ForumRole.Moderator,
       user,

@@ -17,8 +17,8 @@ import { OauthTokenType } from "@eternal-twin/core/lib/oauth/oauth-token-type.js
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
+import { NullableShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import { NullableUserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import { OauthAccessTokenRow, OauthClientRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 import jsonWebToken from "jsonwebtoken";
@@ -126,7 +126,7 @@ export class PgOauthProviderService implements OauthProviderService {
     if (row === undefined) {
       return null;
     }
-    let owner: NullableUserRef;
+    let owner: NullableShortUser;
     if (row.owner_id === null) {
       owner = null;
     } else {

@@ -9,9 +9,9 @@ import { $UserDisplayName, UserDisplayName } from "./user-display-name.js";
 import { $UserId, UserId } from "./user-id.js";
 
 /**
- * Represents a reference to an Eternal-Twin user.
+ * Represents a reference to an Eternal-Twin user, with enough to display it.
  */
-export interface UserRef {
+export interface ShortUser {
   type: ObjectType.User;
 
   id: UserId;
@@ -19,7 +19,7 @@ export interface UserRef {
   displayName: UserDisplayName;
 }
 
-export const $UserRef: RecordIoType<UserRef> = new RecordType<UserRef>({
+export const $ShortUser: RecordIoType<ShortUser> = new RecordType<ShortUser>({
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.User})},
     id: {type: $UserId},
@@ -29,8 +29,8 @@ export const $UserRef: RecordIoType<UserRef> = new RecordType<UserRef>({
 });
 
 /**
- * A user reference that may be null.
+ * A short user that may be null.
  */
-export type NullableUserRef = null | UserRef;
+export type NullableShortUser = null | ShortUser;
 
-export const $NullableUserRef: TryUnionType<NullableUserRef> = new TryUnionType({variants: [$Null, $UserRef]});
+export const $NullableShortUser: TryUnionType<NullableShortUser> = new TryUnionType({variants: [$Null, $ShortUser]});

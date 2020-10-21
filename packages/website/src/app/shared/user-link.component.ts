@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { UserRef } from "@eternal-twin/core/lib/user/user-ref";
+import { ShortUser } from "@eternal-twin/core/lib/user/short-user";
 
 @Component({
   selector: "etwin-user-link",
@@ -8,7 +8,7 @@ import { UserRef } from "@eternal-twin/core/lib/user/user-ref";
 })
 export class UserLinkComponent {
   @Input()
-  public user!: UserRef;
+  public user!: ShortUser;
 
   constructor() {
   }

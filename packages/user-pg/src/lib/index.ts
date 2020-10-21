@@ -3,8 +3,8 @@ import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import { UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import { User } from "@eternal-twin/core/lib/user/user.js";
 import { UserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
@@ -27,9 +27,9 @@ export class PgUserService implements UserService {
     });
   }
 
-  public async getUserRefById(acx: AuthContext, id: UserId): Promise<UserRef | null> {
+  public async getShortUserById(acx: AuthContext, id: UserId): Promise<ShortUser | null> {
     return this.database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
-      return this.getUserRefByIdTx(q, acx, id);
+      return this.getShortUserByIdTx(q, acx, id);
     });
   }
 
@@ -88,11 +88,11 @@ export class PgUserService implements UserService {
     }
   }
 
-  public async getUserRefByIdTx(
+  public async getShortUserByIdTx(
     queryable: Queryable,
     _acx: AuthContext,
     id: UserId,
-  ): Promise<UserRef | null> {
+  ): Promise<ShortUser | null> {
     type Row = Pick<UserRow, "user_id" | "display_name" | "is_administrator">;
     const row: Row | undefined = await queryable.oneOrNone(
       `SELECT user_id, display_name, is_administrator

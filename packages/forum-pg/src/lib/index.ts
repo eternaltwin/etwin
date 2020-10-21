@@ -42,8 +42,8 @@ import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js
 import { UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options.js";
 import { UserForumActor } from "@eternal-twin/core/lib/forum/user-forum-actor.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { $ShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id";
-import { $UserRef, UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import {
   ForumPostRevisionRow,
   ForumPostRow,
@@ -477,8 +477,8 @@ export class PgForumService implements ForumService {
     );
     const items: ForumRoleGrant[] = [];
     for (const row of rows) {
-      const user: UserRef | null = await this.user.getUserRefById(acx, row.user_id);
-      const grantedBy: UserRef | null = await this.user.getUserRefById(acx, row.granted_by);
+      const user: ShortUser | null = await this.user.getShortUserById(acx, row.user_id);
+      const grantedBy: ShortUser | null = await this.user.getShortUserById(acx, row.granted_by);
       if (user === null || grantedBy === null) {
         throw new Error("AssertionError: Expected `user` and `grantedBy` to exist");
       }
@@ -645,7 +645,7 @@ export class PgForumService implements ForumService {
     if (firstRevRow === undefined) {
       throw new Error("AssertionError: Expected author to exist");
     }
-    const author: UserRef | null = await this.user.getUserRefById(acx, firstRevRow.author_id);
+    const author: ShortUser | null = await this.user.getShortUserById(acx, firstRevRow.author_id);
     if (author === null) {
       throw new Error("AssertionError: Expected author to exist");
     }
@@ -684,7 +684,7 @@ export class PgForumService implements ForumService {
     );
     const author: UserForumActor = {
       type: ObjectType.UserForumActor,
-      user: $UserRef.clone(acx.user),
+      user: $ShortUser.clone(acx.user),
     };
     const revision = await this.createPostRevisionTx(queryable, acx, postId, author, options.body, null, null);
 
@@ -830,7 +830,7 @@ export class PgForumService implements ForumService {
 
     const author: UserForumActor = {
       type: ObjectType.UserForumActor,
-      user: $UserRef.clone(acx.user),
+      user: $ShortUser.clone(acx.user),
     };
     await this.createPostRevisionTx(queryable, acx, postId, author, newBody, newModBody, options.comment);
   }
@@ -930,11 +930,11 @@ export class PgForumService implements ForumService {
           html: row.latest_revision_html_mod_body,
         };
       }
-      const firstRevAuthor: UserRef | null = await this.user.getUserRefById(acx, row.first_revision_author_id);
+      const firstRevAuthor: ShortUser | null = await this.user.getShortUserById(acx, row.first_revision_author_id);
       if (firstRevAuthor === null) {
         throw new Error("AssertionError: Null author");
       }
-      const lastRevAuthor: UserRef | null = await this.user.getUserRefById(acx, row.latest_revision_author_id);
+      const lastRevAuthor: ShortUser | null = await this.user.getShortUserById(acx, row.latest_revision_author_id);
       if (lastRevAuthor === null) {
         throw new Error("AssertionError: Null author");
       }
@@ -1049,7 +1049,7 @@ export class PgForumService implements ForumService {
           html: row._html_mod_body,
         };
       }
-      const author: UserRef | null = await this.user.getUserRefById(acx, row.author_id);
+      const author: ShortUser | null = await this.user.getShortUserById(acx, row.author_id);
       if (author === null) {
         throw new Error("AssertionError: Expected author to exist");
       }

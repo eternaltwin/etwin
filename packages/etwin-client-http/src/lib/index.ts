@@ -1,8 +1,8 @@
 import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { EtwinClientService } from "@eternal-twin/core/lib/etwin-client/service.js";
 import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
+import { $ShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import { $UserRef, UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import { IoType } from "kryo";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import superagent from "superagent";
@@ -20,8 +20,8 @@ export class HttpEtwinClient implements EtwinClientService {
     return this.get(accessToken, ["auth", "self"], $AuthContext);
   }
 
-  public async getUserById(accessToken: OauthAccessTokenKey | null, userId: UserId): Promise<UserRef> {
-    return this.get(accessToken, ["user", userId], $UserRef);
+  public async getUserById(accessToken: OauthAccessTokenKey | null, userId: UserId): Promise<ShortUser> {
+    return this.get(accessToken, ["user", userId], $ShortUser);
   }
 
   private async get<R>(

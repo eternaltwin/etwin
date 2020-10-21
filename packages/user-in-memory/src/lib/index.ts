@@ -6,9 +6,9 @@ import { EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import { UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import { User } from "@eternal-twin/core/lib/user/user.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
 
@@ -61,7 +61,7 @@ export class InMemoryUserService implements UserService {
     }
   }
 
-  public async getUserRefById(_acx: AuthContext, id: UserId): Promise<UserRef | null> {
+  public async getShortUserById(_acx: AuthContext, id: UserId): Promise<ShortUser | null> {
     const innerUser: InMemoryUser | undefined = this.users.get(id);
     if (innerUser === undefined) {
       return null;

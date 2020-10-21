@@ -1,7 +1,7 @@
 import { AuthContext } from "../auth/auth-context.js";
 import { CompleteUser } from "./complete-user.js";
+import { ShortUser } from "./short-user.js";
 import { UserId } from "./user-id.js";
-import { UserRef } from "./user-ref.js";
 import { User } from "./user.js";
 
 export interface UserService {
@@ -14,5 +14,5 @@ export interface UserService {
    */
   getUserById(acx: AuthContext, id: UserId): Promise<User | CompleteUser | null>;
 
-  getUserRefById(acx: AuthContext, id: UserId): Promise<UserRef | null>;
+  getShortUserById(acx: AuthContext, id: UserId): Promise<ShortUser | null>;
 }

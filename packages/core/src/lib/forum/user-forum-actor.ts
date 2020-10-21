@@ -3,7 +3,7 @@ import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
-import { $UserRef, UserRef } from "../user/user-ref.js";
+import { $ShortUser, ShortUser } from "../user/short-user.js";
 import { $ForumRole, ForumRole } from "./forum-role.js";
 
 /**
@@ -12,14 +12,14 @@ import { $ForumRole, ForumRole } from "./forum-role.js";
 export interface UserForumActor {
   type: ObjectType.UserForumActor;
   role?: ForumRole;
-  user: UserRef;
+  user: ShortUser;
 }
 
 export const $UserForumActor: RecordIoType<UserForumActor> = new RecordType<UserForumActor>({
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.UserForumActor})},
     role: {type: $ForumRole, optional: true},
-    user: {type: $UserRef},
+    user: {type: $ShortUser},
   },
   changeCase: CaseStyle.SnakeCase,
 });

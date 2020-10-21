@@ -3,7 +3,7 @@ import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
 
-import { $UserRef, UserRef } from "../user/user-ref.js";
+import { $ShortUser, ShortUser } from "../user/short-user.js";
 import { $LinkAction, LinkAction } from "./link-action.js";
 
 /**
@@ -12,14 +12,14 @@ import { $LinkAction, LinkAction } from "./link-action.js";
 export interface EtwinLink {
   link: LinkAction;
   unlink: null;
-  user: UserRef;
+  user: ShortUser;
 }
 
 export const $EtwinLink: RecordIoType<EtwinLink> = new RecordType<EtwinLink>({
   properties: {
     link: {type: $LinkAction},
     unlink: {type: $Null},
-    user: {type: $UserRef},
+    user: {type: $ShortUser},
   },
   changeCase: CaseStyle.SnakeCase,
 });

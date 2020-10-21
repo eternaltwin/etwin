@@ -13,8 +13,8 @@ import { $ForumSection, ForumSection } from "@eternal-twin/core/lib/forum/forum-
 import { $ForumThread, ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js";
+import { $ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
-import { $UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
 import chai from "chai";
 import { Type } from "kryo";
@@ -634,9 +634,9 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
           roleGrants: [
             {
               role: ForumRole.Moderator,
-              user: $UserRef.clone(bobAuth.user),
+              user: $ShortUser.clone(bobAuth.user),
               startTime: sectionWithBobMod.roleGrants[0].startTime,
-              grantedBy: $UserRef.clone(aliceAuth.user),
+              grantedBy: $ShortUser.clone(aliceAuth.user),
             },
           ],
           self: {roles: [ForumRole.Administrator]},
@@ -732,15 +732,15 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
           roleGrants: [
             {
               role: ForumRole.Moderator,
-              user: $UserRef.clone(bobAuth.user),
+              user: $ShortUser.clone(bobAuth.user),
               startTime: sectionWithBobMod.roleGrants[0].startTime,
-              grantedBy: $UserRef.clone(aliceAuth.user),
+              grantedBy: $ShortUser.clone(aliceAuth.user),
             },
             {
               role: ForumRole.Moderator,
-              user: $UserRef.clone(charlieAuth.user),
+              user: $ShortUser.clone(charlieAuth.user),
               startTime: sectionWithCharlieMod.roleGrants[1].startTime,
-              grantedBy: $UserRef.clone(aliceAuth.user),
+              grantedBy: $ShortUser.clone(aliceAuth.user),
             },
           ],
           self: {roles: [ForumRole.Administrator]},
@@ -853,9 +853,9 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
           roleGrants: [
             {
               role: ForumRole.Moderator,
-              user: $UserRef.clone(charlieAuth.user),
+              user: $ShortUser.clone(charlieAuth.user),
               startTime: sectionWithCharlieMod.roleGrants[1].startTime,
-              grantedBy: $UserRef.clone(aliceAuth.user),
+              grantedBy: $ShortUser.clone(aliceAuth.user),
             },
           ],
         };
@@ -888,9 +888,9 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
           roleGrants: [
             {
               role: ForumRole.Moderator,
-              user: $UserRef.clone(bobAuth.user),
+              user: $ShortUser.clone(bobAuth.user),
               startTime: sectionWithCharlieMod.roleGrants[0].startTime,
-              grantedBy: $UserRef.clone(aliceAuth.user),
+              grantedBy: $ShortUser.clone(aliceAuth.user),
             },
           ],
           self: {roles: [ForumRole.Administrator]},
@@ -925,9 +925,9 @@ export function testForumService(withApi: (fn: (api: Api) => Promise<void>) => P
           roleGrants: [
             {
               role: ForumRole.Moderator,
-              user: $UserRef.clone(bobAuth.user),
+              user: $ShortUser.clone(bobAuth.user),
               startTime: sectionWithCharlieMod.roleGrants[0].startTime,
-              grantedBy: $UserRef.clone(aliceAuth.user),
+              grantedBy: $ShortUser.clone(aliceAuth.user),
             },
           ],
           self: {roles: [ForumRole.Administrator]},
