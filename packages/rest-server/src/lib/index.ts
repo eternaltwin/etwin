@@ -1,7 +1,6 @@
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
-import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
-import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client";
+import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import Koa from "koa";
 import koaMount from "koa-mount";
@@ -16,8 +15,7 @@ import { Api as UsersApi, createUsersRouter } from "./users.js";
 export interface Api extends AuthApi, ConfigApi, ForumApi, HammerfestApi, UsersApi {
   auth: AuthService;
   forum: ForumService;
-  hammerfestArchive: HammerfestArchiveService;
-  hammerfestClient: HammerfestClientService;
+  hammerfest: HammerfestService;
   koaAuth: KoaAuth;
   user: UserService;
 }

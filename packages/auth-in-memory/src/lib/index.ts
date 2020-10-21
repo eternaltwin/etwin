@@ -21,7 +21,7 @@ import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/arch
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
-import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
+import { ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
@@ -255,8 +255,8 @@ export class InMemoryAuthService implements AuthService {
       throw Error("Forbidden: Only guests can authenticate");
     }
     const hfSession: HammerfestSession = await this.hammerfestClient.createSession(credentials);
-    const hfUser: HammerfestUserRef = hfSession.user;
-    await this.hammerfestArchive.createOrUpdateUserRef(hfUser);
+    const hfUser: ShortHammerfestUser = hfSession.user;
+    await this.hammerfestArchive.touchShortUser(hfUser);
 
     const link: VersionedEtwinLink = await this.link.getLinkFromHammerfest(hfUser.server, hfUser.id);
 

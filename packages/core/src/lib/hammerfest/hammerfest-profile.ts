@@ -13,10 +13,10 @@ import { $HammerfestLevel, HammerfestLevel } from "./hammerfest-level.js";
 import { $HammerfestQuestStatusMap, HammerfestQuestStatusMap } from "./hammerfest-quest-status-map.js";
 import { $HammerfestRank, HammerfestRank } from "./hammerfest-rank.js";
 import { $HammerfestScore, HammerfestScore } from "./hammerfest-score.js";
-import { $HammerfestUserRef, HammerfestUserRef } from "./hammerfest-user-ref.js";
+import { $ShortHammerfestUser, ShortHammerfestUser } from "./short-hammerfest-user.js";
 
 export interface HammerfestProfile {
-  user: HammerfestUserRef;
+  user: ShortHammerfestUser;
   email?: NullableEmailAddress;
   bestScore: HammerfestScore;
   bestLevel: HammerfestLevel;
@@ -30,7 +30,7 @@ export interface HammerfestProfile {
 
 export const $HammerfestProfile: RecordIoType<HammerfestProfile> = new RecordType<HammerfestProfile>({
   properties: {
-    user: {type: $HammerfestUserRef},
+    user: {type: $ShortHammerfestUser},
     email: {type: $NullableEmailAddress, optional: true},
     bestScore: {type: $HammerfestScore},
     bestLevel: {type: $HammerfestLevel},

@@ -177,7 +177,7 @@ export class InMemoryTokenService implements TokenService {
         session = oldSession;
       }
     }
-    const user = await this.hammerfestArchive.getUserRefById(hfServer, session.hfUserId);
+    const user = await this.hammerfestArchive.getShortUserById({server: hfServer, id: session.hfUserId});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -203,7 +203,7 @@ export class InMemoryTokenService implements TokenService {
     if (session === undefined) {
       return null;
     }
-    const user = await this.hammerfestArchive.getUserRefById(hfServer, session.hfUserId);
+    const user = await this.hammerfestArchive.getShortUserById({server: hfServer, id: session.hfUserId});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }

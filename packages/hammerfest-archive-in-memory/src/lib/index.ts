@@ -1,9 +1,10 @@
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
+import { GetHammerfestUserByIdOptions } from "@eternal-twin/core/lib/hammerfest/get-hammerfest-user-by-id-options.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
-import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
 import { HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";
+import { ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 
 interface InMemoryHammerfestUser {
   server: HammerfestServer;
@@ -26,13 +27,13 @@ export class InMemoryHammerfestArchiveService implements HammerfestArchiveServic
     ]);
   }
 
-  async getUserById(server: HammerfestServer, userId: HammerfestUserId): Promise<HammerfestUserRef | null> {
-    return this.getUserRefById(server, userId);
+  async getUserById(options: Readonly<GetHammerfestUserByIdOptions>): Promise<ShortHammerfestUser | null> {
+    return this.getShortUserById(options);
   }
 
-  async getUserRefById(hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<HammerfestUserRef | null> {
-    const server = this.getImServerData(hfServer);
-    const user: InMemoryHammerfestUser | undefined = server.users.get(hfUserId);
+  async getShortUserById(options: Readonly<GetHammerfestUserByIdOptions>): Promise<ShortHammerfestUser | null> {
+    const server = this.getImServerData(options.server);
+    const user: InMemoryHammerfestUser | undefined = server.users.get(options.id);
     if (user === undefined) {
       return null;
     }
@@ -44,7 +45,7 @@ export class InMemoryHammerfestArchiveService implements HammerfestArchiveServic
     };
   }
 
-  async createOrUpdateUserRef(ref: HammerfestUserRef): Promise<HammerfestUserRef> {
+  async touchShortUser(ref: Readonly<ShortHammerfestUser>): Promise<ShortHammerfestUser> {
     const server = this.getImServerData(ref.server);
     let user: InMemoryHammerfestUser | undefined = server.users.get(ref.id);
     if (user === undefined) {

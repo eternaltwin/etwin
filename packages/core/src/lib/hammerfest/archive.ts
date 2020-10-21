@@ -1,18 +1,10 @@
-import { HammerfestServer } from "./hammerfest-server.js";
-import { HammerfestUserId } from "./hammerfest-user-id.js";
-import { HammerfestUserRef } from "./hammerfest-user-ref.js";
+import { GetHammerfestUserByIdOptions } from "./get-hammerfest-user-by-id-options.js";
+import { ShortHammerfestUser } from "./short-hammerfest-user.js";
 
 export interface HammerfestArchiveService {
-  /**
-   * Retrieves an Hammerfest user by id.
-   *
-   * @param hfServer Hammerfest server for this user
-   * @param hfId Hammerfest id for this user
-   * @returns Hammerfest profile or null if not found
-   */
-  getUserById(hfServer: HammerfestServer, hfId: HammerfestUserId): Promise<HammerfestUserRef | null>;
+  getUserById(options: Readonly<GetHammerfestUserByIdOptions>): Promise<ShortHammerfestUser | null>;
 
-  getUserRefById(hfServer: HammerfestServer, hfId: HammerfestUserId): Promise<HammerfestUserRef | null>;
+  getShortUserById(options: Readonly<GetHammerfestUserByIdOptions>): Promise<ShortHammerfestUser | null>;
 
-  createOrUpdateUserRef(ref: HammerfestUserRef): Promise<HammerfestUserRef>;
+  touchShortUser(ref: Readonly<ShortHammerfestUser>): Promise<ShortHammerfestUser>;
 }

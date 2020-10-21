@@ -1,5 +1,5 @@
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { $HammerfestUserRef, HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
+import { $HammerfestUser, HammerfestUser } from "@eternal-twin/core/lib/hammerfest/hammerfest-user.js";
 import chai from "chai";
 import chaiHttp from "chai-http";
 
@@ -16,12 +16,16 @@ describe("/hammerfest", () => {
         cx.hammerfestClient.createUser("hammerfest.fr", "123", "alice", Buffer.from("aaaaa"));
         const guestAgent: TestAgent = new TestAgent(chai.request.agent(cx.server));
         {
-          const actual: HammerfestUserRef = await guestAgent.get("/hammerfest/users/hammerfest.fr/123", $HammerfestUserRef);
-          const expected: HammerfestUserRef = {
+          const actual: HammerfestUser = await guestAgent.get("/hammerfest/users/hammerfest.fr/123", $HammerfestUser);
+          const expected: HammerfestUser = {
             type: ObjectType.HammerfestUser,
             server: "hammerfest.fr",
             id: "123",
             username: "alice",
+            etwin: {
+              current: null,
+              old: [],
+            },
           };
           chai.assert.deepEqual(actual, expected);
         }
@@ -32,14 +36,18 @@ describe("/hammerfest", () => {
       return withTestServer(async cx => {
         cx.hammerfestClient.createUser("hammerfest.fr", "123", "alice", Buffer.from("aaaaa"));
         const guestAgent: TestAgent = new TestAgent(chai.request.agent(cx.server));
-        await guestAgent.get("/hammerfest/users/hammerfest.fr/123", $HammerfestUserRef);
+        await guestAgent.get("/hammerfest/users/hammerfest.fr/123", $HammerfestUser);
         {
-          const actual: HammerfestUserRef = await guestAgent.get("/hammerfest/users/hammerfest.fr/123", $HammerfestUserRef);
-          const expected: HammerfestUserRef = {
+          const actual: HammerfestUser = await guestAgent.get("/hammerfest/users/hammerfest.fr/123", $HammerfestUser);
+          const expected: HammerfestUser = {
             type: ObjectType.HammerfestUser,
             server: "hammerfest.fr",
             id: "123",
             username: "alice",
+            etwin: {
+              current: null,
+              old: [],
+            },
           };
           chai.assert.deepEqual(actual, expected);
         }
@@ -50,7 +58,7 @@ describe("/hammerfest", () => {
       return withTestServer(async cx => {
         const guestAgent: TestAgent = new TestAgent(chai.request.agent(cx.server));
         try {
-          await guestAgent.get("/hammerfest/users/hammerfest.fr/9999999", $HammerfestUserRef);
+          await guestAgent.get("/hammerfest/users/hammerfest.fr/9999999", $HammerfestUser);
         } catch (e) {
           chai.assert.instanceOf(e, Error);
           chai.assert.strictEqual(e.message, "HammerfestUserNotFound");

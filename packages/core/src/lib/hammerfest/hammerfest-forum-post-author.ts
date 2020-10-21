@@ -8,13 +8,13 @@ import { $HammerfestForumRole, HammerfestForumRole } from "./hammerfest-forum-ro
 import { $HammerfestRank, HammerfestRank } from "./hammerfest-rank.js";
 import { $HammerfestServer } from "./hammerfest-server.js";
 import { $HammerfestUserId } from "./hammerfest-user-id.js";
-import { HammerfestUserRef } from "./hammerfest-user-ref";
 import { $HammerfestUsername } from "./hammerfest-username.js";
+import { ShortHammerfestUser } from "./short-hammerfest-user";
 
 /**
  * A reference uniquely identifying a Hammerfest user.
  */
-export interface HammerfestForumPostAuthor extends HammerfestUserRef {
+export interface HammerfestForumPostAuthor extends ShortHammerfestUser {
   hasCarrot: boolean;
   rank: HammerfestRank;
   role: HammerfestForumRole;

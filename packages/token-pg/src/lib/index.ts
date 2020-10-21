@@ -223,7 +223,7 @@ export class PgTokenService implements TokenService {
     if (row === undefined) {
       return null;
     }
-    const user = await this.hammerfestArchive.getUserRefById(hfServer, hfUserId);
+    const user = await this.hammerfestArchive.getShortUserById({server: hfServer, id: hfUserId});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -269,7 +269,7 @@ export class PgTokenService implements TokenService {
         hfUserId,
       ],
     );
-    const user = await this.hammerfestArchive.getUserRefById(hfServer, row.hammerfest_user_id);
+    const user = await this.hammerfestArchive.getShortUserById({server: hfServer, id: row.hammerfest_user_id});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }

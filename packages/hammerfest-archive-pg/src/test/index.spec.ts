@@ -1,5 +1,4 @@
 import { Api, testHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-test";
-import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 
@@ -17,9 +16,8 @@ async function withPgHammerfestArchiveService<R>(fn: (api: Api) => Promise<R>): 
 
   return withPgPool(dbConfig, async (pool) => {
     const db = new Database(pool);
-    const hammerfestClient = new InMemoryHammerfestClientService();
-    const hammerfest = new PgHammerfestArchiveService(db);
-    return fn({hammerfest, hammerfestClient});
+    const hammerfestArchive = new PgHammerfestArchiveService(db);
+    return fn({hammerfestArchive});
   });
 }
 

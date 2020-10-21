@@ -4,22 +4,23 @@ import { JSON_WRITER } from "kryo-json/lib/json-writer.js";
 import { registerErrMochaTests, registerMochaSuites, TestItem } from "kryo-testing";
 
 import { ObjectType } from "../../lib/core/object-type.js";
-import { $HammerfestUserRef, HammerfestUserRef } from "../../lib/hammerfest/hammerfest-user-ref.js";
+import { $ShortHammerfestUser, ShortHammerfestUser } from "../../lib/hammerfest/short-hammerfest-user.js";
 
-describe("HammerfestUserRef", function () {
-  const items: TestItem<HammerfestUserRef>[] = [
+describe("ShortHammerfestUser", function () {
+  const items: TestItem<ShortHammerfestUser>[] = [
     {
       name: "Elseabora",
       value: {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "127",
+        username: "elseabora",
       },
       io: [
         {
           writer: JSON_WRITER,
           reader: JSON_READER,
-          raw: "{\"type\":\"HammerfestUser\",\"server\":\"hammerfest.fr\",\"id\":\"127\"}",
+          raw: "{\"type\":\"HammerfestUser\",\"server\":\"hammerfest.fr\",\"id\":\"127\",\"username\":\"elseabora\"}",
         },
         {
           reader: JSON_VALUE_READER,
@@ -27,18 +28,19 @@ describe("HammerfestUserRef", function () {
             type: "HammerfestUser",
             server: "hammerfest.fr",
             id: "127",
+            username: "elseabora",
           },
         },
       ],
     },
   ];
 
-  registerMochaSuites($HammerfestUserRef, items);
+  registerMochaSuites($ShortHammerfestUser, items);
 
   describe("Reader", function () {
     const invalids: string[] = [
       "",
     ];
-    registerErrMochaTests(JSON_READER, $HammerfestUserRef, invalids);
+    registerErrMochaTests(JSON_READER, $ShortHammerfestUser, invalids);
   });
 });

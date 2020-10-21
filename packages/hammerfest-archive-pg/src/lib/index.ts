@@ -1,8 +1,7 @@
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
-import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
-import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
-import { $HammerfestUserRef,HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
+import { GetHammerfestUserByIdOptions } from "@eternal-twin/core/lib/hammerfest/get-hammerfest-user-by-id-options.js";
+import { $ShortHammerfestUser, ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { HammerfestUserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 
@@ -13,22 +12,22 @@ export class PgHammerfestArchiveService implements HammerfestArchiveService {
     this.database = database;
   }
 
-  async getUserById(server: HammerfestServer, userId: HammerfestUserId): Promise<HammerfestUserRef | null> {
-    return this.getUserRefById(server, userId);
+  async getUserById(options: Readonly<GetHammerfestUserByIdOptions>): Promise<ShortHammerfestUser | null> {
+    return this.getShortUserById(options);
   }
 
-  async getUserRefById(hfServer: HammerfestServer, hfId: HammerfestUserId): Promise<HammerfestUserRef | null> {
-    return this.database.transaction(TransactionMode.ReadOnly, q => this.getUserRefByIdTx(q, hfServer, hfId));
+  async getShortUserById(options: Readonly<GetHammerfestUserByIdOptions>): Promise<ShortHammerfestUser | null> {
+    return this.database.transaction(TransactionMode.ReadOnly, q => this.getUserRefByIdTx(q, options));
   }
 
-  async getUserRefByIdTx(queryable: Queryable, hfServer: HammerfestServer, hfId: HammerfestUserId): Promise<HammerfestUserRef | null> {
+  async getUserRefByIdTx(queryable: Queryable, options: Readonly<GetHammerfestUserByIdOptions>): Promise<ShortHammerfestUser | null> {
     type Row = Pick<HammerfestUserRow, "hammerfest_server" | "hammerfest_user_id" | "username">;
     const row: Row | undefined = await queryable.oneOrNone(
       `
         SELECT hammerfest_server, hammerfest_user_id, username
         FROM hammerfest_users
             WHERE hammerfest_server = $1::HAMMERFEST_SERVER AND hammerfest_user_id = $2::HAMMERFEST_USER_ID;`,
-      [hfServer, hfId],
+      [options.server, options.id],
     );
     if (row === undefined) {
       return null;
@@ -41,11 +40,11 @@ export class PgHammerfestArchiveService implements HammerfestArchiveService {
     };
   }
 
-  async createOrUpdateUserRef(ref: HammerfestUserRef): Promise<HammerfestUserRef> {
-    return this.database.transaction(TransactionMode.ReadWrite, q => this.createOrUpdateUserRefTx(q, ref));
+  async touchShortUser(ref: Readonly<ShortHammerfestUser>): Promise<ShortHammerfestUser> {
+    return this.database.transaction(TransactionMode.ReadWrite, q => this.touchShortUserfTx(q, ref));
   }
 
-  async createOrUpdateUserRefTx(queryable: Queryable, ref: HammerfestUserRef): Promise<HammerfestUserRef> {
+  async touchShortUserfTx(queryable: Queryable, ref: Readonly<ShortHammerfestUser>): Promise<ShortHammerfestUser> {
     await queryable.countOne(
       `
         INSERT INTO hammerfest_users(hammerfest_server, hammerfest_user_id, username)
@@ -58,6 +57,6 @@ export class PgHammerfestArchiveService implements HammerfestArchiveService {
         ref.username,
       ],
     );
-    return $HammerfestUserRef.clone(ref);
+    return $ShortHammerfestUser.clone(ref);
   }
 }

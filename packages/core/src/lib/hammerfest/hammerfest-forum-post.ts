@@ -4,14 +4,14 @@ import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { $HtmlText, HtmlText } from "../core/html-text.js";
 import { $HammerfestForumDate, HammerfestForumDate } from "./hammerfest-forum-date.js";
 import { $HammerfestForumThreadId, HammerfestForumThreadId } from "./hammerfest-forum-thread-id.js";
-import { $HammerfestUserRef, HammerfestUserRef } from "./hammerfest-user-ref.js";
+import { $ShortHammerfestUser, ShortHammerfestUser } from "./short-hammerfest-user.js";
 
 /**
  * A forum message.
  */
 export interface HammerfestForumPost {
   id?: HammerfestForumThreadId;
-  author: HammerfestUserRef;
+  author: ShortHammerfestUser;
   ctime: HammerfestForumDate;
   content: HtmlText;
 }
@@ -19,7 +19,7 @@ export interface HammerfestForumPost {
 export const $HammerfestForumPost: RecordIoType<HammerfestForumPost> = new RecordType<HammerfestForumPost>({
   properties: {
     id: {type: $HammerfestForumThreadId, optional: true},
-    author: {type: $HammerfestUserRef},
+    author: {type: $ShortHammerfestUser},
     ctime: {type: $HammerfestForumDate},
     content: {type: $HtmlText},
   },

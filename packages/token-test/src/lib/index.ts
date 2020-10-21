@@ -1,7 +1,7 @@
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
-import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
+import { ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
 import chai from "chai";
 
@@ -14,13 +14,13 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
   it("Touches a Hammerfest session", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
-      const alice: HammerfestUserRef = {
+      const alice: ShortHammerfestUser = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(alice);
+      await api.hammerfestArchive.touchShortUser(alice);
       {
         const actual: HammerfestSession = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
         const expected: HammerfestSession = {
@@ -37,13 +37,13 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
   it("Touches and retrieves a Hammerfest session (without any time change)", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
-      const alice: HammerfestUserRef = {
+      const alice: ShortHammerfestUser = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(alice);
+      await api.hammerfestArchive.touchShortUser(alice);
       const session = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await timeout(1000);
       {
@@ -70,13 +70,13 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
   it("Returns null for a known but never authenticated Hammerfest user", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
-      const alice: HammerfestUserRef = {
+      const alice: ShortHammerfestUser = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(alice);
+      await api.hammerfestArchive.touchShortUser(alice);
       {
         const actual: HammerfestSession | null = await api.token.getHammerfest("hammerfest.fr", "1");
         chai.assert.isNull(actual);
@@ -87,13 +87,13 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
   it("Returns null for a revoked Hammerfest session", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
-      const alice: HammerfestUserRef = {
+      const alice: ShortHammerfestUser = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(alice);
+      await api.hammerfestArchive.touchShortUser(alice);
       await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await api.token.revokeHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa");
       {
@@ -106,13 +106,13 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
   it("Touches a session to update its atime (but not ctime)", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
-      const alice: HammerfestUserRef = {
+      const alice: ShortHammerfestUser = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(alice);
+      await api.hammerfestArchive.touchShortUser(alice);
       const session = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await timeout(1000);
       {
@@ -133,13 +133,13 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
   it("Touches, revokes, then touches again with the same session key (same user)", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
-      const alice: HammerfestUserRef = {
+      const alice: ShortHammerfestUser = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(alice);
+      await api.hammerfestArchive.touchShortUser(alice);
       const firstSession = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await api.token.revokeHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa");
       await timeout(1000);
@@ -171,20 +171,20 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
   it("Touches, revokes, then touches again with the same session key (different user)", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
-      const alice: HammerfestUserRef = {
+      const alice: ShortHammerfestUser = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(alice);
-      const bob: HammerfestUserRef = {
+      await api.hammerfestArchive.touchShortUser(alice);
+      const bob: ShortHammerfestUser = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "2",
         username: "bob",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(bob);
+      await api.hammerfestArchive.touchShortUser(bob);
       const firstSession = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await api.token.revokeHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa");
       await timeout(1000);
@@ -220,20 +220,20 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
   it("Touches without a different user without revoking first", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
-      const alice: HammerfestUserRef = {
+      const alice: ShortHammerfestUser = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "1",
         username: "alice",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(alice);
-      const bob: HammerfestUserRef = {
+      await api.hammerfestArchive.touchShortUser(alice);
+      const bob: ShortHammerfestUser = {
         type: ObjectType.HammerfestUser,
         server: "hammerfest.fr",
         id: "2",
         username: "bob",
       };
-      await api.hammerfestArchive.createOrUpdateUserRef(bob);
+      await api.hammerfestArchive.touchShortUser(bob);
       const firstSession = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
       await timeout(1000);
       const secondSession: HammerfestSession = await api.token.touchHammerfest(bob.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", bob.id);

@@ -1,10 +1,8 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
-import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
-import { HammerfestProfile } from "@eternal-twin/core/lib/hammerfest/hammerfest-profile.js";
 import { $HammerfestServer, HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { $HammerfestUserId, HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
-import { $HammerfestUserRef, HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
+import { $HammerfestUser, HammerfestUser } from "@eternal-twin/core/lib/hammerfest/hammerfest-user.js";
+import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import Koa from "koa";
 import Router from "koa-router";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
@@ -13,8 +11,7 @@ import { KoaAuth } from "./helpers/koa-auth.js";
 
 export interface Api {
   koaAuth: KoaAuth;
-  hammerfestArchive: HammerfestArchiveService;
-  hammerfestClient: HammerfestClientService;
+  hammerfest: HammerfestService;
 }
 
 export function createHammerfestRouter(api: Api): Router {
@@ -33,24 +30,13 @@ export function createHammerfestRouter(api: Api): Router {
     }
     const server: HammerfestServer = rawServer as HammerfestServer;
     const userId: HammerfestUserId = rawUserId;
-    const hfUser: HammerfestUserRef | null = await getOrCreateUserById(auth, server, userId);
+    const hfUser: HammerfestUser | null = await api.hammerfest.getUserById(auth, {server, id: userId});
     if (hfUser === null) {
       cx.response.status = 404;
       cx.response.body = {error: "HammerfestUserNotFound"};
       return;
     }
-    cx.response.body = $HammerfestUserRef.write(JSON_VALUE_WRITER, hfUser);
-  }
-
-  async function getOrCreateUserById(_auth: AuthContext, server: HammerfestServer, userId: HammerfestUserId): Promise<HammerfestUserRef | null> {
-    let user: HammerfestUserRef | null = await api.hammerfestArchive.getUserById(server, userId);
-    if (user === null) {
-      const profile: HammerfestProfile | null = await api.hammerfestClient.getProfileById(null, {server, userId});
-      if (profile !== null) {
-        user = await api.hammerfestArchive.createOrUpdateUserRef(profile.user);
-      }
-    }
-    return user;
+    cx.response.body = $HammerfestUser.write(JSON_VALUE_WRITER, hfUser);
   }
 
   return router;

@@ -20,7 +20,7 @@ import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/arch
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
-import { HammerfestUserRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-ref.js";
+import { ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
@@ -170,7 +170,7 @@ export class PgAuthService implements AuthService {
       const displayName = hammerfestToUserDisplayName(hfSession.user);
       const user = await this.database.transaction(TransactionMode.ReadWrite, q => this.createUserTx(q, displayName, null, null, null));
       try {
-        await this.hammerfestArchive.createOrUpdateUserRef(hfSession.user);
+        await this.hammerfestArchive.touchShortUser(hfSession.user);
         await this.link.linkToHammerfest(user.id, hfSession.user.server, hfSession.user.id);
       } catch (e) {
         // Delete user because without a link it is impossible to authenticate as this user.
@@ -663,7 +663,7 @@ export class PgAuthService implements AuthService {
   }
 }
 
-function hammerfestToUserDisplayName(hfUser: Readonly<Pick<HammerfestUserRef, "username" | "id">>): UserDisplayName {
+function hammerfestToUserDisplayName(hfUser: Readonly<ShortHammerfestUser>): UserDisplayName {
   const candidates: string[] = [
     hfUser.username,
     `hf_${hfUser.username}`,

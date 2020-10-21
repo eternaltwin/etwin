@@ -3,7 +3,7 @@ import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
 
-import { $HammerfestUserRef, HammerfestUserRef } from "../hammerfest/hammerfest-user-ref.js";
+import { $ShortHammerfestUser, ShortHammerfestUser } from "../hammerfest/short-hammerfest-user.js";
 import { $LinkAction, LinkAction } from "./link-action.js";
 
 /**
@@ -12,14 +12,14 @@ import { $LinkAction, LinkAction } from "./link-action.js";
 export interface HammerfestLink {
   link: LinkAction;
   unlink: null;
-  user: HammerfestUserRef;
+  user: ShortHammerfestUser;
 }
 
 export const $HammerfestLink: RecordIoType<HammerfestLink> = new RecordType<HammerfestLink>({
   properties: {
     link: {type: $LinkAction},
     unlink: {type: $Null},
-    user: {type: $HammerfestUserRef},
+    user: {type: $ShortHammerfestUser},
   },
   changeCase: CaseStyle.SnakeCase,
 });

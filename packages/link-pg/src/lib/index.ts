@@ -1,6 +1,7 @@
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
+import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
 import { EtwinLink } from "@eternal-twin/core/lib/link/etwin-link.js";
@@ -11,16 +12,15 @@ import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-
 import { VersionedHammerfestLink } from "@eternal-twin/core/lib/link/versioned-hammerfest-link.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
+import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
+import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import {
   HammerfestUserLinkRow,
   TwinoidUserLinkRow
 } from "@eternal-twin/etwin-pg/lib/schema.js";
-import { PgHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-pg";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
-import { PgTwinoidArchiveService } from "@eternal-twin/twinoid-archive-pg";
-import { PgUserService } from "@eternal-twin/user-pg";
 
 const GUEST_AUTH_CONTEXT: GuestAuthContext = {
   type: AuthType.Guest,
@@ -29,15 +29,15 @@ const GUEST_AUTH_CONTEXT: GuestAuthContext = {
 
 export class PgLinkService implements LinkService {
   private readonly database: Database;
-  private readonly hammerfestArchive: PgHammerfestArchiveService;
-  private readonly twinoidArchive: PgTwinoidArchiveService;
-  private readonly user: PgUserService;
+  private readonly hammerfestArchive: HammerfestArchiveService;
+  private readonly twinoidArchive: TwinoidArchiveService;
+  private readonly user: UserService;
 
   constructor(
     database: Database,
-    hammerfestArchive: PgHammerfestArchiveService,
-    twinoidArchive: PgTwinoidArchiveService,
-    user: PgUserService,
+    hammerfestArchive: HammerfestArchiveService,
+    twinoidArchive: TwinoidArchiveService,
+    user: UserService,
   ) {
     this.database = database;
     this.hammerfestArchive = hammerfestArchive;
@@ -66,7 +66,7 @@ export class PgLinkService implements LinkService {
         old: [],
       };
     }
-    const user = await this.user.getUserRefByIdTx(queryable, GUEST_AUTH_CONTEXT, row.user_id);
+    const user = await this.user.getUserRefById(GUEST_AUTH_CONTEXT, row.user_id);
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -101,7 +101,7 @@ export class PgLinkService implements LinkService {
         old: [],
       };
     }
-    const user = await this.user.getUserRefByIdTx(queryable, GUEST_AUTH_CONTEXT, row.user_id);
+    const user = await this.user.getUserRefById(GUEST_AUTH_CONTEXT, row.user_id);
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -137,11 +137,11 @@ export class PgLinkService implements LinkService {
       `,
       [userId],
     );
-    const linkedBy = await this.user.getUserRefByIdTx(queryable, GUEST_AUTH_CONTEXT, userId);
+    const linkedBy = await this.user.getUserRefById(GUEST_AUTH_CONTEXT, userId);
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.hammerfestArchive.getUserRefByIdTx(queryable, row.hammerfest_server, row.hammerfest_user_id);
+    const user = await this.hammerfestArchive.getShortUserById({server: row.hammerfest_server, id: row.hammerfest_user_id});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -176,11 +176,11 @@ export class PgLinkService implements LinkService {
       `,
       [userId],
     );
-    const linkedBy = await this.user.getUserRefByIdTx(queryable, GUEST_AUTH_CONTEXT, userId);
+    const linkedBy = await this.user.getUserRefById(GUEST_AUTH_CONTEXT, userId);
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.twinoidArchive.getUserRefByIdTx(queryable, row.twinoid_user_id);
+    const user = await this.twinoidArchive.getUserRefById(row.twinoid_user_id);
     if (user === null) {
       throw new Error("AssertionError: Expected Twinoid user to exist");
     }
@@ -199,7 +199,7 @@ export class PgLinkService implements LinkService {
   }
 
   private async getVersionedLinksTx(queryable: Queryable, userId: UserId): Promise<VersionedLinks> {
-    const linkedBy = await this.user.getUserRefByIdTx(queryable, GUEST_AUTH_CONTEXT, userId);
+    const linkedBy = await this.user.getUserRefById(GUEST_AUTH_CONTEXT, userId);
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -218,7 +218,7 @@ export class PgLinkService implements LinkService {
         [userId],
       );
       for (const row of rows) {
-        const user = await this.hammerfestArchive.getUserRefByIdTx(queryable, row.hammerfest_server, row.hammerfest_user_id);
+        const user = await this.hammerfestArchive.getShortUserById({server: row.hammerfest_server, id: row.hammerfest_user_id});
         if (user === null) {
           throw new Error("AssertionError: Expected Hammerfest user to exist");
         }
@@ -254,7 +254,7 @@ export class PgLinkService implements LinkService {
         [userId],
       );
       if (row !== undefined) {
-        const user = await this.twinoidArchive.getUserRefByIdTx(queryable, row.twinoid_user_id);
+        const user = await this.twinoidArchive.getUserRefById(row.twinoid_user_id);
         if (user === null) {
           throw new Error("AssertionError: Expected Twinoid user to exist");
         }
