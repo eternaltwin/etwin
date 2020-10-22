@@ -1,0 +1,15 @@
+etwin-linked-user {
+  a {
+    display: grid;
+    max-width: 200px;
+    grid-template-areas:
+      "icon user"
+      "icon website"
+    ;
+    background: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 18px 3px rgba(162, 158, 184, 0.1);
+  }
+  span { grid-area: icon; }
+  strong { grid-area: user; }
+  em { grid-area: website; }
+}

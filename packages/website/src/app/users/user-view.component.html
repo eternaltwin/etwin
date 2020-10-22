@@ -4,6 +4,20 @@
       <ng-container *ngSwitchCase="ObjectType.User">
         <h1>{{user.displayName.current.value}}'s profile</h1>
         <p>This is a user profile. This page is only a placeholder at the moment, but it will be improved once authentication is more reliable. This page will contain {{user.displayName.current.value}}'s messages and achievements.</p>
+        <div class="linked-users">
+          <ng-container *ngIf="user.links.twinoid.current !== null">
+            <etwin-linked-user [link]="user.links.twinoid.current"></etwin-linked-user>
+          </ng-container>
+          <ng-container *ngIf="user.links.hammerfestEs.current !== null">
+            <etwin-linked-user [link]="user.links.hammerfestEs.current"></etwin-linked-user>
+          </ng-container>
+          <ng-container *ngIf="user.links.hammerfestFr.current !== null">
+            <etwin-linked-user [link]="user.links.hammerfestFr.current"></etwin-linked-user>
+          </ng-container>
+          <ng-container *ngIf="user.links.hfestNet.current !== null">
+            <etwin-linked-user [link]="user.links.hfestNet.current"></etwin-linked-user>
+          </ng-container>
+        </div>
       </ng-container>
       <ng-container *ngSwitchDefault>
         <h1>User not found</h1>

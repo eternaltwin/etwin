@@ -1,13 +1,13 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 
-import { AppRoutingModule } from "../app-routing.module";
 import { SharedModule } from "../shared/shared.module";
+import { LinkedUserComponent } from "./linked-user.component";
 import { UserViewComponent } from "./user-view.component";
 import { UsersRoutingModule } from "./users-routing.module";
 
 @NgModule({
-  declarations: [UserViewComponent],
+  declarations: [LinkedUserComponent, UserViewComponent],
   imports: [
     CommonModule,
     UsersRoutingModule,
