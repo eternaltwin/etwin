@@ -1,5 +1,6 @@
 import { ApiType, Config, getLocalConfig } from "@eternal-twin/local-config";
 import { createApiRouter } from "@eternal-twin/rest-server/lib/index.js";
+import koaCors from "@koa/cors";
 import fs from "fs";
 import furi from "furi";
 import Koa from "koa";
@@ -94,6 +95,9 @@ async function main(api: Api): Promise<void> {
   const router: Koa = new Koa();
 
   router.use(koaLogger());
+  if (!IS_PRODUCTION) {
+    router.use(koaCors({origin: "http://localhost:4200", credentials: true}));
+  }
 
   const ONE_DAY: number = 24 * 3600;
   router.use(koaStaticCache(furi.toSysPath(BROWSER_APP_DIR), {maxAge: ONE_DAY}));

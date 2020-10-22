@@ -63,4 +63,5 @@ ci:
   script:
     - "yarn run lint"
     - "yarn run test"
+    - 'yarn --cwd packages/rest-server run main:build'
     - 'yarn --cwd packages/website run build'

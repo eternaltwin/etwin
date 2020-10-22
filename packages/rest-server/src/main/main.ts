@@ -19,7 +19,7 @@ async function main(): Promise<void> {
   app.use(koaLogger());
   // Allow local Angular development server
   app.use(koaCors({origin: "http://localhost:4200", credentials: true}));
-  app.use(koaMount("/", apiRouter));
+  app.use(koaMount("/api/v1", apiRouter));
 
   app.listen(port, () => {
     console.log(`Listening on http://localhost:${port}`);

@@ -31,12 +31,12 @@ const GUEST_AUTH_CONTEXT: AuthContext = {type: AuthType.Guest, scope: AuthScope.
 
 @Injectable()
 export class BrowserAuthService extends AuthService {
-  private readonly rest: RestService;
-  private readonly auth$: ReplaySubject<AuthContext>;
+  readonly #rest: RestService;
+  readonly #auth$: ReplaySubject<AuthContext>;
 
   constructor(transferState: TransferState, rest: RestService) {
     super();
-    this.rest = rest;
+    this.#rest = rest;
 
     let firstAuth: Observable<AuthContext>;
 
@@ -56,16 +56,16 @@ export class BrowserAuthService extends AuthService {
     // Prevent the `complete` event.
     const infFirstAuth: Observable<AuthContext> = rxConcat(firstAuth, RX_NEVER);
 
-    this.auth$ = new ReplaySubject(1);
-    infFirstAuth.subscribe(this.auth$);
+    this.#auth$ = new ReplaySubject(1);
+    infFirstAuth.subscribe(this.#auth$);
   }
 
   public auth(): Observable<AuthContext> {
-    return this.auth$;
+    return this.#auth$;
   }
 
   public registerWithUsername(options: Readonly<RegisterWithUsernameOptions>): Observable<User> {
-    return this.rest.post(["users"], {reqType: $RegisterWithUsernameOptions, req: options, resType: $User})
+    return this.#rest.post(["users"], {reqType: $RegisterWithUsernameOptions, req: options, resType: $User})
       .pipe(rxTap((user: User): void => {
         const auth: UserAuthContext = {
           type: AuthType.User,
@@ -77,7 +77,7 @@ export class BrowserAuthService extends AuthService {
           },
           isAdministrator: user.isAdministrator,
         };
-        this.auth$.next(auth);
+        this.#auth$.next(auth);
       }));
   }
 
@@ -89,7 +89,7 @@ export class BrowserAuthService extends AuthService {
       req: options,
       resType: $User,
     };
-    return this.rest.put(["auth", "self"], reqOptions)
+    return this.#rest.put(["auth", "self"], reqOptions)
       .pipe(rxTap((user: User): void => {
         const auth: UserAuthContext = {
           type: AuthType.User,
@@ -101,7 +101,7 @@ export class BrowserAuthService extends AuthService {
           },
           isAdministrator: user.isAdministrator,
         };
-        this.auth$.next(auth);
+        this.#auth$.next(auth);
       }));
   }
 
@@ -113,7 +113,7 @@ export class BrowserAuthService extends AuthService {
       req: options,
       resType: $User,
     };
-    return this.rest.put(["auth", "self"], reqOptions)
+    return this.#rest.put(["auth", "self"], reqOptions)
       .pipe(rxTap((user: User): void => {
         const auth: UserAuthContext = {
           type: AuthType.User,
@@ -125,21 +125,21 @@ export class BrowserAuthService extends AuthService {
           },
           isAdministrator: user.isAdministrator,
         };
-        this.auth$.next(auth);
+        this.#auth$.next(auth);
       }));
   }
 
   logout(): Observable<null> {
-    return this.rest.delete(["auth", "self"], {resType: $AuthContext})
+    return this.#rest.delete(["auth", "self"], {resType: $AuthContext})
       .pipe(
         rxMap((): null => {
-          this.auth$.next(GUEST_AUTH_CONTEXT);
+          this.#auth$.next(GUEST_AUTH_CONTEXT);
           return null;
         }),
       );
   }
 
   private getSelf(): Observable<AuthContext> {
-    return this.rest.get(["auth", "self"], {resType: $AuthContext});
+    return this.#rest.get(["auth", "self"], {resType: $AuthContext});
   }
 }
