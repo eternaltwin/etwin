@@ -36,18 +36,19 @@ const ALL_TWINOID_SCOPES: readonly OauthScope[] = [
   "en.dinorpg.com",
 ];
 
-export async function createLoginRouter(api: Api): Promise<Koa> {
+export async function createLinkRouter(api: Api): Promise<Koa> {
   const router: Koa = new Koa();
 
-  router.use(koaRoute.post("/twinoid", koaCompose([koaBodyParser(), loginWithTwinoid])));
+  router.use(koaRoute.post("/twinoid", koaCompose([koaBodyParser(), linkToTwinoid])));
 
-  async function loginWithTwinoid(cx: Koa.Context): Promise<void> {
+  async function linkToTwinoid(cx: Koa.Context): Promise<void> {
     // const csrfToken: string = await api.koaAuth.getOrCreateCsrfToken(cx);
     const csrfToken: string = "TODO";
     const state: EtwinOauthStateInput = {
       requestForgeryProtection: csrfToken,
       action: {
-        type: EtwinOauthActionType.Login,
+        type: EtwinOauthActionType.Link,
+        userId: "00000000-0000-0000-0000-000000000000"
       },
     };
     const reqUrl: url.URL = await api.oauthClient.createAuthorizationRequest(state, ALL_TWINOID_SCOPES);

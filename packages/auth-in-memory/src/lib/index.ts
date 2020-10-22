@@ -2,7 +2,6 @@ import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
-import { LinkHammerfestUserOptions } from "@eternal-twin/core/lib/auth/link-hammerfest-user-options.js";
 import { $Login, Login } from "@eternal-twin/core/lib/auth/login.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/core/lib/auth/register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
@@ -314,10 +313,6 @@ export class InMemoryAuthService implements AuthService {
     const user = await this.getExistingUserById(session.user.id);
 
     return {user, session};
-  }
-
-  async linkHammerfestUser(_acx: AuthContext, _options: LinkHammerfestUserOptions): Promise<void> {
-    throw new Error("NotImplemented");
   }
 
   async authenticateSession(acx: AuthContext, sessionId: string): Promise<UserAndSession | null> {

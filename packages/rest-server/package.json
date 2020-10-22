@@ -46,7 +46,7 @@
     "koa-mount": "^4.0.0",
     "koa-route": "^3.2.0",
     "koa-router": "^9.4.0",
-    "kryo": "^0.11.0",
+    "kryo": "^0.11.1",
     "kryo-json": "^0.11.0",
     "kryo-qs": "^0.11.0"
   },
@@ -65,6 +65,7 @@
     "@eternal-twin/password-scrypt": "^0.1.0",
     "@eternal-twin/pg-db": "^0.1.0",
     "@eternal-twin/simple-user-pg": "^0.1.0",
+    "@eternal-twin/token-pg": "^0.1.0",
     "@eternal-twin/twinoid-archive-pg": "^0.1.0",
     "@eternal-twin/twinoid-client-http": "^0.1.0",
     "@eternal-twin/uuid4-generator": "^0.1.0",

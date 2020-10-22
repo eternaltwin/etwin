@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@eternal-twin/core": "^0.1.0",
-    "kryo": "^0.11.0"
+    "kryo": "^0.11.1"
   },
   "devDependencies": {
     "@eternal-twin/auth-in-memory": "^0.1.0",

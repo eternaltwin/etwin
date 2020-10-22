@@ -29,7 +29,7 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "kryo": "^0.11.0"
+    "kryo": "^0.11.1"
   },
   "devDependencies": {
     "@types/mocha": "^8.0.3",

@@ -31,7 +31,7 @@
   "dependencies": {
     "@eternal-twin/core": "^0.1.0",
     "jsonwebtoken": "^8.5.1",
-    "kryo": "^0.11.0",
+    "kryo": "^0.11.1",
     "kryo-json": "^0.11.0"
   },
   "devDependencies": {

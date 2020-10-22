@@ -50,6 +50,9 @@
       "path": "../../../pg-db/src/lib"
     },
     {
+      "path": "../../../token-pg/src/lib"
+    },
+    {
       "path": "../../../twinoid-archive-pg/src/lib"
     },
     {

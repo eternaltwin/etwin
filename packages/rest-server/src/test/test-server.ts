@@ -12,6 +12,7 @@ import { getLocalConfig } from "@eternal-twin/local-config";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { PgSimpleUserService } from "@eternal-twin/simple-user-pg";
+import { PgTokenService } from "@eternal-twin/token-pg";
 import { PgTwinoidArchiveService } from "@eternal-twin/twinoid-archive-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
@@ -54,8 +55,9 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
     const auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, secretKeyBytes, twinoidArchive, twinoidClient, UUID4_GENERATOR);
     const koaAuth = new KoaAuth(auth);
+    const token = new PgTokenService(db, secretKeyStr, hammerfestArchive);
     const forum = new PgForumService(db, UUID4_GENERATOR, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
-    const user = new UserService({link, simpleUser});
+    const user = new UserService({hammerfestArchive, hammerfestClient, link, simpleUser, token});
     const api: Api = {auth, forum, hammerfest, koaAuth, user};
 
     const app: Koa = createApiRouter(api);

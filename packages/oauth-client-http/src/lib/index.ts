@@ -1,4 +1,8 @@
+import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
+import { EtwinOauthStateAndAccessToken } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-and-access-token";
+import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input.js";
+import { $EtwinOauthState } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state.js";
 import {
   $OauthAccessTokenRequest,
   OauthAccessTokenRequest
@@ -9,7 +13,6 @@ import { OauthClientSecret } from "@eternal-twin/core/lib/oauth/oauth-client-sec
 import { OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
 import { OauthGrantType } from "@eternal-twin/core/lib/oauth/oauth-grant-type.js";
 import { OauthScope } from "@eternal-twin/core/lib/oauth/oauth-scope.js";
-import { OauthStateJwt } from "@eternal-twin/core/lib/oauth/oauth-state-jwt.js";
 import { OauthState } from "@eternal-twin/core/lib/oauth/oauth-state.js";
 import authHeader from "auth-header";
 import jsonWebToken from "jsonwebtoken";
@@ -18,53 +21,74 @@ import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 import superagent from "superagent";
 import url from "url";
 
-export class HttpOauthClientService implements OauthClientService {
-  private readonly authorizationUri: url.URL;
-  private readonly grantUri: url.URL;
-  private readonly callbackUri: url.URL;
-  private readonly clientId: OauthClientId;
-  private readonly clientSecret: OauthClientSecret;
-  private readonly tokenSecret: Buffer;
+export interface HttpOauthClientServiceOptions {
+  authorizationUri: url.URL;
+  callbackUri: url.URL;
+  clientId: OauthClientId;
+  clientSecret: OauthClientSecret;
+  clock: ClockService;
+  grantUri: url.URL;
+  tokenSecret: Uint8Array;
+}
 
-  constructor(authorizationUri: url.URL, grantUri: url.URL, clientId: OauthClientId, clientSecret: OauthClientSecret, callbackUri: url.URL, tokenSecret: Uint8Array) {
-    this.authorizationUri = Object.freeze(new url.URL(authorizationUri.toString()));
-    this.grantUri = Object.freeze(new url.URL(grantUri.toString()));
-    this.callbackUri = Object.freeze(new url.URL(callbackUri.toString()));
-    this.clientId = clientId;
-    this.clientSecret = clientSecret;
-    this.tokenSecret = Buffer.from(tokenSecret);
+/**
+ * 15 minutes in seconds.
+ */
+const FIFTEEN_MINUTES: number = 15 * 60;
+
+export class HttpOauthClientService implements OauthClientService {
+  readonly #clock: ClockService;
+  readonly #authorizationUri: url.URL;
+  readonly #grantUri: url.URL;
+  readonly #callbackUri: url.URL;
+  readonly #clientId: OauthClientId;
+  readonly #clientSecret: OauthClientSecret;
+  readonly #tokenSecret: Buffer;
+
+  constructor(options: Readonly<HttpOauthClientServiceOptions>) {
+    this.#clock = options.clock;
+    this.#authorizationUri = Object.freeze(new url.URL(options.authorizationUri.toString()));
+    this.#grantUri = Object.freeze(new url.URL(options.grantUri.toString()));
+    this.#callbackUri = Object.freeze(new url.URL(options.callbackUri.toString()));
+    this.#clientId = options.clientId;
+    this.#clientSecret = options.clientSecret;
+    this.#tokenSecret = Buffer.from(options.tokenSecret);
   }
 
-  public async createAuthorizationRequest(state: OauthState, scopes: readonly OauthScope[]): Promise<url.URL> {
-    const reqUrl: url.URL = new url.URL(this.authorizationUri.toString());
+  public async createAuthorizationRequest(state: EtwinOauthStateInput, scopes: readonly OauthScope[]): Promise<url.URL> {
+    const stateJwt: OauthState = await this.createStateJwt(state);
+    const reqUrl: url.URL = new url.URL(this.#authorizationUri.toString());
     reqUrl.searchParams.set("response_type", "code");
-    reqUrl.searchParams.set("client_id", this.clientId);
-    reqUrl.searchParams.set("redirect_uri", this.callbackUri.toString());
+    reqUrl.searchParams.set("client_id", this.#clientId);
+    reqUrl.searchParams.set("redirect_uri", this.#callbackUri.toString());
     reqUrl.searchParams.set("scope", scopes.join(" "));
-    reqUrl.searchParams.set("state", state);
+    reqUrl.searchParams.set("state", stateJwt);
     reqUrl.searchParams.set("access_type", "offline");
     return reqUrl;
   }
 
-  public async getAccessToken(code: OauthCode): Promise<OauthAccessToken> {
+  public async getAccessToken(rawState: OauthState, code: OauthCode): Promise<EtwinOauthStateAndAccessToken> {
+    const rawStateObj = jsonWebToken.verify(rawState, this.#tokenSecret, {clockTimestamp: this.#clock.nowUnixS()});
+    const state = $EtwinOauthState.read(JSON_VALUE_READER, rawStateObj);
+
     const accessTokenReq: OauthAccessTokenRequest = {
-      clientId: this.clientId,
-      clientSecret: this.clientSecret,
-      redirectUri: this.callbackUri.toString(),
+      clientId: this.#clientId,
+      clientSecret: this.#clientSecret,
+      redirectUri: this.#callbackUri.toString(),
       code,
       grantType: OauthGrantType.AuthorizationCode,
     };
     const rawReq = $OauthAccessTokenRequest.write(JSON_VALUE_WRITER, accessTokenReq);
     let rawRes: superagent.Response;
     try {
-      rawRes = await superagent.post(this.grantUri.toString())
+      rawRes = await superagent.post(this.#grantUri.toString())
         .set("Authorization", this.getAuthorizationHeader())
         .type("application/x-www-form-urlencoded")
         .send(rawReq);
     } catch (err) {
       switch (err.status) {
         case 404:
-          throw new Error(`UnreachableGrantUri: Resource not found: ${this.grantUri}`);
+          throw new Error(`UnreachableGrantUri: Resource not found: ${this.#grantUri}`);
         case 500:
           throw new Error("UnreachableGrantUri: Authorization server error");
         default:
@@ -87,32 +111,37 @@ export class HttpOauthClientService implements OauthClientService {
     if (parsedBody === undefined) {
       throw new Error("UnexpectedGrantUriResponse: Failed to parse response");
     }
-    let res: OauthAccessToken;
+    let accessToken: OauthAccessToken;
     try {
-      res = $OauthAccessToken.read(JSON_VALUE_READER, parsedBody);
+      accessToken = $OauthAccessToken.read(JSON_VALUE_READER, parsedBody);
     } catch (err) {
       throw new Error(`UnexpectedGrantUriResponse: ${JSON.stringify(parsedBody)}`);
     }
-    return res;
+    return {state, accessToken};
   }
 
-  public async createStateJwt(requestForgeryProtection: string, authorizationServer: string): Promise<string> {
-    const payload: Omit<OauthStateJwt, "issuedAt" | "expirationTime"> = {
-      authorizationServer,
-      requestForgeryProtection,
-    };
+  public async createStateJwt(state: EtwinOauthStateInput): Promise<string> {
+    const timeS: number = this.#clock.nowUnixS();
+    const payload = $EtwinOauthState.write(
+      JSON_VALUE_WRITER,
+      {
+        ...state,
+        authorizationServer: this.#authorizationUri.host,
+        issuedAt: timeS,
+        expirationTime: timeS + FIFTEEN_MINUTES,
+      },
+    );
     return jsonWebToken.sign(
       payload,
-      this.tokenSecret,
+      this.#tokenSecret,
       {
         algorithm: "HS256",
-        expiresIn: "1d",
       },
     );
   }
 
   private getAuthorizationHeader(): string {
-    const credentials: string = `${this.clientId}:${this.clientSecret}`;
+    const credentials: string = `${this.#clientId}:${this.#clientSecret}`;
     const token: string = Buffer.from(credentials).toString("base64");
     const header: string = authHeader.format({scheme: "Basic", token});
     return header;

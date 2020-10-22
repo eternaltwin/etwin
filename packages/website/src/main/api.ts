@@ -1,6 +1,7 @@
 import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { SystemClockService } from "@eternal-twin/core/lib/clock/system.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
@@ -8,6 +9,7 @@ import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js"
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { TokenService } from "@eternal-twin/core/lib/token/service.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
@@ -29,6 +31,8 @@ import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import { InMemorySimpleUserService } from "@eternal-twin/simple-user-in-memory";
 import { PgSimpleUserService } from "@eternal-twin/simple-user-pg";
+import { InMemoryTokenService } from "@eternal-twin/token-in-memory";
+import { PgTokenService } from "@eternal-twin/token-pg";
 import { InMemoryTwinoidArchiveService } from "@eternal-twin/twinoid-archive-in-memory";
 import { PgTwinoidArchiveService } from "@eternal-twin/twinoid-archive-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
@@ -68,6 +72,8 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   let oauthProvider: OauthProviderService;
   let twinoidArchive: TwinoidArchiveService;
   let simpleUser: SimpleUserService;
+  let token: TokenService;
+
   let teardown: () => Promise<void>;
 
   if (config.etwin.api === ApiType.InMemory) {
@@ -80,6 +86,8 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     link = new InMemoryLinkService(hammerfestArchive, twinoidArchive, simpleUser);
     auth = new InMemoryAuthService(email, emailTemplate, hammerfestArchive, hammerfestClient, link, imOauthProvider, password, secretKeyBytes, twinoidArchive, twinoidClient, imUser, UUID4_GENERATOR);
     forum = new InMemoryForumService(UUID4_GENERATOR, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
+    token = new InMemoryTokenService(hammerfestArchive);
+
     teardown = async function(): Promise<void> {};
   } else {
     const {pool, teardown: teardownPool} = createPgPool({
@@ -98,23 +106,27 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, secretKeyBytes, twinoidArchive, twinoidClient, UUID4_GENERATOR);
     oauthProvider = new PgOauthProviderService(db, UUID4_GENERATOR, password, secretKeyStr, secretKeyBytes);
     forum = new PgForumService(db, UUID4_GENERATOR, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
+    token = new PgTokenService(db, secretKeyStr, hammerfestArchive);
+
     teardown = async function(): Promise<void> {
       await teardownPool();
     };
   }
 
   const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
-  const user = new UserService({link, simpleUser});
+  const user = new UserService({hammerfestArchive, hammerfestClient, link, simpleUser, token});
 
   const koaAuth = new KoaAuth(auth);
-  const oauthClient = new HttpOauthClientService(
-    new url.URL("https://twinoid.com/oauth/auth"),
-    new url.URL("https://twinoid.com/oauth/token"),
-    config.auth.twinoid.clientId,
-    config.auth.twinoid.secret,
-    new url.URL(urljoin(config.etwin.externalUri.toString(), "oauth/callback")),
-    secretKeyBytes,
-  );
+  const clock = new SystemClockService();
+  const oauthClient = new HttpOauthClientService({
+    authorizationUri: new url.URL("https://twinoid.com/oauth/auth"),
+    callbackUri: new url.URL(urljoin(config.etwin.externalUri.toString(), "oauth/callback")),
+    clientId: config.auth.twinoid.clientId,
+    clientSecret: config.auth.twinoid.secret,
+    clock,
+    grantUri: new url.URL("https://twinoid.com/oauth/token"),
+    tokenSecret: secretKeyBytes,
+  });
 
   for (const [key, client] of config.clients) {
     await oauthProvider.createOrUpdateSystemClient(

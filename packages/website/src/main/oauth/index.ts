@@ -6,6 +6,8 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
+import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type.js";
+import { EtwinOauthStateAndAccessToken } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-and-access-token.js";
 import {
   $OauthAccessTokenRequest,
   OauthAccessTokenRequest,
@@ -23,6 +25,8 @@ import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
 import { $OauthCode, OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
 import { OauthResponseType } from "@eternal-twin/core/lib/oauth/oauth-response-type.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { LinkToTwinoidMethod } from "@eternal-twin/core/lib/user/link-to-twinoid-method.js";
+import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { KoaAuth, SESSION_COOKIE } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import { TwinoidClientService } from "@eternal-twin/twinoid-core/src/lib/client.js";
 import Koa from "koa";
@@ -38,10 +42,11 @@ import url from "url";
 
 export interface Api {
   auth: AuthService;
+  koaAuth: KoaAuth;
   oauthClient: OauthClientService;
   oauthProvider: OauthProviderService;
-  koaAuth: KoaAuth;
   twinoidClient: TwinoidClientService;
+  user: UserService;
 }
 
 const GUEST_ACX: GuestAuthContext = {
@@ -155,15 +160,15 @@ export async function createOauthRouter(api: Api): Promise<Koa> {
       cx.response.body = {error: cx.request.query.error};
     }
     const code: unknown = cx.request.query.code;
-    const state: unknown = cx.request.query.state;
-    if (typeof code !== "string" || typeof state !== "string") {
+    const rawState: unknown = cx.request.query.state;
+    if (typeof code !== "string" || typeof rawState !== "string") {
       cx.response.body = {error: "InvalidRequest: Both `code` and `state` are required."};
       return;
     }
 
-    let accessToken: OauthAccessToken;
+    let stateAndAccessToken: EtwinOauthStateAndAccessToken;
     try {
-      accessToken = await api.oauthClient.getAccessToken(code);
+      stateAndAccessToken = await api.oauthClient.getAccessToken(rawState, code);
     } catch (e) {
       if (e.status === 401 && e.response.body && e.response.body && e.response.body.error === "Unauthorized") {
         cx.response.body = {
@@ -178,17 +183,36 @@ export async function createOauthRouter(api: Api): Promise<Koa> {
       return;
     }
 
-    const {user, session}: UserAndSession = await api.auth.registerOrLoginWithTwinoidOauth(GUEST_ACX, accessToken.accessToken);
-    cx.cookies.set(SESSION_COOKIE, session.id);
-    const auth: UserAuthContext = {
-      type: AuthType.User,
-      scope: AuthScope.Default,
-      user,
-      isAdministrator: user.isAdministrator,
-    };
-    cx.response.body = $AuthContext.write(JSON_VALUE_WRITER, auth);
+    const {state, accessToken} = stateAndAccessToken;
+    switch (state.action.type) {
+      case EtwinOauthActionType.Login: {
+        const {user, session}: UserAndSession = await api.auth.registerOrLoginWithTwinoidOauth(GUEST_ACX, accessToken.accessToken);
+        cx.cookies.set(SESSION_COOKIE, session.id);
+        const auth: UserAuthContext = {
+          type: AuthType.User,
+          scope: AuthScope.Default,
+          user,
+          isAdministrator: user.isAdministrator,
+        };
+        cx.response.body = $AuthContext.write(JSON_VALUE_WRITER, auth);
 
-    cx.redirect("/");
+        cx.redirect("/");
+        break;
+      }
+      case EtwinOauthActionType.Link: {
+        const acx: AuthContext = await api.koaAuth.auth(cx);
+        await api.user.linkToTwinoidWithOauth(acx, {method: LinkToTwinoidMethod.Oauth, userId: state.action.userId, accessToken});
+        cx.redirect("/settings");
+        break;
+      }
+      default: {
+        cx.response.body = {
+          error: "UnexpectedState",
+        };
+        cx.response.status = 422;
+        break;
+      }
+    }
   }
 
   return router;

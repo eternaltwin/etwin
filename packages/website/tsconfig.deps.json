@@ -51,6 +51,12 @@
       "path": "../rest-server/src/lib"
     },
     {
+      "path": "../token-in-memory/src/lib"
+    },
+    {
+      "path": "../token-pg/src/lib"
+    },
+    {
       "path": "../twinoid-archive-in-memory/src/lib"
     },
     {
