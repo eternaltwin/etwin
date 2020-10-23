@@ -2071,11 +2071,13 @@ __metadata:
   dependencies:
     "@eternal-twin/core": ^0.1.0
     "@types/chai": ^4.2.12
+    "@types/jws": ^3.2.2
     "@types/mocha": ^8.0.3
     "@types/node": ^14.11.2
     "@types/superagent": ^4.1.10
     chai: ^4.2.0
     eslint: ^7.10.0
+    jws: ^4.0.0
     kryo-json: ^0.11.0
     mocha: ^8.1.3
     superagent: ^6.1.0
@@ -2873,6 +2875,15 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: d1a6b28f826898bc4f5596d91705aa864419c4a5ca49215507260644af8ceff9edb6db1901a108207cfb22558d035655b55309f38b75fa081da01be9f5408b21
+  languageName: node
+  linkType: hard
+
+"@types/jws@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "@types/jws@npm:3.2.2"
+  dependencies:
+    "@types/node": "*"
+  checksum: e93739e74fe8e4d75fe45bd7c06a285d24a5fee6a2fc7a66e670b069143701e9336a595c6fe61e86ea387fab727f86ed30a18916db8f92c83545d3b6326ed351
   languageName: node
   linkType: hard
 
@@ -9678,6 +9689,17 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"jwa@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "jwa@npm:2.0.0"
+  dependencies:
+    buffer-equal-constant-time: 1.0.1
+    ecdsa-sig-formatter: 1.0.11
+    safe-buffer: ^5.0.1
+  checksum: 03f8af36a3adf27b55ef98ef09be5b4a02b4533e33c91225a38addea1b164e28349cdf78b0e54cce088c472e203e8910bb37e989663c577454d371c7eef1b870
+  languageName: node
+  linkType: hard
+
 "jws@npm:^3.2.2":
   version: 3.2.2
   resolution: "jws@npm:3.2.2"
@@ -9685,6 +9707,16 @@ fsevents@~2.1.2:
     jwa: ^1.4.1
     safe-buffer: ^5.0.1
   checksum: 3990b26ebb6f368bf6c53bf580cd327f207052adedeb7900dde665e143fff9ea5d96d0b4282e85a631a6e3af76ada281a1ccc450b1916d579d07e9d36b564a19
+  languageName: node
+  linkType: hard
+
+"jws@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jws@npm:4.0.0"
+  dependencies:
+    jwa: ^2.0.0
+    safe-buffer: ^5.0.1
+  checksum: fb7d2725da5f4a9669024e3e743a3c4bfc193265614e03d52ea24a5251717107491004892d3524fdee525341d91212928bc19b8253f42f0df3dc35bf478dc92e
   languageName: node
   linkType: hard
 

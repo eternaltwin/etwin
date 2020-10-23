@@ -21,6 +21,8 @@ import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 import superagent from "superagent";
 import url from "url";
 
+import { expandJwt, shrinkJwt } from "./shrink-jwt.js";
+
 export interface HttpOauthClientServiceOptions {
   authorizationUri: url.URL;
   callbackUri: url.URL;
@@ -36,6 +38,13 @@ export interface HttpOauthClientServiceOptions {
  */
 const FIFTEEN_MINUTES: number = 15 * 60;
 
+/**
+ * Twinoid has a limit on the length of the state string: 255 is accepted, 256 is rejected.
+ * This constant corresponds to this limit.
+ * The length is measured in UTF-8 bytes.
+ */
+const TWINOID_MAX_STATE_BYTES: number = 255;
+
 export class HttpOauthClientService implements OauthClientService {
   readonly #clock: ClockService;
   readonly #authorizationUri: url.URL;
@@ -43,6 +52,7 @@ export class HttpOauthClientService implements OauthClientService {
   readonly #callbackUri: url.URL;
   readonly #clientId: OauthClientId;
   readonly #clientSecret: OauthClientSecret;
+  readonly #maxStateBytes: number;
   readonly #tokenSecret: Buffer;
 
   constructor(options: Readonly<HttpOauthClientServiceOptions>) {
@@ -52,23 +62,30 @@ export class HttpOauthClientService implements OauthClientService {
     this.#callbackUri = Object.freeze(new url.URL(options.callbackUri.toString()));
     this.#clientId = options.clientId;
     this.#clientSecret = options.clientSecret;
+    this.#maxStateBytes = TWINOID_MAX_STATE_BYTES;
     this.#tokenSecret = Buffer.from(options.tokenSecret);
   }
 
   public async createAuthorizationRequest(state: EtwinOauthStateInput, scopes: readonly OauthScope[]): Promise<url.URL> {
     const stateJwt: OauthState = await this.createStateJwt(state);
+    const shortJwt: string = await shrinkJwt(stateJwt);
+    const inLimits: boolean = await this.testLimits({state: shortJwt});
+    if (!inLimits) {
+      throw new Error(`StateBeyondLimit: ${JSON.stringify(shortJwt)}`);
+    }
     const reqUrl: url.URL = new url.URL(this.#authorizationUri.toString());
     reqUrl.searchParams.set("response_type", "code");
     reqUrl.searchParams.set("client_id", this.#clientId);
     reqUrl.searchParams.set("redirect_uri", this.#callbackUri.toString());
     reqUrl.searchParams.set("scope", scopes.join(" "));
-    reqUrl.searchParams.set("state", stateJwt);
+    reqUrl.searchParams.set("state", shortJwt);
     reqUrl.searchParams.set("access_type", "offline");
     return reqUrl;
   }
 
   public async getAccessToken(rawState: OauthState, code: OauthCode): Promise<EtwinOauthStateAndAccessToken> {
-    const rawStateObj = jsonWebToken.verify(rawState, this.#tokenSecret, {clockTimestamp: this.#clock.nowUnixS()});
+    const fullJwt: OauthState = await expandJwt(rawState);
+    const rawStateObj = jsonWebToken.verify(fullJwt, this.#tokenSecret, {clockTimestamp: this.#clock.nowUnixS()});
     const state = $EtwinOauthState.read(JSON_VALUE_READER, rawStateObj);
 
     const accessTokenReq: OauthAccessTokenRequest = {
@@ -138,6 +155,11 @@ export class HttpOauthClientService implements OauthClientService {
         algorithm: "HS256",
       },
     );
+  }
+
+  public async testLimits(input: {readonly state: string}): Promise<boolean> {
+    const utf8ByteCount: number = Buffer.from(input.state, "utf-8").length;
+    return utf8ByteCount <= this.#maxStateBytes;
   }
 
   private getAuthorizationHeader(): string {
