@@ -254,7 +254,7 @@ etwin-main-layout, etwin-small-layout {
     border-left: 2px solid $lightGrey;
     margin: .6em 0;
   }
-  
+
   &>h1:first-child {
     margin-top: .2em;
   }
@@ -291,7 +291,7 @@ etwin-main-layout, etwin-small-layout {
   &.xl { margin: 3.8em 0; }
 }
 
-label, input[type=text], input[type=submit], input[type=password] {
+label, input[type=email], input[type=password], input[type=text], input[type=submit] {
   display: block;
 }
 
@@ -302,7 +302,7 @@ label {
 }
 
 .content {
-  input[type=text], input[type=submit], input[type=password], select {
+  input[type=email], input[type=text], input[type=password], input[type=submit], select {
     width: 100%;
     border: none;
   }

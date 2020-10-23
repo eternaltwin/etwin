@@ -114,7 +114,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   }
 
   const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
-  const user = new UserService({hammerfestArchive, hammerfestClient, link, simpleUser, token});
+  const user = new UserService({hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
 
   const koaAuth = new KoaAuth(auth);
   const clock = new SystemClockService();

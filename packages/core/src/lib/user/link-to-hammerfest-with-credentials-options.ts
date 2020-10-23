@@ -2,9 +2,9 @@ import { CaseStyle } from "kryo";
 import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
+import { $HammerfestPassword, HammerfestPassword } from "../hammerfest/hammerfest-password.js";
 import { $HammerfestServer, HammerfestServer } from "../hammerfest/hammerfest-server.js";
 import { $HammerfestUsername, HammerfestUsername } from "../hammerfest/hammerfest-username.js";
-import { $Password, Password } from "../password/password.js";
 import { $LinkToHammerfestMethod, LinkToHammerfestMethod } from "./link-to-hammerfest-method.js";
 import { $UserId, UserId } from "./user-id.js";
 
@@ -29,7 +29,7 @@ export interface LinkToHammerfestWithCredentialsOptions {
   /**
    * Password for the Hammerfest user.
    */
-  hammerfestPassword: Password;
+  hammerfestPassword: HammerfestPassword;
 }
 
 export const $LinkToHammerfestWithCredentialsOptions: RecordIoType<LinkToHammerfestWithCredentialsOptions> = new RecordType<LinkToHammerfestWithCredentialsOptions>({
@@ -38,7 +38,7 @@ export const $LinkToHammerfestWithCredentialsOptions: RecordIoType<LinkToHammerf
     userId: {type: $UserId},
     hammerfestServer: {type: $HammerfestServer},
     hammerfestUsername: {type: $HammerfestUsername},
-    hammerfestPassword: {type: $Password},
+    hammerfestPassword: {type: $HammerfestPassword},
   },
   changeCase: CaseStyle.SnakeCase,
 });

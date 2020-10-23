@@ -8,11 +8,11 @@ describe("InMemoryHammerfestClientService", () => {
   it("createSession", async () => {
     const hammerfest = new InMemoryHammerfestClientService();
 
-    hammerfest.createUser("hammerfest.fr", "123", "alice", Buffer.from("aaaaa"));
+    hammerfest.createUser("hammerfest.fr", "123", "alice", "aaaaa");
 
     {
       const actual: HammerfestSession = await hammerfest.createSession(
-        {server: "hammerfest.fr", username: "alice", password: Buffer.from("aaaaa")},
+        {server: "hammerfest.fr", username: "alice", password: "aaaaa"},
       );
       const expected: HammerfestSession = {
         ctime: actual.ctime,

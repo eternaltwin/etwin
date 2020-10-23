@@ -9,5 +9,10 @@
   "include": [
     "./**/*.ts"
   ],
-  "exclude": []
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../../twinoid-core/src/lib"
+    }
+  ]
 }

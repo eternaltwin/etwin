@@ -13,7 +13,7 @@ describe("/hammerfest", () => {
     it("should load an unlinked profile for the first time", async function (this: Mocha.Context) {
       this.timeout(30000);
       return withTestServer(async cx => {
-        cx.hammerfestClient.createUser("hammerfest.fr", "123", "alice", Buffer.from("aaaaa"));
+        cx.hammerfestClient.createUser("hammerfest.fr", "123", "alice", "aaaaa");
         const guestAgent: TestAgent = new TestAgent(chai.request.agent(cx.server));
         {
           const actual: HammerfestUser = await guestAgent.get("/hammerfest/users/hammerfest.fr/123", $HammerfestUser);
@@ -34,7 +34,7 @@ describe("/hammerfest", () => {
     it("should load an unlinked profile for the second time", async function (this: Mocha.Context) {
       this.timeout(30000);
       return withTestServer(async cx => {
-        cx.hammerfestClient.createUser("hammerfest.fr", "123", "alice", Buffer.from("aaaaa"));
+        cx.hammerfestClient.createUser("hammerfest.fr", "123", "alice", "aaaaa");
         const guestAgent: TestAgent = new TestAgent(chai.request.agent(cx.server));
         await guestAgent.get("/hammerfest/users/hammerfest.fr/123", $HammerfestUser);
         {

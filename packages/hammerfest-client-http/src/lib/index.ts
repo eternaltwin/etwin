@@ -10,13 +10,13 @@ import { HammerfestForumThreadPage } from "@eternal-twin/core/lib/hammerfest/ham
 import { HammerfestGetProfileByIdOptions } from "@eternal-twin/core/lib/hammerfest/hammerfest-get-profile-by-id-options.js";
 import { HammerfestGodChild } from "@eternal-twin/core/lib/hammerfest/hammerfest-god-child.js";
 import { HammerfestItemCounts } from "@eternal-twin/core/lib/hammerfest/hammerfest-item-counts.js";
+import { $HammerfestPassword } from "@eternal-twin/core/lib/hammerfest/hammerfest-password.js";
 import { HammerfestProfile } from "@eternal-twin/core/lib/hammerfest/hammerfest-profile.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestShop } from "@eternal-twin/core/lib/hammerfest/hammerfest-shop.js";
 import { $HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";
-import { $Password } from "@eternal-twin/core/lib/password/password.js";
 import { Cookie, CookieAccessInfo } from "cookiejar";
 import { performance } from "perf_hooks";
 import superagent from "superagent";
@@ -62,7 +62,7 @@ export class HttpHammerfestClientService implements HammerfestClientService {
   }
 
   private async innerCreateSession(credentials: HammerfestCredentials, timeout: number): Promise<HammerfestSession> {
-    if (!$HammerfestUsername.test(credentials.username) || !$Password.test(credentials.password)) {
+    if (!$HammerfestUsername.test(credentials.username) || !$HammerfestPassword.test(credentials.password)) {
       throw new InvalidHammerfestCredentialsError({server: credentials.server, username: credentials.username});
     }
 

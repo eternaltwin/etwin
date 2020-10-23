@@ -1,0 +1,22 @@
+<ng-container [ngSwitch]="link.current !== null">
+  <div class="icon"><img src="/assets/login-methods/twinoid.png"/></div>
+  <h3>twinoid.com</h3>
+  <ng-container *ngSwitchCase="true">
+    <div class="user">{{link.current.user.displayName}} ({{link.current.user.id}})</div>
+    <div class="actions"></div>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <div class="user">No linked account</div>
+    <div class="actions">
+      <form
+        ngNoForm
+        method="POST"
+        enctype="application/x-www-form-urlencoded"
+        action="/actions/link/twinoid"
+      >
+        <input type="submit" name="link_twinoid" class="btn primary" i18n-value="Submit the form to link a Twinoid user@@settings.link.twinoid.submit"
+               value="Link with Twinoid" />
+      </form>
+    </div>
+  </ng-container>
+</ng-container>

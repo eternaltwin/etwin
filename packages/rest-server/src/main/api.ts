@@ -45,7 +45,7 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const forum = new PgForumService(db, UUID4_GENERATOR, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
   const token = new PgTokenService(db, secretKeyStr, hammerfestArchive);
   const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
-  const user = new UserService({hammerfestArchive, hammerfestClient, link, simpleUser, token});
+  const user = new UserService({hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
 
   for (const [key, section] of config.forum.sections) {
     await forum.createOrUpdateSystemSection(

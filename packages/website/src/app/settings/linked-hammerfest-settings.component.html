@@ -1,0 +1,33 @@
+<ng-container [ngSwitch]="link.current !== null">
+  <div class="icon"><img src="/assets/login-methods/hammerfest.png"/></div>
+  <h3>{{server}}</h3>
+  <ng-container *ngSwitchCase="true">
+    <div class="user">{{link.current.user.username}} ({{link.current.user.id}})</div>
+    <div class="actions"></div>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <div class="user">No linked account.</div>
+    <div class="actions">
+      <form
+        ngNoForm
+        method="POST"
+        enctype="application/x-www-form-urlencoded"
+        action="/actions/link/hammerfest"
+      >
+        <input type="hidden" name="method" value="Credentials"/>
+        <input type="hidden" name="user_id" [value]="userId"/>
+        <input type="hidden" name="hammerfest_server" [value]="server"/>
+        <label>
+          <span i18n="Hammerfest username (link Hammerfest)@@settings.link.hammerfest.username">Hammerfest username</span>
+          <input type="text" name="hammerfest_username" class="field" required="required"/>
+        </label>
+        <label>
+          <span i18n="Hammerfest password (link Hammerfest)@@settings.link.hammerfest.password">Hammerfest password</span>
+          <input type="password" name="hammerfest_password" class="field" required="required"/>
+        </label>
+        <input type="submit" name="link_hammerfest" class="btn primary" i18n-value="Submit the form to link a Hammerfest user@@settings.link.hammerfest.submit"
+               value="Link with {{server}}" />
+      </form>
+    </div>
+  </ng-container>
+</ng-container>

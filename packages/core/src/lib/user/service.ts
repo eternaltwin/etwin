@@ -1,11 +1,16 @@
+import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
+import { User as TidUser } from "@eternal-twin/twinoid-core/lib/user.js";
+
 import { AuthContext } from "../auth/auth-context.js";
 import { AuthType } from "../auth/auth-type.js";
+import { ObjectType } from "../core/object-type.js";
 import { HammerfestArchiveService } from "../hammerfest/archive.js";
 import { HammerfestClientService } from "../hammerfest/client.js";
 import { LinkService } from "../link/service.js";
 import { VersionedHammerfestLink } from "../link/versioned-hammerfest-link.js";
 import { VersionedTwinoidLink } from "../link/versioned-twinoid-link";
 import { TokenService } from "../token/service.js";
+import { TwinoidArchiveService } from "../twinoid/archive.js";
 import { GetUserByIdOptions } from "./get-user-by-id-options.js";
 import { LinkToHammerfestMethod } from "./link-to-hammerfest-method.js";
 import { LinkToHammerfestOptions } from "./link-to-hammerfest-options.js";
@@ -23,6 +28,8 @@ export interface UserServiceOptions {
   link: LinkService;
   simpleUser: SimpleUserService;
   token: TokenService;
+  twinoidArchive: TwinoidArchiveService;
+  twinoidClient: TwinoidClientService;
 }
 
 export class UserService {
@@ -31,6 +38,8 @@ export class UserService {
   readonly #link: LinkService;
   readonly #simpleUser: SimpleUserService;
   readonly #token: TokenService;
+  readonly #twinoidArchive: TwinoidArchiveService;
+  readonly #twinoidClient: TwinoidClientService;
 
   public constructor(options: Readonly<UserServiceOptions>) {
     this.#hammerfestArchive = options.hammerfestArchive;
@@ -38,6 +47,8 @@ export class UserService {
     this.#link = options.link;
     this.#simpleUser = options.simpleUser;
     this.#token = options.token;
+    this.#twinoidArchive = options.twinoidArchive;
+    this.#twinoidClient = options.twinoidClient;
   }
 
   async getUserById(acx: AuthContext, options: Readonly<GetUserByIdOptions>): Promise<MaybeCompleteUser | null> {
@@ -118,15 +129,16 @@ export class UserService {
     if (acx.user.id !== options.userId) {
       throw new Error("Forbidden");
     }
-    throw new Error("NotImplemented");
-    // const hfSession = await this.#token.g.testSession(options.hammerfestServer, options.hammerfestSessionKey);
-    // if (hfSession === null) {
-    //   await this.#token.revokeHammerfest(options.hammerfestServer, options.hammerfestSessionKey);
-    //   throw new Error("InvalidHammerfestSession");
-    // }
-    // await this.#hammerfestArchive.touchShortUser(hfSession.user);
-    // await this.#token.touchHammerfest(hfSession.user.server, hfSession.key, hfSession.user.id);
-    // return await this.#link.linkToHammerfest(acx.user.id, hfSession.user.server, hfSession.user.id);
+
+    const tidUser: Pick<TidUser, "id" | "name"> = await this.#twinoidClient.getMe(options.accessToken.accessToken);
+    await this.#twinoidArchive.createOrUpdateUserRef({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
+    await this.#token.touchTwinoidOauth({
+      accessToken: options.accessToken.accessToken,
+      expirationTime: new Date(Date.now() + options.accessToken.expiresIn * 1000),
+      refreshToken: options.accessToken.refreshToken,
+      twinoidUserId: tidUser.id.toString(10),
+    });
+    return await this.#link.linkToTwinoid(acx.user.id, tidUser.id.toString(10));
   }
 
   async linkToTwinoidWithRef(acx: AuthContext, options: Readonly<LinkToTwinoidWithRefOptions>): Promise<VersionedTwinoidLink> {

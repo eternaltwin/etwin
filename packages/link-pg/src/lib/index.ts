@@ -121,21 +121,14 @@ export class PgLinkService implements LinkService {
   }
 
   async linkToHammerfestTx(queryable: Queryable, userId: UserId, hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<VersionedHammerfestLink> {
-    await queryable.countOne(
-      `
-        INSERT INTO hammerfest_user_links(user_id, hammerfest_server, hammerfest_user_id, ctime)
-        VALUES ($1::UUID, $2::VARCHAR, $3::INT, NOW());`,
-      [userId, hfServer, hfUserId],
-    );
-
     type Row = Pick<HammerfestUserLinkRow, "hammerfest_server" | "hammerfest_user_id" | "ctime">;
     const row: Row = await queryable.one(
       `
-        SELECT hammerfest_server, hammerfest_user_id, ctime
-        FROM hammerfest_user_links
-        WHERE hammerfest_user_links.user_id = $1::UUID;
+        INSERT INTO hammerfest_user_links(user_id, hammerfest_server, hammerfest_user_id, ctime)
+        VALUES ($1::UUID, $2::VARCHAR, $3::INT, NOW())
+        RETURNING hammerfest_server, hammerfest_user_id, ctime;
       `,
-      [userId],
+      [userId, hfServer, hfUserId],
     );
     const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, {id: userId});
     if (linkedBy === null) {

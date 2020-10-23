@@ -1,0 +1,31 @@
+.content {
+  etwin-linked-hammerfest-settings, etwin-linked-twinoid-settings {
+    display: grid;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    margin: 1em 0;
+    padding: 1em;
+    grid-template-areas:
+    'icon website'
+    'icon user'
+    'icon actions';
+    grid-template-columns: auto 1fr;
+    column-gap: 1em;
+
+    .icon {
+      grid-area: icon;
+    }
+
+    h3 {
+      grid-area: website;
+      margin: 0;
+    }
+
+    .user {
+      grid-area: user;
+    }
+
+    .actions {
+      grid-area: actions;
+    }
+  }
+}

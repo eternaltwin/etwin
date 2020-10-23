@@ -81,7 +81,7 @@ export class PgTokenService implements TokenService {
                    trt.atime,
                    NOW()
             FROM twinoid_refresh_tokens AS trt
-            WHERE trt._twinoid_refresh_token_hash = digest($2::HAMMERFEST_SESSION_KEY, 'sha256')
+            WHERE trt._twinoid_refresh_token_hash = digest($2::TEXT, 'sha256')
               AND trt.twinoid_user_id <> $3::TWINOID_USER_ID
             RETURNING _twinoid_refresh_token_hash, dtime
         )
@@ -241,26 +241,43 @@ export class PgTokenService implements TokenService {
 
   async touchHammerfestTx(queryable: Queryable, hfServer: HammerfestServer, sessionKey: HammerfestSessionKey, hfUserId: HammerfestUserId): Promise<HammerfestSession> {
     // First add a row to the revoked sessions if the session exists but the `hammerfest_user_id` changed.
+    // Also add a row to the revoked sessions the user was authenticated with a different key (one session per user).
+    await queryable.query(
+      `
+        WITH revoked AS (
+          DELETE FROM hammerfest_sessions AS hs
+            WHERE hs.hammerfest_server = $1::HAMMERFEST_SERVER
+              AND (
+                (
+                  hs._hammerfest_session_key_hash = digest($2::HAMMERFEST_SESSION_KEY, 'sha256')
+                    AND hs.hammerfest_user_id <> $3::HAMMERFEST_USER_ID
+                  )
+                  OR (
+                  hs._hammerfest_session_key_hash <> digest($2::HAMMERFEST_SESSION_KEY, 'sha256')
+                    AND hs.hammerfest_user_id = $3::HAMMERFEST_USER_ID
+                  )
+                )
+            RETURNING hammerfest_server, hammerfest_session_key,_hammerfest_session_key_hash, hammerfest_user_id, ctime, atime
+        )
+        INSERT INTO old_hammerfest_sessions(hammerfest_server, hammerfest_session_key, _hammerfest_session_key_hash, hammerfest_user_id, ctime, atime, dtime)
+        SELECT revoked.*, NOW() AT TIME ZONE 'utc' AS dtime
+        FROM revoked;`,
+      [
+        hfServer,
+        sessionKey,
+        hfUserId,
+      ],
+    );
+
     // Then upsert the session: if the session did not exist we're done, otherwise update the atime and user to
     // their latest values and reset the ctime if a session was revoked.
     type Row = Pick<HammerfestSessionRow, "hammerfest_user_id" | "ctime" | "atime">;
     const row: Row = await queryable.one(
       `
-        WITH revoked AS (
-          INSERT INTO old_hammerfest_sessions(hammerfest_server, hammerfest_session_key, _hammerfest_session_key_hash, hammerfest_user_id, ctime, atime, dtime)
-          SELECT hs.hammerfest_server, hs.hammerfest_session_key, hs._hammerfest_session_key_hash, hs.hammerfest_user_id, hs.ctime, hs.atime, NOW()
-          FROM hammerfest_sessions AS hs
-          WHERE hs.hammerfest_server = $2::HAMMERFEST_SERVER AND hs._hammerfest_session_key_hash = digest($3::HAMMERFEST_SESSION_KEY, 'sha256') AND hs.hammerfest_user_id <> $4::HAMMERFEST_USER_ID
-          RETURNING hammerfest_server, _hammerfest_session_key_hash, dtime
-        )
         INSERT INTO hammerfest_sessions(hammerfest_server, hammerfest_session_key, _hammerfest_session_key_hash, hammerfest_user_id, ctime, atime)
-        VALUES ($2::HAMMERFEST_SERVER, pgp_sym_encrypt($3::HAMMERFEST_SESSION_KEY, $1::TEXT), digest($3::HAMMERFEST_SESSION_KEY, 'sha256'), $4::HAMMERFEST_USER_ID, NOW(), NOW())
+        VALUES ($2::HAMMERFEST_SERVER, pgp_sym_encrypt($3::HAMMERFEST_SESSION_KEY, $1::TEXT), digest($3::HAMMERFEST_SESSION_KEY, 'sha256'), $4::HAMMERFEST_USER_ID, NOW() AT TIME ZONE 'utc', NOW() AT TIME ZONE 'utc')
         ON CONFLICT (hammerfest_server, _hammerfest_session_key_hash)
-          DO UPDATE SET (ctime, atime, hammerfest_user_id) = (
-            SELECT COALESCE(revoked.dtime, hs.ctime), NOW(), EXCLUDED.hammerfest_user_id
-            FROM hammerfest_sessions AS hs LEFT OUTER JOIN revoked USING (hammerfest_server, _hammerfest_session_key_hash)
-            WHERE hs.hammerfest_server = EXCLUDED.hammerfest_server AND hs._hammerfest_session_key_hash = EXCLUDED._hammerfest_session_key_hash
-          )
+          DO UPDATE SET atime = NOW() AT TIME ZONE 'utc'
         RETURNING hammerfest_user_id, ctime, atime;`,
       [
         this.dbSecret,
@@ -293,9 +310,8 @@ export class PgTokenService implements TokenService {
             WHERE hammerfest_server = $1::HAMMERFEST_SERVER AND _hammerfest_session_key_hash = digest($2::HAMMERFEST_SESSION_KEY, 'sha256')
             RETURNING hammerfest_server, hammerfest_session_key,_hammerfest_session_key_hash, hammerfest_user_id, ctime, atime
         )
-        INSERT
-        INTO old_hammerfest_sessions(hammerfest_server, hammerfest_session_key, _hammerfest_session_key_hash, hammerfest_user_id, ctime, atime, dtime)
-        SELECT revoked.*, NOW() AS dtime
+        INSERT INTO old_hammerfest_sessions(hammerfest_server, hammerfest_session_key, _hammerfest_session_key_hash, hammerfest_user_id, ctime, atime, dtime)
+        SELECT revoked.*, NOW() AT TIME ZONE 'utc' AS dtime
         FROM revoked;`,
       [
         hfServer,

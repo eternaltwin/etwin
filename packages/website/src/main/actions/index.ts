@@ -1,5 +1,6 @@
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
+import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import Koa from "koa";
 import koaMount from "koa-mount";
@@ -12,6 +13,7 @@ export interface Api {
   auth: AuthService;
   oauthClient: OauthClientService;
   koaAuth: KoaAuth;
+  user: UserService;
 }
 
 export async function createActionsRouter(api: Api): Promise<Koa> {

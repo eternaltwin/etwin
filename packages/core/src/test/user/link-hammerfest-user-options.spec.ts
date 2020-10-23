@@ -17,13 +17,13 @@ describe("LinkToHammerfestWithCredentialsOptions", function () {
         userId: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
         hammerfestServer: "hammerfest.fr",
         hammerfestUsername: "Alice",
-        hammerfestPassword: Buffer.from("AAA"),
+        hammerfestPassword: "AAA",
       },
       io: [
         {
           writer: JSON_WRITER,
           reader: JSON_READER,
-          raw: "{\"method\":\"Credentials\",\"user_id\":\"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee\",\"hammerfest_server\":\"hammerfest.fr\",\"hammerfest_username\":\"Alice\",\"hammerfest_password\":\"414141\"}",
+          raw: "{\"method\":\"Credentials\",\"user_id\":\"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee\",\"hammerfest_server\":\"hammerfest.fr\",\"hammerfest_username\":\"Alice\",\"hammerfest_password\":\"AAA\"}",
         },
       ],
     },

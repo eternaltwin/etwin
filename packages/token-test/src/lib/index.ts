@@ -264,6 +264,98 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
       }
     });
   });
+
+  it("Touches with a new session key without revoking first", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const alice: ShortHammerfestUser = {
+        type: ObjectType.HammerfestUser,
+        server: "hammerfest.fr",
+        id: "1",
+        username: "alice",
+      };
+      await api.hammerfestArchive.touchShortUser(alice);
+      const firstSession = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
+      await timeout(1000);
+      const secondSession: HammerfestSession = await api.token.touchHammerfest(alice.server, "bbbbbbbbbbbbbbbbbbbbbbbbbb", alice.id);
+      {
+        const expected: HammerfestSession = {
+          user: alice,
+          key: "bbbbbbbbbbbbbbbbbbbbbbbbbb",
+          ctime: new Date(secondSession.ctime),
+          atime: new Date(secondSession.atime),
+        };
+        chai.assert.deepEqual(secondSession, expected);
+        const elapsed: number = secondSession.ctime.getTime() - firstSession.ctime.getTime();
+        chai.assert.isTrue(elapsed >= 1000);
+      }
+      {
+        const actual: HammerfestSession | null = await api.token.getHammerfest("hammerfest.fr", "1");
+        const expected: HammerfestSession = {
+          user: alice,
+          key: "bbbbbbbbbbbbbbbbbbbbbbbbbb",
+          ctime: new Date(secondSession.ctime),
+          atime: new Date(secondSession.atime),
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
+
+  it("Touching automatically revokes a previous key with a different user and a same user token with a different key", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const alice: ShortHammerfestUser = {
+        type: ObjectType.HammerfestUser,
+        server: "hammerfest.fr",
+        id: "1",
+        username: "alice",
+      };
+      await api.hammerfestArchive.touchShortUser(alice);
+      const bob: ShortHammerfestUser = {
+        type: ObjectType.HammerfestUser,
+        server: "hammerfest.fr",
+        id: "2",
+        username: "bob",
+      };
+      await api.hammerfestArchive.touchShortUser(bob);
+      const firstSession = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
+      const secondSession: HammerfestSession = await api.token.touchHammerfest(bob.server, "bbbbbbbbbbbbbbbbbbbbbbbbbb", bob.id);
+      await timeout(1000);
+      const thirdSession: HammerfestSession = await api.token.touchHammerfest(alice.server, "bbbbbbbbbbbbbbbbbbbbbbbbbb", alice.id);
+      {
+        const expected: HammerfestSession = {
+          user: alice,
+          key: "bbbbbbbbbbbbbbbbbbbbbbbbbb",
+          ctime: new Date(thirdSession.ctime),
+          atime: new Date(thirdSession.atime),
+        };
+        chai.assert.deepEqual(thirdSession, expected);
+        {
+          const elapsed: number = thirdSession.ctime.getTime() - firstSession.ctime.getTime();
+          chai.assert.isTrue(elapsed >= 1000);
+        }
+        {
+          const elapsed: number = thirdSession.ctime.getTime() - secondSession.ctime.getTime();
+          chai.assert.isTrue(elapsed >= 1000);
+        }
+      }
+      {
+        const actual: HammerfestSession | null = await api.token.getHammerfest("hammerfest.fr", "1");
+        const expected: HammerfestSession = {
+          user: alice,
+          key: "bbbbbbbbbbbbbbbbbbbbbbbbbb",
+          ctime: new Date(thirdSession.ctime),
+          atime: new Date(thirdSession.atime),
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+      {
+        const actual: HammerfestSession | null = await api.token.getHammerfest("hammerfest.fr", "2");
+        chai.assert.isNull(actual);
+      }
+    });
+  });
 }
 
 async function timeout(ms: number): Promise<void> {

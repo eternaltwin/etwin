@@ -57,7 +57,7 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const koaAuth = new KoaAuth(auth);
     const token = new PgTokenService(db, secretKeyStr, hammerfestArchive);
     const forum = new PgForumService(db, UUID4_GENERATOR, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
-    const user = new UserService({hammerfestArchive, hammerfestClient, link, simpleUser, token});
+    const user = new UserService({hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
     const api: Api = {auth, forum, hammerfest, koaAuth, user};
 
     const app: Koa = createApiRouter(api);
