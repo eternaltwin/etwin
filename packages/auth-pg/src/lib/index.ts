@@ -9,6 +9,7 @@ import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/re
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
 import { Session } from "@eternal-twin/core/lib/auth/session.js";
+import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
@@ -27,7 +28,9 @@ import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-t
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
+import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
+import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
@@ -46,6 +49,11 @@ import { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
 
 import { $EmailRegistrationJwt, EmailRegistrationJwt } from "./email-registration-jwt.js";
 
+const SYSTEM_AUTH: SystemAuthContext = {
+  type: AuthType.System,
+  scope: AuthScope.Default,
+};
+
 export class PgAuthService implements AuthService {
   private readonly database: Database;
   private readonly dbSecret: string;
@@ -55,6 +63,7 @@ export class PgAuthService implements AuthService {
   private readonly hammerfestClient: HammerfestClientService;
   private readonly link: LinkService;
   private readonly password: PasswordService;
+  private readonly simpleUser: SimpleUserService;
   private readonly tokenSecret: Buffer;
   private readonly twinoidArchive: TwinoidArchiveService;
   private readonly twinoidClient: TwinoidClientService;
@@ -87,6 +96,7 @@ export class PgAuthService implements AuthService {
     hammerfestClient: HammerfestClientService,
     link: LinkService,
     password: PasswordService,
+    simpleUser: SimpleUserService,
     tokenSecret: Uint8Array,
     twinoidArchive: TwinoidArchiveService,
     twinoidClient: TwinoidClientService,
@@ -100,6 +110,7 @@ export class PgAuthService implements AuthService {
     this.hammerfestClient = hammerfestClient;
     this.link = link;
     this.password = password;
+    this.simpleUser = simpleUser;
     this.tokenSecret = Buffer.from(tokenSecret);
     this.twinoidArchive = twinoidArchive;
     this.twinoidClient = twinoidClient;
@@ -130,8 +141,30 @@ export class PgAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can register");
     }
+
+    const emailJwt: EmailRegistrationJwt = await this.readEmailVerificationToken(options.emailToken);
+    const email: EmailAddress = emailJwt.email;
+
+    const oldUser: ShortUser | null = await this.simpleUser.getShortUserByEmail(SYSTEM_AUTH, {email});
+    if (oldUser !== null) {
+      throw new Error(`Conflict: EmailAddressAlreadyInUse: ${JSON.stringify(oldUser.id)}`);
+    }
+
+    const displayName: UserDisplayName = options.displayName;
+    const passwordHash: PasswordHash = await this.password.hash(options.password);
+    const user: SimpleUser = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email, username: null});
+
     return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
-      return this.registerWithVerifiedEmailTx(q, acx, options);
+      await this.setPasswordHashRw(q, user.id, passwordHash);
+      try {
+        await this.createValidatedEmailVerification(q, user.id, email, new Date(emailJwt.issuedAt * 1000));
+      } catch (err) {
+        console.warn(`FailedToCreateEmailVerification\n${err.stack}`);
+      }
+
+      const session: Session = await this.createSession(q, user.id);
+
+      return {user, session};
     });
   }
 
@@ -139,8 +172,21 @@ export class PgAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can register");
     }
+
+    const username: Username = options.username;
+    const oldUser: ShortUser | null = await this.simpleUser.getShortUserByUsername(SYSTEM_AUTH, {username});
+    if (oldUser !== null) {
+      throw new Error(`Conflict: UsernameAlreadyInUse: ${JSON.stringify(oldUser.id)}`);
+    }
+
+    const displayName: UserDisplayName = options.displayName;
+    const passwordHash: PasswordHash = await this.password.hash(options.password);
+    const user: SimpleUser = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username});
+
     return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
-      return this.registerWithUsernameTx(q, acx, options);
+      await this.setPasswordHashRw(q, user.id, passwordHash);
+      const session: Session = await this.createSession(q, user.id);
+      return {user, session};
     });
   }
 
@@ -168,7 +214,7 @@ export class PgAuthService implements AuthService {
       userId = link.current.user.id;
     } else {
       const displayName = hammerfestToUserDisplayName(hfSession.user);
-      const user = await this.database.transaction(TransactionMode.ReadWrite, q => this.createUserTx(q, displayName, null, null, null));
+      const user = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
       try {
         await this.hammerfestArchive.touchShortUser(hfSession.user);
         await this.link.linkToHammerfest(user.id, hfSession.user.server, hfSession.user.id);
@@ -178,7 +224,7 @@ export class PgAuthService implements AuthService {
         // If the exception comes from `link.linkToHammerfest`, the archived user remains: it's OK (no link is created).
         // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
         // any issues.
-        await this.hardDeleteUserRw(this.database, user.id);
+        await this.simpleUser.hardDeleteUserById(SYSTEM_AUTH, user.id);
         throw e;
       }
       userId = user.id;
@@ -210,7 +256,7 @@ export class PgAuthService implements AuthService {
       userId = link.current.user.id;
     } else {
       const displayName = twinoidToUserDisplayName(tidUser);
-      const user = await this.database.transaction(TransactionMode.ReadWrite, q => this.createUserTx(q, displayName, null, null, null));
+      const user = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
       try {
         await this.twinoidArchive.createOrUpdateUserRef({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
         await this.link.linkToTwinoid(user.id, tidUser.id.toString(10));
@@ -220,7 +266,7 @@ export class PgAuthService implements AuthService {
         // If the exception comes from `link.linkToTwinoid`, the archived user remains: it's OK (no link is created).
         // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
         // any issues.
-        await this.hardDeleteUserRw(this.database, user.id);
+        await this.simpleUser.hardDeleteUserById(SYSTEM_AUTH, user.id);
         throw e;
       }
       userId = user.id;
@@ -364,76 +410,6 @@ export class PgAuthService implements AuthService {
     };
   }
 
-  private async registerWithVerifiedEmailTx(
-    queryable: Queryable,
-    acx: AuthContext,
-    options: RegisterWithVerifiedEmailOptions,
-  ): Promise<UserAndSession> {
-    if (acx.type !== AuthType.Guest) {
-      throw Error("Forbidden: Only guests can authenticate");
-    }
-
-    const emailJwt: EmailRegistrationJwt = await this.readEmailVerificationToken(options.emailToken);
-
-    const email: EmailAddress = emailJwt.email;
-
-    type Row = Pick<UserRow, "user_id" | "display_name">;
-    const oldUserRow: Row | undefined = await queryable.oneOrNone(
-      `SELECT user_id, display_name
-         FROM users
-         WHERE users.email_address = pgp_sym_encrypt($2::TEXT, $1::TEXT);`,
-      [this.dbSecret, email],
-    );
-    if (oldUserRow !== undefined) {
-      throw new Error(`Conflict: EmailAddressAlreadyInUse: ${JSON.stringify(oldUserRow)}`);
-    }
-
-    const displayName: UserDisplayName = options.displayName;
-    const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const user: SimpleUser = await this.createUserTx(queryable, displayName, email, null, passwordHash);
-
-    try {
-      await this.createValidatedEmailVerification(queryable, user.id, email, new Date(emailJwt.issuedAt * 1000));
-    } catch (err) {
-      console.warn(`FailedToCreateEmailVerification\n${err.stack}`);
-    }
-
-    const session: Session = await this.createSession(queryable, user.id);
-
-    return {user, session};
-  }
-
-  private async registerWithUsernameTx(
-    queryable: Queryable,
-    acx: AuthContext,
-    options: RegisterWithUsernameOptions,
-  ): Promise<UserAndSession> {
-    if (acx.type !== AuthType.Guest) {
-      throw Error("Forbidden: Only guests can authenticate");
-    }
-
-    const username: Username = options.username;
-
-    type Row = Pick<UserRow, "user_id" | "display_name">;
-    const oldUserRow: Row | undefined = await queryable.oneOrNone(
-      `SELECT user_id, display_name
-         FROM users
-         WHERE users.username = $1::VARCHAR;`,
-      [username],
-    );
-    if (oldUserRow !== undefined) {
-      throw new Error(`Conflict: UsernameAlreadyInUse: ${JSON.stringify(oldUserRow)}`);
-    }
-
-    const displayName: UserDisplayName = options.displayName;
-    const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const user: SimpleUser = await this.createUserTx(queryable, displayName, null, username, passwordHash);
-
-    const session: Session = await this.createSession(queryable, user.id);
-
-    return {user, session};
-  }
-
   private async loginWithCredentialsTx(
     queryable: Queryable,
     acx: AuthContext,
@@ -443,30 +419,32 @@ export class PgAuthService implements AuthService {
       throw Error("Forbidden: Only guests can authenticate");
     }
     const login: Login = credentials.login;
-    type Row = Pick<UserRow, "user_id" | "display_name" | "password">;
+    type Row = Pick<UserRow, "user_id" | "display_name">;
     let row: Row;
     switch ($Login.match(credentials.login)) {
       case $EmailAddress: {
-        const maybeRow: Row | undefined = await queryable.oneOrNone(
-          `
-          SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
-          FROM users
-          WHERE users.email_address = pgp_sym_encrypt($2::TEXT, $1::TEXT);`,
-          [this.dbSecret, login],
-        );
-        if (maybeRow === undefined) {
-          throw new Error(`UserNotFound: User not found for the email: ${login}`);
-        }
-        row = maybeRow;
-        break;
+        // TODO: Compute email hash
+        throw new Error("NotImplemented");
+        // const maybeRow: Row | undefined = await queryable.oneOrNone(
+        //   `
+        //   SELECT user_id, display_name
+        //   FROM users
+        //   WHERE users.email_address = pgp_sym_encrypt($2::TEXT, $1::TEXT);`,
+        //   [this.dbSecret, login],
+        // );
+        // if (maybeRow === undefined) {
+        //   throw new Error(`UserNotFound: User not found for the email: ${login}`);
+        // }
+        // row = maybeRow;
+        // break;
       }
       case $Username: {
         const maybeRow: Row | undefined = await queryable.oneOrNone(
           `
-          SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
+          SELECT user_id, display_name
           FROM users
-          WHERE users.username = $2::VARCHAR;`,
-          [this.dbSecret, login],
+          WHERE users.username = $1::VARCHAR;`,
+          [login],
         );
         if (maybeRow === undefined) {
           throw new Error(`UserNotFound: User not found for the username: ${login}`);
@@ -478,11 +456,12 @@ export class PgAuthService implements AuthService {
         throw new Error("AssertionError: Invalid `credentials.login` type");
     }
 
-    if (row.password === null) {
+    const passwordHash: PasswordHash | null = await this.getPasswordHashRo(queryable, row.user_id);
+    if (passwordHash === null) {
       throw new Error("NoPassword: Password authentication is not available for this user");
     }
 
-    const isMatch: boolean = await this.password.verify(row.password, credentials.password);
+    const isMatch: boolean = await this.password.verify(passwordHash, credentials.password);
 
     if (!isMatch) {
       throw new Error("InvalidPassword");
@@ -492,64 +471,6 @@ export class PgAuthService implements AuthService {
     const user = await this.getExistingUserById(queryable, session.user.id);
 
     return {user, session};
-  }
-
-  private async createUserTx(
-    queryable: Queryable,
-    displayName: UserDisplayName,
-    emailAddress: EmailAddress | null,
-    username: Username | null,
-    passwordHash: PasswordHash | null,
-  ): Promise<SimpleUser> {
-    if (!$UserDisplayName.test(displayName)) {
-      throw new Error("InvalidDisplayName");
-    } else if (username !== null && !$Username.test(username)) {
-      throw new Error("InvalidUsername");
-    } else if (emailAddress !== null && !$EmailAddress.test(emailAddress)) {
-      throw new Error("InvalidEmailAddress");
-    }
-
-    type Row = Pick<UserRow, "user_id" | "display_name" | "is_administrator">;
-    const userId: UuidHex = this.uuidGen.next();
-    const userRow: Row = await queryable.one(
-      `
-      WITH administrator_exists AS (SELECT 1 FROM users WHERE is_administrator)
-      INSERT
-      INTO users(
-        user_id, ctime, display_name, display_name_mtime,
-        email_address, email_address_mtime,
-        username, username_mtime,
-        password, password_mtime,
-        is_administrator
-      )
-      VALUES (
-        $2::UUID, NOW(), $3::VARCHAR, NOW(),
-        (CASE WHEN $4::TEXT IS NULL THEN NULL ELSE pgp_sym_encrypt($4::TEXT, $1::TEXT) END), NOW(),
-        $5::VARCHAR, NOW(),
-        pgp_sym_encrypt_bytea($6::BYTEA, $1::TEXT), NOW(),
-        (NOT EXISTS(SELECT 1 FROM administrator_exists))
-      )
-      RETURNING user_id, display_name, is_administrator;`,
-      [this.dbSecret, userId, displayName, emailAddress, username, passwordHash],
-    );
-
-    return {
-      type: ObjectType.User,
-      id: userRow.user_id,
-      displayName: {current: {value: userRow.display_name}},
-      isAdministrator: userRow.is_administrator,
-    };
-  }
-
-  private async hardDeleteUserRw(
-    queryable: Queryable,
-    userId: UserId,
-  ): Promise<void> {
-    await queryable.countOneOrNone(
-      `
-      DELETE FROM users WHERE user_id = $1::UUID;`,
-      [userId],
-    );
   }
 
   private async createValidatedEmailVerification(
@@ -660,6 +581,40 @@ export class PgAuthService implements AuthService {
       throw new Error("AssertionError: Expected JWT verification result to be an object");
     }
     return $EmailRegistrationJwt.read(JSON_VALUE_READER, tokenObj);
+  }
+
+  private async setPasswordHashRw(queryable: Queryable, userId: UserId, passwordHash: PasswordHash): Promise<void> {
+    await queryable.countOne(
+      `
+          UPDATE users
+          SET password = pgp_sym_encrypt_bytea($3::BYTEA, $1::TEXT), password_mtime = NOW()
+          WHERE user_id = $2::UUID;`,
+      [this.dbSecret, userId, passwordHash],
+    );
+  }
+
+  private async getPasswordHashRo(queryable: Queryable, userId: UserId): Promise<PasswordHash | null> {
+    type Row = Pick<UserRow, "password">;
+    const row: Row | undefined = await queryable.oneOrNone(
+      `
+          SELECT pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
+          FROM users
+          WHERE user_id = $2::UUID;`,
+      [this.dbSecret, userId],
+    );
+    return row !== undefined ? row.password : null;
+  }
+
+  public async hasPassword(userId: UserId): Promise<boolean> {
+    type Row = {has_password: boolean};
+    const row: Row | undefined = await this.database.oneOrNone(
+      `
+          SELECT (password IS NOT NULL) as has_password
+          FROM users
+          WHERE user_id = $1::UUID;`,
+      [userId],
+    );
+    return row !== undefined ? row.has_password : false;
   }
 }
 

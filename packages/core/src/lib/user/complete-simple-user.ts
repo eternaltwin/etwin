@@ -27,8 +27,6 @@ export interface CompleteSimpleUser {
   username: NullableUsername;
 
   emailAddress: NullableEmailAddress;
-
-  hasPassword: boolean;
 }
 
 export const $CompleteSimpleUser: RecordIoType<CompleteSimpleUser> = new RecordType<CompleteSimpleUser>({
@@ -40,7 +38,6 @@ export const $CompleteSimpleUser: RecordIoType<CompleteSimpleUser> = new RecordT
     ctime: {type: $Date},
     username: {type: $NullableUsername},
     emailAddress: {type: $NullableEmailAddress},
-    hasPassword: {type: $Boolean},
   },
   changeCase: CaseStyle.SnakeCase,
 });

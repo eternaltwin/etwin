@@ -19,6 +19,7 @@ import { InMemoryForumService } from "../lib/index.js";
 async function withInMemoryForumService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const config = await getLocalConfig();
 
+  const uuidGenerator = UUID4_GENERATOR;
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new InMemoryEmailService();
@@ -28,11 +29,11 @@ async function withInMemoryForumService<R>(fn: (api: Api) => Promise<R>): Promis
   const twinoidArchive = new InMemoryTwinoidArchiveService();
   const hammerfestClient = new InMemoryHammerfestClientService();
   const twinoidClient = new HttpTwinoidClientService();
-  const user = new InMemorySimpleUserService({uuidGenerator: UUID4_GENERATOR});
-  const link = new InMemoryLinkService(hammerfestArchive, twinoidArchive, user);
-  const oauthProvider = new InMemoryOauthProviderService(UUID4_GENERATOR, password, secretKeyBytes);
-  const auth = new InMemoryAuthService(email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, secretKeyBytes, twinoidArchive, twinoidClient, user, UUID4_GENERATOR);
-  const forum = new InMemoryForumService(UUID4_GENERATOR, user, {postsPerPage: 10, threadsPerPage: 20});
+  const simpleUser = new InMemorySimpleUserService({uuidGenerator});
+  const link = new InMemoryLinkService(hammerfestArchive, twinoidArchive, simpleUser);
+  const oauthProvider = new InMemoryOauthProviderService(uuidGenerator, password, secretKeyBytes);
+  const auth = new InMemoryAuthService(email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator);
+  const forum = new InMemoryForumService(uuidGenerator, simpleUser, {postsPerPage: 10, threadsPerPage: 20});
   return fn({auth, forum});
 }
 

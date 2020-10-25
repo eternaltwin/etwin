@@ -3,6 +3,7 @@ import { User as TidUser } from "@eternal-twin/twinoid-core/lib/user.js";
 
 import { AuthContext } from "../auth/auth-context.js";
 import { AuthType } from "../auth/auth-type.js";
+import { AuthService } from "../auth/service.js";
 import { ObjectType } from "../core/object-type.js";
 import { HammerfestArchiveService } from "../hammerfest/archive.js";
 import { HammerfestClientService } from "../hammerfest/client.js";
@@ -23,6 +24,7 @@ import { MaybeCompleteUser } from "./maybe-complete-user.js";
 import { SimpleUserService } from "./simple.js";
 
 export interface UserServiceOptions {
+  auth: AuthService;
   hammerfestArchive: HammerfestArchiveService;
   hammerfestClient: HammerfestClientService;
   link: LinkService;
@@ -33,6 +35,7 @@ export interface UserServiceOptions {
 }
 
 export class UserService {
+  readonly #auth: AuthService;
   readonly #hammerfestArchive: HammerfestArchiveService;
   readonly #hammerfestClient: HammerfestClientService;
   readonly #link: LinkService;
@@ -42,6 +45,7 @@ export class UserService {
   readonly #twinoidClient: TwinoidClientService;
 
   public constructor(options: Readonly<UserServiceOptions>) {
+    this.#auth = options.auth;
     this.#hammerfestArchive = options.hammerfestArchive;
     this.#hammerfestClient = options.hammerfestClient;
     this.#link = options.link;
@@ -56,8 +60,9 @@ export class UserService {
     if (simpleUser === null) {
       return null;
     }
+    const hasPassword = await this.#auth.hasPassword(simpleUser.id);
     const links = await this.#link.getVersionedLinks(simpleUser.id);
-    return {...simpleUser, links};
+    return {...simpleUser, hasPassword, links};
   }
 
   async linkToHammerfest(acx: AuthContext, options: Readonly<LinkToHammerfestOptions>): Promise<VersionedHammerfestLink> {

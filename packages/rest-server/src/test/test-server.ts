@@ -39,6 +39,7 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
   };
 
   return withPgPool(dbConfig, async (pool) => {
+    const uuidGenerator = UUID4_GENERATOR;
     const db = new Database(pool);
     const secretKeyStr: string = config.etwin.secret;
     const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
@@ -46,18 +47,18 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
     const password = new ScryptPasswordService();
-    const simpleUser = new PgSimpleUserService({database: db, databaseSecret: secretKeyStr});
+    const simpleUser = new PgSimpleUserService({database: db, databaseSecret: secretKeyStr, uuidGenerator});
     const hammerfestClient = new InMemoryHammerfestClientService();
     const hammerfestArchive = new PgHammerfestArchiveService(db);
     const twinoidClient = new HttpTwinoidClientService();
     const twinoidArchive = new PgTwinoidArchiveService(db);
     const link = new PgLinkService(db, hammerfestArchive, twinoidArchive, simpleUser);
     const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
-    const auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, secretKeyBytes, twinoidArchive, twinoidClient, UUID4_GENERATOR);
+    const auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, simpleUser, secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator);
     const koaAuth = new KoaAuth(auth);
     const token = new PgTokenService(db, secretKeyStr, hammerfestArchive);
-    const forum = new PgForumService(db, UUID4_GENERATOR, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
-    const user = new UserService({hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
+    const forum = new PgForumService(db, uuidGenerator, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
+    const user = new UserService({auth, hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
     const api: Api = {auth, forum, hammerfest, koaAuth, user};
 
     const app: Koa = createApiRouter(api);

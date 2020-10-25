@@ -118,7 +118,8 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
       {
         const actual: HammerfestSession = await api.token.touchHammerfest(alice.server, "aaaaaaaaaaaaaaaaaaaaaaaaaa", alice.id);
         const elapsed: number = actual.atime.getTime() - session.atime.getTime();
-        chai.assert.isTrue(elapsed >= 1000);
+        // We use a slighltly shorer value than `1000` because `timeout` is imprecise and may sometimes last shorter (e.g. 999ms)
+        chai.assert.isTrue(elapsed >= 950, `at least 1000ms elapsed: ${elapsed}`);
         const expected: HammerfestSession = {
           user: alice,
           key: "aaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -153,7 +154,7 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         };
         chai.assert.deepEqual(secondSession, expected);
         const elapsed: number = secondSession.ctime.getTime() - firstSession.ctime.getTime();
-        chai.assert.isTrue(elapsed >= 1000);
+        chai.assert.isTrue(elapsed >= 950, `at least 1000ms elapsed: ${elapsed}`);
       }
       {
         const actual: HammerfestSession | null = await api.token.getHammerfest("hammerfest.fr", "1");
@@ -198,7 +199,7 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         };
         chai.assert.deepEqual(secondSession, expected);
         const elapsed: number = secondSession.ctime.getTime() - firstSession.ctime.getTime();
-        chai.assert.isTrue(elapsed >= 1000, "at least 1000ms elapsed");
+        chai.assert.isTrue(elapsed >= 950, `at least 1000ms elapsed: ${elapsed}`);
       }
       {
         const actual: HammerfestSession | null = await api.token.getHammerfest("hammerfest.fr", "1");
@@ -246,7 +247,7 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         };
         chai.assert.deepEqual(secondSession, expected);
         const elapsed: number = secondSession.ctime.getTime() - firstSession.ctime.getTime();
-        chai.assert.isTrue(elapsed >= 1000);
+        chai.assert.isTrue(elapsed >= 950, `at least 1000ms elapsed: ${elapsed}`);
       }
       {
         const actual: HammerfestSession | null = await api.token.getHammerfest("hammerfest.fr", "1");
@@ -287,7 +288,7 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         };
         chai.assert.deepEqual(secondSession, expected);
         const elapsed: number = secondSession.ctime.getTime() - firstSession.ctime.getTime();
-        chai.assert.isTrue(elapsed >= 1000);
+        chai.assert.isTrue(elapsed >= 950, `at least 1000ms elapsed: ${elapsed}`);
       }
       {
         const actual: HammerfestSession | null = await api.token.getHammerfest("hammerfest.fr", "1");
@@ -333,11 +334,11 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         chai.assert.deepEqual(thirdSession, expected);
         {
           const elapsed: number = thirdSession.ctime.getTime() - firstSession.ctime.getTime();
-          chai.assert.isTrue(elapsed >= 1000);
+          chai.assert.isTrue(elapsed >= 950, `at least 1000ms elapsed (from first): ${elapsed}`);
         }
         {
           const elapsed: number = thirdSession.ctime.getTime() - secondSession.ctime.getTime();
-          chai.assert.isTrue(elapsed >= 1000);
+          chai.assert.isTrue(elapsed >= 950, `at least 1000ms elapsed (from second): ${elapsed}`);
         }
       }
       {

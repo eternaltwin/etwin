@@ -3,8 +3,10 @@ import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
 import { EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
-import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
+import { CreateUserOptions } from "@eternal-twin/core/lib/user/create-user-options.js";
+import { GetUserByEmailOptions } from "@eternal-twin/core/lib/user/get-user-by-email-options.js";
 import { GetUserByIdOptions } from "@eternal-twin/core/lib/user/get-user-by-id-options.js";
+import { GetUserByUsernameOptions } from "@eternal-twin/core/lib/user/get-user-by-username-options.js";
 import { MaybeCompleteSimpleUser } from "@eternal-twin/core/lib/user/maybe-complete-simple-user.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
@@ -22,8 +24,6 @@ export interface InMemoryUser {
   emailAddressMtime: Date;
   username: Username | null;
   usernameMtime: Date;
-  passwordHash: Uint8Array | null;
-  passwordHashMtime: Date,
   isAdministrator: boolean,
 }
 
@@ -38,6 +38,21 @@ export class InMemorySimpleUserService implements SimpleUserService {
   constructor(options: Readonly<InMemorySimpleUserServiceOption>) {
     this.#uuidGenerator = options.uuidGenerator;
     this.#users = new Map();
+  }
+
+  async createUser(acx: AuthContext, options: Readonly<CreateUserOptions>): Promise<SimpleUser> {
+    if (acx.type !== AuthType.System) {
+      throw new Error("Forbidden");
+    }
+    const imUser = await this._createUser(options.displayName, options.email, options.username);
+    return {
+      type: ObjectType.User,
+      id: imUser.id,
+      displayName: {
+        current: {value: imUser.displayName},
+      },
+      isAdministrator: imUser.isAdministrator,
+    };
   }
 
   public async getUserById(acx: AuthContext, options: Readonly<GetUserByIdOptions>): Promise<MaybeCompleteSimpleUser | null> {
@@ -59,7 +74,6 @@ export class InMemorySimpleUserService implements SimpleUserService {
         ctime: imUser.ctime,
         username: imUser.username,
         emailAddress: imUser.emailAddress,
-        hasPassword: imUser.passwordHash !== null,
       };
     } else {
       return simpleUser;
@@ -68,23 +82,39 @@ export class InMemorySimpleUserService implements SimpleUserService {
 
   public async getShortUserById(_acx: AuthContext, options: Readonly<GetUserByIdOptions>): Promise<ShortUser | null> {
     const imUser: InMemoryUser | undefined = this.#users.get(options.id);
-    if (imUser === undefined) {
-      return null;
-    }
-    return {
-      type: ObjectType.User,
-      id: imUser.id,
-      displayName: {
-        current: {value: imUser.displayName},
-      },
-    };
+    return imToShort(imUser ?? null);
   }
 
-  public async _createUser(
+  public async getShortUserByEmail(acx: AuthContext, options: Readonly<GetUserByEmailOptions>): Promise<ShortUser | null> {
+    if (acx.type !== AuthType.System) {
+      throw new Error("Forbidden");
+    }
+    const imUser: InMemoryUser | null = await this._getInMemoryUserByEmail(options.email);
+    return imToShort(imUser);
+  }
+
+  public async getShortUserByUsername(acx: AuthContext, options: Readonly<GetUserByUsernameOptions>): Promise<ShortUser | null> {
+    if (acx.type !== AuthType.System) {
+      throw new Error("Forbidden");
+    }
+    const imUser: InMemoryUser | null = await this._getInMemoryUserByUsername(options.username);
+    return imToShort(imUser);
+  }
+
+  public async hardDeleteUserById(
+    acx: AuthContext,
+    _userId: UserId,
+  ): Promise<void> {
+    if (acx.type !== AuthType.System) {
+      throw new Error("Forbidden");
+    }
+    // TODO
+  }
+
+  private async _createUser(
     displayName: UserDisplayName,
     emailAddress: EmailAddress | null,
     username: Username | null,
-    passwordHash: PasswordHash | null,
   ): Promise<InMemoryUser> {
     const userId: UserId = this.#uuidGenerator.next();
     const time: number = Date.now();
@@ -97,15 +127,13 @@ export class InMemorySimpleUserService implements SimpleUserService {
       emailAddressMtime: new Date(time),
       username,
       usernameMtime: new Date(time),
-      passwordHash,
-      passwordHashMtime: new Date(time),
       isAdministrator: this.#users.size === 0,
     };
     this.#users.set(inMemoryUser.id, inMemoryUser);
     return inMemoryUser;
   }
 
-  public async _getInMemoryUserByEmail(emailAddress: EmailAddress): Promise<InMemoryUser | null> {
+  private async _getInMemoryUserByEmail(emailAddress: EmailAddress): Promise<InMemoryUser | null> {
     for (const user of this.#users.values()) {
       if (user.emailAddress === emailAddress) {
         return user;
@@ -114,7 +142,7 @@ export class InMemorySimpleUserService implements SimpleUserService {
     return null;
   }
 
-  public async _getInMemoryUserByUsername(username: Username): Promise<InMemoryUser | null> {
+  private async _getInMemoryUserByUsername(username: Username): Promise<InMemoryUser | null> {
     for (const user of this.#users.values()) {
       if (user.username === username) {
         return user;
@@ -122,4 +150,17 @@ export class InMemorySimpleUserService implements SimpleUserService {
     }
     return null;
   }
+}
+
+function imToShort(im: InMemoryUser | null): ShortUser | null {
+  if (im === null) {
+    return null;
+  }
+  return {
+    type: ObjectType.User,
+    id: im.id,
+    displayName: {
+      current: {value: im.displayName},
+    },
+  };
 }

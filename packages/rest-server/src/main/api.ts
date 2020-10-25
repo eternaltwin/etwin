@@ -28,24 +28,25 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
     password: config.db.password,
   });
 
+  const uuidGenerator = UUID4_GENERATOR;
   const db = new Database(pool);
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new ConsoleEmailService();
   const emailTemplate = new EtwinEmailTemplateService(config.etwin.externalUri);
   const password = new ScryptPasswordService();
-  const simpleUser = new PgSimpleUserService({database: db, databaseSecret: secretKeyStr});
+  const simpleUser = new PgSimpleUserService({database: db, databaseSecret: secretKeyStr, uuidGenerator});
   const hammerfestArchive = new PgHammerfestArchiveService(db);
   const hammerfestClient = new HttpHammerfestClientService();
   const twinoidArchive = new PgTwinoidArchiveService(db);
   const twinoidClient = new HttpTwinoidClientService();
   const link = new PgLinkService(db, hammerfestArchive, twinoidArchive, simpleUser);
-  const auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, secretKeyBytes, twinoidArchive, twinoidClient, UUID4_GENERATOR);
+  const auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, simpleUser, secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator);
   const koaAuth = new KoaAuth(auth);
   const forum = new PgForumService(db, UUID4_GENERATOR, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
   const token = new PgTokenService(db, secretKeyStr, hammerfestArchive);
   const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
-  const user = new UserService({hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
+  const user = new UserService({auth, hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
 
   for (const [key, section] of config.forum.sections) {
     await forum.createOrUpdateSystemSection(

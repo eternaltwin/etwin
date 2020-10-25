@@ -17,7 +17,7 @@ import chai from "chai";
 
 export interface Api {
   auth: AuthService;
-  user: SimpleUserService;
+  simpleUser: SimpleUserService;
 }
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};
@@ -48,7 +48,7 @@ export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Pr
     return withApi(async (api: Api): Promise<void> => {
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       {
-        const actual: NullableShortUser = await api.user.getShortUserById(aliceAuth, {id: aliceAuth.user.id});
+        const actual: NullableShortUser = await api.simpleUser.getShortUserById(aliceAuth, {id: aliceAuth.user.id});
         chai.assert.isNotNull(actual);
         const expected: NullableShortUser = {
           type: ObjectType.User,
@@ -65,7 +65,7 @@ export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Pr
     return withApi(async (api: Api): Promise<void> => {
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       {
-        const actual: MaybeCompleteSimpleUser | null = await api.user.getUserById(aliceAuth, {id: aliceAuth.user.id});
+        const actual: MaybeCompleteSimpleUser | null = await api.simpleUser.getUserById(aliceAuth, {id: aliceAuth.user.id});
         chai.assert.isNotNull(actual);
         chai.assert.instanceOf((actual as CompleteSimpleUser).ctime, Date);
         const expected: CompleteSimpleUser = {
@@ -76,7 +76,6 @@ export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Pr
           ctime: (actual as CompleteSimpleUser).ctime,
           username: "alice",
           emailAddress: null,
-          hasPassword: true,
         };
         chai.assert.deepEqual(actual, expected);
       }
@@ -89,7 +88,7 @@ export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Pr
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       const bobAuth: UserAuthContext = await createUser(api.auth, "bob", "Bob", "bbbbb");
       {
-        const actual: MaybeCompleteSimpleUser | null = await api.user.getUserById(bobAuth, {id: aliceAuth.user.id});
+        const actual: MaybeCompleteSimpleUser | null = await api.simpleUser.getUserById(bobAuth, {id: aliceAuth.user.id});
         chai.assert.isNotNull(actual);
         const expected: SimpleUser = {
           type: ObjectType.User,

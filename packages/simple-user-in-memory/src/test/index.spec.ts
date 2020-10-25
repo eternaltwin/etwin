@@ -23,15 +23,15 @@ async function withInMemoryUserService<R>(fn: (api: Api) => Promise<R>): Promise
   const email = new InMemoryEmailService();
   const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
   const password = new ScryptPasswordService();
-  const user = new InMemorySimpleUserService({uuidGenerator: UUID4_GENERATOR});
+  const simpleUser = new InMemorySimpleUserService({uuidGenerator: UUID4_GENERATOR});
   const hammerfestArchive = new InMemoryHammerfestArchiveService();
   const twinoidArchive = new InMemoryTwinoidArchiveService();
-  const link = new InMemoryLinkService(hammerfestArchive, twinoidArchive, user);
+  const link = new InMemoryLinkService(hammerfestArchive, twinoidArchive, simpleUser);
   const hammerfestClient = new InMemoryHammerfestClientService();
   const twinoidClient = new HttpTwinoidClientService();
   const oauthProvider = new InMemoryOauthProviderService(UUID4_GENERATOR, password, secretKeyBytes);
-  const auth = new InMemoryAuthService(email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, secretKeyBytes, twinoidArchive, twinoidClient, user, UUID4_GENERATOR);
-  return fn({auth, user});
+  const auth = new InMemoryAuthService(email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, secretKeyBytes, twinoidArchive, twinoidClient, UUID4_GENERATOR);
+  return fn({auth, simpleUser});
 }
 
 describe("InMemorySimpleUserService", function () {

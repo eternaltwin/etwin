@@ -15,7 +15,7 @@ import chai from "chai";
 export interface Api {
   auth: AuthService;
   link: LinkService;
-  user: SimpleUserService;
+  simpleUser: SimpleUserService;
 }
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};

@@ -1,5 +1,6 @@
 import { HammerfestCredentials } from "../hammerfest/hammerfest-credentials.js";
 import { OauthAccessTokenKey } from "../oauth/oauth-access-token-key.js";
+import { UserId } from "../user/user-id.js";
 import { AuthContext } from "./auth-context.js";
 import { Credentials } from "./credentials.js";
 import { RegisterOrLoginWithEmailOptions } from "./register-or-login-with-email-options.js";
@@ -87,4 +88,6 @@ export interface AuthService {
   ): Promise<AuthContext>;
 
   authenticateSession(acx: AuthContext, sessionId: SessionId): Promise<UserAndSession | null>;
+
+  hasPassword(userId: UserId): Promise<boolean>;
 }

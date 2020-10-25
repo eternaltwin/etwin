@@ -9,6 +9,7 @@ import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/re
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
 import { Session } from "@eternal-twin/core/lib/auth/session.js";
+import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
@@ -27,7 +28,9 @@ import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-t
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
+import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
+import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
@@ -36,7 +39,6 @@ import {
   InMemoryOauthClient,
   InMemoryOauthProviderService,
 } from "@eternal-twin/oauth-provider-in-memory";
-import { InMemorySimpleUserService,InMemoryUser } from "@eternal-twin/simple-user-in-memory";
 import { TwinoidClientService } from "@eternal-twin/twinoid-core/src/lib/client.js";
 import { User as TidUser } from "@eternal-twin/twinoid-core/src/lib/user.js";
 import jsonWebToken from "jsonwebtoken";
@@ -52,6 +54,11 @@ interface EmailVerification {
   validationTime: Date;
 }
 
+const SYSTEM_AUTH: SystemAuthContext = {
+  type: AuthType.System,
+  scope: AuthScope.Default,
+};
+
 export class InMemoryAuthService implements AuthService {
   private readonly email: EmailService;
   private readonly emailTemplate: EmailTemplateService;
@@ -60,15 +67,16 @@ export class InMemoryAuthService implements AuthService {
   private readonly link: LinkService;
   private readonly oauthProvider: InMemoryOauthProviderService;
   private readonly password: PasswordService;
+  private readonly simpleUser: SimpleUserService;
   private readonly tokenSecret: Buffer;
   private readonly twinoidArchive: TwinoidArchiveService;
   private readonly twinoidClient: TwinoidClientService;
-  private readonly user: InMemorySimpleUserService;
   private readonly uuidGen: UuidGenerator;
 
   private readonly defaultLocale: LocaleId;
 
   private readonly sessions: Map<SessionId, Session>;
+  private readonly passwordHashes: Map<UserId, PasswordHash>;
   private readonly emailVerifications: Set<EmailVerification>;
 
   /**
@@ -81,10 +89,10 @@ export class InMemoryAuthService implements AuthService {
    * @param link Link service to use.
    * @param oauthProvider Oauth provider service to use.
    * @param password Password service to use.
+   * @param simpleUser User service to use.
    * @param tokenSecret Secret key used to generated and verify tokens.
    * @param twinoidArchive Twinoid archive service to use.
    * @param twinoidClient Twinoid client service to use.
-   * @param user User service to use.
    * @param uuidGen UUID generator to use.
    */
   constructor(
@@ -95,10 +103,10 @@ export class InMemoryAuthService implements AuthService {
     link: LinkService,
     oauthProvider: InMemoryOauthProviderService,
     password: PasswordService,
+    simpleUser: SimpleUserService,
     tokenSecret: Uint8Array,
     twinoidArchive: TwinoidArchiveService,
     twinoidClient: TwinoidClientService,
-    user: InMemorySimpleUserService,
     uuidGen: UuidGenerator,
   ) {
     this.email = email;
@@ -108,14 +116,16 @@ export class InMemoryAuthService implements AuthService {
     this.link = link;
     this.oauthProvider = oauthProvider;
     this.password = password;
+    this.simpleUser = simpleUser;
     this.tokenSecret = Buffer.from(tokenSecret);
     this.twinoidArchive = twinoidArchive;
     this.twinoidClient = twinoidClient;
-    this.user = user;
     this.uuidGen = uuidGen;
     this.defaultLocale = "en-US";
-    this.sessions = new Map();
+
     this.emailVerifications = new Set();
+    this.passwordHashes = new Map();
+    this.sessions = new Map();
   }
 
   /**
@@ -143,24 +153,17 @@ export class InMemoryAuthService implements AuthService {
     }
 
     const emailJwt: EmailRegistrationJwt = await this.readEmailVerificationToken(options.emailToken);
-
     const email: EmailAddress = emailJwt.email;
 
-    const oldUser: InMemoryUser | null = await this.user._getInMemoryUserByEmail(email);
+    const oldUser: ShortUser | null = await this.simpleUser.getShortUserByEmail(SYSTEM_AUTH, {email});
     if (oldUser !== null) {
       throw new Error(`Conflict: EmailAddressAlreadyInUse: ${JSON.stringify(oldUser.id)}`);
     }
 
-
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const imUser: InMemoryUser = await this.user._createUser(displayName, email, null, passwordHash);
-    const user: SimpleUser = {
-      type: ObjectType.User,
-      id: imUser.id,
-      displayName: {current: {value: imUser.displayName}},
-      isAdministrator: imUser.isAdministrator,
-    };
+    const user: SimpleUser = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email, username: null});
+    this.setPasswordHash(user.id, passwordHash);
 
     try {
       await this.createValidatedEmailVerification(user.id, email, new Date(emailJwt.issuedAt * 1000));
@@ -179,20 +182,15 @@ export class InMemoryAuthService implements AuthService {
     }
 
     const username: Username = options.username;
-    const oldUser: InMemoryUser | null = await this.user._getInMemoryUserByUsername(username);
+    const oldUser: ShortUser | null = await this.simpleUser.getShortUserByUsername(SYSTEM_AUTH, {username});
     if (oldUser !== null) {
       throw new Error(`Conflict: UsernameAlreadyInUse: ${JSON.stringify(oldUser.id)}`);
     }
 
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const imUser: InMemoryUser = await this.user._createUser(displayName, null, username, passwordHash);
-    const user: SimpleUser = {
-      type: ObjectType.User,
-      id: imUser.id,
-      displayName: {current: {value: imUser.displayName}},
-      isAdministrator: imUser.isAdministrator,
-    };
+    const user: SimpleUser = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username});
+    this.setPasswordHash(user.id, passwordHash);
 
     const session: Session = await this.createSession(user.id);
 
@@ -204,10 +202,10 @@ export class InMemoryAuthService implements AuthService {
       throw Error("Forbidden: Only guests can authenticate");
     }
     const login: Login = credentials.login;
-    let imUser: InMemoryUser;
+    let imUser: ShortUser;
     switch ($Login.match(credentials.login)) {
       case $EmailAddress: {
-        const maybeImUser: InMemoryUser | null = await this.user._getInMemoryUserByEmail(login);
+        const maybeImUser: ShortUser | null = await this.simpleUser.getShortUserByEmail(SYSTEM_AUTH, {email: login});
         if (maybeImUser === null) {
           throw new Error(`UserNotFound: User not found for the email: ${login}`);
         }
@@ -215,7 +213,7 @@ export class InMemoryAuthService implements AuthService {
         break;
       }
       case $Username: {
-        const maybeImUser: InMemoryUser | null = await this.user._getInMemoryUserByUsername(login);
+        const maybeImUser: ShortUser | null = await this.simpleUser.getShortUserByUsername(SYSTEM_AUTH, {username: login});
         if (maybeImUser === null) {
           throw new Error(`UserNotFound: User not found for the username: ${login}`);
         }
@@ -225,23 +223,19 @@ export class InMemoryAuthService implements AuthService {
       default:
         throw new Error("AssertionError: Invalid `credentials.login` type");
     }
-    if (imUser.passwordHash === null) {
+    const passwordHash: PasswordHash | null = this.getPasswordHash(imUser.id);
+    if (passwordHash === null) {
       throw new Error("NoPassword: Password authentication is not available for this user");
     }
 
-    const isMatch: boolean = await this.password.verify(imUser.passwordHash, credentials.password);
+    const isMatch: boolean = await this.password.verify(passwordHash, credentials.password);
 
     if (!isMatch) {
       throw new Error("InvalidPassword");
     }
 
     const session: Session = await this.createSession(imUser.id);
-    const user: SimpleUser = {
-      type: ObjectType.User,
-      id: imUser.id,
-      displayName: {current: {value: imUser.displayName}},
-      isAdministrator: imUser.isAdministrator,
-    };
+    const user: SimpleUser = await this.getExistingUserById(imUser.id);
 
     return {user, session};
   }
@@ -270,7 +264,7 @@ export class InMemoryAuthService implements AuthService {
           displayName = "hammerfestPlayer";
         }
       }
-      const user = await this.user._createUser(displayName, null, null, null);
+      const user = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
       await this.link.linkToHammerfest(user.id, hfUser.server, hfUser.id);
       userId = user.id;
     }
@@ -304,7 +298,7 @@ export class InMemoryAuthService implements AuthService {
           }
         }
       }
-      const user = await this.user._createUser(displayName, null, null, null);
+      const user = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
       await this.link.linkToTwinoid(user.id, tidUser.id!.toString(10));
       userId = user.id;
     }
@@ -412,10 +406,7 @@ export class InMemoryAuthService implements AuthService {
   }
 
   private async createSession(userId: UserId): Promise<Session> {
-    const user: SimpleUser | null = await this.user.getUserById(
-      {type: AuthType.System, scope: AuthScope.Default},
-      {id: userId},
-    );
+    const user: SimpleUser | null = await this.simpleUser.getUserById(SYSTEM_AUTH, {id: userId});
     if (user === null) {
       throw new Error("UserNotFound");
     }
@@ -434,7 +425,7 @@ export class InMemoryAuthService implements AuthService {
   }
 
   private async getExistingUserById(userId: UserId): Promise<SimpleUser> {
-    const user: SimpleUser | null = await this.user.getUserById({type: AuthType.System, scope: AuthScope.Default}, {id: userId});
+    const user: SimpleUser | null = await this.simpleUser.getUserById(SYSTEM_AUTH, {id: userId});
 
     if (user === null) {
       throw new Error(`AssertionError: Expected user to exist for id ${userId}`);
@@ -472,5 +463,17 @@ export class InMemoryAuthService implements AuthService {
       throw new Error("AssertionError: Expected JWT verification result to be an object");
     }
     return $EmailRegistrationJwt.read(JSON_VALUE_READER, tokenObj);
+  }
+
+  private setPasswordHash(userId: UserId, passwordHash: PasswordHash): void {
+    this.passwordHashes.set(userId, passwordHash);
+  }
+
+  private getPasswordHash(userId: UserId): PasswordHash | null {
+    return this.passwordHashes.get(userId) ?? null;
+  }
+
+  public async hasPassword(userId: UserId): Promise<boolean> {
+    return this.passwordHashes.has(userId);
   }
 }

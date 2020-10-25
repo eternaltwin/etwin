@@ -27,6 +27,7 @@ async function withPgAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   };
 
   return withPgPool(dbConfig, async (pool) => {
+    const uuidGenerator = UUID4_GENERATOR;
     const db = new Database(pool);
     const secretKeyStr: string = config.etwin.secret;
     const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
@@ -36,11 +37,11 @@ async function withPgAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const password = new ScryptPasswordService();
     const hammerfestArchive = new PgHammerfestArchiveService(db);
     const twinoidArchive = new PgTwinoidArchiveService(db);
-    const user = new PgSimpleUserService({database: db, databaseSecret: secretKeyStr});
-    const link = new PgLinkService(db, hammerfestArchive, twinoidArchive, user);
+    const simpleUser = new PgSimpleUserService({database: db, databaseSecret: secretKeyStr, uuidGenerator});
+    const link = new PgLinkService(db, hammerfestArchive, twinoidArchive, simpleUser);
     const hammerfestClient = new InMemoryHammerfestClientService();
     const twinoidClient = new HttpTwinoidClientService();
-    const auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, secretKeyBytes, twinoidArchive, twinoidClient, UUID4_GENERATOR);
+    const auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, simpleUser, secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator);
     return fn({auth, email, hammerfestClient, link});
   });
 }
