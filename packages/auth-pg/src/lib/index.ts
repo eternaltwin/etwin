@@ -564,7 +564,7 @@ export class PgAuthService implements AuthService {
         user_id, email_address, ctime, validation_time
       )
       VALUES (
-        $2::UUID, pgp_sym_encrypt($3::TEXT, $1::TEXT), $4::TIMESTAMP, NOW()
+        $2::UUID, pgp_sym_encrypt($3::TEXT, $1::TEXT), $4::INSTANT, NOW()
       );`,
       [this.dbSecret, userId, email, ctime],
     );

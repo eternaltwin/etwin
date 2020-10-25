@@ -198,7 +198,7 @@ export function testTokenService(withApi: (fn: (api: Api) => Promise<void>) => P
         };
         chai.assert.deepEqual(secondSession, expected);
         const elapsed: number = secondSession.ctime.getTime() - firstSession.ctime.getTime();
-        chai.assert.isTrue(elapsed >= 1000);
+        chai.assert.isTrue(elapsed >= 1000, "at least 1000ms elapsed");
       }
       {
         const actual: HammerfestSession | null = await api.token.getHammerfest("hammerfest.fr", "1");

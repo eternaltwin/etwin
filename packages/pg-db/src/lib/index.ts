@@ -180,6 +180,7 @@ export class Database implements Queryable {
       password: options.password,
       max: 10,
       idleTimeoutMillis: 1000,
+      parseInputDatesAsUTC: true,
     };
 
     return new Database(new pg.Pool(dbConfig));

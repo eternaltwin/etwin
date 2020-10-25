@@ -1159,7 +1159,7 @@ export class PgForumService implements ForumService {
           forum_section_id, user_id, start_time, end_time, granted_by, revoked_by
         )
           (
-            SELECT forum_section_id, $3::UUID AS user_id, $4::TIMESTAMP AS start_time, NOW() AS end_time,
+            SELECT forum_section_id, $3::UUID AS user_id, $4::INSTANT AS start_time, NOW() AS end_time,
               $5::UUID AS granted_by, $6::UUID AS revoked_by
             FROM section
           )

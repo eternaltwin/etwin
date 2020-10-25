@@ -45,10 +45,10 @@ async function runCreate(version: DbVersion) {
           is_administrator
         )
         VALUES (
-          $1::UUID, $2::TIMESTAMP, $3::VARCHAR, $4::TIMESTAMP,
-          NULL, $2::TIMESTAMP,
-          NULL, $2::TIMESTAMP,
-          NULL, $2::TIMESTAMP,
+          $1::UUID, $2::INSTANT, $3::VARCHAR, $4::INSTANT,
+          NULL, $2::INSTANT,
+          NULL, $2::INSTANT,
+          NULL, $2::INSTANT,
           $5::BOOL
         )
       `,
@@ -88,7 +88,7 @@ async function runCreate(version: DbVersion) {
           user_id, hammerfest_server, hammerfest_user_id, ctime
         )
         VALUES (
-          $1::UUID, $2::VARCHAR, $3::INT, $4::TIMESTAMP
+          $1::UUID, $2::VARCHAR, $3::INT, $4::INSTANT
         )
       `,
       [

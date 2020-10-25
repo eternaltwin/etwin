@@ -28,6 +28,6 @@ async function withPgOauthProviderService<R>(fn: (api: Api) => Promise<R>): Prom
   });
 }
 
-describe("PgAuthService", function () {
+describe("PgOauthProviderService", function () {
   testOauthProviderService(withPgOauthProviderService);
 });

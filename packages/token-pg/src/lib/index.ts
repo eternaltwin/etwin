@@ -51,7 +51,7 @@ export class PgTokenService implements TokenService {
         )
         INSERT
         INTO twinoid_access_tokens(twinoid_access_token, _twinoid_access_token_hash, twinoid_user_id, ctime, atime, expiration_time)
-        VALUES (pgp_sym_encrypt($2::TEXT, $1::TEXT), digest($2::TEXT, 'sha256'), $3::TWINOID_USER_ID, NOW(), NOW(), $4::TIMESTAMP)
+        VALUES (pgp_sym_encrypt($2::TEXT, $1::TEXT), digest($2::TEXT, 'sha256'), $3::TWINOID_USER_ID, NOW(), NOW(), $4::INSTANT)
         ON CONFLICT (_twinoid_access_token_hash)
           DO UPDATE SET (ctime, atime, twinoid_user_id) = (
           SELECT COALESCE(revoked.dtime, tat.ctime), NOW(), EXCLUDED.twinoid_user_id
@@ -260,7 +260,7 @@ export class PgTokenService implements TokenService {
             RETURNING hammerfest_server, hammerfest_session_key,_hammerfest_session_key_hash, hammerfest_user_id, ctime, atime
         )
         INSERT INTO old_hammerfest_sessions(hammerfest_server, hammerfest_session_key, _hammerfest_session_key_hash, hammerfest_user_id, ctime, atime, dtime)
-        SELECT revoked.*, NOW() AT TIME ZONE 'utc' AS dtime
+        SELECT revoked.*, NOW() AS dtime
         FROM revoked;`,
       [
         hfServer,
@@ -275,9 +275,9 @@ export class PgTokenService implements TokenService {
     const row: Row = await queryable.one(
       `
         INSERT INTO hammerfest_sessions(hammerfest_server, hammerfest_session_key, _hammerfest_session_key_hash, hammerfest_user_id, ctime, atime)
-        VALUES ($2::HAMMERFEST_SERVER, pgp_sym_encrypt($3::HAMMERFEST_SESSION_KEY, $1::TEXT), digest($3::HAMMERFEST_SESSION_KEY, 'sha256'), $4::HAMMERFEST_USER_ID, NOW() AT TIME ZONE 'utc', NOW() AT TIME ZONE 'utc')
+        VALUES ($2::HAMMERFEST_SERVER, pgp_sym_encrypt($3::HAMMERFEST_SESSION_KEY, $1::TEXT), digest($3::HAMMERFEST_SESSION_KEY, 'sha256'), $4::HAMMERFEST_USER_ID, NOW(), NOW())
         ON CONFLICT (hammerfest_server, _hammerfest_session_key_hash)
-          DO UPDATE SET atime = NOW() AT TIME ZONE 'utc'
+          DO UPDATE SET atime = NOW()
         RETURNING hammerfest_user_id, ctime, atime;`,
       [
         this.dbSecret,
@@ -311,7 +311,7 @@ export class PgTokenService implements TokenService {
             RETURNING hammerfest_server, hammerfest_session_key,_hammerfest_session_key_hash, hammerfest_user_id, ctime, atime
         )
         INSERT INTO old_hammerfest_sessions(hammerfest_server, hammerfest_session_key, _hammerfest_session_key_hash, hammerfest_user_id, ctime, atime, dtime)
-        SELECT revoked.*, NOW() AT TIME ZONE 'utc' AS dtime
+        SELECT revoked.*, NOW() AS dtime
         FROM revoked;`,
       [
         hfServer,
