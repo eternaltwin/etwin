@@ -1309,6 +1309,38 @@
           <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="settings.link.hammerfest.username" datatype="html">
+        <source>Hammerfest username</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/settings/linked-hammerfest-settings.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <note priority="1" from="description">Hammerfest username (link Hammerfest)</note>
+      </trans-unit>
+      <trans-unit id="settings.link.hammerfest.password" datatype="html">
+        <source>Hammerfest password</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/settings/linked-hammerfest-settings.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <note priority="1" from="description">Hammerfest password (link Hammerfest)</note>
+      </trans-unit>
+      <trans-unit id="settings.link.hammerfest.submit" datatype="html">
+        <source>Link with <x id="INTERPOLATION" equiv-text="{{server}}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/settings/linked-hammerfest-settings.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <note priority="1" from="description">Submit the form to link a Hammerfest user</note>
+      </trans-unit>
+      <trans-unit id="settings.link.twinoid.submit" datatype="html">
+        <source>Link with Twinoid</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/settings/linked-twinoid-settings.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <note priority="1" from="description">Submit the form to link a Twinoid user</note>
+      </trans-unit>
     </body>
   </file>
 </xliff>

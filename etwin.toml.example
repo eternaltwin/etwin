@@ -42,7 +42,7 @@ app_uri = "http://localhost:50313"
 # OAuth callback URI. This the URI where Eternal-Twin will redirect users after authentication.
 callback_uri = "http://localhost:50313/oauth/callback"
 # Secret key for this client.
-secret = "eternalfest_secret"
+secret = "dev_secret"
 
 # Twinoid authentication configuration
 [auth.twinoid]

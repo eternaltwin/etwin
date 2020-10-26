@@ -711,7 +711,7 @@
       </trans-unit>
       <trans-unit id="login.twinoid.submit" datatype="html">
         <source>Sign in</source>
-        <target state="translated">Iniciar sesión (pronto)</target>
+        <target state="translated">Iniciar sesión</target>
         <note priority="1" from="description">Submit the Twinoid login form label</note>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/auth/login/login-twinoid.component.html</context>
@@ -747,7 +747,7 @@
       </trans-unit>
       <trans-unit id="login.method.twinoid" datatype="html">
         <source>Sign in with Twinoid</source>
-        <target state="translated">Iniciar sesión con Twinoid (pronto)</target>
+        <target state="translated">Iniciar sesión con Twinoid</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/auth/login/login.component.html</context>
           <context context-type="linenumber">25</context>
@@ -915,7 +915,7 @@
       </trans-unit>
       <trans-unit id="games.eternalfestButton" datatype="html">
         <source>Play now !</source>
-        <target  state="translated">¡Juega ahora!</target>
+        <target state="translated">¡Juega ahora!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">23</context>
@@ -987,7 +987,7 @@
       </trans-unit>
       <trans-unit id="games.directquizButton" datatype="html">
         <source>Play now !</source>
-        <target  state="translated">¡Juega ahora!</target>
+        <target state="translated">¡Juega ahora!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">77</context>
@@ -1023,7 +1023,7 @@
       </trans-unit>
       <trans-unit id="games.mjrtButton" datatype="html">
         <source>Play now !</source>
-        <target  state="translated">¡Juega ahora!</target>
+        <target state="translated">¡Juega ahora!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">104</context>
@@ -1050,7 +1050,7 @@
       </trans-unit>
       <trans-unit id="games.dinoparcButton" datatype="html">
         <source>Coming soon...</source>
-        <target  state="translated">Próximamente...</target>
+        <target state="translated">Próximamente...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">130</context>
@@ -1086,7 +1086,7 @@
       </trans-unit>
       <trans-unit id="games.dinorpgButton" datatype="html">
         <source>Coming soon...</source>
-        <target  state="translated">Próximamente...</target>
+        <target state="translated">Próximamente...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">157</context>
@@ -1122,7 +1122,7 @@
       </trans-unit>
       <trans-unit id="games.cafejeuxButton" datatype="html">
         <source>Coming soon...</source>
-        <target  state="translated">Próximamente...</target>
+        <target state="translated">Próximamente...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">184</context>
@@ -1158,7 +1158,7 @@
       </trans-unit>
       <trans-unit id="games.emushButton" datatype="html">
         <source>Coming soon...</source>
-        <target  state="translated">Próximamente...</target>
+        <target state="translated">Próximamente...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">211</context>
@@ -1194,7 +1194,7 @@
       </trans-unit>
       <trans-unit id="games.labruteButton" datatype="html">
         <source>Coming soon...</source>
-        <target  state="translated">Próximamente...</target>
+        <target state="translated">Próximamente...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/games/games.component.html</context>
           <context context-type="linenumber">238</context>
@@ -1553,6 +1553,42 @@
           <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">30</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="settings.link.hammerfest.username" datatype="html">
+        <source>Hammerfest username</source>
+        <target state="new">Hammerfest username</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/settings/linked-hammerfest-settings.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <note priority="1" from="description">Hammerfest username (link Hammerfest)</note>
+      </trans-unit>
+      <trans-unit id="settings.link.hammerfest.password" datatype="html">
+        <source>Hammerfest password</source>
+        <target state="new">Hammerfest password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/settings/linked-hammerfest-settings.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <note priority="1" from="description">Hammerfest password (link Hammerfest)</note>
+      </trans-unit>
+      <trans-unit id="settings.link.hammerfest.submit" datatype="html">
+        <source>Link with <x id="INTERPOLATION" equiv-text="{{server}}"/></source>
+        <target state="new">Link with <x id="INTERPOLATION" equiv-text="{{server}}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/settings/linked-hammerfest-settings.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <note priority="1" from="description">Submit the form to link a Hammerfest user</note>
+      </trans-unit>
+      <trans-unit id="settings.link.twinoid.submit" datatype="html">
+        <source>Link with Twinoid</source>
+        <target state="new">Link with Twinoid</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/settings/linked-twinoid-settings.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <note priority="1" from="description">Submit the form to link a Twinoid user</note>
       </trans-unit>
     </body>
   </file>

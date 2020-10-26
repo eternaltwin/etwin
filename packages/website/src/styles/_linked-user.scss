@@ -1,13 +1,17 @@
 etwin-linked-user {
   a {
     display: grid;
-    max-width: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    margin: 1em 0;
+    padding: 1em;
     grid-template-areas:
       "icon user"
       "icon website"
     ;
     background: rgba(0, 0, 0, 0.2);
     box-shadow: 0 0 18px 3px rgba(162, 158, 184, 0.1);
+    grid-template-columns: auto 1fr;
+    column-gap: 1em;
   }
   span { grid-area: icon; }
   strong { grid-area: user; }
