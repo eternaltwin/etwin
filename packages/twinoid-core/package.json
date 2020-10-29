@@ -32,8 +32,10 @@
     "kryo": "^0.11.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.14",
     "@types/mocha": "^8.0.3",
     "@types/node": "^14.11.2",
+    "chai": "^4.2.0",
     "eslint": "^7.10.0",
     "kryo-json": "^0.11.0",
     "kryo-testing": "^0.11.0",

@@ -38,6 +38,9 @@
       "path": "../../../password-scrypt/src/lib"
     },
     {
+      "path": "../../../simple-user-in-memory/src/lib"
+    },
+    {
       "path": "../../../twinoid-archive-in-memory/src/lib"
     },
     {

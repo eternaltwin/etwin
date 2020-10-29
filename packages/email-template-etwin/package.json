@@ -29,7 +29,7 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@eternal-twin/core": "^0.1.0",
+    "@eternal-twin/core": "workspace:*",
     "@types/url-join": "^4.0.0",
     "url-join": "^4.0.1"
   },

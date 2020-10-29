@@ -31,7 +31,7 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@eternal-twin/core": "^0.1.0",
+    "@eternal-twin/core": "workspace:*",
     "@types/cookiejar": "^2.1.1",
     "@types/superagent": "^4.1.10",
     "cookiejar": "^2.1.2",

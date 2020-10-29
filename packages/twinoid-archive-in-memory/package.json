@@ -29,10 +29,10 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@eternal-twin/core": "^0.1.0"
+    "@eternal-twin/core": "workspace:*"
   },
   "devDependencies": {
-    "@eternal-twin/twinoid-archive-test": "^0.1.0",
+    "@eternal-twin/twinoid-archive-test": "workspace:*",
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",
     "@types/node": "^14.11.2",

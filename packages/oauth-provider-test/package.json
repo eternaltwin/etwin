@@ -27,14 +27,14 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@eternal-twin/core": "^0.1.0",
+    "@eternal-twin/core": "workspace:*",
     "jsonwebtoken": "^8.5.1",
     "kryo": "^0.11.1",
     "kryo-json": "^0.11.0"
   },
   "devDependencies": {
-    "@eternal-twin/auth-pg": "^0.1.0",
-    "@eternal-twin/local-config": "^0.1.0",
+    "@eternal-twin/auth-pg": "workspace:*",
+    "@eternal-twin/local-config": "workspace:*",
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",
     "@types/node": "^14.11.2",

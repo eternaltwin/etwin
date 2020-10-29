@@ -29,7 +29,7 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@eternal-twin/twinoid-core": "^0.1.0",
+    "@eternal-twin/twinoid-core": "workspace:*",
     "kryo": "^0.11.1"
   },
   "devDependencies": {

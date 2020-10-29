@@ -31,12 +31,13 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@eternal-twin/pg-db": "^0.1.0",
+    "@eternal-twin/pg-db": "workspace:*",
     "@types/pg": "^7.14.5",
     "furi": "^2.0.0",
     "pg": "^8.3.3"
   },
   "devDependencies": {
+    "@eternal-twin/local-config": "workspace:*",
     "@types/mocha": "^8.0.3",
     "@types/node": "^14.11.2",
     "dotenv": "^8.2.0",

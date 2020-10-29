@@ -29,9 +29,13 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@eternal-twin/core": "^0.1.0",
+    "@eternal-twin/core": "workspace:*",
+    "@types/auth-header": "^1.0.1",
+    "@types/jsonwebtoken": "^8.5.0",
     "@types/jws": "^3.2.2",
     "@types/superagent": "^4.1.10",
+    "auth-header": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
     "jws": "^4.0.0",
     "kryo-json": "^0.11.0",
     "superagent": "^6.1.0"

@@ -9,7 +9,8 @@
     "build:production": "cd packages/website && yarn run build",
     "db:create": "cd packages/etwin-pg && yarn run start create",
     "test:build": "tsc --build ./tsconfig.test.json",
-    "test": "yarn run test:build && mocha --experimental-wasm-modules \"packages/*/test/**/*.spec.js\""
+    "test": "yarn run test:build && mocha --experimental-wasm-modules \"packages/*/test/**/*.spec.js\"",
+    "doctor": "yarn dlx @yarnpkg/doctor@2.1.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.3.0",

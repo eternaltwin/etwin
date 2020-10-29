@@ -32,6 +32,9 @@
       "path": "../../../hammerfest-client-in-memory/src/lib"
     },
     {
+      "path": "../../../link-pg/src/lib"
+    },
+    {
       "path": "../../../local-config/src/lib"
     },
     {
