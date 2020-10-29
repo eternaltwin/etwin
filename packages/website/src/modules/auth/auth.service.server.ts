@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@angular/core";
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
-import { Credentials } from "@eternal-twin/core/lib/auth/credentials";
 import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
+import { UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
 import { User } from "@eternal-twin/core/lib/user/user";
 import { Observable, of as rxOf } from "rxjs";
@@ -32,7 +32,7 @@ export class ServerAuthService extends AuthService {
     throw new Error("NotImplemented");
   }
 
-  loginWithCredentials(options: Readonly<Credentials>): Observable<User> {
+  loginWithCredentials(options: Readonly<UserCredentials>): Observable<User> {
     throw new Error("NotImplemented");
   }
 

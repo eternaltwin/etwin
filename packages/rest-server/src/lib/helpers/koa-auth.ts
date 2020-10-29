@@ -1,11 +1,11 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { Credentials } from "@eternal-twin/core/lib/auth/credentials";
 import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { $SessionId, SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
+import { UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import authHeader from "auth-header";
 import Koa from "koa";
@@ -74,7 +74,7 @@ export class KoaAuth {
       return null;
     }
     if (header.scheme === "Basic") {
-      const credentials: Credentials = {login: header.login, password: header.password};
+      const credentials: UserCredentials = {login: header.login, password: header.password};
       return await this.#auth.authenticateCredentials(credentials);
     } else {
       return await this.#auth.authenticateAccessToken(header.token);

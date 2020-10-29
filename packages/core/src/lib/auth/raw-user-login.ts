@@ -5,6 +5,6 @@ import { Ucs2StringType } from "kryo/lib/ucs2-string";
  *
  * See `Login` for the resolved variant.
  */
-export type RawLogin = string;
+export type RawUserLogin = string;
 
-export const $RawLogin: Ucs2StringType = new Ucs2StringType({maxLength: 100});
+export const $RawUserLogin: Ucs2StringType = new Ucs2StringType({maxLength: 100});

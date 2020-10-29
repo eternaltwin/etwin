@@ -2,12 +2,12 @@ import { HammerfestCredentials } from "../hammerfest/hammerfest-credentials.js";
 import { OauthAccessTokenKey } from "../oauth/oauth-access-token-key.js";
 import { UserId } from "../user/user-id.js";
 import { AuthContext } from "./auth-context.js";
-import { Credentials } from "./credentials.js";
 import { RegisterOrLoginWithEmailOptions } from "./register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "./register-with-username-options.js";
 import { RegisterWithVerifiedEmailOptions } from "./register-with-verified-email-options.js";
 import { SessionId } from "./session-id.js";
 import { UserAndSession } from "./user-and-session.js";
+import { UserCredentials } from "./user-credentials.js";
 
 export interface AuthService {
   /**
@@ -54,7 +54,7 @@ export interface AuthService {
    */
   loginWithCredentials(
     acx: AuthContext,
-    credentials: Credentials,
+    credentials: UserCredentials,
   ): Promise<UserAndSession>;
 
   /**
@@ -72,12 +72,10 @@ export interface AuthService {
   registerOrLoginWithTwinoidOauth(acx: AuthContext, accessToken: OauthAccessTokenKey): Promise<UserAndSession>;
 
   /**
-   * Authenticate an Oauth client using its credentials
-   *
-   * TODO: Merge `loginWithCredentials` into this function.
+   * Authenticate a user or Oauth client using its credentials (basic oauth scheme)
    */
   authenticateCredentials(
-    credentials: Credentials,
+    credentials: UserCredentials,
   ): Promise<AuthContext>;
 
   /**

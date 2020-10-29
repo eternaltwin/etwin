@@ -1,8 +1,6 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
-import { $Login, Login } from "@eternal-twin/core/lib/auth/login.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/core/lib/auth/register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
 import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/register-with-verified-email-options.js";
@@ -11,6 +9,8 @@ import { SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
 import { Session } from "@eternal-twin/core/lib/auth/session.js";
 import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
+import { UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
+import { $UserLogin, UserLogin } from "@eternal-twin/core/lib/auth/user-login.js";
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
@@ -179,7 +179,7 @@ export class PgAuthService implements AuthService {
     });
   }
 
-  async loginWithCredentials(acx: AuthContext, credentials: Credentials): Promise<UserAndSession> {
+  async loginWithCredentials(acx: AuthContext, credentials: UserCredentials): Promise<UserAndSession> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can log in");
     }
@@ -345,14 +345,14 @@ export class PgAuthService implements AuthService {
     };
   }
 
-  public async authenticateCredentials(credentials: Credentials): Promise<AuthContext> {
+  public async authenticateCredentials(credentials: UserCredentials): Promise<AuthContext> {
     return await this.database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
       return this.authenticateCredentialsTx(q, credentials);
     });
   }
 
-  public async authenticateCredentialsTx(queryable: Queryable, credentials: Credentials): Promise<AuthContext> {
-    const login: Login = credentials.login;
+  public async authenticateCredentialsTx(queryable: Queryable, credentials: UserCredentials): Promise<AuthContext> {
+    const login: UserLogin = credentials.login;
     type Row = Pick<OauthClientRow, "oauth_client_id" | "key" | "display_name" | "secret">;
     let row: Row;
     if ($UuidHex.test(login)) {
@@ -402,15 +402,15 @@ export class PgAuthService implements AuthService {
   private async loginWithCredentialsTx(
     queryable: Queryable,
     acx: AuthContext,
-    credentials: Credentials,
+    credentials: UserCredentials,
   ): Promise<UserAndSession> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    const login: Login = credentials.login;
+    const login: UserLogin = credentials.login;
     type Row = Pick<UserRow, "user_id" | "display_name">;
     let row: Row;
-    switch ($Login.match(credentials.login)) {
+    switch ($UserLogin.match(credentials.login)) {
       case $EmailAddress: {
         // TODO: Compute email hash
         throw new Error("NotImplemented");

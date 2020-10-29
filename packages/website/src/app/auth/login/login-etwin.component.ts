@@ -2,7 +2,7 @@ import { DOCUMENT } from "@angular/common";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { RawLogin } from "@eternal-twin/core/lib/auth/raw-login";
+import { RawUserLogin } from "@eternal-twin/core/lib/auth/raw-user-login";
 import { Subscription } from "rxjs";
 import { first as rxFirst } from "rxjs/operators";
 
@@ -60,7 +60,7 @@ export class LoginEtwinComponent implements OnDestroy, OnInit {
       return;
     }
     const model: any = this.loginForm.getRawValue();
-    let login: RawLogin = model.login;
+    let login: RawUserLogin = model.login;
     if (login.indexOf("@") < 0) {
       login = login.toLowerCase();
     }

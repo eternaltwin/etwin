@@ -1,8 +1,6 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
-import { $Login, Login } from "@eternal-twin/core/lib/auth/login.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/core/lib/auth/register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
 import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/register-with-verified-email-options.js";
@@ -11,6 +9,8 @@ import { SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
 import { Session } from "@eternal-twin/core/lib/auth/session.js";
 import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
+import { UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
+import { $UserLogin, UserLogin } from "@eternal-twin/core/lib/auth/user-login.js";
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator";
@@ -186,13 +186,13 @@ export class InMemoryAuthService implements AuthService {
     return {user, session};
   }
 
-  async loginWithCredentials(acx: AuthContext, credentials: Credentials): Promise<UserAndSession> {
+  async loginWithCredentials(acx: AuthContext, credentials: UserCredentials): Promise<UserAndSession> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    const login: Login = credentials.login;
+    const login: UserLogin = credentials.login;
     let imUser: ShortUser;
-    switch ($Login.match(credentials.login)) {
+    switch ($UserLogin.match(credentials.login)) {
       case $EmailAddress: {
         const maybeImUser: ShortUser | null = await this.simpleUser.getShortUserByEmail(SYSTEM_AUTH, {email: login});
         if (maybeImUser === null) {
@@ -342,7 +342,7 @@ export class InMemoryAuthService implements AuthService {
     };
   }
 
-  public async authenticateCredentials(credentials: Credentials): Promise<AuthContext> {
+  public async authenticateCredentials(credentials: UserCredentials): Promise<AuthContext> {
     const imClient: InMemoryOauthClient | null = this.oauthProvider._getInMemoryClientByIdOrKey(credentials.login);
     if (imClient === null) {
       throw new Error(`OauthClientNotFound: Client not found for the id or key: ${credentials.login}`);

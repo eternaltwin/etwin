@@ -1,8 +1,8 @@
 import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { $Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
 import { $RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
+import { $UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { $SimpleUser, SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
@@ -99,7 +99,7 @@ describe("/auth", () => {
       {
         const actual: SimpleUser = await agent.put(
           "/auth/self?method=Etwin",
-          $Credentials,
+          $UserCredentials,
           {
             login: "alice",
             password: Buffer.from("aaaaa"),

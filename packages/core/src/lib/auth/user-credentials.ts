@@ -2,13 +2,13 @@ import { CaseStyle } from "kryo";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $Password, Password } from "../password/password.js";
-import { $Login, Login } from "./login.js";
+import { $UserLogin, UserLogin } from "./user-login.js";
 
-export interface Credentials {
+export interface UserCredentials {
   /**
    * Email address or username.
    */
-  login: Login;
+  login: UserLogin;
 
   /**
    * Password for the Eternal-Twin user.
@@ -16,9 +16,9 @@ export interface Credentials {
   password: Password;
 }
 
-export const $Credentials: RecordIoType<Credentials> = new RecordType<Credentials>({
+export const $UserCredentials: RecordIoType<UserCredentials> = new RecordType<UserCredentials>({
   properties: {
-    login: {type: $Login},
+    login: {type: $UserLogin},
     password: {type: $Password},
   },
   changeCase: CaseStyle.SnakeCase,

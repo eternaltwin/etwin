@@ -3,10 +3,10 @@ import { AuthMethod } from "@eternal-twin/core/lib/auth/auth-method.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { $CreateSessionQuery, CreateSessionQuery } from "@eternal-twin/core/lib/auth/create-session-query.js";
-import { $Credentials, Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
 import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
+import { $UserCredentials, UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
 import {
   $HammerfestCredentials,
   HammerfestCredentials,
@@ -75,7 +75,7 @@ export function createAuthRouter(api: Api): Koa {
   }
 
   async function createSessionWithCredentials(cx: Koa.Context): Promise<void> {
-    const credentials: Credentials = $Credentials.read(JSON_VALUE_READER, cx.request.body);
+    const credentials: UserCredentials = $UserCredentials.read(JSON_VALUE_READER, cx.request.body);
     const result: UserAndSession = await api.auth.loginWithCredentials(GUEST_AUTH, credentials);
     cx.cookies.set(SESSION_COOKIE, result.session.id);
     const user = await api.user.getUserById(
