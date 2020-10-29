@@ -335,8 +335,8 @@ export class PgAuthService implements AuthService {
     // TODO: Add the access time to the auth context?
     // The assertion below is redundant with the DB constraints, it's there just to use `atimeRow`.
     // The three lines below should be removed once `atimeRow` is used for real.
-    if (atimeRow.atime.getTime() > row.ctime.getTime()) {
-      throw new Error("AssertionError");
+    if (atimeRow.atime.getTime() < row.ctime.getTime()) {
+      throw new Error("AssertionError: Expectected access time to be greated than or equal to creation time");
     }
 
     return {
