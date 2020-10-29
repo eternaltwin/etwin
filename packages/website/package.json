@@ -1,7 +1,11 @@
 {
   "name": "@eternal-twin/website",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Eternal-Twin's website",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "licenses": [
     {
       "type": "AGPL-3.0-or-later",
@@ -34,7 +38,6 @@
     "e2e": "ng e2e",
     "prerender": "ng run etwin:prerender"
   },
-  "private": true,
   "engines": {
     "node": ">=14.13.1"
   },
@@ -147,5 +150,11 @@
     ],
     "beautifyOutput": true
   },
-  "type": "module"
+  "type": "module",
+  "exports": {},
+  "files": [
+    "./app/",
+    "./bin/",
+    "./main/"
+  ]
 }

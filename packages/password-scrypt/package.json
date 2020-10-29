@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/password-scrypt",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Eternal-Twin `PasswordService` scrypt-based implementation",
   "repository": {
