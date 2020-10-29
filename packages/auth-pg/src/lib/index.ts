@@ -1,6 +1,10 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
+import { readLogin } from "@eternal-twin/core/lib/auth/helpers.js";
+import { LoginType } from "@eternal-twin/core/lib/auth/login-type.js";
+import { Login } from "@eternal-twin/core/lib/auth/login.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/core/lib/auth/register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
 import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/register-with-verified-email-options.js";
@@ -45,7 +49,7 @@ import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
 import { User as TidUser } from "@eternal-twin/twinoid-core/lib/user.js";
 import jsonWebToken from "jsonwebtoken";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
-import { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
+import { UuidHex } from "kryo/lib/uuid-hex.js";
 
 import { $EmailRegistrationJwt, EmailRegistrationJwt } from "./email-registration-jwt.js";
 
@@ -345,58 +349,73 @@ export class PgAuthService implements AuthService {
     };
   }
 
-  public async authenticateCredentials(credentials: UserCredentials): Promise<AuthContext> {
+  public async authenticateCredentials(credentials: Credentials): Promise<AuthContext> {
     return await this.database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
       return this.authenticateCredentialsTx(q, credentials);
     });
   }
 
-  public async authenticateCredentialsTx(queryable: Queryable, credentials: UserCredentials): Promise<AuthContext> {
-    const login: UserLogin = credentials.login;
-    type Row = Pick<OauthClientRow, "oauth_client_id" | "key" | "display_name" | "secret">;
-    let row: Row;
-    if ($UuidHex.test(login)) {
-      const maybeRow: Row | undefined = await queryable.oneOrNone(
-        `
-        SELECT oauth_client_id, key, display_name, pgp_sym_decrypt_bytea(secret, $1::TEXT) AS secret
-        FROM oauth_clients
-        WHERE oauth_client_id = $2::UUID;`,
-        [this.dbSecret, login],
-      );
-      if (maybeRow === undefined) {
-        throw new Error(`OauthClientNotFound: Client not found for the id: ${login}`);
+  public async authenticateCredentialsTx(queryable: Queryable, credentials: Credentials): Promise<AuthContext> {
+    const login: Login = readLogin(credentials.login);
+    switch (login.type) {
+      case LoginType.OauthClientId: {
+        type Row = Pick<OauthClientRow, "oauth_client_id" | "key" | "display_name" | "secret">;
+        const row: Row | undefined = await queryable.oneOrNone(
+          `
+            SELECT oauth_client_id, key, display_name, pgp_sym_decrypt_bytea(secret, $1::TEXT) AS secret
+            FROM oauth_clients
+            WHERE oauth_client_id = $2::UUID;`,
+          [this.dbSecret, login],
+        );
+        if (row === undefined) {
+          throw new Error(`OauthClientNotFound: Client not found for the id: ${login.value}`);
+        }
+        const isMatch: boolean = await this.password.verify(row.secret, credentials.password);
+        if (!isMatch) {
+          throw new Error("InvalidSecret");
+        }
+        return {
+          type: AuthType.OauthClient,
+          scope: AuthScope.Default,
+          client: {
+            type: ObjectType.OauthClient,
+            id: row.oauth_client_id,
+            key: row.key,
+            displayName: row.display_name,
+          },
+        };
       }
-      row = maybeRow;
-    } else {
-      const maybeRow: Row | undefined = await queryable.oneOrNone(
-        `
+      case LoginType.OauthClientKey: {
+        type Row = Pick<OauthClientRow, "oauth_client_id" | "key" | "display_name" | "secret">;
+        const row: Row | undefined = await queryable.oneOrNone(
+          `
         SELECT oauth_client_id, key, display_name, pgp_sym_decrypt_bytea(secret, $1::TEXT) AS secret
         FROM oauth_clients
         WHERE key = $2::VARCHAR;`,
-        [this.dbSecret, login],
-      );
-      if (maybeRow === undefined) {
-        throw new Error(`OauthClientNotFound: Client not found for the key: ${login}`);
+          [this.dbSecret, login.value],
+        );
+        if (row === undefined) {
+          throw new Error(`OauthClientNotFound: Client not found for the key: ${login.value}`);
+        }
+        const isMatch: boolean = await this.password.verify(row.secret, credentials.password);
+        if (!isMatch) {
+          throw new Error("InvalidSecret");
+        }
+        return {
+          type: AuthType.OauthClient,
+          scope: AuthScope.Default,
+          client: {
+            type: ObjectType.OauthClient,
+            id: row.oauth_client_id,
+            key: row.key,
+            displayName: row.display_name,
+          },
+        };
       }
-      row = maybeRow;
+      default: {
+        throw new Error("NotImplemented");
+      }
     }
-
-    const isMatch: boolean = await this.password.verify(row.secret, credentials.password);
-
-    if (!isMatch) {
-      throw new Error("InvalidSecret");
-    }
-
-    return {
-      type: AuthType.OauthClient,
-      scope: AuthScope.Default,
-      client: {
-        type: ObjectType.OauthClient,
-        id: row.oauth_client_id,
-        key: row.key,
-        displayName: row.display_name,
-      },
-    };
   }
 
   private async loginWithCredentialsTx(

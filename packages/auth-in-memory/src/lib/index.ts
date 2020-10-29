@@ -1,6 +1,9 @@
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
+import { readLogin } from "@eternal-twin/core/lib/auth/helpers.js";
+import { LoginType } from "@eternal-twin/core/lib/auth/login-type.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/core/lib/auth/register-or-login-with-email-options.js";
 import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
 import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/register-with-verified-email-options.js";
@@ -342,28 +345,37 @@ export class InMemoryAuthService implements AuthService {
     };
   }
 
-  public async authenticateCredentials(credentials: UserCredentials): Promise<AuthContext> {
-    const imClient: InMemoryOauthClient | null = this.oauthProvider._getInMemoryClientByIdOrKey(credentials.login);
-    if (imClient === null) {
-      throw new Error(`OauthClientNotFound: Client not found for the id or key: ${credentials.login}`);
+  public async authenticateCredentials(credentials: Credentials): Promise<AuthContext> {
+    const login = readLogin(credentials.login);
+    switch (login.type) {
+      case LoginType.OauthClientId:
+      case LoginType.OauthClientKey: {
+        const imClient: InMemoryOauthClient | null = this.oauthProvider._getInMemoryClientByIdOrKey(login.value);
+        if (imClient === null) {
+          throw new Error(`OauthClientNotFound: Client not found for the id or key: ${credentials.login}`);
+        }
+
+        const isMatch: boolean = await this.password.verify(imClient.passwordHash.latest, credentials.password);
+
+        if (!isMatch) {
+          throw new Error("InvalidSecret");
+        }
+
+        return {
+          type: AuthType.OauthClient,
+          scope: AuthScope.Default,
+          client: {
+            type: ObjectType.OauthClient,
+            id: imClient.id,
+            key: imClient.key,
+            displayName: imClient.displayName.latest,
+          },
+        };
+      }
+      default: {
+        throw new Error("NotImplemented");
+      }
     }
-
-    const isMatch: boolean = await this.password.verify(imClient.passwordHash.latest, credentials.password);
-
-    if (!isMatch) {
-      throw new Error("InvalidSecret");
-    }
-
-    return {
-      type: AuthType.OauthClient,
-      scope: AuthScope.Default,
-      client: {
-        type: ObjectType.OauthClient,
-        id: imClient.id,
-        key: imClient.key,
-        displayName: imClient.displayName.latest,
-      },
-    };
   }
 
   private async getAndTouchSession(sessionId: SessionId): Promise<Session | null> {

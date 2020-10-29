@@ -4,11 +4,11 @@ import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
 import { CreateOrUpdateSystemClientOptions } from "@eternal-twin/core/lib/oauth/create-or-update-system-client-options.js";
+import { $EtwinOauthClientId, EtwinOauthClientId } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-client-id.js";
 import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
 import { OauthAccessTokenRequest } from "@eternal-twin/core/lib/oauth/oauth-access-token-request.js";
 import { OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
 import { OauthClientDisplayName } from "@eternal-twin/core/lib/oauth/oauth-client-display-name.js";
-import { OauthClientId } from "@eternal-twin/core/lib/oauth/oauth-client-id.js";
 import { NullableOauthClientKey } from "@eternal-twin/core/lib/oauth/oauth-client-key";
 import { OauthClientKey } from "@eternal-twin/core/lib/oauth/oauth-client-key.js";
 import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
@@ -23,12 +23,12 @@ import { NullableShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import jsonWebToken from "jsonwebtoken";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
-import { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
+import { UuidHex } from "kryo/lib/uuid-hex.js";
 
 import { $OauthCodeJwt, OauthCodeJwt } from "./oauth-code-jwt.js";
 
 export interface InMemoryOauthClient {
-  id: OauthClientId;
+  id: EtwinOauthClientId;
   key: NullableOauthClientKey;
   ctime: Date;
   displayName: ValueWithChanges<OauthClientDisplayName>;
@@ -40,7 +40,7 @@ export interface InMemoryOauthClient {
 
 export interface InMemoryAccessToken {
   id: UuidHex;
-  clientId: OauthClientId;
+  clientId: EtwinOauthClientId;
   userId: UserId;
   ctime: Date;
   atime: Date;
@@ -72,7 +72,7 @@ export class InMemoryOauthProviderService implements OauthProviderService {
     this.accessTokens = new Set();
   }
 
-  public async getClientByIdOrKey(_auth: AuthContext, idOrKey: OauthClientId | OauthClientKey): Promise<OauthClient | null> {
+  public async getClientByIdOrKey(_auth: AuthContext, idOrKey: EtwinOauthClientId | OauthClientKey): Promise<OauthClient | null> {
     const imClient: InMemoryOauthClient | null = this._getInMemoryClientByIdOrKey(idOrKey);
     if (imClient === null) {
       return null;
@@ -93,7 +93,7 @@ export class InMemoryOauthProviderService implements OauthProviderService {
     const time: number = Date.now();
     if (imClient === null) {
       const passwordHash: PasswordHash = await this.password.hash(options.secret);
-      const oauthClientId: UuidHex = this.uuidGen.next();
+      const oauthClientId: EtwinOauthClientId = this.uuidGen.next();
       imClient = {
         id: oauthClientId,
         key,
@@ -136,7 +136,7 @@ export class InMemoryOauthProviderService implements OauthProviderService {
 
   public async requestAuthorization(
     auth: AuthContext,
-    clientId: OauthClientId,
+    clientId: EtwinOauthClientId,
     scopeString: OauthScopeString | null,
   ): Promise<OauthCode> {
     const scopes: ReadonlySet<OauthScope> = parseScopeString(scopeString);
@@ -210,7 +210,7 @@ export class InMemoryOauthProviderService implements OauthProviderService {
    * Create the JWT acting as the Oauth authorization code.
    */
   private async creatCodeJwt(
-    clientId: OauthClientId,
+    clientId: EtwinOauthClientId,
     clientKey: OauthClientKey | null,
     userId: UserId,
     scopes: readonly OauthScope[],
@@ -243,15 +243,15 @@ export class InMemoryOauthProviderService implements OauthProviderService {
     return $OauthCodeJwt.read(JSON_VALUE_READER, codeObj);
   }
 
-  public _getInMemoryClientByIdOrKey(idOrKey: OauthClientId | OauthClientKey): InMemoryOauthClient | null {
-    if ($UuidHex.test(idOrKey)) {
+  public _getInMemoryClientByIdOrKey(idOrKey: EtwinOauthClientId | OauthClientKey): InMemoryOauthClient | null {
+    if ($EtwinOauthClientId.test(idOrKey)) {
       return this._getInMemoryClientById(idOrKey);
     } else {
       return this._getInMemoryClientByKey(idOrKey);
     }
   }
 
-  public _getInMemoryClientById(id: OauthClientId): InMemoryOauthClient | null {
+  public _getInMemoryClientById(id: EtwinOauthClientId): InMemoryOauthClient | null {
     for (const client of this.clients) {
       if (client.id === id) {
         return client;
