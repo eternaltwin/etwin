@@ -28,11 +28,10 @@ async function withInMemoryLinkService<R>(fn: (api: Api) => Promise<R>): Promise
   const hammerfestArchive = new InMemoryHammerfestArchiveService();
   const twinoidArchive = new InMemoryTwinoidArchiveService();
   const link = new InMemoryLinkService(hammerfestArchive, twinoidArchive, simpleUser);
-  const hammerfest = new InMemoryHammerfestArchiveService();
   const hammerfestClient = new InMemoryHammerfestClientService();
   const twinoidClient = new HttpTwinoidClientService();
   const oauthProvider = new InMemoryOauthProviderService(uuidGenerator, password, secretKeyBytes);
-  const auth = new InMemoryAuthService(email, emailTemplate, hammerfest, hammerfestClient, link, oauthProvider, password, simpleUser, secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator);
+  const auth = new InMemoryAuthService({email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
   return fn({auth, link, simpleUser});
 }
 

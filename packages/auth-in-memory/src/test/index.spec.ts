@@ -18,6 +18,7 @@ import { InMemoryAuthService } from "../lib/index.js";
 async function withInMemoryAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const config = await getLocalConfig();
 
+  const uuidGenerator = UUID4_GENERATOR;
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new InMemoryEmailService();
@@ -27,10 +28,10 @@ async function withInMemoryAuthService<R>(fn: (api: Api) => Promise<R>): Promise
   const twinoidArchive = new InMemoryTwinoidArchiveService();
   const hammerfestClient = new InMemoryHammerfestClientService();
   const twinoidClient = new HttpTwinoidClientService();
-  const simpleUser = new InMemorySimpleUserService({uuidGenerator: UUID4_GENERATOR});
+  const simpleUser = new InMemorySimpleUserService({uuidGenerator});
   const link = new InMemoryLinkService(hammerfestArchive, twinoidArchive, simpleUser);
   const oauthProvider = new InMemoryOauthProviderService(UUID4_GENERATOR, password, secretKeyBytes);
-  const auth = new InMemoryAuthService(email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, secretKeyBytes, twinoidArchive, twinoidClient, UUID4_GENERATOR);
+  const auth = new InMemoryAuthService({email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
   return fn({auth, email, hammerfestClient, link});
 }
 

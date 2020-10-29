@@ -29,22 +29,22 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   });
 
   const uuidGenerator = UUID4_GENERATOR;
-  const db = new Database(pool);
+  const database = new Database(pool);
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new ConsoleEmailService();
   const emailTemplate = new EtwinEmailTemplateService(config.etwin.externalUri);
   const password = new ScryptPasswordService();
-  const simpleUser = new PgSimpleUserService({database: db, databaseSecret: secretKeyStr, uuidGenerator});
-  const hammerfestArchive = new PgHammerfestArchiveService(db);
+  const simpleUser = new PgSimpleUserService({database, databaseSecret: secretKeyStr, uuidGenerator});
+  const hammerfestArchive = new PgHammerfestArchiveService(database);
   const hammerfestClient = new HttpHammerfestClientService();
-  const twinoidArchive = new PgTwinoidArchiveService(db);
+  const twinoidArchive = new PgTwinoidArchiveService(database);
   const twinoidClient = new HttpTwinoidClientService();
-  const link = new PgLinkService(db, hammerfestArchive, twinoidArchive, simpleUser);
-  const auth = new PgAuthService(db, secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, simpleUser, secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator);
+  const link = new PgLinkService(database, hammerfestArchive, twinoidArchive, simpleUser);
+  const auth = new PgAuthService({database, databaseSecret: secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
   const koaAuth = new KoaAuth(auth);
-  const forum = new PgForumService(db, UUID4_GENERATOR, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
-  const token = new PgTokenService(db, secretKeyStr, hammerfestArchive);
+  const forum = new PgForumService(database, uuidGenerator, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
+  const token = new PgTokenService(database, secretKeyStr, hammerfestArchive);
   const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
   const user = new UserService({auth, hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
 

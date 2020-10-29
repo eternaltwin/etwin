@@ -54,6 +54,22 @@ const SYSTEM_AUTH: SystemAuthContext = {
   scope: AuthScope.Default,
 };
 
+export interface PgAuthServiceOptions {
+  database: Database,
+  databaseSecret: string,
+  email: EmailService,
+  emailTemplate: EmailTemplateService,
+  hammerfestArchive: HammerfestArchiveService,
+  hammerfestClient: HammerfestClientService,
+  link: LinkService,
+  password: PasswordService,
+  simpleUser: SimpleUserService,
+  tokenSecret: Uint8Array,
+  twinoidArchive: TwinoidArchiveService,
+  twinoidClient: TwinoidClientService,
+  uuidGenerator: UuidGenerator,
+}
+
 export class PgAuthService implements AuthService {
   private readonly database: Database;
   private readonly dbSecret: string;
@@ -73,48 +89,21 @@ export class PgAuthService implements AuthService {
 
   /**
    * Creates a new authentication service.
-   *
-   * @param database Email service to use.
-   * @param dbSecret Key used to access encrypted columns in the database.
-   * @param uuidGen UUID generator to use.
-   * @param email Email service to use.
-   * @param emailTemplate Email template service to use.
-   * @param hammerfestArchive Hammerfest archive service to use.
-   * @param hammerfestClient Hammerfest client service to use.
-   * @param link Link service to use.
-   * @param password Password service to use.
-   * @param tokenSecret Secret key used to generated and verify tokens.
-   * @param twinoidArchive Twinoid archive service to use.
-   * @param twinoidClient Twinoid client service to use.
    */
-  constructor(
-    database: Database,
-    dbSecret: string,
-    email: EmailService,
-    emailTemplate: EmailTemplateService,
-    hammerfestArchive: HammerfestArchiveService,
-    hammerfestClient: HammerfestClientService,
-    link: LinkService,
-    password: PasswordService,
-    simpleUser: SimpleUserService,
-    tokenSecret: Uint8Array,
-    twinoidArchive: TwinoidArchiveService,
-    twinoidClient: TwinoidClientService,
-    uuidGen: UuidGenerator,
-  ) {
-    this.database = database;
-    this.dbSecret = dbSecret;
-    this.email = email;
-    this.emailTemplate = emailTemplate;
-    this.hammerfestArchive = hammerfestArchive;
-    this.hammerfestClient = hammerfestClient;
-    this.link = link;
-    this.password = password;
-    this.simpleUser = simpleUser;
-    this.tokenSecret = Buffer.from(tokenSecret);
-    this.twinoidArchive = twinoidArchive;
-    this.twinoidClient = twinoidClient;
-    this.uuidGen = uuidGen;
+  constructor(options: Readonly<PgAuthServiceOptions>) {
+    this.database = options.database;
+    this.dbSecret = options.databaseSecret;
+    this.email = options.email;
+    this.emailTemplate = options.emailTemplate;
+    this.hammerfestArchive = options.hammerfestArchive;
+    this.hammerfestClient = options.hammerfestClient;
+    this.link = options.link;
+    this.password = options.password;
+    this.simpleUser = options.simpleUser;
+    this.tokenSecret = Buffer.from(options.tokenSecret);
+    this.twinoidArchive = options.twinoidArchive;
+    this.twinoidClient = options.twinoidClient;
+    this.uuidGen = options.uuidGenerator;
     this.defaultLocale = "en-US";
   }
 

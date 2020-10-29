@@ -59,6 +59,21 @@ const SYSTEM_AUTH: SystemAuthContext = {
   scope: AuthScope.Default,
 };
 
+export interface InMemoryAuthServiceOptions {
+  email: EmailService,
+  emailTemplate: EmailTemplateService,
+  hammerfestArchive: HammerfestArchiveService,
+  hammerfestClient: HammerfestClientService,
+  link: LinkService,
+  oauthProvider: InMemoryOauthProviderService,
+  password: PasswordService,
+  simpleUser: SimpleUserService,
+  tokenSecret: Uint8Array,
+  twinoidArchive: TwinoidArchiveService,
+  twinoidClient: TwinoidClientService,
+  uuidGenerator: UuidGenerator,
+}
+
 export class InMemoryAuthService implements AuthService {
   private readonly email: EmailService;
   private readonly emailTemplate: EmailTemplateService;
@@ -75,52 +90,26 @@ export class InMemoryAuthService implements AuthService {
 
   private readonly defaultLocale: LocaleId;
 
-  private readonly sessions: Map<SessionId, Session>;
-  private readonly passwordHashes: Map<UserId, PasswordHash>;
   private readonly emailVerifications: Set<EmailVerification>;
+  private readonly passwordHashes: Map<UserId, PasswordHash>;
+  private readonly sessions: Map<SessionId, Session>;
 
   /**
    * Creates a new authentication service.
-   *
-   * @param email Email service to use.
-   * @param emailTemplate Email template service to use.
-   * @param hammerfestArchive Hammerfest archive service to use.
-   * @param hammerfestClient Hammerfest client service to use.
-   * @param link Link service to use.
-   * @param oauthProvider Oauth provider service to use.
-   * @param password Password service to use.
-   * @param simpleUser User service to use.
-   * @param tokenSecret Secret key used to generated and verify tokens.
-   * @param twinoidArchive Twinoid archive service to use.
-   * @param twinoidClient Twinoid client service to use.
-   * @param uuidGen UUID generator to use.
    */
-  constructor(
-    email: EmailService,
-    emailTemplate: EmailTemplateService,
-    hammerfestArchive: HammerfestArchiveService,
-    hammerfestClient: HammerfestClientService,
-    link: LinkService,
-    oauthProvider: InMemoryOauthProviderService,
-    password: PasswordService,
-    simpleUser: SimpleUserService,
-    tokenSecret: Uint8Array,
-    twinoidArchive: TwinoidArchiveService,
-    twinoidClient: TwinoidClientService,
-    uuidGen: UuidGenerator,
-  ) {
-    this.email = email;
-    this.emailTemplate = emailTemplate;
-    this.hammerfestArchive = hammerfestArchive;
-    this.hammerfestClient = hammerfestClient;
-    this.link = link;
-    this.oauthProvider = oauthProvider;
-    this.password = password;
-    this.simpleUser = simpleUser;
-    this.tokenSecret = Buffer.from(tokenSecret);
-    this.twinoidArchive = twinoidArchive;
-    this.twinoidClient = twinoidClient;
-    this.uuidGen = uuidGen;
+  constructor(options: Readonly<InMemoryAuthServiceOptions>) {
+    this.email = options.email;
+    this.emailTemplate = options.emailTemplate;
+    this.hammerfestArchive = options.hammerfestArchive;
+    this.hammerfestClient = options.hammerfestClient;
+    this.link = options.link;
+    this.oauthProvider = options.oauthProvider;
+    this.password = options.password;
+    this.simpleUser = options.simpleUser;
+    this.tokenSecret = Buffer.from(options.tokenSecret);
+    this.twinoidArchive = options.twinoidArchive;
+    this.twinoidClient = options.twinoidClient;
+    this.uuidGen = options.uuidGenerator;
     this.defaultLocale = "en-US";
 
     this.emailVerifications = new Set();

@@ -32,7 +32,7 @@ async function withInMemoryForumService<R>(fn: (api: Api) => Promise<R>): Promis
   const simpleUser = new InMemorySimpleUserService({uuidGenerator});
   const link = new InMemoryLinkService(hammerfestArchive, twinoidArchive, simpleUser);
   const oauthProvider = new InMemoryOauthProviderService(uuidGenerator, password, secretKeyBytes);
-  const auth = new InMemoryAuthService(email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator);
+  const auth = new InMemoryAuthService({email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
   const forum = new InMemoryForumService(uuidGenerator, simpleUser, {postsPerPage: 10, threadsPerPage: 20});
   return fn({auth, forum});
 }
