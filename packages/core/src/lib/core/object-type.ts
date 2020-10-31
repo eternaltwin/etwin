@@ -6,16 +6,17 @@ import { TsEnumType } from "kryo/lib/ts-enum.js";
  * It helps with discriminated unions and reflection.
  */
 export enum ObjectType {
-  HammerfestUser,
-  TwinoidUser,
-  OauthClient,
-  User,
-  ForumSection,
-  ForumThread,
+  ClientForumActor,
+  DinoparcUser,
   ForumPost,
   ForumPostRevision,
-  ClientForumActor,
+  ForumSection,
+  ForumThread,
+  HammerfestUser,
+  OauthClient,
   RoleForumActor,
+  TwinoidUser,
+  User,
   UserForumActor,
 }
 
