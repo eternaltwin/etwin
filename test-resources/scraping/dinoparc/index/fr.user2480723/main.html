@@ -1,0 +1,849 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-15" />
+    <meta name="author" content="Motion-Twin" />
+    <meta name="copyright" content="&copy; 2006 Motion-Twin" />
+    <meta name="keywords" lang="fr" content="dinoparc, dinoz, élevage" />
+    <meta name="description" lang="fr" content="Elevez votre Dinoz et faites le combattre !" />
+
+    <title>Dinoparc.com</title>
+
+    <link href="http://data.dinoparc.com/css/main.css?version=15" rel="stylesheet" type="text/css">
+    <link href="http://data.dinoparc.com/css/struct.css?version=15" rel="stylesheet" type="text/css">
+    <link href="http://data.dinoparc.com/css/form.css?version=15" rel="stylesheet" type="text/css">
+
+    
+
+    <!--[if IE 6]>
+      <link rel="stylesheet" type="text/css" href="css/ie.css?version=15"/>
+    <![endif]-->
+    <!--[if IE 5]>
+      <link rel="stylesheet" type="text/css" href="css/ie5.css?version=15"/>
+    <![endif]-->
+
+    <script src="js/tooltip.js?version=4" language="javascript" type="text/javascript"></script>
+    <script src="js/misc.js?version=4" language="javascript" type="text/javascript"></script>
+</head>
+
+<body>
+
+<div class="gradientBg">
+
+    <table class="site">
+    <tr>
+        
+            <td class="siteHeader banner"><a href="/?r=fbkv4c;a=index"><img src="img/design/spacer.gif"></a></td>
+        
+    </tr>
+    <tr>
+        <td class="siteContent">
+            <table>
+                <tr>
+                <td class="leftPane">
+                    
+<div class="menu">
+<h1>Menu</h1>
+
+
+ <!-- LOGGED -->
+
+	
+
+    <div class="title">demurgos</div>
+    <ul class="options">
+        <li><a href="/?r=fbkv4c;a=bank"><span class="money" title="10200 pièces">10200 <img src="img/icons/tiny_coin.gif"></span></a></li>
+        <li><a href="/?r=fbkv4c;a=bank">Obtenir des Pièces</a></li>
+        <li><a href="/?r=fbkv4c;a=user">Mon compte</a></li>
+        
+    </ul>
+
+    <div class="title"> Vos Dinoz </div>
+
+	<div id="dinozListBlock">
+		
+	    <ul class="dinoList">
+	        
+	    </ul>
+	</div>
+
+    <div class="buyLink"><a href="/?r=fbkv4c;a=buy-dino"><img src="img/icons/buy.gif" class="middle"> Acheter un Dinoz</a></div>
+
+
+
+    <div class="title">Menu</div>
+    <ul class="options">
+        <li><a href="/?r=fbkv4c;a=news">Nouveautés</a></li>
+        <li><a href="/?r=fbkv4c;a=inventory">Inventaire</a></li>
+        <li><a href="/?r=fbkv4c;a=collection">Collection</a></li>
+        <li><a href="/?r=fbkv4c;a=shop">Boutique</a></li>
+        <li><a href="/?r=fbkv4c;a=message">Messagerie</a></li>
+        <li><a href="/?r=fbkv4c;a=history"><span class="notify" title="Vous avez des événements non lus !">Historique <img src="img/icons/anim_notify.gif"></span></a></li>
+		<li><a href="/?r=fbkv4c;a=ranks">Classement</a></li>
+		<li><a href="/?r=fbkv4c;a=parrain">Parrainage</a></li>
+		<li><a href="/?r=fbkv4c;a=clan">Clans</a></li>
+		<li>&nbsp;</li>
+
+        <li class="separator"></li>
+
+
+		<li><a href="/?r=fbkv4c;a=guide"><img src="img/icons/help.gif" class="middle"/> Aide</a></li>
+        <li><a href="/?r=fbkv4c;a=disconnect"  onClick="return confirm('Confirmer cette action ?')" ><img src="img/icons/logout.gif" class="middle"/> Déconnexion</a></li>
+    </ul>
+
+
+
+	<br/>
+
+	<div class="menuInfos">Il est 17h32 à Dinoland</div>
+	<div class="menuInfos">559 connectés</div>
+
+	<br/>
+
+	
+
+	<script type="text/javascript">
+		var links = [{ tid : 'alpha', img : 'alpha' },{ tid : 'croque', img : 'croque' },{ tid : 'drpg', img : 'dinorpg' }];
+		var l = links[(new Date()).getDay()%links.length];
+		document.write('<a href="http://trax.motion-twin.com/goto/dparc_mt/'+l.tid+'?days=2"><img src="/img/mt/'+l.img+'.gif"/>');
+	</script>
+
+	
+
+
+</div>
+
+                </td>
+                <td class="contentPane">
+                    <div id="tooltip">
+                    	<div class="content">
+                    		<div class="header">
+                    			<div id="tooltipContent"></div>
+                    		</div>
+                    	</div>
+                    	<div class="footer"></div>
+                    </div>
+                    <div class="guide">
+	<h1>Guide du Joueur</h1>
+
+	<h2>Sommaire</h2>
+
+	<ol>
+		<li><a href="#first">Avant toute chose !</a></li>
+		<li><a href="#adopt">Adopter un Dinoz</a></li>
+		<li><a href="#name">Nommer son Dinoz</a></li>
+		<li><a href="#fiche">La fiche du Dinoz</a></li>
+		<li><a href="#move">Se déplacer dans Dinoland</a></li>
+		<li><a href="#fight">Le combat</a></li>
+		<li><a href="#heal">Se soigner</a></li>
+		<li><a href="#xp">Gagner en expérience</a></li>
+		<li><a href="#tournoi">Participer aux Tournois</a></li>
+		<li><a href="#collec">Objets de Collection</a></li>
+		<li><a href="#effects">Les Effets</a></li>
+		<li>
+			<a href="#clans">Les Clans</a>
+			<ol>
+				<li><a href="#cwar">Les Guerres de Clans</li>
+				<li><a href="#cpoints">Les Points de Guerre</li>
+				<!--<li><a href="#cgods">Les Dieux</li>-->
+				<li><a href="#cally">Les Alliances</li>
+				<li><a href="#cranks">Le Classement des Clans</li>
+			</ol>
+		</li>
+		<li><a href="#quests">Les Quêtes</a></li>
+		<li><a href="#questions">Questions souvent posées</a></li>
+		<li><a href="#reset">Et si je fais une erreur ?</a></li>
+	</ol>
+
+	<!-- ********************************************************************** -->
+
+
+	<a name="first"></a><h2>Avant toute chose !</h2>
+	<p>
+		Si vous êtes perdu sur le site, vous pouvez retrouver ce guide en utilisant le lien
+		<img src="img/icons/help.gif"> à gauche du site.
+	</p>
+	<p>
+		A de nombreux endroits une aide est disponible en plaçant le curseur de votre souris sur une icone.
+		Par exemple, placez votre souris sur cette image: <span class="helpLink" onmouseover='showTip(this,"Ceci est une boite d&#39;aide comme vous en trouverez beaucoup sur le site !","L&#39;aide c&#39;est bien")' onmouseout="hideTip()"><img src="/img/design/icon_help.gif"></span>.
+	</p>
+
+	<a name="adopt"></a><h2>Adopter un Dinoz</h2>
+
+	<p>
+		Vous commencez avec <span class="money" title="10000 pièces">10000 <img src="img/icons/tiny_coin.gif"></span> Pièces. Chaque jour où vous vous connectez au site, vous gagnez automatiquement <span class="money" title="200 pièces">200 <img src="img/icons/tiny_coin.gif"></span> Pièces. Les pièces vous servent à acheter des Dinoz mais aussi des objets dans la boutique permettant par exemple de soigner ou de ressusciter un Dinoz blessé ou mort. Faites donc bon usage de vos pièces, et évitez de tout dépenser !
+	</p>
+
+	<p>
+		Votre premier achat va être un Dinoz. Cliquez sur le lien dans le menu de gauche indiqué <a href="/?r=fbkv4c;a=buy-dino">Acheter un Dinoz</a>. Il vous sera proposé un certain nombre de Dinoz au choix. Choisissez celui que vous préférez, ou lisez la suite de ce guide pour vous aider dans votre choix.
+	</p>
+
+	<p>
+		Il existe différentes races de Dinoz, plus ou moins <strong>rares</strong> et donc plus ou moins chères. Rappellez vous aussi que vous pouvez avoir plusieurs Dinoz à la fois !
+	</p>
+
+	<!-- ********************************************************************** -->
+
+	<a name="name"></a><h2>Nommer son Dinoz</h2>
+
+	<p>
+		Une fois adopté, un lien apparaît vous demandant de choisir le nom de votre Dinoz. Cliquez dessus pour accéder à un formulaire. Là aussi, Choisissez avec soin le nom de votre Dinoz car il ne peut pas être changé par la suite.
+	</p>
+
+
+	<!-- ********************************************************************** -->
+
+	<a name="fiche"></a><h2>La fiche du Dinoz</h2>
+
+	<table class="layout">
+	<tr>
+		<td><img src="img/intro/fiche.gif"/></td>
+		<td class="spacer"></td>
+		<td>
+			<br/>
+			<p>Nous allons maintenant découvrir la fiche de votre Dinoz. Chaque Dinoz possède sa propre fiche qui rassemble les informations importantes le concernant, et vous permet aussi de lui faire effectuer différentes actions.</p>
+		</td>
+	</tr>
+	</table>
+
+	<h3>Partie gauche</h3>
+
+	<p class="sub">
+		Tout d'abord, dans la partie en haut à gauche, se trouve l'image de votre Dinoz. Juste en dessous, une cadre rassemble des informations très importantes dont voici une liste exhaustive:
+	</p>
+
+	<ul class="sub">
+		<li><strong>Race :</strong> c'est la race de votre Dinoz.</li>
+		<li><strong>Vie :</strong> cette barre représente la vie de votre Dinoz. Un indicateur à côté vous donne sa valeur, en pourcent.<br/><br/>
+		Il est <strong>important</strong> de maintenir votre Dinoz en bonne santé, car avec un niveau de vie bas, il est plus fragile aux attaques et risque plus facilement de <strong>mourir</strong>. Un Dinoz qui arrive à 0% de vie est considéré comme mort, et ne peut donc plus effectuer d'action ! Nous verrons un peu plus tard comment soigner et ressusciter votre Dinoz.</li>
+		<li><strong>Niveau :</strong> le niveau d'un Dinoz correspond à sa puissance. En effet à chaque fois qu'un Dinoz gagne un niveau, il peut augmenter l'une de ses <strong>compétences</strong> ainsi qu'un de ses <strong>éléments</strong>. Le niveau vous permet ainsi de vous comparer aux autres Dinoz et d'évaluer le potentiel d'un adversaire.</li>
+		<li><strong>Suivant :</strong> l'expérience d'un Dinoz correspond à sa progression vers le prochain Niveau. A chaque combat et lors de certaines actions, votre Dinoz va gagner quelques points d'expérience. Une fois atteints les 100%, il vous saura proposé d'augmenter d'un Niveau.</li>
+		<li><strong>Danger :</strong> le niveau de danger de votre Dinoz représente ses chances d'être attaqué par un autre Dinoz. Plus le niveau de danger est haut et plus votre Dinoz risque de se faire attaquer.</li>
+		
+		<li><strong>Bonus / Malus :</strong> ce sont les effets qui sont actuellement en cours (voir rubrique <a href="#effects">Effets</a>).</li>
+	</ul>
+
+	<p class="sub">
+		En dessous du cadre, il existe cinq icônes et nombres associés qui sont très importants. Il s'agit de vos <strong>éléments</strong>. Nous verrons à quoi servent les éléments lors de l'apprentissage du <a href="#fight">Combat</a> et comment vous pouvez les augmenter grâce à <a href="#xp">l'Expérience</a>.
+	</p>
+
+	<p class="sub">
+		En dessous de vos éléments se trouve la liste de vos Compétences ainsi que leur niveau. Nous verrons à quoi servent les compétences, comment les développer et comment en apprendre de nouvelles grâce à <a href="#xp">l'Expérience</a>.
+	</p>
+
+	<h3>Partie droite</h3>
+
+	<p class="sub">
+		En haut à droite de la fiche de votre Dinoz se trouve sa position actuelle dans le monde de Dinoland. Le nom du lieu est accompagné d'une illustration et d'une courte description de l'endroit.
+	</p>
+
+	<p class="sub">
+		Le cadre en dessous rassemble les différentes <strong>actions</strong> que votre Dinoz peut réaliser. Maintenez le curseur de la souris au dessus d'une action pour accéder à l'aide correspondant à cette action. Cliquez pour valider une action ou pour obtenir plus d'informations.
+	</p>
+
+	<p class="sub">
+		Nous allons maintenant parler des principales actions qui sont accessibles à votre Dinoz.
+	</p>
+
+
+	<!-- ********************************************************************** -->
+
+	<a name="move"></a><h2>Se déplacer dans Dinoland</h2>
+
+	<p>
+		Votre Dinoz à un vaste monde à explorer. Découvrir de nouveaux lieux lui permettra de trouver des nouvelles possibilités et de faire des rencontres intéressantes. Pour pouvoir déplacer votre Dinoz, il vous suffit de choisir l'option <strong>Se déplacer</strong> parmi les actions disponibles. <strong>Attention !</strong> chacun de vos Dinoz ne peut effectuer qu'un unique déplacement par jour.
+	</p>
+
+	<p>
+		Une fois l'action <strong>Se déplacer</strong> sélectionnée, choisissez sur la carte de Dinoland le lieu où vous désirez vous rendre. Certains lieux ne sont accessibles que grâce à certaines <strong>actions</strong> mais nécessitent d'habitude qu'un certain nombre de conditions soient remplies.
+	</p>
+
+
+
+	<!-- ********************************************************************** -->
+
+	<a name="fight"></a><h2>Le combat</h2>
+
+	<table class="layout">
+	<tr>
+		<td><img src="img/intro/fight.gif"/></td>
+		<td class="spacer"></td>
+		<td>
+			<p>Le combat est un composant essentiel de Dinoparc. Il faut impérativement en connaitre le fonctionnement pour s'assurer la victoire et ainsi éviter de faire <strong>perdre de la vie</strong> à votre Dinoz.</p>
+			<p>
+			<p class="important">Votre Dinoz ne peut effectuer qu'un seul combat par jour. Suivant son indicateur de <strong>Danger</strong> il peut se faire attaquer plusieurs fois par jour ou pas du tout.
+			</p>
+		</td>
+	</tr>
+	</table>
+
+	<h3>Déroulement</h3>
+	<p class="sub">
+		Un combat peut se dérouler dans plusieures conditions. Soit:
+		<ul>
+			<li>votre Dinoz attaque, grâce à <strong>l'action Combat</strong>.
+				<p>
+				Vous ne pouvez pas vous attaquer à des Dinoz trop forts, trop faibles, ou ayant un niveau de Danger trop bas comparé aux autres Dinoz.
+				</p>
+			</li>
+			<li>soit un de vos Dinoz est attaqué pendant votre absence par un autre joueur</li>
+			<li>soit vous participez à un tournoi</li>
+		</ul>
+	</p>
+
+	<p class="sub">
+		Quelle que soit la cause d'un combat, il se déroule de la même façon et toujours selon les même règles. Un combat s'effectue ainsi en <strong>trois phases</strong>. Lors de chaque phase, un <strong>élément</strong> est choisi pour chacun des deux Dinoz. Il est donc important de bien connaitre le système des éléments (décrit ci-dessous).
+	</p>
+
+	<p class="sub">
+		Au cours de chaque phase, l'élément retenu de votre dinoz est confronté à l'élément retenu pour le dinoz adverse. Le gagnant marque des points et la somme des points à la fin du combat détermine le vainqueur.
+	</p>
+
+	<h3>Les éléments</h3>
+
+	<p class="sub">
+		Il existe <strong>cinq éléments</strong> qui sont:
+	</p>
+	<ul class="sub">
+		<li><img src="img/icons/element0.gif"/> Le Feu</li>
+		<li><img src="img/icons/element1.gif"/> La Terre</li>
+		<li><img src="img/icons/element2.gif"/> L'Eau</li>
+		<li><img src="img/icons/element3.gif"/> La Foudre</li>
+		<li><img src="img/icons/element4.gif"/> L'Air</li>
+	</ul>
+
+	<p class="sub">
+		Ils sont organisés dans le cercle suivant, que l'on appelle <strong>le Grand Cycle des éléments</strong>:
+	</p>
+
+	<table class="layout">
+	<tr>
+		<td><img src="img/intro/cycle.gif"/></td>
+		<td class="spacer"></td>
+		<td>
+			<br/>
+			<p class="important">
+				Chaque élément est <strong>fort contre les deux qui le suivent</strong> et <strong>faible contre les deux qui le précédent</strong>.
+			</p>
+			<p>
+				Ainsi la Foudre <img src="/img/icons/element3.gif"> est forte contre l'Air <img src="/img/icons/element4.gif"> et le Feu<img src="/img/icons/element0.gif">, mais est faible contre la Terre <img src="/img/icons/element1.gif"> et l'Eau <img src="/img/icons/element2.gif">.
+			</p>
+		</td>
+	</tr>
+	</table>
+
+	<p class="sub">
+		Il est très important de bien se rappeler l'ordre des éléments lors du choix de son adversaire. En effet une information importante apparait : l'<strong>élément principal</strong> du Dinoz adverse, ce qui vous permet de grandement augmenter vos chances de victoire.
+	</p>
+
+	<p class="sub">
+		Pensez à consulter l'icone
+		<span class="helpLink" onmouseover='showTip(this,"<p>Un petit rappel n&#39;est jamais superflu :&#41;</p><img src=&#39;img/intro/cycleLight.gif&#39;/>","L&#39;aide c&#39;est bien pratique")' onmouseout="hideTip()"><img src="/img/design/icon_help.gif"></span>
+		lorsque vous serez sur le point de démarrer un combat !
+	</p>
+
+	<h3>Résolution</h3>
+	<p class="sub">
+		Ce sont donc les <strong>meilleurs éléments</strong> de chacun des deux Dinoz qui s'affrontent lors de chaque phase de combat. En fonction du rapport entre les éléments, du niveau de chacun des Dinoz sur son élément, et d'un léger facteur chance, la phase peut être gagnée ou perdue. Le perdant de chaque phase perd de la vie, et le gagnant gagne de points. La somme des points en fin de combat détermine le vainqueur.
+	</p>
+
+	<p class="sub">
+		Dans le cas où deux éléments ont la même valeur, l'élément sélectionné est choisi au hazard. Attention donc dans ce cas aux mauvaises suprises !
+	</p>
+
+
+	<h3>La fin de combat</h3>
+
+	<p class="sub">
+		Une fois le combat terminé, un petit récapitulatif s'affiche et votre Dinoz se voit attribuer de l'expérience et des pièces d'or qui lui permettront de se soigner de ses blessures.
+	</p>
+
+
+	<!-- ********************************************************************** -->
+
+	<a name="heal"></a><h2>Se soigner</h2>
+
+	<p>
+		Comme nous l'avons vu auparavant, il est important de maintenir son Dinoz en bonne santé, et donc avec un niveau correct de <strong>Vie</strong>. En effet lors des combats, il arrive souvent que vos Dinoz perdent plus ou moins de Vie, il faudra alors les soigner.
+	</p>
+
+	<h3>Où et comment ?</h3>
+	<p class="sub">
+		Pour soigner un Dinoz, rien de plus simple : cliquez sur le lien <a href="/?r=fbkv4c;a=shop">Boutique</a> dans le menu à gauche. La boutique de Dinoparc vous proposera de nombreuses potions et autres produits qui permettront à vos Dinoz de regagner de la Vie. Pour connaitre l'effet de chaque objet, maintenez le curseur de la souris sur le bouton <strong>Aide</strong> correspondant. Une fois votre objet acheté, pous pouvez l'utiliser en accédant à votre <a href="/?r=fbkv4c;a=inventory">Inventaire</a>.
+	</p>
+
+	<h3>Dinoz Mort</h3>
+
+	<p class="sub">
+		Dans le cas où votre Dinoz serait arrivé à 0% de Vie, il est considéré comme <strong>mort</strong>. Le seul objet permettant de soigner un Dinoz mort est la <strong>Potion d'Ange</strong>. Constituée d'éléments rares, cette potion est plus chère que les autres. Raison de plus pour surveiller avec beaucoup d'attention la vie de votre Dinoz !
+	</p>
+
+	<p class="sub">
+		L'autre possibilité consiste à ressusciter votre Dinoz. Cependant, avec cette option, il perdra son expérience actuelle et retournera automatiquement à Dinoville.
+	</p>
+
+	<!-- ********************************************************************** -->
+
+	<a name="xp"></a><h2>Gagner en expérience</h2>
+
+
+	<table cellspacing="10">
+	<tr>
+		<td><img src="img/intro/levelup.gif"/></td>
+		<td class="spacer"></td>
+		<td>
+			A chaque fin de combat, vous gagnez de l'expérience, et l'indicateur <strong>Suivant</strong> sur votre fiche augmente. Une fois atteints les 100%, il vous sera demandé d'augmenter le niveau de votre Dinoz. Cette augmentation s'accompagne du choix d'une compétence, soit à augmenter, soit à apprendre.
+		</td>
+	</tr>
+	</table>
+
+	<p>
+		Chaque compétence possède trois caractéristiques : un niveau de maîtrise, un élément et un effet. Le niveau de maîtrise d'une compétence est représenté par un certain nombre d'étoiles, il peut varier de 0 (compétence non apprise) à 5 (compétence parfaitement maitrisée). L'effet de la compétence est spécifique, il est décris en passant la souris sur le bouton <strong>Aide</strong> lors du choix de la compétence à augmenter. Pour la plupart des compétences, augmenter son niveau de maîtrise lui permet d'augmenter son effet.
+	</p>
+
+	<p>
+		De plus, chaque compétence a un <strong>élément associé</strong>. Cela veut dire qu'augmenter le <strong>niveau de maîtrise</strong> de cette compétence augmentera aussi d'un point le niveau de l'élément correspondant ! Progresser en niveau vous permet donc d'augmenter vos éléments et ainsi de devenir plus fort en Combat. De plus, quand vous maîtrisez bien certaines compétences (au niveau 4 sur 5), il vous sera proposé d'en apprendre de nouvelles, ce qui vous permettra de découvrir de nouveaux effets.
+	</p>
+
+	<center><img src="img/intro/levelup2.gif"/></center>
+
+	<p>
+		Les stratégies de développement de votre Dinoz sont multiples. Vous pouvez ainsi vous concentrer sur un élément donné (le Feu par exemple) et développer au maximum les compétences liées à cet élement. Où vous pouvez choisir des compétences dont l'effet vous interesse plus particulièrement. Une autre stratégie consiste à développer tous les éléments de façon égale pour pouvoir faire face à toutes les situations.
+	</p>
+
+
+	<!-- ********************************************************************** -->
+
+	<a name="tournoi"></a><h2>Participer aux Tournois</h2>
+
+	<p>
+		Le but des Tournois est de se mesurer à d'autres Dinoz pour déterminer qui est le plus fort. Ainsi une fois inscrit dans un tournoi, votre Dinoz va effectuer une série de combats, au rythme normal d'un par jour. Il commence avec <strong>0 point</strong>. A chaque combat gagné il gagne un point supplémentaire et à chaque combat perdu il perd un point. Le Tournoi continue ainsi jusqu'à ce que vous décidiez de le quitter.
+	</p>
+
+	<p>
+		A ce principe simple s'en ajoute un deuxième : votre Dinoz ne peut combattre que contre d'autres Dinoz inscrits au Tournoi et <strong>ayant le même nombre de points</strong>. Ainsi plus vous gagnez de points et moins les adversaires sont nombreux.... et plus ils sont puissants ! Vous pouvez arrêter le Tournoi quand vous le voulez, mais lors de la prochaine participation vous devrez recommencer à zéro point.
+	</p>
+
+	<p>
+		Chaque Tournoi permet d'obtenir trois <strong>médailles</strong> : Or , Argent et Bronze. Ces médailles sont automatiquement gagnées dés que vous atteignez un certain nombre de points. Collectioner l'<strong>ensemble</strong> des médailles de tous les Tournoi de Dinoland est le but ultime de tout éleveur de Dinoz qui se respecte !
+	</p>
+
+	<!-- ********************************************************************** -->
+
+	<a name="collec"></a><h2>Les Objets de Collection</h2>
+
+	<p>
+		Les objets de Collection sont présents dans la section <em>"Collection"</em>. Comme leur nom l'indique, il s'agit d'objets à collectionner. Ils sont divisés en deux catégories : les médailles, qui sont les récompenses obtenues lors d'un Tournoi (voir ci-dessus), et les objets d'aventure.
+	</p>
+
+	<p>
+		Cette seconde catégorie d'Objet de Collection peut être obtenue par les moyens suivants :
+	</p>
+
+	<ul>
+		<li><strong>Fouiller</strong> : une fois la compétence Fouiller développée, vous pourrez effectuer une nouvelle action "fouiller" dans chacun des différents lieux de Dinoland. Il arrivera que vous trouviez un nouvel objet de Collection à cet endroit.</li>
+		<li><strong>Voler</strong> : une fois cette compétence apprise, vous aurez de temps en temps l'occasion en fin de combat de pouvoir voler un objet de Collection de l'adversaire ! Cela vous permettra ainsi de ne pas avoir à fouiller vous même !</li>
+	</ul>
+
+	<p>
+		Compléter votre Collection n'apporte à ce jour aucun avantage particulier, si ce n'est la satisfaction d'avoir rassemblé tous les objets de Dinoland. Saurez-vous y arriver ?
+	</p>
+
+	<!-- ********************************************************************** -->
+
+	<a name="effects"></a><h2>Les Effets</h2>
+
+	<p>
+		Chaque Dinoz peut avoir un certain nombre d'effets Bonus et d'effets Malus. Les effets Bonus sont bénéfiques et offrent une protection ou un avantage en combat. Les effets Malus sont problématiques et doivent être soignés au plus vite.
+	</p>
+
+	<p>
+		Voici quelques effets Bonus :
+	</p>
+
+	<ul>
+		<li><strong>Charmes</strong> : les charmes vous protègent de la prochaine attaque d'un élement donné. Une fois l'attaque protégée, le charme est perdu.</li>
+		<li><strong>Griffes</strong> : les griffes vous permettent d'empoisonner votre adversaire à condition de lui faire perdre suffisamment de vie.</li>
+	</ul>
+
+	<p>
+		Et quelques effets Malus :
+	</p>
+
+	<ul>
+		<li><strong>Poison</strong> : une fois empoisonné, votre Dinoz perds de la vie chaque jour. Vous devez le soigner au moyen d'un antidote (voir la boutique) de façon à annuler cet effet.</li>
+	</ul>
+
+	<!-- ********************************************************************** -->
+
+	<a name="clans"></a><h2>Les Clans</h2>
+
+	<p>
+		Les Clans sont des groupes de joueurs. Appartenir à un Clan vous permet de discuter avec d'autres joueurs de Dinoparc, d'échanger des techniques et des astuces, et de vous entraider. Vous pouvez rejoindre un Clan ou créer votre propre Clan à partir du menu <a href="/?r=fbkv4c;a=clan">Clans</a>.
+	</p>
+
+	<p>
+		De façon à éviter un trop grand nombre de Clans vides, la création de Clans est payante. De même, pour garantir que les joueurs soient motivés quand ils rejoignent un Clan, et pour éviter les problemes de modération, rejoindre un clan coute <span class="money" title="1000 pièces">1000 <img src="img/icons/tiny_coin.gif"></span>.
+	</p>
+
+	<p>
+		Pour rejoindre un Clan, vous devez d'abord déposer une demande d'adhésion. Vous ne pouvez déposer qu'une demande sur un Clan donné, mais vous pouvez déposer plusieurs demandes sur différents Clans. Chaque demande vous coutera <span class="money" title="1000 pièces">1000 <img src="img/icons/tiny_coin.gif"></span>. Vous pouvez à tout moment annuler une demande, et les pièces vous seront remboursées. Si une demande est rejetée, vous récupérez vos pièces. Dés qu'une demande est acceptée, toutes les autres sont annulées (et vous récupérez leurs pieces), et vous faites désormais partie d'un Clan.
+	</p>
+
+	<p>
+		Attention ! Le créateur d'un Clan peut vous renvoyer à tout moment s'il estime que votre attitude n'est pas convenable. Merci de faire attention aux messages que vous envoyez. <b>En aucun cas</b> les pièces utilisées pour rejoindre un Clan ne peuvent être remboursées en cas de renvoi de ce Clan.
+	</p>
+
+	<a name="cwar"></a>
+	<h3>Les Guerres de Clans</h3>
+
+	<p>
+		Les Clans sont en compétition au sein de la <b>Guerre des Clans</b>. Chaque Clan a une <b>réputation</b> et un nombre de <b>points</b> au classement général. Chaque Clan possède aussi un <b>Totem</b> qu'il faudra satisfaire pour pouvoir <b>déclencher une Guerre</b>.
+	</p>
+
+	<p>
+		Le <b>Totem</b> du Clan est une divinité protectrice. Elle demande un certain nombre d'élements en sacrifice pour être satisfaite. Tous les membres du Clan peuvent participer pour compléter le Totem. Pour cela, il suffit que votre Dinoz apprenne la compétence <b>Fouiller</b>. Cette compétence est disponible à l'apprentissage trés rapidement : dés que l'une des cinq compétences de base (Force, Endurance, Perception, Agilité, Intelligence) a atteint le Niveau 4.
+	</p>
+
+	<p>
+		Une fois <b>Fouiller</b> appris, votre Dinoz peut utiliser cette compétence pour trouver des <b>éléments</b> permettant de <b>compléter le Totem</b>. Plus votre niveau de Fouiller est haut et plus vous trouverez des élements rares. Ainsi, un niveau de Fouiller à 5 (le maximum) vous donne la possibilité de trouver tous les éléments nécessaires au Totem.
+	</p>
+
+	<p>
+		Une fois le <b>Totem</b> complété, c'est au Créateur du Clan de <b>déclarer la Guerre</b> à un Clan adverse. Une fois l'action effectuée, le <b>Totem</b> réclame une nouvelle offrande.
+	</p>
+
+	<p>
+		Un Clan ne peut être en Guerre qu'avec <b>un seul</b> autre Clan mais peut être attaqué par <b>plusieurs</b> Clans. Ces informations (<i>en guerre avec</i> et <i>attaqué par</i>) sont visibles sur la fiche du Clan.
+	</p>
+
+	<p>
+		Une fois en Guerre, le créateur du Clan peut à tout moment <b>abandonner</b> la Guerre sans pénalité. Si vous voulez recommancer la Guerre plus tard, il faudra remplir à nouveau un Totem et repartir avec 0 points.
+	</p>
+
+	<a name="cpoints"></a>
+	<h3>Les Points de Guerre</h3>
+
+	<p>
+	Pour remporter une Guerre, vous devez accumuler un certain nombre de <b>points</b>.
+	</p>
+
+	<p>
+		<b>Quand un Clan A attaque un Clan B</b>, tous les Dinoz du Clan A peuvent attaquer les Dinoz du clan B quelque soit le danger et la différence de niveau. Ils doivent cependant se trouver au même endroit. Si au contraire votre Clan est <b>attaqué</b>, vous ne pouvez pas gagner de points. Par contre en vous défendant bien vous empecherez le Clan adverse de gagner des points et il devra abandonner la Guerre.
+	</p>
+
+	<p>
+		Voici un récapitulatif sur les gains et perte des points lors d'une Guerre :
+	</p>
+
+	<ul>
+	<li>Vous gagnez <b>un point</b> quand vous battez un Dinoz ennemi.</li>
+	<li>Vous perdez <b>un point</b> quand vous ête battu par un Dinoz ennemi.</li>
+	<li>Vous gagnez <b>deux points</b> quand vous mettez un Dinoz ennemi KO.</li>
+	<li>Vous perdez <b>deux points</b> quand votre Dinoz est mis KO par un Dinoz ennemi.</li>
+	<li>Vous gagnez <b>10%</b> des points en piétinant le Clan adverse si ses Dinoz sont tous morts ou en Tournoi (possible toutes les 90 minutes).</li>
+	<li>Une guerre gagnée est <b>annulée</b> si un Clan contre lequel vous avez gagné remporte à son tour une Guerre contre vous, et vous perdrez donc les points correspondant.</li>
+	</ul>
+
+	<p>
+		Une fois que le maximum de point nécessaire est atteint, la Guerre est gagnée.
+	</p>
+
+<!--
+	<a name="cgods"></a>
+	<h3>Les Dieux</h3>
+
+	<p>
+		Il existe trois temples dans Dinoland, chaque temple permettant a votre Dinoz de devenir le Disciple d'un des trois Dieux : Ubountos, Apoltron et Arctarux, tout en obtenant un bonus à ses éléments.
+	</p>
+
+	<p>
+		Sur la page d'un Clan, dans la rubrique <b>Guerre</b>, sont détaillés le nombre de Dinoz Disciples de chaque Dieu pour ce Clan :
+	</p>
+
+	<ul>
+		<li>A partir du moment ou plus de <b>50%</b> des Dinoz du Clan sont les Disciples d'un Dieu, ce Dieu deviens le Dieu du Clan.</li>
+		<li>A partir de <b>70%</b> (et d'un certain nombre de Dinoz), ce Clan est <b>Fidèle</b> au Dieu.</li>
+		<li>A partir de <b>95%</b> (et d'un certain nombre de Dinoz), ce Clan est <b>Fanatique</b> de ce Dieu.</li>
+	</ul>
+
+	<p>
+		Cette évaluation du nombre de Disciples et le choix du Dieu du Clan s'effectue tous les jours aux alentours de minuit.
+	</p>
+
+	<p>
+		Pour profiter des <b>Bonus de Points</b> liés au Dieux, vous devez réunir les conditions suivantes :
+	</p>
+
+	<ul>
+		<li>Votre Clan doit avoir un Dieu</li>
+		<li>Votre Dinoz doit être Disciple de ce même Dieu</li>
+		<li>Votre Dinoz doit attaquer et remporter le combat contre un Clan adverse</li>
+	</ul>
+
+	<p>
+		Quand ces conditions sont remplies, vous bénéficiez du Bonus de Points suivant :
+	</p>
+
+	<ul>
+		<li><b>1 point</b> supplémentaire si le Clan adverse n'a pas de Dieu</li>
+		<li><b>2 points</b> supplémentaires dans l'un des cas suivants :
+			<ul>
+				<li>votre Dieu est <b>Ubountos</b> et celui du Clan adverse est <b>Apoltron</b></li>
+				<li>votre Dieu est <b>Apoltron</b> et celui du Clan adverse est <b>Actarux</b></li>
+				<li>votre Dieu est <b>Actarux</b> et celui du Clan adverse est <b>Ubountos</b></li>
+			</ul>
+		</li>
+		<li>
+			Ces 2 points sont augmentés de la façon suivante :
+			<ul>
+				<li><b>3 points</b> si votre Clan est <b>Fidèle</b> au Dieu</li>
+				<li><b>4 points</b> si votre Clan est <b>Fanatique</b> du Dieu</li>
+			</ul>
+		</li>
+	</ul>
+
+	<p>
+		Ainsi par exemple si votre Clan est Fidèle à Ubountos (70% de Dinoz ayant Ubountos comme Disciple) alors vos Dinoz Disciples d'Ubountos gagneront :
+	</p>
+
+	<ul>
+		<li>1 point par victoire dans un combat contre un Clan n'ayant pas de Dieu</li>
+		<li>3 points par victoire dans un combat contre un Clan ayant Apoltron comme Dieu</li>
+	</ul>
+
+	<p>
+		Les Dinoz peuvent à tout moment changer de Dieu en devenant Disciple d'un autre Dieu. Il suffit pour celà d'amener votre Dinoz dans le temple du Dieu voulu. Celà permet à chaque Clan de déterminer sa stratégie dans la Guerre des Clans.
+	</p>
+-->
+
+	<a name="cally"></a>
+	<h3>Les Alliances entre Clans</h3>
+
+	<p>
+		Il est possible de proposer des Alliances à d'autres Clans. Ceux ci peuvent accepter ou refuser l'Alliance. Une fois l'alliance acceptée, vous commencez a gagner des <b>points</b> de Bonus d'Alliance.
+	</p>
+
+	<p>
+		Le nombre d'alliances possibles est limité par le nombre de Guerres remportées par un Clan (hors trahisons) divisées par 20. Un clan ne peut pas avoir plus de 3 alliances.
+	</p>
+
+	<p>
+		Ces points sont calculés en fonction du temps écoulé depuis l'acceptation des l'alliance, et de la réputation du Clan avec lequel vous êtes allié. Ainsi au bout de 10 jours, votre Alliance vous rapporte 50% de la réputation du Clan, jusqu'au maximum de 150% de la réputation du Clan allié au bout de 30 jours.
+	</p>
+
+	<p>
+		Une fois alliés, les deux Clans ne peuvent plus se déclarer la Guerre. 
+	</p>
+
+	<p>
+		Une Alliance peut a tout moment être annulée par l'un des deux Clans. Les deux clans perdront alors leur bonus de points.
+	</p>
+
+	<p>
+		De plus, au bout de 10 jours, une alliance peut être <b>trahie</b>. Dans ce cas, le Clan effectuant la trahison va automatiquement remporter une Guerre contre le Clan auquel il était allié. Attention aux représailles ! Une guerre gagnée par trahison ne compte pas dans le calcul de la réputation du Clan.
+	</p>
+
+	<a name="cranks"></a>
+	<h3>Le Classement des Clans</h3>
+
+	<p>
+		Les <b>points</b> de votre Clan au Classement Général sont égaux à la somme des <b>réputations</b> des Clans contre lesquels vous avez gagné une Guerre, multiplié par votre <b>multiplicateur</b> de réputation.
+	</p>
+
+	<p>
+		Suivant, votre réputation, le multiplicateur est le suivant :
+	</p>
+	<ul>
+		<li><b>Horrible</b> en dessous de 99 : <b>x1</b></li>
+		<li><b>Mauvaise</b> à partir de <font color="grey">100</font>
+ : <b>x2</b></li>
+		<li><b>Moyenne</b> à partir de <font color="orange">200</font>
+ : <b>x3</b></li>
+		<li><b>Bonne</b> à partir de <font color="blue">300</font>
+ : <b>x4</b></li>
+		<li><b>Excellente</b> à partir de <font color="green">450</font>
+ : <b>x5</b></li>
+		<li>La réputation peut aller jusqu'à <font color="green">700</font>
+ au maximum.</li>
+	</ul>
+
+	<p>
+		Ainsi, si votre Clan X ayant une réputation de <font color="grey">150</font>
+ a gagné deux guerres contre les Clans Y et Z, alors vos points seront calculé avec <em>(Réputation de X + Réputation de Y) x 2</em>. La <b>réputation</b> d'un Clan évolue au fur et à mesure, et donc les points d'un Clan aussi. L'ensemble est recalculé <b>tous les soirs à minuit</b>.
+	</p>
+
+	<p>
+		Si votre Clan X a perdu une guerre contre le Clan Y, il vous suffit de gagner une Guerre contre lui pour que cette défaite soit oubliée. A la place, vous aurez une victoire ce qui aura pour double effet de faire perdre des points au Clan Y et de vous en faire gagner.
+	</p>
+
+	<p>
+		La meilleur méthode pour gagner consiste a garder une bonne réputation (en empechant ou regagnant les défaites) tout en gagnant de nombreuses guerres contre des Clans réputés.
+	</p>
+
+	<p>
+		Important : pour une guerre gagnée donnée, vous ne pouvez pas obtenir plus de 2 fois plus de points que votre réputation actuelle.
+	</p>
+
+	<!-- ********************************************************************** -->
+
+	<a name="quests"></a><h2>Les Quêtes</h2>
+
+	<p>
+		La Quête des Kabukis, les Mystères de l'Ile de Jazz, le Secret des Ouistitis, les Dinoz Sombres.... de nombreuses quêtes vous attendent sur Dinoparc.
+	</p>
+
+	<p>
+		 N'hésitez pas à contacter d'autres joueurs en utilisant la Messagerie ou à rejoindre un Clan pour échanger des informations.
+	</p>
+
+	<!-- ********************************************************************** -->
+
+	<a name="questions"></a><h2>Questions souvent posées</h2>
+
+	<ul>
+	<li>
+		<strong>Dinoparc est-il un jeu gratuit ?</strong>
+		<p>
+		Oui, Dinoparc est un jeu gratuit car l'inscription est gratuite et le jeu est accessible sans aucun frais d'abonnement. Des pièces <img src="/img/icons/tiny_coin.gif"/> vous sont offertes chaque jour, et c'est simplement si vous désirez en obtenir plus rapidement que différents moyens de paiements sont disponibles, tout en restant non obligatoires.
+		</p>
+	</li>
+	<li>
+		<strong>Comment avoir plus d'argent ?</strong>
+		<p>
+		Chaque jour vous gagnez <span class="money" title="200 pièces">200 <img src="img/icons/tiny_coin.gif"></span>. Vous gagnez aussi des pièces lors des combats. De plus, vous pouvez utiliser la <a href="/?r=fbkv4c;a=bank">Banque</a> de Dinoparc pour obtenir plus de Pièces. Enfin, le <a href="/?r=fbkv4c;a=parrain">Parrainage</a> vous permet de gagner des pièces tout en faisant découvrir le site à vos amis.
+		</p>
+	</li>
+	<li>
+		<strong>Je ne vois pas les images des dinoz ou la carte s'afficher, comment je fais ?</strong>
+		<p>
+		Certains utilisateurs peuvent rencontrer des problèmes d'affichage. Nous vous recommandons :
+		</p>
+		<ul>
+		<li>
+		Utiliser le navigateur Firefox (téléchargable gratuitement à partir de <a href="http://www.mozilla-europe.org/fr/products/firefox/" target="_blank">ce lien</a>) pour pouvoir profiter du site.
+		</li>
+		<li>
+		Installer ou mettre à jour le plugin Flash de votre navigateur.
+		</li>
+		<li>
+		Vider la cache de votre navigateur.
+		</li>
+		</ul>
+		<p>
+		Si vous avez des questions sur votre navigateur, veuillez consulter l'aide de votre navigateur.
+		</p>
+	</li>
+	<li>
+		<strong>Peut-on obtenir des Bons du Trésor <img src="/img/icons/tiny_bill.gif"/> contre des pièces <img src="/img/icons/tiny_coin.gif"/> ?</strong>
+		<p>
+			Chaque joueur de Dinoparc obtenant gratuitement à l'inscription des pieces gratuites, il n'est pas possible d'autoriser la conversion de pièces en bons, où celà encouragerait grandement les multicomptes, qui sont interdits par le reglement du site.
+		</p>
+	</li>
+	<li>
+		<strong>Mon Dinoz meurt et je n'ai pas assez d'argent pour m'acheter des potions. Comment faire ?</strong>
+		<p>
+		La première solution consiste à obtenir des pièces grâce à la boutique de Dinoparc. Une autre méthode est de ne pas attaquer avec votre Dinoz. Ainsi vous garderez un niveau de Danger assez bas et vous avez donc moins de chances d'être attaqué en retour. Profitez de ce répit pour économiser de quoi soigner votre Dinoz.
+		</p>
+	</li>
+	<li>
+		<strong>Je pars en vacances, comment je fais pour que mon Dinoz ne meure pas ?</strong>
+		<p>
+		Si vous n'êtes pas là pour vous occuper de votre Dinoz, celui-ci n'attaquera pas. Il gardera donc un niveau de Danger assez bas et risque peu de se faire attaquer. S'il est en bonne santé lors de votre départ, il devrait donc survivre à l'absence de son Maître sans aucun problème.
+		</p>
+	</li>
+	<li>
+		<strong>Puis-je créer plusieurs comptes Dinoparc ?</strong>
+		<p>
+		Comme indiqué lors de l'inscription, un seul compte est autorisé par personne. Vous ne pouvez donc posséder qu'un seul compte. Par contre vous pouvez le remettre à zéro si vous voulez recommencer le jeu, à partir de la rubrique <a href="/?r=fbkv4c;a=user">Mon Compte</a>.
+		</p>
+	</li>
+	<li>
+		<strong>Puis-je prêter/donner/vendre mon compte à quelqu'un d'autre ?</strong>
+		<p>
+		Un compte ne peut être utilisé que par la personne qui l'a créé. Toute utilisation d'un compte par plusieurs personnes sera considéré comme du multicompte et vous risquez donc la suppression de tous vos comptes sans préavis.
+		</p>
+	</li>
+	<li>
+		<strong>Quelqu'un me demande mon mot de passe ou des codes pour ... ?</strong>
+		<p>
+		Quelle que soit la raison, ne donnez <strong>JAMAIS</strong> votre mot de passe ou des codes a qui que ce soit. En particulier, certaines personnes vous feront croire qu'ils veulent vous vendre quelquechose qu'ils ne possèdent pas, dans le but de voler votre compte ou de vous arnaquer. Ne les croyez jamais et rapportez toute tentative frauduleuse auprès de l'équipe de Dinoparc.
+		</p>
+	</li>
+	<li>
+		<strong>Comment changer mon mot de passe ?</strong>
+		<p>
+		En accédant à la rubrique <a href="/?r=fbkv4c;a=user">Mon Compte</a>.
+		</p>
+	</li>
+	<li>
+		<strong>Comment changer adresse email ?</strong>
+		<p>
+		En accédant à la rubrique <a href="/?r=fbkv4c;a=user">Mon Compte</a> vous pouvez définir votre email. Si un email est déjà  défini, il ne peut pas être changé directement. Il faudra que vous envoyiez un mail au support technique (lien en bas de la page) pour demander le changement.
+		</p>
+	</li>
+	<li>
+		<strong>Comment me désinscrire de Dinoparc ?</strong>
+		<p>
+		Si vous pensez n'avoir pas assez bien joué et que vous voulez recommencer à zéro, vous pouvez remettre votre compte à zéro en accédant à la section <a href="/?r=fbkv4c;a=user">Mon Compte</a> à gauche. Vous pouvez aussi vous désinscrire à partir de <a href="/?r=fbkv4c;a=user">Mon Compte</a> ce qui entrainera la suppression immédiate et irréversible de votre compte utilisateur.
+		</p>
+	</li>
+	<li>
+		<strong>Je ne vois plus mon Clan</strong>
+		<p>
+		Soit vous avez été renvoyé du Clan, soit le Clan a été dissout par son créateur. Dans tous les cas vous avez perdu vos <span class="money" title="1000 pièces">1000 <img src="img/icons/tiny_coin.gif"></span> et vous ne pouvez pas les récuperer. Essayez de vous inscrire à un Clan plus accueillant.
+		</p>
+	</li>
+	<li>
+		<strong>Combien de temps dure un Tournoi ?</strong>
+		<p>
+		Les Tournois sont permanents, ils durent jusqu'à ce que vous les quittiez.
+		</p>
+	</li>
+	</ul>
+
+	<!-- ********************************************************************** -->
+
+	<a name="reset"></a><h2>Et si je fais une erreur ?</h2>
+
+	<p>
+		Comme pour tout jeu, il peut arriver de se tromper. Malheureusement, il n'est que très rarement possible de revenir en arrière sur vos actions. Si à un moment du jeu vous préférez tout recommencer depuis le début, c'est très simple. Allez sur <strong>Mon Compte</strong> dans le menu de gauche et sélectionnez <strong>Recommencer la Partie</strong>. Attention ! Vous perdrez tous vos Dinoz ainsi que votre Inventaire, vos Pièces, et les objets de Collection en validant cette commande. Il n'existe pas de retour en arrière possible, alors soyez certain que c'est bien ce que vous voulez avant de valider.
+	</p>
+
+	<p>
+	&nbsp;
+	</p>
+
+</div>
+
+                </td>
+                </tr>
+             </table>
+         </td>
+    </tr>
+    <tr>
+        <td class="siteFooter">
+        	<div>
+        		<a href="/?r=fbkv4c;a=news">Nouveautés</a> &middot;
+        		<a href="/?r=fbkv4c;a=guide">Guide du jeu</a> &middot;
+        		<a href="http://support.motion-twin.com/go?site=dparc;lang=fr;sid=Qc6mLgcaDKgQjv4DZ3Onvm27rJpK37YG" target="_blank">Support technique</a> &middot;
+        		<a href="/?r=fbkv4c;a=password;mail=1">Oubli de mot de passe</a> &middot;
+        		<a href="http://www.motion-twin.com/cgu.php?s=dp" target="_blank">Règlement</a> &middot;
+        		<a href="http://www.motion-twin.com/securite" target="_bank">Sécurité</a>
+        	</div>
+        	<div>&copy; 2009, <a href="http://www.motion-twin.com"><img src="/img/motiontwin.gif" alt="Motion Twin"> </a> &middot; Tous droits réservés, Dinoparc est une marque déposée.</div>
+        </td>
+    </tr>
+    </table>
+</div>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-114594-7";
+urchinTracker();
+</script>
+
+</body>
+</html>

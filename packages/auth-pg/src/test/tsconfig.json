@@ -17,6 +17,9 @@
       "path": "../../../auth-test/src/lib"
     },
     {
+      "path": "../../../dinoparc-store-pg/src/lib"
+    },
+    {
       "path": "../../../email-in-memory/src/lib"
     },
     {

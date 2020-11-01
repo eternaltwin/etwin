@@ -15,6 +15,15 @@
       "path": "../core/src/lib"
     },
     {
+      "path": "../dinoparc-client-http/src/lib"
+    },
+    {
+      "path": "../dinoparc-store-mem/src/lib"
+    },
+    {
+      "path": "../dinoparc-store-pg/src/lib"
+    },
+    {
       "path": "../forum-in-memory/src/lib"
     },
     {

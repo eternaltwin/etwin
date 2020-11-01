@@ -5,14 +5,21 @@ import { AuthContext } from "../auth/auth-context.js";
 import { AuthType } from "../auth/auth-type.js";
 import { AuthService } from "../auth/service.js";
 import { ObjectType } from "../core/object-type.js";
+import { DinoparcClientService } from "../dinoparc/client.js";
+import { DinoparcStore } from "../dinoparc/store.js";
 import { HammerfestArchiveService } from "../hammerfest/archive.js";
 import { HammerfestClientService } from "../hammerfest/client.js";
 import { LinkService } from "../link/service.js";
+import { VersionedDinoparcLink } from "../link/versioned-dinoparc-link.js";
 import { VersionedHammerfestLink } from "../link/versioned-hammerfest-link.js";
 import { VersionedTwinoidLink } from "../link/versioned-twinoid-link";
 import { TokenService } from "../token/service.js";
 import { TwinoidArchiveService } from "../twinoid/archive.js";
 import { GetUserByIdOptions } from "./get-user-by-id-options.js";
+import { LinkToDinoparcMethod } from "./link-to-dinoparc-method.js";
+import { LinkToDinoparcOptions } from "./link-to-dinoparc-options.js";
+import { LinkToDinoparcWithCredentialsOptions } from "./link-to-dinoparc-with-credentials-options.js";
+import { LinkToDinoparcWithRefOptions } from "./link-to-dinoparc-with-ref-options.js";
 import { LinkToHammerfestMethod } from "./link-to-hammerfest-method.js";
 import { LinkToHammerfestOptions } from "./link-to-hammerfest-options.js";
 import { LinkToHammerfestWithCredentialsOptions } from "./link-to-hammerfest-with-credentials-options.js";
@@ -25,6 +32,8 @@ import { SimpleUserService } from "./simple.js";
 
 export interface UserServiceOptions {
   auth: AuthService;
+  dinoparcClient: DinoparcClientService;
+  dinoparcStore: DinoparcStore;
   hammerfestArchive: HammerfestArchiveService;
   hammerfestClient: HammerfestClientService;
   link: LinkService;
@@ -36,6 +45,8 @@ export interface UserServiceOptions {
 
 export class UserService {
   readonly #auth: AuthService;
+  readonly #dinoparcClient: DinoparcClientService;
+  readonly #dinoparcStore: DinoparcStore;
   readonly #hammerfestArchive: HammerfestArchiveService;
   readonly #hammerfestClient: HammerfestClientService;
   readonly #link: LinkService;
@@ -46,6 +57,8 @@ export class UserService {
 
   public constructor(options: Readonly<UserServiceOptions>) {
     this.#auth = options.auth;
+    this.#dinoparcClient = options.dinoparcClient;
+    this.#dinoparcStore = options.dinoparcStore;
     this.#hammerfestArchive = options.hammerfestArchive;
     this.#hammerfestClient = options.hammerfestClient;
     this.#link = options.link;
@@ -63,6 +76,54 @@ export class UserService {
     const hasPassword = await this.#auth.hasPassword(simpleUser.id);
     const links = await this.#link.getVersionedLinks(simpleUser.id);
     return {...simpleUser, hasPassword, links};
+  }
+
+  async linkToDinoparc(acx: AuthContext, options: Readonly<LinkToDinoparcOptions>): Promise<VersionedDinoparcLink> {
+    switch (options.method) {
+      case LinkToDinoparcMethod.Credentials:
+        return this.linkToDinoparcWithCredentials(acx, options);
+      case LinkToDinoparcMethod.Ref:
+        return this.linkToDinoparcWithRef(acx, options);
+      default:
+        throw new Error("AssertionError: Unexpected `LinkToHammerfestMethod`");
+    }
+  }
+
+  async linkToDinoparcWithCredentials(acx: AuthContext, options: Readonly<LinkToDinoparcWithCredentialsOptions>): Promise<VersionedDinoparcLink> {
+    if (acx.type !== AuthType.User) {
+      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    }
+    if (acx.user.id !== options.userId) {
+      throw new Error("Forbidden");
+    }
+    const dparcSession = await this.#dinoparcClient.createSession({
+      server: options.dinoparcServer,
+      username: options.dinoparcUsername,
+      password: options.dinoparcPassword,
+    });
+    await this.#dinoparcStore.touchShortUser(dparcSession.user);
+    await this.#token.touchDinoparc(dparcSession.user.server, dparcSession.key, dparcSession.user.id);
+    return await this.#link.linkToDinoparc({
+      userId: acx.user.id,
+      dinoparcServer: dparcSession.user.server,
+      dinoparcUserId: dparcSession.user.id,
+      linkedBy: acx.user.id,
+    });
+  }
+
+  async linkToDinoparcWithRef(acx: AuthContext, options: Readonly<LinkToDinoparcWithRefOptions>): Promise<VersionedDinoparcLink> {
+    if (acx.type !== AuthType.User) {
+      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    }
+    if (!acx.isAdministrator) {
+      throw new Error("Forbidden");
+    }
+    return await this.#link.linkToDinoparc({
+      userId: options.userId,
+      dinoparcServer: options.dinoparcServer,
+      dinoparcUserId: options.dinoparcUserId,
+      linkedBy: acx.user.id,
+    });
   }
 
   async linkToHammerfest(acx: AuthContext, options: Readonly<LinkToHammerfestOptions>): Promise<VersionedHammerfestLink> {

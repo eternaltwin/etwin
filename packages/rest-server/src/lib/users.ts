@@ -73,6 +73,14 @@ export function createUsersRouter(api: Api): Router {
     const user: User = {
       ...userAndSession.user,
       links: {
+        dinoparcCom: {
+          current: null,
+          old: [],
+        },
+        enDinoparcCom: {
+          current: null,
+          old: [],
+        },
         hammerfestEs: {
           current: null,
           old: [],
@@ -82,6 +90,10 @@ export function createUsersRouter(api: Api): Router {
           old: [],
         },
         hfestNet: {
+          current: null,
+          old: [],
+        },
+        spDinoparcCom: {
           current: null,
           old: [],
         },

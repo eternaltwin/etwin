@@ -206,6 +206,14 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
         // Eternal-Twin is linked to Hammerfest
         const actual: VersionedLinks = await api.link.getVersionedLinks(userAndSession.user.id);
         const expected: VersionedLinks = {
+          dinoparcCom: {
+            current: null,
+            old: [],
+          },
+          enDinoparcCom: {
+            current: null,
+            old: [],
+          },
           hammerfestEs: {
             current: null,
             old: [],
@@ -231,6 +239,10 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
             old: [],
           },
           hfestNet: {
+            current: null,
+            old: [],
+          },
+          spDinoparcCom: {
             current: null,
             old: [],
           },

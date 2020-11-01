@@ -5,13 +5,13 @@ import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { $DinoparcServer, DinoparcServer } from "./dinoparc-server.js";
 import { $DinoparcUserId, DinoparcUserId } from "./dinoparc-user-id.js";
 
-export interface GetDinoparcUserByIdOptions {
+export interface GetDinoparcUserOptions {
   server: DinoparcServer;
   id: DinoparcUserId;
   time?: Date;
 }
 
-export const $GetHammerfestUserByIdOptions: RecordIoType<GetDinoparcUserByIdOptions> = new RecordType<GetDinoparcUserByIdOptions>({
+export const $GetDinoparcUserOptions: RecordIoType<GetDinoparcUserOptions> = new RecordType<GetDinoparcUserOptions>({
   properties: {
     server: {type: $DinoparcServer},
     id: {type: $DinoparcUserId},

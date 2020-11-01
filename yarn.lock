@@ -1823,6 +1823,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-test": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/hammerfest-archive-in-memory": "workspace:*"
@@ -1856,6 +1857,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-test": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
@@ -1918,6 +1920,99 @@ __metadata:
     kryo-json: ^0.11.0
     kryo-qs: ^0.11.0
     kryo-testing: ^0.11.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/dinoparc-client-http@workspace:*, @eternal-twin/dinoparc-client-http@workspace:packages/dinoparc-client-http":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/dinoparc-client-http@workspace:packages/dinoparc-client-http"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/cookiejar": ^2.1.2
+    "@types/mocha": ^8.2.0
+    "@types/node": ^14.14.14
+    "@types/superagent": ^4.1.10
+    chai: ^4.2.0
+    cookiejar: ^2.1.2
+    domhandler: ^4.0.0
+    domutils: ^2.4.4
+    eslint: ^7.15.0
+    furi: ^2.0.0
+    htmlparser2: ^6.0.0
+    iconv-lite: ^0.6.2
+    kryo: ^0.11.1
+    kryo-json: ^0.11.0
+    mocha: ^8.2.1
+    superagent: ^6.1.0
+    typescript: ^4.1.3
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/dinoparc-client-mem@workspace:*, @eternal-twin/dinoparc-client-mem@workspace:packages/dinoparc-client-mem":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/dinoparc-client-mem@workspace:packages/dinoparc-client-mem"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/dinoparc-store-mem@workspace:*, @eternal-twin/dinoparc-store-mem@workspace:packages/dinoparc-store-mem":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/dinoparc-store-mem@workspace:packages/dinoparc-store-mem"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-test": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/dinoparc-store-pg@workspace:*, @eternal-twin/dinoparc-store-pg@workspace:packages/dinoparc-store-pg":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/dinoparc-store-pg@workspace:packages/dinoparc-store-pg"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-test": "workspace:*"
+    "@eternal-twin/etwin-pg": "workspace:*"
+    "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/pg-db": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/dinoparc-store-test@workspace:*, @eternal-twin/dinoparc-store-test@workspace:packages/dinoparc-store-test":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/dinoparc-store-test@workspace:packages/dinoparc-store-test"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/local-config": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
     mocha: ^8.2.1
     typescript: ^4.1.2
   languageName: unknown
@@ -2059,6 +2154,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-in-memory": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/forum-test": "workspace:*"
@@ -2089,6 +2185,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
@@ -2137,7 +2234,6 @@ __metadata:
   dependencies:
     "@eternal-twin/core": "workspace:*"
     "@eternal-twin/hammerfest-archive-test": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2155,7 +2251,6 @@ __metadata:
     "@eternal-twin/core": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
     "@eternal-twin/hammerfest-archive-test": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@types/chai": ^4.2.14
@@ -2192,21 +2287,21 @@ __metadata:
     "@eternal-twin/core": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/cookiejar": ^2.1.2
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
+    "@types/mocha": ^8.2.0
+    "@types/node": ^14.14.14
     "@types/superagent": ^4.1.10
     chai: ^4.2.0
     cookiejar: ^2.1.2
-    domhandler: ^3.3.0
-    domutils: ^2.4.2
-    eslint: ^7.14.0
+    domhandler: ^4.0.0
+    domutils: ^2.4.4
+    eslint: ^7.15.0
     furi: ^2.0.0
-    htmlparser2: ^5.0.1
+    htmlparser2: ^6.0.0
     kryo: ^0.11.1
     kryo-json: ^0.11.0
     mocha: ^8.2.1
     superagent: ^6.1.0
-    typescript: ^4.1.2
+    typescript: ^4.1.3
   languageName: unknown
   linkType: soft
 
@@ -2231,6 +2326,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-in-memory": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/hammerfest-archive-in-memory": "workspace:*"
@@ -2260,6 +2356,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
@@ -2462,6 +2559,9 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-http": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
+    "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/email-console": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-etwin": "workspace:*"
@@ -2518,6 +2618,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-in-memory": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/hammerfest-archive-in-memory": "workspace:*"
@@ -2546,6 +2647,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
@@ -2591,6 +2693,7 @@ __metadata:
   resolution: "@eternal-twin/token-in-memory@workspace:packages/token-in-memory"
   dependencies:
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/hammerfest-archive-in-memory": "workspace:*"
     "@eternal-twin/token-test": "workspace:*"
     "@types/chai": ^4.2.14
@@ -2608,6 +2711,7 @@ __metadata:
   resolution: "@eternal-twin/token-pg@workspace:packages/token-pg"
   dependencies:
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
     "@eternal-twin/hammerfest-archive-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
@@ -2761,6 +2865,9 @@ __metadata:
     "@eternal-twin/auth-in-memory": "workspace:*"
     "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-http": "workspace:*"
+    "@eternal-twin/dinoparc-store-mem": "workspace:*"
+    "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/email-console": "workspace:*"
     "@eternal-twin/email-template-etwin": "workspace:*"
     "@eternal-twin/forum-in-memory": "workspace:*"
@@ -3369,6 +3476,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/mocha@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "@types/mocha@npm:8.2.0"
+  checksum: 87a6cc62fa8bb4c0d3c9447c7aa316b600435fa969822e5a786abc9df78e4143f71906480684dbf9ae7b8b8849dfda4783828c47e5415d370371db84225a05ff
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*":
   version: 14.11.5
   resolution: "@types/node@npm:14.11.5"
@@ -3380,6 +3494,13 @@ __metadata:
   version: 14.14.10
   resolution: "@types/node@npm:14.14.10"
   checksum: b793aa15e8c08df50d0f77dc0fe7a93bc2e09bfa5a424841d4dba045d6ae8503b7ffe89b773ffe197c9b637c898bb22e78442e21ff4b33414d35160d9c3f8a9b
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^14.14.14":
+  version: 14.14.14
+  resolution: "@types/node@npm:14.14.14"
+  checksum: dea8d257d49d68c65dafa6ebde9453bb61b67febc92ed8d7e38fce8b95f18d32ccffb3ab37021f9be8d1e5c65cd59cdb7dd8981d9b89b2be103b3012aee09fcf
   languageName: node
   linkType: hard
 
@@ -6725,6 +6846,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"domelementtype@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "domelementtype@npm:2.1.0"
+  checksum: c3e63b6c94bf74d6375e12370f612d1cd61c0d3bc21b46684d93c797b3924de2e84278b0b5cdf3dce21f64ee94c34a005994f373c0e420759ae1856f075f0f57
+  languageName: node
+  linkType: hard
+
 "domexception@npm:^2.0.1":
   version: 2.0.1
   resolution: "domexception@npm:2.0.1"
@@ -6734,12 +6862,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"domhandler@npm:^3.0.0, domhandler@npm:^3.3.0":
+"domhandler@npm:^3.0.0":
   version: 3.3.0
   resolution: "domhandler@npm:3.3.0"
   dependencies:
     domelementtype: ^2.0.1
   checksum: dcc53af0ac02f1fc30abf3a794e31c13ad5e47dd00eeb06465211d854cba11c8db60eb65f4f11410fcd332a850eaca394cdd210805628b4f82d1cbcec78c8368
+  languageName: node
+  linkType: hard
+
+"domhandler@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "domhandler@npm:4.0.0"
+  dependencies:
+    domelementtype: ^2.1.0
+  checksum: 22cc8e1335728a7c49434d1d12ff1563aea758c26c8ebf50fcf9e28ceb2bd0e5a15518d69abdb5db37aa7c0c347c8f68d323d12fc744a68853fb7641cbdcec89
   languageName: node
   linkType: hard
 
@@ -6760,14 +6897,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"domutils@npm:^2.4.2":
-  version: 2.4.2
-  resolution: "domutils@npm:2.4.2"
+"domutils@npm:^2.4.4":
+  version: 2.4.4
+  resolution: "domutils@npm:2.4.4"
   dependencies:
     dom-serializer: ^1.0.1
     domelementtype: ^2.0.1
-    domhandler: ^3.3.0
-  checksum: 43d7e55714e6597982fc1088e1b5136ede8068b47d831ec9a9047e4ca49a480f3a6e289e636768d0d29077164888e44110cbd19079f780f91a1362f3b77adb73
+    domhandler: ^4.0.0
+  checksum: abee29c1aade78506fb9ccb7bd7a2720fb18a87f230a7f7f2e3438458c27dee03b8abad4f3e448ed39da86d2a573e8bc7323d8dd0f2a473f26a455c017e303ce
   languageName: node
   linkType: hard
 
@@ -8730,15 +8867,15 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"htmlparser2@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "htmlparser2@npm:5.0.1"
+"htmlparser2@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "htmlparser2@npm:6.0.0"
   dependencies:
     domelementtype: ^2.0.1
-    domhandler: ^3.3.0
-    domutils: ^2.4.2
+    domhandler: ^4.0.0
+    domutils: ^2.4.4
     entities: ^2.0.0
-  checksum: c3564b7d26b5e894ee9aae9132ddf23ce79c4d31881b75aef14224b5d89c2e17dc638fa77c0a576e0fcc4c73cc608890bc63b4452f79d7960d2b4af836247fc0
+  checksum: 03819682d894316d1f8d1a11c9212bdf9c8b2e7a2adc0e19262ac8105d0a4d0577caa1f40bf52ac4876961720342e9f12b86dbf2488f0a8263cf278c03129833
   languageName: node
   linkType: hard
 
@@ -15946,6 +16083,16 @@ typescript@^4.1.2:
   languageName: node
   linkType: hard
 
+typescript@^4.1.3:
+  version: 4.1.3
+  resolution: "typescript@npm:4.1.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 4f7ab1506ea22c7a1c313ec5b4285e93ce08d709ad6086d02d3096adb399ca339972ee56d1e578213c51dd0fb7b0fad50283c2d3c39642405644458ae29774f8
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@4.0.5#builtin<compat/typescript>, typescript@patch:typescript@~4.0.5#builtin<compat/typescript>":
   version: 4.0.5
   resolution: "typescript@patch:typescript@npm%3A4.0.5#builtin<compat/typescript>::version=4.0.5&hash=5bf698"
@@ -15963,6 +16110,16 @@ typescript@^4.1.2:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: acfc7be6a091806432f324ad258c4a7d2a63996106a4c001db1eebb2661608a9fd0d109d0d29249c3e6890e3547a97b8580cbe0833aa64b2fb83f66e4d88a466
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.1.3#builtin<compat/typescript>":
+  version: 4.1.3
+  resolution: "typescript@patch:typescript@npm%3A4.1.3#builtin<compat/typescript>::version=4.1.3&hash=5bf698"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 5637a1074cdaed15dbdc109d7e495f00971742fc169b06e758181ac6b091d086f6a7d60d9977dc4572357038c7d798e0786a043eda37d7776537a3d939416a8d
   languageName: node
   linkType: hard
 

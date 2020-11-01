@@ -17,6 +17,12 @@
       "path": "../../../auth-pg/src/lib"
     },
     {
+      "path": "../../../dinoparc-client-mem/src/lib"
+    },
+    {
+      "path": "../../../dinoparc-store-pg/src/lib"
+    },
+    {
       "path": "../../../email-in-memory/src/lib"
     },
     {

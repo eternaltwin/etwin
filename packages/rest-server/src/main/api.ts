@@ -3,6 +3,8 @@ import { SystemClockService } from "@eternal-twin/core/lib/clock/system.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { HttpDinoparcClientService } from "@eternal-twin/dinoparc-client-http";
+import { PgDinoparcStore } from "@eternal-twin/dinoparc-store-pg";
 import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { PgForumService } from "@eternal-twin/forum-pg";
@@ -40,19 +42,21 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const emailTemplate = new EtwinEmailTemplateService(config.etwin.externalUri);
   const password = new ScryptPasswordService();
   const simpleUser = new PgSimpleUserService({database, databaseSecret: secretKeyStr, uuidGenerator});
+  const dinoparcClient = new HttpDinoparcClientService();
+  const dinoparcStore = new PgDinoparcStore(database);
   const hammerfestArchive = new PgHammerfestArchiveService(database);
   const hammerfestClient = new HttpHammerfestClientService();
   const twinoidArchive = new PgTwinoidArchiveService(database);
   const twinoidClient = new HttpTwinoidClientService();
-  const link = new PgLinkService(database, hammerfestArchive, twinoidArchive, simpleUser);
+  const link = new PgLinkService({database, dinoparcStore, hammerfestArchive, twinoidArchive, user: simpleUser});
   const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
   const oauthProvider = new OauthProviderService({clock, oauthProviderStore, simpleUser, tokenSecret: secretKeyBytes, uuidGenerator});
   const auth = new PgAuthService({database, databaseSecret: secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
   const koaAuth = new KoaAuth(auth);
   const forum = new PgForumService(database, uuidGenerator, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
-  const token = new PgTokenService(database, secretKeyStr, hammerfestArchive);
+  const token = new PgTokenService(database, secretKeyStr, dinoparcStore, hammerfestArchive);
   const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
-  const user = new UserService({auth, hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
+  const user = new UserService({auth, dinoparcClient, dinoparcStore, hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
 
   for (const [key, section] of config.forum.sections) {
     await forum.createOrUpdateSystemSection(

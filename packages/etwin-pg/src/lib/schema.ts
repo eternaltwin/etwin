@@ -1,3 +1,8 @@
+export type PgUserId = string;
+export type PgDinoparcUserId = string;
+export type PgDinoparcUsername = string;
+export type PgInstant = Date;
+export type PgDinoparcServer = "dinoparc.com" | "en.dinoparc.com" | "sp.dinoparc.com";
 export type PgHammerfestServer = "hammerfest.es" | "hammerfest.fr" | "hfest.net";
 
 export interface UserRow {
@@ -35,6 +40,26 @@ export interface SessionRow {
   atime: Date;
 
   data: object;
+}
+
+export interface DinoparcUserRow {
+  dinoparc_server: PgDinoparcServer;
+
+  dinoparc_user_id: PgDinoparcUserId;
+
+  username: PgDinoparcUsername;
+}
+
+export interface DinoparcUserLinkRow {
+  user_id: PgUserId;
+
+  dinoparc_server: PgDinoparcServer;
+
+  dinoparc_user_id: PgDinoparcUserId;
+
+  linked_at: PgInstant;
+
+  linked_by: PgUserId;
 }
 
 export interface HammerfestUserRow {
@@ -168,6 +193,23 @@ export interface TwinoidUserLinkRow {
   twinoid_user_id: string;
 
   ctime: Date;
+}
+
+export interface DinoparcSessionRow {
+  dinoparc_server: PgDinoparcServer;
+  dinoparc_session_key: string;
+  dinoparc_user_id: string;
+  ctime: Date;
+  atime: Date;
+}
+
+export interface OldDinoparcSessionRow {
+  dinoparc_server: PgDinoparcServer;
+  dinoparc_session_key: string;
+  dinoparc_user_id: string;
+  ctime: Date;
+  atime: Date;
+  dtime: Date;
 }
 
 export interface HammerfestSessionRow {

@@ -1,6 +1,7 @@
 import { Api, testAuthService } from "@eternal-twin/auth-test";
 import { VirtualClockService } from "@eternal-twin/core/lib/clock/virtual.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { MemDinoparcStore } from "@eternal-twin/dinoparc-store-mem";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { InMemoryHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-in-memory";
@@ -27,12 +28,13 @@ async function withInMemoryAuthService<R>(fn: (api: Api) => Promise<R>): Promise
   const email = new InMemoryEmailService();
   const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
   const password = new ScryptPasswordService();
+  const dinoparcStore = new MemDinoparcStore();
   const hammerfestArchive = new InMemoryHammerfestArchiveService();
   const twinoidArchive = new InMemoryTwinoidArchiveService();
   const hammerfestClient = new InMemoryHammerfestClientService();
   const twinoidClient = new HttpTwinoidClientService();
   const simpleUser = new InMemorySimpleUserService({uuidGenerator});
-  const link = new InMemoryLinkService(hammerfestArchive, twinoidArchive, simpleUser);
+  const link = new InMemoryLinkService({dinoparcStore, hammerfestArchive, twinoidArchive, user: simpleUser});
   const oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
   const oauthProvider = new OauthProviderService({clock, oauthProviderStore, simpleUser, tokenSecret: secretKeyBytes, uuidGenerator});
   const auth = new InMemoryAuthService({email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});

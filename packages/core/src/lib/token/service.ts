@@ -1,3 +1,7 @@
+import { DinoparcServer } from "../dinoparc/dinoparc-server.js";
+import { DinoparcSession } from "../dinoparc/dinoparc-session.js";
+import { DinoparcSessionKey } from "../dinoparc/dinoparc-session-key.js";
+import { DinoparcUserId } from "../dinoparc/dinoparc-user-id.js";
 import { HammerfestServer } from "../hammerfest/hammerfest-server.js";
 import { HammerfestSession } from "../hammerfest/hammerfest-session.js";
 import { HammerfestSessionKey } from "../hammerfest/hammerfest-session-key.js";
@@ -25,6 +29,24 @@ export interface TokenService {
   revokeTwinoidRefreshToken(rtKey: RfcOauthRefreshTokenKey): Promise<void>;
 
   getTwinoidOauth(tidUserId: TwinoidUserId): Promise<TwinoidOauth>;
+
+  /**
+   * Notifies the service of an active Dinoparc session.
+   */
+  touchDinoparc(dparcServer: DinoparcServer, sessionKey: DinoparcSessionKey, dparcUserId: DinoparcUserId): Promise<DinoparcSession>;
+
+  /**
+   * Notifies the service of an inactive Dinoparc session.
+   */
+  revokeDinoparc(dparcServer: DinoparcServer, sessionKey: DinoparcSessionKey): Promise<void>;
+
+  /**
+   * Returns an active session for the provided Dinoparc user, if found.
+   *
+   * Note that the session's last known state is "authenticated as `dparcUserId`". If the session expired or was altered
+   * externally, this may not correspond to its real state. The session may correspond to a guest or another user.
+   */
+  getDinoparc(dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<DinoparcSession | null>;
 
   /**
    * Notifies the service of an active Hammerfest session.

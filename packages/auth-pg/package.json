@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@eternal-twin/auth-test": "workspace:*",
+    "@eternal-twin/dinoparc-store-pg": "workspace:*",
     "@eternal-twin/email-in-memory": "workspace:*",
     "@eternal-twin/email-template-json": "workspace:*",
     "@eternal-twin/hammerfest-archive-pg": "workspace:*",

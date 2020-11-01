@@ -28,21 +28,33 @@ describe("/users", () => {
           emailAddress: null,
           hasPassword: true,
           links: {
-            twinoid: {
+            dinoparcCom: {
               current: null,
-              old: []
+              old: [],
+            },
+            enDinoparcCom: {
+              current: null,
+              old: [],
             },
             hammerfestEs: {
               current: null,
-              old: []
+              old: [],
             },
             hammerfestFr: {
               current: null,
-              old: []
+              old: [],
             },
             hfestNet: {
               current: null,
-              old: []
+              old: [],
+            },
+            spDinoparcCom: {
+              current: null,
+              old: [],
+            },
+            twinoid: {
+              current: null,
+              old: [],
             },
           },
         };
@@ -56,21 +68,33 @@ describe("/users", () => {
           displayName: {current: {value: "Alice"}},
           isAdministrator: true,
           links: {
-            twinoid: {
+            dinoparcCom: {
               current: null,
-              old: []
+              old: [],
+            },
+            enDinoparcCom: {
+              current: null,
+              old: [],
             },
             hammerfestEs: {
               current: null,
-              old: []
+              old: [],
             },
             hammerfestFr: {
               current: null,
-              old: []
+              old: [],
             },
             hfestNet: {
               current: null,
-              old: []
+              old: [],
+            },
+            spDinoparcCom: {
+              current: null,
+              old: [],
+            },
+            twinoid: {
+              current: null,
+              old: [],
             },
           },
         };
@@ -84,21 +108,33 @@ describe("/users", () => {
           displayName: {current: {value: "Alice"}},
           isAdministrator: true,
           links: {
-            twinoid: {
+            dinoparcCom: {
               current: null,
-              old: []
+              old: [],
+            },
+            enDinoparcCom: {
+              current: null,
+              old: [],
             },
             hammerfestEs: {
               current: null,
-              old: []
+              old: [],
             },
             hammerfestFr: {
               current: null,
-              old: []
+              old: [],
             },
             hfestNet: {
               current: null,
-              old: []
+              old: [],
+            },
+            spDinoparcCom: {
+              current: null,
+              old: [],
+            },
+            twinoid: {
+              current: null,
+              old: [],
             },
           },
         };
@@ -116,21 +152,33 @@ describe("/users", () => {
           emailAddress: null,
           hasPassword: true,
           links: {
-            twinoid: {
+            dinoparcCom: {
               current: null,
-              old: []
+              old: [],
+            },
+            enDinoparcCom: {
+              current: null,
+              old: [],
             },
             hammerfestEs: {
               current: null,
-              old: []
+              old: [],
             },
             hammerfestFr: {
               current: null,
-              old: []
+              old: [],
             },
             hfestNet: {
               current: null,
-              old: []
+              old: [],
+            },
+            spDinoparcCom: {
+              current: null,
+              old: [],
+            },
+            twinoid: {
+              current: null,
+              old: [],
             },
           },
         };
@@ -148,21 +196,33 @@ describe("/users", () => {
           emailAddress: null,
           hasPassword: true,
           links: {
-            twinoid: {
+            dinoparcCom: {
               current: null,
-              old: []
+              old: [],
+            },
+            enDinoparcCom: {
+              current: null,
+              old: [],
             },
             hammerfestEs: {
               current: null,
-              old: []
+              old: [],
             },
             hammerfestFr: {
               current: null,
-              old: []
+              old: [],
             },
             hfestNet: {
               current: null,
-              old: []
+              old: [],
+            },
+            spDinoparcCom: {
+              current: null,
+              old: [],
+            },
+            twinoid: {
+              current: null,
+              old: [],
             },
           },
         };
@@ -176,21 +236,33 @@ describe("/users", () => {
           displayName: {current: {value: "Bob"}},
           isAdministrator: false,
           links: {
-            twinoid: {
+            dinoparcCom: {
               current: null,
-              old: []
+              old: [],
+            },
+            enDinoparcCom: {
+              current: null,
+              old: [],
             },
             hammerfestEs: {
               current: null,
-              old: []
+              old: [],
             },
             hammerfestFr: {
               current: null,
-              old: []
+              old: [],
             },
             hfestNet: {
               current: null,
-              old: []
+              old: [],
+            },
+            spDinoparcCom: {
+              current: null,
+              old: [],
+            },
+            twinoid: {
+              current: null,
+              old: [],
             },
           },
         };

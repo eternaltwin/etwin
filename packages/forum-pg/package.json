@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@eternal-twin/auth-pg": "workspace:*",
+    "@eternal-twin/dinoparc-store-pg": "workspace:*",
     "@eternal-twin/email-in-memory": "workspace:*",
     "@eternal-twin/email-template-json": "workspace:*",
     "@eternal-twin/forum-test": "workspace:*",

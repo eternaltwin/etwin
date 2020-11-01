@@ -1,13 +1,19 @@
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
+import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
+import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
+import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { DinoparcLink } from "@eternal-twin/core/lib/link/dinoparc-link.js";
 import { EtwinLink } from "@eternal-twin/core/lib/link/etwin-link.js";
 import { HammerfestLink } from "@eternal-twin/core/lib/link/hammerfest-link.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
+import { SimpleLinkToDinoparcOptions } from "@eternal-twin/core/lib/link/simple-link-to-dinoparc-options.js";
 import { TwinoidLink } from "@eternal-twin/core/lib/link/twinoid-link.js";
+import { VersionedDinoparcLink } from "@eternal-twin/core/lib/link/versioned-dinoparc-link.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { VersionedHammerfestLink } from "@eternal-twin/core/lib/link/versioned-hammerfest-link.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
@@ -18,18 +24,24 @@ import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Date } from "kryo/lib/date.js";
 
-interface InMemoryBaseLink {
+interface MemBaseLink {
   userId: UserId;
   linkedAt: Date;
   linkedBy: UserId;
 }
 
-interface InMemoryHammerfestUserLink extends InMemoryBaseLink {
+interface MemDinoparcUserLink extends MemBaseLink {
+  dparcServer: DinoparcServer;
+  dparcUserId: DinoparcUserId;
+}
+
+interface MemHammerfestUserLink extends MemBaseLink {
   hfServer: HammerfestServer;
   hfUserId: HammerfestUserId;
 }
 
-interface InMemoryTwinoidUserLink extends InMemoryBaseLink {
+
+interface MemTwinoidUserLink extends MemBaseLink {
   tidUserId: TwinoidUserId;
 }
 
@@ -38,24 +50,50 @@ const GUEST_AUTH_CONTEXT: GuestAuthContext = {
   scope: AuthScope.Default,
 };
 
-export class InMemoryLinkService implements LinkService {
-  private readonly hammerfestArchive: HammerfestArchiveService;
-  private readonly twinoidArchive: TwinoidArchiveService;
-  private readonly user: SimpleUserService;
-  private readonly hammerfestUserLinks: Set<InMemoryHammerfestUserLink>;
-  private readonly twinoidUserLinks: Set<InMemoryTwinoidUserLink>;
+export interface MemLinkServiceOptions {
+  dinoparcStore: DinoparcStore,
+  hammerfestArchive: HammerfestArchiveService,
+  twinoidArchive: TwinoidArchiveService,
+  user: SimpleUserService,
+}
 
-  public constructor(hammerfestArchive: HammerfestArchiveService, twinoidArchive: TwinoidArchiveService, user: SimpleUserService) {
-    this.hammerfestArchive = hammerfestArchive;
-    this.twinoidArchive = twinoidArchive;
-    this.user = user;
-    this.hammerfestUserLinks = new Set();
-    this.twinoidUserLinks = new Set();
+export class InMemoryLinkService implements LinkService {
+  readonly #dinoparcStore: DinoparcStore;
+  readonly #hammerfestArchive: HammerfestArchiveService;
+  readonly #twinoidArchive: TwinoidArchiveService;
+  readonly #user: SimpleUserService;
+  readonly #dinoparcUserLinks: Set<MemDinoparcUserLink>;
+  readonly #hammerfestUserLinks: Set<MemHammerfestUserLink>;
+  readonly #twinoidUserLinks: Set<MemTwinoidUserLink>;
+
+  public constructor(options: Readonly<MemLinkServiceOptions>) {
+    this.#dinoparcStore = options.dinoparcStore;
+    this.#hammerfestArchive = options.hammerfestArchive;
+    this.#twinoidArchive = options.twinoidArchive;
+    this.#user = options.user;
+    this.#dinoparcUserLinks = new Set();
+    this.#hammerfestUserLinks = new Set();
+    this.#twinoidUserLinks = new Set();
+  }
+
+  public async getLinkFromDinoparc(dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<VersionedEtwinLink> {
+    let current: EtwinLink | null = null;
+    for (const imLink of this.#dinoparcUserLinks) {
+      if (imLink.dparcServer !== dparcServer || imLink.dparcUserId !== dparcUserId) {
+        continue;
+      }
+      current = await this.toEtwinLink(imLink);
+      break;
+    }
+    return {
+      current,
+      old: [],
+    };
   }
 
   public async getLinkFromHammerfest(hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<VersionedEtwinLink> {
     let current: EtwinLink | null = null;
-    for (const imLink of this.hammerfestUserLinks) {
+    for (const imLink of this.#hammerfestUserLinks) {
       if (imLink.hfServer !== hfServer || imLink.hfUserId !== hfUserId) {
         continue;
       }
@@ -70,7 +108,7 @@ export class InMemoryLinkService implements LinkService {
 
   public async getLinkFromTwinoid(tidUserId: TwinoidUserId): Promise<VersionedEtwinLink> {
     let current: EtwinLink | null = null;
-    for (const imLink of this.twinoidUserLinks) {
+    for (const imLink of this.#twinoidUserLinks) {
       if (imLink.tidUserId !== tidUserId) {
         continue;
       }
@@ -83,15 +121,33 @@ export class InMemoryLinkService implements LinkService {
     };
   }
 
+  public async linkToDinoparc(options: Readonly<SimpleLinkToDinoparcOptions>): Promise<VersionedDinoparcLink> {
+    const imLink: MemDinoparcUserLink = {
+      userId: options.userId,
+      dparcServer: options.dinoparcServer,
+      dparcUserId: options.dinoparcUserId,
+      linkedAt: new Date(),
+      linkedBy: options.linkedBy,
+    };
+    this.#dinoparcUserLinks.add(imLink);
+
+    const dparcLink = await this.toDinoparcLink(imLink);
+
+    return {
+      current: dparcLink,
+      old: [],
+    };
+  }
+
   public async linkToHammerfest(userId: UserId, hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<VersionedHammerfestLink> {
-    const imLink: InMemoryHammerfestUserLink = {
+    const imLink: MemHammerfestUserLink = {
       userId,
       hfServer,
       hfUserId,
       linkedAt: new Date(),
       linkedBy: userId,
     };
-    this.hammerfestUserLinks.add(imLink);
+    this.#hammerfestUserLinks.add(imLink);
 
     const hfLink = await this.toHammerfestLink(imLink);
 
@@ -102,13 +158,13 @@ export class InMemoryLinkService implements LinkService {
   }
 
   public async linkToTwinoid(userId: UserId, tidUserId: TwinoidUserId): Promise<VersionedTwinoidLink> {
-    const imLink: InMemoryTwinoidUserLink = {
+    const imLink: MemTwinoidUserLink = {
       userId,
       tidUserId,
       linkedAt: new Date(),
       linkedBy: userId,
     };
-    this.twinoidUserLinks.add(imLink);
+    this.#twinoidUserLinks.add(imLink);
 
     const tidLink = await this.toTwinoidLink(imLink);
 
@@ -119,11 +175,33 @@ export class InMemoryLinkService implements LinkService {
   }
 
   public async getVersionedLinks(userId: UserId): Promise<VersionedLinks> {
+    let dparcEn: DinoparcLink | null = null;
+    let dparcFr: DinoparcLink | null = null;
+    let dparcSp: DinoparcLink | null = null;
     let hammerfestEs: HammerfestLink | null = null;
     let hammerfestFr: HammerfestLink | null = null;
     let hfestNet: HammerfestLink | null = null;
     let twinoid: TwinoidLink | null = null;
-    for (const imLink of this.hammerfestUserLinks) {
+    for (const imLink of this.#dinoparcUserLinks) {
+      if (imLink.userId !== userId) {
+        continue;
+      }
+      const link: DinoparcLink = await this.toDinoparcLink(imLink);
+      switch (imLink.dparcServer) {
+        case "dinoparc.com":
+          dparcFr = link;
+          break;
+        case "en.dinoparc.com":
+          dparcEn = link;
+          break;
+        case "sp.dinoparc.com":
+          dparcSp = link;
+          break;
+        default:
+          throw new Error("AssertionError: Unexpected hfServer");
+      }
+    }
+    for (const imLink of this.#hammerfestUserLinks) {
       if (imLink.userId !== userId) {
         continue;
       }
@@ -142,7 +220,7 @@ export class InMemoryLinkService implements LinkService {
           throw new Error("AssertionError: Unexpected hfServer");
       }
     }
-    for (const imLink of this.twinoidUserLinks) {
+    for (const imLink of this.#twinoidUserLinks) {
       if (imLink.userId !== userId) {
         continue;
       }
@@ -150,6 +228,14 @@ export class InMemoryLinkService implements LinkService {
     }
 
     return {
+      dinoparcCom: {
+        current: dparcFr,
+        old: [],
+      },
+      enDinoparcCom: {
+        current: dparcEn,
+        old: [],
+      },
       hammerfestEs: {
         current: hammerfestEs,
         old: [],
@@ -162,6 +248,10 @@ export class InMemoryLinkService implements LinkService {
         current: hfestNet,
         old: [],
       },
+      spDinoparcCom: {
+        current: dparcSp,
+        old: [],
+      },
       twinoid: {
         current: twinoid,
         old: [],
@@ -169,12 +259,12 @@ export class InMemoryLinkService implements LinkService {
     };
   }
 
-  private async toEtwinLink(imLink: InMemoryBaseLink): Promise<EtwinLink> {
-    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
+  private async toEtwinLink(imLink: MemBaseLink): Promise<EtwinLink> {
+    const linkedBy = await this.#user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.userId});
+    const user = await this.#user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.userId});
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -188,12 +278,31 @@ export class InMemoryLinkService implements LinkService {
     };
   }
 
-  private async toHammerfestLink(imLink: InMemoryHammerfestUserLink): Promise<HammerfestLink> {
-    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
+  private async toDinoparcLink(imLink: MemDinoparcUserLink): Promise<DinoparcLink> {
+    const linkedBy = await this.#user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.hammerfestArchive.getShortUserById({server: imLink.hfServer, id: imLink.hfUserId});
+    const user = await this.#dinoparcStore.getShortUser({server: imLink.dparcServer, id: imLink.dparcUserId});
+    if (user === null) {
+      throw new Error("AssertionError: Expected Dinoparc user to exist");
+    }
+    return {
+      link: {
+        time: $Date.clone(imLink.linkedAt),
+        user: linkedBy,
+      },
+      unlink: null,
+      user,
+    };
+  }
+
+  private async toHammerfestLink(imLink: MemHammerfestUserLink): Promise<HammerfestLink> {
+    const linkedBy = await this.#user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
+    if (linkedBy === null) {
+      throw new Error("AssertionError: Expected user to exist");
+    }
+    const user = await this.#hammerfestArchive.getShortUserById({server: imLink.hfServer, id: imLink.hfUserId});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -207,12 +316,12 @@ export class InMemoryLinkService implements LinkService {
     };
   }
 
-  private async toTwinoidLink(imLink: InMemoryTwinoidUserLink): Promise<TwinoidLink> {
-    const linkedBy = await this.user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
+  private async toTwinoidLink(imLink: MemTwinoidUserLink): Promise<TwinoidLink> {
+    const linkedBy = await this.#user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.twinoidArchive.getUserRefById(imLink.tidUserId);
+    const user = await this.#twinoidArchive.getUserRefById(imLink.tidUserId);
     if (user === null) {
       throw new Error("AssertionError: Expected Twinoid user to exist");
     }

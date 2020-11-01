@@ -48,6 +48,14 @@ export function testLinkService(withApi: (fn: (api: Api) => Promise<void>) => Pr
       {
         const actual: VersionedLinks = await api.link.getVersionedLinks(aliceAuth.user.id);
         const expected: VersionedLinks = {
+          dinoparcCom: {
+            current: null,
+            old: [],
+          },
+          enDinoparcCom: {
+            current: null,
+            old: [],
+          },
           hammerfestEs: {
             current: null,
             old: [],
@@ -57,6 +65,10 @@ export function testLinkService(withApi: (fn: (api: Api) => Promise<void>) => Pr
             old: [],
           },
           hfestNet: {
+            current: null,
+            old: [],
+          },
+          spDinoparcCom: {
             current: null,
             old: [],
           },

@@ -32,6 +32,7 @@
     "@eternal-twin/core": "workspace:*"
   },
   "devDependencies": {
+    "@eternal-twin/dinoparc-store-mem": "workspace:*",
     "@eternal-twin/hammerfest-archive-in-memory": "workspace:*",
     "@eternal-twin/token-test": "workspace:*",
     "@types/chai": "^4.2.14",
