@@ -1604,6 +1604,7 @@ __metadata:
     "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
     "@eternal-twin/link-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/simple-user-pg": "workspace:*"
@@ -1647,9 +1648,13 @@ __metadata:
   resolution: "@eternal-twin/core@workspace:packages/core"
   dependencies:
     "@eternal-twin/twinoid-core": "workspace:*"
+    "@types/chai": ^4.2.12
     "@types/mocha": ^8.0.3
     "@types/node": ^14.11.2
+    chai: ^4.2.0
     eslint: ^7.10.0
+    furi: ^2.0.0
+    jsonwebtoken: ^8.5.1
     kryo: ^0.11.1
     kryo-json: ^0.11.0
     kryo-qs: ^0.11.0
@@ -1834,6 +1839,7 @@ __metadata:
     "@eternal-twin/link-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/marktwin": ^0.2.0
+    "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/simple-user-pg": "workspace:*"
@@ -2002,6 +2008,7 @@ __metadata:
     "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
     "@eternal-twin/link-test": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/simple-user-pg": "workspace:*"
@@ -2208,6 +2215,7 @@ __metadata:
     "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
     "@eternal-twin/link-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/simple-user-pg": "workspace:*"
@@ -2287,6 +2295,7 @@ __metadata:
     "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
     "@eternal-twin/link-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/simple-user-test": "workspace:*"

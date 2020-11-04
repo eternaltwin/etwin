@@ -2,8 +2,8 @@ import { HammerfestServer } from "../hammerfest/hammerfest-server.js";
 import { HammerfestSessionKey } from "../hammerfest/hammerfest-session-key.js";
 import { HammerfestSession } from "../hammerfest/hammerfest-session.js";
 import { HammerfestUserId } from "../hammerfest/hammerfest-user-id.js";
-import { OauthAccessTokenKey } from "../oauth/oauth-access-token-key";
-import { OauthRefreshTokenKey } from "../oauth/oauth-refresh-token-key.js";
+import { RfcOauthAccessTokenKey } from "../oauth/rfc-oauth-access-token-key";
+import { RfcOauthRefreshTokenKey } from "../oauth/rfc-oauth-refresh-token-key.js";
 import { TwinoidUserId } from "../twinoid/twinoid-user-id.js";
 import { TouchOauthTokenOptions } from "./touch-oauth-token-options.js";
 import { TwinoidOauth } from "./twinoid-oauth.js";
@@ -20,9 +20,9 @@ import { TwinoidOauth } from "./twinoid-oauth.js";
 export interface TokenService {
   touchTwinoidOauth(options: TouchOauthTokenOptions): Promise<void>;
 
-  revokeTwinoidAccessToken(atKey: OauthAccessTokenKey): Promise<void>;
+  revokeTwinoidAccessToken(atKey: RfcOauthAccessTokenKey): Promise<void>;
 
-  revokeTwinoidRefreshToken(rtKey: OauthRefreshTokenKey): Promise<void>;
+  revokeTwinoidRefreshToken(rtKey: RfcOauthRefreshTokenKey): Promise<void>;
 
   getTwinoidOauth(tidUserId: TwinoidUserId): Promise<TwinoidOauth>;
 

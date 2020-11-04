@@ -1,153 +1,90 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
-import { CreateOrUpdateSystemClientOptions } from "@eternal-twin/core/lib/oauth/create-or-update-system-client-options.js";
-import { OauthAccessTokenRequest } from "@eternal-twin/core/lib/oauth/oauth-access-token-request.js";
-import { OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
+import { CreateStoredOauthAccessTokenOptions } from "@eternal-twin/core/lib/oauth/create-stored-oauth-access-token-options.js";
 import { OauthClientDisplayName } from "@eternal-twin/core/lib/oauth/oauth-client-display-name.js";
 import { OauthClientId } from "@eternal-twin/core/lib/oauth/oauth-client-id.js";
 import { OauthClientKey } from "@eternal-twin/core/lib/oauth/oauth-client-key.js";
 import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
-import { OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
-import { OauthScopeString } from "@eternal-twin/core/lib/oauth/oauth-scope-string.js";
-import { OauthScope } from "@eternal-twin/core/lib/oauth/oauth-scope.js";
-import { OauthTokenType } from "@eternal-twin/core/lib/oauth/oauth-token-type.js";
-import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store.js";
+import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
+import { StoredOauthAccessToken } from "@eternal-twin/core/lib/oauth/stored-oauth-access-token.js";
+import { TouchStoredSystemClientOptions } from "@eternal-twin/core/lib/oauth/touch-stored-system-client-options.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { NullableShortUser } from "@eternal-twin/core/lib/user/short-user.js";
-import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { OauthAccessTokenRow, OauthClientRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
-import jsonWebToken from "jsonwebtoken";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
-import { $UuidHex, UuidHex } from "kryo/lib/uuid-hex.js";
 
-import { $OauthCodeJwt, OauthCodeJwt } from "./oauth-code-jwt.js";
+export interface PgOauthProviderStoreOptions {
+  database: Database;
+  databaseSecret: string;
+  password: PasswordService;
+  uuidGenerator: UuidGenerator;
+}
 
-export class PgOauthProviderService implements OauthProviderService {
-  private readonly database: Database;
-  private readonly uuidGen: UuidGenerator;
-  private readonly password: PasswordService;
-  private readonly dbSecret: string;
-  private readonly tokenSecret: Buffer;
+export class PgOauthProviderStore implements OauthProviderStore {
+  readonly #database: Database;
+  readonly #databaseSecret: string;
+  readonly #password: PasswordService;
+  readonly #uuidGenerator: UuidGenerator;
 
-  constructor(
-    database: Database,
-    uuidGen: UuidGenerator,
-    password: PasswordService,
-    dbSecret: string,
-    tokenSecret: Uint8Array,
-  ) {
-    this.database = database;
-    this.uuidGen = uuidGen;
-    this.password = password;
-    this.dbSecret = dbSecret;
-    this.tokenSecret = Buffer.from(tokenSecret);
+  constructor(options: Readonly<PgOauthProviderStoreOptions>) {
+    this.#database = options.database;
+    this.#databaseSecret = options.databaseSecret;
+    this.#password = options.password;
+    this.#uuidGenerator = options.uuidGenerator;
   }
 
-  public async getClientByIdOrKey(auth: AuthContext, id: OauthClientId): Promise<OauthClient | null> {
-    return this.database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
-      return this.getClientByIdOrKeyTx(q, auth, id);
-    });
-  }
-
-  public async createOrUpdateSystemClient(key: OauthClientKey, options: CreateOrUpdateSystemClientOptions): Promise<OauthClient> {
-    return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
-      return this.createOrUpdateSystemClientTx(q, key, options);
-    });
-  }
-
-  public async requestAuthorization(
-    auth: AuthContext,
-    clientId: OauthClientId,
-    scopeString: OauthScopeString | null,
-  ): Promise<OauthCode> {
-    const scopes: ReadonlySet<OauthScope> = parseScopeString(scopeString);
-    if (auth.type !== AuthType.User) {
-      throw new Error("Unauthorized");
-    }
-    const client: OauthClient | null = await this.getClientByIdOrKey(auth, clientId);
-    if (client === null) {
-      throw new Error("ClientNotFound");
-    }
-    const missingScopes: Set<OauthScope> = new Set();
-    if (client.owner === null) {
-      // System client (authorize all without asking the user).
-    } else {
-      // External client (check missing authorizations).
-      for (const scope of scopes) {
-        switch (scope) {
-          case "base":
-            throw new Error("NotImplemented: Check if the current user has allowed base access");
-          default:
-            throw new Error(`AssertionError: UnknownScope: ${scope}`);
-        }
-      }
-    }
-    if (missingScopes.size > 0) {
-      const name: string = "PromptUserAuthorization";
-      const description: string = `Missing scopes: ${[...missingScopes].join(" ")}`;
-      const err = new Error(`${name}: ${description}`);
-      err.name = name;
-      Reflect.set(err, "missingScopes", missingScopes);
-      throw err;
-    }
-    return this.creatCodeJwt(clientId, client.key, auth.user.id, [...scopes]);
-  }
-
-  private async getClientByIdOrKeyTx(
-    queryable: Queryable,
-    _auth: AuthContext,
-    idOrKey: OauthClientKey,
-  ): Promise<OauthClient | null> {
-    let id: OauthClientId | null = null;
-    let key: OauthClientKey | null = null;
-    if ($UuidHex.test(idOrKey)) {
-      id = idOrKey;
-    } else {
-      key = idOrKey;
-    }
-
-    type Row = Pick<OauthClientRow, "oauth_client_id" | "key" | "ctime" | "display_name" | "app_uri" | "callback_uri" | "owner_id">;
-    const row: Row | undefined = await queryable.oneOrNone(
-      `
+  public async getClientById(id: OauthClientId): Promise<OauthClient | null> {
+    return this.#database.transaction(TransactionMode.ReadOnly, async (queryable: Queryable) => {
+      type Row = Pick<OauthClientRow, "oauth_client_id" | "key" | "ctime" | "display_name" | "app_uri" | "callback_uri" | "owner_id">;
+      const row: Row | undefined = await queryable.oneOrNone(
+        `
         SELECT oauth_client_id, key, ctime,
           display_name,
           app_uri,
           callback_uri,
           owner_id
         FROM oauth_clients
-        WHERE oauth_client_id = $1::UUID OR key = $2::VARCHAR;`,
-      [id, key],
-    );
-    if (row === undefined) {
-      return null;
-    }
-    let owner: NullableShortUser;
-    if (row.owner_id === null) {
-      owner = null;
-    } else {
-      throw new Error("NotImplemented: non-null owner id");
-    }
-    return {
-      type: ObjectType.OauthClient,
-      id: row.oauth_client_id,
-      key: row.key,
-      displayName: row.display_name,
-      appUri: row.app_uri,
-      callbackUri: row.callback_uri,
-      owner,
-    };
+        WHERE oauth_client_id = $1::UUID;`,
+        [id],
+      );
+      if (row === undefined) {
+        return null;
+      }
+      return fromClientRow(row);
+    });
   }
 
-  private async createOrUpdateSystemClientTx(
-    queryable: Queryable,
-    key: OauthClientKey,
-    options: CreateOrUpdateSystemClientOptions,
-  ): Promise<OauthClient> {
+  public async getClientByKey(key: OauthClientKey): Promise<OauthClient | null> {
+    return this.#database.transaction(TransactionMode.ReadOnly, async (queryable: Queryable) => {
+      type Row = Pick<OauthClientRow, "oauth_client_id" | "key" | "ctime" | "display_name" | "app_uri" | "callback_uri" | "owner_id">;
+      const row: Row | undefined = await queryable.oneOrNone(
+        `
+        SELECT oauth_client_id, key, ctime,
+          display_name,
+          app_uri,
+          callback_uri,
+          owner_id
+        FROM oauth_clients
+        WHERE key = $1::VARCHAR;`,
+        [key],
+      );
+      if (row === undefined) {
+        return null;
+      }
+      return fromClientRow(row);
+    });
+  }
+
+  public async touchSystemClient(options: TouchStoredSystemClientOptions): Promise<OauthClient> {
+    return this.#database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+      return this.touchSystemClientTx(q,  options);
+    });
+  }
+
+  private async touchSystemClientTx(queryable: Queryable, options: TouchStoredSystemClientOptions): Promise<OauthClient> {
     type OldRow = Pick<OauthClientRow, "oauth_client_id" | "key" | "display_name" | "app_uri" | "callback_uri" | "secret">;
     const oldRow: OldRow | undefined = await queryable.oneOrNone(
       `
@@ -159,12 +96,12 @@ export class PgOauthProviderService implements OauthProviderService {
           owner_id
         FROM oauth_clients
         WHERE key = $2::VARCHAR;`,
-      [this.dbSecret, key],
+      [this.#databaseSecret, options.key],
     );
 
     if (oldRow === undefined) {
-      const passwordHash: PasswordHash = await this.password.hash(options.secret);
-      const oauthClientId: UuidHex = this.uuidGen.next();
+      const passwordHash: PasswordHash = await this.#password.hash(options.secret);
+      const oauthClientId: OauthClientId = this.#uuidGenerator.next();
       type Row = Pick<OauthClientRow, "oauth_client_id" | "ctime">;
       const row: Row = await queryable.one(
         `INSERT INTO oauth_clients(
@@ -185,8 +122,8 @@ export class PgOauthProviderService implements OauthProviderService {
            )
            RETURNING oauth_client_id, ctime;`,
         [
-          this.dbSecret,
-          oauthClientId, key,
+          this.#databaseSecret,
+          oauthClientId, options.key,
           options.displayName,
           options.appUri,
           options.callbackUri,
@@ -196,7 +133,7 @@ export class PgOauthProviderService implements OauthProviderService {
       return {
         type: ObjectType.OauthClient,
         id: row.oauth_client_id,
-        key: key,
+        key: options.key,
         displayName: options.displayName,
         appUri: options.appUri,
         callbackUri: options.callbackUri,
@@ -213,10 +150,10 @@ export class PgOauthProviderService implements OauthProviderService {
         ? null
         : options.callbackUri;
       let secret: PasswordHash | null;
-      if (await this.password.verify(oldRow.secret, options.secret)) {
+      if (await this.#password.verify(oldRow.secret, options.secret)) {
         secret = null;
       } else {
-        secret = await this.password.hash(options.secret);
+        secret = await this.#password.hash(options.secret);
       }
 
       if (displayName !== null) {
@@ -243,7 +180,7 @@ export class PgOauthProviderService implements OauthProviderService {
             UPDATE oauth_clients
             SET secret = pgp_sym_encrypt_bytea($3::BYTEA, $1::TEXT), secret_mtime = NOW()
             WHERE oauth_client_id = $2::UUID;`,
-          [this.dbSecret, oldRow.oauth_client_id, secret],
+          [this.#databaseSecret, oldRow.oauth_client_id, secret],
         );
       }
 
@@ -283,96 +220,81 @@ export class PgOauthProviderService implements OauthProviderService {
     }
   }
 
-  public async createAccessToken(acx: AuthContext, req: OauthAccessTokenRequest): Promise<OauthAccessToken> {
-    if (acx.type !== AuthType.OauthClient) {
-      if (acx.type === AuthType.Guest) {
-        throw new Error("Unauthorized");
-      } else {
-        throw new Error("Forbidden");
-      }
-    }
-    const codeJwt: OauthCodeJwt = await this.readCodeJwt(req.code);
-    // TODO: Check if `redirect_uri` matches
-    if (!codeJwt.audience.includes(acx.client.id)) {
-      throw new Error("Forbidden");
-    }
-
-    return this.database.transaction(TransactionMode.ReadWrite, async (queryable: Queryable): Promise<OauthAccessToken> => {
-      type Row = Pick<OauthAccessTokenRow, "oauth_access_token_id" | "ctime">;
-      const accessTokenId = this.uuidGen.next();
-
+  public async createAccessToken(options: Readonly<CreateStoredOauthAccessTokenOptions>): Promise<StoredOauthAccessToken> {
+    return this.#database.transaction(TransactionMode.ReadWrite, async (queryable: Queryable): Promise<StoredOauthAccessToken> => {
+      type Row = Pick<OauthAccessTokenRow, "oauth_access_token_id" | "oauth_client_id" | "user_id" | "ctime" | "atime">;
       const row: Row = await queryable.one(
         `
           INSERT INTO oauth_access_tokens(
             oauth_access_token_id, oauth_client_id, user_id, ctime, atime
           )
           VALUES (
-            $1::UUID, $2::UUID, $3::UUID, NOW(), NOW()
+            $1::UUID, $2::UUID, $3::UUID, $4::INSTANT, $4::INSTANT
           )
-          RETURNING oauth_access_token_id, ctime`,
-        [accessTokenId, acx.client.id, codeJwt.subject],
+          RETURNING oauth_access_token_id, oauth_client_id, user_id, ctime, atime;`,
+        [options.key, options.clientId, options.userId, options.ctime, /* options.expirationTime */],
       );
-
-      return {
-        accessToken: row.oauth_access_token_id,
-        expiresIn: 1e9, // TODO: Make it expire!
-        tokenType: OauthTokenType.Bearer,
-      };
+      return fromAccessTokenRow(row);
     });
   }
 
-  /**
-   * Create the JWT acting as the Oauth authorization code.
-   */
-  private async creatCodeJwt(
-    clientId: OauthClientId,
-    clientKey: OauthClientKey | null,
-    userId: UserId,
-    scopes: readonly OauthScope[],
-  ) {
-    const audience: string [] = [clientId];
-    if (clientKey !== null) {
-      audience.push(clientKey);
-    }
-    return jsonWebToken.sign(
-      {scopes},
-      this.tokenSecret,
-      {
-        issuer: "etwin",
-        subject: userId,
-        audience,
-        algorithm: "HS256",
-        expiresIn: "5min",
-      },
-    );
+  public async getAccessTokenByKey(key: RfcOauthAccessTokenKey): Promise<StoredOauthAccessToken | null> {
+    return this.#database.transaction(TransactionMode.ReadOnly, async (queryable: Queryable) => {
+      type Row = Pick<OauthAccessTokenRow, "oauth_access_token_id" | "oauth_client_id" | "user_id" | "ctime" | "atime">;
+      const row: Row = await queryable.one(
+        `
+          SELECT oauth_access_token_id, oauth_client_id, user_id, ctime, atime
+          FROM oauth_access_tokens
+          WHERE oauth_access_token_id = $1::UUID;`,
+        [key],
+      );
+      return fromAccessTokenRow(row);
+    });
   }
 
-  private async readCodeJwt(code: string): Promise<OauthCodeJwt> {
-    const codeObj: object | string = jsonWebToken.verify(
-      code,
-      this.tokenSecret,
-    );
-    if (typeof codeObj !== "object" || codeObj === null) {
-      throw new Error("AssertionError: Expected JWT verification result to be an object");
-    }
-    return $OauthCodeJwt.read(JSON_VALUE_READER, codeObj);
+  public async verifyClientSecret(id: OauthClientId, secret: Uint8Array): Promise<boolean> {
+    return this.#database.transaction(TransactionMode.ReadOnly, async (queryable: Queryable) => {
+      type Row = Pick<OauthClientRow, "secret">;
+      const row: Row | undefined = await queryable.oneOrNone(
+        `
+        SELECT pgp_sym_decrypt_bytea(secret, $1::TEXT) AS secret
+        FROM oauth_clients
+        WHERE oauth_client_id = $2::UUID;`,
+        [this.#databaseSecret, id],
+      );
+      if (row === undefined) {
+        throw new Error(`AssertionError: Expected Client ${id} to exist`);
+      }
+      return this.#password.verify(row.secret, secret);
+    });
   }
 }
 
-export function parseScopeString(str: OauthScopeString | null): Set<OauthScope> {
-  if (str === null) {
-    str = "";
+function fromClientRow(row: Pick<OauthClientRow, "oauth_client_id" | "key" | "ctime" | "display_name" | "app_uri" | "callback_uri" | "owner_id">): OauthClient {
+  let owner: NullableShortUser;
+  if (row.owner_id === null) {
+    owner = null;
+  } else {
+    throw new Error("NotImplemented: non-null owner id");
   }
-  const rawScopes = str.split(" ")
-    .map(x => x.trim())
-    .filter(x => x.length > 0);
-  const scopes: Set<OauthScope> = new Set();
-  scopes.add("base");
-  for (const rawScope of rawScopes) {
-    if (rawScope !== "base") {
-      throw new Error("InvalidScope");
-    }
-    scopes.add(rawScope);
-  }
-  return scopes;
+  return {
+    type: ObjectType.OauthClient,
+    id: row.oauth_client_id,
+    key: row.key,
+    displayName: row.display_name,
+    appUri: row.app_uri,
+    callbackUri: row.callback_uri,
+    owner,
+  };
+}
+
+function fromAccessTokenRow(row: Pick<OauthAccessTokenRow, "oauth_access_token_id" | "oauth_client_id" | "user_id" | "ctime" | "atime">): StoredOauthAccessToken {
+  return {
+    client: {type: ObjectType.OauthClient, id: row.oauth_client_id},
+    user: {type: ObjectType.User, id: row.user_id},
+    key: row.oauth_access_token_id,
+    ctime: row.ctime,
+    atime: row.atime,
+    expirationTime: row.atime,
+  };
 }

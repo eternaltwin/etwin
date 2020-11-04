@@ -1,3 +1,6 @@
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { ApiType, Config, getLocalConfig } from "@eternal-twin/local-config";
 import { createApiRouter } from "@eternal-twin/rest-server/lib/index.js";
 import koaCors from "@koa/cors";
@@ -21,6 +24,11 @@ const IS_PRODUCTION: boolean = process.env.NODE_ENV === "production";
 const APP_DIR: url.URL = furi.join(PROJECT_ROOT, "app");
 const BROWSER_APP_DIR: url.URL = furi.join(APP_DIR, "browser");
 
+const SYSTEM_AUTH: SystemAuthContext = {
+  type: AuthType.System,
+  scope: AuthScope.Default,
+};
+
 async function main(api: Api): Promise<void> {
   const config: Config = await getLocalConfig();
   console.log("Server configuration:");
@@ -39,7 +47,13 @@ async function main(api: Api): Promise<void> {
     console.log("(none)");
   } else {
     for (const [key, client] of config.clients) {
+      const c = await api.oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, key);
+      if (c === null) {
+        throw new Error(`AssertionError: Failed to retrieve client for ${key}`);
+      }
       console.log(`${key} {`);
+      console.log(`  Id: ${c.id}`);
+      console.log(`  Key: ${c.key}`);
       console.log(`  Display name: ${client.displayName}`);
       console.log(`  App URI: ${client.appUri}`);
       console.log(`  Callback URI: ${client.callbackUri}`);

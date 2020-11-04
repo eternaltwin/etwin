@@ -3,13 +3,13 @@ import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $Url, Url } from "../core/url.js";
-import { $OauthClientId, OauthClientId } from "./oauth-client-id.js";
+import { $OauthClientInputRef, OauthClientInputRef } from "./oauth-client-input-ref.js";
 import { $OauthClientSecret, OauthClientSecret } from "./oauth-client-secret.js";
 import { $OauthCode, OauthCode } from "./oauth-code.js";
 import { $OauthGrantType, OauthGrantType } from "./oauth-grant-type.js";
 
 export interface OauthAccessTokenRequest {
-  clientId?: OauthClientId;
+  clientId?: OauthClientInputRef;
   clientSecret?: OauthClientSecret;
   redirectUri?: Url;
   code: OauthCode;
@@ -18,7 +18,7 @@ export interface OauthAccessTokenRequest {
 
 export const $OauthAccessTokenRequest: RecordIoType<OauthAccessTokenRequest> = new RecordType<OauthAccessTokenRequest>({
   properties: {
-    clientId: {type: $OauthClientId, optional: true},
+    clientId: {type: $OauthClientInputRef, optional: true},
     clientSecret: {type: $OauthClientSecret, optional: true},
     redirectUri: {type: $Url, optional: true},
     code: {type: $OauthCode},

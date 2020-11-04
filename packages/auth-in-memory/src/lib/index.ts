@@ -27,7 +27,11 @@ import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-
 import { ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
-import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
+import { CompleteOauthAccessToken } from "@eternal-twin/core/lib/oauth/complete-oauth-access-token.js";
+import { EtwinOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/etwin-oauth-access-token-key.js";
+import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
+import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
@@ -37,11 +41,6 @@ import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
-import {
-  InMemoryAccessToken,
-  InMemoryOauthClient,
-  InMemoryOauthProviderService,
-} from "@eternal-twin/oauth-provider-in-memory";
 import { TwinoidClientService } from "@eternal-twin/twinoid-core/src/lib/client.js";
 import { User as TidUser } from "@eternal-twin/twinoid-core/src/lib/user.js";
 import jsonWebToken from "jsonwebtoken";
@@ -68,7 +67,7 @@ export interface InMemoryAuthServiceOptions {
   hammerfestArchive: HammerfestArchiveService,
   hammerfestClient: HammerfestClientService,
   link: LinkService,
-  oauthProvider: InMemoryOauthProviderService,
+  oauthProvider: OauthProviderService,
   password: PasswordService,
   simpleUser: SimpleUserService,
   tokenSecret: Uint8Array,
@@ -83,7 +82,7 @@ export class InMemoryAuthService implements AuthService {
   private readonly hammerfestArchive: HammerfestArchiveService;
   private readonly hammerfestClient: HammerfestClientService;
   private readonly link: LinkService;
-  private readonly oauthProvider: InMemoryOauthProviderService;
+  private readonly oauthProvider: OauthProviderService;
   private readonly password: PasswordService;
   private readonly simpleUser: SimpleUserService;
   private readonly tokenSecret: Buffer;
@@ -267,7 +266,7 @@ export class InMemoryAuthService implements AuthService {
     return {user, session};
   }
 
-  async registerOrLoginWithTwinoidOauth(acx: AuthContext, at: OauthAccessTokenKey): Promise<UserAndSession> {
+  async registerOrLoginWithTwinoidOauth(acx: AuthContext, at: RfcOauthAccessTokenKey): Promise<UserAndSession> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
@@ -315,67 +314,68 @@ export class InMemoryAuthService implements AuthService {
     return {user, session};
   }
 
-  public async authenticateAccessToken(token: OauthAccessTokenKey): Promise<AuthContext> {
-    const imToken: InMemoryAccessToken | null = this.oauthProvider._getInMemoryAccessTokenById(token);
-    if (imToken === null) {
+  public async authenticateAccessToken(tokenKey: EtwinOauthAccessTokenKey): Promise<AuthContext> {
+    const token: CompleteOauthAccessToken | null = await this.oauthProvider.getAccessTokenByKey(SYSTEM_AUTH, tokenKey);
+    if (token === null) {
       throw new Error("NotFound");
     }
-    const client = this.oauthProvider._getInMemoryClientById(imToken.clientId);
-    if (client === null) {
-      throw new Error("AssertionError: Expected client to exist");
-    }
-    const user = await this.getExistingUserById(imToken.userId);
-
-    imToken.atime = new Date();
-
     return {
       type: AuthType.AccessToken,
       scope: AuthScope.Default,
-      client: {
-        type: ObjectType.OauthClient,
-        id: client.id,
-        key: client.key,
-        displayName: client.displayName.latest,
-      },
-      user: {
-        type: ObjectType.User,
-        id: user.id,
-        displayName: user.displayName,
-      }
+      client: token.client,
+      user: token.user,
     };
   }
 
   public async authenticateCredentials(credentials: Credentials): Promise<AuthContext> {
     const login = readLogin(credentials.login);
     switch (login.type) {
-      case LoginType.OauthClientId:
       case LoginType.OauthClientKey: {
-        const imClient: InMemoryOauthClient | null = this.oauthProvider._getInMemoryClientByIdOrKey(login.value);
-        if (imClient === null) {
+        const client: OauthClient | null = await this.oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, login.value);
+        if (client === null) {
           throw new Error(`OauthClientNotFound: Client not found for the id or key: ${credentials.login}`);
         }
-
-        const isMatch: boolean = await this.password.verify(imClient.passwordHash.latest, credentials.password);
-
-        if (!isMatch) {
-          throw new Error("InvalidSecret");
+        return this.innerAuthenticateClientCredentials(client, credentials.password);
+      }
+      case LoginType.Uuid: {
+        const [client, user] = await Promise.all([
+          this.oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, login.value),
+          this.simpleUser.getShortUserById(SYSTEM_AUTH, {id: login.value}),
+        ]);
+        if (client !== null) {
+          if (user !== null) {
+            throw new Error("AssertionError: Expected only `client` to be non-null");
+          }
+          return this.innerAuthenticateClientCredentials(client, credentials.password);
+        } else if (user !== null) {
+          throw new Error("NotImplemented");
+        } else {
+          throw new Error(`NotFound: no client or user for the id ${login.value}`);
         }
-
-        return {
-          type: AuthType.OauthClient,
-          scope: AuthScope.Default,
-          client: {
-            type: ObjectType.OauthClient,
-            id: imClient.id,
-            key: imClient.key,
-            displayName: imClient.displayName.latest,
-          },
-        };
       }
       default: {
         throw new Error("NotImplemented");
       }
     }
+  }
+
+  private async innerAuthenticateClientCredentials(client: OauthClient, password: Uint8Array): Promise<AuthContext> {
+    const isMatch: boolean = await this.oauthProvider.verifyClientSecret(SYSTEM_AUTH, client.id, password);
+
+    if (!isMatch) {
+      throw new Error("InvalidSecret");
+    }
+
+    return {
+      type: AuthType.OauthClient,
+      scope: AuthScope.Default,
+      client: {
+        type: ObjectType.OauthClient,
+        id: client.id,
+        key: client.key,
+        displayName: client.displayName,
+      },
+    };
   }
 
   private async getAndTouchSession(sessionId: SessionId): Promise<Session | null> {

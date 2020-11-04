@@ -1,10 +1,10 @@
 import { CaseStyle } from "kryo";
 import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { TryUnionType } from "kryo/lib/try-union.js";
 
-import { $UuidHex } from "../core/uuid-hex.js";
-import { OauthClientId } from "../oauth/oauth-client-id.js";
-import { UserId } from "../user/user-id.js";
+import { $OauthClientId, OauthClientId } from "../oauth/oauth-client-id.js";
+import { $UserId, UserId } from "../user/user-id.js";
 import { $LoginType, LoginType } from "./login-type.js";
 
 export interface UuidLogin {
@@ -16,8 +16,7 @@ export interface UuidLogin {
 export const $UuidLogin: RecordIoType<UuidLogin> = new RecordType<UuidLogin>({
   properties: {
     type: {type: new LiteralType({type: $LoginType, value: LoginType.Uuid})},
-    // TODO: Union type
-    value: {type: $UuidHex},
+    value: {type: new TryUnionType({variants: [$UserId, $OauthClientId]})},
   },
   changeCase: CaseStyle.SnakeCase,
 });

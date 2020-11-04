@@ -4,11 +4,11 @@ import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
 
-import { $OauthAccessTokenKey, OauthAccessTokenKey } from "../oauth/oauth-access-token-key.js";
+import { $RfcOauthAccessTokenKey, RfcOauthAccessTokenKey } from "../oauth/rfc-oauth-access-token-key.js";
 import { $TwinoidUserId, TwinoidUserId } from "../twinoid/twinoid-user-id.js";
 
 export interface TwinoidAccessToken {
-  key: OauthAccessTokenKey;
+  key: RfcOauthAccessTokenKey;
   ctime: Date;
   atime: Date;
   expirationTime: Date;
@@ -17,7 +17,7 @@ export interface TwinoidAccessToken {
 
 export const $TwinoidAccessToken: RecordIoType<TwinoidAccessToken> = new RecordType<TwinoidAccessToken>({
   properties: {
-    key: {type: $OauthAccessTokenKey},
+    key: {type: $RfcOauthAccessTokenKey},
     ctime: {type: $Date},
     atime: {type: $Date},
     expirationTime: {type: $Date},

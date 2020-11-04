@@ -115,7 +115,7 @@ export function createForumRouter(api: Api): Router {
       cx.response.body = {error: "InvalidRequestBody"};
       return;
     }
-    const section: ForumSection = await api.forum.addModerator(auth, sectionIdOrKey, body.userId);
+    const section: ForumSection = await api.forum.addModerator(auth, sectionIdOrKey, body.id);
     cx.response.body = $ForumSection.write(JSON_VALUE_WRITER, section);
   }
 
@@ -138,7 +138,7 @@ export function createForumRouter(api: Api): Router {
       cx.response.body = {error: "InvalidRequestBody"};
       return;
     }
-    const section: ForumSection = await api.forum.deleteModerator(auth, sectionIdOrKey, body.userId);
+    const section: ForumSection = await api.forum.deleteModerator(auth, sectionIdOrKey, body.id);
     cx.response.body = $ForumSection.write(JSON_VALUE_WRITER, section);
   }
 

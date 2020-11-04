@@ -12,8 +12,8 @@ import { OauthClientId } from "@eternal-twin/core/lib/oauth/oauth-client-id.js";
 import { OauthClientSecret } from "@eternal-twin/core/lib/oauth/oauth-client-secret.js";
 import { OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
 import { OauthGrantType } from "@eternal-twin/core/lib/oauth/oauth-grant-type.js";
-import { OauthScope } from "@eternal-twin/core/lib/oauth/oauth-scope.js";
 import { OauthState } from "@eternal-twin/core/lib/oauth/oauth-state.js";
+import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope.js";
 import authHeader from "auth-header";
 import jsonWebToken from "jsonwebtoken";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
@@ -66,7 +66,7 @@ export class HttpOauthClientService implements OauthClientService {
     this.#tokenSecret = Buffer.from(options.tokenSecret);
   }
 
-  public async createAuthorizationRequest(state: EtwinOauthStateInput, scopes: readonly OauthScope[]): Promise<url.URL> {
+  public async createAuthorizationRequest(state: EtwinOauthStateInput, scopes: readonly RfcOauthScope[]): Promise<url.URL> {
     const stateJwt: OauthState = await this.createStateJwt(state);
     const shortJwt: string = await shrinkJwt(stateJwt);
     const inLimits: boolean = await this.testLimits({state: shortJwt});

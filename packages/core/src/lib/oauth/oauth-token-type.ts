@@ -5,7 +5,7 @@ export enum OauthTokenType {
   Bearer,
 }
 
-// TODO: Deserialization
+// TODO: Case-insensitive deserialization
 export const $OauthTokenType: TsEnumType<OauthTokenType> = new TsEnumType<OauthTokenType>({
   enum: OauthTokenType,
   changeCase: CaseStyle.PascalCase,

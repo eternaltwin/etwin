@@ -38,6 +38,9 @@
       "path": "../../../local-config/src/lib"
     },
     {
+      "path": "../../../oauth-provider-pg/src/lib"
+    },
+    {
       "path": "../../../password-scrypt/src/lib"
     },
     {

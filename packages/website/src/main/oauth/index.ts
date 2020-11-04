@@ -115,7 +115,7 @@ export async function createOauthRouter(api: Api): Promise<Koa> {
     }
 
     try {
-      const code: OauthCode = await api.oauthProvider.requestAuthorization(auth, client.id, query.scope ?? null);
+      const code: OauthCode = await api.oauthProvider.createAuthorizationCode(auth, client.id, query.scope ?? null);
       const targetUri: url.URL = new url.URL(client.callbackUri);
       targetUri.searchParams.set("code", $OauthCode.write(QS_VALUE_WRITER, code));
       if (query.state !== undefined) {

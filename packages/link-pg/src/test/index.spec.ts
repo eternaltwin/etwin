@@ -1,4 +1,6 @@
 import { PgAuthService } from "@eternal-twin/auth-pg";
+import { VirtualClockService } from "@eternal-twin/core/lib/clock/virtual.js";
+import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/index.js";
@@ -6,6 +8,7 @@ import { PgHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-pg"
 import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
 import { Api, testLinkService } from "@eternal-twin/link-test";
 import { getLocalConfig } from "@eternal-twin/local-config";
+import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { PgSimpleUserService } from "@eternal-twin/simple-user-pg";
@@ -27,6 +30,7 @@ async function withPgLinkService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   };
 
   return withPgPool(dbConfig, async (pool) => {
+    const clock = new VirtualClockService(new Date("2020-10-22T19:28:22.976Z"));
     const uuidGenerator = UUID4_GENERATOR;
     const database = new Database(pool);
     const secretKeyStr: string = config.etwin.secret;
@@ -41,7 +45,9 @@ async function withPgLinkService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const link = new PgLinkService(database, hammerfestArchive, twinoidArchive, simpleUser);
     const hammerfestClient = new InMemoryHammerfestClientService();
     const twinoidClient = new HttpTwinoidClientService();
-    const auth = new PgAuthService({database, databaseSecret: secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
+    const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
+    const oauthProvider = new OauthProviderService({clock, oauthProviderStore, simpleUser, tokenSecret: secretKeyBytes, uuidGenerator});
+    const auth = new PgAuthService({database, databaseSecret: secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
     return fn({auth, link, simpleUser});
   });
 }

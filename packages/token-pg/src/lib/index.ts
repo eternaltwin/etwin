@@ -3,8 +3,8 @@ import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-s
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
-import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key";
-import { OauthRefreshTokenKey } from "@eternal-twin/core/lib/oauth/oauth-refresh-token-key.js";
+import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
+import { RfcOauthRefreshTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-refresh-token-key.js";
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
 import { TouchOauthTokenOptions } from "@eternal-twin/core/lib/token/touch-oauth-token-options";
 import { NullableTwinoidAccessToken } from "@eternal-twin/core/lib/token/twinoid-access-token";
@@ -105,11 +105,11 @@ export class PgTokenService implements TokenService {
     }
   }
 
-  async revokeTwinoidAccessToken(atKey: OauthAccessTokenKey): Promise<void> {
+  async revokeTwinoidAccessToken(atKey: RfcOauthAccessTokenKey): Promise<void> {
     return this.database.transaction(TransactionMode.ReadWrite, q => this.revokeTwinoidAccessTokenTx(q, atKey));
   }
 
-  async revokeTwinoidAccessTokenTx(queryable: Queryable, atKey: OauthAccessTokenKey): Promise<void> {
+  async revokeTwinoidAccessTokenTx(queryable: Queryable, atKey: RfcOauthAccessTokenKey): Promise<void> {
     await queryable.countOneOrNone(
       `
         WITH revoked AS (
@@ -127,11 +127,11 @@ export class PgTokenService implements TokenService {
     );
   }
 
-  async revokeTwinoidRefreshToken(rtKey: OauthRefreshTokenKey): Promise<void> {
+  async revokeTwinoidRefreshToken(rtKey: RfcOauthRefreshTokenKey): Promise<void> {
     return this.database.transaction(TransactionMode.ReadWrite, q => this.revokeTwinoidRefreshTokenTx(q, rtKey));
   }
 
-  async revokeTwinoidRefreshTokenTx(queryable: Queryable, rtKey: OauthRefreshTokenKey): Promise<void> {
+  async revokeTwinoidRefreshTokenTx(queryable: Queryable, rtKey: RfcOauthRefreshTokenKey): Promise<void> {
     await queryable.countOneOrNone(
       `
         WITH revoked AS (

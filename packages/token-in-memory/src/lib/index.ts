@@ -3,8 +3,8 @@ import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-s
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
-import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
-import { OauthRefreshTokenKey } from "@eternal-twin/core/lib/oauth/oauth-refresh-token-key.js";
+import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
+import { RfcOauthRefreshTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-refresh-token-key.js";
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
 import { TouchOauthTokenOptions } from "@eternal-twin/core/lib/token/touch-oauth-token-options.js";
 import { NullableTwinoidAccessToken } from "@eternal-twin/core/lib/token/twinoid-access-token.js";
@@ -25,7 +25,7 @@ interface ImHammerfestSession {
 }
 
 interface ImAccessToken {
-  key: OauthAccessTokenKey;
+  key: RfcOauthAccessTokenKey;
   tidUserId: TwinoidUserId;
   ctime: Date;
   atime: Date;
@@ -33,19 +33,19 @@ interface ImAccessToken {
 }
 
 interface ImAccessTokens {
-  byKey: Map<OauthAccessTokenKey, ImAccessToken>
+  byKey: Map<RfcOauthAccessTokenKey, ImAccessToken>
   byUserId: Map<TwinoidUserId, ImAccessToken>
 }
 
 interface ImRefreshToken {
-  key: OauthRefreshTokenKey;
+  key: RfcOauthRefreshTokenKey;
   tidUserId: TwinoidUserId;
   ctime: Date;
   atime: Date;
 }
 
 interface ImRefreshTokens {
-  byKey: Map<OauthRefreshTokenKey, ImRefreshToken>
+  byKey: Map<RfcOauthRefreshTokenKey, ImRefreshToken>
   byUserId: Map<TwinoidUserId, ImRefreshToken>
 }
 
@@ -107,14 +107,14 @@ export class InMemoryTokenService implements TokenService {
     }
   }
 
-  async revokeTwinoidAccessToken(atKey: OauthAccessTokenKey): Promise<void> {
+  async revokeTwinoidAccessToken(atKey: RfcOauthAccessTokenKey): Promise<void> {
     const token: ImAccessToken | undefined = this.twinoidAccessTokens.byKey.get(atKey);
     if (token !== undefined) {
       tidAtRevoke(this.twinoidAccessTokens, token);
     }
   }
 
-  async revokeTwinoidRefreshToken(rtKey: OauthRefreshTokenKey): Promise<void> {
+  async revokeTwinoidRefreshToken(rtKey: RfcOauthRefreshTokenKey): Promise<void> {
     const token: ImRefreshToken | undefined = this.twinoidRefreshTokens.byKey.get(rtKey);
     if (token !== undefined) {
       tidRtRevoke(this.twinoidRefreshTokens, token);

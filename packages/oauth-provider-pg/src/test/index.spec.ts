@@ -1,13 +1,14 @@
+import { VirtualClockService } from "@eternal-twin/core/lib/clock/virtual.js";
 import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/index.js";
 import { getLocalConfig } from "@eternal-twin/local-config";
-import { Api, testOauthProviderService } from "@eternal-twin/oauth-provider-test";
+import { Api, testOauthProviderStore } from "@eternal-twin/oauth-provider-test";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 
-import { PgOauthProviderService } from "../lib/index.js";
+import { PgOauthProviderStore } from "../lib/index.js";
 
-async function withPgOauthProviderService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
+async function withPgOauthProviderStore<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const config = await getLocalConfig();
   const dbConfig: DbConfig = {
     host: config.db.host,
@@ -18,16 +19,17 @@ async function withPgOauthProviderService<R>(fn: (api: Api) => Promise<R>): Prom
   };
 
   return withPgPool(dbConfig, async (pool) => {
-    const db = new Database(pool);
+    const database = new Database(pool);
+    await dropAndCreate(database as any, LATEST_DB_VERSION);
     const secretKeyStr: string = config.etwin.secret;
-    const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
-    await dropAndCreate(db as any, LATEST_DB_VERSION);
     const password = new ScryptPasswordService();
-    const oauthProvider = new PgOauthProviderService(db, UUID4_GENERATOR, password, secretKeyStr, secretKeyBytes);
-    return fn({oauthProvider});
+    const uuidGenerator = UUID4_GENERATOR;
+    const clock = new VirtualClockService(new Date("2020-10-22T19:28:22.976Z"));
+    const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
+    return fn({clock, oauthProviderStore});
   });
 }
 
-describe("PgOauthProviderService", function () {
-  testOauthProviderService(withPgOauthProviderService);
+describe("PgOauthProviderStore", function () {
+  testOauthProviderStore(withPgOauthProviderStore);
 });

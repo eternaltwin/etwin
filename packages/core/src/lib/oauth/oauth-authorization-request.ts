@@ -2,13 +2,13 @@ import { CaseStyle } from "kryo";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $Url, Url } from "../core/url.js";
-import { $OauthClientId, OauthClientId } from "./oauth-client-id.js";
+import { $OauthClientInputRef, OauthClientInputRef } from "./oauth-client-input-ref.js";
 import { $OauthResponseType, OauthResponseType } from "./oauth-response-type.js";
 import { $OauthScopeString, OauthScopeString } from "./oauth-scope-string.js";
 import { $OauthState, OauthState } from "./oauth-state.js";
 
 export interface OauthAuthorizationRequest {
-  clientId: OauthClientId;
+  clientId: OauthClientInputRef;
   redirectUri?: Url;
   responseType: OauthResponseType;
   scope?: OauthScopeString;
@@ -17,7 +17,7 @@ export interface OauthAuthorizationRequest {
 
 export const $OauthAuthorizationRequest: RecordIoType<OauthAuthorizationRequest> = new RecordType<OauthAuthorizationRequest>({
   properties: {
-    clientId: {type: $OauthClientId},
+    clientId: {type: $OauthClientInputRef},
     redirectUri: {type: $Url, optional: true},
     responseType: {type: $OauthResponseType},
     scope: {type: $OauthScopeString, optional: true},

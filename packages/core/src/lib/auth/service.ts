@@ -1,5 +1,6 @@
 import { HammerfestCredentials } from "../hammerfest/hammerfest-credentials.js";
-import { OauthAccessTokenKey } from "../oauth/oauth-access-token-key.js";
+import { EtwinOauthAccessTokenKey } from "../oauth/etwin-oauth-access-token-key.js";
+import { RfcOauthAccessTokenKey } from "../oauth/rfc-oauth-access-token-key.js";
 import { UserId } from "../user/user-id.js";
 import { AuthContext } from "./auth-context.js";
 import { Credentials } from "./credentials.js";
@@ -71,7 +72,7 @@ export interface AuthService {
    *
    * Automatically creates an etwin user if the tid user isn't linked to any user yet.
    */
-  registerOrLoginWithTwinoidOauth(acx: AuthContext, accessToken: OauthAccessTokenKey): Promise<UserAndSession>;
+  registerOrLoginWithTwinoidOauth(acx: AuthContext, accessToken: RfcOauthAccessTokenKey): Promise<UserAndSession>;
 
   /**
    * Authenticate a user or Oauth client using its credentials (basic oauth scheme)
@@ -83,9 +84,7 @@ export interface AuthService {
   /**
    * Authenticate an access token (e.g. from Oauth)
    */
-  authenticateAccessToken(
-    token: OauthAccessTokenKey,
-  ): Promise<AuthContext>;
+  authenticateAccessToken(token: EtwinOauthAccessTokenKey): Promise<AuthContext>;
 
   authenticateSession(acx: AuthContext, sessionId: SessionId): Promise<UserAndSession | null>;
 

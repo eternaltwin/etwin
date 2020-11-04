@@ -9,6 +9,7 @@ import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js"
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store.js";
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
@@ -24,8 +25,8 @@ import { InMemoryLinkService } from "@eternal-twin/link-in-memory";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { ApiType, Config } from "@eternal-twin/local-config";
 import { HttpOauthClientService } from "@eternal-twin/oauth-client-http";
-import { InMemoryOauthProviderService } from "@eternal-twin/oauth-provider-in-memory";
-import { PgOauthProviderService } from "@eternal-twin/oauth-provider-pg";
+import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
+import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
@@ -56,6 +57,7 @@ export interface Api {
 }
 
 async function createApi(config: Config): Promise<{api: Api; teardown(): Promise<void>}> {
+  const clock = new SystemClockService();
   const uuidGenerator = UUID4_GENERATOR;
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
@@ -69,6 +71,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   let forum: ForumService;
   let hammerfestArchive: HammerfestArchiveService;
   let link: LinkService;
+  let oauthProviderStore: OauthProviderStore;
   let oauthProvider: OauthProviderService;
   let twinoidArchive: TwinoidArchiveService;
   let simpleUser: SimpleUserService;
@@ -78,12 +81,12 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
 
   if (config.etwin.api === ApiType.InMemory) {
     simpleUser = new InMemorySimpleUserService({uuidGenerator});
-    const imOauthProvider = new InMemoryOauthProviderService(uuidGenerator, password, secretKeyBytes);
-    oauthProvider = imOauthProvider;
     hammerfestArchive = new InMemoryHammerfestArchiveService();
     twinoidArchive = new InMemoryTwinoidArchiveService();
     link = new InMemoryLinkService(hammerfestArchive, twinoidArchive, simpleUser);
-    auth = new InMemoryAuthService({email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider: imOauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
+    oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
+    oauthProvider = new OauthProviderService({clock, oauthProviderStore, simpleUser, tokenSecret: secretKeyBytes, uuidGenerator});
+    auth = new InMemoryAuthService({email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
     forum = new InMemoryForumService(uuidGenerator, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
     token = new InMemoryTokenService(hammerfestArchive);
 
@@ -102,8 +105,9 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     simpleUser = new PgSimpleUserService({database, databaseSecret: secretKeyStr, uuidGenerator});
     link = new PgLinkService(database, hammerfestArchive, twinoidArchive, simpleUser);
     hammerfestArchive = new PgHammerfestArchiveService(database);
-    auth = new PgAuthService({database, databaseSecret: secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
-    oauthProvider = new PgOauthProviderService(database, uuidGenerator, password, secretKeyStr, secretKeyBytes);
+    oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
+    oauthProvider = new OauthProviderService({clock, oauthProviderStore, simpleUser, tokenSecret: secretKeyBytes, uuidGenerator});
+    auth = new PgAuthService({database, databaseSecret: secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
     forum = new PgForumService(database, uuidGenerator, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
     token = new PgTokenService(database, secretKeyStr, hammerfestArchive);
 
@@ -116,7 +120,6 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   const user = new UserService({auth, hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
 
   const koaAuth = new KoaAuth(auth);
-  const clock = new SystemClockService();
   const oauthClient = new HttpOauthClientService({
     authorizationUri: new url.URL("https://twinoid.com/oauth/auth"),
     callbackUri: new url.URL(urljoin(config.etwin.externalUri.toString(), "oauth/callback")),

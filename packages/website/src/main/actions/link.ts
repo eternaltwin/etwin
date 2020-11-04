@@ -4,7 +4,7 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type.js";
 import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input.js";
-import { OauthScope } from "@eternal-twin/core/lib/oauth/oauth-scope.js";
+import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope.js";
 import {
   $LinkToHammerfestOptions,
   LinkToHammerfestOptions
@@ -25,7 +25,7 @@ export interface Api {
   user: UserService;
 }
 
-const ALL_TWINOID_SCOPES: readonly OauthScope[] = [
+const ALL_TWINOID_SCOPES: readonly RfcOauthScope[] = [
   "contacts",
   "groups",
   "applications",

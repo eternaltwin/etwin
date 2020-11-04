@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
 import { $ListingQuery } from "@eternal-twin/core/lib/core/listing-query";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
 import { $CreatePostOptions, CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options";
 import { $CreateThreadOptions, CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
@@ -100,7 +101,7 @@ export class BrowserForumService extends ForumService {
   addModerator(sectionIdOrKey: ForumSectionId | ForumSectionKey, userId: UserId): Observable<ForumSection> {
     return this.#rest.post(["forum", "sections", sectionIdOrKey, "role_grants"], {
       reqType: $UserIdRef,
-      req: {userId},
+      req: {type: ObjectType.User, id: userId},
       resType: $ForumSection,
     });
   }
@@ -108,7 +109,7 @@ export class BrowserForumService extends ForumService {
   deleteModerator(sectionIdOrKey: ForumSectionId | ForumSectionKey, userId: UserId): Observable<ForumSection> {
     return this.#rest.delete(["forum", "sections", sectionIdOrKey, "role_grants"], {
       reqType: $UserIdRef,
-      req: {userId},
+      req: {type: ObjectType.User, id: userId},
       resType: $ForumSection,
     });
   }

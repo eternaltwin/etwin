@@ -30,7 +30,6 @@
   },
   "dependencies": {
     "@eternal-twin/core": "workspace:*",
-    "@eternal-twin/oauth-provider-in-memory": "workspace:*",
     "@eternal-twin/twinoid-core": "workspace:*",
     "@types/jsonwebtoken": "^8.5.0",
     "jsonwebtoken": "^8.5.1",
@@ -45,6 +44,7 @@
     "@eternal-twin/hammerfest-client-in-memory": "workspace:*",
     "@eternal-twin/link-in-memory": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
+    "@eternal-twin/oauth-provider-in-memory": "workspace:*",
     "@eternal-twin/password-scrypt": "workspace:*",
     "@eternal-twin/simple-user-in-memory": "workspace:*",
     "@eternal-twin/twinoid-archive-in-memory": "workspace:*",

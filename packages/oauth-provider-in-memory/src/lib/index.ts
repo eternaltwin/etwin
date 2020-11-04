@@ -1,35 +1,25 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { ClockService } from "@eternal-twin/core/lib/clock/service";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
-import { CreateOrUpdateSystemClientOptions } from "@eternal-twin/core/lib/oauth/create-or-update-system-client-options.js";
-import { $EtwinOauthClientId, EtwinOauthClientId } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-client-id.js";
-import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
-import { OauthAccessTokenRequest } from "@eternal-twin/core/lib/oauth/oauth-access-token-request.js";
-import { OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
+import { CreateStoredOauthAccessTokenOptions } from "@eternal-twin/core/lib/oauth/create-stored-oauth-access-token-options";
 import { OauthClientDisplayName } from "@eternal-twin/core/lib/oauth/oauth-client-display-name.js";
-import { NullableOauthClientKey } from "@eternal-twin/core/lib/oauth/oauth-client-key";
-import { OauthClientKey } from "@eternal-twin/core/lib/oauth/oauth-client-key.js";
+import { OauthClientId } from "@eternal-twin/core/lib/oauth/oauth-client-id";
+import { OauthClientKey } from "@eternal-twin/core/lib/oauth/oauth-client-key";
 import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
-import { OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
-import { OauthScopeString } from "@eternal-twin/core/lib/oauth/oauth-scope-string.js";
-import { OauthScope } from "@eternal-twin/core/lib/oauth/oauth-scope.js";
-import { OauthTokenType } from "@eternal-twin/core/lib/oauth/oauth-token-type.js";
-import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store";
+import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key";
+import { StoredOauthAccessToken } from "@eternal-twin/core/lib/oauth/stored-oauth-access-token";
+import { TouchStoredSystemClientOptions } from "@eternal-twin/core/lib/oauth/touch-stored-system-client-options";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { NullableShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import jsonWebToken from "jsonwebtoken";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { UuidHex } from "kryo/lib/uuid-hex.js";
 
-import { $OauthCodeJwt, OauthCodeJwt } from "./oauth-code-jwt.js";
-
 export interface InMemoryOauthClient {
-  id: EtwinOauthClientId;
-  key: NullableOauthClientKey;
+  id: OauthClientId;
+  key: OauthClientKey | null;
   ctime: Date;
   displayName: ValueWithChanges<OauthClientDisplayName>;
   appUri: ValueWithChanges<Url>;
@@ -40,63 +30,68 @@ export interface InMemoryOauthClient {
 
 export interface InMemoryAccessToken {
   id: UuidHex;
-  clientId: EtwinOauthClientId;
+  clientId: OauthClientId;
   userId: UserId;
   ctime: Date;
   atime: Date;
+  expirationTime: Date;
 }
 
 export interface ValueWithChanges<T> {
   latest: T;
   mtime: Date;
-  changes: {value: T, startTime: Date}[];
+  changes: { value: T, startTime: Date }[];
 }
 
-export class InMemoryOauthProviderService implements OauthProviderService {
-  private readonly uuidGen: UuidGenerator;
-  private readonly password: PasswordService;
-  private readonly tokenSecret: Buffer;
+export interface InMemoryOauthProviderStoreOptions {
+  clock: ClockService;
+  password: PasswordService;
+  uuidGenerator: UuidGenerator;
+}
 
-  private readonly clients: Set<InMemoryOauthClient>;
-  private readonly accessTokens: Set<InMemoryAccessToken>;
+export class InMemoryOauthProviderStore implements OauthProviderStore {
+  readonly #clock: ClockService;
+  readonly #password: PasswordService;
+  readonly #uuidGenerator: UuidGenerator;
 
-  constructor(
-    uuidGen: UuidGenerator,
-    password: PasswordService,
-    tokenSecret: Uint8Array,
-  ) {
-    this.uuidGen = uuidGen;
-    this.password = password;
-    this.tokenSecret = Buffer.from(tokenSecret);
-    this.clients = new Set();
-    this.accessTokens = new Set();
+  readonly #clientsById: Map<OauthClientId, InMemoryOauthClient>;
+  readonly #clientsByKey: Map<OauthClientKey, InMemoryOauthClient>;
+  readonly #accessTokensById: Map<UuidHex, InMemoryAccessToken>;
+
+  constructor(options: Readonly<InMemoryOauthProviderStoreOptions>) {
+    this.#clock = options.clock;
+    this.#password = options.password;
+    this.#uuidGenerator = options.uuidGenerator;
+    this.#clientsById = new Map();
+    this.#clientsByKey = new Map();
+    this.#accessTokensById = new Map();
   }
 
-  public async getClientByIdOrKey(_auth: AuthContext, idOrKey: EtwinOauthClientId | OauthClientKey): Promise<OauthClient | null> {
-    const imClient: InMemoryOauthClient | null = this._getInMemoryClientByIdOrKey(idOrKey);
+  public async getClientById(id: OauthClientId): Promise<OauthClient | null> {
+    const imClient: InMemoryOauthClient | null = this.getImClientById(id);
     if (imClient === null) {
       return null;
     }
-    return {
-      type: ObjectType.OauthClient,
-      id: imClient.id,
-      key: imClient.key,
-      displayName: imClient.displayName.latest,
-      appUri: imClient.appUri.latest,
-      callbackUri: imClient.callbackUri.latest,
-      owner: imClient.owner,
-    };
+    return fromImClient(imClient);
   }
 
-  public async createOrUpdateSystemClient(key: OauthClientKey, options: CreateOrUpdateSystemClientOptions): Promise<OauthClient> {
-    let imClient: InMemoryOauthClient | null = this._getInMemoryClientByKey(key);
-    const time: number = Date.now();
+  public async getClientByKey(key: OauthClientKey): Promise<OauthClient | null> {
+    const imClient: InMemoryOauthClient | null = this.getImClientByKey(key);
     if (imClient === null) {
-      const passwordHash: PasswordHash = await this.password.hash(options.secret);
-      const oauthClientId: EtwinOauthClientId = this.uuidGen.next();
+      return null;
+    }
+    return fromImClient(imClient);
+  }
+
+  public async touchSystemClient(options: TouchStoredSystemClientOptions): Promise<OauthClient> {
+    let imClient: InMemoryOauthClient | null = this.getImClientByKey(options.key);
+    const time: Date = this.#clock.now();
+    if (imClient === null) {
+      const passwordHash: PasswordHash = await this.#password.hash(options.secret);
+      const oauthClientId: OauthClientId = this.#uuidGenerator.next();
       imClient = {
         id: oauthClientId,
-        key,
+        key: options.key,
         displayName: {latest: options.displayName, mtime: new Date(time), changes: []},
         appUri: {latest: options.appUri, mtime: new Date(time), changes: []},
         callbackUri: {latest: options.callbackUri, mtime: new Date(time), changes: []},
@@ -104,7 +99,7 @@ export class InMemoryOauthProviderService implements OauthProviderService {
         ctime: new Date(time),
         passwordHash: {latest: passwordHash, mtime: new Date(time), changes: []},
       };
-      this.clients.add(imClient);
+      this.addImClient(imClient);
     } else {
       if (imClient.displayName.latest !== options.displayName) {
         imClient.displayName.changes.push({value: imClient.displayName.latest, startTime: imClient.displayName.mtime});
@@ -121,178 +116,85 @@ export class InMemoryOauthProviderService implements OauthProviderService {
         imClient.callbackUri.latest = options.callbackUri;
         imClient.callbackUri.mtime = new Date(time);
       }
-      // TODO: Add support for password updates
-    }
-    return {
-      type: ObjectType.OauthClient,
-      id: imClient.id,
-      key: imClient.key,
-      displayName: imClient.displayName.latest,
-      appUri: imClient.appUri.latest,
-      callbackUri: imClient.callbackUri.latest,
-      owner: imClient.owner,
-    };
-  }
-
-  public async requestAuthorization(
-    auth: AuthContext,
-    clientId: EtwinOauthClientId,
-    scopeString: OauthScopeString | null,
-  ): Promise<OauthCode> {
-    const scopes: ReadonlySet<OauthScope> = parseScopeString(scopeString);
-    if (auth.type !== AuthType.User) {
-      throw new Error("Unauthorized");
-    }
-    const client: OauthClient | null = await this.getClientByIdOrKey(auth, clientId);
-    if (client === null) {
-      throw new Error("ClientNotFound");
-    }
-    const missingScopes: Set<OauthScope> = new Set();
-    if (client.owner === null) {
-      // System client (authorize all without asking the user).
-    } else {
-      // External client (check missing authorizations).
-      for (const scope of scopes) {
-        switch (scope) {
-          case "base":
-            throw new Error("NotImplemented: Check if the current user has allowed base access");
-          default:
-            throw new Error(`AssertionError: UnknownScope: ${scope}`);
-        }
+      if (!(await this.#password.verify(imClient.passwordHash.latest, options.secret))) {
+        const passwordHash: PasswordHash = await this.#password.hash(options.secret);
+        imClient.passwordHash.changes.push({value: imClient.passwordHash.latest, startTime: imClient.passwordHash.mtime});
+        imClient.passwordHash.latest = passwordHash;
+        imClient.passwordHash.mtime = new Date(time);
       }
     }
-    if (missingScopes.size > 0) {
-      const name: string = "PromptUserAuthorization";
-      const description: string = `Missing scopes: ${[...missingScopes].join(" ")}`;
-      const err = new Error(`${name}: ${description}`);
-      err.name = name;
-      Reflect.set(err, "missingScopes", missingScopes);
-      throw err;
-    }
-    return this.creatCodeJwt(clientId, client.key, auth.user.id, [...scopes]);
+    return fromImClient(imClient);
   }
 
-  public async createAccessToken(acx: AuthContext, req: OauthAccessTokenRequest): Promise<OauthAccessToken> {
-    if (acx.type !== AuthType.OauthClient) {
-      if (acx.type === AuthType.Guest) {
-        throw new Error("Unauthorized");
-      } else {
-        throw new Error("Forbidden");
-      }
-    }
-    const codeJwt: OauthCodeJwt = await this.readCodeJwt(req.code);
-    // TODO: Check if `redirect_uri` matches
-    if (!codeJwt.audience.includes(acx.client.id)) {
-      throw new Error("Forbidden");
-    }
-
-    const accessTokenId: UuidHex = this.uuidGen.next();
-    const ctime: number = Date.now();
-
+  public async createAccessToken(options: Readonly<CreateStoredOauthAccessTokenOptions>): Promise<StoredOauthAccessToken> {
     const imAccessToken: InMemoryAccessToken = {
-      id: accessTokenId,
-      ctime: new Date(ctime),
-      atime: new Date(ctime),
-      clientId: acx.client.id,
-      userId: codeJwt.subject,
+      id: options.key,
+      ctime: new Date(options.ctime),
+      atime: new Date(options.ctime),
+      expirationTime: new Date(options.expirationTime),
+      clientId: options.clientId,
+      userId: options.userId,
     };
-
-    this.accessTokens.add(imAccessToken);
-
-    return {
-      accessToken: imAccessToken.id,
-      expiresIn: 1e9, // TODO: Make it expire!
-      tokenType: OauthTokenType.Bearer,
-    };
+    this.addImAccessToken(imAccessToken);
+    return fromImAccessToken(imAccessToken);
   }
 
-  /**
-   * Create the JWT acting as the Oauth authorization code.
-   */
-  private async creatCodeJwt(
-    clientId: EtwinOauthClientId,
-    clientKey: OauthClientKey | null,
-    userId: UserId,
-    scopes: readonly OauthScope[],
-  ) {
-    const audience: string [] = [clientId];
-    if (clientKey !== null) {
-      audience.push(clientKey);
+  public async getAccessTokenByKey(key: RfcOauthAccessTokenKey): Promise<StoredOauthAccessToken | null> {
+    const imAt = this.getImAccessTokenById(key);
+    return imAt !== null ? fromImAccessToken(imAt) : null;
+  }
+
+  public async verifyClientSecret(id: OauthClientId, secret: Uint8Array): Promise<boolean> {
+    const imClient = this.getImClientById(id);
+    if (imClient === null) {
+      throw new Error(`AssertionError: Expected Client ${id} to exist`);
     }
-    return jsonWebToken.sign(
-      {scopes},
-      this.tokenSecret,
-      {
-        issuer: "etwin",
-        subject: userId,
-        audience,
-        algorithm: "HS256",
-        expiresIn: "5min",
-      },
-    );
+    return this.#password.verify(imClient.passwordHash.latest, secret);
   }
 
-  private async readCodeJwt(code: string): Promise<OauthCodeJwt> {
-    const codeObj: object | string = jsonWebToken.verify(
-      code,
-      this.tokenSecret,
-    );
-    if (typeof codeObj !== "object" || codeObj === null) {
-      throw new Error("AssertionError: Expected JWT verification result to be an object");
-    }
-    return $OauthCodeJwt.read(JSON_VALUE_READER, codeObj);
-  }
-
-  public _getInMemoryClientByIdOrKey(idOrKey: EtwinOauthClientId | OauthClientKey): InMemoryOauthClient | null {
-    if ($EtwinOauthClientId.test(idOrKey)) {
-      return this._getInMemoryClientById(idOrKey);
-    } else {
-      return this._getInMemoryClientByKey(idOrKey);
+  private addImClient(imClient: InMemoryOauthClient): void {
+    this.#clientsById.set(imClient.id, imClient);
+    if (imClient.key !== null) {
+      this.#clientsByKey.set(imClient.key, imClient);
     }
   }
 
-  public _getInMemoryClientById(id: EtwinOauthClientId): InMemoryOauthClient | null {
-    for (const client of this.clients) {
-      if (client.id === id) {
-        return client;
-      }
-    }
-    return null;
+  private getImClientById(id: OauthClientId): InMemoryOauthClient | null {
+    return this.#clientsById.get(id) ?? null;
   }
 
-  private _getInMemoryClientByKey(key: OauthClientKey): InMemoryOauthClient | null {
-    for (const client of this.clients) {
-      if (client.key === key) {
-        return client;
-      }
-    }
-    return null;
+  private getImClientByKey(key: OauthClientKey): InMemoryOauthClient | null {
+    return this.#clientsByKey.get(key) ?? null;
   }
 
-  public _getInMemoryAccessTokenById(id: OauthAccessTokenKey): InMemoryAccessToken | null {
-    for (const token of this.accessTokens) {
-      if (token.id === id) {
-        return token;
-      }
-    }
-    return null;
+  private addImAccessToken(imAccessToken: InMemoryAccessToken): void {
+    this.#accessTokensById.set(imAccessToken.id, imAccessToken);
+  }
+
+  private getImAccessTokenById(id: RfcOauthAccessTokenKey): InMemoryAccessToken | null {
+    return this.#accessTokensById.get(id) ?? null;
   }
 }
 
-export function parseScopeString(str: OauthScopeString | null): Set<OauthScope> {
-  if (str === null) {
-    str = "";
-  }
-  const rawScopes = str.split(" ")
-    .map(x => x.trim())
-    .filter(x => x.length > 0);
-  const scopes: Set<OauthScope> = new Set();
-  scopes.add("base");
-  for (const rawScope of rawScopes) {
-    if (rawScope !== "base") {
-      throw new Error("InvalidScope");
-    }
-    scopes.add(rawScope);
-  }
-  return scopes;
+function fromImClient(imClient: InMemoryOauthClient): OauthClient {
+  return {
+    type: ObjectType.OauthClient,
+    id: imClient.id,
+    key: imClient.key,
+    displayName: imClient.displayName.latest,
+    appUri: imClient.appUri.latest,
+    callbackUri: imClient.callbackUri.latest,
+    owner: imClient.owner,
+  };
+}
+
+function fromImAccessToken(imAccessToken: InMemoryAccessToken): StoredOauthAccessToken {
+  return {
+    client: {type: ObjectType.OauthClient, id: imAccessToken.clientId},
+    user: {type: ObjectType.User, id: imAccessToken.userId},
+    key: imAccessToken.id,
+    ctime: new Date(imAccessToken.ctime),
+    atime: new Date(imAccessToken.atime),
+    expirationTime: new Date(imAccessToken.expirationTime),
+  };
 }

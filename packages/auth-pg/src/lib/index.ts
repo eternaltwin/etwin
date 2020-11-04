@@ -28,7 +28,9 @@ import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-
 import { ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
-import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
+import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
+import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service";
+import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
@@ -66,6 +68,7 @@ export interface PgAuthServiceOptions {
   hammerfestArchive: HammerfestArchiveService,
   hammerfestClient: HammerfestClientService,
   link: LinkService,
+  oauthProvider: OauthProviderService,
   password: PasswordService,
   simpleUser: SimpleUserService,
   tokenSecret: Uint8Array,
@@ -82,6 +85,7 @@ export class PgAuthService implements AuthService {
   private readonly hammerfestArchive: HammerfestArchiveService;
   private readonly hammerfestClient: HammerfestClientService;
   private readonly link: LinkService;
+  private readonly oauthProvider: OauthProviderService;
   private readonly password: PasswordService;
   private readonly simpleUser: SimpleUserService;
   private readonly tokenSecret: Buffer;
@@ -102,6 +106,7 @@ export class PgAuthService implements AuthService {
     this.hammerfestArchive = options.hammerfestArchive;
     this.hammerfestClient = options.hammerfestClient;
     this.link = options.link;
+    this.oauthProvider = options.oauthProvider;
     this.password = options.password;
     this.simpleUser = options.simpleUser;
     this.tokenSecret = Buffer.from(options.tokenSecret);
@@ -237,7 +242,7 @@ export class PgAuthService implements AuthService {
     return result;
   }
 
-  async registerOrLoginWithTwinoidOauth(acx: AuthContext, at: OauthAccessTokenKey): Promise<UserAndSession> {
+  async registerOrLoginWithTwinoidOauth(acx: AuthContext, at: RfcOauthAccessTokenKey): Promise<UserAndSession> {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
@@ -288,13 +293,13 @@ export class PgAuthService implements AuthService {
     });
   }
 
-  public async authenticateAccessToken(token: OauthAccessTokenKey): Promise<AuthContext> {
+  public async authenticateAccessToken(token: RfcOauthAccessTokenKey): Promise<AuthContext> {
     return await this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       return this.authenticateAccessTokenTx(q, token);
     });
   }
 
-  public async authenticateAccessTokenTx(queryable: Queryable, token: OauthAccessTokenKey): Promise<AuthContext> {
+  public async authenticateAccessTokenTx(queryable: Queryable, token: RfcOauthAccessTokenKey): Promise<AuthContext> {
     type Row = Pick<OauthAccessTokenRow, "ctime" | "atime" | "user_id" | "oauth_client_id">
       & {user_display_name: UserRow["display_name"], oauth_client_display_name: OauthClientRow["display_name"], oauth_client_key: OauthClientRow["key"]};
 
@@ -350,72 +355,54 @@ export class PgAuthService implements AuthService {
   }
 
   public async authenticateCredentials(credentials: Credentials): Promise<AuthContext> {
-    return await this.database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
-      return this.authenticateCredentialsTx(q, credentials);
-    });
-  }
-
-  public async authenticateCredentialsTx(queryable: Queryable, credentials: Credentials): Promise<AuthContext> {
     const login: Login = readLogin(credentials.login);
     switch (login.type) {
-      case LoginType.OauthClientId: {
-        type Row = Pick<OauthClientRow, "oauth_client_id" | "key" | "display_name" | "secret">;
-        const row: Row | undefined = await queryable.oneOrNone(
-          `
-            SELECT oauth_client_id, key, display_name, pgp_sym_decrypt_bytea(secret, $1::TEXT) AS secret
-            FROM oauth_clients
-            WHERE oauth_client_id = $2::UUID;`,
-          [this.dbSecret, login],
-        );
-        if (row === undefined) {
-          throw new Error(`OauthClientNotFound: Client not found for the id: ${login.value}`);
-        }
-        const isMatch: boolean = await this.password.verify(row.secret, credentials.password);
-        if (!isMatch) {
-          throw new Error("InvalidSecret");
-        }
-        return {
-          type: AuthType.OauthClient,
-          scope: AuthScope.Default,
-          client: {
-            type: ObjectType.OauthClient,
-            id: row.oauth_client_id,
-            key: row.key,
-            displayName: row.display_name,
-          },
-        };
-      }
       case LoginType.OauthClientKey: {
-        type Row = Pick<OauthClientRow, "oauth_client_id" | "key" | "display_name" | "secret">;
-        const row: Row | undefined = await queryable.oneOrNone(
-          `
-        SELECT oauth_client_id, key, display_name, pgp_sym_decrypt_bytea(secret, $1::TEXT) AS secret
-        FROM oauth_clients
-        WHERE key = $2::VARCHAR;`,
-          [this.dbSecret, login.value],
-        );
-        if (row === undefined) {
-          throw new Error(`OauthClientNotFound: Client not found for the key: ${login.value}`);
+        const client: OauthClient | null = await this.oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, login.value);
+        if (client === null) {
+          throw new Error(`OauthClientNotFound: Client not found for the id or key: ${credentials.login}`);
         }
-        const isMatch: boolean = await this.password.verify(row.secret, credentials.password);
-        if (!isMatch) {
-          throw new Error("InvalidSecret");
+        return this.innerAuthenticateClientCredentials(client, credentials.password);
+      }
+      case LoginType.Uuid: {
+        const [client, user] = await Promise.all([
+          this.oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, login.value),
+          this.simpleUser.getShortUserById(SYSTEM_AUTH, {id: login.value}),
+        ]);
+        if (client !== null) {
+          if (user !== null) {
+            throw new Error("AssertionError: Expected only `client` to be non-null");
+          }
+          return this.innerAuthenticateClientCredentials(client, credentials.password);
+        } else if (user !== null) {
+          throw new Error("NotImplemented");
+        } else {
+          throw new Error(`NotFound: no client or user for the id ${login.value}`);
         }
-        return {
-          type: AuthType.OauthClient,
-          scope: AuthScope.Default,
-          client: {
-            type: ObjectType.OauthClient,
-            id: row.oauth_client_id,
-            key: row.key,
-            displayName: row.display_name,
-          },
-        };
       }
       default: {
         throw new Error("NotImplemented");
       }
     }
+  }
+
+  private async innerAuthenticateClientCredentials(client: OauthClient, password: Uint8Array): Promise<AuthContext> {
+    const isMatch: boolean = await this.oauthProvider.verifyClientSecret(SYSTEM_AUTH, client.id, password);
+
+    if (!isMatch) {
+      throw new Error("InvalidSecret");
+    }
+
+    return {
+      type: AuthType.OauthClient,
+      scope: AuthScope.Default,
+      client: {
+        type: ObjectType.OauthClient,
+        id: client.id,
+        key: client.key,
+        displayName: client.displayName,
+      },
+    };
   }
 
   private async loginWithCredentialsTx(

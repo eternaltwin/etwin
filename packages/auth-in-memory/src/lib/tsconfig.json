@@ -15,9 +15,6 @@
       "path": "../../../core/src/lib"
     },
     {
-      "path": "../../../oauth-provider-in-memory/src/lib"
-    },
-    {
       "path": "../../../twinoid-core/src/lib"
     }
   ]

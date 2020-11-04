@@ -1,25 +1,8 @@
-import { CaseStyle } from "kryo";
-import { LiteralType } from "kryo/lib/literal.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { TryUnionType } from "kryo/lib/try-union.js";
 
-import { $ObjectType, ObjectType } from "../core/object-type.js";
-import { $OauthClientDisplayName, OauthClientDisplayName } from "./oauth-client-display-name.js";
-import { $OauthClientId, OauthClientId } from "./oauth-client-id.js";
-import { $NullableOauthClientKey, NullableOauthClientKey } from "./oauth-client-key.js";
+import { $OauthClientIdRef, OauthClientIdRef } from "./oauth-client-id-ref.js";
+import { $OauthClientKeyRef, OauthClientKeyRef } from "./oauth-client-key-ref.js";
 
-export interface OauthClientRef {
-  type: ObjectType.OauthClient;
-  id: OauthClientId;
-  key: NullableOauthClientKey;
-  displayName: OauthClientDisplayName;
-}
+export type OauthClientRef = OauthClientIdRef | OauthClientKeyRef;
 
-export const $OauthClientRef: RecordIoType<OauthClientRef> = new RecordType<OauthClientRef>({
-  properties: {
-    type: {type: new LiteralType({type: $ObjectType, value: ObjectType.OauthClient})},
-    id: {type: $OauthClientId},
-    key: {type: $NullableOauthClientKey},
-    displayName: {type: $OauthClientDisplayName},
-  },
-  changeCase: CaseStyle.SnakeCase,
-});
+export const $OauthClientRef: TryUnionType<OauthClientRef> = new TryUnionType({variants: [$OauthClientIdRef, $OauthClientKeyRef]});

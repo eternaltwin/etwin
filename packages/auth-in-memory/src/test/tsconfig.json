@@ -35,6 +35,9 @@
       "path": "../../../local-config/src/lib"
     },
     {
+      "path": "../../../oauth-provider-in-memory/src/lib"
+    },
+    {
       "path": "../../../password-scrypt/src/lib"
     },
     {
