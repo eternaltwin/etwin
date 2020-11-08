@@ -94,8 +94,8 @@ function getAuthorizationHeader(cx: Koa.Context): BasicAuth | BearerAuth | null 
     // InvalidHeader
     return null;
   }
-  switch (header.scheme) {
-    case "Basic": {
+  switch (header.scheme.toLowerCase()) {
+    case "basic": {
       const token: string | string[] | null = header.token;
       if (typeof token !== "string") {
         return null;
@@ -116,7 +116,7 @@ function getAuthorizationHeader(cx: Koa.Context): BasicAuth | BearerAuth | null 
       const password: string = credentials.slice(colonIndex + 1);
       return {scheme: "Basic", login, password: Buffer.from(password)};
     }
-    case "Bearer": {
+    case "bearer": {
       const token: string | string[] | null = header.token;
       if (typeof token !== "string") {
         return null;
