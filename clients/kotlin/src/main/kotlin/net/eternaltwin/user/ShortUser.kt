@@ -11,8 +11,10 @@ data class ShortUser constructor(
   val id: UserId,
   @SerialName("display_name")
   val displayName: UserDisplayNameVersions,
-)
+) {
+  companion object {
+    fun fromJsonString(jsonString: String): ShortUser = JSON_FORMAT.decodeFromString(jsonString)
 
-fun ShortUser.Companion.fromJsonString(jsonString: String): ShortUser = JSON_FORMAT.decodeFromString(jsonString)
-
-fun ShortUser.Companion.toJsonString(value: ShortUser): String = JSON_FORMAT.encodeToString(value)
+    fun toJsonString(value: ShortUser): String = JSON_FORMAT.encodeToString(value)
+  }
+}

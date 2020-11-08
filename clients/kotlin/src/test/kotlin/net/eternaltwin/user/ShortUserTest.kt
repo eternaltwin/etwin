@@ -16,7 +16,7 @@ class ShortUserTest {
           "demurgos" to ShortUser(
             id = UserId("9f310484-963b-446b-af69-797feec6813f"),
             displayName = UserDisplayNameVersions(UserDisplayNameVersion(UserDisplayName("Demurgos"))),
-          )
+          ),
         ),
       )
   }

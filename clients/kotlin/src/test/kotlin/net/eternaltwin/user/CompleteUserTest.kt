@@ -86,7 +86,7 @@ class CompleteUserTest {
             username = null,
             emailAddress = null,
             hasPassword = false,
-          )
+          ),
         ),
       )
   }

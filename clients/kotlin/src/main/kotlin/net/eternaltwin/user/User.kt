@@ -12,8 +12,10 @@ data class User constructor(
   @SerialName("is_administrator")
   val isAdministrator: Boolean,
   val links: VersionedLinks,
-)
+) {
+  companion object {
+    fun fromJsonString(jsonString: String): User = JSON_FORMAT.decodeFromString(jsonString)
 
-fun User.Companion.fromJsonString(jsonString: String): User = JSON_FORMAT.decodeFromString(jsonString)
-
-fun User.Companion.toJsonString(value: User): String = JSON_FORMAT.encodeToString(value)
+    fun toJsonString(value: User): String = JSON_FORMAT.encodeToString(value)
+  }
+}

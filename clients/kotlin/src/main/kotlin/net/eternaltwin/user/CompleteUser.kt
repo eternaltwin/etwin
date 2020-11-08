@@ -25,8 +25,10 @@ data class CompleteUser constructor(
   val emailAddress: EmailAddress?,
   @SerialName("has_password")
   val hasPassword: Boolean,
-)
+) {
+  companion object {
+    fun fromJsonString(jsonString: String): CompleteUser = JSON_FORMAT.decodeFromString(jsonString)
 
-fun CompleteUser.Companion.fromJsonString(jsonString: String): CompleteUser = JSON_FORMAT.decodeFromString(jsonString)
-
-fun CompleteUser.Companion.toJsonString(value: CompleteUser): String = JSON_FORMAT.encodeToString(value)
+    fun toJsonString(value: CompleteUser): String = JSON_FORMAT.encodeToString(value)
+  }
+}
