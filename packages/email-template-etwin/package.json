@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/email-template-etwin",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Eternal-Twin `EmailTemplateService` production implementation",
   "repository": {

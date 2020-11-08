@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/oauth-provider-test",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Implementation-independent tests for Eternal-Twin's `OauthProviderService`",
   "repository": {
