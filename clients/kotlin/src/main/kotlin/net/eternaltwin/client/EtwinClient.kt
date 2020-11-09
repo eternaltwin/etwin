@@ -1,8 +1,11 @@
 package net.eternaltwin.client
 
-import net.eternaltwin.user.ShortUser
+import net.eternaltwin.auth.AuthContext
+import net.eternaltwin.user.MaybeCompleteUser
 import net.eternaltwin.user.UserId
 
 interface EtwinClient {
-    fun getUser(userId: UserId): ShortUser
+  fun getSelf(auth: Auth): AuthContext
+
+  fun getUser(auth: Auth, userId: UserId): MaybeCompleteUser
 }

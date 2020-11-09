@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     // ...
-    implementation("net.eternaltwin:etwin:0.0.1")
+    implementation("net.eternaltwin:etwin:0.1.3")
 }
 ```
 
@@ -23,6 +23,7 @@ dependencies {
 ### Kotlin
 
 ```kotlin
+import net.eternaltwin.client.Auth
 import net.eternaltwin.client.HttpEtwinClient
 import net.eternaltwin.user.UserId
 import java.net.URI
@@ -30,7 +31,7 @@ import java.net.URI
 fun main(args: Array<String>) {
     val client = HttpEtwinClient(URI("https://eternal-twin.net/api/v1"))
     val uid = UserId("9f310484-963b-446b-af69-797feec6813f")
-    val user = client.getUser(uid)
+    val user = client.getUser(Auth.GUEST, uid)
     println(user)
 }
 ```
@@ -38,9 +39,10 @@ fun main(args: Array<String>) {
 ### Java
 
 ```java
+import net.eternaltwin.client.Auth;
 import net.eternaltwin.client.HttpEtwinClient;
+import net.eternaltwin.user.MaybeCompleteUser;
 import net.eternaltwin.user.UserId;
-import net.eternaltwin.user.ShortUser;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -49,7 +51,7 @@ public class Main {
   public static void main(String[] args) throws URISyntaxException {
     HttpEtwinClient client = new HttpEtwinClient(new URI("https://eternal-twin.net/api/v1"));
     UserId uid = new UserId("9f310484-963b-446b-af69-797feec6813f");
-    ShortUser user = client.getUser(uid);
+    MaybeCompleteUser user = client.getUser(Auth.GUEST, uid);
     System.out.println(user);
   }
 }
