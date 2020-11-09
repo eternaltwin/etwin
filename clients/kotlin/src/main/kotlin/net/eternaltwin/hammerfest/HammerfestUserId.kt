@@ -10,16 +10,16 @@ import kotlinx.serialization.encoding.Encoder
 
 @Serializable(with = HammerfestUserId.Serializer::class)
 data class HammerfestUserId(
-  val value: String,
+  val inner: String,
 ) {
-  override fun toString(): String = "HammerfestUserId(${this.value})"
+  override fun toString(): String = "HammerfestUserId(${this.inner})"
 
   object Serializer : KSerializer<HammerfestUserId> {
     override val descriptor: SerialDescriptor =
       PrimitiveSerialDescriptor("net.eternaltwin.hammerfest.HammerfestUserId", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: HammerfestUserId) =
-      encoder.encodeString(value.value)
+      encoder.encodeString(value.inner)
 
     override fun deserialize(decoder: Decoder): HammerfestUserId =
       HammerfestUserId(decoder.decodeString())

@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-  // implementation(files("../../clients/kotlin/build/libs/etwin-0.1.3.jar"))
-  implementation("net.eternaltwin:etwin:0.1.3")
+  // implementation(files("../../clients/kotlin/build/libs/etwin-0.1.5.jar"))
+  implementation("net.eternaltwin:etwin:0.1.5")
   testImplementation("org.junit.jupiter:junit-jupiter-engine:5.6.2")
 }

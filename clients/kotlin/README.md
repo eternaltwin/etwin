@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     // ...
-    implementation("net.eternaltwin:etwin:0.1.3")
+    implementation("net.eternaltwin:etwin:0.1.5")
 }
 ```
 

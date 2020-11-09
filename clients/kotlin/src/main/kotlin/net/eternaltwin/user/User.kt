@@ -1,18 +1,21 @@
 package net.eternaltwin.user
 
 import JSON_FORMAT
-import kotlinx.serialization.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import net.eternaltwin.link.VersionedLinks
 
 @Serializable
 data class User constructor(
-  val id: UserId,
+  override val id: UserId,
   @SerialName("display_name")
-  val displayName: UserDisplayNameVersions,
+  override val displayName: UserDisplayNameVersions,
   @SerialName("is_administrator")
-  val isAdministrator: Boolean,
-  val links: VersionedLinks,
-) {
+  override val isAdministrator: Boolean,
+  override val links: VersionedLinks,
+) : UserLike {
   companion object {
     fun fromJsonString(jsonString: String): User = JSON_FORMAT.decodeFromString(jsonString)
 

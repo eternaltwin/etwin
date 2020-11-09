@@ -11,11 +11,21 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
+import net.eternaltwin.link.VersionedLinks
 
 @Serializable(with = MaybeCompleteUser.Serializer::class)
-sealed class MaybeCompleteUser {
+sealed class MaybeCompleteUser : UserLike {
   @Serializable(with = MaybeCompleteUser.Complete.Serializer::class)
   data class Complete(val inner: CompleteUser) : MaybeCompleteUser() {
+    override val id: UserId
+      get() = this.inner.id
+    override val displayName: UserDisplayNameVersions
+      get() = this.inner.displayName
+    override val isAdministrator: Boolean
+      get() = this.inner.isAdministrator
+    override val links: VersionedLinks
+      get() = this.inner.links
+
     object Serializer : KSerializer<MaybeCompleteUser.Complete> {
       override val descriptor: SerialDescriptor =
         CompleteUser.serializer().descriptor
@@ -38,6 +48,15 @@ sealed class MaybeCompleteUser {
 
   @Serializable(with = MaybeCompleteUser.Simple.Serializer::class)
   data class Simple(val inner: User) : MaybeCompleteUser() {
+    override val id: UserId
+      get() = this.inner.id
+    override val displayName: UserDisplayNameVersions
+      get() = this.inner.displayName
+    override val isAdministrator: Boolean
+      get() = this.inner.isAdministrator
+    override val links: VersionedLinks
+      get() = this.inner.links
+
     object Serializer : KSerializer<MaybeCompleteUser.Simple> {
       override val descriptor: SerialDescriptor =
         User.serializer().descriptor

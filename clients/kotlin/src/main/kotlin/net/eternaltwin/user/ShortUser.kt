@@ -1,17 +1,20 @@
 package net.eternaltwin.user
 
 import JSON_FORMAT
-import kotlinx.serialization.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 
 /**
  * User reference with extra data to display it.
  */
 @Serializable
 data class ShortUser constructor(
-  val id: UserId,
+  override val id: UserId,
   @SerialName("display_name")
-  val displayName: UserDisplayNameVersions,
-) {
+  override val displayName: UserDisplayNameVersions,
+) : ShortUserLike {
   companion object {
     fun fromJsonString(jsonString: String): ShortUser = JSON_FORMAT.decodeFromString(jsonString)
 

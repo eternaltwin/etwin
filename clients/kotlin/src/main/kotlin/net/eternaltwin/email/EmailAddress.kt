@@ -10,16 +10,16 @@ import kotlinx.serialization.encoding.Encoder
 
 @Serializable(with = EmailAddress.Serializer::class)
 data class EmailAddress(
-  val value: String,
+  val inner: String,
 ) {
-  override fun toString(): String = "EmailAddress(${this.value})"
+  override fun toString(): String = "EmailAddress(${this.inner})"
 
   object Serializer : KSerializer<EmailAddress> {
     override val descriptor: SerialDescriptor =
       PrimitiveSerialDescriptor("net.eternaltwin.email.EmailAddress", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: EmailAddress) =
-      encoder.encodeString(value.value)
+      encoder.encodeString(value.inner)
 
     override fun deserialize(decoder: Decoder): EmailAddress =
       EmailAddress(decoder.decodeString())

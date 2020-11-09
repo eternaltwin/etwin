@@ -10,16 +10,16 @@ import kotlinx.serialization.encoding.Encoder
 
 @Serializable(with = Username.Serializer::class)
 data class Username(
-  val value: String,
+  val inner: String,
 ) {
-  override fun toString(): String = "Username(${this.value})"
+  override fun toString(): String = "Username(${this.inner})"
 
   object Serializer : KSerializer<Username> {
     override val descriptor: SerialDescriptor =
       PrimitiveSerialDescriptor("net.eternaltwin.user.Username", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: Username) =
-      encoder.encodeString(value.value)
+      encoder.encodeString(value.inner)
 
     override fun deserialize(decoder: Decoder): Username =
       Username(decoder.decodeString())

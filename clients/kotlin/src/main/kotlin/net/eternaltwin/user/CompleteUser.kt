@@ -2,7 +2,10 @@ package net.eternaltwin.user
 
 import InstantSerializer
 import JSON_FORMAT
-import kotlinx.serialization.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import net.eternaltwin.email.EmailAddress
 import net.eternaltwin.link.VersionedLinks
 import java.time.Instant
@@ -12,12 +15,12 @@ import java.time.Instant
  */
 @Serializable
 data class CompleteUser constructor(
-  val id: UserId,
+  override val id: UserId,
   @SerialName("display_name")
-  val displayName: UserDisplayNameVersions,
+  override val displayName: UserDisplayNameVersions,
   @SerialName("is_administrator")
-  val isAdministrator: Boolean,
-  val links: VersionedLinks,
+  override val isAdministrator: Boolean,
+  override val links: VersionedLinks,
   @Serializable(with = InstantSerializer::class)
   val ctime: Instant,
   val username: VersionedLinks?,
@@ -25,7 +28,7 @@ data class CompleteUser constructor(
   val emailAddress: EmailAddress?,
   @SerialName("has_password")
   val hasPassword: Boolean,
-) {
+) : UserLike {
   companion object {
     fun fromJsonString(jsonString: String): CompleteUser = JSON_FORMAT.decodeFromString(jsonString)
 

@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "net.eternaltwin"
-version = "0.1.3"
+version = "0.1.5"
 
 repositories {
   jcenter()
@@ -93,6 +93,5 @@ publishing {
       name = "local"
       url = uri("file://${buildDir}/repo")
     }
-
   }
 }

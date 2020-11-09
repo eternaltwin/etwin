@@ -1,4 +1,5 @@
 package net.eternaltwin.user
 
-interface ShortUserLike {
+interface ShortUserLike : UserIdRefLike {
+  val displayName: UserDisplayNameVersions
 }

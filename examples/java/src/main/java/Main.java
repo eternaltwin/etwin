@@ -1,4 +1,5 @@
 // import net.eternaltwin.auth.AuthContext;
+
 import net.eternaltwin.client.Auth;
 import net.eternaltwin.client.HttpEtwinClient;
 import net.eternaltwin.user.MaybeCompleteUser;
@@ -13,6 +14,8 @@ public class Main {
     // Retrieve a user as a guest
     MaybeCompleteUser user = client.getUser(Auth.GUEST, new UserId("9f310484-963b-446b-af69-797feec6813f"));
     System.out.println(user);
+    System.out.println(user.getId().getInner());
+    System.out.println(user.getDisplayName().getCurrent().getValue().getInner());
     // Retrieve the current user using an OAuth access token
     // Auth auth = Auth.fromToken("accesToken...");
     // AuthContext self = client.getSelf(auth);
