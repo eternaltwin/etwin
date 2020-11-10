@@ -1,0 +1,45 @@
+{
+  "name": "eternal-twin/etwin",
+  "description": "PHP client for the Eternal-Twin API",
+  "type": "library",
+  "version": "0.0.3",
+  "license": "AGPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Charles Samborski",
+      "email": "demurgos@demurgos.net"
+    },
+    {
+      "name": "Benjamin Behrendt",
+      "email": "behrendt@isg.cs.uni-magdeburg.de"
+    }
+  ],
+  "minimum-stability": "stable",
+  "scripts": {
+    "test": "phpunit --testdox test",
+    "publish": [
+      "@test",
+      "scripts/publish.sh"
+    ]
+  },
+  "require": {
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "php": ">=7.4.1",
+    "ramsey/uuid": "^4.1.1",
+    "guzzlehttp/guzzle": "^7.2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.4.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Etwin\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Etwin\\Test\\": "test/"
+    }
+  }
+}

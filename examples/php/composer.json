@@ -1,0 +1,17 @@
+{
+  "name": "eternal-twin/etwin-php-example",
+  "description": "Example of the PHP client usage",
+  "type": "project",
+  "version": "0.0.1",
+  "license": "AGPL-3.0-or-later",
+  "minimum-stability": "stable",
+  "scripts": {
+    "start": "php -f main.php"
+  },
+  "require": {
+    "eternal-twin/etwin": "^0.0.3",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "php": ">=7.4.1"
+  }
+}

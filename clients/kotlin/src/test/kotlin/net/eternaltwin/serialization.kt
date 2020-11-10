@@ -1,12 +1,11 @@
 package net.eternaltwin
 
-import java.lang.RuntimeException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.stream.Stream
 import kotlin.streams.asStream
 
-private val TEST_ROOT = Paths.get("test").toAbsolutePath()
+private val TEST_ROOT = Paths.get("../../test-resources").toAbsolutePath()
 
 data class SerializationTestItem<T>(
   val name: String,
