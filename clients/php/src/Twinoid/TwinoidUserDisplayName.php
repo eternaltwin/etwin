@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\User;
+namespace Etwin\Twinoid;
 
-final class UserDisplayName implements \JsonSerializable {
+final class TwinoidUserDisplayName implements \JsonSerializable {
   private string $inner;
 
   final public function __construct(string $inner) {

@@ -1,29 +1,29 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\User;
+namespace Etwin\Twinoid;
 
 use Etwin\Core\ObjectType;
 
-final class ShortUser implements \JsonSerializable, ShortUserLike {
-  private UserId $id;
-  private UserDisplayNameVersions $displayName;
+final class ShortTwinoidUser implements \JsonSerializable {
+  private TwinoidUserId $id;
+  private TwinoidUserDisplayName $displayName;
 
-  final public function __construct(UserId $id, UserDisplayNameVersions $displayName) {
+  final public function __construct(TwinoidUserId $id, TwinoidUserDisplayName $displayName) {
     $this->id = $id;
     $this->displayName = $displayName;
   }
 
-  final public function getId(): UserId {
+  final public function getId(): TwinoidUserId {
     return $this->id;
   }
 
-  final public function getDisplayName(): UserDisplayNameVersions {
+  final public function getDisplayName(): TwinoidUserDisplayName {
     return $this->displayName;
   }
 
   final public function jsonSerialize(): array {
     return [
-      "type" => ObjectType::User()->jsonSerialize(),
+      "type" => ObjectType::TwinoidUser()->jsonSerialize(),
       "id" => $this->id->jsonSerialize(),
       "display_name" => $this->displayName->jsonSerialize(),
     ];
@@ -35,11 +35,11 @@ final class ShortUser implements \JsonSerializable, ShortUserLike {
    */
   final public static function jsonDeserialize($raw): self {
     $type = ObjectType::jsonDeserialize($raw["type"]);
-    if ($type !== ObjectType::User()) {
+    if ($type !== ObjectType::TwinoidUser()) {
       throw new \TypeError("Invalid `type` value");
     }
-    $id = UserId::jsonDeserialize($raw["id"]);
-    $displayName = UserDisplayNameVersions::jsonDeserialize($raw["display_name"]);
+    $id = TwinoidUserId::jsonDeserialize($raw["id"]);
+    $displayName = TwinoidUserDisplayName::jsonDeserialize($raw["display_name"]);
     return new self($id, $displayName);
   }
 

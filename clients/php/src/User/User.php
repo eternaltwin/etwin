@@ -3,14 +3,19 @@
 namespace Etwin\User;
 
 use Etwin\Core\ObjectType;
+use Etwin\Link\VersionedLinks;
 
-final class ShortUser implements \JsonSerializable, ShortUserLike {
+final class User implements \JsonSerializable, ShortUserLike {
   private UserId $id;
   private UserDisplayNameVersions $displayName;
+  private bool $isAdminitrator;
+  private VersionedLinks $links;
 
-  final public function __construct(UserId $id, UserDisplayNameVersions $displayName) {
+  final public function __construct(UserId $id, UserDisplayNameVersions $displayName, bool $isAdminitrator, VersionedLinks $links) {
     $this->id = $id;
     $this->displayName = $displayName;
+    $this->isAdminitrator = $isAdminitrator;
+    $this->links = $links;
   }
 
   final public function getId(): UserId {
@@ -21,11 +26,21 @@ final class ShortUser implements \JsonSerializable, ShortUserLike {
     return $this->displayName;
   }
 
+  final public function isAdministrator(): bool {
+    return $this->isAdminitrator;
+  }
+
+  final public function getLinks(): VersionedLinks {
+    return $this->links;
+  }
+
   final public function jsonSerialize(): array {
     return [
       "type" => ObjectType::User()->jsonSerialize(),
       "id" => $this->id->jsonSerialize(),
       "display_name" => $this->displayName->jsonSerialize(),
+      "is_administrator" => $this->isAdminitrator,
+      "links" => $this->links->jsonSerialize(),
     ];
   }
 
@@ -40,7 +55,9 @@ final class ShortUser implements \JsonSerializable, ShortUserLike {
     }
     $id = UserId::jsonDeserialize($raw["id"]);
     $displayName = UserDisplayNameVersions::jsonDeserialize($raw["display_name"]);
-    return new self($id, $displayName);
+    $isAdministrator = $raw["is_administrator"];
+    $links = VersionedLinks::jsonDeserialize($raw["links"]);
+    return new self($id, $displayName, $isAdministrator, $links);
   }
 
   /**

@@ -9,7 +9,7 @@
     "start": "php -f main.php"
   },
   "require": {
-    "eternal-twin/etwin": "^0.0.3",
+    "eternal-twin/etwin": "^0.0.4",
     "ext-json": "*",
     "ext-mbstring": "*",
     "php": ">=7.4.1"

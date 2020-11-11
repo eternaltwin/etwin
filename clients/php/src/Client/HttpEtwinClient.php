@@ -2,7 +2,10 @@
 
 namespace Etwin\Client;
 
-use Etwin\User\ShortUser;
+use Etwin\Auth\AuthContext;
+use Etwin\Auth\GuestAuthContext;
+use Etwin\Auth\UserAuthContext;
+use Etwin\User\User;
 use Etwin\User\UserId;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
@@ -25,11 +28,25 @@ class HttpEtwinClient implements EtwinClient {
     $this->client = new Client(["base_uri" => $parsedBaseUri, "timeout" => self::DEFAULT_TIMEOUT]);
   }
 
+  /**
+   * @param Auth $auth
+   * @return GuestAuthContext | UserAuthContext
+   * @throws \JsonException
+   */
   function getSelf(Auth $auth) {
-
+    $res = $this->client->get(
+      $this->resolve(["auth", "self"]),
+      [
+        "headers" => [
+          "Authorization" => $auth->getAuthorizationHeader(),
+        ],
+      ],
+    );
+    $resBody = $res->getBody()->getContents();
+    return AuthContext::fromJson($resBody);
   }
 
-  function getUser(Auth $auth, UserId $userId): ShortUser {
+  function getUser(Auth $auth, UserId $userId): User {
     $res = $this->client->get(
       $this->resolve(["users", $userId->toString()]),
       [
@@ -39,7 +56,7 @@ class HttpEtwinClient implements EtwinClient {
       ],
     );
     $resBody = $res->getBody()->getContents();
-    return ShortUser::fromJson($resBody);
+    return User::fromJson($resBody);
   }
 
   /**

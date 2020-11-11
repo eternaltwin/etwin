@@ -2,11 +2,17 @@
 
 namespace Etwin\Client;
 
-use Etwin\User\ShortUser;
+use Etwin\Auth\GuestAuthContext;
+use Etwin\Auth\UserAuthContext;
+use Etwin\User\User;
 use Etwin\User\UserId;
 
 interface EtwinClient {
+  /**
+   * @param Auth $auth
+   * @return GuestAuthContext | UserAuthContext
+   */
   function getSelf(Auth $auth);
 
-  function getUser(Auth $auth, UserId $userId): ShortUser;
+  function getUser(Auth $auth, UserId $userId): User;
 }

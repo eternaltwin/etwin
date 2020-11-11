@@ -3,8 +3,17 @@
 namespace Etwin\Core;
 
 final class ObjectType implements \JsonSerializable {
+  private static ?self $_ClientForumActor;
+  private static ?self $_ForumPost;
+  private static ?self $_ForumPostRevision;
+  private static ?self $_ForumSection;
+  private static ?self $_ForumThread;
   private static ?self $_HammerfestUser;
+  private static ?self $_OauthClient;
+  private static ?self $_RoleForumActor;
+  private static ?self $_TwinoidUser;
   private static ?self $_User;
+  private static ?self $_UserForumActor;
 
   private string $inner;
 
@@ -28,8 +37,12 @@ final class ObjectType implements \JsonSerializable {
     switch ($raw) {
       case "HammerfestUser":
         return self::HammerfestUser();
+      case "TwinoidUser":
+        return self::TwinoidUser();
       case "User":
         return self::User();
+      case "UserForumActor":
+        return self::UserForumActor();
       default:
         throw new \TypeError("Unexpected `ObjectType` value");
     }
@@ -37,15 +50,29 @@ final class ObjectType implements \JsonSerializable {
 
   final public static function HammerfestUser(): self {
     if (!isset(self::$_HammerfestUser)) {
-      self::$_HammerfestUser = new ObjectType("HammerfestUser");
+      self::$_HammerfestUser = new self("HammerfestUser");
     }
     return self::$_HammerfestUser;
   }
 
-  final public static function User(): self {
+  final public static function TwinoidUser(): self {
     if (!isset(self::$_User)) {
-      self::$_User = new ObjectType("User");
+      self::$_User = new self("TwinoidUser");
     }
     return self::$_User;
+  }
+
+  final public static function User(): self {
+    if (!isset(self::$_TwinoidUser)) {
+      self::$_TwinoidUser = new self("User");
+    }
+    return self::$_TwinoidUser;
+  }
+
+  final public static function UserForumActor(): self {
+    if (!isset(self::$_UserForumActor)) {
+      self::$_UserForumActor = new self("UserForumActor");
+    }
+    return self::$_UserForumActor;
   }
 }

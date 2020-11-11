@@ -2,7 +2,7 @@
   "name": "eternal-twin/etwin",
   "description": "PHP client for the Eternal-Twin API",
   "type": "library",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "AGPL-3.0-or-later",
   "authors": [
     {
