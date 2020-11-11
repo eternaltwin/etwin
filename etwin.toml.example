@@ -33,15 +33,47 @@ password = "dev"
 
 # System Oauth clients configuration
 # You can define any number of OAuth clients using `[clients.<key>]` blocks (one block per client),
-# where `<key>` acts as a stable identifier for the client.
+# where `<key>` acts as a stable identifier for the client: the OAuth `client_id` is derived as `<key>@clients`.
+#
+# Fields:
+# ```
+# // Name of the client, as it should be displayed to users
+# display_name: OauthClientDisplayName (String)
+# // URI of the client homepage, as information for users
+# app_uri: Uri (String)
+# // Oauth callback URI, where Eternal-Twin will redirect users
+# callback_uri: Uri (String)
+# // Secret for the client, used when querying the API directly (e.g. to get the OAuth access code)
+# secret: Password (String)
+# ```
 [clients.eternalfest]
-# Name of the OAuth client, as it should be displayed to users.
 display_name = "Eternalfest"
-# Main URI of the OAuth client. This is used when displaying application information.
 app_uri = "http://localhost:50313"
-# OAuth callback URI. This the URI where Eternal-Twin will redirect users after authentication.
 callback_uri = "http://localhost:50313/oauth/callback"
-# Secret key for this client.
+secret = "dev_secret"
+
+[clients.myhordes]
+display_name = "MyHordes"
+app_uri = "http://myhordes.localhost"
+callback_uri = "http://myhordes.localhost/oauth/callback"
+secret = "dev_secret"
+
+[clients.neoparc]
+display_name = "NeoParc"
+app_uri = "http://neoparc.localhost"
+callback_uri = "http://neoparc.localhost/oauth/callback"
+secret = "dev_secret"
+
+[clients.kadokadeo]
+display_name = "Kadokadeo"
+app_uri = "http://kadokadeo.localhost"
+callback_uri = "http://kadokadeo.localhost/oauth/callback"
+secret = "dev_secret"
+
+[clients.mjrt]
+display_name = "Mjrt"
+app_uri = "http://mjrt.localhost"
+callback_uri = "http://mjrt.localhost/oauth/callback"
 secret = "dev_secret"
 
 # Twinoid authentication configuration

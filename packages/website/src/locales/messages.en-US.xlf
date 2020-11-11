@@ -63,7 +63,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">31</context>
         </context-group>
         <note priority="1" from="description">Section describing who we are</note>
       </trans-unit>
@@ -120,7 +120,9 @@
       history.
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/>
-      This project is lead by MrPapy and Demurgos. Anyone is free to join and help.
+      This project is lead by Demurgos and TheMoa59, for the technical and organizational side respectively. We also
+      want to thank MrPapy for helping to start the project.
+      Anyone is free to join and help.
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p&gt;"/>
     <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p&gt;"/>
       Useful links:
@@ -143,7 +145,7 @@
   </source>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">28</context>
         </context-group>
         <note priority="1" from="description">Title of the general informations section</note>
       </trans-unit>
@@ -156,7 +158,7 @@
   </source>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">36</context>
         </context-group>
         <note priority="1" from="description">Section explaining we&apos;re against cheating</note>
       </trans-unit>
@@ -164,7 +166,7 @@
         <source>Legal notices</source>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">41</context>
+          <context context-type="linenumber">43</context>
         </context-group>
         <note priority="1" from="description">Link to legal notices</note>
       </trans-unit>
@@ -189,18 +191,25 @@
         </context-group>
         <note priority="1" from="description">Introduction to the donation section</note>
       </trans-unit>
-      <trans-unit id="donate.stars" datatype="html">
+      <trans-unit id="donate.action" datatype="html">
         <source>
-    We decided to use the <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>OpenCollective<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> platform
-    to transparently manage our donations and costs. Eternal-Twin applied for approval and we are waiting to pass the
-    manual review from OpenCollective to prove that we are a legitimate project before we can accept donations.
-    Once we are verified, we will be able to accept donations.
+    You can <x id="START_LINK" ctype="x-a" equiv-text="&lt;a&gt;"/>check our OpenCollective page<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> for all details about
+    our finance. We are using the OpenCollective platform for its transparence: you can see every donation we receive
+    and all our expenses. Our project was reviewed and approved: we can now receive donations.
   </source>
         <context-group purpose="location">
           <context context-type="sourcefile">../app/donate/donate.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
-        <note priority="1" from="description">Paragraph on the star goal</note>
+        <note priority="1" from="description">Paragraph describe how to donate</note>
+      </trans-unit>
+      <trans-unit id="donate.button" datatype="html">
+        <source>Donate</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">../app/donate/donate.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+        <note priority="1" from="description">Call to action on the donation button</note>
       </trans-unit>
       <trans-unit id="app.settingsNav" datatype="html">
         <source>Settings</source>

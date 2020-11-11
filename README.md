@@ -34,5 +34,3 @@ The different configuration parameters are commented in `etwin.toml.example`.
 ## Wiki
 
 Partially Outdated: See [wiki](https://gitlab.com/eternal-twin/etwin/-/wikis/home) and `README.md` files in package directories for help.
-
-for i in forum-in-memory forum-pg; do (cd -- "$i" && yarn upgrade --latest); done
