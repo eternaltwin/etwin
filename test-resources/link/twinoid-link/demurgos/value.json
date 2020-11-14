@@ -1,0 +1,20 @@
+{
+  "link": {
+    "time": "2020-10-26T18:53:14.493Z",
+    "user": {
+      "type": "User",
+      "id": "9f310484-963b-446b-af69-797feec6813f",
+      "display_name": {
+        "current": {
+          "value": "Demurgos"
+        }
+      }
+    }
+  },
+  "unlink": null,
+  "user": {
+    "type": "TwinoidUser",
+    "id": "38",
+    "display_name": "Demurgos"
+  }
+}

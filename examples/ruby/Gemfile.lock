@@ -1,0 +1,85 @@
+PATH
+  remote: .
+  specs:
+    etwin_rb_example (0.0.0)
+      etwin (~> 0.0.3)
+      sorbet-runtime (~> 0.5.6076)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ast (2.4.1)
+    debase (2.3.2)
+      debase-ruby_core_source (~> 0.10.11)
+    debase-ruby_core_source (0.10.11)
+    diff-lcs (1.4.4)
+    etwin (0.0.3)
+      faraday (~> 1.1.0)
+      sorbet-runtime (~> 0.5.6076)
+    faraday (1.1.0)
+      multipart-post (>= 1.2, < 3)
+      ruby2_keywords
+    io-console (0.5.6)
+    irb (1.2.7)
+      reline (>= 0.1.5)
+    multipart-post (2.1.1)
+    parallel (1.20.1)
+    parser (2.7.2.0)
+      ast (~> 2.4.1)
+    rainbow (3.0.0)
+    rake (13.0.1)
+    regexp_parser (2.0.0)
+    reline (0.1.9)
+      io-console (~> 0.5)
+    rexml (3.2.4)
+    rspec (3.10.0)
+      rspec-core (~> 3.10.0)
+      rspec-expectations (~> 3.10.0)
+      rspec-mocks (~> 3.10.0)
+    rspec-core (3.10.0)
+      rspec-support (~> 3.10.0)
+    rspec-expectations (3.10.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.10.0)
+    rspec-mocks (3.10.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.10.0)
+    rspec-support (3.10.0)
+    rubocop (1.3.1)
+      parallel (~> 1.10)
+      parser (>= 2.7.1.5)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8)
+      rexml
+      rubocop-ast (>= 1.1.1)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 2.0)
+    rubocop-ast (1.2.0)
+      parser (>= 2.7.1.5)
+    rubocop-sorbet (0.5.1)
+      rubocop
+    ruby-debug-ide (2.3.1)
+      debase (~> 2.3.2)
+    ruby-progressbar (1.10.1)
+    ruby2_keywords (0.0.2)
+    sorbet (0.5.6111)
+      sorbet-static (= 0.5.6111)
+    sorbet-runtime (0.5.6111)
+    sorbet-static (0.5.6111-universal-darwin-14)
+    unicode-display_width (1.7.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  etwin_rb_example!
+  irb (~> 1.2.7)
+  rake (~> 13.0.1)
+  rspec (~> 3.10.0)
+  rubocop (~> 1.3.1)
+  rubocop-sorbet (~> 0.5.1)
+  ruby-debug-ide (~> 2.3.1)
+  sorbet (~> 0.5.6076)
+
+BUNDLED WITH
+   2.1.4

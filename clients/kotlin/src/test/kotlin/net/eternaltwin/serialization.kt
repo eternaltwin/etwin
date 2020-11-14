@@ -29,8 +29,8 @@ data class SerializationTestItem<T>(
         actualItemNames.add(ent.name)
         val value = values[ent.name] ?: throw RuntimeException("Missing test value for $group > ${ent.name}")
         val valuePath = ent.toPath().resolve("value.json")
-        val jsonString: String = String(Files.readAllBytes(valuePath)).trim()
-        testItems.add(SerializationTestItem(ent.name, jsonString, value))
+        val json: String = String(Files.readAllBytes(valuePath)).trim()
+        testItems.add(SerializationTestItem(ent.name, json, value))
       }
       val extraValueKeys = values.keys.subtract(actualItemNames)
       if (extraValueKeys.isNotEmpty()) {

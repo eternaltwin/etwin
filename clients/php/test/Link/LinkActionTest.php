@@ -28,7 +28,7 @@ final class LinkActionTest extends TestCase {
       "link/link-action",
       [
         "demurgos" => new LinkAction(
-          DateTimeImmutable::createFromFormat(Instant::FORMAT, "2017-05-25T23:12:50.000Z"),
+          DateTimeImmutable::createFromFormat(Instant::FORMAT, "2017-05-25T23:12:50.001Z"),
           new ShortUser(
             UserId::fromString("9f310484-963b-446b-af69-797feec6813f"),
             new UserDisplayNameVersions(new UserDisplayNameVersion(new UserDisplayName("Demurgos")), []),

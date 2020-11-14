@@ -11,7 +11,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\UriResolver;
 
-class HttpEtwinClient implements EtwinClient {
+final class HttpEtwinClient implements EtwinClient {
   const DEFAULT_TIMEOUT = 30.0;
 
   private Uri $baseUri;
