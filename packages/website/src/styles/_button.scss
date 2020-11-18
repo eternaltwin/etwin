@@ -1,50 +1,3 @@
-/* --- SET SIZES --- */
-
-$contentWidth: 1024px;
-$marginWidth: 36px;
-$columns: 12;
-$colWidth: 50px;
-$colWidth-alt: 72px;
-$gutterWidth: ($contentWidth - (2 * $marginWidth) - ($columns * $colWidth)) / ($columns - 1) ; // 32px
-$gutterWidth-alt: ($contentWidth - (2 * $marginWidth) - ($columns * $colWidth-alt)) / ($columns - 1) ; // 8px
-
-$fontSize: 1em;
-$fontWeightLight: 300;
-$fontWeightRegular: 400;
-$fontWeightBold: 800;
-$lineHeight: 1.4em;
-
-/* --- OLD COLORS --- */
-
-$bgColor: #101010;
-$textColor: #d0d0d0;
-$bgAccentColor: #6a100e;
-
-$accentColor: #6a100e;
-$accentColorLight: #a81e22;
-$accentColorDark: #470d0b;
-
-/* --- SET COLORS --- */
-
-$red: #b52125;
-$darkRed: #6a0f0d;
-$deepRed: #590503;
-
-$lightViolet: #a29eb8;
-$darkViolet: #222034;
-$deepViolet: #181623;
-
-$lightWhite: #ededed;
-$lightGrey: #6f6f6f;
-$mediumGrey: #4d4d4d;
-$darkGrey: #1f1f1f;
-$deepGrey: #0f0f0f;
-$deepBlack: #040406;
-
-$pink: #ffafae;
-$darkPink: #ec8989;
-$orange: #cd6f00;
-
 /* --- MAIN BUTTONS --- */
 
 // THERE ARE 4 DISTINCT BUTTON STYLES:
@@ -97,15 +50,15 @@ $orange: #cd6f00;
   .actionBox {
     // two actionBox in a box will automatically balance their content left and right
 
-    margin-left: (-$gutterWidth-alt / 2);
-    margin-right: (-$gutterWidth-alt / 2);
+    margin-left: (-$gutterWidth / 2);
+    margin-right: (-$gutterWidth / 2);
 
     & + .actionBox { justify-content: flex-end; }
 
     @media only screen and (max-width: $desktopBreakpoint) {
       min-width: 100% !important;
-      margin-right: (-$gutterWidth-alt / 2) !important;
-      margin-left: (-$gutterWidth-alt / 2) !important;
+      margin-right: (-$gutterWidth / 2) !important;
+      margin-left: (-$gutterWidth / 2) !important;
       .btn:not(:only-child) {
         max-width: 100% ;
       }
@@ -152,7 +105,7 @@ $orange: #cd6f00;
 
     min-height: 2.5em;
     padding: .7em 1.7em;
-    margin: ($gutterWidth-alt / 2);
+    margin: ($gutterWidth / 2);
     cursor: pointer;
     background-color: $darkViolet;
     border-radius: .25em;
@@ -284,18 +237,18 @@ $orange: #cd6f00;
 
   .actionBox.multi .btn, .btn.multi {
     border-radius: 0;
-    margin: ($gutterWidth-alt / 2) -1px;
+    margin: ($gutterWidth / 2) -1px;
     clip-path: inset(-4px 1px -4px -4px);
     -webkit-clip-path: inset(-4px 1px -4px -4px);
 
     &:first-child {
       border-radius: 4px 0 0 4px;
-      margin-left: ($gutterWidth-alt / 2);
+      margin-left: ($gutterWidth / 2);
     }
 
     &:last-child {
       border-radius: 0 4px 4px 0;
-      margin-right: ($gutterWidth-alt / 2);
+      margin-right: ($gutterWidth / 2);
       clip-path: inset(-4px -4px -4px -4px);
       -webkit-clip-path: inset(-4px -4px -4px -4px);
     }

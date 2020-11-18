@@ -1,0 +1,44 @@
+/* --- SET GLOBAL SIZES --- */
+
+$contentWidth: 1024px;
+$desktopBreakpoint: 768px;
+
+$marginWidth: 36px;
+$columns: 12;
+$colWidth: 72px;
+$gutterWidth: ($contentWidth - (2 * $marginWidth) - ($columns * $colWidth)) / ($columns - 1) ; // 8px
+
+
+
+/* --- SET FONTS --- */
+
+$fontSize: 1em;
+$fontSizeMobile: 0.88em;
+$fontWeightLight: 300;
+$fontWeightRegular: 400;
+$fontWeightBold: 800;
+$lineHeight: 1.4em;
+
+
+
+/* --- SET COLORS --- */
+
+$red: #b52125;
+$darkRed: #6a0f0d;
+$deepRed: #590503;
+
+$lightViolet: #a29eb8;
+$mediumViolet: #2d2753;
+$darkViolet: #222034;
+$deepViolet: #181623;
+
+$lightWhite: #ededed;
+$lightGrey: #6f6f6f;
+$mediumGrey: #4d4d4d;
+$darkGrey: #1f1f1f;
+$deepGrey: #0f0f0f;
+$deepBlack: #040406;
+
+$pink: #ffafae;
+$darkPink: #ec8989;
+$orange: #cd6f00;
