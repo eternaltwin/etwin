@@ -1,6 +1,6 @@
 import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { EtwinClientService } from "@eternal-twin/core/lib/etwin-client/service.js";
-import { OauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/oauth-access-token-key.js";
+import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { $ShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { IoType } from "kryo";
@@ -16,16 +16,16 @@ export class HttpEtwinClient implements EtwinClientService {
     this.apiUri = Object.freeze(new url.URL(apiUri.toString()));
   }
 
-  public async getAuthSelf(accessToken: OauthAccessTokenKey): Promise<AuthContext> {
+  public async getAuthSelf(accessToken: RfcOauthAccessTokenKey): Promise<AuthContext> {
     return this.get(accessToken, ["auth", "self"], $AuthContext);
   }
 
-  public async getUserById(accessToken: OauthAccessTokenKey | null, userId: UserId): Promise<ShortUser> {
-    return this.get(accessToken, ["user", userId], $ShortUser);
+  public async getUserById(accessToken: RfcOauthAccessTokenKey | null, userId: UserId): Promise<ShortUser> {
+    return this.get(accessToken, ["users", userId], $ShortUser);
   }
 
   private async get<R>(
-    accessToken: OauthAccessTokenKey | null,
+    accessToken: RfcOauthAccessTokenKey | null,
     route: readonly string[],
     resType: IoType<R>,
   ): Promise<R> {
@@ -55,7 +55,7 @@ export class HttpEtwinClient implements EtwinClientService {
 
   private setAuth(
     req: superagent.SuperAgentRequest,
-    accessToken: OauthAccessTokenKey | null,
+    accessToken: RfcOauthAccessTokenKey | null,
   ): superagent.SuperAgentRequest {
     if (accessToken === null) {
       return req;
@@ -64,11 +64,11 @@ export class HttpEtwinClient implements EtwinClientService {
     }
   }
 
-  private getAuthorizationHeader(accessToken: OauthAccessTokenKey): string {
+  private getAuthorizationHeader(accessToken: RfcOauthAccessTokenKey): string {
     return `Bearer ${accessToken}`;
   }
 
   private resolveUri(components: readonly string[]): string {
-    return urlJoin(this.apiUri.toString(), ...components);
+    return urlJoin(this.apiUri.toString(), "api/v1", ...components);
   }
 }

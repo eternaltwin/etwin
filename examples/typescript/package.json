@@ -1,0 +1,24 @@
+{
+  "name": "@eternaltwin/client-example-ts",
+  "private": true,
+  "scripts": {
+    "build": "tsc --build src/lib/tsconfig.json",
+    "main:build": "tsc --build src/main/tsconfig.json",
+    "start": "yarn run main:build && node main/main.js"
+  },
+  "type": "module",
+  "exports": {
+    "./lib/": "./lib/"
+  },
+  "files": [
+    "./lib/"
+  ],
+  "dependencies": {
+    "@eternal-twin/core": "^0.3.1",
+    "@eternal-twin/etwin-client-http": "^0.3.2",
+    "kryo-json": "^0.11.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.2"
+  }
+}

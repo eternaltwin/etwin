@@ -1,7 +1,10 @@
 import chai from "chai";
 
+import { InMemoryEtwinClient } from "../lib/index.js";
+
 describe("InMemoryEtwinClient", () => {
   it("compiles", async () => {
-    chai.assert.strictEqual(1 + 1, 2);
+    const client = new InMemoryEtwinClient();
+    chai.assert.isDefined(client);
   });
 });

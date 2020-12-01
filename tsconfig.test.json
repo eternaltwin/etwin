@@ -16,6 +16,12 @@
       "path": "packages/core/src/test"
     },
     {
+      "path": "packages/etwin-client-http/src/test"
+    },
+    {
+      "path": "packages/etwin-client-in-memory/src/test"
+    },
+    {
       "path": "packages/forum-in-memory/src/test"
     },
     {
