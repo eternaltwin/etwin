@@ -1,4 +1,4 @@
-COMMENT ON SCHEMA public IS '{"version": "V003"}';
+COMMENT ON SCHEMA public IS '{"version": 3}';
 
 CREATE TABLE public.forum_sections (
   forum_section_id UUID PRIMARY KEY NOT NULL,

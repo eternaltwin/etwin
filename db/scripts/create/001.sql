@@ -1,4 +1,4 @@
-COMMENT ON SCHEMA public IS '{"version": "V001"}';
+COMMENT ON SCHEMA public IS '{"version": 1}';
 
 -- A user
 CREATE TABLE public.users (

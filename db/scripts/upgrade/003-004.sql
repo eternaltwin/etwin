@@ -1,4 +1,4 @@
-COMMENT ON SCHEMA public IS '{"version": "V004"}';
+COMMENT ON SCHEMA public IS '{"version": 4}';
 
 CREATE DOMAIN HAMMERFEST_SERVER AS VARCHAR(13) CHECK (VALUE IN ('hammerfest.es', 'hammerfest.fr', 'hfest.net'));
 CREATE DOMAIN HAMMERFEST_SESSION_KEY AS VARCHAR(26) CHECK (VALUE ~ '^[0-9a-z]{26}$');
