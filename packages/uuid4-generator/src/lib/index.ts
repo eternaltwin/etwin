@@ -8,4 +8,4 @@ const UUID4_GENERATOR: UuidGenerator = {
   },
 };
 
-export { UUID4_GENERATOR, UUID4_GENERATOR as default };
+export { UUID4_GENERATOR as default,UUID4_GENERATOR };

@@ -11,10 +11,10 @@ import {
 } from "@eternal-twin/core/lib/user/link-to-hammerfest-options.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
+import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import koaRoute from "koa-route";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import url from "url";
 
@@ -45,13 +45,13 @@ const ALL_TWINOID_SCOPES: readonly RfcOauthScope[] = [
   "en.dinorpg.com",
 ];
 
-export async function createLinkRouter(api: Api): Promise<Koa> {
-  const router: Koa = new Koa();
+export async function createLinkRouter(api: Api): Promise<Router> {
+  const router: Router = new Router();
 
-  router.use(koaRoute.post("/hammerfest", koaCompose([koaBodyParser(), linkToHammerfest])));
+  router.post("/hammerfest", koaCompose([koaBodyParser(), linkToHammerfest]));
 
-  async function linkToHammerfest(cx: Koa.Context): Promise<void> {
-    const acx: AuthContext = await api.koaAuth.auth(cx);
+  async function linkToHammerfest(cx: RouterContext): Promise<void> {
+    const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (acx.type !== AuthType.User) {
       cx.response.status = 401;
       // cx.response.redirect("/settings");
@@ -78,10 +78,10 @@ export async function createLinkRouter(api: Api): Promise<Koa> {
     cx.response.redirect("/settings");
   }
 
-  router.use(koaRoute.post("/twinoid", koaCompose([koaBodyParser(), linkToTwinoid])));
+  router.post("/twinoid", koaCompose([koaBodyParser(), linkToTwinoid]));
 
-  async function linkToTwinoid(cx: Koa.Context): Promise<void> {
-    const acx: AuthContext = await api.koaAuth.auth(cx);
+  async function linkToTwinoid(cx: RouterContext): Promise<void> {
+    const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (acx.type !== AuthType.User) {
       cx.response.redirect("/settings");
       return;

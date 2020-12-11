@@ -23,11 +23,15 @@ export interface Api extends AuthApi, ConfigApi, ForumApi, HammerfestApi, UsersA
 export function createApiRouter(api: Api): Koa {
   const router: Koa = new Koa();
 
-  router.use(koaMount("/auth", createAuthRouter(api)));
+  const auth = createAuthRouter(api);
+  router.use(koaMount("/auth", auth.routes()));
+  router.use(koaMount("/auth", auth.allowedMethods()));
   const config = createConfigRouter(api);
   router.use(koaMount("/config", config.routes()));
   router.use(koaMount("/config", config.allowedMethods()));
-  router.use(koaMount("/users", createUsersRouter(api)));
+  const users = createUsersRouter(api);
+  router.use(koaMount("/users", users.routes()));
+  router.use(koaMount("/users", users.allowedMethods()));
   const forum = createForumRouter(api);
   router.use(koaMount("/forum", forum.routes()));
   router.use(koaMount("/forum", forum.allowedMethods()));

@@ -13,15 +13,16 @@ import {
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { $MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import koaRoute from "koa-route";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 import { QsValueReader } from "kryo-qs/lib/qs-value-reader.js";
 
 import { KoaAuth, SESSION_COOKIE } from "./helpers/koa-auth.js";
+import { KoaState } from "./koa-state";
 
 const QS_VALUE_READER: QsValueReader = new QsValueReader();
 
@@ -33,19 +34,19 @@ export interface Api {
   user: UserService;
 }
 
-export function createAuthRouter(api: Api): Koa {
-  const router: Koa = new Koa();
+export function createAuthRouter(api: Api): Router {
+  const router: Router = new Router();
 
-  router.use(koaRoute.get("/self", getSelf));
+  router.get("/self", getSelf);
 
-  async function getSelf(cx: Koa.Context): Promise<void> {
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+  async function getSelf(cx: RouterContext<KoaState>): Promise<void> {
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     cx.response.body = $AuthContext.write(JSON_VALUE_WRITER, auth);
   }
 
-  router.use(koaRoute.put("/self", koaCompose([koaBodyParser(), createSession])));
+  router.put("/self", koaCompose([koaBodyParser(), createSession]));
 
-  async function createSession(cx: Koa.Context): Promise<void> {
+  async function createSession(cx:  RouterContext<KoaState>): Promise<void> {
     let query: CreateSessionQuery;
     try {
       query = $CreateSessionQuery.read(QS_VALUE_READER, cx.request.query);
@@ -64,7 +65,7 @@ export function createAuthRouter(api: Api): Koa {
         break;
       }
       case AuthMethod.Twinoid: {
-        await createSessionWithTwinoidCredentials(cx);
+        await createSessionWithTwinoidCredentials(cx as any as Koa.Context);
         break;
       }
       default: {
@@ -74,7 +75,7 @@ export function createAuthRouter(api: Api): Koa {
     }
   }
 
-  async function createSessionWithCredentials(cx: Koa.Context): Promise<void> {
+  async function createSessionWithCredentials(cx: RouterContext<KoaState>): Promise<void> {
     const credentials: UserCredentials = $UserCredentials.read(JSON_VALUE_READER, cx.request.body);
     const result: UserAndSession = await api.auth.loginWithCredentials(GUEST_AUTH, credentials);
     cx.cookies.set(SESSION_COOKIE, result.session.id);
@@ -85,7 +86,7 @@ export function createAuthRouter(api: Api): Koa {
     cx.response.body = $MaybeCompleteUser.write(JSON_VALUE_WRITER, user!);
   }
 
-  async function createSessionWithHammerfestCredentials(cx: Koa.Context): Promise<void> {
+  async function createSessionWithHammerfestCredentials(cx: RouterContext<KoaState>): Promise<void> {
     const credentials: HammerfestCredentials = $HammerfestCredentials.read(JSON_VALUE_READER, cx.request.body);
     const result: UserAndSession = await api.auth.registerOrLoginWithHammerfest(GUEST_AUTH, credentials);
     cx.cookies.set(SESSION_COOKIE, result.session.id);
@@ -100,9 +101,9 @@ export function createAuthRouter(api: Api): Koa {
     cx.response.status = 500;
   }
 
-  router.use(koaRoute.delete("/self", deleteSession));
+  router.delete("/self", deleteSession);
 
-  async function deleteSession(cx: Koa.Context): Promise<void> {
+  async function deleteSession(cx: RouterContext<KoaState>): Promise<void> {
     cx.cookies.set(SESSION_COOKIE, "");
     cx.response.body = $AuthContext.write(JSON_VALUE_WRITER, GUEST_AUTH);
   }

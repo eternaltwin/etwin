@@ -7,9 +7,9 @@ import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
+import Router, { RouterContext } from "@koa/router";
 import * as furi from "furi";
 import Koa from "koa";
-import koaRoute from "koa-route";
 import koaStaticCache from "koa-static-cache";
 import url from "url";
 
@@ -64,14 +64,15 @@ function fullyQualifyUrl(options: ServerAppConfig, pathAndQuery: string): url.UR
 }
 
 // The Express app is exported so that it can be used by serverless Functions.
-export async function app(options?: Partial<ServerAppConfig>) {
+export async function app(options?: Partial<ServerAppConfig>): Promise<Koa> {
   const config: ServerAppConfig = resolveServerOptions(options);
 
   const serverDir = furi.fromSysPath(__dirname);
   const indexFuri = config.isIndexNextToServerMain
     ? furi.join(serverDir, "index.html")
     : furi.join(serverDir, "../../browser", furi.basename(serverDir), "index.html");
-  const router = new Koa();
+
+  const app = new Koa();
 
   const providers: StaticProvider[] = [];
   if (config.externalUri !== undefined) {
@@ -87,13 +88,16 @@ export async function app(options?: Partial<ServerAppConfig>) {
     providers,
   });
 
-  // TODO: Fix `koaRoute` type definitions to accept a readonly ROUTES.
-  router.use(koaRoute.get([...ROUTES], ngRender));
+  const router = new Router();
+  // TODO: Fix `koajs/router` type definitions to accept a readonly ROUTES.
+  router.get([...ROUTES], ngRender);
+  app.use(router.routes());
+  app.use(router.allowedMethods());
 
-  async function ngRender(cx: Koa.Context): Promise<void> {
+  async function ngRender(cx: RouterContext): Promise<void> {
     let acx: AuthContext;
     try {
-      acx = await config.api.koaAuth.auth(cx);
+      acx = await config.api.koaAuth.auth(cx as any as Koa.Context);
     } catch (err) {
       console.error(err);
       acx = GUEST_AUTH_CONTEXT;
@@ -110,10 +114,10 @@ export async function app(options?: Partial<ServerAppConfig>) {
   if (!config.isIndexNextToServerMain) {
     const browserDir = furi.join(serverDir, "../../browser", furi.basename(serverDir));
     const ONE_DAY: number = 24 * 3600;
-    router.use(koaStaticCache(furi.toSysPath(browserDir), {maxAge: ONE_DAY}));
+    app.use(koaStaticCache(furi.toSysPath(browserDir), {maxAge: ONE_DAY}));
   }
 
-  return router;
+  return app;
 }
 
 async function run() {

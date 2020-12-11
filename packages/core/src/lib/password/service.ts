@@ -1,5 +1,5 @@
-import { PasswordHash } from "./password-hash.js";
 import { Password } from "./password.js";
+import { PasswordHash } from "./password-hash.js";
 
 export interface PasswordService {
   /**

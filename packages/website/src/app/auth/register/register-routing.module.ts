@@ -1,9 +1,9 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
+import { RegisterComponent } from "./register.component";
 import { RegisterEmailComponent } from "./register-email.component";
 import { RegisterUsernameComponent } from "./register-username.component";
-import { RegisterComponent } from "./register.component";
 
 const routes: Routes = [
   {path: "", component: RegisterComponent, pathMatch: "full"},

@@ -9,15 +9,15 @@ import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js"
 import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
 import { KoaAuth, SESSION_COOKIE } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
+import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import koaRoute from "koa-route";
 import { CaseStyle } from "kryo";
-import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
 import { $Ucs2String } from "kryo/lib/ucs2-string.js";
+import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
 
 const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
 
@@ -67,15 +67,15 @@ export interface Api {
   koaAuth: KoaAuth;
 }
 
-export async function createRegisterRouter(api: Api): Promise<Koa> {
-  const router: Koa = new Koa();
+export async function createRegisterRouter(api: Api): Promise<Router> {
+  const router: Router = new Router();
 
-  router.use(koaRoute.post("/", koaCompose([koaBodyParser(), registerUser])));
+  router.post("/", koaCompose([koaBodyParser(), registerUser]));
 
-  async function registerUser(cx: Koa.Context): Promise<void> {
+  async function registerUser(cx: RouterContext): Promise<void> {
     let auth: AuthContext;
     try {
-      auth = await api.koaAuth.auth(cx);
+      auth = await api.koaAuth.auth(cx as any as Koa.Context);
     } catch (err) {
       console.error(err);
       auth = GUEST_AUTH;

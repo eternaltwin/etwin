@@ -4,10 +4,9 @@ import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-o
 import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input.js";
 import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope.js";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
-import Koa from "koa";
+import Router, { RouterContext } from "@koa/router";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import koaRoute from "koa-route";
 import url from "url";
 
 export interface Api {
@@ -36,12 +35,12 @@ const ALL_TWINOID_SCOPES: readonly RfcOauthScope[] = [
   "en.dinorpg.com",
 ];
 
-export async function createLoginRouter(api: Api): Promise<Koa> {
-  const router: Koa = new Koa();
+export async function createLoginRouter(api: Api): Promise<Router> {
+  const router: Router = new Router();
 
-  router.use(koaRoute.post("/twinoid", koaCompose([koaBodyParser(), loginWithTwinoid])));
+  router.post("/twinoid", koaCompose([koaBodyParser(), loginWithTwinoid]));
 
-  async function loginWithTwinoid(cx: Koa.Context): Promise<void> {
+  async function loginWithTwinoid(cx: RouterContext): Promise<void> {
     // const csrfToken: string = await api.koaAuth.getOrCreateCsrfToken(cx);
     const csrfToken: string = "TODO";
     const state: EtwinOauthStateInput = {

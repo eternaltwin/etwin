@@ -10,13 +10,13 @@ import chai from "chai";
 import fs from "fs";
 import furi from "furi";
 import { CaseStyle } from "kryo";
-import { JSON_READER } from "kryo-json/lib/json-reader.js";
-import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 import { $Boolean } from "kryo/lib/boolean.js";
 import { LiteralType } from "kryo/lib/literal.js";
 import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
+import { JSON_READER } from "kryo-json/lib/json-reader.js";
+import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 import url from "url";
 
 import {

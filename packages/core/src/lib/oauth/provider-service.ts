@@ -1,11 +1,11 @@
 import jsonWebToken from "jsonwebtoken";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { ArrayType } from "kryo/lib/array.js";
 import { $Uint53 } from "kryo/lib/integer.js";
 import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { $Ucs2String } from "kryo/lib/ucs2-string.js";
 import { UuidHex } from "kryo/lib/uuid-hex";
+import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 
 import { AuthContext } from "../auth/auth-context.js";
 import { AuthType } from "../auth/auth-type.js";
@@ -17,12 +17,12 @@ import { UserId } from "../user/user-id.js";
 import { CompleteOauthAccessToken } from "./complete-oauth-access-token.js";
 import { CreateOrUpdateSystemClientOptions } from "./create-or-update-system-client-options.js";
 import { parseScopeString, toOauthClientTypedKey } from "./helpers.js";
-import { OauthAccessTokenRequest } from "./oauth-access-token-request.js";
 import { OauthAccessToken } from "./oauth-access-token.js";
+import { OauthAccessTokenRequest } from "./oauth-access-token-request.js";
+import { OauthClient } from "./oauth-client.js";
 import { $OauthClientId, OauthClientId } from "./oauth-client-id.js";
 import { OauthClientInputRef } from "./oauth-client-input-ref.js";
 import { OauthClientKey } from "./oauth-client-key.js";
-import { OauthClient } from "./oauth-client.js";
 import { OauthCode } from "./oauth-code.js";
 import { OauthScopeString } from "./oauth-scope-string.js";
 import { OauthTokenType } from "./oauth-token-type.js";

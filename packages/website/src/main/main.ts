@@ -4,6 +4,7 @@ import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-conte
 import { ApiType, Config, getLocalConfig } from "@eternal-twin/local-config";
 import { createApiRouter } from "@eternal-twin/rest-server/lib/index.js";
 import koaCors from "@koa/cors";
+import Router  from "@koa/router";
 import fs from "fs";
 import furi from "furi";
 import Koa from "koa";
@@ -117,16 +118,18 @@ async function main(api: Api): Promise<void> {
   router.use(koaStaticCache(furi.toSysPath(BROWSER_APP_DIR), {maxAge: ONE_DAY}));
 
   const apiRouter: Koa = await createApiRouter(api);
-  router.use(koaMount("/api/v1", apiRouter));
+  router.use(koaMount("/api/v1", apiRouter as any as Koa.Middleware));
 
-  const actionsRouter: Koa = await createActionsRouter(api);
-  router.use(koaMount("/actions", actionsRouter));
+  const actionsRouter: Router = await createActionsRouter(api);
+  router.use(koaMount("/actions", actionsRouter.routes()));
+  router.use(koaMount("/actions", actionsRouter.allowedMethods()));
 
-  const oauthRouter: Koa = await createOauthRouter(api);
-  router.use(koaMount("/oauth", oauthRouter));
+  const oauthRouter: Router = await createOauthRouter(api);
+  router.use(koaMount("/oauth", oauthRouter.routes()));
+  router.use(koaMount("/oauth", oauthRouter.allowedMethods()));
 
   const i18nRouter: Koa = createI18nRouter(defaultRouter, prodAppRouters);
-  router.use(koaMount("/", i18nRouter));
+  router.use(koaMount("/", i18nRouter as any as Koa.Middleware));
 
   router.listen(config.etwin.httpPort, () => {
     console.log(`Listening on internal port ${config.etwin.httpPort}, externally available at ${config.etwin.externalUri}`);
@@ -142,10 +145,10 @@ function createI18nRouter(defaultRouter: Koa, localizedRouters: Map<Locale, Koa>
     supportedLocales: localizedRouters.keys(),
   });
 
-  const defaultMiddleware: Koa.Middleware = koaMount(defaultRouter);
+  const defaultMiddleware: Koa.Middleware = koaMount(defaultRouter as any as Koa.Middleware) as Koa.Middleware;
   const localizedMiddlewares: Map<Locale, Koa.Middleware> = new Map();
   for (const [locale, app] of localizedRouters) {
-    localizedMiddlewares.set(locale, koaMount(app));
+    localizedMiddlewares.set(locale, koaMount(app as any as Koa.Middleware) as Koa.Middleware);
   }
 
   router.use(async (cx, next) => {

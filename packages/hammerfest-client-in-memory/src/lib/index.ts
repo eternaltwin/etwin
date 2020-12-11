@@ -10,8 +10,8 @@ import { HammerfestItemCounts } from "@eternal-twin/core/lib/hammerfest/hammerfe
 import { HammerfestPassword } from "@eternal-twin/core/lib/hammerfest/hammerfest-password.js";
 import { HammerfestProfile } from "@eternal-twin/core/lib/hammerfest/hammerfest-profile";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
-import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
+import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestShop } from "@eternal-twin/core/lib/hammerfest/hammerfest-shop";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
 import { HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";

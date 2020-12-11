@@ -18,6 +18,7 @@ typedoc/
 /packages/*/target/
 /packages/*/test/
 *.cache
+target
 
 ###############################################################################
 # Dependencies                                                                #

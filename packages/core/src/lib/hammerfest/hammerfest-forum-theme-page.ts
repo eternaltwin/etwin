@@ -3,8 +3,8 @@ import { ArrayType } from "kryo/lib/array.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $HammerfestForumThemeRef, HammerfestForumThemeRef } from "./hammerfest-forum-theme-ref.js";
-import { $HammerfestForumThreadListing, HammerfestForumThreadListing } from "./hammerfest-forum-thread-listing.js";
 import { $HammerfestForumThread, HammerfestForumThread } from "./hammerfest-forum-thread.js";
+import { $HammerfestForumThreadListing, HammerfestForumThreadListing } from "./hammerfest-forum-thread-listing.js";
 
 export interface HammerfestForumThemePage {
   theme: HammerfestForumThemeRef;

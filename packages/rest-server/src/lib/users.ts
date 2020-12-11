@@ -14,17 +14,18 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
-import { $UserId, UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $User, User } from "@eternal-twin/core/lib/user/user.js";
+import { $UserId, UserId } from "@eternal-twin/core/lib/user/user-id.js";
+import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import koaRoute from "koa-route";
+import { TryUnionType } from "kryo/lib/try-union.js";
 import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
 import { JsonValueWriter } from "kryo-json/lib/json-value-writer.js";
-import { TryUnionType } from "kryo/lib/try-union.js";
 
 import { KoaAuth, SESSION_COOKIE } from "./helpers/koa-auth.js";
+import { KoaState } from "./koa-state";
 
 const JSON_VALUE_WRITER: JsonValueWriter = new JsonValueWriter();
 const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
@@ -43,12 +44,12 @@ const $CreateUserBody: TryUnionType<CreateUserBody> = new TryUnionType<CreateUse
   variants: [$RegisterWithVerifiedEmailOptions, $RegisterWithUsernameOptions],
 });
 
-export function createUsersRouter(api: Api): Koa {
-  const router: Koa = new Koa();
+export function createUsersRouter(api: Api): Router {
+  const router: Router = new Router();
 
-  router.use(koaRoute.post("/", koaCompose([koaBodyParser(), createUser])));
+  router.post("/", koaCompose([koaBodyParser(), createUser]));
 
-  async function createUser(cx: Koa.Context): Promise<void> {
+  async function createUser(cx: RouterContext<KoaState>): Promise<void> {
     const variantValue = $CreateUserBody.variantRead(JSON_VALUE_READER, cx.request.body);
     let userAndSession: UserAndSession;
     switch (variantValue.variant) {
@@ -93,10 +94,11 @@ export function createUsersRouter(api: Api): Koa {
     cx.response.body = $User.write(JSON_VALUE_WRITER, user);
   }
 
-  router.use(koaRoute.get("/:user_id", getUserById));
+  router.get("/:user_id", getUserById);
 
-  async function getUserById(cx: Koa.Context, rawUserId: string): Promise<void> {
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+  async function getUserById(cx: RouterContext<KoaState>): Promise<void> {
+    const rawUserId = cx.params["user_id"];
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$UserId.test(rawUserId)) {
       cx.response.status = 422;
       cx.response.body = {error: "InvalidId"};

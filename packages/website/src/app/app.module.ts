@@ -3,8 +3,8 @@ import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 
 import { ConfigService } from "../modules/config/config.service";
-import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { AppRoutingModule } from "./app-routing.module";
 import { HomeView } from "./home/home.component";
 import { SharedModule } from "./shared/shared.module";
 

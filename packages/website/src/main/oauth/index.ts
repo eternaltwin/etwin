@@ -8,11 +8,11 @@ import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.j
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type.js";
 import { EtwinOauthStateAndAccessToken } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-and-access-token.js";
+import { $OauthAccessToken, OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
 import {
   $OauthAccessTokenRequest,
   OauthAccessTokenRequest,
 } from "@eternal-twin/core/lib/oauth/oauth-access-token-request.js";
-import { $OauthAccessToken, OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
 import {
   $OauthAuthorizationError,
   OauthAuthorizationError,
@@ -29,10 +29,10 @@ import { LinkToTwinoidMethod } from "@eternal-twin/core/lib/user/link-to-twinoid
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { KoaAuth, SESSION_COOKIE } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import { TwinoidClientService } from "@eternal-twin/twinoid-core/src/lib/client.js";
+import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import koaRoute from "koa-route";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader.js";
@@ -54,12 +54,12 @@ const GUEST_ACX: GuestAuthContext = {
   scope: AuthScope.Default,
 };
 
-export async function createOauthRouter(api: Api): Promise<Koa> {
-  const router: Koa = new Koa();
+export async function createOauthRouter(api: Api): Promise<Router> {
+  const router: Router = new Router();
 
-  router.use(koaRoute.get("/authorize", grantOauthAuthorization));
+  router.get("/authorize", grantOauthAuthorization);
 
-  async function grantOauthAuthorization(cx: Koa.Context): Promise<void> {
+  async function grantOauthAuthorization(cx: RouterContext): Promise<void> {
     // We start by checking for early errors that may correspond to malicious queries.
     // If the client id is missing, the client does not exist or there is a
     // mismatch on the `redirect_uri`, then we consider we treat it as a
@@ -72,7 +72,7 @@ export async function createOauthRouter(api: Api): Promise<Koa> {
       cx.response.body = {error: "MissingClientId"};
       return;
     }
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     const client: OauthClient | null = await api.oauthProvider.getClientByIdOrKey(auth, clientId);
     if (client === null) {
       cx.response.status = 404;
@@ -133,10 +133,10 @@ export async function createOauthRouter(api: Api): Promise<Koa> {
     }
   }
 
-  router.use(koaRoute.post("/token", koaCompose([koaBodyParser(), getAccessToken])));
+  router.post("/token", koaCompose([koaBodyParser(), getAccessToken]));
 
-  async function getAccessToken(cx: Koa.Context): Promise<void> {
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+  async function getAccessToken(cx: RouterContext): Promise<void> {
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     const req: OauthAccessTokenRequest = $OauthAccessTokenRequest.read(JSON_VALUE_READER, cx.request.body);
     let accessToken: OauthAccessToken;
     try {
@@ -153,9 +153,9 @@ export async function createOauthRouter(api: Api): Promise<Koa> {
     cx.response.body = $OauthAccessToken.write(JSON_VALUE_WRITER, accessToken);
   }
 
-  router.use(koaRoute.get("/callback", onAuthorizationGrant));
+  router.get("/callback", onAuthorizationGrant);
 
-  async function onAuthorizationGrant(cx: Koa.Context): Promise<void> {
+  async function onAuthorizationGrant(cx: RouterContext): Promise<void> {
     if (cx.request.query.error !== undefined) {
       cx.response.body = {error: cx.request.query.error};
     }
@@ -200,7 +200,7 @@ export async function createOauthRouter(api: Api): Promise<Koa> {
         break;
       }
       case EtwinOauthActionType.Link: {
-        const acx: AuthContext = await api.koaAuth.auth(cx);
+        const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
         await api.user.linkToTwinoidWithOauth(acx, {method: LinkToTwinoidMethod.Oauth, userId: state.action.userId, accessToken});
         cx.redirect("/settings");
         break;

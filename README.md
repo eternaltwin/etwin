@@ -25,6 +25,7 @@ The `website` package has more advanced tasks described in its `README.md`, all 
 - `yarn test`: Compile the tests and run them
 - `yarn lint`: Check for common errors and style issues.
 - `yarn format`: Attempt to fix style issues automatically.
+- `yarn up '@!(eternal-twin)/*'`: Update all dependencies.
 
 ## Configuration
 

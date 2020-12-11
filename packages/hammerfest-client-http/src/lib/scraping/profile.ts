@@ -6,8 +6,8 @@ import { HammerfestItemId } from "@eternal-twin/core/lib/hammerfest/hammerfest-i
 import { HammerfestProfile } from "@eternal-twin/core/lib/hammerfest/hammerfest-profile.js";
 import { HammerfestQuestId } from "@eternal-twin/core/lib/hammerfest/hammerfest-quest-id.js";
 import { HammerfestQuestName } from "@eternal-twin/core/lib/hammerfest/hammerfest-quest-name.js";
-import { HammerfestQuestStatusMap } from "@eternal-twin/core/lib/hammerfest/hammerfest-quest-status-map.js";
 import { HammerfestQuestStatus } from "@eternal-twin/core/lib/hammerfest/hammerfest-quest-status.js";
+import { HammerfestQuestStatusMap } from "@eternal-twin/core/lib/hammerfest/hammerfest-quest-status-map.js";
 import { HammerfestRank } from "@eternal-twin/core/lib/hammerfest/hammerfest-rank.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { Element, Node } from "domhandler";

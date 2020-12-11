@@ -3,27 +3,28 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { $ListingQuery, ListingQuery } from "@eternal-twin/core/lib/core/listing-query.js";
 import { $CreatePostOptions, CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options.js";
 import { $CreateThreadOptions, CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options.js";
-import { $ForumPostId, ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id.js";
 import { $ForumPost, ForumPost } from "@eternal-twin/core/lib/forum/forum-post.js";
+import { $ForumPostId, ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id.js";
+import { $ForumSection, ForumSection } from "@eternal-twin/core/lib/forum/forum-section.js";
 import { $ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id.js";
 import { $ForumSectionKey } from "@eternal-twin/core/lib/forum/forum-section-key.js";
 import { $ForumSectionListing, ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing.js";
-import { $ForumSection, ForumSection } from "@eternal-twin/core/lib/forum/forum-section.js";
+import { $ForumThread, ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { $ForumThreadId, ForumThreadId } from "@eternal-twin/core/lib/forum/forum-thread-id.js";
 import { $ForumThreadKey, ForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key.js";
-import { $ForumThread, ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { $UpdatePostOptions, UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options.js";
 import { $UserIdRef, UserIdRef } from "@eternal-twin/core/lib/user/user-id-ref.js";
+import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import Router from "koa-router";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader.js";
 
 import { KoaAuth } from "./helpers/koa-auth.js";
+import { KoaState } from "./koa-state";
 
 export interface Api {
   auth: AuthService;
@@ -36,17 +37,17 @@ export function createForumRouter(api: Api): Router {
 
   router.get("/sections", getSections);
 
-  async function getSections(cx: Koa.Context): Promise<void> {
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+  async function getSections(cx: RouterContext<KoaState>): Promise<void> {
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     const sections: ForumSectionListing = await api.forum.getSections(auth);
     cx.response.body = $ForumSectionListing.write(JSON_VALUE_WRITER, sections);
   }
 
   router.get("/sections/:section_id", getSectionById);
 
-  async function getSectionById(cx: Koa.Context): Promise<void> {
+  async function getSectionById(cx: RouterContext<KoaState>): Promise<void> {
     const rawSectionIdOrKey: string = cx.params["section_id"];
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumSectionId.test(rawSectionIdOrKey) && !$ForumSectionKey.test(rawSectionIdOrKey)) {
       cx.response.status = 422;
       cx.response.body = {error: "InvalidSectionIdOrKey"};
@@ -75,9 +76,9 @@ export function createForumRouter(api: Api): Router {
 
   router.post("/sections/:section_id", koaCompose([koaBodyParser(), createThread]));
 
-  async function createThread(cx: Koa.Context): Promise<void> {
+  async function createThread(cx: RouterContext<KoaState>): Promise<void> {
     const rawSectionIdOrKey: string = cx.params["section_id"];
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumSectionId.test(rawSectionIdOrKey) && !$ForumSectionKey.test(rawSectionIdOrKey)) {
       cx.response.status = 422;
       cx.response.body = {error: "InvalidSectionIdOrKey"};
@@ -98,9 +99,9 @@ export function createForumRouter(api: Api): Router {
 
   router.post("/sections/:section_id/role_grants", koaCompose([koaBodyParser(), addModerator]));
 
-  async function addModerator(cx: Koa.Context): Promise<void> {
+  async function addModerator(cx: RouterContext<KoaState>): Promise<void> {
     const rawSectionIdOrKey: string = cx.params["section_id"];
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumSectionId.test(rawSectionIdOrKey) && !$ForumSectionKey.test(rawSectionIdOrKey)) {
       cx.response.status = 422;
       cx.response.body = {error: "InvalidSectionIdOrKey"};
@@ -121,9 +122,9 @@ export function createForumRouter(api: Api): Router {
 
   router.delete("/sections/:section_id/role_grants", koaCompose([koaBodyParser(), deleteModerator]));
 
-  async function deleteModerator(cx: Koa.Context): Promise<void> {
+  async function deleteModerator(cx: RouterContext<KoaState>): Promise<void> {
     const rawSectionIdOrKey: string = cx.params["section_id"];
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumSectionId.test(rawSectionIdOrKey) && !$ForumSectionKey.test(rawSectionIdOrKey)) {
       cx.response.status = 422;
       cx.response.body = {error: "InvalidSectionIdOrKey"};
@@ -144,9 +145,9 @@ export function createForumRouter(api: Api): Router {
 
   router.get("/threads/:thread_id", getThreadByIdOrKey);
 
-  async function getThreadByIdOrKey(cx: Koa.Context): Promise<void> {
+  async function getThreadByIdOrKey(cx: RouterContext<KoaState>): Promise<void> {
     const rawThreadIdOrKey: string = cx.params["thread_id"];
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumThreadId.test(rawThreadIdOrKey) && !$ForumThreadKey.test(rawThreadIdOrKey)) {
       cx.response.status = 422;
       cx.response.body = {error: "InvalidThreadIdOrKey"};
@@ -175,9 +176,9 @@ export function createForumRouter(api: Api): Router {
 
   router.post("/threads/:thread_id", koaCompose([koaBodyParser(), createPost]));
 
-  async function createPost(cx: Koa.Context): Promise<void> {
+  async function createPost(cx: RouterContext<KoaState>): Promise<void> {
     const rawThreadIdOrKey: string = cx.params["thread_id"];
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumThreadId.test(rawThreadIdOrKey) && !$ForumThreadKey.test(rawThreadIdOrKey)) {
       cx.response.status = 422;
       cx.response.body = {error: "InvalidThreadIdOrKey"};
@@ -198,9 +199,9 @@ export function createForumRouter(api: Api): Router {
 
   router.get("/posts/:post_id", getPost);
 
-  async function getPost(cx: Koa.Context): Promise<void> {
+  async function getPost(cx: RouterContext<KoaState>): Promise<void> {
     const rawPostId: string = cx.params["post_id"];
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumPostId.test(rawPostId)) {
       cx.response.status = 422;
       cx.response.body = {error: "InvalidPostId"};
@@ -229,9 +230,9 @@ export function createForumRouter(api: Api): Router {
 
   router.patch("/posts/:post_id", koaCompose([koaBodyParser(), updatePost]));
 
-  async function updatePost(cx: Koa.Context): Promise<void> {
+  async function updatePost(cx: RouterContext<KoaState>): Promise<void> {
     const rawPostId: string = cx.params["post_id"];
-    const auth: AuthContext = await api.koaAuth.auth(cx);
+    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumPostId.test(rawPostId)) {
       cx.response.status = 422;
       cx.response.body = {error: "InvalidThreadIdOrKey"};

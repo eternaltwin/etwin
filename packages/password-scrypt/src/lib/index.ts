@@ -1,5 +1,5 @@
-import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { Password } from "@eternal-twin/core/lib/password/password.js";
+import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import scryptKdf from "scrypt-kdf";
 

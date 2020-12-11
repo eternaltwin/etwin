@@ -2,8 +2,8 @@ import { $UuidHex } from "../core/uuid-hex.js";
 import { $EmailAddress } from "../email/email-address.js";
 import { $OauthClientKey } from "../oauth/oauth-client-key.js";
 import { $Username } from "../user/username.js";
-import { LoginType } from "./login-type.js";
 import { Login } from "./login.js";
+import { LoginType } from "./login-type.js";
 
 const USER_SUFFIX = "@users";
 

@@ -8,8 +8,8 @@ import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.j
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { $ForumPost, ForumPost } from "@eternal-twin/core/lib/forum/forum-post.js";
 import { ForumRole } from "@eternal-twin/core/lib/forum/forum-role.js";
-import { $ForumSectionListing, ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing.js";
 import { $ForumSection, ForumSection } from "@eternal-twin/core/lib/forum/forum-section.js";
+import { $ForumSectionListing, ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing.js";
 import { $ForumThread, ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js";

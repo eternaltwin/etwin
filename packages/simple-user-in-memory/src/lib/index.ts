@@ -9,8 +9,8 @@ import { GetUserByIdOptions } from "@eternal-twin/core/lib/user/get-user-by-id-o
 import { GetUserByUsernameOptions } from "@eternal-twin/core/lib/user/get-user-by-username-options.js";
 import { MaybeCompleteSimpleUser } from "@eternal-twin/core/lib/user/maybe-complete-simple-user.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
-import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
+import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";

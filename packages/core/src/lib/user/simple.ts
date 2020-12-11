@@ -14,7 +14,9 @@ export interface SimpleUserService {
   getUserById(acx: AuthContext, options: Readonly<GetUserByIdOptions>): Promise<MaybeCompleteSimpleUser | null>;
 
   getShortUserByEmail(acx: AuthContext, options: Readonly<GetUserByEmailOptions>): Promise<ShortUser | null>;
+
   getShortUserById(acx: AuthContext, options: Readonly<GetUserByIdOptions>): Promise<ShortUser | null>;
+
   getShortUserByUsername(acx: AuthContext, options: Readonly<GetUserByUsernameOptions>): Promise<ShortUser | null>;
 
   hardDeleteUserById(acx: AuthContext, userId: UserId): Promise<void>;
