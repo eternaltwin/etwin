@@ -1,15 +1,77 @@
 <etwin-main-layout>
-  <h1 i18n="Title of the donation section@@donate.title">Donate</h1>
-  <p i18n="Introduction to the donation section@@donate.introduction">
-    Eternal-Twin is a free website. We only depend on donations to cover our costs and stay online.
-    The website is maintained by volunteers and we do not generate any profit.
-    Eternal-Twin wants to archive the Motion-Twin games and provide a place for their communities.
-    If you like what we do and want to help us, consider making a donation.
-  </p>
-  <p i18n="Paragraph describe how to donate@@donate.action">
-    You can <a href="https://opencollective.com/eternal-twin">check our OpenCollective page</a> for all details about
-    our finance. We are using the OpenCollective platform for its transparence: you can see every donation we receive
-    and all our expenses. Our project was reviewed and approved: we can now receive donations.
-  </p>
-  <a class="btn" href="https://opencollective.com/eternal-twin/donate" i18n="Call to action on the donation button@@donate.button">Donate</a>
+  <h1 i18n="Title of the donation section@@donate.title">Contribute to the Eternal-Twin project</h1>
+  <p i18n="Introduction to the donation section@@donate.introduction">If you are interested by the project and wish to contribute to it, several choices are offered to you :</p>
+
+  <div class="item-container">
+    <article class="contribute-item team">
+      <img src="/assets/icons/contribute-team.png">
+      <h2 i18n="Title of the Integrate the team item@@donate.team.title">Enter the team</h2>
+      <div i18n="Content of the Integrate the team item@@donate.team.content">
+        <p>The Eternal-Twin team is formed by enthusiasts who wish to see their favorite games persist despite the discontinuation of Flash technology.</p>
+        <p>Join our Discord server if you also want to get into the adventure, we are always happy to welcome you !</p>
+      </div>
+      <div class="actionBox">
+        <a href="https://discord.gg/ERc3svy" class="btn" i18n="Button of the Integrate the team item@@donate.team.button">Join the Discord</a>
+      </div>
+    </article>
+    <article class="contribute-item dev">
+      <img src="/assets/icons/contribute-dev.png">
+      <h2 i18n="Title of the Help development item@@donate.dev.title">Support the development</h2>
+      <div i18n="Content of the Help development item@@donate.dev.content">
+        <p>As Eternal-Twin is an ambitious project, all help for developing is welcome.</p>
+        <p>If you are interested in browser games and have web develpment skills, feel free to contact our devs and read the documentation !</p>
+      </div>
+      <div class="actionBox">
+        <a routerLink="/docs" class="btn" i18n="Button of the Help development item@@donate.dev.button">Read the documentation</a>
+      </div>
+    </article>
+    <article class="contribute-item cheer">
+      <img src="/assets/icons/contribute-cheer.png">
+      <h2 i18n="Title of the Encourage item@@donate.cheer.title">Encourage us</h2>
+      <div i18n="Content of the Encourage item@@donate.cheer.content">
+        <p>Small actions are sometimes the best ! The community is the core element of Eternal-Twin, which is why your feedback, your opinions and your encouragements are so important to us.</p>
+        <p>Create an account and take part to the forum's activity !</p>
+      </div>
+      <div class="actionBox">
+        <a routerLink="/forum" class="btn" i18n="Button of the Encourage item@@donate.cheer.button">Visit the forum</a>
+      </div>
+    </article>
+    <article class="contribute-item donate">
+      <img src="/assets/icons/contribute-donate.png">
+      <h2 i18n="Title of the Donate item@@donate.donate.title">Fund us</h2>
+      <div i18n="Content of the Donate item@@donate.donate.content">
+        <p>All Eternal-Twin games are entirely free, we depend entirely on your donations for our financial sustainability. We do not seek profit, so the money donated to the project will be used to maintain the required servers and services. Please note that donations are voluntary and do not bring any in-game benefits.</p>
+        <p>For the sake of transparency, we have opted to use <a href="https://opencollective.com/eternal-twin">OpenCollective</a> for donations and expenses management. OpenCollective is a reliable platform that lets you know exactly where your money is going.</p>
+        <p>Our current objective is 50 € per month. This amount will be split as follows : 20 € for servers, 15 € for email service, 10 € for backups, 5 to 10 € for domain names. The extra funds will be used to either provide better servers or saved for future expenses.</p>
+      </div>
+      <div class="donate-container">
+        <!-- <div class="progress">
+          <div class="texts">
+            <p i18n="Remaining funded months@@donate.progress.remaining"><span>XX</span><br />months reserve</p>
+            <p i18n="Additional month@@donate.progress.additional"><span>XX € remaining</span><br />for an additional month</p>
+          </div>
+          <div class="bar-container">
+            <ul>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li></li>
+              <li class="current">
+                <div class="bar" style="min-width: 40%;"></div>
+              </li>
+            </ul>
+          </div>
+        </div> -->
+        <div class="actionBox" style="width: calc(100% + 8px);">
+          <a href="https://opencollective.com/eternal-twin/donate" class="btn" i18n="Button of the Donate item@@donate.donate.button">Donate</a>
+        </div>
+      </div>
+    </article>
+  </div>
 </etwin-main-layout>

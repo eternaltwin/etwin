@@ -1,0 +1,209 @@
+$team-color: rgb(220, 94, 18);
+$dev-color: rgb(104, 184, 205);
+$cheer-color: rgb(161, 145, 209);
+$donate-color: rgb(232, 147, 36);
+
+.item-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+article.contribute-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 6em 0 .5em 0;
+  padding: 1.1em .7em;
+  background: $deepBlack;
+  border: 1px solid transparent;
+  border-bottom-width: 5px;
+  border-radius: 5px;
+
+  img {
+    display: block;
+    width: 116px;
+    margin: -82px auto 0 auto;
+  }
+
+  h2 {
+    font-size: 2.2em;
+    margin: .45em 0 1em 0;
+    text-align: center;
+  }
+
+  .actionBox { margin: 1.2em -4px 0 -4px; }
+
+  a.btn {
+    align-self: flex-end;
+    text-shadow: 0 0 7px rgba(0, 0, 0, .4);
+    min-width: calc(100% - 8px);
+  }
+
+  &.team, &.dev, &.cheer { width: calc(33% - 5.5px) }
+
+  &.team {
+    border-color: $team-color;
+    h2 { color: $team-color; }
+    .actionBox a.btn {
+      background-color: $team-color;
+      &:hover, &:focus { background-color: saturate(darken($team-color, 8), 10); }
+      &:active { background-color: adjust_hue(darken($team-color, 8), -5); }
+    }
+  }
+
+  &.dev {
+    border-color: $dev-color;
+    & h2 { color: $dev-color; }
+    .actionBox a.btn {
+      background-color: $dev-color;
+      &:hover, &:focus { background-color: saturate(darken($dev-color, 7), 8); }
+      &:active { background-color: saturate(darken($dev-color, 14), 8); }
+    }  }
+
+  &.cheer {
+    border-color: $cheer-color;
+    & h2 { color: $cheer-color; }
+    .actionBox a.btn {
+      background-color: $cheer-color;
+      &:hover, &:focus { background-color: saturate(darken($cheer-color, 7), 8); }
+      &:active { background-color: saturate(darken($cheer-color, 14), 8); }
+    }  }
+
+  &.donate {
+    border-color: $donate-color;
+    & h2 { color: $donate-color; }
+    .actionBox a.btn {
+      background-color: $donate-color;
+      &:hover, &:focus { background-color: saturate(darken($donate-color, 8), 10); }
+      &:active { background-color: adjust_hue(darken($donate-color, 8), -5); }
+    }
+
+    // Progress bar styling
+
+    .donate-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin-top: 2.5em;
+
+      .progress {
+        flex: 2;
+        margin-right: 1.4em;
+
+        .texts {
+          display: flex;
+          flex-flow: row nowrap;
+          text-align: center;
+          color:  $lightWhite;
+          font-size: 0.85rem;
+          line-height: 1.35em;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+
+          p {
+            padding: 0 1em;
+            span { font-size: 1.05rem; font-weight: 800; }
+            &::after {
+              content:"";
+              display: block;
+              width: 9px;
+              height: 9px;
+              margin: .25em auto .6em auto;
+              background: url("/assets/icons/contribute_down_arrow.svg") center no-repeat;
+            }
+          }
+
+          p:nth-child(2) {
+            flex: 1;
+            min-width: 65%;
+          }
+        }
+
+        .bar-container {
+          width: 100%;
+          height: 17px;
+
+          ul {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: stretch;
+            list-style: none;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+
+            li:not(.current), .current > .bar {
+              flex: 1;
+              max-width: 22px;
+              margin-right: 3px;
+              background: white;
+              border: 1px solid rgb(247, 202, 88);
+              border-bottom-width: 3px;
+              border-radius: 3px;
+            }
+
+            @for $i from 1 through 10 { // to transition from dark red to bright yellow
+              li:nth-child(#{$i}):not(.current), .current:nth-child(#{$i}) > .bar {
+                $lightenvalue: ($i * 3.5);
+                $saturatevalue: ($i * 3.5);
+                $huevalue: ($i * 5);
+                background-color: adjust_hue(saturate(lighten(rgb(182, 34, 38), $lightenvalue), $saturatevalue), $huevalue)
+              }
+
+            li:nth-child(11):not(.current), .current:nth-child(11) > .bar { // set manually to transition from bright yellow to white
+              $lightenvalue: 48;
+              $saturatevalue: (11 * 3.5);
+              $huevalue: (11 * 5);
+              background-color: adjust_hue(saturate(lighten(rgb(182, 34, 38), $lightenvalue), $saturatevalue), $huevalue)
+            }            }
+
+            li.current {
+              display: flex;
+              position: relative;
+              flex: 10;
+              min-width: 65%;
+              margin-top: 3px;
+              background: $mediumGrey;
+              border-radius: 3px;
+
+              .bar {
+                min-width: 50%;
+                margin-top: -3px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+/* --- MID-SIZE CONTENT --- */
+
+@media only screen and (max-width: $contentWidth) {
+  .item-container {
+
+    article.contribute-item {
+      width: auto;
+      margin-top: 4.5em;
+    }
+
+    article.contribute-item.donate > div {
+      flex-direction: column;
+      .progress { margin-right: 0; }
+    }
+  }
+}
+
+
+/* --- MOBILE CONTENT --- */
+
+@media only screen and (max-width: $desktopBreakpoint) {
+
+  .item-container article.contribute-item {
+    width: auto;
+  }
+}

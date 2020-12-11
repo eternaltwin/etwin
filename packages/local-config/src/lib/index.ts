@@ -136,7 +136,7 @@ function readClientConfig(raw: unknown, prefix: string): ClientConfig {
   const appUri = Object.freeze(new url.URL(rawAppUri));
   const rawCallbackUri: string = readString(raw, "callback_uri", `${prefix}.callback_uri`);
   const callbackUri = Object.freeze(new url.URL(rawCallbackUri));
-  const secret: string = readString(raw, "secret", "etwin.secret");
+  const secret: string = readString(raw, "secret", `${prefix}.secret`);
   return {displayName, appUri, callbackUri, secret};
 }
 
