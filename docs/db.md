@@ -1,3 +1,5 @@
+[Home](./index.md)
+
 # Database
 
 Eternal-Twin uses Postgres as its main database.

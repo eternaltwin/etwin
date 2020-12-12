@@ -1,0 +1,349 @@
+<ng-container [ngSwitch]="path"><ng-container *ngSwitchCase="&quot;api&quot;">
+<p><a routerLink="/docs/">Home</a></p><h1>/api</h1><ul><li><a routerLink="/docs/api/v1">v1</a></li></ul>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;api/v1/auth&quot;">
+<p><a routerLink="/docs/">Home</a></p><h1>/<a routerLink="/docs/api">api</a>/<a routerLink="/docs/api/v1">v1</a>/auth</h1><ul><li><a routerLink="/docs/api/v1/auth/self">self</a></li></ul>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;api/v1/auth/self&quot;">
+<p><a routerLink="/docs/">Home</a></p><h1>/<a routerLink="/docs/api">api</a>/<a routerLink="/docs/api/v1">v1</a>/<a routerLink="/docs/api/v1/auth">auth</a>/self</h1><h2>GET</h2><p>Returns data describing the authentication context of the request.</p><h3>Examples</h3><p>Guest:</p><pre>GET /api/v1/auth/self
+</pre><pre>{{ "{" }}
+  "type": "Guest",
+  "scope": "Default"
+}
+</pre><p>User (using a session cookie):</p><pre>GET /api/v1/auth/self
+Cookie: sid=b8be19ef-2d61-44de-b7d2-9c34ccb8a763
+</pre><pre>{{ "{" }}
+  "type": "User",
+  "scope": "Default",
+  "user": {{ "{" }}
+    "type": "User",
+    "id": "9f310484-963b-446b-af69-797feec6813f",
+    "display_name": {{ "{" }}
+      "current": {{ "{" }}
+        "value": "Demurgos"
+      }
+    }
+  },
+  "is_administrator": true
+}
+</pre><p>OAuth acess token:</p><pre>GET /api/v1/auth/self
+Authorization: Bearer 5f6613eb-880f-4b01-8e71-96b644e4584f
+</pre><pre>{{ "{" }}
+  "type": "AccessToken",
+  "scope": "Default",
+  "client": {{ "{" }}
+    "type": "OauthClient",
+    "id": "d19e61a3-83d3-410f-84ec-49aaab841559",
+    "key": "eternalfest@clients",
+    "display_name": "Eternalfest"
+  },
+  "user": {{ "{" }}
+    "type": "User",
+    "id": "0d8d5067-5954-4930-94be-c1d09bf71903",
+    "display_name": {{ "{" }}
+      "current": {{ "{" }}
+        "value": "Elseabora"
+      }
+    }
+  }
+}
+</pre>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;api/v1&quot;">
+<p><a routerLink="/docs/">Home</a></p><h1>/<a routerLink="/docs/api">api</a>/v1</h1><ul><li><a routerLink="/docs/api/v1/auth">auth</a></li><li><a routerLink="/docs/api/v1/users">users</a></li></ul>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;api/v1/users&quot;">
+<p><a routerLink="/docs/">Home</a></p><h1>/<a routerLink="/docs/api">api</a>/<a routerLink="/docs/api/v1">v1</a>/users</h1><ul><li><a routerLink="/docs/api/v1/users/user-id">:user_id</a></li></ul>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;api/v1/users/user-id&quot;">
+<p><a routerLink="/docs/">Home</a></p><h1>/<a routerLink="/docs/api">api</a>/<a routerLink="/docs/api/v1">v1</a>/<a routerLink="/docs/api/v1/users">users</a>/:user_id</h1><h2>GET</h2><p>Returns user data.</p><h3>Examples</h3><pre>GET /api/v1/users/9f310484-963b-446b-af69-797feec6813f
+</pre><pre>{{ "{" }}
+  "type": "User",
+  "id": "9f310484-963b-446b-af69-797feec6813f",
+  "display_name": {{ "{" }}
+    "current": {{ "{" }}
+      "value": "Demurgos"
+    }
+  },
+  "is_administrator": true,
+  "links": {{ "{" }}
+    "hammerfest_es": {{ "{" }}
+      "current": null,
+      "old": []
+    },
+    "hammerfest_fr": {{ "{" }}
+      "current": {{ "{" }}
+        "link": {{ "{" }}
+          "time": "2017-05-25T23:12:50.000Z",
+          "user": {{ "{" }}
+            "type": "User",
+            "id": "9f310484-963b-446b-af69-797feec6813f",
+            "display_name": {{ "{" }}
+              "current": {{ "{" }}
+                "value": "Demurgos"
+              }
+            }
+          }
+        },
+        "unlink": null,
+        "user": {{ "{" }}
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "127",
+          "username": "elseabora"
+        }
+      },
+      "old": []
+    },
+    "hfest_net": {{ "{" }}
+      "current": {{ "{" }}
+        "link": {{ "{" }}
+          "time": "2017-05-25T23:13:12.000Z",
+          "user": {{ "{" }}
+            "type": "User",
+            "id": "9f310484-963b-446b-af69-797feec6813f",
+            "display_name": {{ "{" }}
+              "current": {{ "{" }}
+                "value": "Demurgos"
+              }
+            }
+          }
+        },
+        "unlink": null,
+        "user": {{ "{" }}
+          "type": "HammerfestUser",
+          "server": "hfest.net",
+          "id": "205769",
+          "username": "Demurgos"
+        }
+      },
+      "old": []
+    },
+    "twinoid": {{ "{" }}
+      "current": {{ "{" }}
+        "link": {{ "{" }}
+          "time": "2020-10-26T18:53:14.493Z",
+          "user": {{ "{" }}
+            "type": "User",
+            "id": "9f310484-963b-446b-af69-797feec6813f",
+            "display_name": {{ "{" }}
+              "current": {{ "{" }}
+                "value": "Demurgos"
+              }
+            }
+          }
+        },
+        "unlink": null,
+        "user": {{ "{" }}
+          "type": "TwinoidUser",
+          "id": "38",
+          "display_name": "Demurgos"
+        }
+      },
+      "old": []
+    }
+  }
+}
+</pre>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;app/etwin-api&quot;">
+<p><a routerLink="/docs/">Home</a> | <a routerLink="/docs/app">Applications</a></p><h1>Eternal-Twin API</h1><p>Eternal-Twin exposes all its data through a REST API.
+Some resources are protected and require the right authorization.</p><p>There are <a href="https://gitlab.com/eternal-twin/etwin/-/tree/master/clients">official clients</a>
+for various platforms. You should use them instead of writing your own client:</p><ul><li><a href="https://gitlab.com/eternal-twin/etwin/-/tree/master/clients/kotlin">Kotlin</a></li><li><a href="https://gitlab.com/eternal-twin/etwin/-/tree/master/clients/php">PHP</a></li><li><a href="https://gitlab.com/eternal-twin/etwin/-/tree/master/clients/ruby">Ruby</a></li><li><a href="https://gitlab.com/eternal-twin/etwin/-/tree/master/clients/typescript">TypeScript</a></li></ul><p>See also <a href="https://gitlab.com/eternal-twin/etwin/-/tree/master/examples">the examples</a></p><p>These clients are not complte yet, help is welcome to improve them.</p><p>All the client support retrieving data about the current client and retrieving data about users
+(enough to authenticate users with an OAuth access token).</p>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;app/etwin-integration&quot;">
+<p><a routerLink="/docs/">Home</a> | <a routerLink="/docs/app">Applications</a></p><h1>Eternal-Twin Integration</h1><p>This section describes how to integrate Eternal-Twin into your project's
+repository. Integrating Eternal-Twin to your repository allows you to run and
+test your project using a locally installed version of the Eternal-Twin website.</p><p>Eternal-Twin is installed as a project-local Node package:</p><ul><li>it ensures all the contributors use the same version</li><li>the project is fully self-contained and does not require an internet
+connection to run</li><li>if you have multiple projects on your computer, there are no conflicts: each
+one has its own Eternal-Twin version.</li></ul><p>The packaged version is not the full website (for example, it does not include
+translations). It's a lightweight version specifically intended to be installed
+inside other projects.</p><h2>System requirements</h2><p>You need the following tools on your system:</p><ul><li><a routerLink="/docs/tools/node">Node.js</a>: Version <code>14.13.1</code> or higher</li><li><a routerLink="/docs/tools/yarn">Yarn</a></li></ul><p><strong>ℹ</strong> Using <strong>npm</strong> as an alternative to <strong>yarn</strong> is not officially supported but should work.</p><h2>Configure your repository for Node packages</h2><p>Your repository must contain a <code>package.json</code> file at its root. It is a
+manifest file containing metadata for Node.js.</p><p>If your project does not have a <code>package.json</code>, you may create one by running
+the following command at the repo root and replying to the prompts:</p><pre>yarn init .
+</pre><p>You may read the <a href="https://yarnpkg.com/configuration/manifest">Yarn</a> or
+<a href="https://docs.npmjs.com/cli/v6/configuring-npm/package-json">npm</a> documentation
+if you wish to learn more about <code>package.json</code> files.</p><p>Below is an example minimal <code>package.json</code> file.</p><pre>{{ "{" }}
+  "name": "myproject",
+  "version": "0.0.1",
+  "licenses": [
+    {{ "{" }}
+      "type": "AGPL-3.0-or-later",
+      "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
+    }
+  ],
+  "private": true,
+  "scripts": {{ "{" }}},
+  "dependencies": {{ "{" }}},
+  "devDependencies": {{ "{" }}}
+}
+</pre><p>Make sure to commit the <code>package.json</code> file.</p><h2>Install Eternal-Twin inside your project</h2><p>Run the following command in the directory containing <code>package.json</code>:</p><pre>yarnn add --dev @eternal-twin/website
+</pre><p>This will perform the following 3 actions:</p><ol><li>Update your <code>package.json</code> file to document the new dependency on the package <code>@eternal-twin/website</code>.</li><li>Download the package (and its own dependencies) into the <code>node_modules</code> directory.</li><li>Create (or update) a <code>yarn.lock</code> file to remember the exact version of the dependencies that
+were installed and prevent accidental regressions.</li></ol><p>Commit the <code>package.json</code> and <code>yarn.lock</code> files.</p><p>Do not commit the <code>node_modules</code> directory: add the <code>node_modules/</code> rule to your <code>.gitignore</code> file.</p><p>You now have to update your <code>package.json</code> file to expose the <code>etwin</code> command.
+Add the entry <code>"etwin": "etwin"</code> to the <code>scripts</code> config in your <code>package.json</code>.
+The resulting <code>package.json</code> should be similar to:</p><pre>{{ "{" }}
+  "name": "myproject",
+  "version": "0.0.1",
+  "licenses": [
+    {{ "{" }}
+      "type": "AGPL-3.0-or-later",
+      "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
+    }
+  ],
+  "private": true,
+  "scripts": {{ "{" }}
+    "etwin": "etwin"
+  },
+  "dependencies": {{ "{" }}},
+  "devDependencies": {{ "{" }}
+    "@eternal-twin/website": "^0.3.1"
+  }
+}
+</pre><h2>Configure Eternal-Twin</h2><p>Before you can run Eternal-Twin, you must configure it.</p><p>ℹ There is <a href="https://gitlab.com/eternal-twin/etwin/-/issues/20">an open issue</a> to
+allow Eternal-Twin to run without any configuration file.</p><p>The Eternal-Twin configuration is loaded from a file named <code>etwin.toml</code>.</p><p>This file may contain configuration specific to your local machine and as such
+should not be stored in Git. The recommended strategy to configure Eternal-Twin
+is the following:</p><ol><li>Create a file named <code>etwin.toml.example</code>.</li><li>Copy <a href="https://gitlab.com/eternal-twin/etwin/-/blob/master/etwin.toml.example">the official example configuration</a>
+(<a href="https://gitlab.com/eternal-twin/etwin/-/raw/master/etwin.toml.example">raw</a>)
+into <code>etwin.toml.example</code>. You do not need to customize the config yet.</li><li>Add the <code>etwin.toml</code> rule to your <code>.gitignore</code>, commit the file <code>etwin.toml.example</code></li><li>Update your project setup documentation: contributors should copy the file <code>etwin.toml.example</code>
+into <code>etwin.toml</code> manually.</li><li>Copy your <code>etwin.toml.example</code> file into <code>etwin.toml</code>.</li></ol><h2>Start Eternal-Twin</h2><p>Once Eternal-Twin is installed and configured, you can run it from anywhere
+inside your repo using the following command:</p><pre>yarn etwin
+</pre><p>This command starts the local Eternal-Twin server on your computer. You can
+use this server to test your project.</p><p>When starting, the server displays the configuration it is using. You can use
+this information to troubleshoot your configuration.</p><p>By default, the server uses the port <code>50320</code> and is available at the address
+<a href="http://localhost:50320/">http://localhost:50320/</a>.</p><h2>Next steps</h2><p>Now that your repo is configured to run Eternal-Twin, you may start to actually
+integrate your project with Eternal-Twin. The first step would be to <a routerLink="/docs/app/etwin-oauth">use
+Eternal-Twin to manage user accounts through OAuth</a>.</p>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;app/etwin-oauth&quot;">
+<p><a routerLink="/docs/">Home</a> | <a routerLink="/docs/app">Applications</a></p><h1>Eternal-Twin for OAuth</h1><h2>Technical information</h2><ul><li>Authorization endpoint: <code>/oauth/authorize</code></li><li>Token endpoint: <code>/oauth/token</code></li><li>Client ID: Displayed when starting <code>etwin</code>: <code>Id</code> or <code>Key</code> at your choice (<code>Key</code> is recommended)</li><li>Client secret: As configured in your <code>etwin.toml</code> file.</li></ul><h2>External documents</h2><ul><li><a href="https://tools.ietf.org/html/rfc6749">RFC 6749 - The OAuth 2.0 Authorization Framework</a></li><li><a href="https://auth0.com/docs/flows/authorization-code-flow">Auth0 documentation</a></li><li><a href="https://twinoid.com/developers/doc">Twinoid documentation</a></li></ul><h1>Registering the client</h1><p>The first to use Eternal-Twin as an OAuth provider is to register you game or app as a client.
+This step is achieved through the <code>etwin.toml</code> configuration file.</p><p>You must add an <a href="https://gitlab.com/eternal-twin/etwin/-/blob/master/etwin.toml.example#L34">OAuth client section</a>
+and <strong>restart Eternal-Twin</strong>.</p><p>Follow the documentation in the <code>etwin.toml</code> file. Here is an example:</p><pre>[clients.myproject]
+display_name = "My Project"
+app_uri = "http://localhost:8080"
+callback_uri = "http://localhost:8080/oauth/callback"
+secret = "dev_secret"
+</pre><p>The key <code>myproject</code> is used as an internal identifier for your project.</p><p>The <code>display_name</code> and <code>app_uri</code> are not used yet, they are meant to
+identify your app to users.</p><p>The <code>callback_uri</code> value is the absolute URI to your OAuth callback endpoint:
+the URI where users are redirected back to your app with their authorization
+code.</p><p><code>secret</code> defines the secret key shared between Eternal-Twin and your OAuth
+client. It is used when exchanging the authorization code for an access token.
+When running your project locally, it is recommended to leave it as
+<code>dev_secret</code>. When running in production, the secret is a long random string.</p><p>Restart your local Eternal-Twin server to apply the changes. When Eternal-Twin
+starts, it prints details about the current configuration. You should see a
+section for your OAuth client:</p><pre>myproject {{ "{" }}
+  Id: 38f33c3f-db3b-49ce-81a7-597c97ba3162
+  Key: myproject@clients
+  Display name: My Project
+  App URI: http://localhost:8080/
+  Callback URI: http://localhost:8080/oauth/callback
+}
+</pre><p>The OAuth protocol referes to <code>client_id</code> value used to identify your client.
+Eternal-Twin allows you to use either the <code>Id</code> field or the <code>Key</code> field as your
+<code>client_id</code>. It is recommended to use the <code>Key</code> value as the <code>client_id</code>: the
+<code>Id</code> changes every time the client is registered while the <code>Key</code> is stable.</p><h2>Acquiring the Access token</h2><p>OAuth is a standard protocol. You should check if your language has existing
+libraries to help you acquiring the access token.</p><h3>User redirection</h3><p>Add a form on your app containing a single button <code>Sign-in with Eternal-Twin</code>
+and no text field (you may add some hidden fields as needed).
+Clicking on this button should submit the form through POST to your own server.</p><p>The server should reply to this request with a redirection to the
+Eternal-Twin authorization endpoint: HTTP status code <code>302</code> with a <code>Location</code>
+header.</p><p>The redirection URL is built with the following parameters:</p><table><tr><th>Name</th><th>Value</th></tr><tr><td>Origin</td><td>Eternal-Twin <code>external_uri</code> config. <code>http://localhost:50320</code> by default during devlopment, <code>https://eternalfest.net</code> in production. Your app should get this value from the environment (config file, environment variable)</td></tr><tr><td>Pathname</td><td><code>/oauth/authorize</code></td></tr><tr><td><code>access_type</code> parameter</td><td>The string <code>offline</code></td></tr><tr><td><code>response_type</code> parameter</td><td>The string <code>code</code></td></tr><tr><td><code>client_id</code> parameter</td><td>Must match your client's <code>Id</code> or <code>Key</code> field (displayed when starting Eternal-Twin)</td></tr><tr><td><code>redirect_uri</code> parameter</td><td>Must match the <code>callback_uri</code> field from the client registration.</td></tr><tr><td><code>scope</code> parameter</td><td>The empty string, or <code>base</code></td></tr><tr><td><code>state</code> parameter</td><td>A string holding your application state. It is recommeded to use a signed JWT</td></tr></table><p>Example:</p><pre>http://localhost:50320/oauth/authorize?access_type=offline&amp;response_type=code&amp;client_id=eternalfest%40clients&amp;redirect_uri=http%3A%2F%2Flocalhost%3A50313%2Foauth%2Fcallback&amp;scope=&amp;state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uU2VydmVyIjoiZXRlcm5hbC10d2luLm5ldCIsInJlcXVlc3RGb3JnZXJ5UHJvdGVjdGlvbiI6ImJkZWQyZDg5MWFlNDYwMTk2OWZhZmI0YjAxMmQ3ODZiIiwiaWF0IjoxNjA3OTU0NDExLCJleHAiOjE2MDgwNDA4MTF9.BRvm4D4Rfc2ZoHwlzLtEd3oiyJmxCq4eqPmxhYXRz7g
+</pre><h3>User return</h3><p>Once Eternal-Twin has authenticated the user, it is redirected back to your app
+at the URI defined as the <code>callback_uri</code>.</p><p>Eternal-Twin will append the following search parameters:</p><ul><li>In case of error:<ul><li><code>error</code>: See OAuth RFC</li><li><code>state</code></li></ul></li><li>In case of success:<ul><li><code>code</code>: The one-time authorization code</li><li><code>state</code></li></ul></li></ul><p>Example (success):</p><pre>http://localhost:50313/oauth/callback?code=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZXMiOlsiYmFzZSJdLCJpYXQiOjE2MDc5NTU4ODYsImV4cCI6MTYwNzk1NjE4NiwiYXVkIjpbIjhlNGY4MDY5LTRlN2MtNDkzYS1hYTA3LTNhNGFmNmIwYmZjNCIsImV0ZXJuYWxmZXN0QGNsaWVudHMiXSwiaXNzIjoiZXR3aW4iLCJzdWIiOiJkMTYxNjRhNC1hODliLTRhYzUtOGNkYS03ZDU1ZjkzMWFkYjgifQ.Vm-M5SfMjEHuRreRUzaMYJW0cUeIrlMwHIJP9fmFf_Y&amp;state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uU2VydmVyIjoiZXRlcm5hbC10d2luLm5ldCIsInJlcXVlc3RGb3JnZXJ5UHJvdGVjdGlvbiI6ImJkZWQyZDg5MWFlNDYwMTk2OWZhZmI0YjAxMmQ3ODZiIiwiaWF0IjoxNjA3OTU0NDExLCJleHAiOjE2MDgwNDA4MTF9.BRvm4D4Rfc2ZoHwlzLtEd3oiyJmxCq4eqPmxhYXRz7g
+</pre><h3>Claiming the token</h3><p>On success, your <code>callback_uri</code> handler receives a one-time authorization code
+(<code>code</code>). You can exchange this code for a long-term access token.</p><p>You app must perform a direct request to the Eternal-Twin server (not a client
+redirection).</p><table><tr><th>Name</th><th>Value</th></tr><tr><td>Method</td><td><code>POST</code></td></tr><tr><td>Origin</td><td>Eternal-Twin <code>external_uri</code> config.</td></tr><tr><td>Pathname</td><td><code>/oauth/token</code></td></tr><tr><td><code>Authorization</code> header</td><td>Scheme: <code>Basic</code>, login: OAuth client <code>Id</code> or <code>Key</code>, password: <code>secret</code> field from the <code>etwin.toml</code></td></tr><tr><td><code>Content-type</code> header</td><td><code>application/json</code> or <code>application/x-www-form-urlencoded</code></td></tr><tr><td><code>code</code> request body field</td><td>The value of the one-time authorization code</td></tr><tr><td><code>grant_type</code> request body field</td><td>The string <code>authorization_code</code></td></tr></table><p>The Eternal-Twin server will respond with the access token:</p><pre>{{ "{" }}
+  access_token: "AMHILF5gGddDnfqVj9K8yIeP3VMIgaxG",
+  refresh_token: "HfznfQUg1C2p87ESIp6WRq945ppG6swD",
+  expires_in: 7200,
+  token_type: "Bearer",
+}
+</pre><p>The value of the <code>access_token</code> field is the one you should use with API clients.</p><h2>Next steps</h2><p>The next step is usually to immediately use this <code>access_token</code> to get data about
+the current user from the API and authenticate it.</p><p>See <a routerLink="/docs/app/etwin-api">using the Eternal-Twin API</a>.</p>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;app&quot;">
+<p><a routerLink="/docs/">Home</a> | <a routerLink="/docs/app">Applications</a></p><h1>Application Development</h1><p>This section provides guides to help when developing Eternal-Twin applications and games.</p><ul><li><a routerLink="/docs/app/etwin-integration">Eternal-Twin integration</a></li><li><a routerLink="/docs/app/etwin-oauth">Eternal-Twin for OAuth</a></li><li><a routerLink="/docs/app/etwin-api">Eternal-Twin API</a></li></ul>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;db&quot;">
+<p><a routerLink="/docs/">Home</a></p><h1>Database</h1><p>Eternal-Twin uses Postgres as its main database.</p><h2>Initialize the Postgres cluster</h2><pre># Run as the Postgres user
+initdb --locale "en_US.UTF-8" --encoding="UTF8" --pgdata="/var/lib/postgres/data/"
+</pre><p>Example</p><pre>[postgres@red ~]$ initdb --locale "en_US.UTF-8" --encoding="UTF8" --pgdata="/var/lib/postgres/data/"
+The files belonging to this database system will be owned by user "postgres".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "en_US.UTF-8".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+fixing permissions on existing directory /var/lib/postgres/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default max_connections ... 100
+selecting default shared_buffers ... 128MB
+selecting default time zone ... Europe/Paris
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+initdb: warning: enabling "trust" authentication for local connections
+You can change this by editing pg_hba.conf or using the option -A, or
+--auth-local and --auth-host, the next time you run initdb.
+
+Success. You can now start the database server using:
+
+    pg_ctl -D /var/lib/postgres/data/ -l logfile start
+
+</pre><h2>Create a dev DB superuser</h2><pre># Run as the Postgres user
+createuser --encrypted --interactive --pwprompt
+</pre><p>Example</p><pre>postgres@host $ createuser --encrypted --interactive --pwprompt
+Enter name of role to add: etwin
+Enter password for new role: dev
+Enter it again: dev
+Shall the new role be a superuser? (y/n) y
+</pre><h2>Create a DB</h2><pre>createdb --owner=&lt;dbuser&gt; &lt;dbname&gt;
+psql &lt;dbname&gt;
+ALTER SCHEMA public OWNER TO &lt;dbuser&gt;;
+</pre><p>Example:</p><pre>$ createdb --owner=etwin etwindb
+$ psql etwindb
+psql (9.6.10)
+Type "help" for help.
+
+etwindb=# ALTER SCHEMA public OWNER TO etwin;
+</pre><h2>PgCrypto</h2><p>Enable pgcrypto.</p><pre>$ psql dbname
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+</pre>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;&quot;">
+<p><a routerLink="/docs/">Home</a></p><h1>Eternal-Twin Documentation</h1><p>Welcome to the Eternal-Twin documentation. This section describes various technical aspects relating to Eternal-Twin.</p><h2>General</h2><ul><li><a routerLink="/docs/api">API</a></li></ul><h2><a routerLink="/docs/app">Application development</a></h2><ul><li><a routerLink="/docs/app/etwin-integration">Eternal-Twin integration</a></li><li><a routerLink="/docs/app/etwin-oauth">Eternal-Twin for OAuth</a></li><li><a routerLink="/docs/app/etwin-api">Eternal-Twin API</a></li></ul><h2><a routerLink="/docs/tools">Tools</a></h2><ul><li><a routerLink="/docs/tools/node">Node.js</a></li></ul><h2>Other</h2><ul><li><a routerLink="/docs/oauth">OAuth</a></li><li><a routerLink="/docs/db">Postgres</a></li></ul>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;oauth&quot;">
+<p><a routerLink="/docs/">Home</a></p><h1>Oauth</h1><p>Eternal-Twin uses <a href="https://tools.ietf.org/html/rfc6749">the OAuth 2.0 authorization framework</a> to expose its data to the game websites.
+Each game website is an OAuth 2 client.</p><h2>Client creation</h2><p>The first step is to create an OAuth client. It is not exposed publicly yet.</p><p>The creation options are:</p><ul><li>General information: display name, homepage URI</li><li>Technical: OAuth redirect (callback) URI</li></ul><p>The server creates the application and picks a random secret.
+The secret is returned as clear-text in the creation response, it is never returned again.
+The server treats the secret as a password and only stores its hash.</p><h2>Authorization request</h2><p>To authenticate a user, the client must redirect the end user to Eternal-Twin to request its authorization.</p><p>The base URI is <code>https://eternal-twin.net/oauth/authorize</code>, with the following query parameters:</p><table><tr><th>Name</th><th>Description</th></tr><tr><td>client_id</td><td><strong>Required</strong>. Client ID received during the client creation</td></tr><tr><td>redirect_uri</td><td>Redirection URI. The default and only accepted value is the one configured during the app creation</td></tr><tr><td>login</td><td>Not yet implement: username to use by default</td></tr><tr><td>scope</td><td>Not yet implement: scopes to request</td></tr><tr><td>state</td><td>A string returned as-is</td></tr><tr><td>method</td><td>Authentication method suggestion if the user needs to sign-in (etwin, twinoid, hammerfest). Default: <code>etwin</code></td></tr></table><h2>Parameters</h2><h3>State</h3><p>The state parameter is a string returned as-is once the user has authenticated. It must include an unguessable part to prevent CSRF attacks.</p><p>For the system clients, we use a JWT based on <a href="https://tools.ietf.org/html/draft-bradley-oauth-jwt-encoded-state-00">this RFC draft</a> for the state. In particular, it has a "Request Forgery Protection" (<code>rfp</code>) field.</p><h3>Redirect URI</h3><p>Eternal-Twin does not allow dynamic redirect URIs. Use the <code>state</code> parameter to encode state.</p><p>For the system clients, we use <code>https://&lt;game&gt;/oauth/callback</code> if the client supports only one authorization server (Eternal-Twin), or <code>https://&lt;game&gt;/oauth/callback/&lt;as&gt;</code> where <code>as</code> is a string identifying the authorization server.</p>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;server&quot;">
+<h1>Server</h1><h2>Environment</h2><table><tr><th>Name</th><th>Version</th></tr><tr><td>JRE</td><td>14</td></tr><tr><td>Nginx</td><td>1.18</td></tr><tr><td>Node.js</td><td>Any supported by <code>nvm</code></td></tr><tr><td>PHP</td><td>7.4</td></tr><tr><td>Postgres</td><td>13.1</td></tr><tr><td>Ruby</td><td>2.7</td></tr></table><h2>Network</h2><ul><li>Internal name: <code>siman.eternal-twin.net</code></li><li>IPv4: <code>54.38.241.200</code></li><li>IPv6: <code>2001:41d0:305:2100::5e4</code></li></ul>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;tools&quot;">
+<p><a routerLink="/docs/">Home</a> | <a routerLink="/docs/tools">Tools</a></p><h1>Tools</h1><p>Help for the tools used around Eternal-Twin.</p><ul><li><a routerLink="/docs/tools/node">Node.js</a></li><li><a routerLink="/docs/tools/yarn">Yarn</a></li></ul>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;tools/node&quot;">
+<p><a routerLink="/docs/">Home</a> | <a routerLink="/docs/tools">Tools</a></p><h1>Node.js</h1><p><a href="https://nodejs.org/en/">Official website</a> | <a href="https://github.com/nodejs/node">GitHub</a></p><blockquote><p><strong>Node.js</strong> is an open-source, cross-platform, back-end, JavaScript runtime
+environment that executes JavaScript code outside a web browser.</p></blockquote><p>Eternal-Twin uses <strong>Node.js</strong> for its website and various command-line tools.</p><h2>Intallation</h2><p><strong>⚠</strong> Most projects require the version <code>14.13.1</code> or above.</p><h3>Linux or Mac</h3><ol><li><a href="https://github.com/nvm-sh/nvm#install--update-script">Install <code>nvm</code></a>.</li><li>Run <code>nvm install node</code>.</li></ol><p>Check your installation with <code>node --version</code>.</p><p><strong>⚠</strong> Most Linux distributions provide a <code>nodejs</code> or <code>node</code> package. This is a
+system-level package intended as a dependency for other software. It is
+recommended to avoid using this version: it requires <code>sudo</code> to install
+global packages using <code>npm</code> and may be an older version that does not support
+some projects.</p><h3>Windows</h3><p><a href="https://nodejs.org/en/download/">Download the Windows installer</a> and execute it.</p><p>Check your installation with <code>node --version</code>.</p>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;tools/package-json&quot;">
+<p>https://yarnpkg.com/configuration/manifest</p><p>TODO</p>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;tools/yarn&quot;">
+<p><a routerLink="/docs/">Home</a> | <a routerLink="/docs/tools">Tools</a></p><h1>Yarn</h1><p><a href="https://yarnpkg.com/">Official website</a> | <a href="https://github.com/yarnpkg/berry">GitHub</a></p><p><strong>Yarn</strong> is a modern package manager for <strong><a routerLink="/docs/tools/node">Node.js</a></strong> and the web.
+Compared to other such package managers (e.g. <code>npm</code>), it is faster, more
+reliable, and more flexible.</p><h2>Installation</h2><ol><li>Install <a routerLink="/docs/tools/node">Node.js</a></li><li>Run <code>npm install --global yarn</code></li><li>Check your installation with <code>yarn --version</code>.</li></ol>
+</ng-container>
+<ng-container *ngSwitchDefault=""><etwin-docs-not-found [path]="path"></etwin-docs-not-found></ng-container>
+</ng-container>

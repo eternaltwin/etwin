@@ -3,6 +3,10 @@
  */
 export const ROUTES: readonly string[] = [
   "/",
+  "/docs",
+  "/docs/:a",
+  "/docs/:a/:b",
+  "/docs/:a/:b/:c",
   "/donate",
   "/forum",
   "/forum/sections/:section_id",

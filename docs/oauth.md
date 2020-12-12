@@ -1,3 +1,5 @@
+[Home](./index.md)
+
 # Oauth
 
 Eternal-Twin uses [the OAuth 2.0 authorization framework](https://tools.ietf.org/html/rfc6749) to expose its data to the game websites.
