@@ -3,7 +3,6 @@ import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import Router, { RouterContext } from "@koa/router";
-import koaMount from "koa-mount";
 
 import { createLinkRouter } from "./link.js";
 import { createLoginRouter } from "./login.js";
@@ -20,11 +19,11 @@ export async function createActionsRouter(api: Api): Promise<Router> {
   const router: Router = new Router();
 
   const link: Router = await createLinkRouter(api);
-  router.use("/link", link.routes());
+  router.use("/link", link.routes(), link.allowedMethods());
   const login: Router = await createLoginRouter(api);
-  router.use(koaMount("/login", login.routes()));
+  router.use("/login", login.routes(), login.allowedMethods());
   const register: Router = await createRegisterRouter(api);
-  router.use(koaMount("/register", register.routes()));
+  router.use("/register", register.routes(), register.allowedMethods());
 
   router.use((cx: RouterContext) => {
     cx.response.status = 404;

@@ -16,9 +16,9 @@ import { SimpleUserService } from "../user/simple.js";
 import { UserId } from "../user/user-id.js";
 import { CompleteOauthAccessToken } from "./complete-oauth-access-token.js";
 import { CreateOrUpdateSystemClientOptions } from "./create-or-update-system-client-options.js";
+import { EtwinOauthAccessTokenRequest } from "./etwin-oauth-access-token-request.js";
 import { parseScopeString, toOauthClientTypedKey } from "./helpers.js";
 import { OauthAccessToken } from "./oauth-access-token.js";
-import { OauthAccessTokenRequest } from "./oauth-access-token-request.js";
 import { OauthClient } from "./oauth-client.js";
 import { $OauthClientId, OauthClientId } from "./oauth-client-id.js";
 import { OauthClientInputRef } from "./oauth-client-input-ref.js";
@@ -116,7 +116,7 @@ export class OauthProviderService implements OauthProviderService {
     return this.creatCodeJwt(clientId, client.key, auth.user.id, [...scopes]);
   }
 
-  public async createAccessToken(acx: AuthContext, req: OauthAccessTokenRequest): Promise<OauthAccessToken> {
+  public async createAccessToken(acx: AuthContext, req: EtwinOauthAccessTokenRequest): Promise<OauthAccessToken> {
     if (acx.type !== AuthType.OauthClient) {
       if (acx.type === AuthType.Guest) {
         throw new Error("Unauthorized");

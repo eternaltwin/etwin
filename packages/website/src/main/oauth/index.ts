@@ -8,11 +8,11 @@ import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.j
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type.js";
 import { EtwinOauthStateAndAccessToken } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-and-access-token.js";
-import { $OauthAccessToken, OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
 import {
-  $OauthAccessTokenRequest,
-  OauthAccessTokenRequest,
-} from "@eternal-twin/core/lib/oauth/oauth-access-token-request.js";
+  $EtwinOauthAccessTokenRequest,
+  EtwinOauthAccessTokenRequest
+} from "@eternal-twin/core/lib/oauth/etwin-oauth-access-token-request.js";
+import { $OauthAccessToken, OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
 import {
   $OauthAuthorizationError,
   OauthAuthorizationError,
@@ -137,7 +137,7 @@ export async function createOauthRouter(api: Api): Promise<Router> {
 
   async function getAccessToken(cx: RouterContext): Promise<void> {
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
-    const req: OauthAccessTokenRequest = $OauthAccessTokenRequest.read(JSON_VALUE_READER, cx.request.body);
+    const req: EtwinOauthAccessTokenRequest = $EtwinOauthAccessTokenRequest.read(JSON_VALUE_READER, cx.request.body);
     let accessToken: OauthAccessToken;
     try {
       accessToken = await api.oauthProvider.createAccessToken(auth, req);

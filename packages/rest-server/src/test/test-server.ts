@@ -67,7 +67,10 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const user = new UserService({auth, hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
     const api: Api = {auth, forum, hammerfest, koaAuth, user};
 
-    const app: Koa = createApiRouter(api);
+    const app: Koa = new Koa();
+    const router = createApiRouter(api);
+    app.use(router.routes());
+    app.use(router.allowedMethods());
 
     const server: http.Server = http.createServer(app.callback());
 

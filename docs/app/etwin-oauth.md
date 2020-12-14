@@ -61,7 +61,7 @@ myproject {
 }
 ```
 
-The OAuth protocol referes to `client_id` value used to identify your client.
+The OAuth protocol referes to a `client_id` value used to identify your client.
 Eternal-Twin allows you to use either the `Id` field or the `Key` field as your
 `client_id`. It is recommended to use the `Key` value as the `client_id`: the
 `Id` changes every time the client is registered while the `Key` is stable.

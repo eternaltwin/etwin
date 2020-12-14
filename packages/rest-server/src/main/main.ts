@@ -1,8 +1,8 @@
 import { Config, getLocalConfig } from "@eternal-twin/local-config";
 import koaCors from "@koa/cors";
+import Router from "@koa/router";
 import Koa from "koa";
 import koaLogger from "koa-logger";
-import koaMount from "koa-mount";
 
 import { createApiRouter } from "../lib/index.js";
 import { createApi } from "./api.js";
@@ -11,7 +11,7 @@ async function main(): Promise<void> {
   const config: Config = await getLocalConfig();
   const {api} = await createApi(config);
 
-  const apiRouter: Koa = createApiRouter(api);
+  const apiRouter: Router = createApiRouter(api).prefix("/api/v1");
 
   const app: Koa = new Koa();
   const port: number = config.etwin.httpPort;
@@ -19,7 +19,8 @@ async function main(): Promise<void> {
   app.use(koaLogger());
   // Allow local Angular development server
   app.use(koaCors({origin: "http://localhost:4200", credentials: true}));
-  app.use(koaMount("/api/v1", apiRouter as any as Koa.Middleware));
+  app.use(apiRouter.routes());
+  app.use(apiRouter.allowedMethods());
 
   app.listen(port, () => {
     console.log(`Listening on http://localhost:${port}`);

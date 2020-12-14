@@ -117,8 +117,9 @@ async function main(api: Api): Promise<void> {
   const ONE_DAY: number = 24 * 3600;
   router.use(koaStaticCache(furi.toSysPath(BROWSER_APP_DIR), {maxAge: ONE_DAY}));
 
-  const apiRouter: Koa = await createApiRouter(api);
-  router.use(koaMount("/api/v1", apiRouter as any as Koa.Middleware));
+  const apiRouter: Router = await createApiRouter(api);
+  router.use(koaMount("/api/v1", apiRouter.routes()));
+  router.use(koaMount("/api/v1", apiRouter.allowedMethods()));
 
   const actionsRouter: Router = await createActionsRouter(api);
   router.use(koaMount("/actions", actionsRouter.routes()));

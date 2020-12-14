@@ -4,15 +4,15 @@ import { $EtwinOauthState } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth
 import { EtwinOauthStateAndAccessToken } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-and-access-token";
 import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input.js";
 import { $OauthAccessToken, OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
-import {
-  $OauthAccessTokenRequest,
-  OauthAccessTokenRequest
-} from "@eternal-twin/core/lib/oauth/oauth-access-token-request.js";
 import { OauthClientId } from "@eternal-twin/core/lib/oauth/oauth-client-id.js";
 import { OauthClientSecret } from "@eternal-twin/core/lib/oauth/oauth-client-secret.js";
 import { OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
 import { OauthGrantType } from "@eternal-twin/core/lib/oauth/oauth-grant-type.js";
 import { OauthState } from "@eternal-twin/core/lib/oauth/oauth-state.js";
+import {
+  $RfcOauthAccessTokenRequest,
+  RfcOauthAccessTokenRequest
+} from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-request.js";
 import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope.js";
 import authHeader from "auth-header";
 import jsonWebToken from "jsonwebtoken";
@@ -88,14 +88,14 @@ export class HttpOauthClientService implements OauthClientService {
     const rawStateObj = jsonWebToken.verify(fullJwt, this.#tokenSecret, {clockTimestamp: this.#clock.nowUnixS()});
     const state = $EtwinOauthState.read(JSON_VALUE_READER, rawStateObj);
 
-    const accessTokenReq: OauthAccessTokenRequest = {
+    const accessTokenReq: RfcOauthAccessTokenRequest = {
       clientId: this.#clientId,
       clientSecret: this.#clientSecret,
       redirectUri: this.#callbackUri.toString(),
       code,
       grantType: OauthGrantType.AuthorizationCode,
     };
-    const rawReq = $OauthAccessTokenRequest.write(JSON_VALUE_WRITER, accessTokenReq);
+    const rawReq = $RfcOauthAccessTokenRequest.write(JSON_VALUE_WRITER, accessTokenReq);
     let rawRes: superagent.Response;
     try {
       rawRes = await superagent.post(this.#grantUri.toString())

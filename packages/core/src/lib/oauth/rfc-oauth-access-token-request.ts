@@ -3,22 +3,27 @@ import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $Url, Url } from "../core/url.js";
-import { $OauthClientInputRef, OauthClientInputRef } from "./oauth-client-input-ref.js";
 import { $OauthClientSecret, OauthClientSecret } from "./oauth-client-secret.js";
 import { $OauthCode, OauthCode } from "./oauth-code.js";
 import { $OauthGrantType, OauthGrantType } from "./oauth-grant-type.js";
+import { $RfcOauthClientId, RfcOauthClientId } from "./rfc-oauth-client-id.js";
 
-export interface OauthAccessTokenRequest {
-  clientId?: OauthClientInputRef;
+/**
+ * RFC-compliant token request.
+ *
+ * Use `EtwinOauthAccessTokenRequest` the more specific Etwin variant.
+ */
+export interface RfcOauthAccessTokenRequest {
+  clientId?: RfcOauthClientId;
   clientSecret?: OauthClientSecret;
   redirectUri?: Url;
   code: OauthCode;
   grantType: OauthGrantType.AuthorizationCode;
 }
 
-export const $OauthAccessTokenRequest: RecordIoType<OauthAccessTokenRequest> = new RecordType<OauthAccessTokenRequest>({
+export const $RfcOauthAccessTokenRequest: RecordIoType<RfcOauthAccessTokenRequest> = new RecordType<RfcOauthAccessTokenRequest>({
   properties: {
-    clientId: {type: $OauthClientInputRef, optional: true},
+    clientId: {type: $RfcOauthClientId, optional: true},
     clientSecret: {type: $OauthClientSecret, optional: true},
     redirectUri: {type: $Url, optional: true},
     code: {type: $OauthCode},
