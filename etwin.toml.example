@@ -99,6 +99,10 @@ display_name = "Main Forum (en-US)"
 # Locale for this section
 locale = "en-US"
 
+[forum.sections.fr_main]
+display_name = "Forum Général (fr-FR)"
+locale = "fr-FR"
+
 [forum.sections.es_main]
 display_name = "Foro principal (es-SP)"
 locale = "es-SP"
@@ -107,6 +111,42 @@ locale = "es-SP"
 display_name = "Ĉefa forumo (eo)"
 locale = "eo"
 
-[forum.sections.fr_main]
-display_name = "Forum Général (fr-FR)"
+[forum.sections.eternalfest_main]
+display_name = "[Eternalfest] Le Panthéon"
+locale = "fr-FR"
+
+[forum.sections.emush_main]
+display_name = "[Emush] Neron is watching you"
+locale = "fr-FR"
+
+[forum.sections.drpg_main]
+display_name = "[DinoRPG] Jurassic Park"
+locale = "fr-FR"
+
+[forum.sections.myhordes_main]
+display_name = "[Myhordes] Le Saloon"
+locale = "fr-FR"
+
+[forum.sections.kadokadeo_main]
+display_name = "[Kadokadeo] Café des palabres"
+locale = "fr-FR"
+
+[forum.sections.kingdom_main]
+display_name = "[Kingdom] La foire du trône"
+locale = "fr-FR"
+
+[forum.sections.mjrt_main]
+display_name = "[Mjrt] La bergerie"
+locale = "fr-FR"
+
+[forum.sections.na_main]
+display_name = "[Naturalchimie] Le laboratoire"
+locale = "fr-FR"
+
+[forum.sections.sq_main]
+display_name = "[Studioquiz] Le bar à questions"
+locale = "fr-FR"
+
+[forum.sections.ts_main]
+display_name = "[Teacher Story] La salle des profs"
 locale = "fr-FR"

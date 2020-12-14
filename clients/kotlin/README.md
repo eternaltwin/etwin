@@ -1,6 +1,6 @@
 # Etwin
 
-![bintray](https://img.shields.io/bintray/v/eternal-twin/maven/etwin)
+[![Bintray](https://img.shields.io/bintray/v/eternal-twin/maven/etwin)][bintray]
 
 Official Eternal-Twin API net.eternaltwin.client for Java and Kotlin.
 

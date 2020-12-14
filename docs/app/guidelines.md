@@ -6,9 +6,9 @@
 
 All code in the Eternal-Twin repositories should be licensed with the AGPL3 license:
 
-- Full name: `Affero General Public License v1.0 or later`
-- Short name: `AGPL-1.0-or-later`
-- SPDX link: https://spdx.org/licenses/AGPL-3.0-or-later.html
+- Full name: `GNU Affero General Public License v3.0 or later`
+- Short name: `AGPL-3.0-or-later`
+- SPDX link: <https://spdx.org/licenses/AGPL-3.0-or-later.html>
 
 ### Assets
 
@@ -16,7 +16,7 @@ All other non-code assets should be licensed with the following Creative Commons
 
 - Full name: `Creative Commons Attribution Non Commercial Share Alike 4.0 International`
 - Short name: `CC-BY-NC-SA-4.0`
-- SPDX link: https://spdx.org/licenses/CC-BY-NC-SA-4.0.html
+- SPDX link: <https://spdx.org/licenses/CC-BY-NC-SA-4.0.html>
 
 ### Other
 

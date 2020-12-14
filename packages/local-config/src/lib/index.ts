@@ -173,8 +173,8 @@ function readForumSectionConfig(raw: unknown, prefix: string): ForumSectionConfi
     throw new Error(`Expected forum section config to be an object: ${prefix}`);
   }
   const displayName: string = readString(raw, "display_name", `${prefix}.display_name`);
-  const locale: string = readString(raw, "locale", `${prefix}.locale`);
-  if (!supportedLocales.has(locale as any)) {
+  const locale: string | null = readOptString(raw, "locale", `${prefix}.locale`);
+  if (locale !== null && !supportedLocales.has(locale as any)) {
     throw new Error(`AssertionError: Only ${[...supportedLocales].join(", ")} locales are allowed`);
   }
   return {displayName, locale: locale as any};
@@ -205,6 +205,17 @@ function readOptObj(rawObj: object, key: string, fullKey: string): object | null
 function readString(rawObj: object, key: string, fullKey: string): string {
   if (!Reflect.has(rawObj, key)) {
     throw new Error(`Missing config: ${fullKey}`);
+  }
+  const value: unknown = Reflect.get(rawObj, key);
+  if (typeof value !== "string") {
+    throw new Error(`Invalid config type, expected string: ${fullKey}`);
+  }
+  return value;
+}
+
+function readOptString(rawObj: object, key: string, fullKey: string): string | null {
+  if (!Reflect.has(rawObj, key)) {
+    return null;
   }
   const value: unknown = Reflect.get(rawObj, key);
   if (typeof value !== "string") {
