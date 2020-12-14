@@ -2,6 +2,7 @@
 
 namespace Etwin\Client;
 
+use Etwin\Auth\AccessTokenAuthContext;
 use Etwin\Auth\AuthContext;
 use Etwin\Auth\GuestAuthContext;
 use Etwin\Auth\UserAuthContext;
@@ -30,7 +31,7 @@ final class HttpEtwinClient implements EtwinClient {
 
   /**
    * @param Auth $auth
-   * @return GuestAuthContext | UserAuthContext
+   * @return AccessTokenAuthContext | GuestAuthContext | UserAuthContext
    * @throws \JsonException
    */
   function getSelf(Auth $auth) {

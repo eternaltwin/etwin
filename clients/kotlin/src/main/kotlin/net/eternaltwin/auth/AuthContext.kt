@@ -12,6 +12,28 @@ import kotlinx.serialization.json.*
 
 @Serializable(with = AuthContext.Serializer::class)
 sealed class AuthContext {
+  @Serializable(with = AuthContext.AccessToken.Serializer::class)
+  data class AccessToken(val inner: AccessTokenAuthContext) : AuthContext() {
+    object Serializer : KSerializer<AuthContext.AccessToken> {
+      override val descriptor: SerialDescriptor =
+        AccessTokenAuthContext.serializer().descriptor
+
+      override fun serialize(encoder: Encoder, value: AuthContext.AccessToken) =
+        encoder.encodeSerializableValue(AccessTokenAuthContext.serializer(), value.inner)
+
+      override fun deserialize(decoder: Decoder): AuthContext.AccessToken =
+        AuthContext.AccessToken(decoder.decodeSerializableValue(AccessTokenAuthContext.serializer()))
+    }
+
+    companion object {
+      fun fromJsonString(jsonString: String): AuthContext.AccessToken =
+        JSON_FORMAT.decodeFromString(jsonString)
+
+      fun toJsonString(value: AuthContext.AccessToken): String =
+        JSON_FORMAT.encodeToString(value)
+    }
+  }
+
   @Serializable(with = AuthContext.Guest.Serializer::class)
   data class Guest(val inner: GuestAuthContext) : AuthContext() {
     object Serializer : KSerializer<AuthContext.Guest> {
@@ -38,7 +60,7 @@ sealed class AuthContext {
   data class User(val inner: UserAuthContext) : AuthContext() {
     object Serializer : KSerializer<AuthContext.User> {
       override val descriptor: SerialDescriptor =
-        User.serializer().descriptor
+        UserAuthContext.serializer().descriptor
 
       override fun serialize(encoder: Encoder, value: AuthContext.User) =
         encoder.encodeSerializableValue(UserAuthContext.serializer(), value.inner)
@@ -58,8 +80,10 @@ sealed class AuthContext {
 
   object Serializer : JsonContentPolymorphicSerializer<AuthContext>(AuthContext::class) {
     override fun selectDeserializer(element: JsonElement) = when {
+      element.jsonObject["type"]?.jsonPrimitive == JsonPrimitive("AccessToken") -> AuthContext.AccessToken.serializer()
       element.jsonObject["type"]?.jsonPrimitive == JsonPrimitive("Guest") -> AuthContext.Guest.serializer()
-      else -> AuthContext.User.serializer()
+      element.jsonObject["type"]?.jsonPrimitive == JsonPrimitive("User") -> AuthContext.User.serializer()
+      else -> throw IllegalArgumentException()
     }
   }
 

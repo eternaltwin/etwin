@@ -1,0 +1,19 @@
+{
+  "type": "AccessToken",
+  "scope": "Default",
+  "client": {
+    "type": "OauthClient",
+    "id": "d19e61a3-83d3-410f-84ec-49aaab841559",
+    "key": "eternalfest@clients",
+    "display_name": "Eternalfest"
+  },
+  "user": {
+    "type": "User",
+    "id": "9f310484-963b-446b-af69-797feec6813f",
+    "display_name": {
+      "current": {
+        "value": "Demurgos"
+      }
+    }
+  }
+}

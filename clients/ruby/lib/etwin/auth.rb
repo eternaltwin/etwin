@@ -7,6 +7,7 @@ module Etwin
   end
 end
 
+require_relative './auth/access_token_auth_context'
 require_relative './auth/auth_context'
 require_relative './auth/auth_scope'
 require_relative './auth/auth_type'

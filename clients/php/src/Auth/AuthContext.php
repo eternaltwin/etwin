@@ -8,10 +8,12 @@ final class AuthContext {
 
   /**
    * @param mixed $raw
-   * @return GuestAuthContext | UserAuthContext
+   * @return AccessTokenAuthContext | GuestAuthContext | UserAuthContext
    */
   final public static function jsonDeserialize($raw) {
     switch ($raw["type"]) {
+      case "AccessToken":
+        return AccessTokenAuthContext::jsonDeserialize($raw);
       case "Guest":
         return GuestAuthContext::jsonDeserialize($raw);
       case "User":
@@ -23,7 +25,7 @@ final class AuthContext {
 
   /**
    * @param string $json
-   * @return GuestAuthContext | UserAuthContext
+   * @return AccessTokenAuthContext | GuestAuthContext | UserAuthContext
    * @throws \JsonException
    */
   final public static function fromJson(string $json) {

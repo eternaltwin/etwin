@@ -8,6 +8,7 @@ module Etwin
       extend T::Sig
 
       enums do
+        AccessToken = new('AccessToken')
         Guest = new('Guest')
         User = new('User')
       end

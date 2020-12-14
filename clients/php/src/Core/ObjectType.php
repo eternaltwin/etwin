@@ -37,6 +37,8 @@ final class ObjectType implements \JsonSerializable {
     switch ($raw) {
       case "HammerfestUser":
         return self::HammerfestUser();
+      case "OauthClient":
+        return self::OauthClient();
       case "TwinoidUser":
         return self::TwinoidUser();
       case "User":
@@ -53,6 +55,13 @@ final class ObjectType implements \JsonSerializable {
       self::$_HammerfestUser = new self("HammerfestUser");
     }
     return self::$_HammerfestUser;
+  }
+
+  final public static function OauthClient(): self {
+    if (!isset(self::$_OauthClient)) {
+      self::$_OauthClient = new self("OauthClient");
+    }
+    return self::$_OauthClient;
   }
 
   final public static function TwinoidUser(): self {

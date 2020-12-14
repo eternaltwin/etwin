@@ -3,6 +3,7 @@
 namespace Etwin\Auth;
 
 final class AuthType implements \JsonSerializable {
+  private static ?self $_AccessToken;
   private static ?self $_Guest;
   private static ?self $_User;
 
@@ -26,6 +27,8 @@ final class AuthType implements \JsonSerializable {
 
   final public static function fromString(string $raw): self {
     switch ($raw) {
+      case "AccessToken":
+        return self::AccessToken();
       case "Guest":
         return self::Guest();
       case "User":
@@ -33,6 +36,13 @@ final class AuthType implements \JsonSerializable {
       default:
         throw new \TypeError("Unexpected `AuthType` value");
     }
+  }
+
+  final public static function AccessToken(): self {
+    if (!isset(self::$_AccessToken)) {
+      self::$_AccessToken = new self("AccessToken");
+    }
+    return self::$_AccessToken;
   }
 
   final public static function Guest(): self {

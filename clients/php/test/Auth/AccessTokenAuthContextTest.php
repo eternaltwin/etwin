@@ -4,9 +4,6 @@ namespace Etwin\Test\Auth;
 
 use Etwin\Auth\AccessTokenAuthContext;
 use Etwin\Auth\AuthScope;
-use Etwin\Auth\AuthContext;
-use Etwin\Auth\GuestAuthContext;
-use Etwin\Auth\UserAuthContext;
 use Etwin\Oauth\OauthClientDisplayName;
 use Etwin\Oauth\OauthClientId;
 use Etwin\Oauth\OauthClientKey;
@@ -19,28 +16,20 @@ use Etwin\User\UserDisplayNameVersions;
 use Etwin\User\UserId;
 use PHPUnit\Framework\TestCase;
 
-final class AuthContextTest extends TestCase {
+final class AccessTokenAuthContextTest extends TestCase {
   /**
    * @dataProvider provideFromJson
    * @param SerializationTestItem $item
    */
   public function testFromJson(SerializationTestItem $item): void {
-    $actual = AuthContext::fromJson($item->getJson());
+    $actual = AccessTokenAuthContext::fromJson($item->getJson());
     $this->assertEquals($item->getValue(), $actual);
   }
 
   public function provideFromJson(): array {
     return SerializationTestItem::fromTestDir(
-      "auth/auth-context",
+      "auth/access-token-auth-context",
       [
-        "demurgos" => new UserAuthContext(
-          AuthScope::Default(),
-          new ShortUser(
-            UserId::fromString("9f310484-963b-446b-af69-797feec6813f"),
-            new UserDisplayNameVersions(new UserDisplayNameVersion(new UserDisplayName("Demurgos")), []),
-          ),
-          true,
-        ),
         "eternalfest-demurgos" => new AccessTokenAuthContext(
           AuthScope::Default(),
           new ShortOauthClient(
@@ -52,9 +41,6 @@ final class AuthContextTest extends TestCase {
             UserId::fromString("9f310484-963b-446b-af69-797feec6813f"),
             new UserDisplayNameVersions(new UserDisplayNameVersion(new UserDisplayName("Demurgos")), []),
           ),
-        ),
-        "guest" => new GuestAuthContext(
-          AuthScope::Default(),
         ),
       ],
     );

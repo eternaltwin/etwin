@@ -20,6 +20,7 @@ module Etwin
       def AuthContext.deserialize(raw)
         type = AuthType.deserialize(raw['type'])
         case type
+        when AuthType::AccessToken then AccessTokenAuthContext.deserialize(raw)
         when AuthType::Guest then GuestAuthContext.deserialize(raw)
         when AuthType::User then UserAuthContext.deserialize(raw)
         else T.absurd(type)
