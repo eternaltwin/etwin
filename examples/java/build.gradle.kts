@@ -1,5 +1,6 @@
 plugins {
   java
+  application
 }
 
 group = "net.eternaltwin"
@@ -11,7 +12,11 @@ repositories {
 }
 
 dependencies {
-  // implementation(files("../../clients/kotlin/build/libs/etwin-0.1.5.jar"))
-  implementation("net.eternaltwin:etwin:0.1.5")
+  // implementation(files("../../clients/kotlin/build/libs/etwin-0.3.2.jar"))
+  implementation("net.eternaltwin:etwin:0.3.2")
   testImplementation("org.junit.jupiter:junit-jupiter-engine:5.6.2")
+}
+
+application {
+  mainClassName = "Main"
 }

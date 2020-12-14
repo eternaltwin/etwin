@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a94ac3bbad9a0c4ed64bdcae03d7de86",
+    "content-hash": "5db34a6fb313042d9f98fd928aa9a48d",
     "packages": [
         {
             "name": "brick/math",
@@ -64,16 +64,16 @@
         },
         {
             "name": "eternal-twin/etwin",
-            "version": "0.0.4",
+            "version": "0.3.2",
             "source": {
                 "type": "git",
                 "url": "https://gitlab.com/eternal-twin/etwin-php.git",
-                "reference": "b48547c77fcef5a31d2d68731742ce063efe4ac3"
+                "reference": "ae3b130648467b74362a7a461c21886a03698749"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/eternal-twin%2Fetwin-php/repository/archive.zip?sha=b48547c77fcef5a31d2d68731742ce063efe4ac3",
-                "reference": "b48547c77fcef5a31d2d68731742ce063efe4ac3",
+                "url": "https://gitlab.com/api/v4/projects/eternal-twin%2Fetwin-php/repository/archive.zip?sha=ae3b130648467b74362a7a461c21886a03698749",
+                "reference": "ae3b130648467b74362a7a461c21886a03698749",
                 "shasum": ""
             },
             "require": {
@@ -110,7 +110,7 @@
             "support": {
                 "issues": "https://gitlab.com/api/v4/projects/22362307/issues"
             },
-            "time": "2020-11-11T12:04:51+00:00"
+            "time": "2020-12-14T17:36:03+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

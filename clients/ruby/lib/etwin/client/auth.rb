@@ -51,7 +51,7 @@ module Etwin
         end
       end
 
-      Guest = new(nil)
+      Guest = T.let(new(nil), Auth)
 
       class << self
         extend T::Sig

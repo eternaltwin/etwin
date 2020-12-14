@@ -45,10 +45,10 @@ class Debase::Context
   def frame_locals(frame_no = nil); end
   def handler; end
 end
-module InvalidName___Class_0x00___InstructionSequenceMixin_7
+module InvalidName___Class_0x00___InstructionSequenceMixin_1
   def translate(iseq); end
 end
-module InvalidName___Class_0x00___InstructionSequenceMixin2_8
+module InvalidName___Class_0x00___InstructionSequenceMixin2_2
   def do_set_flags(iseq, path); end
   def load_iseq(path); end
 end

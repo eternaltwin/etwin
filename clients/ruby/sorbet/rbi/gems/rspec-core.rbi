@@ -1646,7 +1646,9 @@ class RSpec::Core::ExampleGroup
   extend RSpec::Core::MemoizedHelpers::ClassMethods
   extend RSpec::Core::SharedExampleGroup
   include RSpec::Core::MemoizedHelpers
+  include RSpec::Core::MockingAdapters::RSpec
   include RSpec::Core::Pending
+  include RSpec::Matchers
 end
 class RSpec::Core::ExampleGroup::WrongScopeError < NoMethodError
 end
@@ -1917,4 +1919,19 @@ module RSpec::Core::MockingAdapters::RSpec
   def verify_mocks_for_rspec; end
   include RSpec::Mocks::ExampleMethods
   include RSpec::Mocks::ExampleMethods::ExpectHost
+end
+class RSpec::ExampleGroups::EtwinAuthAccessTokenAuthContext < RSpec::Core::ExampleGroup
+  extend RSpec::Matchers::DSL
+end
+class RSpec::Expectations::MultipleExpectationsNotMetError < RSpec::Expectations::ExpectationNotMetError
+  include RSpec::Core::MultipleExceptionError::InterfaceTag
+end
+class RSpec::ExampleGroups::EtwinAuthAuthContext < RSpec::Core::ExampleGroup
+  extend RSpec::Matchers::DSL
+end
+class RSpec::ExampleGroups::EtwinAuthGuestAuthContext < RSpec::Core::ExampleGroup
+  extend RSpec::Matchers::DSL
+end
+class RSpec::ExampleGroups::EtwinAuthUserAuthContext < RSpec::Core::ExampleGroup
+  extend RSpec::Matchers::DSL
 end

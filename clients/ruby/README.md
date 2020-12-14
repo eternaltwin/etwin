@@ -1,5 +1,7 @@
 # Etwin client for ruby
 
+![gem](https://img.shields.io/gem/v/etwin)
+
 ## Installation
 
 Add a dependency on the `etwin` gem.
@@ -33,7 +35,10 @@ bundle exec rubocop
 bundle exec rspec
 # bundle exec rake release
 # bundle exec rake install
+bundle exec srb rbi update
 bundle exec srb tc
 # gem build
 # gem push ...
 ```
+
+[gem]: https://rubygems.org/gems/etwin

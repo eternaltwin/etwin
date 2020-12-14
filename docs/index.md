@@ -17,10 +17,11 @@ Welcome to the Eternal-Twin documentation. This section describes various techni
 ## [Tools](./tools/index.md)
 
 - [Node.js](./tools/node.md)
-- [package.json](./tools/package.json)
+- [package.json](./tools/package-json.md)
 - [Yarn](./tools/yarn.md)
 
 ## Other
 
 - [OAuth](./oauth.md)
 - [Postgres](./db.md)
+- [Server](./server.md)

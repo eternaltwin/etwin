@@ -991,12 +991,12 @@
 # Did you mean?  Bundler::URI::SCHEME
 # uninitialized constant Bundler::URI::FTP::TBLDECWWWCOMP_
 # Did you mean?  Bundler::URI::FTP::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::FTP::TBLENCWWWCOMP_
 # Did you mean?  Bundler::URI::FTP::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::FTP::UNSAFE
 # Did you mean?  Bundler::URI::UNSAFE
 # uninitialized constant Bundler::URI::FTP::URI_REF
@@ -1057,12 +1057,12 @@
 # Did you mean?  Bundler::URI::SCHEME
 # uninitialized constant Bundler::URI::File::TBLDECWWWCOMP_
 # Did you mean?  Bundler::URI::File::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::File::TBLENCWWWCOMP_
 # Did you mean?  Bundler::URI::File::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::File::UNSAFE
 # Did you mean?  Bundler::URI::UNSAFE
 # uninitialized constant Bundler::URI::File::URI_REF
@@ -1126,12 +1126,12 @@
 # Did you mean?  Bundler::URI::SCHEME
 # uninitialized constant Bundler::URI::Generic::TBLDECWWWCOMP_
 # Did you mean?  Bundler::URI::Generic::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::Generic::TBLENCWWWCOMP_
 # Did you mean?  Bundler::URI::Generic::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::Generic::UNSAFE
 # Did you mean?  Bundler::URI::UNSAFE
 # uninitialized constant Bundler::URI::Generic::URI_REF
@@ -1245,12 +1245,12 @@
 # Did you mean?  Bundler::URI::SCHEME
 # uninitialized constant Bundler::URI::HTTP::TBLDECWWWCOMP_
 # Did you mean?  Bundler::URI::HTTP::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::HTTP::TBLENCWWWCOMP_
 # Did you mean?  Bundler::URI::HTTP::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::HTTP::UNSAFE
 # Did you mean?  Bundler::URI::UNSAFE
 # uninitialized constant Bundler::URI::HTTP::URI_REF
@@ -1309,12 +1309,12 @@
 # Did you mean?  Bundler::URI::SCHEME
 # uninitialized constant Bundler::URI::HTTPS::TBLDECWWWCOMP_
 # Did you mean?  Bundler::URI::HTTPS::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::HTTPS::TBLENCWWWCOMP_
 # Did you mean?  Bundler::URI::HTTPS::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::HTTPS::UNSAFE
 # Did you mean?  Bundler::URI::UNSAFE
 # uninitialized constant Bundler::URI::HTTPS::URI_REF
@@ -1373,12 +1373,12 @@
 # Did you mean?  Bundler::URI::SCHEME
 # uninitialized constant Bundler::URI::LDAP::TBLDECWWWCOMP_
 # Did you mean?  Bundler::URI::LDAP::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::LDAP::TBLENCWWWCOMP_
 # Did you mean?  Bundler::URI::LDAP::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::LDAP::UNSAFE
 # Did you mean?  Bundler::URI::UNSAFE
 # uninitialized constant Bundler::URI::LDAP::URI_REF
@@ -1460,12 +1460,12 @@
 # Did you mean?  Bundler::URI::LDAPS::SCOPE_ONE
 # uninitialized constant Bundler::URI::LDAPS::TBLDECWWWCOMP_
 # Did you mean?  Bundler::URI::LDAPS::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::LDAPS::TBLENCWWWCOMP_
 # Did you mean?  Bundler::URI::LDAPS::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::LDAPS::UNSAFE
 # Did you mean?  Bundler::URI::UNSAFE
 # uninitialized constant Bundler::URI::LDAPS::URI_REF
@@ -1522,12 +1522,12 @@
 # Did you mean?  Bundler::URI::SCHEME
 # uninitialized constant Bundler::URI::MailTo::TBLDECWWWCOMP_
 # Did you mean?  Bundler::URI::MailTo::TBLENCWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::MailTo::TBLENCWWWCOMP_
 # Did you mean?  Bundler::URI::MailTo::TBLDECWWWCOMP_
-#                Bundler::URI::TBLENCWWWCOMP_
 #                Bundler::URI::TBLDECWWWCOMP_
+#                Bundler::URI::TBLENCWWWCOMP_
 # uninitialized constant Bundler::URI::MailTo::UNSAFE
 # Did you mean?  Bundler::URI::UNSAFE
 # uninitialized constant Bundler::URI::MailTo::URI_REF
@@ -1952,6 +1952,163 @@
 # wrong constant name <Class:Passwd>
 # uninitialized constant Exception2MessageMapper
 # uninitialized constant Exception2MessageMapper
+# wrong constant name <static-init>
+# wrong constant name <Class:EMHttp>
+# wrong constant name <Class:EMSynchrony>
+# wrong constant name <Class:Excon>
+# wrong constant name <Class:HTTPClient>
+# wrong constant name <Class:NetHttpPersistent>
+# wrong constant name <Class:Patron>
+# wrong constant name <Class:Rack>
+# wrong constant name <Class:Test>
+# wrong constant name <Class:Typhoeus>
+# uninitialized constant Faraday::Adapter::EMHttp::CONTENT_LENGTH
+# Did you mean?  Faraday::Adapter::CONTENT_LENGTH
+# wrong constant name <Class:Manager>
+# wrong constant name <Class:Options>
+# uninitialized constant Faraday::Adapter::EMHttp::TIMEOUT_KEYS
+# Did you mean?  Faraday::Adapter::TIMEOUT_KEYS
+# wrong constant name create_request
+# wrong constant name error_message
+# wrong constant name parallel?
+# wrong constant name perform_request
+# wrong constant name perform_single_request
+# wrong constant name raise_error
+# wrong constant name timeout_message?
+# wrong constant name add
+# wrong constant name check_finished
+# wrong constant name perform_request
+# wrong constant name reset
+# wrong constant name run
+# wrong constant name running?
+# wrong constant name <static-init>
+# wrong constant name configure_compression
+# wrong constant name configure_proxy
+# wrong constant name configure_socket
+# wrong constant name configure_ssl
+# wrong constant name configure_timeout
+# wrong constant name connection_config
+# wrong constant name read_body
+# wrong constant name request_config
+# wrong constant name request_options
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name setup_parallel_manager
+# uninitialized constant Faraday::Adapter::EMSynchrony::CONTENT_LENGTH
+# Did you mean?  Faraday::Adapter::CONTENT_LENGTH
+# wrong constant name <Class:ParallelManager>
+# uninitialized constant Faraday::Adapter::EMSynchrony::TIMEOUT_KEYS
+# Did you mean?  Faraday::Adapter::TIMEOUT_KEYS
+# wrong constant name create_request
+# wrong constant name add
+# wrong constant name run
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name setup_parallel_manager
+# uninitialized constant Faraday::Adapter::Excon::CONTENT_LENGTH
+# Did you mean?  Faraday::Adapter::CONTENT_LENGTH
+# uninitialized constant Faraday::Adapter::Excon::TIMEOUT_KEYS
+# Did you mean?  Faraday::Adapter::TIMEOUT_KEYS
+# wrong constant name build_connection
+# wrong constant name read_body
+# wrong constant name <static-init>
+# uninitialized constant Faraday::Adapter::HTTPClient::CONTENT_LENGTH
+# Did you mean?  Faraday::Adapter::CONTENT_LENGTH
+# uninitialized constant Faraday::Adapter::HTTPClient::TIMEOUT_KEYS
+# Did you mean?  Faraday::Adapter::TIMEOUT_KEYS
+# wrong constant name build_connection
+# wrong constant name configure_client
+# wrong constant name configure_proxy
+# wrong constant name configure_socket
+# wrong constant name configure_ssl
+# wrong constant name configure_timeouts
+# wrong constant name ssl_cert_store
+# wrong constant name ssl_verify_mode
+# wrong constant name <static-init>
+# uninitialized constant Faraday::Adapter::NetHttp::CONTENT_LENGTH
+# Did you mean?  Faraday::Adapter::CONTENT_LENGTH
+# uninitialized constant Faraday::Adapter::NetHttp::TIMEOUT_KEYS
+# Did you mean?  Faraday::Adapter::TIMEOUT_KEYS
+# uninitialized constant Faraday::Adapter::NetHttpPersistent::CONTENT_LENGTH
+# Did you mean?  Faraday::Adapter::CONTENT_LENGTH
+# uninitialized constant Faraday::Adapter::NetHttpPersistent::NET_HTTP_EXCEPTIONS
+# uninitialized constant Faraday::Adapter::NetHttpPersistent::TIMEOUT_KEYS
+# Did you mean?  Faraday::Adapter::TIMEOUT_KEYS
+# wrong constant name <static-init>
+# uninitialized constant Faraday::Adapter::Patron::CONTENT_LENGTH
+# Did you mean?  Faraday::Adapter::CONTENT_LENGTH
+# uninitialized constant Faraday::Adapter::Patron::TIMEOUT_KEYS
+# Did you mean?  Faraday::Adapter::TIMEOUT_KEYS
+# wrong constant name build_connection
+# wrong constant name configure_proxy
+# wrong constant name configure_ssl
+# wrong constant name configure_timeouts
+# wrong constant name <static-init>
+# uninitialized constant Faraday::Adapter::Rack::CONTENT_LENGTH
+# Did you mean?  Faraday::Adapter::CONTENT_LENGTH
+# uninitialized constant Faraday::Adapter::Rack::TIMEOUT_KEYS
+# Did you mean?  Faraday::Adapter::TIMEOUT_KEYS
+# wrong constant name initialize
+# wrong constant name <static-init>
+# uninitialized constant Faraday::Adapter::Test::CONTENT_LENGTH
+# Did you mean?  Faraday::Adapter::CONTENT_LENGTH
+# wrong constant name <Class:Stub>
+# wrong constant name <Class:Stubs>
+# uninitialized constant Faraday::Adapter::Test::TIMEOUT_KEYS
+# Did you mean?  Faraday::Adapter::TIMEOUT_KEYS
+# wrong constant name configure
+# wrong constant name initialize
+# wrong constant name stubs
+# wrong constant name stubs=
+# wrong constant name headers_match?
+# wrong constant name initialize
+# wrong constant name matches?
+# wrong constant name params_match?
+# wrong constant name path_match?
+# wrong constant name <static-init>
+# wrong constant name <Class:NotFound>
+# wrong constant name delete
+# wrong constant name empty?
+# wrong constant name get
+# wrong constant name head
+# wrong constant name match
+# wrong constant name matches?
+# wrong constant name new_stub
+# wrong constant name options
+# wrong constant name patch
+# wrong constant name post
+# wrong constant name put
+# wrong constant name verify_stubbed_calls
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# uninitialized constant Faraday::Adapter::Typhoeus::CONTENT_LENGTH
+# Did you mean?  Faraday::Adapter::CONTENT_LENGTH
+# uninitialized constant Faraday::Adapter::Typhoeus::TIMEOUT_KEYS
+# Did you mean?  Faraday::Adapter::TIMEOUT_KEYS
+# wrong constant name call
+# wrong constant name <static-init>
+# wrong constant name call
+# wrong constant name initialize
+# wrong constant name <static-init>
+# wrong constant name build_hash
+# wrong constant name header
+# uninitialized constant Faraday::Request::BasicAuthentication::KEY
+# Did you mean?  Faraday::Request::Key
+# wrong constant name <static-init>
+# wrong constant name header
+# wrong constant name <Class:Options>
+# wrong constant name call
+# wrong constant name initialize
+# wrong constant name <static-init>
+# wrong constant name <static-init>
+# uninitialized constant Faraday::Request::Multipart::CONTENT_TYPE
+# uninitialized constant Faraday::Request::TokenAuthentication::KEY
+# Did you mean?  Faraday::Request::Key
+# wrong constant name initialize
+# wrong constant name <static-init>
+# wrong constant name header
+# wrong constant name initialize
 # wrong constant name <static-init>
 # uninitialized constant Fcntl
 # uninitialized constant Fcntl
@@ -2477,55 +2634,6 @@
 # wrong constant name ==
 # wrong constant name to_der
 # wrong constant name fips_mode
-# wrong constant name __id__!
-# wrong constant name __send__!
-# wrong constant name class!
-# wrong constant name clone!
-# wrong constant name define_singleton_method!
-# wrong constant name delete_field!
-# wrong constant name dig!
-# wrong constant name display!
-# wrong constant name dup!
-# wrong constant name each_pair!
-# wrong constant name encode_with
-# wrong constant name encode_with!
-# wrong constant name enum_for!
-# wrong constant name extend!
-# wrong constant name freeze!
-# wrong constant name hash!
-# wrong constant name init_with
-# wrong constant name init_with!
-# wrong constant name inspect!
-# wrong constant name instance_eval!
-# wrong constant name instance_exec!
-# wrong constant name instance_variable_get!
-# wrong constant name instance_variable_set!
-# wrong constant name instance_variables!
-# wrong constant name itself!
-# wrong constant name marshal_dump!
-# wrong constant name method!
-# wrong constant name methods!
-# wrong constant name object_id!
-# wrong constant name private_methods!
-# wrong constant name protected_methods!
-# wrong constant name public_method!
-# wrong constant name public_methods!
-# wrong constant name public_send!
-# wrong constant name remove_instance_variable!
-# wrong constant name send!
-# wrong constant name singleton_class!
-# wrong constant name singleton_method!
-# wrong constant name singleton_methods!
-# wrong constant name taint!
-# wrong constant name tap!
-# wrong constant name then!
-# wrong constant name to_enum!
-# wrong constant name to_h!
-# wrong constant name to_s!
-# wrong constant name trust!
-# wrong constant name untaint!
-# wrong constant name untrust!
-# wrong constant name yield_self!
 # uninitialized constant OpenURI
 # Did you mean?  OpenStruct
 # uninitialized constant OpenURI
@@ -2789,8 +2897,8 @@
 # Did you mean?  Ripper::EVENTS
 # uninitialized constant Ripper::Lexer::EXPR_ARG
 # Did you mean?  Ripper::Lexer::EXPR_BEG
-#                Ripper::EXPR_ARG
 #                Ripper::EXPR_BEG
+#                Ripper::EXPR_ARG
 # uninitialized constant Ripper::Lexer::EXPR_ARG_ANY
 # Did you mean?  Ripper::Lexer::EXPR_END_ANY
 #                Ripper::Lexer::EXPR_BEG_ANY
@@ -2799,8 +2907,8 @@
 #                Ripper::EXPR_BEG_ANY
 # uninitialized constant Ripper::Lexer::EXPR_BEG
 # Did you mean?  Ripper::Lexer::EXPR_ARG
-#                Ripper::EXPR_ARG
 #                Ripper::EXPR_BEG
+#                Ripper::EXPR_ARG
 # uninitialized constant Ripper::Lexer::EXPR_BEG_ANY
 # Did you mean?  Ripper::Lexer::EXPR_END_ANY
 #                Ripper::Lexer::EXPR_ARG_ANY
@@ -2813,25 +2921,25 @@
 # Did you mean?  Ripper::Lexer::EXPR_ARG
 #                Ripper::EXPR_ARG
 #                Ripper::Lexer::EXPR_ENDARG
-#                Ripper::EXPR_CMDARG
 #                Ripper::EXPR_ENDARG
+#                Ripper::EXPR_CMDARG
 # uninitialized constant Ripper::Lexer::EXPR_DOT
 # Did you mean?  Ripper::EXPR_DOT
 # uninitialized constant Ripper::Lexer::EXPR_END
 # Did you mean?  Ripper::Lexer::EXPR_MID
-#                Ripper::EXPR_MID
 #                Ripper::EXPR_END
+#                Ripper::EXPR_MID
 #                Ripper::Lexer::EXPR_ENDFN
 #                Ripper::EXPR_ENDFN
 # uninitialized constant Ripper::Lexer::EXPR_ENDARG
 # Did you mean?  Ripper::Lexer::EXPR_ARG
-#                Ripper::EXPR_ARG
 #                Ripper::EXPR_END
+#                Ripper::EXPR_ARG
 #                Ripper::Lexer::EXPR_ENDFN
 #                Ripper::EXPR_ENDFN
 #                Ripper::Lexer::EXPR_CMDARG
-#                Ripper::EXPR_CMDARG
 #                Ripper::EXPR_ENDARG
+#                Ripper::EXPR_CMDARG
 #                Ripper::Lexer::EXPR_END_ANY
 #                Ripper::EXPR_END_ANY
 # uninitialized constant Ripper::Lexer::EXPR_ENDFN
@@ -2868,13 +2976,13 @@
 #                Ripper::EXPR_LABELED
 # uninitialized constant Ripper::Lexer::EXPR_MID
 # Did you mean?  Ripper::Lexer::EXPR_END
+#                Ripper::EXPR_END
 #                Ripper::EXPR_MID
-#                Ripper::EXPR_END
 # uninitialized constant Ripper::Lexer::EXPR_NONE
-# Did you mean?  Ripper::Lexer::EXPR_DOT
-#                Ripper::Lexer::EXPR_END
-#                Ripper::EXPR_DOT
+# Did you mean?  Ripper::Lexer::EXPR_END
+#                Ripper::Lexer::EXPR_DOT
 #                Ripper::EXPR_END
+#                Ripper::EXPR_DOT
 #                Ripper::EXPR_NONE
 #                Ripper::Lexer::EXPR_FNAME
 #                Ripper::EXPR_FNAME
@@ -2932,8 +3040,8 @@
 # Did you mean?  Ripper::EVENTS
 # uninitialized constant Ripper::SexpBuilder::EXPR_ARG
 # Did you mean?  Ripper::SexpBuilder::EXPR_BEG
-#                Ripper::EXPR_ARG
 #                Ripper::EXPR_BEG
+#                Ripper::EXPR_ARG
 # uninitialized constant Ripper::SexpBuilder::EXPR_ARG_ANY
 # Did you mean?  Ripper::SexpBuilder::EXPR_END_ANY
 #                Ripper::SexpBuilder::EXPR_BEG_ANY
@@ -2942,8 +3050,8 @@
 #                Ripper::EXPR_BEG_ANY
 # uninitialized constant Ripper::SexpBuilder::EXPR_BEG
 # Did you mean?  Ripper::SexpBuilder::EXPR_ARG
-#                Ripper::EXPR_ARG
 #                Ripper::EXPR_BEG
+#                Ripper::EXPR_ARG
 # uninitialized constant Ripper::SexpBuilder::EXPR_BEG_ANY
 # Did you mean?  Ripper::SexpBuilder::EXPR_END_ANY
 #                Ripper::SexpBuilder::EXPR_ARG_ANY
@@ -2956,25 +3064,25 @@
 # Did you mean?  Ripper::SexpBuilder::EXPR_ARG
 #                Ripper::EXPR_ARG
 #                Ripper::SexpBuilder::EXPR_ENDARG
-#                Ripper::EXPR_CMDARG
 #                Ripper::EXPR_ENDARG
+#                Ripper::EXPR_CMDARG
 # uninitialized constant Ripper::SexpBuilder::EXPR_DOT
 # Did you mean?  Ripper::EXPR_DOT
 # uninitialized constant Ripper::SexpBuilder::EXPR_END
 # Did you mean?  Ripper::SexpBuilder::EXPR_MID
-#                Ripper::EXPR_MID
 #                Ripper::EXPR_END
+#                Ripper::EXPR_MID
 #                Ripper::SexpBuilder::EXPR_ENDFN
 #                Ripper::EXPR_ENDFN
 # uninitialized constant Ripper::SexpBuilder::EXPR_ENDARG
 # Did you mean?  Ripper::SexpBuilder::EXPR_ARG
-#                Ripper::EXPR_ARG
 #                Ripper::EXPR_END
+#                Ripper::EXPR_ARG
 #                Ripper::SexpBuilder::EXPR_ENDFN
 #                Ripper::EXPR_ENDFN
 #                Ripper::SexpBuilder::EXPR_CMDARG
-#                Ripper::EXPR_CMDARG
 #                Ripper::EXPR_ENDARG
+#                Ripper::EXPR_CMDARG
 #                Ripper::SexpBuilder::EXPR_END_ANY
 #                Ripper::EXPR_END_ANY
 # uninitialized constant Ripper::SexpBuilder::EXPR_ENDFN
@@ -3011,13 +3119,13 @@
 #                Ripper::EXPR_LABELED
 # uninitialized constant Ripper::SexpBuilder::EXPR_MID
 # Did you mean?  Ripper::SexpBuilder::EXPR_END
+#                Ripper::EXPR_END
 #                Ripper::EXPR_MID
-#                Ripper::EXPR_END
 # uninitialized constant Ripper::SexpBuilder::EXPR_NONE
-# Did you mean?  Ripper::SexpBuilder::EXPR_DOT
-#                Ripper::SexpBuilder::EXPR_END
-#                Ripper::EXPR_DOT
+# Did you mean?  Ripper::SexpBuilder::EXPR_END
+#                Ripper::SexpBuilder::EXPR_DOT
 #                Ripper::EXPR_END
+#                Ripper::EXPR_DOT
 #                Ripper::EXPR_NONE
 #                Ripper::SexpBuilder::EXPR_FNAME
 #                Ripper::EXPR_FNAME
@@ -3226,8 +3334,8 @@
 # Did you mean?  Ripper::EVENTS
 # uninitialized constant Ripper::SexpBuilderPP::EXPR_ARG
 # Did you mean?  Ripper::SexpBuilderPP::EXPR_BEG
-#                Ripper::EXPR_ARG
 #                Ripper::EXPR_BEG
+#                Ripper::EXPR_ARG
 # uninitialized constant Ripper::SexpBuilderPP::EXPR_ARG_ANY
 # Did you mean?  Ripper::SexpBuilderPP::EXPR_END_ANY
 #                Ripper::SexpBuilderPP::EXPR_BEG_ANY
@@ -3236,8 +3344,8 @@
 #                Ripper::EXPR_BEG_ANY
 # uninitialized constant Ripper::SexpBuilderPP::EXPR_BEG
 # Did you mean?  Ripper::SexpBuilderPP::EXPR_ARG
-#                Ripper::EXPR_ARG
 #                Ripper::EXPR_BEG
+#                Ripper::EXPR_ARG
 # uninitialized constant Ripper::SexpBuilderPP::EXPR_BEG_ANY
 # Did you mean?  Ripper::SexpBuilderPP::EXPR_END_ANY
 #                Ripper::SexpBuilderPP::EXPR_ARG_ANY
@@ -3250,25 +3358,25 @@
 # Did you mean?  Ripper::SexpBuilderPP::EXPR_ARG
 #                Ripper::EXPR_ARG
 #                Ripper::SexpBuilderPP::EXPR_ENDARG
-#                Ripper::EXPR_CMDARG
 #                Ripper::EXPR_ENDARG
+#                Ripper::EXPR_CMDARG
 # uninitialized constant Ripper::SexpBuilderPP::EXPR_DOT
 # Did you mean?  Ripper::EXPR_DOT
 # uninitialized constant Ripper::SexpBuilderPP::EXPR_END
 # Did you mean?  Ripper::SexpBuilderPP::EXPR_MID
-#                Ripper::EXPR_MID
 #                Ripper::EXPR_END
+#                Ripper::EXPR_MID
 #                Ripper::SexpBuilderPP::EXPR_ENDFN
 #                Ripper::EXPR_ENDFN
 # uninitialized constant Ripper::SexpBuilderPP::EXPR_ENDARG
 # Did you mean?  Ripper::SexpBuilderPP::EXPR_ARG
-#                Ripper::EXPR_ARG
 #                Ripper::EXPR_END
+#                Ripper::EXPR_ARG
 #                Ripper::SexpBuilderPP::EXPR_ENDFN
 #                Ripper::EXPR_ENDFN
 #                Ripper::SexpBuilderPP::EXPR_CMDARG
-#                Ripper::EXPR_CMDARG
 #                Ripper::EXPR_ENDARG
+#                Ripper::EXPR_CMDARG
 #                Ripper::SexpBuilderPP::EXPR_END_ANY
 #                Ripper::EXPR_END_ANY
 # uninitialized constant Ripper::SexpBuilderPP::EXPR_ENDFN
@@ -3305,13 +3413,13 @@
 #                Ripper::EXPR_LABELED
 # uninitialized constant Ripper::SexpBuilderPP::EXPR_MID
 # Did you mean?  Ripper::SexpBuilderPP::EXPR_END
+#                Ripper::EXPR_END
 #                Ripper::EXPR_MID
-#                Ripper::EXPR_END
 # uninitialized constant Ripper::SexpBuilderPP::EXPR_NONE
-# Did you mean?  Ripper::SexpBuilderPP::EXPR_DOT
-#                Ripper::SexpBuilderPP::EXPR_END
-#                Ripper::EXPR_DOT
+# Did you mean?  Ripper::SexpBuilderPP::EXPR_END
+#                Ripper::SexpBuilderPP::EXPR_DOT
 #                Ripper::EXPR_END
+#                Ripper::EXPR_DOT
 #                Ripper::EXPR_NONE
 #                Ripper::SexpBuilderPP::EXPR_FNAME
 #                Ripper::EXPR_FNAME
@@ -4196,6 +4304,21 @@
 # uninitialized constant RuboCop::Cop::Security::MarshalLoad::LITERAL_REGEX
 # uninitialized constant RuboCop::Cop::Security::Open::LITERAL_REGEX
 # uninitialized constant RuboCop::Cop::Security::YAMLLoad::LITERAL_REGEX
+# uninitialized constant RuboCop::Cop::Sorbet::EnforceSigilOrder::BYTE_ORDER_MARK
+# uninitialized constant RuboCop::Cop::Sorbet::EnforceSigilOrder::LITERAL_REGEX
+# uninitialized constant RuboCop::Cop::Sorbet::EnforceSigilOrder::RESTRICT_ON_SEND
+# uninitialized constant RuboCop::Cop::Sorbet::EnforceSigilOrder::SIGIL_REGEX
+# uninitialized constant RuboCop::Cop::Sorbet::EnforceSigilOrder::STRICTNESS_LEVELS
+# uninitialized constant RuboCop::Cop::Sorbet::ForbidIncludeConstLiteral::LITERAL_REGEX
+# uninitialized constant RuboCop::Cop::Sorbet::ForbidIncludeConstLiteral::RESTRICT_ON_SEND
+# uninitialized constant RuboCop::Cop::Sorbet::ForbidSuperclassConstLiteral::LITERAL_REGEX
+# uninitialized constant RuboCop::Cop::Sorbet::ForbidSuperclassConstLiteral::RESTRICT_ON_SEND
+# uninitialized constant RuboCop::Cop::Sorbet::ForbidUntypedStructProps::LITERAL_REGEX
+# uninitialized constant RuboCop::Cop::Sorbet::ForbidUntypedStructProps::RESTRICT_ON_SEND
+# uninitialized constant RuboCop::Cop::Sorbet::SignatureBuildOrder::LITERAL_REGEX
+# uninitialized constant RuboCop::Cop::Sorbet::SignatureBuildOrder::RESTRICT_ON_SEND
+# uninitialized constant RuboCop::Cop::Sorbet::ValidSigil::LITERAL_REGEX
+# uninitialized constant RuboCop::Cop::Sorbet::ValidSigil::RESTRICT_ON_SEND
 # uninitialized constant RuboCop::Cop::SpaceBeforePunctuation::BYTE_ORDER_MARK
 # uninitialized constant RuboCop::Cop::Style::AccessModifierDeclarations::LITERAL_REGEX
 # uninitialized constant RuboCop::Cop::Style::AccessorGrouping::BYTE_ORDER_MARK
@@ -4841,12 +4964,12 @@
 # Did you mean?  URI::SCHEME
 # uninitialized constant URI::File::TBLDECWWWCOMP_
 # Did you mean?  URI::File::TBLENCWWWCOMP_
-#                URI::TBLENCWWWCOMP_
 #                URI::TBLDECWWWCOMP_
+#                URI::TBLENCWWWCOMP_
 # uninitialized constant URI::File::TBLENCWWWCOMP_
 # Did you mean?  URI::File::TBLDECWWWCOMP_
-#                URI::TBLENCWWWCOMP_
 #                URI::TBLDECWWWCOMP_
+#                URI::TBLENCWWWCOMP_
 # uninitialized constant URI::File::UNSAFE
 # Did you mean?  URI::UNSAFE
 # uninitialized constant URI::File::URI_REF

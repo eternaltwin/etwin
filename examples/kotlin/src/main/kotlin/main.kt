@@ -5,7 +5,7 @@ import net.eternaltwin.user.MaybeCompleteUser
 import net.eternaltwin.user.UserId
 import java.net.URI
 
-fun main(args: Array<String>) {
+fun main() {
   val client = HttpEtwinClient(URI("https://eternal-twin.net/api/v1"))
   // Retrieve a user as a guest
   val user: MaybeCompleteUser = client.getUser(Auth.GUEST, UserId("9f310484-963b-446b-af69-797feec6813f"))

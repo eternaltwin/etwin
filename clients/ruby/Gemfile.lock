@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    etwin (0.0.3)
+    etwin (0.3.2)
       faraday (~> 1.1.0)
       sorbet-runtime (~> 0.5.6076)
 

@@ -3290,6 +3290,43 @@ class Etc::Passwd
   def self.members(); end
 end
 
+class Etwin::Auth::AccessTokenAuthContext
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Auth::GuestAuthContext
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Auth::UserAuthContext
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Client::Auth
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+module Etwin::Client::EtwinClient
+  extend ::T::Private::Abstract::Hooks
+  extend ::T::InterfaceWrapper::Helpers
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Client::HttpEtwinClient
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
 class Etwin::Hammerfest::HammerfestUserId
   extend ::T::Private::Final::NoInherit
   extend ::T::Private::Methods::MethodHooks
@@ -3308,6 +3345,120 @@ class Etwin::Hammerfest::ShortHammerfestUser
   extend ::T::Private::Methods::SingletonMethodHooks
 end
 
+class Etwin::Link::HammerfestLink
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Link::LinkAction
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Link::TwinoidLink
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Link::VersionedHammerfestLink
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Link::VersionedLinks
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Link::VersionedTwinoidLink
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Oauth::OauthClientDisplayName
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Oauth::OauthClientId
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Oauth::OauthClientKey
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Oauth::ShortOauthClient
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Twinoid::ShortTwinoidUser
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Twinoid::TwinoidUserDisplayName
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::Twinoid::TwinoidUserId
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::User::ShortUser
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::User::User
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::User::UserDisplayName
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::User::UserDisplayNameVersion
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::User::UserDisplayNameVersions
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
+class Etwin::User::UserId
+  extend ::T::Private::Final::NoInherit
+  extend ::T::Private::Methods::MethodHooks
+  extend ::T::Private::Methods::SingletonMethodHooks
+end
+
 class ExitCalledError
 end
 
@@ -3316,6 +3467,343 @@ end
 
 class FalseClass
   include ::JSON::Ext::Generator::GeneratorMethods::FalseClass
+end
+
+module Faraday
+  METHODS_WITH_BODY = ::T.let(nil, ::T.untyped)
+  METHODS_WITH_QUERY = ::T.let(nil, ::T.untyped)
+  VERSION = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Adapter
+  CONTENT_LENGTH = ::T.let(nil, ::T.untyped)
+  TIMEOUT_KEYS = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Adapter::EMHttp
+  include ::Faraday::Adapter::EMHttp::Options
+  def create_request(env); end
+
+  def error_message(client); end
+
+  def parallel?(env); end
+
+  def perform_request(env); end
+
+  def perform_single_request(env); end
+
+  def raise_error(msg); end
+
+  def timeout_message?(msg); end
+end
+
+class Faraday::Adapter::EMHttp::Manager
+  def add(&block); end
+
+  def check_finished(); end
+
+  def perform_request(); end
+
+  def reset(); end
+
+  def run(); end
+
+  def running?(); end
+end
+
+class Faraday::Adapter::EMHttp::Manager
+end
+
+module Faraday::Adapter::EMHttp::Options
+  def configure_compression(options, env); end
+
+  def configure_proxy(options, env); end
+
+  def configure_socket(options, env); end
+
+  def configure_ssl(options, env); end
+
+  def configure_timeout(options, env); end
+
+  def connection_config(env); end
+
+  def read_body(env); end
+
+  def request_config(env); end
+
+  def request_options(env); end
+end
+
+module Faraday::Adapter::EMHttp::Options
+end
+
+class Faraday::Adapter::EMHttp
+  def self.setup_parallel_manager(_options=T.unsafe(nil)); end
+end
+
+class Faraday::Adapter::EMSynchrony
+  include ::Faraday::Adapter::EMHttp::Options
+  def create_request(env); end
+end
+
+class Faraday::Adapter::EMSynchrony::ParallelManager
+  def add(request, method, *args, &block); end
+
+  def run(); end
+end
+
+class Faraday::Adapter::EMSynchrony::ParallelManager
+end
+
+class Faraday::Adapter::EMSynchrony
+  def self.setup_parallel_manager(_options=T.unsafe(nil)); end
+end
+
+class Faraday::Adapter::Excon
+  def build_connection(env); end
+
+  def read_body(env); end
+  OPTS_KEYS = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Adapter::Excon
+end
+
+class Faraday::Adapter::HTTPClient
+  def build_connection(env); end
+
+  def configure_client(client); end
+
+  def configure_proxy(client, proxy); end
+
+  def configure_socket(client, bind); end
+
+  def configure_ssl(client, ssl); end
+
+  def configure_timeouts(client, req); end
+
+  def ssl_cert_store(ssl); end
+
+  def ssl_verify_mode(ssl); end
+end
+
+class Faraday::Adapter::HTTPClient
+end
+
+class Faraday::Adapter::NetHttp
+  NET_HTTP_EXCEPTIONS = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Adapter::NetHttpPersistent
+  SSL_CONFIGURATIONS = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Adapter::NetHttpPersistent
+end
+
+class Faraday::Adapter::Patron
+  def build_connection(env); end
+
+  def configure_proxy(session, proxy); end
+
+  def configure_ssl(session, ssl); end
+
+  def configure_timeouts(session, req); end
+  CURL_TIMEOUT_MESSAGES = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Adapter::Patron
+end
+
+class Faraday::Adapter::Rack
+  def initialize(faraday_app, rack_app); end
+  SPECIAL_HEADERS = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Adapter::Rack
+end
+
+class Faraday::Adapter::Test
+  def configure(); end
+
+  def initialize(app, stubs=T.unsafe(nil), &block); end
+
+  def stubs(); end
+
+  def stubs=(stubs); end
+end
+
+class Faraday::Adapter::Test::Stub
+  def headers_match?(request_headers); end
+
+  def initialize(host, full, headers, body, block); end
+
+  def matches?(request_host, request_uri, request_headers, request_body); end
+
+  def params_match?(request_params); end
+
+  def path_match?(request_path, meta); end
+end
+
+class Faraday::Adapter::Test::Stub
+end
+
+class Faraday::Adapter::Test::Stubs
+  def delete(path, headers=T.unsafe(nil), &block); end
+
+  def empty?(); end
+
+  def get(path, headers=T.unsafe(nil), &block); end
+
+  def head(path, headers=T.unsafe(nil), &block); end
+
+  def match(request_method, host, path, headers, body); end
+
+  def matches?(stack, host, path, headers, body); end
+
+  def new_stub(request_method, path, headers=T.unsafe(nil), body=T.unsafe(nil), &block); end
+
+  def options(path, headers=T.unsafe(nil), &block); end
+
+  def patch(path, body=T.unsafe(nil), headers=T.unsafe(nil), &block); end
+
+  def post(path, body=T.unsafe(nil), headers=T.unsafe(nil), &block); end
+
+  def put(path, body=T.unsafe(nil), headers=T.unsafe(nil), &block); end
+
+  def verify_stubbed_calls(); end
+end
+
+class Faraday::Adapter::Test::Stubs::NotFound
+end
+
+class Faraday::Adapter::Test::Stubs::NotFound
+end
+
+class Faraday::Adapter::Test::Stubs
+end
+
+class Faraday::Adapter::Test
+end
+
+class Faraday::Adapter::Typhoeus
+  def call(); end
+end
+
+class Faraday::Adapter::Typhoeus
+end
+
+class Faraday::Connection
+  METHODS = ::T.let(nil, ::T.untyped)
+end
+
+module Faraday::DecodeMethods
+  SUBKEYS_REGEX = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Env
+  ContentLength = ::T.let(nil, ::T.untyped)
+  MethodsWithBodies = ::T.let(nil, ::T.untyped)
+  StatusesWithoutBody = ::T.let(nil, ::T.untyped)
+  SuccessfulStatuses = ::T.let(nil, ::T.untyped)
+end
+
+Faraday::FilePart = UploadIO
+
+Faraday::Parts = Parts
+
+class Faraday::RackBuilder
+  LOCK_ERR = ::T.let(nil, ::T.untyped)
+  NO_ARGUMENT = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::RackBuilder::Handler
+  REGISTRY = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Request::Authorization
+  def call(env); end
+
+  def initialize(app, type, token); end
+  KEY = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Request::Authorization
+  def self.build_hash(type, hash); end
+
+  def self.header(type, token); end
+end
+
+class Faraday::Request::BasicAuthentication
+end
+
+class Faraday::Request::BasicAuthentication
+  def self.header(login, pass); end
+end
+
+class Faraday::Request::Instrumentation
+  def call(env); end
+
+  def initialize(app, options=T.unsafe(nil)); end
+end
+
+class Faraday::Request::Instrumentation::Options
+end
+
+class Faraday::Request::Instrumentation::Options
+end
+
+class Faraday::Request::Instrumentation
+end
+
+class Faraday::Request::Multipart
+  DEFAULT_BOUNDARY_PREFIX = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Request::Retry
+  DEFAULT_EXCEPTIONS = ::T.let(nil, ::T.untyped)
+  IDEMPOTENT_METHODS = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Request::Retry::Options
+  DEFAULT_CHECK = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Request::TokenAuthentication
+  def initialize(app, token, options=T.unsafe(nil)); end
+end
+
+class Faraday::Request::TokenAuthentication
+  def self.header(token, options=T.unsafe(nil)); end
+end
+
+class Faraday::Request::UrlEncoded
+  CONTENT_TYPE = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Response::Logger
+  def initialize(app, logger=T.unsafe(nil), options=T.unsafe(nil)); end
+end
+
+class Faraday::Response::Logger
+end
+
+class Faraday::Response::RaiseError
+  ClientErrorStatuses = ::T.let(nil, ::T.untyped)
+  ServerErrorStatuses = ::T.let(nil, ::T.untyped)
+end
+
+Faraday::Timer = Timeout
+
+Faraday::UploadIO = UploadIO
+
+module Faraday::Utils
+  DEFAULT_SEP = ::T.let(nil, ::T.untyped)
+  ESCAPE_RE = ::T.let(nil, ::T.untyped)
+end
+
+class Faraday::Utils::Headers
+  KeyMap = ::T.let(nil, ::T.untyped)
 end
 
 class Fiber
@@ -4268,8 +4756,6 @@ end
 
 Net::HTTPFatalErrorCode = Net::HTTPClientError
 
-Net::HTTPInformation::EXCEPTION_TYPE = Net::HTTPError
-
 Net::HTTPInformationCode = Net::HTTPInformation
 
 class Net::HTTPLoopDetected
@@ -4333,6 +4819,8 @@ Net::HTTPServerError::EXCEPTION_TYPE = Net::HTTPFatalError
 Net::HTTPServerErrorCode = Net::HTTPServerError
 
 Net::HTTPSession = Net::HTTP
+
+Net::HTTPSuccess::EXCEPTION_TYPE = Net::HTTPError
 
 Net::HTTPSuccessCode = Net::HTTPSuccess
 
@@ -4533,103 +5021,6 @@ module OpenSSL
 end
 
 class OpenStruct
-  def __id__!(); end
-
-  def __send__!(*_); end
-
-  def class!(); end
-
-  def clone!(*_); end
-
-  def define_singleton_method!(*_); end
-
-  def delete_field!(name); end
-
-  def dig!(name, *names); end
-
-  def display!(*_); end
-
-  def dup!(); end
-
-  def each_pair!(); end
-
-  def encode_with(coder); end
-
-  def encode_with!(coder); end
-
-  def enum_for!(*_); end
-
-  def extend!(mod, *args); end
-
-  def freeze!(); end
-
-  def hash!(); end
-
-  def init_with(coder); end
-
-  def init_with!(coder); end
-
-  def inspect!(); end
-
-  def instance_eval!(*_); end
-
-  def instance_exec!(*_); end
-
-  def instance_variable_get!(_); end
-
-  def instance_variable_set!(_, _1); end
-
-  def instance_variables!(); end
-
-  def itself!(); end
-
-  def marshal_dump!(); end
-
-  def method!(_); end
-
-  def methods!(*_); end
-
-  def object_id!(); end
-
-  def private_methods!(*_); end
-
-  def protected_methods!(*_); end
-
-  def public_method!(_); end
-
-  def public_methods!(*_); end
-
-  def public_send!(*_); end
-
-  def remove_instance_variable!(_); end
-
-  def send!(*_); end
-
-  def singleton_class!(); end
-
-  def singleton_method!(_); end
-
-  def singleton_methods!(*_); end
-
-  def taint!(); end
-
-  def tap!(); end
-
-  def then!(); end
-
-  def to_enum!(*_); end
-
-  def to_h!(&block); end
-
-  def to_s!(); end
-
-  def trust!(); end
-
-  def untaint!(); end
-
-  def untrust!(); end
-
-  def yield_self!(); end
   VERSION = ::T.let(nil, ::T.untyped)
 end
 
@@ -4870,11 +5261,6 @@ end
 RSpec::Core::Example::AllExceptionsExcludingDangerousOnesOnRubiesThatAllowIt = RSpec::Support::AllExceptionsExceptOnesWeMustNotRescue
 
 class RSpec::Core::ExampleGroup
-  include ::RSpec::Core::MockingAdapters::RSpec
-  include ::RSpec::Mocks::ExampleMethods
-  include ::RSpec::Mocks::ArgumentMatchers
-  include ::RSpec::Mocks::ExampleMethods::ExpectHost
-  include ::RSpec::Matchers
   INSTANCE_VARIABLE_TO_IGNORE = ::T.let(nil, ::T.untyped)
 end
 
@@ -4963,10 +5349,6 @@ class RSpec::Expectations::Configuration
 end
 
 RSpec::Expectations::LegacyMacherAdapter = RSpec::Expectations::LegacyMatcherAdapter
-
-class RSpec::Expectations::MultipleExpectationsNotMetError
-  include ::RSpec::Core::MultipleExceptionError::InterfaceTag
-end
 
 module RSpec::Expectations::Version
   STRING = ::T.let(nil, ::T.untyped)
@@ -6387,7 +6769,10 @@ module RuboCop::AST::NodePattern::Sets
   SET_0_1 = ::T.let(nil, ::T.untyped)
   SET_10_10 = ::T.let(nil, ::T.untyped)
   SET_1_1 = ::T.let(nil, ::T.untyped)
+  SET_ABSTRACT_OVERRIDE_OVERRIDABLE_ETC = ::T.let(nil, ::T.untyped)
   SET_ADD_DEPENDENCY_ADD_RUNTIME_DEPENDENCY_ADD_DEVELOPMENT_DEPENDENCY = ::T.let(nil, ::T.untyped)
+  SET_ANY_ALL_NORETURN_ETC = ::T.let(nil, ::T.untyped)
+  SET_ATTR_READER_ATTR_WRITER_ATTR_ACCESSOR = ::T.let(nil, ::T.untyped)
   SET_ATTR_READER_ATTR_WRITER_ATTR_ACCESSOR_ATTR = ::T.let(nil, ::T.untyped)
   SET_CAPTURE2_CAPTURE2E_CAPTURE3_ETC = ::T.let(nil, ::T.untyped)
   SET_CIPHER_DIGEST = ::T.let(nil, ::T.untyped)
@@ -6395,6 +6780,7 @@ module RuboCop::AST::NodePattern::Sets
   SET_CLASS_EVAL_MODULE_EVAL = ::T.let(nil, ::T.untyped)
   SET_CLASS_MODULE = ::T.let(nil, ::T.untyped)
   SET_CLASS_MODULE_STRUCT = ::T.let(nil, ::T.untyped)
+  SET_CONSTANTIZE_CONSTANTS_CONST_GET = ::T.let(nil, ::T.untyped)
   SET_COUNT_LENGTH_SIZE = ::T.let(nil, ::T.untyped)
   SET_DEFINE_METHOD_DEFINE_SINGLETON_METHOD = ::T.let(nil, ::T.untyped)
   SET_EACH_WITH_INDEX_WITH_INDEX = ::T.let(nil, ::T.untyped)
@@ -6420,6 +6806,7 @@ module RuboCop::AST::NodePattern::Sets
   SET_PIPELINE_PIPELINE_R_PIPELINE_RW_ETC = ::T.let(nil, ::T.untyped)
   SET_PRIVATE_PROTECTED = ::T.let(nil, ::T.untyped)
   SET_PRIVATE_PROTECTED_PUBLIC = ::T.let(nil, ::T.untyped)
+  SET_PROP_CONST = ::T.let(nil, ::T.untyped)
   SET_PUBLIC_CONSTANT_PRIVATE_CONSTANT = ::T.let(nil, ::T.untyped)
   SET_PUBLIC_PROTECTED_PRIVATE_MODULE_FUNCTION = ::T.let(nil, ::T.untyped)
   SET_RAISE_FAIL = ::T.let(nil, ::T.untyped)
@@ -6438,6 +6825,7 @@ module RuboCop::AST::NodePattern::Sets
   SET_TO_ENUM_ENUM_FOR = ::T.let(nil, ::T.untyped)
   SET_TO_I_TO_F_TO_C = ::T.let(nil, ::T.untyped)
   SET_TRUE_FALSE = ::T.let(nil, ::T.untyped)
+  SET_TYPE_TEMPLATE_TYPE_MEMBER = ::T.let(nil, ::T.untyped)
   SET_ZERO_POSITIVE_NEGATIVE = ::T.let(nil, ::T.untyped)
   SET__ = ::T.let(nil, ::T.untyped)
   SET__AT_SLICE = ::T.let(nil, ::T.untyped)
@@ -7718,6 +8106,35 @@ class RuboCop::Cop::Severity
   NAMES = ::T.let(nil, ::T.untyped)
 end
 
+class RuboCop::Cop::Sorbet::EnforceSigilOrder
+  CODING_REGEX = ::T.let(nil, ::T.untyped)
+  FROZEN_REGEX = ::T.let(nil, ::T.untyped)
+  INDENT_REGEX = ::T.let(nil, ::T.untyped)
+  MAGIC_REGEX = ::T.let(nil, ::T.untyped)
+  PREFERRED_ORDER = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ForbidIncludeConstLiteral
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ForbidSuperclassConstLiteral
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ForbidUntypedStructProps
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::SignatureBuildOrder
+  ORDER = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ValidSigil
+  SIGIL_REGEX = ::T.let(nil, ::T.untyped)
+  STRICTNESS_LEVELS = ::T.let(nil, ::T.untyped)
+end
+
 module RuboCop::Cop::SpaceAfterPunctuation
   MSG = ::T.let(nil, ::T.untyped)
 end
@@ -8872,6 +9289,11 @@ end
 
 class RuboCop::Runner
   MAX_ITERATIONS = ::T.let(nil, ::T.untyped)
+end
+
+module RuboCop::Sorbet
+  CONFIG = ::T.let(nil, ::T.untyped)
+  VERSION = ::T.let(nil, ::T.untyped)
 end
 
 class RuboCop::TargetFinder

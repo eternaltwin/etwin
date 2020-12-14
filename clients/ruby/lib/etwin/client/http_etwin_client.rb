@@ -36,7 +36,7 @@ module Etwin
 
       sig(:final) { params(segments: T::Array[String]).returns(URI::HTTP) }
       def resolve(segments)
-        @base_uri.merge("api/v1/#{ segments * '/'}")
+        T.cast(@base_uri.merge("api/v1/#{ segments * '/'}"), URI::HTTP)
       end
     end
   end

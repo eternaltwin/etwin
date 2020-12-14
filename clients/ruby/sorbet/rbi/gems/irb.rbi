@@ -306,7 +306,7 @@ class IRB::Color::SymbolState
   def initialize; end
   def scan_token(token); end
 end
-class InvalidName___Class_0x00___Vec_1
+class InvalidName___Class_0x00___Vec_9
   def cross(other); end
   def dot(other); end
   def initialize(x, y, z); end
@@ -316,13 +316,13 @@ class InvalidName___Class_0x00___Vec_1
   def y; end
   def z; end
 end
-class InvalidName___Class_0x00___Canvas_2
+class InvalidName___Class_0x00___Canvas_10
   def draw; end
   def initialize(arg0); end
   def line(arg0, arg1); end
   def line0(p1, p2); end
 end
-class InvalidName___Class_0x00___RubyModel_3
+class InvalidName___Class_0x00___RubyModel_11
   def init_ruby_model; end
   def initialize; end
   def render_frame(i); end

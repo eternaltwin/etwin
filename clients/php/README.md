@@ -1,5 +1,7 @@
 # PHP client for the Eternal-Twin API
 
+![packagist](https://img.shields.io/packagist/v/eternal-twin/etwin)
+
 ## Usage
 
 ```
@@ -26,3 +28,11 @@ var_dump($user);
 composer install
 composer exec -- phpunit --testdox test
 ```
+
+## Publish
+
+```
+./scripts/publish.sh
+```
+
+[packagist]: https://packagist.org/packages/eternal-twin/etwin

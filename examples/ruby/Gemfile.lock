@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     etwin_rb_example (0.0.0)
-      etwin (~> 0.0.3)
+      etwin (~> 0.3.2)
       sorbet-runtime (~> 0.5.6076)
 
 GEM
@@ -13,7 +13,7 @@ GEM
       debase-ruby_core_source (~> 0.10.11)
     debase-ruby_core_source (0.10.11)
     diff-lcs (1.4.4)
-    etwin (0.0.3)
+    etwin (0.3.2)
       faraday (~> 1.1.0)
       sorbet-runtime (~> 0.5.6076)
     faraday (1.1.0)
@@ -64,7 +64,7 @@ GEM
     ruby2_keywords (0.0.2)
     sorbet (0.5.6111)
       sorbet-static (= 0.5.6111)
-    sorbet-runtime (0.5.6111)
+    sorbet-runtime (0.5.6154)
     sorbet-static (0.5.6111-universal-darwin-14)
     unicode-display_width (1.7.0)
 

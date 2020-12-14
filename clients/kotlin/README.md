@@ -1,5 +1,7 @@
 # Etwin
 
+![bintray](https://img.shields.io/bintray/v/eternal-twin/maven/etwin)
+
 Official Eternal-Twin API net.eternaltwin.client for Java and Kotlin.
 
 ## Installation
@@ -59,6 +61,8 @@ public class Main {
 
 ## Tasks
 
-- `gradlew :test`: Run the test suite
-- `gradlew :dokkaHtml`: Generate the documentation
-- `gradlew :publish`: Publish the new library version
+- `./gradlew :test`: Run the test suite
+- `./gradlew :dokkaHtml`: Generate the documentation
+- `./gradlew :publish`: Publish the new library version
+
+[bintray]: https://bintray.com/eternal-twin/maven/etwin
