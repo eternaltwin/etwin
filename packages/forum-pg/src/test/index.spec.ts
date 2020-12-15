@@ -3,7 +3,7 @@ import { VirtualClockService } from "@eternal-twin/core/lib/clock/virtual.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
-import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/index.js";
+import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { Api, testForumService } from "@eternal-twin/forum-test";
 import { PgHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-pg";
 import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
@@ -36,7 +36,7 @@ async function withPgForumService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const database = new Database(pool);
     const secretKeyStr: string = config.etwin.secret;
     const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
-    await dropAndCreate(database as any, LATEST_DB_VERSION);
+    await forceCreateLatest(database);
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
     const password = new ScryptPasswordService();

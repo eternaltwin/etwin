@@ -5,7 +5,7 @@ import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-serv
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
-import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg";
+import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { PgForumService } from "@eternal-twin/forum-pg";
 import { PgHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-pg";
 import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
@@ -47,7 +47,7 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const database = new Database(pool);
     const secretKeyStr: string = config.etwin.secret;
     const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
-    await dropAndCreate(database as any, LATEST_DB_VERSION);
+    await forceCreateLatest(database);
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
     const password = new ScryptPasswordService();

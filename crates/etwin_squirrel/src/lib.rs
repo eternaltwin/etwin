@@ -18,8 +18,8 @@ use std::pin::Pin;
 use sqlx::postgres::PgDone;
 use std::convert::TryInto;
 
-const SQL_NODE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{0,4})\.sql$").unwrap());
-const SQL_EDGE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{0,4})-([0-9]{0,4})\.sql$").unwrap());
+const SQL_NODE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{1,4})\.sql$").unwrap());
+const SQL_EDGE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{1,4})-([0-9]{1,4})\.sql$").unwrap());
 
 /// Opaque handle representing a database state recognized by the issuing resolver.
 #[derive(Clone, Copy)]
@@ -196,7 +196,7 @@ impl SchemaResolver {
         graph.add_node(end);
         states.insert(end, ());
         graph.add_edge(start, end, edge);
-        latest = max(latest, max(start, end));
+        latest = max(latest, end);
       }
     }
     let drop = d.get_file("drop.sql").map(|f| {

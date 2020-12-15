@@ -1,5 +1,5 @@
 import { VirtualClockService } from "@eternal-twin/core/lib/clock/virtual.js";
-import { dropAndCreate, LATEST_DB_VERSION } from "@eternal-twin/etwin-pg/lib/index.js";
+import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { Api, testOauthProviderStore } from "@eternal-twin/oauth-provider-test";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
@@ -20,7 +20,7 @@ async function withPgOauthProviderStore<R>(fn: (api: Api) => Promise<R>): Promis
 
   return withPgPool(dbConfig, async (pool) => {
     const database = new Database(pool);
-    await dropAndCreate(database as any, LATEST_DB_VERSION);
+    await forceCreateLatest(database);
     const secretKeyStr: string = config.etwin.secret;
     const password = new ScryptPasswordService();
     const uuidGenerator = UUID4_GENERATOR;
