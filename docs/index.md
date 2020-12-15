@@ -11,6 +11,7 @@ Welcome to the Eternal-Twin documentation. This section describes various techni
 ## [Application development](./app/index.md)
 
 - [Guidelines](./app/guidelines.md)
+- [Application Configuration](./app/config.md)
 - [Eternal-Twin integration](./app/etwin-integration.md)
 - [Eternal-Twin for OAuth](./app/etwin-oauth.md)
 - [Eternal-Twin API](./app/etwin-api.md)

@@ -21,3 +21,8 @@ All other non-code assets should be licensed with the following Creative Commons
 ### Other
 
 If you need another license, [open an issue](https://gitlab.com/eternal-twin/etwin/-/issues).
+
+## Configuration
+
+Your application must have a mechanism to load configuration from the
+environment variable or a configuration file. See [Application configuration](./config.md).

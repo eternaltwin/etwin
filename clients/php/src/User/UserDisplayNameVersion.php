@@ -9,7 +9,7 @@ final class UserDisplayNameVersion implements \JsonSerializable {
     $this->value = $value;
   }
 
-  final public function getInner(): UserDisplayName {
+  final public function getValue(): UserDisplayName {
     return $this->value;
   }
 
