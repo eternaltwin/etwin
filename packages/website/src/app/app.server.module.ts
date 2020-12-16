@@ -4,6 +4,7 @@ import { ServerModule, ServerTransferStateModule } from "@angular/platform-serve
 import { ServerAuthModule } from "../modules/auth/auth.module.server";
 import { ServerConfigModule } from "../modules/config/config.module.server";
 import { ServerForumModule } from "../modules/forum/forum.module.server";
+import { ServerHammerfestModule } from "../modules/hammerfest/hammerfest.module.server";
 import { ServerUserModule } from "../modules/user/user.module.server";
 import { AppComponent } from "./app.component";
 import { AppModule } from "./app.module";
@@ -14,6 +15,7 @@ import { AppModule } from "./app.module";
     ServerAuthModule,
     ServerConfigModule,
     ServerForumModule,
+    ServerHammerfestModule,
     ServerModule,
     ServerTransferStateModule,
     ServerUserModule,

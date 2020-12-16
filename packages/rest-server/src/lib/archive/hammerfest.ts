@@ -7,8 +7,8 @@ import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 
-import { KoaAuth } from "./helpers/koa-auth.js";
-import { KoaState } from "./koa-state";
+import { KoaAuth } from "../helpers/koa-auth.js";
+import { KoaState } from "../koa-state.js";
 
 export interface Api {
   koaAuth: KoaAuth;
@@ -18,7 +18,7 @@ export interface Api {
 export function createHammerfestRouter(api: Api): Router {
   const router: Router = new Router();
 
-  router.get("/users/:server/:user_id", getUserById);
+  router.get("/:server/users/:user_id", getUserById);
 
   async function getUserById(cx: RouterContext<KoaState>): Promise<void> {
     const rawServer: string = cx.params["server"];

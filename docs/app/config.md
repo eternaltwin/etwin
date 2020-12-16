@@ -22,6 +22,12 @@ TOML files.
 
 Provide and example configuration file in your repository.
 
+### Zero configuration
+
+You may allow your application to start without any environement variable or
+configuration file. Assume that the application is running locally in
+development mode in such case.
+
 ## Runtime representation
 
 Your application must fully load the configuration during its initialization.

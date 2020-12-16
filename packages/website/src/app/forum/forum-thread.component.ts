@@ -4,8 +4,7 @@ import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
 import { ForumRole } from "@eternal-twin/core/lib/forum/forum-role";
 import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
 import { NEVER as RX_NEVER, Observable, of as rxOf } from "rxjs";
-import { catchError as rxCatchError } from "rxjs/internal/operators/catchError";
-import { map as rxMap, startWith as rxStartWith } from "rxjs/operators";
+import { catchError as rxCatchError,map as rxMap, startWith as rxStartWith } from "rxjs/operators";
 
 import { AuthService } from "../../modules/auth/auth.service";
 

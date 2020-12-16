@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
-import { Observable } from "rxjs";
-import { NEVER as RX_NEVER } from "rxjs/internal/observable/never";
-import { map as rxMap } from "rxjs/internal/operators/map";
+import { NEVER as RX_NEVER,Observable } from "rxjs";
+import { map as rxMap } from "rxjs/operators";
 
 const RESOLUTION_ERROR: unique symbol = Symbol("RESOLUTION_ERROR");
 

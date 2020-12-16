@@ -1,6 +1,6 @@
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
-import { GetHammerfestUserByIdOptions } from "@eternal-twin/core/lib/hammerfest/get-hammerfest-user-by-id-options.js";
+import { GetHammerfestUserOptions } from "@eternal-twin/core/lib/hammerfest/get-hammerfest-user-options.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
 import { HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";
@@ -27,11 +27,11 @@ export class InMemoryHammerfestArchiveService implements HammerfestArchiveServic
     ]);
   }
 
-  async getUserById(options: Readonly<GetHammerfestUserByIdOptions>): Promise<ShortHammerfestUser | null> {
+  async getUserById(options: Readonly<GetHammerfestUserOptions>): Promise<ShortHammerfestUser | null> {
     return this.getShortUserById(options);
   }
 
-  async getShortUserById(options: Readonly<GetHammerfestUserByIdOptions>): Promise<ShortHammerfestUser | null> {
+  async getShortUserById(options: Readonly<GetHammerfestUserOptions>): Promise<ShortHammerfestUser | null> {
     const server = this.getImServerData(options.server);
     const user: InMemoryHammerfestUser | undefined = server.users.get(options.id);
     if (user === undefined) {

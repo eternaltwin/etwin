@@ -1,0 +1,35 @@
+<h1>{{user.username}}</h1>
+
+<div class="linked-user" [ngSwitch]="user.server">
+  <ng-container *ngSwitchCase="'hfest.net'">
+    <a href="http://www.hfest.net/user.html/{{user.id}}">
+      <span><img src="/assets/login-methods/hammerfest.png"/></span>
+      <strong>{{user.username}}</strong>
+      <em>hfest.net</em>
+    </a>
+  </ng-container>
+  <ng-container *ngSwitchCase="'hammerfes.es'">
+    <a href="http://www.hfest.net/user.html/{{user.id}}">
+      <span><img src="/assets/login-methods/hammerfest.png"/></span>
+      <strong>{{user.username}}</strong>
+      <em>hammerfest.es</em>
+    </a>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <a href="http://www.hammerfest.fr/user.html/{{user.id}}">
+      <span><img src="/assets/login-methods/hammerfest.png"/></span>
+      <strong>{{user.username}}</strong>
+      <em>hammerfest.fr</em>
+    </a>
+  </ng-container>
+</div>
+
+<div class="linked-user" *ngIf="user.etwin.current !== null">
+  <a [routerLink]="['', 'users', user.etwin.current.user.id]">
+    <span><img src="/assets/login-methods/eternal-twin.png"/></span>
+    <strong>{{user.etwin.current.user.displayName.current.value}}</strong>
+    <em>Eternal-Twin</em>
+  </a>
+</div>
+
+<pre>{{user | json}}</pre>

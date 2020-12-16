@@ -1,0 +1,12 @@
+<etwin-main-layout>
+  <ng-container *ngIf="user$ | async as user">
+    <ng-container [ngSwitch]="user !== HAMMERFEST_USER_NOT_FOUND">
+      <ng-container *ngSwitchCase="true">
+        <etwin-hammerfest-user [user]="user"></etwin-hammerfest-user>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <h1 i18n="Hammerfest user not found error message@@archive.hammerfest.error.userNotFound">Hammerfest user not found</h1>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</etwin-main-layout>

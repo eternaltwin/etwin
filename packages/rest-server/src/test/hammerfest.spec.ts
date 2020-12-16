@@ -16,7 +16,7 @@ describe("/hammerfest", () => {
         cx.hammerfestClient.createUser("hammerfest.fr", "123", "alice", "aaaaa");
         const guestAgent: TestAgent = new TestAgent(chai.request.agent(cx.server));
         {
-          const actual: HammerfestUser = await guestAgent.get("/hammerfest/users/hammerfest.fr/123", $HammerfestUser);
+          const actual: HammerfestUser = await guestAgent.get("/archive/hammerfest/hammerfest.fr/users/123", $HammerfestUser);
           const expected: HammerfestUser = {
             type: ObjectType.HammerfestUser,
             server: "hammerfest.fr",
@@ -36,9 +36,9 @@ describe("/hammerfest", () => {
       return withTestServer(async cx => {
         cx.hammerfestClient.createUser("hammerfest.fr", "123", "alice", "aaaaa");
         const guestAgent: TestAgent = new TestAgent(chai.request.agent(cx.server));
-        await guestAgent.get("/hammerfest/users/hammerfest.fr/123", $HammerfestUser);
+        await guestAgent.get("/archive/hammerfest/hammerfest.fr/users/123", $HammerfestUser);
         {
-          const actual: HammerfestUser = await guestAgent.get("/hammerfest/users/hammerfest.fr/123", $HammerfestUser);
+          const actual: HammerfestUser = await guestAgent.get("/archive/hammerfest/hammerfest.fr/users/123", $HammerfestUser);
           const expected: HammerfestUser = {
             type: ObjectType.HammerfestUser,
             server: "hammerfest.fr",
@@ -58,7 +58,7 @@ describe("/hammerfest", () => {
       return withTestServer(async cx => {
         const guestAgent: TestAgent = new TestAgent(chai.request.agent(cx.server));
         try {
-          await guestAgent.get("/hammerfest/users/hammerfest.fr/9999999", $HammerfestUser);
+          await guestAgent.get("/archive/hammerfest/hammerfest.fr/users/9999999", $HammerfestUser);
         } catch (e) {
           chai.assert.instanceOf(e, Error);
           chai.assert.strictEqual(e.message, "HammerfestUserNotFound");

@@ -5,6 +5,7 @@ import { HomeView } from "./home/home.component";
 
 const routes: Routes = [
   {path: "", component: HomeView, pathMatch: "full"},
+  {path: "archive", loadChildren: () => import("./archive/archive.module").then(({ArchiveModule}) => ArchiveModule)},
   {path: "docs", loadChildren: () => import("./docs/docs.module").then(({DocsModule}) => DocsModule)},
   {path: "donate", loadChildren: () => import("./donate/donate.module").then(({DonateModule}) => DonateModule)},
   {path: "login", loadChildren: () => import("./auth/login/login.module").then(({LoginModule}) => LoginModule)},
