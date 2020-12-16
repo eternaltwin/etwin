@@ -18,6 +18,7 @@ Welcome to the Eternal-Twin documentation. This section describes various techni
 
 ## [Tools](./tools/index.md)
 
+- [Apache](./tools/apache.md)
 - [Node.js](./tools/node.md)
 - [package.json](./tools/package-json.md)
 - [Yarn](./tools/yarn.md)
