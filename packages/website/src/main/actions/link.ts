@@ -5,6 +5,7 @@ import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.
 import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type.js";
 import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input.js";
 import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope.js";
+import { $LinkToDinoparcOptions, LinkToDinoparcOptions } from "@eternal-twin/core/lib/user/link-to-dinoparc-options.js";
 import {
   $LinkToHammerfestOptions,
   LinkToHammerfestOptions
@@ -47,6 +48,36 @@ const ALL_TWINOID_SCOPES: readonly RfcOauthScope[] = [
 
 export async function createLinkRouter(api: Api): Promise<Router> {
   const router: Router = new Router();
+
+  router.post("/dinoparc", koaCompose([koaBodyParser(), linkToDinoparc]));
+
+  async function linkToDinoparc(cx: RouterContext): Promise<void> {
+    const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
+    if (acx.type !== AuthType.User) {
+      cx.response.status = 401;
+      // cx.response.redirect("/settings");
+      return;
+    }
+
+    let options: LinkToDinoparcOptions;
+    try {
+      options = $LinkToDinoparcOptions.read(JSON_VALUE_READER, cx.request.body);
+    } catch (err) {
+      cx.response.status = 422;
+      // cx.response.redirect("/settings");
+      return;
+    }
+
+    try {
+      await api.user.linkToDinoparc(acx, options);
+    } catch (err) {
+      console.log(err);
+      cx.response.status = 400;
+      return;
+    }
+
+    cx.response.redirect("/settings");
+  }
 
   router.post("/hammerfest", koaCompose([koaBodyParser(), linkToHammerfest]));
 

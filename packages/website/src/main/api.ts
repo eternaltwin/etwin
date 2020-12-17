@@ -2,6 +2,7 @@ import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { SystemClockService } from "@eternal-twin/core/lib/clock/system.js";
+import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
@@ -48,6 +49,7 @@ import urljoin from "url-join";
 
 export interface Api {
   auth: AuthService;
+  dinoparc: DinoparcService;
   forum: ForumService;
   hammerfest: HammerfestService;
   hammerfestArchive: HammerfestArchiveService;
@@ -124,6 +126,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     };
   }
 
+  const dinoparc = new DinoparcService({dinoparcStore, link});
   const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
   const user = new UserService({auth, dinoparcClient, dinoparcStore, hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
 
@@ -160,7 +163,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     );
   }
 
-  const api: Api = {auth, forum, hammerfest, hammerfestArchive, hammerfestClient, koaAuth, oauthClient, oauthProvider, simpleUser, twinoidClient, user};
+  const api: Api = {auth, dinoparc, forum, hammerfest, hammerfestArchive, hammerfestClient, koaAuth, oauthClient, oauthProvider, simpleUser, twinoidClient, user};
 
   return {api, teardown};
 }

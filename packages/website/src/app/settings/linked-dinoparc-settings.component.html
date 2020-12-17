@@ -1,0 +1,33 @@
+<ng-container [ngSwitch]="link.current !== null">
+  <div class="icon"><img src="/assets/login-methods/dinoparc.png"/></div>
+  <h3>{{server}}</h3>
+  <ng-container *ngSwitchCase="true">
+    <div class="user">{{link.current.user.username}} ({{link.current.user.id}})</div>
+    <div class="actions"></div>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <div class="user">No linked account.</div>
+    <div class="actions">
+      <form
+        ngNoForm
+        method="POST"
+        enctype="application/x-www-form-urlencoded"
+        action="/actions/link/dinoparc"
+      >
+        <input type="hidden" name="method" value="Credentials"/>
+        <input type="hidden" name="user_id" [value]="userId"/>
+        <input type="hidden" name="dinoparc_server" [value]="server"/>
+        <label>
+          <span i18n="Dinoparc username (link Dinoparc)@@settings.link.dinoparc.username">Dinoparc username</span>
+          <input type="text" name="dinoparc_username" class="field" required="required"/>
+        </label>
+        <label>
+          <span i18n="Dinoparc password (link Dinoparc)@@settings.link.dinoparc.password">Dinoparc password</span>
+          <input type="password" name="dinoparc_password" class="field" required="required"/>
+        </label>
+        <input type="submit" name="link_dinoparc" class="btn primary" i18n-value="Submit the form to link a Dinoparc user@@settings.link.dinoparc.submit"
+               value="Link with {{server}}" />
+      </form>
+    </div>
+  </ng-container>
+</ng-container>

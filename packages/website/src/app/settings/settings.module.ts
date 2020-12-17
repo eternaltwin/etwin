@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 
 import { SharedModule } from "../shared/shared.module";
+import { LinkedDinoparcSettingsComponent } from "./linked-dinoparc-settings.component";
 import { LinkedHammerfestSettingsComponent } from "./linked-hammerfest-settings.component";
 import { LinkedTwinoidSettingsComponent } from "./linked-twinoid-settings.component";
 import { LinkedUsersSettingsComponent } from "./linked-users-settings.component";
@@ -10,6 +11,7 @@ import { SettingsViewComponent } from "./settings-view.component";
 
 @NgModule({
   declarations: [
+    LinkedDinoparcSettingsComponent,
     LinkedHammerfestSettingsComponent,
     LinkedUsersSettingsComponent,
     LinkedTwinoidSettingsComponent,

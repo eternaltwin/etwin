@@ -6,21 +6,21 @@ import { ShortDinoparcUser } from "./short-dinoparc-user";
 import { DinoparcStore } from "./store";
 
 export interface DinoparcServiceOptions {
-  dinoparcArchive: DinoparcStore;
+  dinoparcStore: DinoparcStore;
   link: LinkService;
 }
 
 export class DinoparcService {
-  readonly #dinoparcArchive: DinoparcStore;
+  readonly #dinoparcStore: DinoparcStore;
   readonly #link: LinkService;
 
   public constructor(options: Readonly<DinoparcServiceOptions>) {
-    this.#dinoparcArchive = options.dinoparcArchive;
+    this.#dinoparcStore = options.dinoparcStore;
     this.#link = options.link;
   }
 
   async getUser(_acx: AuthContext, options: Readonly<GetDinoparcUserOptions>): Promise<DinoparcUser | null> {
-    const user: ShortDinoparcUser | null = await this.#dinoparcArchive.getShortUser(options);
+    const user: ShortDinoparcUser | null = await this.#dinoparcStore.getShortUser(options);
     if (user === null) {
       return null;
     }

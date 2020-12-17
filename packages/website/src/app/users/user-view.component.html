@@ -17,6 +17,15 @@
           <ng-container *ngIf="user.links.hfestNet.current !== null">
             <etwin-linked-user [link]="user.links.hfestNet.current"></etwin-linked-user>
           </ng-container>
+          <ng-container *ngIf="user.links.dinoparcCom.current !== null">
+            <etwin-linked-user [link]="user.links.dinoparcCom.current"></etwin-linked-user>
+          </ng-container>
+          <ng-container *ngIf="user.links.enDinoparcCom.current !== null">
+            <etwin-linked-user [link]="user.links.enDinoparcCom.current"></etwin-linked-user>
+          </ng-container>
+          <ng-container *ngIf="user.links.spDinoparcCom.current !== null">
+            <etwin-linked-user [link]="user.links.spDinoparcCom.current"></etwin-linked-user>
+          </ng-container>
         </div>
       </ng-container>
       <ng-container *ngSwitchDefault>

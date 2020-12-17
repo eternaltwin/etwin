@@ -1,5 +1,6 @@
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { SystemClockService } from "@eternal-twin/core/lib/clock/system.js";
+import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
@@ -61,6 +62,7 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const twinoidClient = new HttpTwinoidClientService();
     const twinoidArchive = new PgTwinoidArchiveService(database);
     const link = new PgLinkService({database, dinoparcStore, hammerfestArchive, twinoidArchive, user: simpleUser});
+    const dinoparc = new DinoparcService({dinoparcStore, link});
     const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
     const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
     const oauthProvider = new OauthProviderService({clock, oauthProviderStore, simpleUser, tokenSecret: secretKeyBytes, uuidGenerator});
@@ -69,7 +71,7 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const token = new PgTokenService(database, secretKeyStr, dinoparcStore, hammerfestArchive);
     const forum = new PgForumService(database, uuidGenerator, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
     const user = new UserService({auth, dinoparcClient, dinoparcStore, hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
-    const api: Api = {auth, forum, hammerfest, koaAuth, user};
+    const api: Api = {auth, dinoparc, forum, hammerfest, koaAuth, user};
 
     const app: Koa = new Koa();
     const router = createApiRouter(api);

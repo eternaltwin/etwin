@@ -1,6 +1,7 @@
 import { InjectionToken } from "@angular/core";
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import { Config } from "@eternal-twin/core/lib/config/config";
+import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service";
 import { ForumService } from "@eternal-twin/core/lib/forum/service";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service";
 import { UserService } from "@eternal-twin/core/lib/user/service";
@@ -8,6 +9,8 @@ import { UserService } from "@eternal-twin/core/lib/user/service";
 export const AUTH_CONTEXT: InjectionToken<AuthContext> = new InjectionToken("AuthContext");
 
 export const CONFIG: InjectionToken<Config> = new InjectionToken("Config");
+
+export const DINOPARC: InjectionToken<DinoparcService> = new InjectionToken("DinoparcService");
 
 export const FORUM: InjectionToken<ForumService> = new InjectionToken("ForumService");
 

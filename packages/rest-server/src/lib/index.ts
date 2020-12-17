@@ -1,4 +1,5 @@
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
@@ -14,6 +15,7 @@ import { Api as UsersApi, createUsersRouter } from "./users.js";
 
 export interface Api extends AuthApi, ConfigApi, ForumApi, ArchiveApi, UsersApi {
   auth: AuthService;
+  dinoparc: DinoparcService;
   forum: ForumService;
   hammerfest: HammerfestService;
   koaAuth: KoaAuth;
@@ -23,6 +25,8 @@ export interface Api extends AuthApi, ConfigApi, ForumApi, ArchiveApi, UsersApi 
 export function createApiRouter(api: Api): Router {
   const router: Router = new Router();
 
+  const archive = createArchiveRouter(api);
+  router.use("/archive", archive.routes(), archive.allowedMethods());
   const auth = createAuthRouter(api);
   router.use("/auth", auth.routes(), auth.allowedMethods());
   const config = createConfigRouter(api);
@@ -31,8 +35,6 @@ export function createApiRouter(api: Api): Router {
   router.use("/users", users.routes(), users.allowedMethods());
   const forum = createForumRouter(api);
   router.use("/forum", forum.routes(), forum.allowedMethods());
-  const archive = createArchiveRouter(api);
-  router.use("/archive", archive.routes(), archive.allowedMethods());
 
   router.use((cx: RouterContext<KoaState>) => {
     cx.response.status = 404;

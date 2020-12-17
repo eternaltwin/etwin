@@ -1,0 +1,19 @@
+<h1>{{user.username}}</h1>
+
+<div class="linked-user" [ngSwitch]="user.server">
+  <a href="#">
+    <span><img src="/assets/login-methods/dinoparc.png"/></span>
+    <strong>{{user.username}}</strong>
+    <em>{{user.server}}</em>
+  </a>
+</div>
+
+<div class="linked-user" *ngIf="user.etwin.current !== null">
+  <a [routerLink]="['', 'users', user.etwin.current.user.id]">
+    <span><img src="/assets/login-methods/eternal-twin.png"/></span>
+    <strong>{{user.etwin.current.user.displayName.current.value}}</strong>
+    <em>Eternal-Twin</em>
+  </a>
+</div>
+
+<pre>{{user | json}}</pre>
