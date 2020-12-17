@@ -14,16 +14,16 @@
       "path": "../lib"
     },
     {
-      "path": "../../../announcement-pg/src/lib"
+      "path": "../../../announcement-test/src/lib"
     },
     {
-      "path": "../../../auth-pg/src/lib"
+      "path": "../../../auth-in-memory/src/lib"
     },
     {
       "path": "../../../dinoparc-client-mem/src/lib"
     },
     {
-      "path": "../../../dinoparc-store-pg/src/lib"
+      "path": "../../../dinoparc-store-mem/src/lib"
     },
     {
       "path": "../../../email-in-memory/src/lib"
@@ -32,46 +32,34 @@
       "path": "../../../email-template-json/src/lib"
     },
     {
-      "path": "../../../etwin-client-in-memory/src/lib"
+      "path": "../../../forum-in-memory/src/lib"
     },
     {
-      "path": "../../../etwin-pg/src/lib"
-    },
-    {
-      "path": "../../../forum-pg/src/lib"
-    },
-    {
-      "path": "../../../hammerfest-store-pg/src/lib"
+      "path": "../../../hammerfest-store-mem/src/lib"
     },
     {
       "path": "../../../hammerfest-client-mem/src/lib"
     },
     {
-      "path": "../../../link-pg/src/lib"
+      "path": "../../../link-in-memory/src/lib"
     },
     {
       "path": "../../../local-config/src/lib"
     },
     {
-      "path": "../../../oauth-provider-pg/src/lib"
+      "path": "../../../oauth-provider-in-memory/src/lib"
     },
     {
       "path": "../../../password-scrypt/src/lib"
     },
     {
-      "path": "../../../pg-db/src/lib"
-    },
-    {
-      "path": "../../../token-pg/src/lib"
-    },
-    {
-      "path": "../../../twinoid-store-pg/src/lib"
+      "path": "../../../twinoid-store-mem/src/lib"
     },
     {
       "path": "../../../twinoid-client-http/src/lib"
     },
     {
-      "path": "../../../user-store-pg/src/lib"
+      "path": "../../../user-store-mem/src/lib"
     },
     {
       "path": "../../../uuid4-generator/src/lib"

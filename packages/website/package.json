@@ -42,6 +42,8 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
+    "@eternal-twin/announcement-mem": "workspace:*",
+    "@eternal-twin/announcement-pg": "workspace:*",
     "@eternal-twin/auth-in-memory": "workspace:*",
     "@eternal-twin/auth-pg": "workspace:*",
     "@eternal-twin/core": "workspace:*",

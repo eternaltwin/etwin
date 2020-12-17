@@ -14,28 +14,22 @@
       "path": "../lib"
     },
     {
-      "path": "../../../announcement-pg/src/lib"
+      "path": "../../../announcement-test/src/lib"
     },
     {
       "path": "../../../auth-pg/src/lib"
     },
     {
-      "path": "../../../dinoparc-client-mem/src/lib"
+      "path": "../../../dinoparc-store-pg/src/lib"
     },
     {
-      "path": "../../../dinoparc-store-pg/src/lib"
+      "path": "../../../dinoparc-client-mem/src/lib"
     },
     {
       "path": "../../../email-in-memory/src/lib"
     },
     {
       "path": "../../../email-template-json/src/lib"
-    },
-    {
-      "path": "../../../etwin-client-in-memory/src/lib"
-    },
-    {
-      "path": "../../../etwin-pg/src/lib"
     },
     {
       "path": "../../../forum-pg/src/lib"
@@ -57,12 +51,6 @@
     },
     {
       "path": "../../../password-scrypt/src/lib"
-    },
-    {
-      "path": "../../../pg-db/src/lib"
-    },
-    {
-      "path": "../../../token-pg/src/lib"
     },
     {
       "path": "../../../twinoid-store-pg/src/lib"

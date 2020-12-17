@@ -1817,6 +1817,90 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eternal-twin/announcement-mem@workspace:*, @eternal-twin/announcement-mem@workspace:packages/announcement-mem":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/announcement-mem@workspace:packages/announcement-mem"
+  dependencies:
+    "@eternal-twin/announcement-test": "workspace:*"
+    "@eternal-twin/auth-in-memory": "workspace:*"
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
+    "@eternal-twin/dinoparc-store-mem": "workspace:*"
+    "@eternal-twin/email-in-memory": "workspace:*"
+    "@eternal-twin/email-template-json": "workspace:*"
+    "@eternal-twin/forum-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-mem": "workspace:*"
+    "@eternal-twin/link-in-memory": "workspace:*"
+    "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/marktwin": ^0.2.0
+    "@eternal-twin/oauth-provider-in-memory": "workspace:*"
+    "@eternal-twin/password-scrypt": "workspace:*"
+    "@eternal-twin/twinoid-client-http": "workspace:*"
+    "@eternal-twin/twinoid-store-mem": "workspace:*"
+    "@eternal-twin/user-store-mem": "workspace:*"
+    "@eternal-twin/uuid4-generator": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/announcement-pg@workspace:*, @eternal-twin/announcement-pg@workspace:packages/announcement-pg":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/announcement-pg@workspace:packages/announcement-pg"
+  dependencies:
+    "@eternal-twin/announcement-test": "workspace:*"
+    "@eternal-twin/auth-pg": "workspace:*"
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
+    "@eternal-twin/dinoparc-store-pg": "workspace:*"
+    "@eternal-twin/email-in-memory": "workspace:*"
+    "@eternal-twin/email-template-json": "workspace:*"
+    "@eternal-twin/etwin-pg": "workspace:*"
+    "@eternal-twin/forum-pg": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-pg": "workspace:*"
+    "@eternal-twin/link-pg": "workspace:*"
+    "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/marktwin": ^0.2.0
+    "@eternal-twin/oauth-provider-pg": "workspace:*"
+    "@eternal-twin/password-scrypt": "workspace:*"
+    "@eternal-twin/pg-db": "workspace:*"
+    "@eternal-twin/twinoid-client-http": "workspace:*"
+    "@eternal-twin/twinoid-store-pg": "workspace:*"
+    "@eternal-twin/user-store-pg": "workspace:*"
+    "@eternal-twin/uuid4-generator": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/announcement-test@workspace:*, @eternal-twin/announcement-test@workspace:packages/announcement-test":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/announcement-test@workspace:packages/announcement-test"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    kryo: ^0.11.1
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
 "@eternal-twin/auth-in-memory@workspace:*, @eternal-twin/auth-in-memory@workspace:packages/auth-in-memory":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/auth-in-memory@workspace:packages/auth-in-memory"
@@ -2562,6 +2646,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@eternal-twin/rest-server@workspace:packages/rest-server"
   dependencies:
+    "@eternal-twin/announcement-pg": "workspace:*"
     "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
     "@eternal-twin/dinoparc-client-http": "workspace:*"
@@ -2869,6 +2954,8 @@ __metadata:
     "@angular/platform-browser-dynamic": ^11.0.2
     "@angular/platform-server": ^11.0.2
     "@angular/router": ^11.0.2
+    "@eternal-twin/announcement-mem": "workspace:*"
+    "@eternal-twin/announcement-pg": "workspace:*"
     "@eternal-twin/auth-in-memory": "workspace:*"
     "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"

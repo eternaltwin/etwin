@@ -1,6 +1,8 @@
+import { PgAnnouncementService } from "@eternal-twin/announcement-pg";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { SystemClockService } from "@eternal-twin/core/lib/clock/system.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
+import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
@@ -26,7 +28,7 @@ import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import { KoaAuth } from "../lib/helpers/koa-auth.js";
 import { Api } from "../lib/index.js";
 
-export async function createApi(config: Config): Promise<{api: Api; teardown(): Promise<void>}> {
+export async function createApi(config: Config): Promise<{ api: Api; teardown(): Promise<void> }> {
   const {pool, teardown: teardownPool} = createPgPool({
     host: config.db.host,
     port: config.db.port,
@@ -51,16 +53,61 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const twinoidStore = new PgTwinoidStore(database);
   const twinoidClient = new HttpTwinoidClientService();
   const link = new PgLinkService({database, dinoparcStore, hammerfestStore, twinoidStore, userStore});
-  const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
-  const oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
-  const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});
+  const oauthProviderStore = new PgOauthProviderStore({
+    database,
+    databaseSecret: secretKeyStr,
+    password,
+    uuidGenerator
+  });
+  const oauthProvider = new OauthProviderService({
+    clock,
+    oauthProviderStore,
+    userStore,
+    tokenSecret: secretKeyBytes,
+    uuidGenerator
+  });
+  const auth = new PgAuthService({
+    database,
+    databaseSecret: secretKeyStr,
+    dinoparcClient,
+    dinoparcStore,
+    email,
+    emailTemplate,
+    hammerfestStore,
+    hammerfestClient,
+    link,
+    oauthProvider,
+    password,
+    userStore,
+    tokenSecret: secretKeyBytes,
+    twinoidStore,
+    twinoidClient,
+    uuidGenerator
+  });
   const koaAuth = new KoaAuth(auth);
-  const forum = new PgForumService(database, uuidGenerator, userStore, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
+  const forumConfig: ForumConfig = {
+    postsPerPage: config.forum.postsPerPage,
+    threadsPerPage: config.forum.threadsPerPage
+  };
+  const forum = new PgForumService(database, uuidGenerator, userStore, forumConfig);
+  const announcement = new PgAnnouncementService({database, uuidGenerator, forum});
+
   const token = new PgTokenService(database, secretKeyStr, dinoparcStore, hammerfestStore);
   const dinoparc = new DinoparcService({dinoparcStore, link});
   const hammerfest = new HammerfestService({hammerfestStore, hammerfestClient, link});
   const twinoid = new TwinoidService({twinoidStore, link});
-  const user = new UserService({auth, dinoparcClient, dinoparcStore, hammerfestStore, hammerfestClient, link, userStore, token, twinoidStore, twinoidClient});
+  const user = new UserService({
+    auth,
+    dinoparcClient,
+    dinoparcStore,
+    hammerfestStore,
+    hammerfestClient,
+    link,
+    userStore,
+    token,
+    twinoidStore,
+    twinoidClient
+  });
 
   for (const [key, section] of config.forum.sections) {
     await forum.createOrUpdateSystemSection(
@@ -72,7 +119,7 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
     );
   }
 
-  const api: Api = {auth, dinoparc, forum, hammerfest, koaAuth, twinoid, user};
+  const api: Api = {announcement, auth, dinoparc, forum, hammerfest, koaAuth, twinoid, user};
 
   async function teardown(): Promise<void> {
     await teardownPool();

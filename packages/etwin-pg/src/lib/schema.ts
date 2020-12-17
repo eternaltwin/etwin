@@ -6,6 +6,9 @@ export type PgTwinoidUserId = string;
 export type PgInstant = Date;
 export type PgDinoparcServer = "dinoparc.com" | "en.dinoparc.com" | "sp.dinoparc.com";
 export type PgHammerfestServer = "hammerfest.es" | "hammerfest.fr" | "hfest.net";
+export type PgAnnouncementId = string;
+export type PgForumThreadId = string;
+export type PgLocaleId = string;
 
 export interface UserRow {
   user_id: string;
@@ -183,6 +186,14 @@ export interface ForumRoleRevocationRow {
   end_time: Date;
   granted_by: string;
   revoked_by: string;
+}
+
+export interface AnnouncementRow {
+  announcement_id: PgAnnouncementId;
+  forum_thread_id: PgForumThreadId;
+  created_at: PgInstant;
+  created_by: PgUserId;
+  locale: PgLocaleId | null;
 }
 
 export interface TwinoidUserRow {

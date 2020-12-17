@@ -8,7 +8,7 @@ import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $ForumThread, ForumThread } from "../forum/forum-thread.js";
 import { $AnnouncementId, AnnouncementId } from "./announcement-id.js";
 
-export interface Announcement {
+export interface ShortAnnouncement {
   type: ObjectType.Announcement;
   id: AnnouncementId;
   createdAt: Date;
@@ -16,13 +16,13 @@ export interface Announcement {
   locale: LocaleId;
 }
 
-export const $Announcement: RecordIoType<Announcement> = new RecordType<Announcement>({
+export const $ShortAnnouncement: RecordIoType<ShortAnnouncement> = new RecordType<ShortAnnouncement>({
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.Announcement})},
     id: {type: $AnnouncementId},
-    thread: {type: $ForumThread},
     createdAt: {type: $Date},
-    locale: {type: $LocaleId}
+    thread: {type: $ForumThread},
+    locale: {type: $LocaleId},
   },
   changeCase: CaseStyle.SnakeCase,
 });

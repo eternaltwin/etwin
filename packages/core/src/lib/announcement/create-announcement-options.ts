@@ -1,9 +1,14 @@
-import { LocaleId } from "../core/locale-id.js";
-import { MarkdownText } from "../core/markdown-text.js";
-import { AnnouncementTitle } from "./announcement-title.js";
+import { RecordIoType, RecordType } from "kryo/lib/record.js";
+
+import { $ForumThreadId, ForumThreadId } from "../forum/forum-thread-id.js";
+
 
 export interface CreateAnnouncementOptions {
-  locale: LocaleId;
-  title: AnnouncementTitle;
-  body: MarkdownText;
+  thread: ForumThreadId;
 }
+
+export const $CreateAnnouncementOptions: RecordIoType<CreateAnnouncementOptions> = new RecordType<CreateAnnouncementOptions>({
+  properties: {
+    thread: {type: $ForumThreadId},
+  }
+});

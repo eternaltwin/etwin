@@ -6,6 +6,12 @@
   "include": [],
   "references": [
     {
+      "path": "../announcement-mem/src/lib"
+    },
+    {
+      "path": "../announcement-pg/src/lib"
+    },
+    {
       "path": "../auth-in-memory/src/lib"
     },
     {

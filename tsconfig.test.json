@@ -7,6 +7,12 @@
   "include": [],
   "references": [
     {
+      "path": "packages/announcement-mem/src/test"
+    },
+    {
+      "path": "packages/announcement-pg/src/test"
+    },
+    {
       "path": "packages/auth-in-memory/src/test"
     },
     {
