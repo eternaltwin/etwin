@@ -88,9 +88,11 @@ sealed class AuthContext {
   }
 
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): AuthContext =
       JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: AuthContext): String =
       JSON_FORMAT.encodeToString(value)
   }

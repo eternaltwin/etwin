@@ -31,7 +31,7 @@ import net.eternaltwin.user.UserId
 import java.net.URI
 
 fun main(args: Array<String>) {
-    val client = HttpEtwinClient(URI("https://eternal-twin.net/api/v1"))
+    val client = HttpEtwinClient(URI("https://eternal-twin.net/"))
     val uid = UserId("9f310484-963b-446b-af69-797feec6813f")
     val user = client.getUser(Auth.GUEST, uid)
     println(user)
@@ -51,7 +51,7 @@ import java.net.URISyntaxException;
 
 public class Main {
   public static void main(String[] args) throws URISyntaxException {
-    HttpEtwinClient client = new HttpEtwinClient(new URI("https://eternal-twin.net/api/v1"));
+    HttpEtwinClient client = new HttpEtwinClient(new URI("https://eternal-twin.net/"));
     UserId uid = new UserId("9f310484-963b-446b-af69-797feec6813f");
     MaybeCompleteUser user = client.getUser(Auth.GUEST, uid);
     System.out.println(user);

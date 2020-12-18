@@ -8,16 +8,16 @@ plugins {
 }
 
 group = "net.eternaltwin"
-version = "0.3.2"
+version = "0.3.6"
 
 repositories {
   jcenter()
 }
 
 dependencies {
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
+  implementation("com.squareup.okhttp3:okhttp:4.9.0")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0")
-  implementation("net.eternaltwin:etwin:0.0.1")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
   testImplementation(kotlin("test-junit5"))
   testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
   testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.0")
@@ -54,6 +54,7 @@ publishing {
     create<MavenPublication>("etwin") {
       from(components["java"])
       pom {
+        artifactId = "etwin"
         name.set("Etwin")
         description.set("A demonstration of Maven POM customization")
         url.set("https://gitlab.com/eternal-twin/etwin")

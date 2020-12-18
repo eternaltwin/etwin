@@ -1,1 +1,1 @@
-rootProject.name = "etwin"
+rootProject.name = "etwin-client-kt"

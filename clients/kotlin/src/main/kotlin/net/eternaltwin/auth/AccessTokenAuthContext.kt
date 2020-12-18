@@ -12,8 +12,10 @@ data class AccessTokenAuthContext constructor(
   val user: ShortUser,
 ) {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): AccessTokenAuthContext = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: AccessTokenAuthContext): String = JSON_FORMAT.encodeToString(value)
   }
 }

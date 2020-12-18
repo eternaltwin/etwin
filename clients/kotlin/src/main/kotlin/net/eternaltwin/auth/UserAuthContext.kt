@@ -12,8 +12,10 @@ data class UserAuthContext constructor(
   val isAdministrator: Boolean,
 ) {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): UserAuthContext = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: UserAuthContext): String = JSON_FORMAT.encodeToString(value)
   }
 }

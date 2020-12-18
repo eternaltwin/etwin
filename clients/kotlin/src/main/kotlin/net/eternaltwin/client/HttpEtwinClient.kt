@@ -1,43 +1,61 @@
 package net.eternaltwin.client
 
-import JSON_FORMAT
-import kotlinx.serialization.decodeFromString
 import net.eternaltwin.auth.AuthContext
 import net.eternaltwin.user.MaybeCompleteUser
 import net.eternaltwin.user.UserId
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 
-class HttpEtwinClient(private val apiBase: URI) : EtwinClient {
-  private val client: HttpClient = HttpClient.newBuilder().build()
+class HttpEtwinClient(etwinUri: URI) : EtwinClient {
+  private val apiBase: HttpUrl
+  private val client = OkHttpClient()
+
+  init {
+    this.apiBase = etwinUri.toString().toHttpUrl()
+  }
 
   override fun getSelf(auth: Auth): AuthContext {
-    val request = this.newRequestBuilder(auth)
-      .uri(this.resolve(listOf("auth", "self")))
+    val request = auth.apply(
+      Request.Builder()
+        .url(this.resolve(listOf("auth", "self")))
+        .get()
+    )
       .build()
-    val response = this.client.send(request, HttpResponse.BodyHandlers.ofString())
-    return JSON_FORMAT.decodeFromString(response.body())
+
+    this.client.newCall(request).execute().use { response ->
+      if (!response.isSuccessful) {
+        throw RuntimeException("Unexpected code $response")
+      }
+      return AuthContext.fromJsonString(response.body!!.string())
+    }
   }
 
   override fun getUser(auth: Auth, userId: UserId): MaybeCompleteUser {
-    val request = this.newRequestBuilder(auth)
-      .uri(this.resolve(listOf("users", userId.toUuidString())))
+    val request = auth.apply(
+      Request.Builder()
+        .url(this.resolve(listOf("users", userId.toUuidString())))
+        .get()
+    )
       .build()
-    val response = this.client.send(request, HttpResponse.BodyHandlers.ofString())
-    return JSON_FORMAT.decodeFromString(response.body())
+
+    this.client.newCall(request).execute().use { response ->
+      if (!response.isSuccessful) {
+        throw RuntimeException("Unexpected code $response")
+      }
+      return MaybeCompleteUser.fromJsonString(response.body!!.string())
+    }
   }
 
-  private fun newRequestBuilder(auth: Auth): HttpRequest.Builder {
-    val builder = HttpRequest.newBuilder();
-    auth.apply(builder)
-    return builder
-  }
-
-  private fun resolve(segments: List<String>): URI {
-    val basePath = this.apiBase.path
-    val path = basePath + "/" + segments.joinToString("/")
-    return URI(this.apiBase.scheme, this.apiBase.host, path, "")
+  private fun resolve(segments: List<String>): HttpUrl {
+    var builder = this.apiBase.newBuilder()
+      .addPathSegment("api")
+      .addPathSegment("v1");
+    for (segment in segments) {
+      builder = builder.addPathSegment(segment)
+    }
+    return builder.build()
   }
 }

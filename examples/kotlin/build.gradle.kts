@@ -13,8 +13,7 @@ repositories {
   maven(url = "https://dl.bintray.com/eternal-twin/maven")
 }
 dependencies {
-//  implementation(files("../../clients/kotlin/build/libs/etwin-0.3.2.jar"))
-  implementation("net.eternaltwin:etwin:0.3.2")
+  implementation("net.eternaltwin:etwin:0.3.6")
   testImplementation(kotlin("test-junit5"))
 }
 tasks.withType<KotlinCompile>() {

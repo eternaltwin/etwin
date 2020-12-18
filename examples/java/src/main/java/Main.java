@@ -1,5 +1,3 @@
-// import net.eternaltwin.auth.AuthContext;
-
 import net.eternaltwin.client.Auth;
 import net.eternaltwin.client.HttpEtwinClient;
 import net.eternaltwin.user.MaybeCompleteUser;
@@ -17,8 +15,9 @@ public class Main {
     System.out.println(user.getId().getInner());
     System.out.println(user.getDisplayName().getCurrent().getValue().getInner());
     // Retrieve the current user using an OAuth access token
-    // Auth auth = Auth.fromToken("accesToken...");
-    // AuthContext self = client.getSelf(auth);
+    // AuthContext self = client.getSelf(Auth.fromToken("accesToken..."));
     // System.out.println(self);
+    // AccessTokenAuthContext acx = ((AuthContext.AccessToken) self).getInner();
+    // System.out.println(acx);
   }
 }

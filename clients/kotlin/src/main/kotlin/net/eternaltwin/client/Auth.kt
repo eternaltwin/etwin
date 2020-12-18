@@ -1,5 +1,6 @@
 package net.eternaltwin.client
 
+import okhttp3.Request
 import java.net.http.HttpRequest
 import java.nio.charset.Charset
 import java.util.*
@@ -7,9 +8,11 @@ import java.util.*
 private val COLON_UTF8_BYTES = ":".toByteArray(Charset.forName("UTF-8"))
 
 class Auth private constructor(private val authorizationHeader: String?) {
-  internal fun apply(builder: HttpRequest.Builder) {
+  internal fun apply(builder: Request.Builder): Request.Builder {
     if (this.authorizationHeader != null) {
-      builder.header("Authorization", this.authorizationHeader)
+      return builder.header("Authorization", this.authorizationHeader)
+    } else {
+      return builder
     }
   }
 
