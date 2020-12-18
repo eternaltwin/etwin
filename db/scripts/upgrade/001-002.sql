@@ -1,7 +1,7 @@
 COMMENT ON SCHEMA public IS '{"version": 2}';
 
 ALTER TABLE users
-  ADD CONSTRAINT username__uniq UNIQUE(username);
+  ADD CONSTRAINT username__uniq UNIQUE (username);
 
 -- OAuth clients
 CREATE TABLE public.oauth_clients (
@@ -36,7 +36,7 @@ CREATE TABLE public.oauth_clients (
   CHECK (callback_uri_mtime >= ctime),
   CHECK (secret_mtime >= ctime),
   -- System apps have a key and no owner, third-party apps have an owner but no key
-  CHECK ((key IS NULL) <> (owner_ID IS NULL)),
+  CHECK ((key IS NULL) <> (owner_id IS NULL)),
   UNIQUE (key)
 );
 

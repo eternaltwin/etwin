@@ -99,4 +99,7 @@ CREATE TABLE public.hammerfest_user_links (
 );
 
 INSERT INTO hammerfest_servers("domain")
-VALUES ('hammerfest.fr'), ('hfest.net'), ('hammerfest.es');
+VALUES
+  ('hammerfest.fr'),
+  ('hfest.net'),
+  ('hammerfest.es');
