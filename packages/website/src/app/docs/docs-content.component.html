@@ -190,7 +190,7 @@ if you wish to learn more about <code>package.json</code> files.</p><p>Below is 
   "dependencies": {{ "{" }}},
   "devDependencies": {{ "{" }}}
 }
-</pre><p>Make sure to commit the <code>package.json</code> file.</p><h2>Install Eternal-Twin inside your project</h2><p>Run the following command in the directory containing <code>package.json</code>:</p><pre>yarnn add --dev @eternal-twin/website
+</pre><p>Make sure to commit the <code>package.json</code> file.</p><h2>Install Eternal-Twin inside your project</h2><p>Run the following command in the directory containing <code>package.json</code>:</p><pre>yarn add --dev @eternal-twin/website
 </pre><p>This will perform the following 3 actions:</p><ol><li>Update your <code>package.json</code> file to document the new dependency on the package <code>@eternal-twin/website</code>.</li><li>Download the package (and its own dependencies) into the <code>node_modules</code> directory.</li><li>Create (or update) a <code>yarn.lock</code> file to remember the exact version of the dependencies that
 were installed and prevent accidental regressions.</li></ol><p>Commit the <code>package.json</code> and <code>yarn.lock</code> files.</p><p>Do not commit the <code>node_modules</code> directory: add the <code>node_modules/</code> rule to your <code>.gitignore</code> file.</p><p>You now have to update your <code>package.json</code> file to expose the <code>etwin</code> command.
 Add the entry <code>"etwin": "etwin"</code> to the <code>scripts</code> config in your <code>package.json</code>.

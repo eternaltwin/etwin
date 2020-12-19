@@ -67,7 +67,7 @@ Make sure to commit the `package.json` file.
 Run the following command in the directory containing `package.json`:
 
 ```
-yarnn add --dev @eternal-twin/website
+yarn add --dev @eternal-twin/website
 ```
 
 This will perform the following 3 actions:
