@@ -150,3 +150,7 @@ locale = "fr-FR"
 [forum.sections.ts_main]
 display_name = "[Teacher Story] La salle des profs"
 locale = "fr-FR"
+
+[forum.sections.ts_popotamo]
+display_name = "[Popotamo] Le mot le plus long"
+locale = "fr-FR"
