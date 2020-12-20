@@ -109,7 +109,7 @@ etwin-main-layout, etwin-small-layout {
   padding: 2.25em;
   max-width: $contentWidth;
   width: 88%;
-  background-color: transparentize($deepGrey, .2);
+  background-color: transparentize($deepGrey, .3);
   border-top: 3px solid $red;
   border-radius: 6px;
 
@@ -198,38 +198,45 @@ etwin-main-layout, etwin-small-layout {
 
   table {
     border-collapse: collapse;
-    margin: 1rem 0;
+    margin: 1.3em 0;
   }
 
   td, th {
     border: 1px solid $lightGrey;
-    padding: 0.5rem;
+    padding: 0.5em;
     text-align: left;
   }
 
   th {
-    background-color: $deepViolet;
+    background-color: $darkGrey;
     font-weight: bold;
+    font-size: 1.1em;
+  }
+
+  code, pre {
+    font-size: 85%;
+    border-radius: 3px;
+    background: $deepViolet;
+    border: 1px solid $darkViolet;
   }
 
   code {
     padding: 0.2em 0.4em;
     margin: 0;
-    font-size: 85%;
-    border-radius: 3px;
-    border: 1px solid $darkViolet;
-    background: $deepViolet;
   }
 
   pre {
-    padding: 0.5em;
+    padding: .8em 1.1em;
     margin: 0;
-    font-size: 85%;
-    border-radius: 3px;
-    border: 1px solid $darkViolet;
-    background: $deepViolet;
     line-height: 1.5em;
     overflow: auto;
+
+    // SCROLLBAR STYLING  
+    scrollbar-width: thin;
+    scrollbar-color: $lightWhite $mediumGrey;
+    &::-webkit-scrollbar { width: 8px; height: 8px; }
+    &::-webkit-scrollbar-track { background: $mediumGrey; }
+    &::-webkit-scrollbar-thumb { background-color: $lightWhite; }
   }
 
   blockquote {

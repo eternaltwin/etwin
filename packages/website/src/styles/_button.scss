@@ -201,20 +201,20 @@
 
     &[disabled], &.disabled {
       font-weight: 600;
-      color: $lightGrey;
-      background-color: darken($darkGrey, 5.9);
+      color: lighten($lightGrey, 5);
+      background-color: $darkGrey;
       background-image: linear-gradient(135deg,
-        darken($darkGrey, 2%) 16.67%,
+        $darkGrey 16.67%,
         $deepGrey 16.67%,
         $deepGrey 50%,
-        darken($darkGrey, 2%) 50%,
-        darken($darkGrey, 2%) 66.67%,
+        $darkGrey 50%,
+        $darkGrey 66.67%,
         $deepGrey 66.67%,
         $deepGrey 100%);   /*diagonal gradient to create a stripes effect background*/
-      background-size: 12.00px 12.00px;
+      background-size: 12px 12px;
       box-shadow:
         0 1px 0 1px $deepBlack,
-        inset 0 0 0 2px darken($darkGrey, 2%);  /*Inset shadow, simulates a white border*/
+        inset 0 0 0 2px $darkGrey;  /*Inset shadow, simulates a white border*/
       cursor: not-allowed;
 
       transition: background-image .25s;

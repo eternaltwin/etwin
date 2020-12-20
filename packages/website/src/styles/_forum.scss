@@ -26,7 +26,7 @@ etwin-forum-post, .etwin-forum-post {
   .post-meta {
     display: flex;
     align-items: center;
-    background-color: $deepBlack;
+    background-color: darken($deepGrey, 2.5);
     color: $lightViolet;
     padding: 2px 16px;
 
@@ -80,7 +80,7 @@ etwin-forum-post, .etwin-forum-post {
 
     &:hover, &:focus, &:focus-within {
       text-decoration: none;
-      background-color: transparentize($deepBlack, .45);
+      background-color: transparentize($deepBlack, .7);
     }
 
     .name {
