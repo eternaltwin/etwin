@@ -12,6 +12,7 @@ import {
 } from "@eternal-twin/core/lib/auth/register-with-username-options";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { $DinoparcCredentials, DinoparcCredentials } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials";
 import {
   $HammerfestCredentials,
   HammerfestCredentials,
@@ -86,6 +87,30 @@ export class BrowserAuthService extends AuthService {
       queryType: $CreateSessionQuery,
       query: {method: AuthMethod.Etwin},
       reqType: $RawUserCredentials,
+      req: options,
+      resType: $User,
+    };
+    return this.#rest.put(["auth", "self"], reqOptions)
+      .pipe(rxTap((user: User): void => {
+        const auth: UserAuthContext = {
+          type: AuthType.User,
+          scope: AuthScope.Default,
+          user: {
+            type: ObjectType.User,
+            id: user.id,
+            displayName: user.displayName,
+          },
+          isAdministrator: user.isAdministrator,
+        };
+        this.#auth$.next(auth);
+      }));
+  }
+
+  loginWithDinoparcCredentials(options: Readonly<DinoparcCredentials>): Observable<User> {
+    const reqOptions = {
+      queryType: $CreateSessionQuery,
+      query: {method: AuthMethod.Dinoparc},
+      reqType: $DinoparcCredentials,
       req: options,
       resType: $User,
     };

@@ -1,3 +1,4 @@
+import { DinoparcCredentials } from "../dinoparc/dinoparc-credentials.js";
 import { HammerfestCredentials } from "../hammerfest/hammerfest-credentials.js";
 import { EtwinOauthAccessTokenKey } from "../oauth/etwin-oauth-access-token-key.js";
 import { RfcOauthAccessTokenKey } from "../oauth/rfc-oauth-access-token-key.js";
@@ -59,6 +60,13 @@ export interface AuthService {
     acx: AuthContext,
     credentials: UserCredentials,
   ): Promise<UserAndSession>;
+
+  /**
+   * Authenticates a user using Dinoparc credentials.
+   *
+   * Automatically creates a user if the credentials aren't linked to any user yet.
+   */
+  registerOrLoginWithDinoparc(acx: AuthContext, credentials: DinoparcCredentials): Promise<UserAndSession>;
 
   /**
    * Authenticates a user using Hammerfest credentials.

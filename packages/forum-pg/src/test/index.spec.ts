@@ -1,6 +1,7 @@
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { VirtualClockService } from "@eternal-twin/core/lib/clock/virtual.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { MemDinoparcClient } from "@eternal-twin/dinoparc-client-mem";
 import { PgDinoparcStore } from "@eternal-twin/dinoparc-store-pg";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
@@ -46,11 +47,12 @@ async function withPgForumService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const twinoidArchive = new PgTwinoidArchiveService(database);
     const dinoparcStore = new PgDinoparcStore(database);
     const link = new PgLinkService({database, dinoparcStore, hammerfestArchive, twinoidArchive, user: simpleUser});
+    const dinoparcClient = new MemDinoparcClient();
     const hammerfestClient = new InMemoryHammerfestClientService();
     const twinoidClient = new HttpTwinoidClientService();
     const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
     const oauthProvider = new OauthProviderService({clock, oauthProviderStore, simpleUser, tokenSecret: secretKeyBytes, uuidGenerator});
-    const auth = new PgAuthService({database, databaseSecret: secretKeyStr, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
+    const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
     const forum = new PgForumService(database, UUID4_GENERATOR, simpleUser, {postsPerPage: 10, threadsPerPage: 20});
     return fn({auth, forum});
   });

@@ -1,33 +1,33 @@
 <form
   method="POST"
   enctype="application/x-www-form-urlencoded"
-  action="/actions/login-with-hammerfest"
+  action="/actions/login-with-dinoparc"
   [formGroup]="loginForm"
   (ngSubmit)="onSubmit($event)"
 >
   <div class="active_method">
-    <img src="/assets/login-methods/hammerfest.png"/>
-    <ng-container i18n="@@login.method.hammerfest">Sign in with Hammerfest</ng-container>
+    <img src="/assets/login-methods/dinoparc.png"/>
+    <ng-container i18n="@@login.method.dinoparc">Sign in with Dinoparc</ng-container>
   </div>
   <label>
-    <span i18n="Hammerfest server label@@login.hammerfestServer">Server</span>
+    <span i18n="Dinoparc server label@@login.dinoparcServer">Server</span>
     <select class="small" name="server" class="field" formControlName="server">
-      <option value="hammerfest.fr">hammerfest.fr</option>
-      <option value="hfest.net">hfest.net</option>
-      <option value="hammerfest.es">hammerfest.es</option>
+      <option value="dinoparc.com">dinoparc.com</option>
+      <option value="en.dinoparc.com">en.dinoparc.com</option>
+      <option value="sp.dinoparc.com">sp.dinoparc.com</option>
     </select>
   </label>
   <label>
-    <span i18n="Hammerfest username address field label@@login.hammerfestUsername">Hammerfest username</span>
+    <span i18n="Dinoparc username address field label@@login.dinoparcUsername">Dinoparc username</span>
     <input type="text" name="username" class="field" formControlName="username" required="required"/>
     <div *ngIf="username.invalid && (username.dirty || username.touched)" class="error">
-      <div *ngIf="username.errors?.required" i18n="@@login.hammerfestUsernameRequired">
-        The username is required.
+      <div *ngIf="username.errors?.required" i18n="@@login.dinoparcUsernameRequired">
+        The Dinoparc username is required.
       </div>
     </div>
   </label>
   <label>
-    <span i18n="Password field label@@login.password">Hammerfest password</span>
+    <span i18n="Password field label@@login.password">Dinoparc password</span>
     <input type="password" name="password" class="field" formControlName="password" required="required"/>
     <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error">
       <div *ngIf="password.errors?.required" i18n="@@login.passwordRequired">
@@ -35,9 +35,9 @@
       </div>
     </div>
   </label>
-  <input type="submit" name="sign_in" class="btn primary" i18n-value="Submit the Hammerfest login form label@@login.hammerfest.submit"
+  <input type="submit" name="sign_in" class="btn primary" i18n-value="Submit the Dinoparc login form label@@login.dinoparc.submit"
          value="Sign in" [disabled]="loginForm.invalid || pendingSubscription !== null"/>
-  <div *ngIf="serverError" class="error" i18n="@@login.hammerfest.unknownError">
+  <div *ngIf="serverError" class="error" i18n="@@login.dinoparc.unknownError">
     Failed to authenticate: please check your credentials.
   </div>
 </form>

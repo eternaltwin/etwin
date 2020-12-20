@@ -2,7 +2,12 @@ import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { Credentials } from "@eternal-twin/core/lib/auth/credentials.js";
-import { readLogin } from "@eternal-twin/core/lib/auth/helpers.js";
+import {
+  dinoparcToUserDisplayName,
+  hammerfestToUserDisplayName,
+  readLogin,
+  twinoidToUserDisplayName
+} from "@eternal-twin/core/lib/auth/helpers.js";
 import { Login } from "@eternal-twin/core/lib/auth/login.js";
 import { LoginType } from "@eternal-twin/core/lib/auth/login-type.js";
 import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/core/lib/auth/register-or-login-with-email-options.js";
@@ -18,6 +23,10 @@ import { $UserLogin, UserLogin } from "@eternal-twin/core/lib/auth/user-login.js
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
+import { DinoparcClientService } from "@eternal-twin/core/lib/dinoparc/client.js";
+import { DinoparcCredentials } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials.js";
+import { DinoparcSession } from "@eternal-twin/core/lib/dinoparc/dinoparc-session.js";
+import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { $EmailAddress, EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
 import { EmailService } from "@eternal-twin/core/lib/email/service.js";
 import { EmailTemplateService } from "@eternal-twin/core/lib/email-template/service.js";
@@ -25,7 +34,6 @@ import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/arch
 import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
-import { ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
@@ -37,7 +45,7 @@ import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
-import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
+import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
 import {
@@ -61,59 +69,65 @@ const SYSTEM_AUTH: SystemAuthContext = {
 };
 
 export interface PgAuthServiceOptions {
-  database: Database,
-  databaseSecret: string,
-  email: EmailService,
-  emailTemplate: EmailTemplateService,
-  hammerfestArchive: HammerfestArchiveService,
-  hammerfestClient: HammerfestClientService,
-  link: LinkService,
-  oauthProvider: OauthProviderService,
-  password: PasswordService,
-  simpleUser: SimpleUserService,
-  tokenSecret: Uint8Array,
-  twinoidArchive: TwinoidArchiveService,
-  twinoidClient: TwinoidClientService,
-  uuidGenerator: UuidGenerator,
+  database: Database;
+  databaseSecret: string;
+  dinoparcStore: DinoparcStore;
+  dinoparcClient: DinoparcClientService;
+  email: EmailService;
+  emailTemplate: EmailTemplateService;
+  hammerfestArchive: HammerfestArchiveService;
+  hammerfestClient: HammerfestClientService;
+  link: LinkService;
+  oauthProvider: OauthProviderService;
+  password: PasswordService;
+  simpleUser: SimpleUserService;
+  tokenSecret: Uint8Array;
+  twinoidArchive: TwinoidArchiveService;
+  twinoidClient: TwinoidClientService;
+  uuidGenerator: UuidGenerator;
 }
 
 export class PgAuthService implements AuthService {
-  private readonly database: Database;
-  private readonly dbSecret: string;
-  private readonly email: EmailService;
-  private readonly emailTemplate: EmailTemplateService;
-  private readonly hammerfestArchive: HammerfestArchiveService;
-  private readonly hammerfestClient: HammerfestClientService;
-  private readonly link: LinkService;
-  private readonly oauthProvider: OauthProviderService;
-  private readonly password: PasswordService;
-  private readonly simpleUser: SimpleUserService;
-  private readonly tokenSecret: Buffer;
-  private readonly twinoidArchive: TwinoidArchiveService;
-  private readonly twinoidClient: TwinoidClientService;
-  private readonly uuidGen: UuidGenerator;
+  readonly #database: Database;
+  readonly #dbSecret: string;
+  readonly #dinoparcStore: DinoparcStore;
+  readonly #dinoparcClient: DinoparcClientService;
+  readonly #email: EmailService;
+  readonly #emailTemplate: EmailTemplateService;
+  readonly #hammerfestArchive: HammerfestArchiveService;
+  readonly #hammerfestClient: HammerfestClientService;
+  readonly #link: LinkService;
+  readonly #oauthProvider: OauthProviderService;
+  readonly #password: PasswordService;
+  readonly #simpleUser: SimpleUserService;
+  readonly #tokenSecret: Buffer;
+  readonly #twinoidArchive: TwinoidArchiveService;
+  readonly #twinoidClient: TwinoidClientService;
+  readonly #uuidGen: UuidGenerator;
 
-  private readonly defaultLocale: LocaleId;
+  readonly #defaultLocale: LocaleId;
 
   /**
    * Creates a new authentication service.
    */
   constructor(options: Readonly<PgAuthServiceOptions>) {
-    this.database = options.database;
-    this.dbSecret = options.databaseSecret;
-    this.email = options.email;
-    this.emailTemplate = options.emailTemplate;
-    this.hammerfestArchive = options.hammerfestArchive;
-    this.hammerfestClient = options.hammerfestClient;
-    this.link = options.link;
-    this.oauthProvider = options.oauthProvider;
-    this.password = options.password;
-    this.simpleUser = options.simpleUser;
-    this.tokenSecret = Buffer.from(options.tokenSecret);
-    this.twinoidArchive = options.twinoidArchive;
-    this.twinoidClient = options.twinoidClient;
-    this.uuidGen = options.uuidGenerator;
-    this.defaultLocale = "en-US";
+    this.#database = options.database;
+    this.#dbSecret = options.databaseSecret;
+    this.#dinoparcStore = options.dinoparcStore;
+    this.#dinoparcClient = options.dinoparcClient;
+    this.#email = options.email;
+    this.#emailTemplate = options.emailTemplate;
+    this.#hammerfestArchive = options.hammerfestArchive;
+    this.#hammerfestClient = options.hammerfestClient;
+    this.#link = options.link;
+    this.#oauthProvider = options.oauthProvider;
+    this.#password = options.password;
+    this.#simpleUser = options.simpleUser;
+    this.#tokenSecret = Buffer.from(options.tokenSecret);
+    this.#twinoidArchive = options.twinoidArchive;
+    this.#twinoidClient = options.twinoidClient;
+    this.#uuidGen = options.uuidGenerator;
+    this.#defaultLocale = "en-US";
   }
 
   /**
@@ -127,9 +141,9 @@ export class PgAuthService implements AuthService {
       throw Error("Forbidden: Only guests can authenticate");
     }
     const token: string = await this.createEmailVerificationToken(options.email);
-    const emailLocale: LocaleId = options.locale ?? this.defaultLocale;
-    const emailContent = await this.emailTemplate.verifyRegistrationEmail(emailLocale, token);
-    await this.email.sendEmail(options.email, emailContent);
+    const emailLocale: LocaleId = options.locale ?? this.#defaultLocale;
+    const emailContent = await this.#emailTemplate.verifyRegistrationEmail(emailLocale, token);
+    await this.#email.sendEmail(options.email, emailContent);
   }
 
   async registerWithVerifiedEmail(
@@ -143,16 +157,16 @@ export class PgAuthService implements AuthService {
     const emailJwt: EmailRegistrationJwt = await this.readEmailVerificationToken(options.emailToken);
     const email: EmailAddress = emailJwt.email;
 
-    const oldUser: ShortUser | null = await this.simpleUser.getShortUserByEmail(SYSTEM_AUTH, {email});
+    const oldUser: ShortUser | null = await this.#simpleUser.getShortUserByEmail(SYSTEM_AUTH, {email});
     if (oldUser !== null) {
       throw new Error(`Conflict: EmailAddressAlreadyInUse: ${JSON.stringify(oldUser.id)}`);
     }
 
     const displayName: UserDisplayName = options.displayName;
-    const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const user: SimpleUser = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email, username: null});
+    const passwordHash: PasswordHash = await this.#password.hash(options.password);
+    const user: SimpleUser = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email, username: null});
 
-    return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+    return this.#database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       await this.setPasswordHashRw(q, user.id, passwordHash);
       try {
         await this.createValidatedEmailVerification(q, user.id, email, new Date(emailJwt.issuedAt * 1000));
@@ -172,16 +186,16 @@ export class PgAuthService implements AuthService {
     }
 
     const username: Username = options.username;
-    const oldUser: ShortUser | null = await this.simpleUser.getShortUserByUsername(SYSTEM_AUTH, {username});
+    const oldUser: ShortUser | null = await this.#simpleUser.getShortUserByUsername(SYSTEM_AUTH, {username});
     if (oldUser !== null) {
       throw new Error(`Conflict: UsernameAlreadyInUse: ${JSON.stringify(oldUser.id)}`);
     }
 
     const displayName: UserDisplayName = options.displayName;
-    const passwordHash: PasswordHash = await this.password.hash(options.password);
-    const user: SimpleUser = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username});
+    const passwordHash: PasswordHash = await this.#password.hash(options.password);
+    const user: SimpleUser = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username});
 
-    return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+    return this.#database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       await this.setPasswordHashRw(q, user.id, passwordHash);
       const session: Session = await this.createSession(q, user.id);
       return {user, session};
@@ -192,9 +206,59 @@ export class PgAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can log in");
     }
-    return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+    return this.#database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       return this.loginWithCredentialsTx(q, acx, credentials);
     });
+  }
+
+  async registerOrLoginWithDinoparc(
+    acx: AuthContext,
+    credentials: DinoparcCredentials,
+  ): Promise<UserAndSession> {
+    if (acx.type !== AuthType.Guest) {
+      throw Error("Forbidden: Only guests can authenticate");
+    }
+    const dparcSession: DinoparcSession = await this.#dinoparcClient.createSession(credentials);
+    const link: VersionedEtwinLink = await this.#link.getLinkFromDinoparc(dparcSession.user.server, dparcSession.user.id);
+    let userId: UserId;
+    if (link.current !== null) {
+      // TODO: Check that the user is active, otherwise unlink and create a new user
+      userId = link.current.user.id;
+    } else {
+      const displayName = dinoparcToUserDisplayName(dparcSession.user);
+      const user = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
+      try {
+        await this.#dinoparcStore.touchShortUser(dparcSession.user);
+        await this.#link.linkToDinoparc({
+          userId: user.id,
+          dinoparcServer: dparcSession.user.server,
+          dinoparcUserId: dparcSession.user.id,
+          linkedBy: user.id,
+        });
+      } catch (e) {
+        // Delete user because without a link it is impossible to authenticate as this user.
+        // If the exception comes from `hammerfestArchive.createOrUpdateUseRef`, the changes are fully reverted.
+        // If the exception comes from `link.linkToHammerfest`, the archived user remains: it's OK (no link is created).
+        // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
+        // any issues.
+        await this.#simpleUser.hardDeleteUserById(SYSTEM_AUTH, user.id);
+        throw e;
+      }
+      userId = user.id;
+    }
+    const result: UserAndSession = await this.#database.transaction(TransactionMode.ReadWrite, async queryable => {
+      const session: Session = await this.createSession(queryable, userId);
+      const user = await this.getExistingUserById(queryable, session.user.id);
+      return {user, session};
+    });
+    // At this point the authentication is complete, we may still use the Hammerfest session to improve our archive but
+    // errors should not prevent the authentication.
+    // try {
+    //   this.hammerfest.archiveSession(hfSession)
+    // } catch (e) {
+    //   console.warn(e);
+    // }
+    return result;
   }
 
   async registerOrLoginWithHammerfest(
@@ -204,30 +268,30 @@ export class PgAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    const hfSession: HammerfestSession = await this.hammerfestClient.createSession(credentials);
-    const link: VersionedEtwinLink = await this.link.getLinkFromHammerfest(hfSession.user.server, hfSession.user.id);
+    const hfSession: HammerfestSession = await this.#hammerfestClient.createSession(credentials);
+    const link: VersionedEtwinLink = await this.#link.getLinkFromHammerfest(hfSession.user.server, hfSession.user.id);
     let userId: UserId;
     if (link.current !== null) {
       // TODO: Check that the user is active, otherwise unlink and create a new user
       userId = link.current.user.id;
     } else {
       const displayName = hammerfestToUserDisplayName(hfSession.user);
-      const user = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
+      const user = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
       try {
-        await this.hammerfestArchive.touchShortUser(hfSession.user);
-        await this.link.linkToHammerfest(user.id, hfSession.user.server, hfSession.user.id);
+        await this.#hammerfestArchive.touchShortUser(hfSession.user);
+        await this.#link.linkToHammerfest(user.id, hfSession.user.server, hfSession.user.id);
       } catch (e) {
         // Delete user because without a link it is impossible to authenticate as this user.
         // If the exception comes from `hammerfestArchive.createOrUpdateUseRef`, the changes are fully reverted.
         // If the exception comes from `link.linkToHammerfest`, the archived user remains: it's OK (no link is created).
         // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
         // any issues.
-        await this.simpleUser.hardDeleteUserById(SYSTEM_AUTH, user.id);
+        await this.#simpleUser.hardDeleteUserById(SYSTEM_AUTH, user.id);
         throw e;
       }
       userId = user.id;
     }
-    const result: UserAndSession = await this.database.transaction(TransactionMode.ReadWrite, async queryable => {
+    const result: UserAndSession = await this.#database.transaction(TransactionMode.ReadWrite, async queryable => {
       const session: Session = await this.createSession(queryable, userId);
       const user = await this.getExistingUserById(queryable, session.user.id);
       return {user, session};
@@ -246,30 +310,30 @@ export class PgAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    const tidUser: Pick<TidUser, "id" | "name"> = await this.twinoidClient.getMe(at);
-    const link: VersionedEtwinLink = await this.link.getLinkFromTwinoid(tidUser.id.toString(10));
+    const tidUser: Pick<TidUser, "id" | "name"> = await this.#twinoidClient.getMe(at);
+    const link: VersionedEtwinLink = await this.#link.getLinkFromTwinoid(tidUser.id.toString(10));
     let userId: UserId;
     if (link.current !== null) {
       // TODO: Check that the user is active, otherwise unlink and create a new user
       userId = link.current.user.id;
     } else {
       const displayName = twinoidToUserDisplayName(tidUser);
-      const user = await this.simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
+      const user = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
       try {
-        await this.twinoidArchive.createOrUpdateUserRef({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
-        await this.link.linkToTwinoid(user.id, tidUser.id.toString(10));
+        await this.#twinoidArchive.createOrUpdateUserRef({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
+        await this.#link.linkToTwinoid(user.id, tidUser.id.toString(10));
       } catch (e) {
         // Delete user because without a link it is impossible to authenticate as this user.
         // If the exception comes from `twinoidArchive.createOrUpdateUseRef`, the changes are fully reverted.
         // If the exception comes from `link.linkToTwinoid`, the archived user remains: it's OK (no link is created).
         // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
         // any issues.
-        await this.simpleUser.hardDeleteUserById(SYSTEM_AUTH, user.id);
+        await this.#simpleUser.hardDeleteUserById(SYSTEM_AUTH, user.id);
         throw e;
       }
       userId = user.id;
     }
-    const result: UserAndSession = await this.database.transaction(TransactionMode.ReadWrite, async queryable => {
+    const result: UserAndSession = await this.#database.transaction(TransactionMode.ReadWrite, async queryable => {
       const session: Session = await this.createSession(queryable, userId);
       const user = await this.getExistingUserById(queryable, session.user.id);
       return {user, session};
@@ -281,7 +345,7 @@ export class PgAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can register");
     }
-    return this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+    return this.#database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       const session: Session | null = await this.getAndTouchSession(q, sessionId);
       if (session === null) {
         return null;
@@ -294,7 +358,7 @@ export class PgAuthService implements AuthService {
   }
 
   public async authenticateAccessToken(token: RfcOauthAccessTokenKey): Promise<AuthContext> {
-    return await this.database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
+    return await this.#database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       return this.authenticateAccessTokenTx(q, token);
     });
   }
@@ -358,7 +422,7 @@ export class PgAuthService implements AuthService {
     const login: Login = readLogin(credentials.login);
     switch (login.type) {
       case LoginType.OauthClientKey: {
-        const client: OauthClient | null = await this.oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, login.value);
+        const client: OauthClient | null = await this.#oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, login.value);
         if (client === null) {
           throw new Error(`OauthClientNotFound: Client not found for the id or key: ${credentials.login}`);
         }
@@ -366,8 +430,8 @@ export class PgAuthService implements AuthService {
       }
       case LoginType.Uuid: {
         const [client, user] = await Promise.all([
-          this.oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, login.value),
-          this.simpleUser.getShortUserById(SYSTEM_AUTH, {id: login.value}),
+          this.#oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, login.value),
+          this.#simpleUser.getShortUserById(SYSTEM_AUTH, {id: login.value}),
         ]);
         if (client !== null) {
           if (user !== null) {
@@ -387,7 +451,7 @@ export class PgAuthService implements AuthService {
   }
 
   private async innerAuthenticateClientCredentials(client: OauthClient, password: Uint8Array): Promise<AuthContext> {
-    const isMatch: boolean = await this.oauthProvider.verifyClientSecret(SYSTEM_AUTH, client.id, password);
+    const isMatch: boolean = await this.#oauthProvider.verifyClientSecret(SYSTEM_AUTH, client.id, password);
 
     if (!isMatch) {
       throw new Error("InvalidSecret");
@@ -456,7 +520,7 @@ export class PgAuthService implements AuthService {
       throw new Error("NoPassword: Password authentication is not available for this user");
     }
 
-    const isMatch: boolean = await this.password.verify(passwordHash, credentials.password);
+    const isMatch: boolean = await this.#password.verify(passwordHash, credentials.password);
 
     if (!isMatch) {
       throw new Error("InvalidPassword");
@@ -482,14 +546,14 @@ export class PgAuthService implements AuthService {
       VALUES (
         $2::UUID, pgp_sym_encrypt($3::TEXT, $1::TEXT), $4::INSTANT, NOW()
       );`,
-      [this.dbSecret, userId, email, ctime],
+      [this.#dbSecret, userId, email, ctime],
     );
   }
 
   private async createSession(queryable: Queryable, userId: UserId): Promise<Session> {
     type Row = Pick<SessionRow, "ctime"> & Pick<UserRow, "display_name">;
 
-    const sessionId: UuidHex = this.uuidGen.next();
+    const sessionId: UuidHex = this.#uuidGen.next();
 
     const row: Row = await queryable.one(
       `
@@ -559,7 +623,7 @@ export class PgAuthService implements AuthService {
 
     return jsonWebToken.sign(
       payload,
-      this.tokenSecret,
+      this.#tokenSecret,
       {
         algorithm: "HS256",
         expiresIn: "1d",
@@ -570,7 +634,7 @@ export class PgAuthService implements AuthService {
   private async readEmailVerificationToken(token: string): Promise<EmailRegistrationJwt> {
     const tokenObj: object | string = jsonWebToken.verify(
       token,
-      this.tokenSecret,
+      this.#tokenSecret,
     );
     if (typeof tokenObj !== "object" || tokenObj === null) {
       throw new Error("AssertionError: Expected JWT verification result to be an object");
@@ -584,7 +648,7 @@ export class PgAuthService implements AuthService {
           UPDATE users
           SET password = pgp_sym_encrypt_bytea($3::BYTEA, $1::TEXT), password_mtime = NOW()
           WHERE user_id = $2::UUID;`,
-      [this.dbSecret, userId, passwordHash],
+      [this.#dbSecret, userId, passwordHash],
     );
   }
 
@@ -595,14 +659,14 @@ export class PgAuthService implements AuthService {
           SELECT pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
           FROM users
           WHERE user_id = $2::UUID;`,
-      [this.dbSecret, userId],
+      [this.#dbSecret, userId],
     );
     return row !== undefined ? row.password : null;
   }
 
   public async hasPassword(userId: UserId): Promise<boolean> {
     type Row = {has_password: boolean};
-    const row: Row | undefined = await this.database.oneOrNone(
+    const row: Row | undefined = await this.#database.oneOrNone(
       `
           SELECT (password IS NOT NULL) as has_password
           FROM users
@@ -612,43 +676,3 @@ export class PgAuthService implements AuthService {
     return row !== undefined ? row.has_password : false;
   }
 }
-
-function hammerfestToUserDisplayName(hfUser: Readonly<ShortHammerfestUser>): UserDisplayName {
-  const candidates: string[] = [
-    hfUser.username,
-    `hf_${hfUser.username}`,
-    `hf_${hfUser.id}`,
-    "hammerfestPlayer",
-  ];
-  for (const candidate of candidates) {
-    if ($UserDisplayName.test(candidate)) {
-      return candidate;
-    }
-  }
-  throw new Error("AssertionError: Failed to derive user display name from Hammerfest");
-}
-
-function twinoidToUserDisplayName(tidUser: Readonly<Pick<TidUser, "id" | "name">>): UserDisplayName {
-  const candidates: string[] = [
-    tidUser.name,
-    `tid_${tidUser.name}`,
-    `tid_${tidUser.id.toString(10)}`,
-    "twinoidPlayer",
-  ];
-
-  for (const candidate of candidates) {
-    if ($UserDisplayName.test(candidate)) {
-      return candidate;
-    }
-  }
-  throw new Error("AssertionError: Failed to derive user display name from Twinoid");
-}
-
-// function userToAuthContext(user: Readonly<User>): UserAuthContext {
-//   return {
-//     type: AuthType.User,
-//     user: $ShortUser.clone(user),
-//     scope: AuthScope.Default,
-//     isAdministrator: user.isAdministrator,
-//   };
-// }

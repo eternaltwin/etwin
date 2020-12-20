@@ -32,6 +32,9 @@ export class LoginComponent implements OnDestroy, OnInit {
     const subscription: Subscription = this.route.queryParams.subscribe({
       next: (value: Params): void => {
         switch (value.method) {
+          case "dinoparc":
+            this.method = AuthMethod.Dinoparc;
+            break;
           case "hammerfest":
             this.method = AuthMethod.Hammerfest;
             break;

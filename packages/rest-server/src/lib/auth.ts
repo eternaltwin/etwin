@@ -7,6 +7,7 @@ import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { $UserCredentials, UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
+import { $DinoparcCredentials, DinoparcCredentials } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials.js";
 import {
   $HammerfestCredentials,
   HammerfestCredentials,
@@ -56,6 +57,10 @@ export function createAuthRouter(api: Api): Router {
       return;
     }
     switch (query.method) {
+      case AuthMethod.Dinoparc: {
+        await createSessionWithDinoparcCredentials(cx);
+        break;
+      }
       case AuthMethod.Etwin: {
         await createSessionWithCredentials(cx);
         break;
@@ -78,6 +83,17 @@ export function createAuthRouter(api: Api): Router {
   async function createSessionWithCredentials(cx: RouterContext<KoaState>): Promise<void> {
     const credentials: UserCredentials = $UserCredentials.read(JSON_VALUE_READER, cx.request.body);
     const result: UserAndSession = await api.auth.loginWithCredentials(GUEST_AUTH, credentials);
+    cx.cookies.set(SESSION_COOKIE, result.session.id);
+    const user = await api.user.getUserById(
+      {type: AuthType.User, user: result.user, isAdministrator: result.user.isAdministrator, scope: AuthScope.Default},
+      {id: result.user.id},
+    );
+    cx.response.body = $MaybeCompleteUser.write(JSON_VALUE_WRITER, user!);
+  }
+
+  async function createSessionWithDinoparcCredentials(cx: RouterContext<KoaState>): Promise<void> {
+    const credentials: DinoparcCredentials = $DinoparcCredentials.read(JSON_VALUE_READER, cx.request.body);
+    const result: UserAndSession = await api.auth.registerOrLoginWithDinoparc(GUEST_AUTH, credentials);
     cx.cookies.set(SESSION_COOKIE, result.session.id);
     const user = await api.user.getUserById(
       {type: AuthType.User, user: result.user, isAdministrator: result.user.isAdministrator, scope: AuthScope.Default},

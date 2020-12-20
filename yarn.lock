@@ -1823,6 +1823,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-test": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
     "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
@@ -1857,6 +1858,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-test": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
     "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
@@ -2154,6 +2156,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-in-memory": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
     "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
@@ -2185,6 +2188,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
     "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
@@ -2326,6 +2330,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-in-memory": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
     "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
@@ -2356,6 +2361,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
     "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
@@ -2618,6 +2624,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-in-memory": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
     "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
@@ -2647,6 +2654,7 @@ __metadata:
   dependencies:
     "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
     "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"

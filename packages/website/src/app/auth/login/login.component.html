@@ -1,6 +1,9 @@
 <etwin-small-layout>
   <div class="content">
     <ng-container [ngSwitch]="method">
+      <ng-container *ngSwitchCase="AuthMethod.Dinoparc">
+        <etwin-login-dinoparc></etwin-login-dinoparc>
+      </ng-container>
       <ng-container *ngSwitchCase="AuthMethod.Hammerfest">
         <etwin-login-hammerfest></etwin-login-hammerfest>
       </ng-container>
@@ -23,6 +26,10 @@
     <a routerLink="/login" [queryParams]="{method: 'twinoid', next: next}" class="btn" *ngIf="method !== AuthMethod.Twinoid">
       <img src="/assets/login-methods/twinoid.png"/>
       <ng-container i18n="@@login.method.twinoid">Sign in with Twinoid</ng-container>
+    </a>
+    <a routerLink="/login" [queryParams]="{method: 'dinoparc', next: next}" class="btn" *ngIf="method !== AuthMethod.Dinoparc">
+      <img src="/assets/login-methods/dinoparc.png"/>
+      <ng-container i18n="@@login.method.dinoparc">Sign in with Dinoparc</ng-container>
     </a>
     <a routerLink="/login" [queryParams]="{method: 'hammerfest', next: next}" class="btn" *ngIf="method !== AuthMethod.Hammerfest">
       <img src="/assets/login-methods/hammerfest.png"/>

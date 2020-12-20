@@ -1,6 +1,11 @@
+import { User as TidUser } from "@eternal-twin/twinoid-core/lib/user.js";
+
 import { $UuidHex } from "../core/uuid-hex.js";
+import { ShortDinoparcUser } from "../dinoparc/short-dinoparc-user.js";
 import { $EmailAddress } from "../email/email-address.js";
+import { ShortHammerfestUser } from "../hammerfest/short-hammerfest-user.js";
 import { $OauthClientKey } from "../oauth/oauth-client-key.js";
+import { $UserDisplayName, UserDisplayName } from "../user/user-display-name.js";
 import { $Username } from "../user/username.js";
 import { Login } from "./login.js";
 import { LoginType } from "./login-type.js";
@@ -29,4 +34,50 @@ export function readLogin(raw: unknown): Login {
   } else {
     throw new Error("InvalidLogin");
   }
+}
+
+export function dinoparcToUserDisplayName(dparcUser: Readonly<ShortDinoparcUser>): UserDisplayName {
+  const candidates: string[] = [
+    dparcUser.username,
+    `dparc_${dparcUser.username}`,
+    `dparc_${dparcUser.id}`,
+    "dparcPlayer",
+  ];
+  for (const candidate of candidates) {
+    if ($UserDisplayName.test(candidate)) {
+      return candidate;
+    }
+  }
+  throw new Error("AssertionError: Failed to derive user display name from Dinoparc");
+}
+
+export function hammerfestToUserDisplayName(hfUser: Readonly<ShortHammerfestUser>): UserDisplayName {
+  const candidates: string[] = [
+    hfUser.username,
+    `hf_${hfUser.username}`,
+    `hf_${hfUser.id}`,
+    "hammerfestPlayer",
+  ];
+  for (const candidate of candidates) {
+    if ($UserDisplayName.test(candidate)) {
+      return candidate;
+    }
+  }
+  throw new Error("AssertionError: Failed to derive user display name from Hammerfest");
+}
+
+export function twinoidToUserDisplayName(tidUser: Readonly<Pick<TidUser, "id" | "name">>): UserDisplayName {
+  const candidates: string[] = [
+    tidUser.name,
+    `tid_${tidUser.name}`,
+    `tid_${tidUser.id.toString(10)}`,
+    "twinoidPlayer",
+  ];
+
+  for (const candidate of candidates) {
+    if ($UserDisplayName.test(candidate)) {
+      return candidate;
+    }
+  }
+  throw new Error("AssertionError: Failed to derive user display name from Twinoid");
 }
