@@ -1,5 +1,5 @@
 import { getLocalConfig } from "@eternal-twin/local-config";
-import { withPgPool } from "@eternal-twin/pg-db";
+import { Database, withPgPool } from "@eternal-twin/pg-db";
 import pg from "pg";
 
 import { forceCreateLatest, getState, upgradeLatest } from "../lib/index.js";
@@ -22,7 +22,8 @@ export async function main() {
 async function runCheck() {
   const config = await getLocalConfig();
   return withPgPool(config.db, async (pool: pg.Pool) => {
-    const state = await getState(pool);
+    const db = new Database(pool);
+    const state = await getState(db);
     if (state === 0) {
       console.log("Empty database");
     } else {
@@ -34,14 +35,16 @@ async function runCheck() {
 async function runCreate() {
   const config = await getLocalConfig();
   return withPgPool(config.db, async (pool: pg.Pool) => {
-    await forceCreateLatest(pool);
+    const db = new Database(pool);
+    await forceCreateLatest(db);
   });
 }
 
 async function runUpgrade() {
   const config = await getLocalConfig();
   return withPgPool(config.db, async (pool: pg.Pool) => {
-    await upgradeLatest(pool);
+    const db = new Database(pool);
+    await upgradeLatest(db);
   });
 }
 

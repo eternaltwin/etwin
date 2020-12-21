@@ -1,6 +1,7 @@
+import { Database, TransactionMode } from "@eternal-twin/pg-db";
 import * as fs from "fs";
 import * as furi from "furi";
-import {URL} from "url";
+import { URL } from "url";
 
 import { Queryable } from "./index";
 
@@ -198,42 +199,43 @@ export class Squirrel {
     return {states: path};
   }
 
-  public async empty(queryable: Queryable): Promise<void> {
+  public async empty(db: Database): Promise<void> {
     if (this.#drop === null) {
       throw new Error("AssertionError: No drop script");
     }
-    await queryable.query(this.#drop, []);
+    // TODO: Transaction?
+    await db.query(this.#drop, []);
   }
 
-  public async upgrade(queryable: Queryable, version: SchemaVersion): Promise<void> {
+  public async upgrade(queryable: Database, version: SchemaVersion): Promise<void> {
     return this.innerUpgrade(queryable, version);
   }
 
-  public async upgradeLatest(queryable: Queryable): Promise<void> {
+  public async upgradeLatest(queryable: Database): Promise<void> {
     return this.innerUpgrade(queryable, this.#latest);
   }
 
-  private async innerUpgrade(queryable: Queryable, version: SchemaVersion): Promise<void> {
+  private async innerUpgrade(queryable: Database, version: SchemaVersion): Promise<void> {
     const start = await this.getState(queryable);
     const migration = this.createMigration(start, version, MigrationDirection.UpgradeOnly);
     await this.innerApplyMigration(queryable, migration);
   }
 
-  public async forceCreate(queryable: Queryable, version: SchemaVersion): Promise<void> {
+  public async forceCreate(queryable: Database, version: SchemaVersion): Promise<void> {
     return this.innerForceCreate(queryable, version);
   }
 
-  public async forceCreateLatest(queryable: Queryable): Promise<void> {
+  public async forceCreateLatest(queryable: Database): Promise<void> {
     return this.innerForceCreate(queryable, this.#latest);
   }
 
-  private async innerForceCreate(queryable: Queryable, version: SchemaVersion): Promise<void> {
+  private async innerForceCreate(queryable: Database, version: SchemaVersion): Promise<void> {
     const migration = this.createMigration(0, version, MigrationDirection.UpgradeOnly);
     await this.empty(queryable);
     await this.innerApplyMigration(queryable, migration);
   }
 
-  private async innerApplyMigration(queryable: Queryable, migration: Migration): Promise<void> {
+  private async innerApplyMigration(queryable: Database, migration: Migration): Promise<void> {
     for (let i = 1; i < migration.states.length; i++) {
       const start = migration.states[i - 1];
       const end = migration.states[i];
@@ -241,7 +243,7 @@ export class Squirrel {
     }
   }
 
-  private async innerApplyTransition(queryable: Queryable, start: SchemaState, end: SchemaState): Promise<void> {
+  private async innerApplyTransition(db: Database, start: SchemaState, end: SchemaState): Promise<void> {
     if (!this.#states.has(start)) {
       throw new Error("AssertionError: Invalid start state");
     }
@@ -252,15 +254,21 @@ export class Squirrel {
     if (edge === undefined) {
       throw new Error("AssertionError: Invalid transition");
     }
-    const oldState = await this.innerGetState(queryable);
-    if (oldState !== start) {
-      throw new Error("AssertionError: Incompatible start state");
-    }
-    await queryable.query(edge.schema, []);
-    const newState = await this.innerGetState(queryable);
-    if (newState !== end) {
-      throw new Error("AssertionError: Failed transition");
-    }
+
+    return db.transaction(
+      TransactionMode.ReadWrite,
+      async (tx: Queryable): Promise<void> => {
+        const oldState = await this.innerGetState(tx);
+        if (oldState !== start) {
+          throw new Error("AssertionError: Incompatible start state");
+        }
+        await tx.query(edge.schema, []);
+        const newState = await this.innerGetState(tx);
+        if (newState !== end) {
+          throw new Error("AssertionError: Failed transition");
+        }
+      }
+    );
   }
 
   public async getState(queryable: Queryable): Promise<SchemaState> {

@@ -1,3 +1,4 @@
+import { Database, Queryable } from "@eternal-twin/pg-db";
 import * as furi from "furi";
 
 import { SchemaState, Squirrel } from "./squirrel.js";
@@ -16,36 +17,34 @@ async function getSquirrel(): Promise<Squirrel> {
 /**
  * Represents a simple queryable object for a database.
  */
-export interface Queryable {
-  query(query: string, values: readonly unknown[]): Promise<any>;
-}
+export { Queryable };
 
 export async function getState(queryable: Queryable): Promise<SchemaState> {
   const squirrel = await getSquirrel();
   return squirrel.getState(queryable);
 }
 
-export async function empty(queryable: Queryable): Promise<void> {
+export async function empty(queryable: Database): Promise<void> {
   const squirrel = await getSquirrel();
   return squirrel.empty(queryable);
 }
 
-export async function forceCreateLatest(queryable: Queryable): Promise<void> {
+export async function forceCreateLatest(queryable: Database): Promise<void> {
   const squirrel = await getSquirrel();
   return squirrel.forceCreateLatest(queryable);
 }
 
-export async function forceCreate(queryable: Queryable, state: SchemaState): Promise<void> {
+export async function forceCreate(queryable: Database, state: SchemaState): Promise<void> {
   const squirrel = await getSquirrel();
   return squirrel.forceCreate(queryable, state);
 }
 
-export async function upgrade(queryable: Queryable, state: SchemaState): Promise<void> {
+export async function upgrade(queryable: Database, state: SchemaState): Promise<void> {
   const squirrel = await getSquirrel();
   return squirrel.upgrade(queryable, state);
 }
 
-export async function upgradeLatest(queryable: Queryable): Promise<void> {
+export async function upgradeLatest(queryable: Database): Promise<void> {
   const squirrel = await getSquirrel();
   return squirrel.upgradeLatest(queryable);
 }
