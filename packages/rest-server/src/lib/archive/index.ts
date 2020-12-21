@@ -1,14 +1,17 @@
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
+import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import Router  from "@koa/router";
 
 import { KoaAuth } from "../helpers/koa-auth.js";
 import { Api as DinoparcApi, createDinoparcRouter } from "./dinoparc.js";
 import { Api as HammerfestApi, createHammerfestRouter } from "./hammerfest.js";
+import { Api as TwinoidApi, createTwinoidRouter } from "./twinoid.js";
 
-export interface Api extends DinoparcApi, HammerfestApi {
+export interface Api extends DinoparcApi, HammerfestApi, TwinoidApi {
   dinoparc: DinoparcService;
   hammerfest: HammerfestService;
+  twinoid: TwinoidService;
   koaAuth: KoaAuth;
 }
 
@@ -19,6 +22,8 @@ export function createArchiveRouter(api: Api): Router {
   router.use("/dinoparc", dinoparc.routes(), dinoparc.allowedMethods());
   const hammerfest = createHammerfestRouter(api);
   router.use("/hammerfest", hammerfest.routes(), hammerfest.allowedMethods());
+  const twinoid = createTwinoidRouter(api);
+  router.use("/twinoid", twinoid.routes(), twinoid.allowedMethods());
 
   return router;
 }

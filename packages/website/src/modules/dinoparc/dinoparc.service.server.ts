@@ -5,7 +5,7 @@ import { GetDinoparcUserOptions } from "@eternal-twin/core/lib/dinoparc/get-dino
 import { DinoparcService as CoreDinoparcService } from "@eternal-twin/core/lib/dinoparc/service";
 import { from as rxFrom, Observable } from "rxjs";
 
-import { AUTH_CONTEXT, HAMMERFEST } from "../../server/tokens";
+import { AUTH_CONTEXT, DINOPARC } from "../../server/tokens";
 import { DinoparcService } from "./dinoparc.service";
 
 @Injectable()
@@ -13,7 +13,7 @@ export class ServerDinoparcService extends DinoparcService {
   readonly #acx: AuthContext;
   readonly #dinoparc: CoreDinoparcService;
 
-  constructor(@Inject(AUTH_CONTEXT) acx: AuthContext, @Inject(HAMMERFEST) dinoparc: CoreDinoparcService) {
+  constructor(@Inject(AUTH_CONTEXT) acx: AuthContext, @Inject(DINOPARC) dinoparc: CoreDinoparcService) {
     super();
     this.#acx = acx;
     this.#dinoparc = dinoparc;

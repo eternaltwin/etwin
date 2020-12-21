@@ -1,9 +1,9 @@
 import { AuthContext } from "../auth/auth-context.js";
 import { LinkService } from "../link/service.js";
-import { DinoparcUser } from "./dinoparc-user";
-import { GetDinoparcUserOptions } from "./get-dinoparc-user-options";
-import { ShortDinoparcUser } from "./short-dinoparc-user";
-import { DinoparcStore } from "./store";
+import { DinoparcUser } from "./dinoparc-user.js";
+import { GetDinoparcUserOptions } from "./get-dinoparc-user-options.js";
+import { ShortDinoparcUser } from "./short-dinoparc-user.js";
+import { DinoparcStore } from "./store.js";
 
 export interface DinoparcServiceOptions {
   dinoparcStore: DinoparcStore;

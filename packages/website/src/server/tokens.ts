@@ -16,4 +16,6 @@ export const FORUM: InjectionToken<ForumService> = new InjectionToken("ForumServ
 
 export const HAMMERFEST: InjectionToken<HammerfestService> = new InjectionToken("HammerfestService");
 
+export const TWINOID: InjectionToken<DinoparcService> = new InjectionToken("TwinoidService");
+
 export const USER: InjectionToken<UserService> = new InjectionToken("UserService");

@@ -1,6 +1,6 @@
 <ng-container [ngSwitch]="link.user.type">
   <ng-container *ngSwitchCase="ObjectType.TwinoidUser">
-    <a href="https://twinoid.com/user/{{link.user.id}}">
+    <a [routerLink]="['', 'archive', 'twinoid', 'users', link.user.id]">
       <span><img src="/assets/login-methods/twinoid.png"/></span>
       <strong>{{link.user.displayName}}</strong>
       <em>twinoid.com</em>

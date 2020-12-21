@@ -3,6 +3,7 @@ import { SystemClockService } from "@eternal-twin/core/lib/clock/system.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { HttpDinoparcClient } from "@eternal-twin/dinoparc-client-http";
 import { PgDinoparcStore } from "@eternal-twin/dinoparc-store-pg";
@@ -58,6 +59,7 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
   const token = new PgTokenService(database, secretKeyStr, dinoparcStore, hammerfestStore);
   const dinoparc = new DinoparcService({dinoparcStore, link});
   const hammerfest = new HammerfestService({hammerfestStore, hammerfestClient, link});
+  const twinoid = new TwinoidService({twinoidStore, link});
   const user = new UserService({auth, dinoparcClient, dinoparcStore, hammerfestStore, hammerfestClient, link, userStore, token, twinoidStore, twinoidClient});
 
   for (const [key, section] of config.forum.sections) {
@@ -70,7 +72,7 @@ export async function createApi(config: Config): Promise<{api: Api; teardown(): 
     );
   }
 
-  const api: Api = {auth, dinoparc, forum, hammerfest, koaAuth, user};
+  const api: Api = {auth, dinoparc, forum, hammerfest, koaAuth, twinoid, user};
 
   async function teardown(): Promise<void> {
     await teardownPool();

@@ -13,6 +13,7 @@ import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store.js";
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
+import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
@@ -59,6 +60,7 @@ export interface Api {
   oauthProvider: OauthProviderService;
   userStore: UserStore;
   twinoidClient: TwinoidClientService;
+  twinoid: TwinoidService;
   user: UserService;
 }
 
@@ -128,6 +130,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
 
   const dinoparc = new DinoparcService({dinoparcStore, link});
   const hammerfest = new HammerfestService({hammerfestStore, hammerfestClient, link});
+  const twinoid = new TwinoidService({twinoidStore, link});
   const user = new UserService({auth, dinoparcClient, dinoparcStore, hammerfestStore, hammerfestClient, link, userStore, token, twinoidStore, twinoidClient});
 
   const koaAuth = new KoaAuth(auth);
@@ -163,7 +166,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     );
   }
 
-  const api: Api = {auth, dinoparc, forum, hammerfest, hammerfestStore, hammerfestClient, koaAuth, oauthClient, oauthProvider, userStore, twinoidClient, user};
+  const api: Api = {auth, dinoparc, forum, hammerfest, hammerfestStore, hammerfestClient, koaAuth, oauthClient, oauthProvider, userStore, twinoid, twinoidClient, user};
 
   return {api, teardown};
 }

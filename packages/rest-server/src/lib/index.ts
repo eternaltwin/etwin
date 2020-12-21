@@ -2,6 +2,7 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
+import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import Router, { RouterContext } from "@koa/router";
 
@@ -19,6 +20,7 @@ export interface Api extends AuthApi, ConfigApi, ForumApi, ArchiveApi, UsersApi 
   forum: ForumService;
   hammerfest: HammerfestService;
   koaAuth: KoaAuth;
+  twinoid: TwinoidService;
   user: UserService;
 }
 

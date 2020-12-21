@@ -3,6 +3,7 @@ import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
+import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import url from "url";
@@ -13,6 +14,7 @@ interface Api {
   forum: ForumService;
   hammerfest: HammerfestService;
   koaAuth: KoaAuth;
+  twinoid: TwinoidService;
   user: UserService;
 }
 

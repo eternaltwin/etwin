@@ -1,0 +1,12 @@
+<etwin-main-layout>
+  <ng-container *ngIf="user$ | async as user">
+    <ng-container [ngSwitch]="user !== TWINOID_USER_NOT_FOUND">
+      <ng-container *ngSwitchCase="true">
+        <etwin-twinoid-user [user]="user"></etwin-twinoid-user>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <h1 i18n="Twinoid user not found error message@@archive.twinoid.error.userNotFound">Twinoid user not found</h1>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</etwin-main-layout>

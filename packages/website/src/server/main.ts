@@ -17,7 +17,7 @@ import { AppServerModule } from "../app/app.server.module";
 import { ROUTES } from "../routes";
 import { Api, ServerAppConfig } from "./config";
 import { NgKoaEngine } from "./ng-koa-engine";
-import { AUTH_CONTEXT, CONFIG, DINOPARC, FORUM, HAMMERFEST, USER } from "./tokens";
+import { AUTH_CONTEXT, CONFIG, DINOPARC, FORUM, HAMMERFEST, TWINOID, USER } from "./tokens";
 
 const GUEST_AUTH_CONTEXT: AuthContext = Object.freeze({
   type: AuthType.Guest,
@@ -82,6 +82,7 @@ export async function app(options?: Partial<ServerAppConfig>): Promise<Koa> {
   providers.push({provide: DINOPARC, useValue: config.api.dinoparc});
   providers.push({provide: FORUM, useValue: config.api.forum});
   providers.push({provide: HAMMERFEST, useValue: config.api.hammerfest});
+  providers.push({provide: TWINOID, useValue: config.api.twinoid});
   providers.push({provide: USER, useValue: config.api.user});
 
   const engine: NgKoaEngine = await NgKoaEngine.create({
