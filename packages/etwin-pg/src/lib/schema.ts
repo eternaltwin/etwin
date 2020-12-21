@@ -11,11 +11,13 @@ export type PgForumThreadId = string;
 export type PgLocaleId = string;
 
 export interface UserRow {
-  user_id: string;
+  user_id: PgUserId;
 
-  ctime: Date;
+  ctime: PgInstant;
 
   display_name: string;
+
+  display_name_mtime: PgInstant;
 
   email_address: string | null;
 

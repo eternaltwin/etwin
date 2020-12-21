@@ -12,6 +12,7 @@ import {
 } from "@eternal-twin/core/lib/auth/register-with-verified-email-options.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
+import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { $User, User } from "@eternal-twin/core/lib/user/user.js";
@@ -70,39 +71,16 @@ export function createUsersRouter(api: Api): Router {
       }
     }
     cx.cookies.set(SESSION_COOKIE, userAndSession.session.id);
-    const user: User = {
-      ...userAndSession.user,
-      links: {
-        dinoparcCom: {
-          current: null,
-          old: [],
-        },
-        enDinoparcCom: {
-          current: null,
-          old: [],
-        },
-        hammerfestEs: {
-          current: null,
-          old: [],
-        },
-        hammerfestFr: {
-          current: null,
-          old: [],
-        },
-        hfestNet: {
-          current: null,
-          old: [],
-        },
-        spDinoparcCom: {
-          current: null,
-          old: [],
-        },
-        twinoid: {
-          current: null,
-          old: [],
-        },
-      }
+    const acx: UserAuthContext = {
+      type: AuthType.User,
+      user: userAndSession.user,
+      isAdministrator: userAndSession.isAdministrator,
+      scope: AuthScope.Default,
     };
+    const user: User | null = await api.user.getUserById(acx, {id: userAndSession.user.id});
+    if (user === null) {
+      throw new Error("AssertionError: UserNotFound");
+    }
     cx.response.body = $User.write(JSON_VALUE_WRITER, user);
   }
 

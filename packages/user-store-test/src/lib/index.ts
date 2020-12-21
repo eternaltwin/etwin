@@ -5,8 +5,9 @@ import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/registe
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
+import { VirtualClockService } from "@eternal-twin/core/lib/clock/virtual.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { CompleteSimpleUser } from "@eternal-twin/core/lib/user/complete-simple-user.js";
+import { $CompleteSimpleUser, CompleteSimpleUser } from "@eternal-twin/core/lib/user/complete-simple-user.js";
 import { COMPLETE_USER_FIELDS } from "@eternal-twin/core/lib/user/complete-user-fields.js";
 import { DEFAULT_USER_FIELDS } from "@eternal-twin/core/lib/user/default-user-fields.js";
 import { MaybeCompleteSimpleUser } from "@eternal-twin/core/lib/user/maybe-complete-simple-user.js";
@@ -20,6 +21,7 @@ import chai from "chai";
 
 export interface Api {
   auth: AuthService;
+  clock: VirtualClockService;
   userStore: UserStore;
 }
 
@@ -39,7 +41,7 @@ async function createUser(
     type: AuthType.User,
     scope: AuthScope.Default,
     user: userAndSession.user,
-    isAdministrator: userAndSession.user.isAdministrator,
+    isAdministrator: userAndSession.isAdministrator,
   };
 }
 
@@ -64,17 +66,34 @@ export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Pr
   it("Register the admin and retrieve itself (complete)", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
+      const NOW = api.clock.now();
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       {
         const actual: MaybeCompleteSimpleUser | null = await api.userStore.getUser({ref: {id: aliceAuth.user.id}, fields: COMPLETE_USER_FIELDS});
         chai.assert.isNotNull(actual);
-        chai.assert.instanceOf((actual as CompleteSimpleUser).ctime, Date);
+        if (!$CompleteSimpleUser.test(actual)) {
+          throw new Error("AssertionError: Expected CompleteSimpleUser");
+        }
         const expected: CompleteSimpleUser = {
           type: ObjectType.User,
-          id: actual!.id,
-          displayName: {current: {value: "Alice"}},
+          id: actual.id,
+          createdAt: NOW,
+          displayName: {
+            current: {
+              start: {
+                time: NOW,
+                user: {
+                  type: ObjectType.User,
+                  id: actual.id,
+                  displayName: {current: {value: "Alice"}},
+                }
+              },
+              end: null,
+              value: "Alice",
+            },
+            old: [],
+          },
           isAdministrator: true,
-          ctime: (actual as CompleteSimpleUser).ctime,
           username: "alice",
           emailAddress: null,
         };
@@ -86,14 +105,30 @@ export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Pr
   it("Register an admin and user, retrieve its default fields", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
+      const NOW = api.clock.now();
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
       {
-        const actual: MaybeCompleteSimpleUser | null = await api.userStore.getUser({ref: {id: aliceAuth.user.id}, fields: DEFAULT_USER_FIELDS});
+        const actual: SimpleUser | null = await api.userStore.getUser({ref: {id: aliceAuth.user.id}, fields: DEFAULT_USER_FIELDS});
         chai.assert.isNotNull(actual);
         const expected: SimpleUser = {
           type: ObjectType.User,
           id: actual!.id,
-          displayName: {current: {value: "Alice"}},
+          createdAt: NOW,
+          displayName: {
+            current: {
+              start: {
+                time: NOW,
+                user: {
+                  type: ObjectType.User,
+                  id: actual!.id,
+                  displayName: {current: {value: "Alice"}},
+                }
+              },
+              end: null,
+              value: "Alice",
+            },
+            old: [],
+          },
           isAdministrator: true,
         };
         chai.assert.deepEqual(actual, expected);

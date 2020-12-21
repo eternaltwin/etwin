@@ -4,8 +4,9 @@ import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
 
+import { $FieldShortVersions, FieldShortVersions } from "../core/field-short-versions.js";
 import { $ObjectType, ObjectType } from "../core/object-type.js";
-import { $UserDisplayNameVersions, UserDisplayNameVersions } from "./user-display-name-versions.js";
+import { $UserDisplayName, UserDisplayName } from "./user-display-name.js";
 import { $UserId, UserId } from "./user-id.js";
 
 /**
@@ -16,14 +17,14 @@ export interface ShortUser {
 
   id: UserId;
 
-  displayName: UserDisplayNameVersions;
+  displayName: FieldShortVersions<UserDisplayName>;
 }
 
 export const $ShortUser: RecordIoType<ShortUser> = new RecordType<ShortUser>({
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.User})},
     id: {type: $UserId},
-    displayName: {type: $UserDisplayNameVersions},
+    displayName: {type: $FieldShortVersions.apply($UserDisplayName) as RecordIoType<FieldShortVersions<UserDisplayName>>},
   },
   changeCase: CaseStyle.SnakeCase,
 });

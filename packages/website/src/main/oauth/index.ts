@@ -186,13 +186,13 @@ export async function createOauthRouter(api: Api): Promise<Router> {
     const {state, accessToken} = stateAndAccessToken;
     switch (state.action.type) {
       case EtwinOauthActionType.Login: {
-        const {user, session}: UserAndSession = await api.auth.registerOrLoginWithTwinoidOauth(GUEST_ACX, accessToken.accessToken);
+        const {isAdministrator, user, session}: UserAndSession = await api.auth.registerOrLoginWithTwinoidOauth(GUEST_ACX, accessToken.accessToken);
         cx.cookies.set(SESSION_COOKIE, session.id);
         const auth: UserAuthContext = {
           type: AuthType.User,
           scope: AuthScope.Default,
           user,
-          isAdministrator: user.isAdministrator,
+          isAdministrator: isAdministrator,
         };
         cx.response.body = $AuthContext.write(JSON_VALUE_WRITER, auth);
 

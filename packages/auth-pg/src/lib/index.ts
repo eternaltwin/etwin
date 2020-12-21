@@ -17,7 +17,7 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { Session } from "@eternal-twin/core/lib/auth/session.js";
 import { SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
 import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
-import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
+import { $UserAndSession, UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
 import { $UserLogin, UserLogin } from "@eternal-twin/core/lib/auth/user-login.js";
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
@@ -42,6 +42,7 @@ import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-a
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
+import { DEFAULT_USER_FIELDS } from "@eternal-twin/core/lib/user/default-user-fields.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
 import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
@@ -177,7 +178,7 @@ export class PgAuthService implements AuthService {
 
       const session: Session = await this.createSession(q, user.id);
 
-      return {user, session};
+      return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
     });
   }
 
@@ -199,7 +200,7 @@ export class PgAuthService implements AuthService {
     return this.#database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       await this.setPasswordHashRw(q, user.id, passwordHash);
       const session: Session = await this.createSession(q, user.id);
-      return {user, session};
+      return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
     });
   }
 
@@ -249,8 +250,11 @@ export class PgAuthService implements AuthService {
     }
     const result: UserAndSession = await this.#database.transaction(TransactionMode.ReadWrite, async queryable => {
       const session: Session = await this.createSession(queryable, userId);
-      const user = await this.getExistingUserById(queryable, session.user.id);
-      return {user, session};
+      const user = await this.#userStore.getUser({ref: {id: userId}, fields: DEFAULT_USER_FIELDS});
+      if (user === null) {
+        throw new Error("AssertionError: UserNotFound");
+      }
+      return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
     });
     // At this point the authentication is complete, we may still use the Hammerfest session to improve our archive but
     // errors should not prevent the authentication.
@@ -299,8 +303,11 @@ export class PgAuthService implements AuthService {
     }
     const result: UserAndSession = await this.#database.transaction(TransactionMode.ReadWrite, async queryable => {
       const session: Session = await this.createSession(queryable, userId);
-      const user = await this.getExistingUserById(queryable, session.user.id);
-      return {user, session};
+      const user = await this.#userStore.getUser({ref: {id: userId}, fields: DEFAULT_USER_FIELDS});
+      if (user === null) {
+        throw new Error("AssertionError: UserNotFound");
+      }
+      return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
     });
     // At this point the authentication is complete, we may still use the Hammerfest session to improve our archive but
     // errors should not prevent the authentication.
@@ -345,8 +352,11 @@ export class PgAuthService implements AuthService {
     }
     const result: UserAndSession = await this.#database.transaction(TransactionMode.ReadWrite, async queryable => {
       const session: Session = await this.createSession(queryable, userId);
-      const user = await this.getExistingUserById(queryable, session.user.id);
-      return {user, session};
+      const user = await this.#userStore.getUser({ref: {id: userId}, fields: DEFAULT_USER_FIELDS});
+      if (user === null) {
+        throw new Error("AssertionError: UserNotFound");
+      }
+      return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
     });
     return result;
   }
@@ -361,9 +371,12 @@ export class PgAuthService implements AuthService {
         return null;
       }
 
-      const user: SimpleUser = await this.getExistingUserById(q, session.user.id);
+      const user = await this.#userStore.getUser({ref: {id: session.user.id}, fields: DEFAULT_USER_FIELDS});
+      if (user === null) {
+        throw new Error("AssertionError: UserNotFound");
+      }
 
-      return {user, session};
+      return $UserAndSession.clone({user, isAdministrator: true, session});
     });
   }
 
@@ -537,9 +550,11 @@ export class PgAuthService implements AuthService {
     }
 
     const session: Session = await this.createSession(queryable, row.user_id);
-    const user = await this.getExistingUserById(queryable, session.user.id);
-
-    return {user, session};
+    const user = await this.#userStore.getUser({ref: {id: row.user_id}, fields: DEFAULT_USER_FIELDS});
+    if (user === null) {
+      throw new Error("AssertionError: UserNotFound");
+    }
+    return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
   }
 
   private async createValidatedEmailVerification(
@@ -606,23 +621,6 @@ export class PgAuthService implements AuthService {
       user: {type: ObjectType.User, id: row.user_id, displayName: {current: {value: row.display_name}}},
       ctime: row.ctime,
       atime: row.atime,
-    };
-  }
-
-  private async getExistingUserById(queryable: Queryable, userId: UserId): Promise<SimpleUser> {
-    type Row = Pick<UserRow, "user_id" | "display_name" | "is_administrator">;
-    const row: Row = await queryable.one(
-      `
-      SELECT user_id, display_name, is_administrator
-      FROM users
-      WHERE users.user_id = $1::UUID;`,
-      [userId],
-    );
-    return {
-      type: ObjectType.User,
-      id: row.user_id,
-      displayName: {current: {value: row.display_name}},
-      isAdministrator: row.is_administrator,
     };
   }
 

@@ -34,7 +34,7 @@ async function createUser(
     type: AuthType.User,
     scope: AuthScope.Default,
     user: userAndSession.user,
-    isAdministrator: userAndSession.user.isAdministrator,
+    isAdministrator: userAndSession.isAdministrator,
   };
 }
 

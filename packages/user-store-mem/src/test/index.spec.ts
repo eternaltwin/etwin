@@ -29,7 +29,7 @@ async function withMemUserStore<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const email = new InMemoryEmailService();
   const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
   const password = new ScryptPasswordService();
-  const userStore = new MemUserStore({uuidGenerator});
+  const userStore = new MemUserStore({clock, uuidGenerator});
   const dinoparcStore = new MemDinoparcStore();
   const hammerfestStore = new MemHammerfestStore();
   const twinoidStore = new MemTwinoidStore();
@@ -40,7 +40,7 @@ async function withMemUserStore<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
   const oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
   const auth = new InMemoryAuthService({dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});
-  return fn({auth, userStore});
+  return fn({auth, clock, userStore});
 }
 
 describe("MemUserStore", function () {

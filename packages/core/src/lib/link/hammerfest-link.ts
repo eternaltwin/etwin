@@ -3,21 +3,21 @@ import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
 
+import { $UserDot, UserDot } from "../core/user-dot.js";
 import { $ShortHammerfestUser, ShortHammerfestUser } from "../hammerfest/short-hammerfest-user.js";
-import { $LinkAction, LinkAction } from "./link-action.js";
 
 /**
  * Active link from an Eternal-Twin user to a Hammerfest user.
  */
 export interface HammerfestLink {
-  link: LinkAction;
+  link: UserDot;
   unlink: null;
   user: ShortHammerfestUser;
 }
 
 export const $HammerfestLink: RecordIoType<HammerfestLink> = new RecordType<HammerfestLink>({
   properties: {
-    link: {type: $LinkAction},
+    link: {type: $UserDot},
     unlink: {type: $Null},
     user: {type: $ShortHammerfestUser},
   },

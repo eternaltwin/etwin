@@ -61,7 +61,7 @@ export class KoaAuth {
         id: userAndSession.user.id,
         displayName: userAndSession.user.displayName,
       },
-      isAdministrator: userAndSession.user.isAdministrator,
+      isAdministrator: userAndSession.isAdministrator,
     };
   }
 

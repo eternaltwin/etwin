@@ -45,7 +45,7 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
   const email = new ConsoleEmailService();
   const emailTemplate = new EtwinEmailTemplateService(config.etwin.externalUri);
   const password = new ScryptPasswordService();
-  const userStore = new PgUserStore({database, databaseSecret: secretKeyStr, uuidGenerator});
+  const userStore = new PgUserStore({clock, database, databaseSecret: secretKeyStr, uuidGenerator});
   const dinoparcClient = new HttpDinoparcClient();
   const dinoparcStore = new PgDinoparcStore(database);
   const hammerfestStore = new PgHammerfestStore(database);

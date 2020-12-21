@@ -33,6 +33,7 @@ import { LinkToTwinoidWithRefOptions } from "./link-to-twinoid-with-ref-options.
 import { MaybeCompleteSimpleUser } from "./maybe-complete-simple-user.js";
 import { MaybeCompleteUser } from "./maybe-complete-user.js";
 import { UserStore } from "./store.js";
+import { User } from "./user.js";
 import { UserFieldsType } from "./user-fields-type.js";
 
 export interface UserServiceOptions {
@@ -82,7 +83,6 @@ export class UserService {
         userFields = {type: UserFieldsType.CompleteIfSelf, selfUserId: acx.user.id};
       }
     }
-
     const simpleUser: MaybeCompleteSimpleUser | null = await this.#userStore.getUser({
       ref: {id: options.id},
       time: options.time,
@@ -91,9 +91,13 @@ export class UserService {
     if (simpleUser === null) {
       return null;
     }
-    const hasPassword = await this.#auth.hasPassword(simpleUser.id);
     const links = await this.#link.getVersionedLinks(simpleUser.id);
-    return {...simpleUser, hasPassword, links};
+    const user: User = {...simpleUser, links};
+    if (acx.type !== AuthType.User || (!acx.isAdministrator && user.id !== acx.user.id)) {
+      return user;
+    }
+    const hasPassword = await this.#auth.hasPassword(simpleUser.id);
+    return {...user, hasPassword, links};
   }
 
   async linkToDinoparc(acx: AuthContext, options: Readonly<LinkToDinoparcOptions>): Promise<VersionedDinoparcLink> {

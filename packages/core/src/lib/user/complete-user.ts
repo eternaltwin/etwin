@@ -4,10 +4,11 @@ import { $Date } from "kryo/lib/date.js";
 import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
+import { $FieldVersions, FieldVersions } from "../core/field-versions.js";
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $NullableEmailAddress, NullableEmailAddress } from "../email/email-address.js";
 import { $VersionedLinks, VersionedLinks } from "../link/versioned-links.js";
-import { $UserDisplayNameVersions, UserDisplayNameVersions } from "./user-display-name-versions.js";
+import { $UserDisplayName, UserDisplayName } from "./user-display-name.js";
 import { $UserId, UserId } from "./user-id.js";
 import { $NullableUsername, NullableUsername } from "./username.js";
 
@@ -22,13 +23,13 @@ export interface CompleteUser {
 
   id: UserId;
 
-  displayName: UserDisplayNameVersions;
+  createdAt: Date;
+
+  displayName: FieldVersions<UserDisplayName>;
 
   isAdministrator: boolean;
 
   links: VersionedLinks;
-
-  ctime: Date;
 
   username: NullableUsername;
 
@@ -41,10 +42,10 @@ export const $CompleteUser: RecordIoType<CompleteUser> = new RecordType<Complete
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.User})},
     id: {type: $UserId},
-    displayName: {type: $UserDisplayNameVersions},
+    createdAt: {type: $Date},
+    displayName: {type: $FieldVersions.apply($UserDisplayName) as RecordIoType<FieldVersions<UserDisplayName>>},
     isAdministrator: {type: $Boolean},
     links: {type: $VersionedLinks},
-    ctime: {type: $Date},
     username: {type: $NullableUsername},
     emailAddress: {type: $NullableEmailAddress},
     hasPassword: {type: $Boolean},

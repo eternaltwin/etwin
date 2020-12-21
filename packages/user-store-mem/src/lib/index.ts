@@ -1,3 +1,5 @@
+import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
+import { FieldCurrentVersion } from "@eternal-twin/core/lib/core/field-current-version.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
 import { EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
@@ -18,11 +20,21 @@ import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { UserRef } from "@eternal-twin/core/lib/user/user-ref.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
 
-export interface InMemoryUser {
+interface MemDot {
+  timeMs: number;
+  userId: UserId;
+}
+
+interface MemField<T> {
+  start: MemDot;
+  end: MemDot | null;
+  value: T;
+}
+
+export interface MemUser {
   id: UserId;
   ctime: Date;
-  displayName: UserDisplayName;
-  displayNameMtime: Date;
+  displayName: MemField<UserDisplayName>[];
   emailAddress: EmailAddress | null;
   emailAddressMtime: Date;
   username: Username | null;
@@ -30,28 +42,33 @@ export interface InMemoryUser {
   isAdministrator: boolean,
 }
 
-export interface InMemorySimpleUserServiceOption {
+export interface MemUserStoreOptions {
+  clock: ClockService;
   uuidGenerator: UuidGenerator;
 }
 
 export class MemUserStore implements UserStore {
+  readonly #clock: ClockService;
   readonly #uuidGenerator: UuidGenerator;
-  readonly #users: Map<UserId, InMemoryUser>;
+  readonly #users: Map<UserId, MemUser>;
 
-  constructor(options: Readonly<InMemorySimpleUserServiceOption>) {
+  constructor(options: Readonly<MemUserStoreOptions>) {
+    this.#clock = options.clock;
     this.#uuidGenerator = options.uuidGenerator;
     this.#users = new Map();
   }
 
   async createUser(options: Readonly<CreateUserOptions>): Promise<SimpleUser> {
-    const imUser = await this._createUser(options.displayName, options.email, options.username);
+    const memUser = await this._createMemUser(options.displayName, options.email, options.username);
     return {
       type: ObjectType.User,
-      id: imUser.id,
+      id: memUser.id,
+      createdAt: new Date(memUser.ctime),
       displayName: {
-        current: {value: imUser.displayName},
+        current: this.toCurrentField(memUser.displayName[0]),
+        old: [],
       },
-      isAdministrator: imUser.isAdministrator,
+      isAdministrator: memUser.isAdministrator,
     };
   }
 
@@ -60,7 +77,7 @@ export class MemUserStore implements UserStore {
   getUser(options: Readonly<GetUserOptions & {fields: CompleteUserFields}>): Promise<CompleteSimpleUser | null>;
   getUser(options: Readonly<GetUserOptions & {fields: CompleteIfSelfUserFields}>): Promise<MaybeCompleteSimpleUser | null>;
   public async getUser(options: Readonly<GetUserOptions>): Promise<ShortUser | SimpleUser | CompleteSimpleUser | null> {
-    const memUser: InMemoryUser | null = await this._getMemUserByRef(options.ref);
+    const memUser: MemUser | null = await this._getMemUserByRef(options.ref);
     if (memUser === null) {
       return null;
     }
@@ -69,7 +86,7 @@ export class MemUserStore implements UserStore {
       id: memUser.id,
       displayName: {
         current: {
-          value: memUser.displayName,
+          value: memUser.displayName[0].value,
         },
       },
     };
@@ -77,7 +94,13 @@ export class MemUserStore implements UserStore {
       return short;
     }
     const def: SimpleUser = {
-      ...short,
+      type: ObjectType.User,
+      id: memUser.id,
+      createdAt: new Date(memUser.ctime),
+      displayName: {
+        current: this.toCurrentField(memUser.displayName[0]),
+        old: [],
+      },
       isAdministrator: memUser.isAdministrator,
     };
     if (
@@ -88,7 +111,7 @@ export class MemUserStore implements UserStore {
     }
     const complete: CompleteSimpleUser = {
       ...def,
-      ctime: memUser.ctime,
+      createdAt: memUser.ctime,
       username: memUser.username,
       emailAddress: memUser.emailAddress,
     };
@@ -107,29 +130,34 @@ export class MemUserStore implements UserStore {
     this.#users.delete(userId);
   }
 
-  private async _createUser(
+  private async _createMemUser(
     displayName: UserDisplayName,
     emailAddress: EmailAddress | null,
     username: Username | null,
-  ): Promise<InMemoryUser> {
+  ): Promise<MemUser> {
     const userId: UserId = this.#uuidGenerator.next();
-    const time: number = Date.now();
-    const inMemoryUser: InMemoryUser = {
+    const timeMs: number = this.#clock.nowUnixMs();
+    const inMemoryUser: MemUser = {
       id: userId,
-      ctime: new Date(time),
-      displayName,
-      displayNameMtime: new Date(time),
+      ctime: new Date(timeMs),
+      displayName: [
+        {
+          start: {userId, timeMs},
+          end: null,
+          value: displayName,
+        }
+      ],
       emailAddress,
-      emailAddressMtime: new Date(time),
+      emailAddressMtime: new Date(timeMs),
       username,
-      usernameMtime: new Date(time),
+      usernameMtime: new Date(timeMs),
       isAdministrator: this.#users.size === 0,
     };
     this.#users.set(inMemoryUser.id, inMemoryUser);
     return inMemoryUser;
   }
 
-  private async _getMemUserByRef(ref: UserRef): Promise<InMemoryUser | null> {
+  private async _getMemUserByRef(ref: UserRef): Promise<MemUser | null> {
     if (ref.id !== undefined) {
       return this.#users.get(ref.id) ?? null;
     } else if (ref.username !== undefined) {
@@ -141,7 +169,7 @@ export class MemUserStore implements UserStore {
     }
   }
 
-  private async _getInMemoryUserByEmail(emailAddress: EmailAddress): Promise<InMemoryUser | null> {
+  private async _getInMemoryUserByEmail(emailAddress: EmailAddress): Promise<MemUser | null> {
     for (const user of this.#users.values()) {
       if (user.emailAddress === emailAddress) {
         return user;
@@ -150,12 +178,39 @@ export class MemUserStore implements UserStore {
     return null;
   }
 
-  private async _getInMemoryUserByUsername(username: Username): Promise<InMemoryUser | null> {
+  private async _getInMemoryUserByUsername(username: Username): Promise<MemUser | null> {
     for (const user of this.#users.values()) {
       if (user.username === username) {
         return user;
       }
     }
     return null;
+  }
+
+  private getRequiredShortUser(userId: UserId): ShortUser {
+    const memUser: MemUser | undefined = this.#users.get(userId);
+    if (memUser === undefined) {
+      throw new Error(`AssertionError: UserNotFound: ${userId}`);
+    }
+    return {
+      type: ObjectType.User,
+      id: memUser.id,
+      displayName: {
+        current: {
+          value: memUser.displayName[0].value,
+        }
+      }
+    };
+  }
+
+  private toCurrentField<T>(memField: MemField<T>): FieldCurrentVersion<T> {
+    return {
+      start: {
+        time: new Date(memField.start.timeMs),
+        user: this.getRequiredShortUser(memField.start.userId),
+      },
+      end: null,
+      value: memField.value,
+    };
   }
 }

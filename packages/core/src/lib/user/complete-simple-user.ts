@@ -4,9 +4,10 @@ import { $Date } from "kryo/lib/date.js";
 import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
+import { $FieldVersions, FieldVersions } from "../core/field-versions.js";
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $NullableEmailAddress, NullableEmailAddress } from "../email/email-address.js";
-import { $UserDisplayNameVersions, UserDisplayNameVersions } from "./user-display-name-versions.js";
+import { $UserDisplayName, UserDisplayName } from "./user-display-name.js";
 import { $UserId, UserId } from "./user-id.js";
 import { $NullableUsername, NullableUsername } from "./username.js";
 
@@ -18,11 +19,11 @@ export interface CompleteSimpleUser {
 
   id: UserId;
 
-  displayName: UserDisplayNameVersions;
+  createdAt: Date;
+
+  displayName: FieldVersions<UserDisplayName>;
 
   isAdministrator: boolean;
-
-  ctime: Date;
 
   username: NullableUsername;
 
@@ -33,9 +34,9 @@ export const $CompleteSimpleUser: RecordIoType<CompleteSimpleUser> = new RecordT
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.User})},
     id: {type: $UserId},
-    displayName: {type: $UserDisplayNameVersions},
+    createdAt: {type: $Date},
+    displayName: {type: $FieldVersions.apply($UserDisplayName) as RecordIoType<FieldVersions<UserDisplayName>>},
     isAdministrator: {type: $Boolean},
-    ctime: {type: $Date},
     username: {type: $NullableUsername},
     emailAddress: {type: $NullableEmailAddress},
   },

@@ -4,7 +4,6 @@ import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { $RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
 import { $UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { $SimpleUser, SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import chai from "chai";
 import chaiHttp from "chai-http";
@@ -34,7 +33,7 @@ describe("/auth", () => {
     this.timeout(30000);
     return withTestServer(async ({server}) => {
       const agent: TestAgent = new TestAgent(chai.request.agent(server));
-      const actualUser: ShortUser = await agent.post(
+      const actualUser: SimpleUser = await agent.post(
         "/users",
         $RegisterWithUsernameOptions,
         {
@@ -45,15 +44,34 @@ describe("/auth", () => {
         $SimpleUser,
       );
       {
+        console.error("ERR1");
         const expected: SimpleUser = {
           type: ObjectType.User,
           id: actualUser.id,
-          displayName: {current: {value: "Alice"}},
+          createdAt: actualUser.createdAt,
+          displayName: {
+            current: {
+              start: {
+                time: actualUser.createdAt,
+                user: {
+                  type: ObjectType.User,
+                  id: actualUser.id,
+                  displayName: {
+                    current: {value: "Alice"},
+                  },
+                }
+              },
+              end: null,
+              value: "Alice"
+            },
+            old: []
+          },
           isAdministrator: true,
         };
         chai.assert.deepEqual(actualUser, expected);
       }
       {
+        console.error("ERR2");
         const actual: AuthContext = await agent.get("/auth/self", $AuthContext);
         const expected: AuthContext = {
           type: AuthType.User,
@@ -109,7 +127,24 @@ describe("/auth", () => {
         const expected: SimpleUser = {
           type: ObjectType.User,
           id: user.id,
-          displayName: {current: {value: "Alice"}},
+          createdAt: user.createdAt,
+          displayName: {
+            current: {
+              start: {
+                time: user.createdAt,
+                user: {
+                  type: ObjectType.User,
+                  id: user.id,
+                  displayName: {
+                    current: {value: "Alice"},
+                  },
+                }
+              },
+              end: null,
+              value: "Alice"
+            },
+            old: []
+          },
           isAdministrator: true,
         };
         chai.assert.deepEqual(actual, expected);
@@ -121,7 +156,7 @@ describe("/auth", () => {
     this.timeout(30000);
     return withTestServer(async ({server}) => {
       const agent: TestAgent = new TestAgent(chai.request.agent(server));
-      const actualUser: ShortUser = await agent.post(
+      const actualUser: SimpleUser = await agent.post(
         "/users",
         $RegisterWithUsernameOptions,
         {
@@ -135,7 +170,24 @@ describe("/auth", () => {
         const expected: SimpleUser = {
           type: ObjectType.User,
           id: actualUser.id,
-          displayName: {current: {value: "Alice"}},
+          createdAt: actualUser.createdAt,
+          displayName: {
+            current: {
+              start: {
+                time: actualUser.createdAt,
+                user: {
+                  type: ObjectType.User,
+                  id: actualUser.id,
+                  displayName: {
+                    current: {value: "Alice"},
+                  },
+                }
+              },
+              end: null,
+              value: "Alice"
+            },
+            old: []
+          },
           isAdministrator: true,
         };
         chai.assert.deepEqual(actualUser, expected);

@@ -3,7 +3,7 @@ import { AnnouncementListing } from "@eternal-twin/core/lib/announcement/announc
 import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
+import { GUEST_AUTH } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
 import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
@@ -22,8 +22,6 @@ export interface Api {
   announcement: AnnouncementService;
 }
 
-const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};
-
 async function createUser(
   auth: AuthService,
   username: Username,
@@ -40,7 +38,7 @@ async function createUser(
     type: AuthType.User,
     scope: AuthScope.Default,
     user: userAndSession.user,
-    isAdministrator: userAndSession.user.isAdministrator,
+    isAdministrator: userAndSession.isAdministrator,
   };
 }
 

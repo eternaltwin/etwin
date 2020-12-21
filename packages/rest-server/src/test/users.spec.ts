@@ -21,9 +21,23 @@ describe("/users", () => {
         const expected: CompleteUser = {
           type: ObjectType.User,
           id: alice.id,
-          displayName: {current: {value: "Alice"}},
+          createdAt: alice.createdAt,
+          displayName: {
+            current: {
+              start: {
+                time: alice.createdAt,
+                user: {
+                  type: ObjectType.User,
+                  id: alice.id,
+                  displayName: {current: {value: "Alice"}},
+                }
+              },
+              end: null,
+              value: "Alice",
+            },
+            old: [],
+          },
           isAdministrator: true,
-          ctime: actual.ctime,
           username: "alice",
           emailAddress: null,
           hasPassword: true,
@@ -65,7 +79,22 @@ describe("/users", () => {
         const expected: User = {
           type: ObjectType.User,
           id: alice.id,
-          displayName: {current: {value: "Alice"}},
+          createdAt: alice.createdAt,
+          displayName: {
+            current: {
+              start: {
+                time: alice.createdAt,
+                user: {
+                  type: ObjectType.User,
+                  id: alice.id,
+                  displayName: {current: {value: "Alice"}},
+                }
+              },
+              end: null,
+              value: "Alice",
+            },
+            old: [],
+          },
           isAdministrator: true,
           links: {
             dinoparcCom: {
@@ -105,7 +134,22 @@ describe("/users", () => {
         const expected: User = {
           type: ObjectType.User,
           id: alice.id,
-          displayName: {current: {value: "Alice"}},
+          createdAt: alice.createdAt,
+          displayName: {
+            current: {
+              start: {
+                time: alice.createdAt,
+                user: {
+                  type: ObjectType.User,
+                  id: alice.id,
+                  displayName: {current: {value: "Alice"}},
+                }
+              },
+              end: null,
+              value: "Alice",
+            },
+            old: [],
+          },
           isAdministrator: true,
           links: {
             dinoparcCom: {
@@ -145,9 +189,23 @@ describe("/users", () => {
         const expected: CompleteUser = {
           type: ObjectType.User,
           id: bob.id,
-          displayName: {current: {value: "Bob"}},
+          createdAt: bob.createdAt,
+          displayName: {
+            current: {
+              start: {
+                time: bob.createdAt,
+                user: {
+                  type: ObjectType.User,
+                  id: bob.id,
+                  displayName: {current: {value: "Bob"}},
+                }
+              },
+              end: null,
+              value: "Bob",
+            },
+            old: [],
+          },
           isAdministrator: false,
-          ctime: actual.ctime,
           username: "bob",
           emailAddress: null,
           hasPassword: true,
@@ -189,9 +247,23 @@ describe("/users", () => {
         const expected: CompleteUser = {
           type: ObjectType.User,
           id: bob.id,
-          displayName: {current: {value: "Bob"}},
+          createdAt: bob.createdAt,
+          displayName: {
+            current: {
+              start: {
+                time: bob.createdAt,
+                user: {
+                  type: ObjectType.User,
+                  id: bob.id,
+                  displayName: {current: {value: "Bob"}},
+                }
+              },
+              end: null,
+              value: "Bob",
+            },
+            old: [],
+          },
           isAdministrator: false,
-          ctime: actual.ctime,
           username: "bob",
           emailAddress: null,
           hasPassword: true,
@@ -233,7 +305,22 @@ describe("/users", () => {
         const expected: User = {
           type: ObjectType.User,
           id: bob.id,
-          displayName: {current: {value: "Bob"}},
+          createdAt: bob.createdAt,
+          displayName: {
+            current: {
+              start: {
+                time: bob.createdAt,
+                user: {
+                  type: ObjectType.User,
+                  id: bob.id,
+                  displayName: {current: {value: "Bob"}},
+                }
+              },
+              end: null,
+              value: "Bob",
+            },
+            old: [],
+          },
           isAdministrator: false,
           links: {
             dinoparcCom: {

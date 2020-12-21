@@ -1,10 +1,12 @@
 import { CaseStyle } from "kryo";
 import { $Boolean } from "kryo/lib/boolean.js";
+import { $Date } from "kryo/lib/date.js";
 import { LiteralType } from "kryo/lib/literal.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
+import { $FieldVersions, FieldVersions } from "../core/field-versions.js";
 import { $ObjectType, ObjectType } from "../core/object-type.js";
-import { $UserDisplayNameVersions, UserDisplayNameVersions } from "./user-display-name-versions.js";
+import { $UserDisplayName, UserDisplayName } from "./user-display-name.js";
 import { $UserId, UserId } from "./user-id.js";
 
 /**
@@ -18,7 +20,9 @@ export interface SimpleUser {
 
   id: UserId;
 
-  displayName: UserDisplayNameVersions;
+  createdAt: Date;
+
+  displayName: FieldVersions<UserDisplayName>;
 
   isAdministrator: boolean;
 }
@@ -27,7 +31,8 @@ export const $SimpleUser: RecordIoType<SimpleUser> = new RecordType<SimpleUser>(
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.User})},
     id: {type: $UserId},
-    displayName: {type: $UserDisplayNameVersions},
+    createdAt: {type: $Date},
+    displayName: {type: $FieldVersions.apply($UserDisplayName) as RecordIoType<FieldVersions<UserDisplayName>>},
     isAdministrator: {type: $Boolean},
   },
   changeCase: CaseStyle.SnakeCase,

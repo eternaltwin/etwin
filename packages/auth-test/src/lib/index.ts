@@ -58,8 +58,8 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
             type: ObjectType.User,
             id: actual.user.id,
             displayName: {current: {value: "Alice"}},
-            isAdministrator: true,
           },
+          isAdministrator: true,
           session: {
             id: actual.session.id,
             user: {
@@ -91,8 +91,8 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
             type: ObjectType.User,
             id: actual.user.id,
             displayName: {current: {value: "Alice"}},
-            isAdministrator: true,
           },
+          isAdministrator: true,
           session: {
             id: actual.session.id,
             user: {
@@ -128,8 +128,8 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
             type: ObjectType.User,
             id: actual.user.id,
             displayName: {current: {value: "Alice"}},
-            isAdministrator: true,
           },
+          isAdministrator: true,
           session: {
             id: actual.session.id,
             user: {
@@ -163,8 +163,8 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
             type: ObjectType.User,
             id: userAndSession.user.id,
             displayName: {current: {value: "alice"}},
-            isAdministrator: true,
           },
+          isAdministrator: true,
           session: {
             id: userAndSession.session.id,
             user: {

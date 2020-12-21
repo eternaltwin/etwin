@@ -41,7 +41,7 @@ async function withPgUserStore<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
     const password = new ScryptPasswordService();
-    const userStore = new PgUserStore({database, databaseSecret: secretKeyStr, uuidGenerator});
+    const userStore = new PgUserStore({clock, database, databaseSecret: secretKeyStr, uuidGenerator});
     const dinoparcStore = new PgDinoparcStore(database);
     const hammerfestStore = new PgHammerfestStore(database);
     const twinoidStore = new PgTwinoidStore(database);
@@ -52,7 +52,7 @@ async function withPgUserStore<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
     const oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
     const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});
-    return fn({auth, userStore});
+    return fn({auth, clock, userStore});
   });
 }
 

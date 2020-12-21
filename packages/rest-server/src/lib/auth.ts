@@ -85,7 +85,7 @@ export function createAuthRouter(api: Api): Router {
     const result: UserAndSession = await api.auth.loginWithCredentials(GUEST_AUTH, credentials);
     cx.cookies.set(SESSION_COOKIE, result.session.id);
     const user = await api.user.getUserById(
-      {type: AuthType.User, user: result.user, isAdministrator: result.user.isAdministrator, scope: AuthScope.Default},
+      {type: AuthType.User, user: result.user, isAdministrator: result.isAdministrator, scope: AuthScope.Default},
       {id: result.user.id},
     );
     cx.response.body = $MaybeCompleteUser.write(JSON_VALUE_WRITER, user!);
@@ -96,7 +96,7 @@ export function createAuthRouter(api: Api): Router {
     const result: UserAndSession = await api.auth.registerOrLoginWithDinoparc(GUEST_AUTH, credentials);
     cx.cookies.set(SESSION_COOKIE, result.session.id);
     const user = await api.user.getUserById(
-      {type: AuthType.User, user: result.user, isAdministrator: result.user.isAdministrator, scope: AuthScope.Default},
+      {type: AuthType.User, user: result.user, isAdministrator: result.isAdministrator, scope: AuthScope.Default},
       {id: result.user.id},
     );
     cx.response.body = $MaybeCompleteUser.write(JSON_VALUE_WRITER, user!);
@@ -107,7 +107,7 @@ export function createAuthRouter(api: Api): Router {
     const result: UserAndSession = await api.auth.registerOrLoginWithHammerfest(GUEST_AUTH, credentials);
     cx.cookies.set(SESSION_COOKIE, result.session.id);
     const user = await api.user.getUserById(
-      {type: AuthType.User, user: result.user, isAdministrator: result.user.isAdministrator, scope: AuthScope.Default},
+      {type: AuthType.User, user: result.user, isAdministrator: result.isAdministrator, scope: AuthScope.Default},
       {id: result.user.id},
     );
     cx.response.body = $MaybeCompleteUser.write(JSON_VALUE_WRITER, user!);

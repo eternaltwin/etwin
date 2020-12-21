@@ -16,7 +16,7 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { Session } from "@eternal-twin/core/lib/auth/session.js";
 import { SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
 import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
-import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
+import { $UserAndSession, UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
 import { $UserLogin, UserLogin } from "@eternal-twin/core/lib/auth/user-login.js";
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
@@ -182,7 +182,7 @@ export class InMemoryAuthService implements AuthService {
 
     const session: Session = await this.createSession(user.id);
 
-    return {user, session};
+    return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
   }
 
   async registerWithUsername(acx: AuthContext, options: RegisterWithUsernameOptions): Promise<UserAndSession> {
@@ -203,7 +203,7 @@ export class InMemoryAuthService implements AuthService {
 
     const session: Session = await this.createSession(user.id);
 
-    return {user, session};
+    return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
   }
 
   async loginWithCredentials(acx: AuthContext, credentials: UserCredentials): Promise<UserAndSession> {
@@ -246,7 +246,7 @@ export class InMemoryAuthService implements AuthService {
     const session: Session = await this.createSession(imUser.id);
     const user: SimpleUser = await this.getExistingUserById(imUser.id);
 
-    return {user, session};
+    return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
   }
 
   async registerOrLoginWithDinoparc(
@@ -275,7 +275,7 @@ export class InMemoryAuthService implements AuthService {
     const session: Session = await this.createSession(userId);
     const user = await this.getExistingUserById(session.user.id);
 
-    return {user, session};
+    return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
   }
 
   async registerOrLoginWithHammerfest(
@@ -304,7 +304,7 @@ export class InMemoryAuthService implements AuthService {
     const session: Session = await this.createSession(userId);
     const user = await this.getExistingUserById(session.user.id);
 
-    return {user, session};
+    return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
   }
 
   async registerOrLoginWithTwinoidOauth(acx: AuthContext, at: RfcOauthAccessTokenKey): Promise<UserAndSession> {
@@ -329,7 +329,7 @@ export class InMemoryAuthService implements AuthService {
     const session: Session = await this.createSession(userId);
     const user = await this.getExistingUserById(session.user.id);
 
-    return {user, session};
+    return {user, isAdministrator: user.isAdministrator, session};
   }
 
   async authenticateSession(acx: AuthContext, sessionId: string): Promise<UserAndSession | null> {
@@ -343,7 +343,7 @@ export class InMemoryAuthService implements AuthService {
 
     const user: SimpleUser = await this.getExistingUserById(session.user.id);
 
-    return {user, session};
+    return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
   }
 
   public async authenticateAccessToken(tokenKey: EtwinOauthAccessTokenKey): Promise<AuthContext> {
@@ -467,6 +467,7 @@ export class InMemoryAuthService implements AuthService {
     return {
       type: ObjectType.User,
       id: user.id,
+      createdAt: user.createdAt,
       displayName: user.displayName,
       isAdministrator: user.isAdministrator,
     };

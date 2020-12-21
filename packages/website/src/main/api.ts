@@ -100,7 +100,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   let teardown: () => Promise<void>;
 
   if (config.etwin.api === ApiType.InMemory) {
-    userStore = new MemUserStore({uuidGenerator});
+    userStore = new MemUserStore({clock, uuidGenerator});
     dinoparcStore = new MemDinoparcStore();
     hammerfestStore = new MemHammerfestStore();
     twinoidStore = new MemTwinoidStore();
@@ -147,7 +147,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     dinoparcStore = new PgDinoparcStore(database);
     hammerfestStore = new PgHammerfestStore(database);
     twinoidStore = new PgTwinoidStore(database);
-    userStore = new PgUserStore({database, databaseSecret: secretKeyStr, uuidGenerator});
+    userStore = new PgUserStore({clock, database, databaseSecret: secretKeyStr, uuidGenerator});
     link = new PgLinkService({database, dinoparcStore, hammerfestStore, twinoidStore, userStore});
     hammerfestStore = new PgHammerfestStore(database);
     oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
