@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/etwin-client-http",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Eternal-Twin `EtwinClientService` implementation using the HTTP REST API",
   "repository": {
@@ -16,6 +16,7 @@
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
+    "prepack": "yarn run build",
     "build": "tsc --build src/lib/tsconfig.json"
   },
   "publishConfig": {

@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/password-scrypt",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Eternal-Twin `PasswordService` scrypt-based implementation",
   "repository": {
@@ -17,6 +17,7 @@
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
+    "prepack": "yarn run build",
     "test:build": "tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha \"test/**/*.spec.js\""
   },

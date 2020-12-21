@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/website",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Eternal-Twin's website",
   "publishConfig": {
     "access": "public",
@@ -36,6 +36,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "prepack": "yarn run build && rimraf \"app/@(browser|server)/@(de-DE|eo|es-SP|fr-FR)\" \"app/browser/**/*.gz\"",
     "prerender": "ng run etwin:prerender"
   },
   "engines": {
@@ -138,6 +139,7 @@
     "ngx-i18nsupport": "^0.17.1",
     "normalize.css": "^8.0.1",
     "protractor": "~7.0.0",
+    "rimraf": "^3.0.2",
     "ts-node": "~9.0.0",
     "typescript": "~4.0.5",
     "zone.js": "~0.11.3"

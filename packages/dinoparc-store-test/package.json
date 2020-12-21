@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/dinoparc-store-test",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Implementation-independent tests for Eternal-Twin's `DinoparcArchiveService`",
   "repository": {
@@ -16,6 +16,7 @@
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
+    "prepack": "yarn run build",
     "build": "tsc --build src/lib/tsconfig.json"
   },
   "publishConfig": {

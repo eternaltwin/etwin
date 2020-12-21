@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/hammerfest-client-http",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Eternal-Twin `HammerfestClientService` HTTP-based implementation",
   "repository": {
@@ -18,6 +18,7 @@
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
     "main:build": "tsc --build src/main/tsconfig.json",
+    "prepack": "yarn run build",
     "start": "yarn run main:build && node --unhandled-rejections=strict main/main.js",
     "test:build": "tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha \"test/**/*.spec.js\""

@@ -3031,6 +3031,7 @@ __metadata:
     ngx-i18nsupport: ^0.17.1
     normalize.css: ^8.0.1
     protractor: ~7.0.0
+    rimraf: ^3.0.2
     rxjs: ^6.6.3
     ts-node: ~9.0.0
     tslib: ^2.0.3

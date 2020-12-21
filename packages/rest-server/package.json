@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/rest-server",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin",
   "description": "HTTP REST interface for the Eternal-Twin API",
   "repository": {
@@ -17,6 +17,7 @@
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
+    "prepack": "yarn run build",
     "test:build": "tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha --experimental-wasm-modules \"test/**/*.spec.js\"",
     "main:build": "tsc --build src/main/tsconfig.json",
