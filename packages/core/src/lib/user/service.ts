@@ -171,7 +171,12 @@ export class UserService {
     });
     await this.#hammerfestArchive.touchShortUser(hfSession.user);
     await this.#token.touchHammerfest(hfSession.user.server, hfSession.key, hfSession.user.id);
-    return await this.#link.linkToHammerfest(acx.user.id, hfSession.user.server, hfSession.user.id);
+    return await this.#link.linkToHammerfest({
+      userId: acx.user.id,
+      hammerfestServer: hfSession.user.server,
+      hammerfestUserId: hfSession.user.id,
+      linkedBy: acx.user.id,
+    });
   }
 
   async linkToHammerfestWithSessionKey(acx: AuthContext, options: Readonly<LinkToHammerfestWithSessionKeyOptions>): Promise<VersionedHammerfestLink> {
@@ -188,7 +193,12 @@ export class UserService {
     }
     await this.#hammerfestArchive.touchShortUser(hfSession.user);
     await this.#token.touchHammerfest(hfSession.user.server, hfSession.key, hfSession.user.id);
-    return await this.#link.linkToHammerfest(acx.user.id, hfSession.user.server, hfSession.user.id);
+    return await this.#link.linkToHammerfest({
+      userId: acx.user.id,
+      hammerfestServer: hfSession.user.server,
+      hammerfestUserId: hfSession.user.id,
+      linkedBy: acx.user.id,
+    });
   }
 
   async linkToHammerfestWithRef(acx: AuthContext, options: Readonly<LinkToHammerfestWithRefOptions>): Promise<VersionedHammerfestLink> {
@@ -203,7 +213,12 @@ export class UserService {
       throw new Error("InvalidHammerfestRef");
     }
     await this.#hammerfestArchive.touchShortUser(hfProfile.user);
-    return await this.#link.linkToHammerfest(options.userId, hfProfile.user.server, hfProfile.user.id);
+    return await this.#link.linkToHammerfest({
+      userId: options.userId,
+      hammerfestServer: hfProfile.user.server,
+      hammerfestUserId: hfProfile.user.id,
+      linkedBy: acx.user.id,
+    });
   }
 
   async linkToTwinoidWithOauth(acx: AuthContext, options: Readonly<LinkToTwinoidWithOauthOptions>): Promise<VersionedTwinoidLink> {
@@ -222,7 +237,11 @@ export class UserService {
       refreshToken: options.accessToken.refreshToken,
       twinoidUserId: tidUser.id.toString(10),
     });
-    return await this.#link.linkToTwinoid(acx.user.id, tidUser.id.toString(10));
+    return await this.#link.linkToTwinoid({
+      userId: acx.user.id,
+      twinoidUserId: tidUser.id.toString(10),
+      linkedBy: acx.user.id,
+    });
   }
 
   async linkToTwinoidWithRef(acx: AuthContext, options: Readonly<LinkToTwinoidWithRefOptions>): Promise<VersionedTwinoidLink> {
@@ -233,6 +252,10 @@ export class UserService {
       throw new Error("Forbidden");
     }
     // TODO: Touch twinoid user
-    return await this.#link.linkToTwinoid(options.userId, options.twinoidUserId);
+    return await this.#link.linkToTwinoid({
+      userId: options.userId,
+      twinoidUserId: options.twinoidUserId,
+      linkedBy: acx.user.id,
+    });
   }
 }

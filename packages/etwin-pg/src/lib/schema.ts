@@ -1,6 +1,8 @@
 export type PgUserId = string;
 export type PgDinoparcUserId = string;
 export type PgDinoparcUsername = string;
+export type PgHammerfestUserId = string;
+export type PgTwinoidUserId = string;
 export type PgInstant = Date;
 export type PgDinoparcServer = "dinoparc.com" | "en.dinoparc.com" | "sp.dinoparc.com";
 export type PgHammerfestServer = "hammerfest.es" | "hammerfest.fr" | "hfest.net";
@@ -71,13 +73,15 @@ export interface HammerfestUserRow {
 }
 
 export interface HammerfestUserLinkRow {
-  user_id: string;
+  user_id: PgUserId;
 
   hammerfest_server: PgHammerfestServer;
 
-  hammerfest_user_id: string;
+  hammerfest_user_id: PgHammerfestUserId;
 
-  ctime: Date;
+  linked_at: PgInstant;
+
+  linked_by: PgUserId;
 }
 
 export interface OauthClientRow {
@@ -188,11 +192,13 @@ export interface TwinoidUserRow {
 }
 
 export interface TwinoidUserLinkRow {
-  user_id: string;
+  user_id: PgUserId;
 
-  twinoid_user_id: string;
+  twinoid_user_id: PgTwinoidUserId;
 
-  ctime: Date;
+  linked_at: PgInstant;
+
+  linked_by: PgUserId;
 }
 
 export interface DinoparcSessionRow {

@@ -9,6 +9,8 @@ import { EtwinLink } from "@eternal-twin/core/lib/link/etwin-link.js";
 import { HammerfestLink } from "@eternal-twin/core/lib/link/hammerfest-link.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { SimpleLinkToDinoparcOptions } from "@eternal-twin/core/lib/link/simple-link-to-dinoparc-options.js";
+import { SimpleLinkToHammerfestOptions } from "@eternal-twin/core/lib/link/simple-link-to-hammerfest-options.js";
+import { SimpleLinkToTwinoidOptions } from "@eternal-twin/core/lib/link/simple-link-to-twinoid-options.js";
 import { TwinoidLink } from "@eternal-twin/core/lib/link/twinoid-link.js";
 import { VersionedDinoparcLink } from "@eternal-twin/core/lib/link/versioned-dinoparc-link.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
@@ -131,13 +133,13 @@ export class InMemoryLinkService implements LinkService {
     };
   }
 
-  public async linkToHammerfest(userId: UserId, hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<VersionedHammerfestLink> {
+  public async linkToHammerfest(options: Readonly<SimpleLinkToHammerfestOptions>): Promise<VersionedHammerfestLink> {
     const imLink: MemHammerfestUserLink = {
-      userId,
-      hfServer,
-      hfUserId,
+      userId: options.userId,
+      hfServer: options.hammerfestServer,
+      hfUserId: options.hammerfestUserId,
       linkedAt: new Date(),
-      linkedBy: userId,
+      linkedBy: options.linkedBy,
     };
     this.#hammerfestUserLinks.add(imLink);
 
@@ -149,12 +151,12 @@ export class InMemoryLinkService implements LinkService {
     };
   }
 
-  public async linkToTwinoid(userId: UserId, tidUserId: TwinoidUserId): Promise<VersionedTwinoidLink> {
+  public async linkToTwinoid(options: Readonly<SimpleLinkToTwinoidOptions>): Promise<VersionedTwinoidLink> {
     const imLink: MemTwinoidUserLink = {
-      userId,
-      tidUserId,
+      userId: options.userId,
+      tidUserId: options.twinoidUserId,
       linkedAt: new Date(),
-      linkedBy: userId,
+      linkedBy: options.linkedBy,
     };
     this.#twinoidUserLinks.add(imLink);
 

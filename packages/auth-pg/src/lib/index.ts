@@ -280,7 +280,12 @@ export class PgAuthService implements AuthService {
       const user = await this.#userStore.createUser({displayName, email: null, username: null});
       try {
         await this.#hammerfestArchive.touchShortUser(hfSession.user);
-        await this.#link.linkToHammerfest(user.id, hfSession.user.server, hfSession.user.id);
+        await this.#link.linkToHammerfest({
+          userId: user.id,
+          hammerfestServer: hfSession.user.server,
+          hammerfestUserId: hfSession.user.id,
+          linkedBy: user.id,
+        });
       } catch (e) {
         // Delete user because without a link it is impossible to authenticate as this user.
         // If the exception comes from `hammerfestArchive.createOrUpdateUseRef`, the changes are fully reverted.
@@ -322,7 +327,11 @@ export class PgAuthService implements AuthService {
       const user = await this.#userStore.createUser({displayName, email: null, username: null});
       try {
         await this.#twinoidArchive.createOrUpdateUserRef({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
-        await this.#link.linkToTwinoid(user.id, tidUser.id.toString(10));
+        await this.#link.linkToTwinoid({
+          userId: user.id,
+          twinoidUserId: tidUser.id.toString(10),
+          linkedBy: user.id,
+        });
       } catch (e) {
         // Delete user because without a link it is impossible to authenticate as this user.
         // If the exception comes from `twinoidArchive.createOrUpdateUseRef`, the changes are fully reverted.

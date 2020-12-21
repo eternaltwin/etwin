@@ -4,8 +4,10 @@ import { HammerfestServer } from "../hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "../hammerfest/hammerfest-user-id.js";
 import { TwinoidUserId } from "../twinoid/twinoid-user-id.js";
 import { UserId } from "../user/user-id.js";
-import { SimpleLinkToDinoparcOptions } from "./simple-link-to-dinoparc-options";
-import { VersionedDinoparcLink } from "./versioned-dinoparc-link";
+import { SimpleLinkToDinoparcOptions } from "./simple-link-to-dinoparc-options.js";
+import { SimpleLinkToHammerfestOptions } from "./simple-link-to-hammerfest-options.js";
+import { SimpleLinkToTwinoidOptions } from "./simple-link-to-twinoid-options.js";
+import { VersionedDinoparcLink } from "./versioned-dinoparc-link.js";
 import { VersionedEtwinLink } from "./versioned-etwin-link.js";
 import { VersionedHammerfestLink } from "./versioned-hammerfest-link.js";
 import { VersionedLinks } from "./versioned-links.js";
@@ -28,7 +30,7 @@ export interface LinkService {
 
   linkToDinoparc(options: Readonly<SimpleLinkToDinoparcOptions>): Promise<VersionedDinoparcLink>;
 
-  linkToHammerfest(userId: UserId, server: HammerfestServer, hfUserId: HammerfestUserId): Promise<VersionedHammerfestLink>;
+  linkToHammerfest(options: Readonly<SimpleLinkToHammerfestOptions>): Promise<VersionedHammerfestLink>;
 
-  linkToTwinoid(userId: UserId, twinoidUserId: TwinoidUserId): Promise<VersionedTwinoidLink>;
+  linkToTwinoid(options: Readonly<SimpleLinkToTwinoidOptions>): Promise<VersionedTwinoidLink>;
 }

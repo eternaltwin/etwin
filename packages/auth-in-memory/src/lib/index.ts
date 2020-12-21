@@ -297,7 +297,7 @@ export class InMemoryAuthService implements AuthService {
     } else {
       const displayName = hammerfestToUserDisplayName(hfSession.user);
       const user = await this.#userStore.createUser({displayName, email: null, username: null});
-      await this.#link.linkToHammerfest(user.id, hfUser.server, hfUser.id);
+      await this.#link.linkToHammerfest({userId: user.id, hammerfestServer: hfUser.server, hammerfestUserId: hfUser.id, linkedBy: user.id});
       userId = user.id;
     }
 
@@ -322,7 +322,7 @@ export class InMemoryAuthService implements AuthService {
     } else {
       const displayName = twinoidToUserDisplayName(tidUser as Readonly<Pick<TidUser, "id" | "name">>);
       const user = await this.#userStore.createUser({displayName, email: null, username: null});
-      await this.#link.linkToTwinoid(user.id, tidUser.id!.toString(10));
+      await this.#link.linkToTwinoid({userId: user.id, twinoidUserId: tidUser.id!.toString(10), linkedBy: user.id});
       userId = user.id;
     }
 

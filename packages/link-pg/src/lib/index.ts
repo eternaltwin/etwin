@@ -7,6 +7,8 @@ import { EtwinLink } from "@eternal-twin/core/lib/link/etwin-link.js";
 import { HammerfestLink, NullableHammerfestLink } from "@eternal-twin/core/lib/link/hammerfest-link.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { SimpleLinkToDinoparcOptions } from "@eternal-twin/core/lib/link/simple-link-to-dinoparc-options.js";
+import { SimpleLinkToHammerfestOptions } from "@eternal-twin/core/lib/link/simple-link-to-hammerfest-options.js";
+import { SimpleLinkToTwinoidOptions } from "@eternal-twin/core/lib/link/simple-link-to-twinoid-options.js";
 import { NullableTwinoidLink, TwinoidLink } from "@eternal-twin/core/lib/link/twinoid-link.js";
 import { VersionedDinoparcLink } from "@eternal-twin/core/lib/link/versioned-dinoparc-link.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
@@ -14,7 +16,6 @@ import { VersionedHammerfestLink } from "@eternal-twin/core/lib/link/versioned-h
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
-import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
 import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
@@ -92,10 +93,10 @@ export class PgLinkService implements LinkService {
   }
 
   private async getLinkFromHammerfestTx(queryable: Queryable, hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<VersionedEtwinLink> {
-    type Row = Pick<HammerfestUserLinkRow, "ctime" | "user_id">;
+    type Row = Pick<HammerfestUserLinkRow, "linked_at" | "linked_by" | "user_id">;
     const row: Row | undefined = await queryable.oneOrNone(
       `
-        SELECT ctime, user_id
+        SELECT linked_at, linked_by, user_id
         FROM hammerfest_user_links
         WHERE hammerfest_server = $1::VARCHAR
           AND hammerfest_user_id = $2::VARCHAR;
@@ -109,11 +110,12 @@ export class PgLinkService implements LinkService {
       };
     }
     const user = await this.#userStore.getUser({ref: {id: row.user_id}, fields: SHORT_USER_FIELDS});
-    if (user === null) {
+    const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
+    if (user === null || linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
     const link: EtwinLink = {
-      link: {time: row.ctime, user},
+      link: {time: row.linked_at, user: linkedBy},
       unlink: null,
       user,
     };
@@ -128,10 +130,10 @@ export class PgLinkService implements LinkService {
   }
 
   private async getLinkFromTwinoidTx(queryable: Queryable, twinoidUserId: string): Promise<VersionedEtwinLink> {
-    type Row = Pick<TwinoidUserLinkRow, "ctime" | "user_id">;
+    type Row = Pick<TwinoidUserLinkRow, "linked_at" | "linked_by" | "user_id">;
     const row: Row | undefined = await queryable.oneOrNone(
       `
-        SELECT ctime, user_id
+        SELECT linked_at, linked_by, user_id
         FROM twinoid_user_links
         WHERE twinoid_user_links.twinoid_user_id = $1::VARCHAR;
       `,
@@ -144,11 +146,12 @@ export class PgLinkService implements LinkService {
       };
     }
     const user = await this.#userStore.getUser({ref: {id: row.user_id}, fields: SHORT_USER_FIELDS});
-    if (user === null) {
+    const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
+    if (user === null || linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
     const link: EtwinLink = {
-      link: {time: row.ctime, user},
+      link: {time: row.linked_at, user: linkedBy},
       unlink: null,
       user,
     };
@@ -178,7 +181,7 @@ export class PgLinkService implements LinkService {
     }
     const user = await this.#dinoparcStore.getShortUser({server: row.dinoparc_server, id: row.dinoparc_user_id});
     if (user === null) {
-      throw new Error("AssertionError: Expected Hammerfest user to exist");
+      throw new Error("AssertionError: Expected Dinoparc user to exist");
     }
     const link: DinoparcLink = {
       link: {time: row.linked_at, user: linkedBy},
@@ -188,21 +191,21 @@ export class PgLinkService implements LinkService {
     return {current: link, old: []};
   }
 
-  async linkToHammerfest(userId: UserId, hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<VersionedHammerfestLink> {
-    return this.#database.transaction(TransactionMode.ReadWrite, q => this.linkToHammerfestTx(q, userId, hfServer, hfUserId));
+  async linkToHammerfest(options: Readonly<SimpleLinkToHammerfestOptions>): Promise<VersionedHammerfestLink> {
+    return this.#database.transaction(TransactionMode.ReadWrite, q => this.linkToHammerfestTx(q, options));
   }
 
-  private async linkToHammerfestTx(queryable: Queryable, userId: UserId, hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<VersionedHammerfestLink> {
-    type Row = Pick<HammerfestUserLinkRow, "hammerfest_server" | "hammerfest_user_id" | "ctime">;
+  private async linkToHammerfestTx(queryable: Queryable, options: Readonly<SimpleLinkToHammerfestOptions>): Promise<VersionedHammerfestLink> {
+    type Row = Pick<HammerfestUserLinkRow, "hammerfest_server" | "hammerfest_user_id" | "linked_at">;
     const row: Row = await queryable.one(
       `
-        INSERT INTO hammerfest_user_links(user_id, hammerfest_server, hammerfest_user_id, ctime)
-        VALUES ($1::UUID, $2::VARCHAR, $3::INT, NOW())
-        RETURNING hammerfest_server, hammerfest_user_id, ctime;
+        INSERT INTO hammerfest_user_links(user_id, hammerfest_server, hammerfest_user_id, linked_at, linked_by)
+        VALUES ($1::USER_ID, $2::HAMMERFEST_SERVER, $3::HAMMERFEST_USER_ID, NOW(), $4::USER_ID)
+        RETURNING hammerfest_server, hammerfest_user_id, linked_at;
       `,
-      [userId, hfServer, hfUserId],
+      [options.userId, options.hammerfestServer, options.hammerfestUserId, options.linkedBy],
     );
-    const linkedBy = await this.#userStore.getUser({ref: {id: userId}, fields: SHORT_USER_FIELDS});
+    const linkedBy = await this.#userStore.getUser({ref: {id: options.linkedBy}, fields: SHORT_USER_FIELDS});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -211,37 +214,37 @@ export class PgLinkService implements LinkService {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
     const link: HammerfestLink = {
-      link: {time: row.ctime, user: linkedBy},
+      link: {time: row.linked_at, user: linkedBy},
       unlink: null,
       user,
     };
     return {current: link, old: []};
   }
 
-  async linkToTwinoid(userId: UserId, twinoidUserId: TwinoidUserId): Promise<VersionedTwinoidLink> {
-    return this.#database.transaction(TransactionMode.ReadWrite, q => this.linkToTwinoidTx(q, userId, twinoidUserId));
+  async linkToTwinoid(options: Readonly<SimpleLinkToTwinoidOptions>): Promise<VersionedTwinoidLink> {
+    return this.#database.transaction(TransactionMode.ReadWrite, q => this.linkToTwinoidTx(q, options));
   }
 
-  private async linkToTwinoidTx(queryable: Queryable, userId: UserId, twinoidUserId: TwinoidUserId): Promise<VersionedTwinoidLink> {
+  private async linkToTwinoidTx(queryable: Queryable, options: Readonly<SimpleLinkToTwinoidOptions>): Promise<VersionedTwinoidLink> {
     await queryable.countOne(
       `
         INSERT
-        INTO twinoid_user_links(user_id, twinoid_user_id, ctime)
-        VALUES ($1::UUID, $2::VARCHAR, NOW());`,
-      [userId, twinoidUserId],
+        INTO twinoid_user_links(user_id, twinoid_user_id, linked_at, linked_by)
+        VALUES ($1::USER_ID, $2::TWINOID_USER_ID, NOW(), $3::USER_ID);`,
+      [options.userId, options.twinoidUserId, options.linkedBy],
     );
 
-    type TwinoidRow = Pick<TwinoidUserLinkRow, "twinoid_user_id" | "ctime">;
+    type TwinoidRow = Pick<TwinoidUserLinkRow, "twinoid_user_id" | "linked_at">;
     const row: TwinoidRow = await queryable.one(
       `
-        SELECT twinoid_user_id, ctime, name
+        SELECT twinoid_user_id, linked_at, name
         FROM twinoid_user_links
                INNER JOIN twinoid_users USING (twinoid_user_id)
         WHERE twinoid_user_links.user_id = $1::UUID;
       `,
-      [userId],
+      [options.userId],
     );
-    const linkedBy = await this.#userStore.getUser({ref: {id: userId}, fields: SHORT_USER_FIELDS});
+    const linkedBy = await this.#userStore.getUser({ref: {id: options.linkedBy}, fields: SHORT_USER_FIELDS});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -250,7 +253,7 @@ export class PgLinkService implements LinkService {
       throw new Error("AssertionError: Expected Twinoid user to exist");
     }
     const link: TwinoidLink = {
-      link: {time: row.ctime, user: linkedBy},
+      link: {time: row.linked_at, user: linkedBy},
       unlink: null,
       user,
     };
@@ -264,10 +267,6 @@ export class PgLinkService implements LinkService {
   }
 
   private async getVersionedLinksTx(queryable: Queryable, userId: UserId): Promise<VersionedLinks> {
-    const linkedBy = await this.#userStore.getUser({ref: {id: userId}, fields: SHORT_USER_FIELDS});
-    if (linkedBy === null) {
-      throw new Error("AssertionError: Expected user to exist");
-    }
     let dparcEn: NullableDinoparcLink = null;
     let dparcFr: NullableDinoparcLink = null;
     let dparcSp: NullableDinoparcLink = null;
@@ -315,22 +314,26 @@ export class PgLinkService implements LinkService {
       }
     }
     {
-      type HammerfestRow = Pick<HammerfestUserLinkRow, "hammerfest_server" | "hammerfest_user_id" | "ctime">;
+      type HammerfestRow = Pick<HammerfestUserLinkRow, "hammerfest_server" | "hammerfest_user_id" | "linked_at" | "linked_by">;
       const rows: HammerfestRow[] = await queryable.many(
         `
-          SELECT hammerfest_server, hammerfest_user_id, ctime
+          SELECT hammerfest_server, hammerfest_user_id, linked_at, linked_by
           FROM hammerfest_user_links
           WHERE hammerfest_user_links.user_id = $1::UUID;
         `,
         [userId],
       );
       for (const row of rows) {
+        const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
+        if (linkedBy === null) {
+          throw new Error("AssertionError: Expected linkedBy user to exist");
+        }
         const user = await this.#hammerfestArchive.getShortUserById({server: row.hammerfest_server, id: row.hammerfest_user_id});
         if (user === null) {
           throw new Error("AssertionError: Expected Hammerfest user to exist");
         }
         const link: HammerfestLink = {
-          link: {time: row.ctime, user: linkedBy},
+          link: {time: row.linked_at, user: linkedBy},
           unlink: null,
           user,
         };
@@ -350,10 +353,10 @@ export class PgLinkService implements LinkService {
       }
     }
     {
-      type TwinoidRow = Pick<TwinoidUserLinkRow, "twinoid_user_id" | "ctime">;
+      type TwinoidRow = Pick<TwinoidUserLinkRow, "twinoid_user_id" | "linked_at" | "linked_by">;
       const row: TwinoidRow | undefined = await queryable.oneOrNone(
         `
-          SELECT twinoid_user_id, ctime, name
+          SELECT twinoid_user_id, linked_at, linked_by, name
           FROM twinoid_user_links
                  INNER JOIN twinoid_users USING (twinoid_user_id)
           WHERE twinoid_user_links.user_id = $1::UUID;
@@ -361,12 +364,16 @@ export class PgLinkService implements LinkService {
         [userId],
       );
       if (row !== undefined) {
+        const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
+        if (linkedBy === null) {
+          throw new Error("AssertionError: Expected linkedBy user to exist");
+        }
         const user = await this.#twinoidArchive.getUserRefById(row.twinoid_user_id);
         if (user === null) {
           throw new Error("AssertionError: Expected Twinoid user to exist");
         }
         twinoid = {
-          link: {time: row.ctime, user: linkedBy},
+          link: {time: row.linked_at, user: linkedBy},
           unlink: null,
           user,
         };
