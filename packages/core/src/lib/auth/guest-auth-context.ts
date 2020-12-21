@@ -17,3 +17,5 @@ export const $GuestAuthContext: RecordIoType<GuestAuthContext> = new RecordType<
   },
   changeCase: CaseStyle.SnakeCase,
 });
+
+export const GUEST_AUTH: GuestAuthContext = Object.freeze({type: AuthType.Guest, scope: AuthScope.Default});

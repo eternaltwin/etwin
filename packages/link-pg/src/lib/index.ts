@@ -1,6 +1,3 @@
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
 import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
 import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
 import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
@@ -18,7 +15,8 @@ import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
-import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
+import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
+import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { DinoparcStore } from "@eternal-twin/core/src/lib/dinoparc/store.js";
 import { DinoparcLink, NullableDinoparcLink } from "@eternal-twin/core/src/lib/link/dinoparc-link.js";
@@ -29,17 +27,12 @@ import {
 } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 
-const GUEST_AUTH_CONTEXT: GuestAuthContext = {
-  type: AuthType.Guest,
-  scope: AuthScope.Default,
-};
-
 export interface PgLinkServiceOptions {
   database: Database,
   dinoparcStore: DinoparcStore,
   hammerfestArchive: HammerfestArchiveService,
   twinoidArchive: TwinoidArchiveService,
-  user: SimpleUserService,
+  userStore: UserStore,
 }
 
 export class PgLinkService implements LinkService {
@@ -47,14 +40,14 @@ export class PgLinkService implements LinkService {
   readonly #dinoparcStore: DinoparcStore;
   readonly #hammerfestArchive: HammerfestArchiveService;
   readonly #twinoidArchive: TwinoidArchiveService;
-  readonly #userStore: SimpleUserService;
+  readonly #userStore: UserStore;
 
   constructor(options: Readonly<PgLinkServiceOptions>) {
     this.#database = options.database;
     this.#dinoparcStore = options.dinoparcStore;
     this.#hammerfestArchive = options.hammerfestArchive;
     this.#twinoidArchive = options.twinoidArchive;
-    this.#userStore = options.user;
+    this.#userStore = options.userStore;
   }
 
   async getLinkFromDinoparc(dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<VersionedEtwinLink> {
@@ -78,8 +71,8 @@ export class PgLinkService implements LinkService {
         old: [],
       };
     }
-    const user = await this.#userStore.getShortUserById(GUEST_AUTH_CONTEXT, {id: row.user_id});
-    const linkedBy = await this.#userStore.getShortUserById(GUEST_AUTH_CONTEXT, {id: row.linked_by});
+    const user = await this.#userStore.getUser({ref: {id: row.user_id}, fields: SHORT_USER_FIELDS});
+    const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
     if (user === null || linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -115,7 +108,7 @@ export class PgLinkService implements LinkService {
         old: [],
       };
     }
-    const user = await this.#userStore.getShortUserById(GUEST_AUTH_CONTEXT, {id: row.user_id});
+    const user = await this.#userStore.getUser({ref: {id: row.user_id}, fields: SHORT_USER_FIELDS});
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -150,7 +143,7 @@ export class PgLinkService implements LinkService {
         old: [],
       };
     }
-    const user = await this.#userStore.getShortUserById(GUEST_AUTH_CONTEXT, {id: row.user_id});
+    const user = await this.#userStore.getUser({ref: {id: row.user_id}, fields: SHORT_USER_FIELDS});
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -179,7 +172,7 @@ export class PgLinkService implements LinkService {
       `,
       [options.userId, options.dinoparcServer, options.dinoparcUserId, options.linkedBy],
     );
-    const linkedBy = await this.#userStore.getShortUserById(GUEST_AUTH_CONTEXT, {id: options.linkedBy});
+    const linkedBy = await this.#userStore.getUser({ref: {id: options.linkedBy}, fields: SHORT_USER_FIELDS});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -209,7 +202,7 @@ export class PgLinkService implements LinkService {
       `,
       [userId, hfServer, hfUserId],
     );
-    const linkedBy = await this.#userStore.getShortUserById(GUEST_AUTH_CONTEXT, {id: userId});
+    const linkedBy = await this.#userStore.getUser({ref: {id: userId}, fields: SHORT_USER_FIELDS});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -248,7 +241,7 @@ export class PgLinkService implements LinkService {
       `,
       [userId],
     );
-    const linkedBy = await this.#userStore.getShortUserById(GUEST_AUTH_CONTEXT, {id: userId});
+    const linkedBy = await this.#userStore.getUser({ref: {id: userId}, fields: SHORT_USER_FIELDS});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -271,7 +264,7 @@ export class PgLinkService implements LinkService {
   }
 
   private async getVersionedLinksTx(queryable: Queryable, userId: UserId): Promise<VersionedLinks> {
-    const linkedBy = await this.#userStore.getShortUserById(GUEST_AUTH_CONTEXT, {id: userId});
+    const linkedBy = await this.#userStore.getUser({ref: {id: userId}, fields: SHORT_USER_FIELDS});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -293,7 +286,7 @@ export class PgLinkService implements LinkService {
         [userId],
       );
       for (const row of rows) {
-        const linkedBy = await this.#userStore.getShortUserById(GUEST_AUTH_CONTEXT, {id: row.linked_by});
+        const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
         if (linkedBy === null) {
           throw new Error("AssertionError: Expected linkedBy user to exist");
         }

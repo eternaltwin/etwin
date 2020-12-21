@@ -15,6 +15,9 @@ import { VersionedHammerfestLink } from "../link/versioned-hammerfest-link.js";
 import { VersionedTwinoidLink } from "../link/versioned-twinoid-link";
 import { TokenService } from "../token/service.js";
 import { TwinoidArchiveService } from "../twinoid/archive.js";
+import { CompleteIfSelfUserFields } from "./complete-if-self-user-fields.js";
+import { COMPLETE_USER_FIELDS, CompleteUserFields } from "./complete-user-fields.js";
+import { DEFAULT_USER_FIELDS, DefaultUserFields } from "./default-user-fields.js";
 import { GetUserByIdOptions } from "./get-user-by-id-options.js";
 import { LinkToDinoparcMethod } from "./link-to-dinoparc-method.js";
 import { LinkToDinoparcOptions } from "./link-to-dinoparc-options.js";
@@ -27,8 +30,10 @@ import { LinkToHammerfestWithRefOptions } from "./link-to-hammerfest-with-ref-op
 import { LinkToHammerfestWithSessionKeyOptions } from "./link-to-hammerfest-with-session-key-options.js";
 import { LinkToTwinoidWithOauthOptions } from "./link-to-twinoid-with-oauth-options.js";
 import { LinkToTwinoidWithRefOptions } from "./link-to-twinoid-with-ref-options.js";
+import { MaybeCompleteSimpleUser } from "./maybe-complete-simple-user.js";
 import { MaybeCompleteUser } from "./maybe-complete-user.js";
-import { SimpleUserService } from "./simple.js";
+import { UserStore } from "./store.js";
+import { UserFieldsType } from "./user-fields-type.js";
 
 export interface UserServiceOptions {
   auth: AuthService;
@@ -37,7 +42,7 @@ export interface UserServiceOptions {
   hammerfestArchive: HammerfestArchiveService;
   hammerfestClient: HammerfestClientService;
   link: LinkService;
-  simpleUser: SimpleUserService;
+  userStore: UserStore;
   token: TokenService;
   twinoidArchive: TwinoidArchiveService;
   twinoidClient: TwinoidClientService;
@@ -50,7 +55,7 @@ export class UserService {
   readonly #hammerfestArchive: HammerfestArchiveService;
   readonly #hammerfestClient: HammerfestClientService;
   readonly #link: LinkService;
-  readonly #simpleUser: SimpleUserService;
+  readonly #userStore: UserStore;
   readonly #token: TokenService;
   readonly #twinoidArchive: TwinoidArchiveService;
   readonly #twinoidClient: TwinoidClientService;
@@ -62,14 +67,27 @@ export class UserService {
     this.#hammerfestArchive = options.hammerfestArchive;
     this.#hammerfestClient = options.hammerfestClient;
     this.#link = options.link;
-    this.#simpleUser = options.simpleUser;
+    this.#userStore = options.userStore;
     this.#token = options.token;
     this.#twinoidArchive = options.twinoidArchive;
     this.#twinoidClient = options.twinoidClient;
   }
 
   async getUserById(acx: AuthContext, options: Readonly<GetUserByIdOptions>): Promise<MaybeCompleteUser | null> {
-    const simpleUser = await this.#simpleUser.getUserById(acx, options);
+    let userFields: DefaultUserFields | CompleteUserFields | CompleteIfSelfUserFields = DEFAULT_USER_FIELDS;
+    if (acx.type === AuthType.User) {
+      if (acx.isAdministrator) {
+        userFields = COMPLETE_USER_FIELDS;
+      } else {
+        userFields = {type: UserFieldsType.CompleteIfSelf, selfUserId: acx.user.id};
+      }
+    }
+
+    const simpleUser: MaybeCompleteSimpleUser | null = await this.#userStore.getUser({
+      ref: {id: options.id},
+      time: options.time,
+      fields: userFields,
+    });
     if (simpleUser === null) {
       return null;
     }

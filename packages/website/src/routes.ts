@@ -10,6 +10,8 @@ export const ROUTES: readonly string[] = [
   "/docs/:a",
   "/docs/:a/:b",
   "/docs/:a/:b/:c",
+  "/docs/:a/:b/:c/:d",
+  "/docs/:a/:b/:c/:d/:e",
   "/donate",
   "/forum",
   "/forum/sections/:section_id",

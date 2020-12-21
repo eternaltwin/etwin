@@ -43,8 +43,9 @@ import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
-import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
+import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
 import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
+import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
@@ -80,7 +81,7 @@ export interface PgAuthServiceOptions {
   link: LinkService;
   oauthProvider: OauthProviderService;
   password: PasswordService;
-  simpleUser: SimpleUserService;
+  userStore: UserStore;
   tokenSecret: Uint8Array;
   twinoidArchive: TwinoidArchiveService;
   twinoidClient: TwinoidClientService;
@@ -99,7 +100,7 @@ export class PgAuthService implements AuthService {
   readonly #link: LinkService;
   readonly #oauthProvider: OauthProviderService;
   readonly #password: PasswordService;
-  readonly #simpleUser: SimpleUserService;
+  readonly #userStore: UserStore;
   readonly #tokenSecret: Buffer;
   readonly #twinoidArchive: TwinoidArchiveService;
   readonly #twinoidClient: TwinoidClientService;
@@ -122,7 +123,7 @@ export class PgAuthService implements AuthService {
     this.#link = options.link;
     this.#oauthProvider = options.oauthProvider;
     this.#password = options.password;
-    this.#simpleUser = options.simpleUser;
+    this.#userStore = options.userStore;
     this.#tokenSecret = Buffer.from(options.tokenSecret);
     this.#twinoidArchive = options.twinoidArchive;
     this.#twinoidClient = options.twinoidClient;
@@ -157,14 +158,14 @@ export class PgAuthService implements AuthService {
     const emailJwt: EmailRegistrationJwt = await this.readEmailVerificationToken(options.emailToken);
     const email: EmailAddress = emailJwt.email;
 
-    const oldUser: ShortUser | null = await this.#simpleUser.getShortUserByEmail(SYSTEM_AUTH, {email});
+    const oldUser: ShortUser | null = await this.#userStore.getUser({ref: {email}, fields: SHORT_USER_FIELDS});
     if (oldUser !== null) {
       throw new Error(`Conflict: EmailAddressAlreadyInUse: ${JSON.stringify(oldUser.id)}`);
     }
 
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.#password.hash(options.password);
-    const user: SimpleUser = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email, username: null});
+    const user: SimpleUser = await this.#userStore.createUser({displayName, email, username: null});
 
     return this.#database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       await this.setPasswordHashRw(q, user.id, passwordHash);
@@ -186,14 +187,14 @@ export class PgAuthService implements AuthService {
     }
 
     const username: Username = options.username;
-    const oldUser: ShortUser | null = await this.#simpleUser.getShortUserByUsername(SYSTEM_AUTH, {username});
+    const oldUser: ShortUser | null = await this.#userStore.getUser({ref: {username}, fields: SHORT_USER_FIELDS});
     if (oldUser !== null) {
       throw new Error(`Conflict: UsernameAlreadyInUse: ${JSON.stringify(oldUser.id)}`);
     }
 
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.#password.hash(options.password);
-    const user: SimpleUser = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username});
+    const user: SimpleUser = await this.#userStore.createUser({displayName, email: null, username});
 
     return this.#database.transaction(TransactionMode.ReadWrite, async (q: Queryable) => {
       await this.setPasswordHashRw(q, user.id, passwordHash);
@@ -226,7 +227,7 @@ export class PgAuthService implements AuthService {
       userId = link.current.user.id;
     } else {
       const displayName = dinoparcToUserDisplayName(dparcSession.user);
-      const user = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
+      const user = await this.#userStore.createUser({displayName, email: null, username: null});
       try {
         await this.#dinoparcStore.touchShortUser(dparcSession.user);
         await this.#link.linkToDinoparc({
@@ -241,7 +242,7 @@ export class PgAuthService implements AuthService {
         // If the exception comes from `link.linkToHammerfest`, the archived user remains: it's OK (no link is created).
         // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
         // any issues.
-        await this.#simpleUser.hardDeleteUserById(SYSTEM_AUTH, user.id);
+        await this.#userStore.hardDeleteUserById(user.id);
         throw e;
       }
       userId = user.id;
@@ -276,7 +277,7 @@ export class PgAuthService implements AuthService {
       userId = link.current.user.id;
     } else {
       const displayName = hammerfestToUserDisplayName(hfSession.user);
-      const user = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
+      const user = await this.#userStore.createUser({displayName, email: null, username: null});
       try {
         await this.#hammerfestArchive.touchShortUser(hfSession.user);
         await this.#link.linkToHammerfest(user.id, hfSession.user.server, hfSession.user.id);
@@ -286,7 +287,7 @@ export class PgAuthService implements AuthService {
         // If the exception comes from `link.linkToHammerfest`, the archived user remains: it's OK (no link is created).
         // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
         // any issues.
-        await this.#simpleUser.hardDeleteUserById(SYSTEM_AUTH, user.id);
+        await this.#userStore.hardDeleteUserById(user.id);
         throw e;
       }
       userId = user.id;
@@ -318,7 +319,7 @@ export class PgAuthService implements AuthService {
       userId = link.current.user.id;
     } else {
       const displayName = twinoidToUserDisplayName(tidUser);
-      const user = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
+      const user = await this.#userStore.createUser({displayName, email: null, username: null});
       try {
         await this.#twinoidArchive.createOrUpdateUserRef({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
         await this.#link.linkToTwinoid(user.id, tidUser.id.toString(10));
@@ -328,7 +329,7 @@ export class PgAuthService implements AuthService {
         // If the exception comes from `link.linkToTwinoid`, the archived user remains: it's OK (no link is created).
         // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
         // any issues.
-        await this.#simpleUser.hardDeleteUserById(SYSTEM_AUTH, user.id);
+        await this.#userStore.hardDeleteUserById(user.id);
         throw e;
       }
       userId = user.id;
@@ -431,7 +432,7 @@ export class PgAuthService implements AuthService {
       case LoginType.Uuid: {
         const [client, user] = await Promise.all([
           this.#oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, login.value),
-          this.#simpleUser.getShortUserById(SYSTEM_AUTH, {id: login.value}),
+          this.#userStore.getUser({ref: {id: login.value}, fields: SHORT_USER_FIELDS}),
         ]);
         if (client !== null) {
           if (user !== null) {

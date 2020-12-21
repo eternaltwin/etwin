@@ -43,7 +43,8 @@ import { ShortForumPostRevisionListing } from "@eternal-twin/core/lib/forum/shor
 import { UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options.js";
 import { UserForumActor } from "@eternal-twin/core/lib/forum/user-forum-actor.js";
 import { $ShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
-import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
+import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
+import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { renderMarktwin } from "@eternal-twin/marktwin";
 import { Grammar } from "@eternal-twin/marktwin/lib/grammar.js";
@@ -83,14 +84,14 @@ const SYSTEM_AUTH: SystemAuthContext = {
 
 export class InMemoryForumService implements ForumService {
   private readonly uuidGen: UuidGenerator;
-  private readonly user: SimpleUserService;
+  private readonly user: UserStore;
   private readonly sections: Map<ForumSectionId, InMemorySection>;
   private readonly threads: Map<ForumThreadId, InMemoryThread>;
   private readonly posts: Map<ForumPostId, InMemoryPost>;
 
   readonly config: Readonly<ForumConfig>;
 
-  constructor(uuidGen: UuidGenerator, user: SimpleUserService, config: Readonly<ForumConfig>) {
+  constructor(uuidGen: UuidGenerator, user: UserStore, config: Readonly<ForumConfig>) {
     this.uuidGen = uuidGen;
     this.user = user;
     this.config = {postsPerPage: config.postsPerPage, threadsPerPage: config.threadsPerPage};
@@ -181,7 +182,7 @@ export class InMemoryForumService implements ForumService {
     if (section === null) {
       throw new Error("AssertionError: Expected section to exist");
     }
-    const author: ShortUser | null = await this.user.getShortUserById(acx, {id: imPost.authorId});
+    const author: ShortUser | null = await this.user.getUser({ref: {id: imPost.authorId}, fields: SHORT_USER_FIELDS});
     if (author === null) {
       throw new Error("AssertionError: Expected author to exist");
     }
@@ -487,7 +488,7 @@ export class InMemoryForumService implements ForumService {
   }
 
   private async getPosts(
-    acx: AuthContext,
+    _acx: AuthContext,
     thread: Pick<ForumThreadMeta, "id" | "posts">,
     offset: number,
     limit: number,
@@ -497,7 +498,7 @@ export class InMemoryForumService implements ForumService {
       if (post.threadId !== thread.id) {
         continue;
       }
-      const author: ShortUser | null = await this.user.getShortUserById(acx, {id: post.authorId});
+      const author: ShortUser | null = await this.user.getUser({ref: {id: post.authorId}, fields: SHORT_USER_FIELDS});
       if (author === null) {
         throw new Error("AssertionError: Expected author to exist");
       }
@@ -761,7 +762,7 @@ export class InMemoryForumService implements ForumService {
         return;
       }
     }
-    const user: ShortUser | null = await this.user.getShortUserById(acx, {id: userId});
+    const user: ShortUser | null = await this.user.getUser({ref: {id: userId}, fields: SHORT_USER_FIELDS});
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }

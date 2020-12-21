@@ -13,9 +13,9 @@ import { getLocalConfig } from "@eternal-twin/local-config";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
-import { PgSimpleUserService } from "@eternal-twin/simple-user-pg";
 import { PgTwinoidArchiveService } from "@eternal-twin/twinoid-archive-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
+import { PgUserStore } from "@eternal-twin/user-store-pg";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 
@@ -44,14 +44,14 @@ async function withPgAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const hammerfestArchive = new PgHammerfestArchiveService(database);
     const dinoparcStore = new PgDinoparcStore(database);
     const twinoidArchive = new PgTwinoidArchiveService(database);
-    const simpleUser = new PgSimpleUserService({database, databaseSecret: secretKeyStr, uuidGenerator});
-    const link = new PgLinkService({database, dinoparcStore, hammerfestArchive, twinoidArchive, user: simpleUser});
+    const userStore = new PgUserStore({database, databaseSecret: secretKeyStr, uuidGenerator});
+    const link = new PgLinkService({database, dinoparcStore, hammerfestArchive, twinoidArchive, userStore});
     const dinoparcClient = new MemDinoparcClient();
     const hammerfestClient = new InMemoryHammerfestClientService();
     const twinoidClient = new HttpTwinoidClientService();
     const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
-    const oauthProvider = new OauthProviderService({clock, oauthProviderStore, simpleUser, tokenSecret: secretKeyBytes, uuidGenerator});
-    const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
+    const oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
+    const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
     return fn({auth, email, hammerfestClient, link});
   });
 }

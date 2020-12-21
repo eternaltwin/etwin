@@ -12,7 +12,8 @@ import { AuthType } from "../auth/auth-type.js";
 import { ClockService } from "../clock/service.js";
 import { UuidGenerator } from "../core/uuid-generator.js";
 import { ShortUser } from "../user/short-user.js";
-import { SimpleUserService } from "../user/simple.js";
+import { SHORT_USER_FIELDS } from "../user/short-user-fields.js";
+import { UserStore } from "../user/store.js";
 import { UserId } from "../user/user-id.js";
 import { CompleteOauthAccessToken } from "./complete-oauth-access-token.js";
 import { CreateOrUpdateSystemClientOptions } from "./create-or-update-system-client-options.js";
@@ -35,7 +36,7 @@ import { StoredOauthAccessToken } from "./stored-oauth-access-token.js";
 export interface OauthProviderServiceOptions {
   clock: ClockService;
   oauthProviderStore: OauthProviderStore;
-  simpleUser: SimpleUserService;
+  userStore: UserStore;
   tokenSecret: Uint8Array;
   uuidGenerator: UuidGenerator;
 }
@@ -43,14 +44,14 @@ export interface OauthProviderServiceOptions {
 export class OauthProviderService implements OauthProviderService {
   readonly #clock: ClockService;
   readonly #oauthProviderStore: OauthProviderStore;
-  readonly #simpleUser: SimpleUserService;
+  readonly #userStore: UserStore;
   readonly #tokenSecret: Buffer;
   readonly #uuidGenerator: UuidGenerator;
 
   constructor(options: Readonly<OauthProviderServiceOptions>) {
     this.#clock = options.clock;
     this.#oauthProviderStore = options.oauthProviderStore;
-    this.#simpleUser = options.simpleUser;
+    this.#userStore = options.userStore;
     this.#tokenSecret = Buffer.from(options.tokenSecret);
     this.#uuidGenerator = options.uuidGenerator;
   }
@@ -145,13 +146,13 @@ export class OauthProviderService implements OauthProviderService {
     };
   }
 
-  public async getAccessTokenByKey(acx: AuthContext, atKey: RfcOauthAccessTokenKey): Promise<CompleteOauthAccessToken | null> {
+  public async getAccessTokenByKey(_acx: AuthContext, atKey: RfcOauthAccessTokenKey): Promise<CompleteOauthAccessToken | null> {
     // Also update atime
     const storedToken: StoredOauthAccessToken | null = await this.#oauthProviderStore.getAccessTokenByKey(atKey);
     if (storedToken === null) {
       return null;
     }
-    const user: ShortUser | null = await this.#simpleUser.getShortUserById(acx, {id: storedToken.user.id});
+    const user: ShortUser | null = await this.#userStore.getUser({ref: {id: storedToken.user.id}, fields: SHORT_USER_FIELDS});
     const client: ShortOauthClient | null = await this.#oauthProviderStore.getClientById(storedToken.client.id);
     if (user === null || client === null) {
       throw new Error("NotFound: User or Client");

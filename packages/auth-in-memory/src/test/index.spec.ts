@@ -11,9 +11,9 @@ import { InMemoryLinkService } from "@eternal-twin/link-in-memory";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
-import { InMemorySimpleUserService } from "@eternal-twin/simple-user-in-memory";
 import { InMemoryTwinoidArchiveService } from "@eternal-twin/twinoid-archive-in-memory";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
+import { MemUserStore } from "@eternal-twin/user-store-mem";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 
@@ -35,11 +35,11 @@ async function withInMemoryAuthService<R>(fn: (api: Api) => Promise<R>): Promise
   const dinoparcClient = new MemDinoparcClient();
   const hammerfestClient = new InMemoryHammerfestClientService();
   const twinoidClient = new HttpTwinoidClientService();
-  const simpleUser = new InMemorySimpleUserService({uuidGenerator});
-  const link = new InMemoryLinkService({dinoparcStore, hammerfestArchive, twinoidArchive, user: simpleUser});
+  const userStore = new MemUserStore({uuidGenerator});
+  const link = new InMemoryLinkService({dinoparcStore, hammerfestArchive, twinoidArchive, userStore});
   const oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
-  const oauthProvider = new OauthProviderService({clock, oauthProviderStore, simpleUser, tokenSecret: secretKeyBytes, uuidGenerator});
-  const auth = new InMemoryAuthService({dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
+  const oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
+  const auth = new InMemoryAuthService({dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
   return fn({auth, email, hammerfestClient, link});
 }
 

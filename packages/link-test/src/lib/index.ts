@@ -7,7 +7,6 @@ import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js"
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
-import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
 import chai from "chai";
@@ -15,7 +14,6 @@ import chai from "chai";
 export interface Api {
   auth: AuthService;
   link: LinkService;
-  simpleUser: SimpleUserService;
 }
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};

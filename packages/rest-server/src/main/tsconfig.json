@@ -47,13 +47,16 @@
       "path": "../../../local-config/src/lib"
     },
     {
+      "path": "../../../oauth-provider-pg/src/lib"
+    },
+    {
       "path": "../../../password-scrypt/src/lib"
     },
     {
       "path": "../../../pg-db/src/lib"
     },
     {
-      "path": "../../../simple-user-pg/src/lib"
+      "path": "../../../user-store-pg/src/lib"
     },
     {
       "path": "../../../token-pg/src/lib"

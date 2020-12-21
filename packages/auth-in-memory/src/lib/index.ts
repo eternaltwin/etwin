@@ -45,9 +45,11 @@ import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-a
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
+import { DEFAULT_USER_FIELDS } from "@eternal-twin/core/lib/user/default-user-fields.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
-import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
+import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
 import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
+import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
@@ -81,7 +83,7 @@ export interface InMemoryAuthServiceOptions {
   link: LinkService,
   oauthProvider: OauthProviderService,
   password: PasswordService,
-  simpleUser: SimpleUserService,
+  userStore: UserStore,
   tokenSecret: Uint8Array,
   twinoidArchive: TwinoidArchiveService,
   twinoidClient: TwinoidClientService,
@@ -98,7 +100,7 @@ export class InMemoryAuthService implements AuthService {
   readonly #link: LinkService;
   readonly #oauthProvider: OauthProviderService;
   readonly #password: PasswordService;
-  readonly #simpleUser: SimpleUserService;
+  readonly #userStore: UserStore;
   readonly #tokenSecret: Buffer;
   readonly #twinoidArchive: TwinoidArchiveService;
   readonly #twinoidClient: TwinoidClientService;
@@ -123,7 +125,7 @@ export class InMemoryAuthService implements AuthService {
     this.#link = options.link;
     this.#oauthProvider = options.oauthProvider;
     this.#password = options.password;
-    this.#simpleUser = options.simpleUser;
+    this.#userStore = options.userStore;
     this.#tokenSecret = Buffer.from(options.tokenSecret);
     this.#twinoidArchive = options.twinoidArchive;
     this.#twinoidClient = options.twinoidClient;
@@ -162,14 +164,14 @@ export class InMemoryAuthService implements AuthService {
     const emailJwt: EmailRegistrationJwt = await this.readEmailVerificationToken(options.emailToken);
     const email: EmailAddress = emailJwt.email;
 
-    const oldUser: ShortUser | null = await this.#simpleUser.getShortUserByEmail(SYSTEM_AUTH, {email});
+    const oldUser: ShortUser | null = await this.#userStore.getUser({ref: {email}, fields: SHORT_USER_FIELDS});
     if (oldUser !== null) {
       throw new Error(`Conflict: EmailAddressAlreadyInUse: ${JSON.stringify(oldUser.id)}`);
     }
 
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.#password.hash(options.password);
-    const user: SimpleUser = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email, username: null});
+    const user: SimpleUser = await this.#userStore.createUser({displayName, email, username: null});
     this.setPasswordHash(user.id, passwordHash);
 
     try {
@@ -189,14 +191,14 @@ export class InMemoryAuthService implements AuthService {
     }
 
     const username: Username = options.username;
-    const oldUser: ShortUser | null = await this.#simpleUser.getShortUserByUsername(SYSTEM_AUTH, {username});
+    const oldUser: ShortUser | null = await this.#userStore.getUser({ref: {username}, fields: SHORT_USER_FIELDS});
     if (oldUser !== null) {
       throw new Error(`Conflict: UsernameAlreadyInUse: ${JSON.stringify(oldUser.id)}`);
     }
 
     const displayName: UserDisplayName = options.displayName;
     const passwordHash: PasswordHash = await this.#password.hash(options.password);
-    const user: SimpleUser = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username});
+    const user: SimpleUser = await this.#userStore.createUser({displayName, email: null, username});
     this.setPasswordHash(user.id, passwordHash);
 
     const session: Session = await this.createSession(user.id);
@@ -212,7 +214,7 @@ export class InMemoryAuthService implements AuthService {
     let imUser: ShortUser;
     switch ($UserLogin.match(credentials.login)) {
       case $EmailAddress: {
-        const maybeImUser: ShortUser | null = await this.#simpleUser.getShortUserByEmail(SYSTEM_AUTH, {email: login});
+        const maybeImUser: ShortUser | null = await this.#userStore.getUser({ref: {email: login}, fields: SHORT_USER_FIELDS});
         if (maybeImUser === null) {
           throw new Error(`UserNotFound: User not found for the email: ${login}`);
         }
@@ -220,7 +222,7 @@ export class InMemoryAuthService implements AuthService {
         break;
       }
       case $Username: {
-        const maybeImUser: ShortUser | null = await this.#simpleUser.getShortUserByUsername(SYSTEM_AUTH, {username: login});
+        const maybeImUser: ShortUser | null = await this.#userStore.getUser({ref: {username: login}, fields: SHORT_USER_FIELDS});
         if (maybeImUser === null) {
           throw new Error(`UserNotFound: User not found for the username: ${login}`);
         }
@@ -265,7 +267,7 @@ export class InMemoryAuthService implements AuthService {
       userId = link.current.user.id;
     } else {
       const displayName = dinoparcToUserDisplayName(dparcSession.user);
-      const user = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
+      const user = await this.#userStore.createUser({displayName, email: null, username: null});
       await this.#link.linkToDinoparc({userId: user.id, dinoparcServer: dparcUser.server, dinoparcUserId: dparcUser.id, linkedBy: user.id});
       userId = user.id;
     }
@@ -294,7 +296,7 @@ export class InMemoryAuthService implements AuthService {
       userId = link.current.user.id;
     } else {
       const displayName = hammerfestToUserDisplayName(hfSession.user);
-      const user = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
+      const user = await this.#userStore.createUser({displayName, email: null, username: null});
       await this.#link.linkToHammerfest(user.id, hfUser.server, hfUser.id);
       userId = user.id;
     }
@@ -319,7 +321,7 @@ export class InMemoryAuthService implements AuthService {
       userId = link.current.user.id;
     } else {
       const displayName = twinoidToUserDisplayName(tidUser as Readonly<Pick<TidUser, "id" | "name">>);
-      const user = await this.#simpleUser.createUser(SYSTEM_AUTH, {displayName, email: null, username: null});
+      const user = await this.#userStore.createUser({displayName, email: null, username: null});
       await this.#link.linkToTwinoid(user.id, tidUser.id!.toString(10));
       userId = user.id;
     }
@@ -370,7 +372,7 @@ export class InMemoryAuthService implements AuthService {
       case LoginType.Uuid: {
         const [client, user] = await Promise.all([
           this.#oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, login.value),
-          this.#simpleUser.getShortUserById(SYSTEM_AUTH, {id: login.value}),
+          this.#userStore.getUser({ref: {id: login.value}, fields: SHORT_USER_FIELDS}),
         ]);
         if (client !== null) {
           if (user !== null) {
@@ -437,7 +439,7 @@ export class InMemoryAuthService implements AuthService {
   }
 
   private async createSession(userId: UserId): Promise<Session> {
-    const user: SimpleUser | null = await this.#simpleUser.getUserById(SYSTEM_AUTH, {id: userId});
+    const user: SimpleUser | null = await this.#userStore.getUser({ref: {id: userId}, fields: DEFAULT_USER_FIELDS});
     if (user === null) {
       throw new Error("UserNotFound");
     }
@@ -456,7 +458,7 @@ export class InMemoryAuthService implements AuthService {
   }
 
   private async getExistingUserById(userId: UserId): Promise<SimpleUser> {
-    const user: SimpleUser | null = await this.#simpleUser.getUserById(SYSTEM_AUTH, {id: userId});
+    const user: SimpleUser | null = await this.#userStore.getUser({ref: {id: userId}, fields: DEFAULT_USER_FIELDS});
 
     if (user === null) {
       throw new Error(`AssertionError: Expected user to exist for id ${userId}`);

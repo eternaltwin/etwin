@@ -15,7 +15,7 @@ import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store.
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
-import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
+import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { HttpDinoparcClientService } from "@eternal-twin/dinoparc-client-http";
 import { MemDinoparcStore } from "@eternal-twin/dinoparc-store-mem";
 import { PgDinoparcStore } from "@eternal-twin/dinoparc-store-pg";
@@ -35,14 +35,14 @@ import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
-import { InMemorySimpleUserService } from "@eternal-twin/simple-user-in-memory";
-import { PgSimpleUserService } from "@eternal-twin/simple-user-pg";
 import { InMemoryTokenService } from "@eternal-twin/token-in-memory";
 import { PgTokenService } from "@eternal-twin/token-pg";
 import { InMemoryTwinoidArchiveService } from "@eternal-twin/twinoid-archive-in-memory";
 import { PgTwinoidArchiveService } from "@eternal-twin/twinoid-archive-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
+import { MemUserStore } from "@eternal-twin/user-store-mem";
+import { PgUserStore } from "@eternal-twin/user-store-pg";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 import urljoin from "url-join";
@@ -57,7 +57,7 @@ export interface Api {
   koaAuth: KoaAuth;
   oauthClient: OauthClientService;
   oauthProvider: OauthProviderService;
-  simpleUser: SimpleUserService;
+  userStore: UserStore;
   twinoidClient: TwinoidClientService;
   user: UserService;
 }
@@ -82,21 +82,21 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
   let oauthProviderStore: OauthProviderStore;
   let oauthProvider: OauthProviderService;
   let twinoidArchive: TwinoidArchiveService;
-  let simpleUser: SimpleUserService;
+  let userStore: UserStore;
   let token: TokenService;
 
   let teardown: () => Promise<void>;
 
   if (config.etwin.api === ApiType.InMemory) {
-    simpleUser = new InMemorySimpleUserService({uuidGenerator});
+    userStore = new MemUserStore({uuidGenerator});
     dinoparcStore = new MemDinoparcStore();
     hammerfestArchive = new InMemoryHammerfestArchiveService();
     twinoidArchive = new InMemoryTwinoidArchiveService();
-    link = new InMemoryLinkService({dinoparcStore, hammerfestArchive, twinoidArchive, user: simpleUser});
+    link = new InMemoryLinkService({dinoparcStore, hammerfestArchive, twinoidArchive, userStore});
     oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
-    oauthProvider = new OauthProviderService({clock, oauthProviderStore, simpleUser, tokenSecret: secretKeyBytes, uuidGenerator});
-    auth = new InMemoryAuthService({dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
-    forum = new InMemoryForumService(uuidGenerator, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
+    oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
+    auth = new InMemoryAuthService({dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
+    forum = new InMemoryForumService(uuidGenerator, userStore, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
     token = new InMemoryTokenService(clock, dinoparcStore, hammerfestArchive);
 
     teardown = async function(): Promise<void> {};
@@ -112,13 +112,13 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     dinoparcStore = new PgDinoparcStore(database);
     hammerfestArchive = new PgHammerfestArchiveService(database);
     twinoidArchive = new PgTwinoidArchiveService(database);
-    simpleUser = new PgSimpleUserService({database, databaseSecret: secretKeyStr, uuidGenerator});
-    link = new PgLinkService({database, dinoparcStore, hammerfestArchive, twinoidArchive, user: simpleUser});
+    userStore = new PgUserStore({database, databaseSecret: secretKeyStr, uuidGenerator});
+    link = new PgLinkService({database, dinoparcStore, hammerfestArchive, twinoidArchive, userStore});
     hammerfestArchive = new PgHammerfestArchiveService(database);
     oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
-    oauthProvider = new OauthProviderService({clock, oauthProviderStore, simpleUser, tokenSecret: secretKeyBytes, uuidGenerator});
-    auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, simpleUser, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
-    forum = new PgForumService(database, uuidGenerator, simpleUser, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
+    oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
+    auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
+    forum = new PgForumService(database, uuidGenerator, userStore, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
     token = new PgTokenService(database, secretKeyStr, dinoparcStore, hammerfestArchive);
 
     teardown = async function(): Promise<void> {
@@ -128,7 +128,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
 
   const dinoparc = new DinoparcService({dinoparcStore, link});
   const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
-  const user = new UserService({auth, dinoparcClient, dinoparcStore, hammerfestArchive, hammerfestClient, link, simpleUser, token, twinoidArchive, twinoidClient});
+  const user = new UserService({auth, dinoparcClient, dinoparcStore, hammerfestArchive, hammerfestClient, link, userStore, token, twinoidArchive, twinoidClient});
 
   const koaAuth = new KoaAuth(auth);
   const oauthClient = new HttpOauthClientService({
@@ -163,7 +163,7 @@ async function createApi(config: Config): Promise<{api: Api; teardown(): Promise
     );
   }
 
-  const api: Api = {auth, dinoparc, forum, hammerfest, hammerfestArchive, hammerfestClient, koaAuth, oauthClient, oauthProvider, simpleUser, twinoidClient, user};
+  const api: Api = {auth, dinoparc, forum, hammerfest, hammerfestArchive, hammerfestClient, koaAuth, oauthClient, oauthProvider, userStore, twinoidClient, user};
 
   return {api, teardown};
 }

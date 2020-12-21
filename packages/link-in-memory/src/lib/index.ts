@@ -1,6 +1,3 @@
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
 import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
 import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
@@ -20,7 +17,8 @@ import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
 import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
-import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
+import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
+import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Date } from "kryo/lib/date.js";
 
@@ -40,28 +38,22 @@ interface MemHammerfestUserLink extends MemBaseLink {
   hfUserId: HammerfestUserId;
 }
 
-
 interface MemTwinoidUserLink extends MemBaseLink {
   tidUserId: TwinoidUserId;
 }
-
-const GUEST_AUTH_CONTEXT: GuestAuthContext = {
-  type: AuthType.Guest,
-  scope: AuthScope.Default,
-};
 
 export interface MemLinkServiceOptions {
   dinoparcStore: DinoparcStore,
   hammerfestArchive: HammerfestArchiveService,
   twinoidArchive: TwinoidArchiveService,
-  user: SimpleUserService,
+  userStore: UserStore,
 }
 
 export class InMemoryLinkService implements LinkService {
   readonly #dinoparcStore: DinoparcStore;
   readonly #hammerfestArchive: HammerfestArchiveService;
   readonly #twinoidArchive: TwinoidArchiveService;
-  readonly #user: SimpleUserService;
+  readonly #userStore: UserStore;
   readonly #dinoparcUserLinks: Set<MemDinoparcUserLink>;
   readonly #hammerfestUserLinks: Set<MemHammerfestUserLink>;
   readonly #twinoidUserLinks: Set<MemTwinoidUserLink>;
@@ -70,7 +62,7 @@ export class InMemoryLinkService implements LinkService {
     this.#dinoparcStore = options.dinoparcStore;
     this.#hammerfestArchive = options.hammerfestArchive;
     this.#twinoidArchive = options.twinoidArchive;
-    this.#user = options.user;
+    this.#userStore = options.userStore;
     this.#dinoparcUserLinks = new Set();
     this.#hammerfestUserLinks = new Set();
     this.#twinoidUserLinks = new Set();
@@ -260,11 +252,11 @@ export class InMemoryLinkService implements LinkService {
   }
 
   private async toEtwinLink(imLink: MemBaseLink): Promise<EtwinLink> {
-    const linkedBy = await this.#user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
+    const linkedBy = await this.#userStore.getUser({ref: {id: imLink.linkedBy}, fields: SHORT_USER_FIELDS});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.#user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.userId});
+    const user = await this.#userStore.getUser({ref: {id: imLink.userId}, fields: SHORT_USER_FIELDS});
     if (user === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -279,7 +271,7 @@ export class InMemoryLinkService implements LinkService {
   }
 
   private async toDinoparcLink(imLink: MemDinoparcUserLink): Promise<DinoparcLink> {
-    const linkedBy = await this.#user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
+    const linkedBy = await this.#userStore.getUser({ref: {id: imLink.linkedBy}, fields: SHORT_USER_FIELDS});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -298,7 +290,7 @@ export class InMemoryLinkService implements LinkService {
   }
 
   private async toHammerfestLink(imLink: MemHammerfestUserLink): Promise<HammerfestLink> {
-    const linkedBy = await this.#user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
+    const linkedBy = await this.#userStore.getUser({ref: {id: imLink.linkedBy}, fields: SHORT_USER_FIELDS});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
@@ -317,7 +309,7 @@ export class InMemoryLinkService implements LinkService {
   }
 
   private async toTwinoidLink(imLink: MemTwinoidUserLink): Promise<TwinoidLink> {
-    const linkedBy = await this.#user.getShortUserById(GUEST_AUTH_CONTEXT, {id: imLink.linkedBy});
+    const linkedBy = await this.#userStore.getUser({ref: {id: imLink.linkedBy}, fields: SHORT_USER_FIELDS});
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }

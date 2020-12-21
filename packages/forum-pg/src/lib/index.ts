@@ -42,7 +42,8 @@ import { ShortForumPost } from "@eternal-twin/core/lib/forum/short-forum-post.js
 import { UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options.js";
 import { UserForumActor } from "@eternal-twin/core/lib/forum/user-forum-actor.js";
 import { $ShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
-import { SimpleUserService } from "@eternal-twin/core/lib/user/simple.js";
+import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
+import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id";
 import {
   ForumPostRevisionRow,
@@ -63,13 +64,13 @@ const SYSTEM_AUTH: SystemAuthContext = {
 export class PgForumService implements ForumService {
   private readonly database: Database;
   private readonly uuidGen: UuidGenerator;
-  private readonly user: SimpleUserService;
+  private readonly user: UserStore;
   public readonly config: Readonly<ForumConfig>;
 
   constructor(
     database: Database,
     uuidGen: UuidGenerator,
-    user: SimpleUserService,
+    user: UserStore,
     config: Readonly<ForumConfig>,
   ) {
     this.database = database;
@@ -465,7 +466,7 @@ export class PgForumService implements ForumService {
 
   private async getRoleGrantsTx(
     queryable: Queryable,
-    acx: AuthContext,
+    _acx: AuthContext,
     sectionId: ForumSectionId,
   ): Promise<ForumRoleGrant[]> {
     type Row = Pick<ForumRoleGrantRow, "user_id" | "start_time" | "granted_by">;
@@ -477,8 +478,8 @@ export class PgForumService implements ForumService {
     );
     const items: ForumRoleGrant[] = [];
     for (const row of rows) {
-      const user: ShortUser | null = await this.user.getShortUserById(acx, {id: row.user_id});
-      const grantedBy: ShortUser | null = await this.user.getShortUserById(acx, {id: row.granted_by});
+      const user: ShortUser | null = await this.user.getUser({ref: {id: row.user_id}, fields: SHORT_USER_FIELDS});
+      const grantedBy: ShortUser | null = await this.user.getUser({ref: {id: row.granted_by}, fields: SHORT_USER_FIELDS});
       if (user === null || grantedBy === null) {
         throw new Error("AssertionError: Expected `user` and `grantedBy` to exist");
       }
@@ -645,7 +646,7 @@ export class PgForumService implements ForumService {
     if (firstRevRow === undefined) {
       throw new Error("AssertionError: Expected author to exist");
     }
-    const author: ShortUser | null = await this.user.getShortUserById(acx, {id: firstRevRow.author_id});
+    const author: ShortUser | null = await this.user.getUser({ref: {id: firstRevRow.author_id}, fields: SHORT_USER_FIELDS});
     if (author === null) {
       throw new Error("AssertionError: Expected author to exist");
     }
@@ -865,7 +866,7 @@ export class PgForumService implements ForumService {
 
   private async getPostsTx(
     queryable: Queryable,
-    acx: AuthContext,
+    _acx: AuthContext,
     thread: Pick<ForumThreadMeta, "id" | "posts">,
     offset: number,
     limit: number,
@@ -930,11 +931,11 @@ export class PgForumService implements ForumService {
           html: row.latest_revision_html_mod_body,
         };
       }
-      const firstRevAuthor: ShortUser | null = await this.user.getShortUserById(acx, {id: row.first_revision_author_id});
+      const firstRevAuthor: ShortUser | null = await this.user.getUser({ref: {id: row.first_revision_author_id}, fields: SHORT_USER_FIELDS});
       if (firstRevAuthor === null) {
         throw new Error("AssertionError: Null author");
       }
-      const lastRevAuthor: ShortUser | null = await this.user.getShortUserById(acx, {id: row.latest_revision_author_id});
+      const lastRevAuthor: ShortUser | null = await this.user.getUser({ref: {id: row.latest_revision_author_id}, fields: SHORT_USER_FIELDS});
       if (lastRevAuthor === null) {
         throw new Error("AssertionError: Null author");
       }
@@ -1018,7 +1019,7 @@ export class PgForumService implements ForumService {
 
   private async getPostRevisionsTx(
     queryable: Queryable,
-    acx: AuthContext,
+    _acx: AuthContext,
     postId: ForumPostId,
     postRevisionCount: number,
     offset: number,
@@ -1049,7 +1050,7 @@ export class PgForumService implements ForumService {
           html: row._html_mod_body,
         };
       }
-      const author: ShortUser | null = await this.user.getShortUserById(acx, {id: row.author_id});
+      const author: ShortUser | null = await this.user.getUser({ref: {id: row.author_id}, fields: SHORT_USER_FIELDS});
       if (author === null) {
         throw new Error("AssertionError: Expected author to exist");
       }

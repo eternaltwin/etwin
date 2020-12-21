@@ -1,5 +1,5 @@
 {
-  "name": "@eternal-twin/simple-user-pg",
+  "name": "@eternal-twin/user-store-pg",
   "version": "0.3.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Eternal-Twin `SimpleUserService` Postgres implementation",
@@ -45,9 +45,9 @@
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/oauth-provider-pg": "workspace:*",
     "@eternal-twin/password-scrypt": "workspace:*",
-    "@eternal-twin/simple-user-test": "workspace:*",
     "@eternal-twin/twinoid-archive-pg": "workspace:*",
     "@eternal-twin/twinoid-client-http": "workspace:*",
+    "@eternal-twin/user-store-test": "workspace:*",
     "@eternal-twin/uuid4-generator": "workspace:*",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.0.4",
