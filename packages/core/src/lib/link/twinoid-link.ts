@@ -3,7 +3,7 @@ import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
 
-import { $TwinoidUserRef, TwinoidUserRef } from "../twinoid/twinoid-user-ref.js";
+import { $ShortTwinoidUser, ShortTwinoidUser } from "../twinoid/short-twinoid-user.js";
 import { $LinkAction, LinkAction } from "./link-action.js";
 
 /**
@@ -12,14 +12,14 @@ import { $LinkAction, LinkAction } from "./link-action.js";
 export interface TwinoidLink {
   link: LinkAction;
   unlink: null;
-  user: TwinoidUserRef;
+  user: ShortTwinoidUser;
 }
 
 export const $TwinoidLink: RecordIoType<TwinoidLink> = new RecordType<TwinoidLink>({
   properties: {
     link: {type: $LinkAction},
     unlink: {type: $Null},
-    user: {type: $TwinoidUserRef},
+    user: {type: $ShortTwinoidUser},
   },
   changeCase: CaseStyle.SnakeCase,
 });

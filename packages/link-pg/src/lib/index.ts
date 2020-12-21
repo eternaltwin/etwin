@@ -1,8 +1,8 @@
 import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
 import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
-import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
+import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
 import { EtwinLink } from "@eternal-twin/core/lib/link/etwin-link.js";
 import { HammerfestLink, NullableHammerfestLink } from "@eternal-twin/core/lib/link/hammerfest-link.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
@@ -15,7 +15,7 @@ import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-
 import { VersionedHammerfestLink } from "@eternal-twin/core/lib/link/versioned-hammerfest-link.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
-import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
+import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
@@ -31,23 +31,23 @@ import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 export interface PgLinkServiceOptions {
   database: Database,
   dinoparcStore: DinoparcStore,
-  hammerfestArchive: HammerfestArchiveService,
-  twinoidArchive: TwinoidArchiveService,
+  hammerfestStore: HammerfestStore,
+  twinoidStore: TwinoidStore,
   userStore: UserStore,
 }
 
 export class PgLinkService implements LinkService {
   readonly #database: Database;
   readonly #dinoparcStore: DinoparcStore;
-  readonly #hammerfestArchive: HammerfestArchiveService;
-  readonly #twinoidArchive: TwinoidArchiveService;
+  readonly #hammerfestArchive: HammerfestStore;
+  readonly #twinoidArchive: TwinoidStore;
   readonly #userStore: UserStore;
 
   constructor(options: Readonly<PgLinkServiceOptions>) {
     this.#database = options.database;
     this.#dinoparcStore = options.dinoparcStore;
-    this.#hammerfestArchive = options.hammerfestArchive;
-    this.#twinoidArchive = options.twinoidArchive;
+    this.#hammerfestArchive = options.hammerfestStore;
+    this.#twinoidArchive = options.twinoidStore;
     this.#userStore = options.userStore;
   }
 
@@ -209,7 +209,7 @@ export class PgLinkService implements LinkService {
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.#hammerfestArchive.getShortUserById({server: row.hammerfest_server, id: row.hammerfest_user_id});
+    const user = await this.#hammerfestArchive.getShortUser({server: row.hammerfest_server, id: row.hammerfest_user_id});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -248,7 +248,7 @@ export class PgLinkService implements LinkService {
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.#twinoidArchive.getUserRefById(row.twinoid_user_id);
+    const user = await this.#twinoidArchive.getShortUser({id: row.twinoid_user_id});
     if (user === null) {
       throw new Error("AssertionError: Expected Twinoid user to exist");
     }
@@ -328,7 +328,7 @@ export class PgLinkService implements LinkService {
         if (linkedBy === null) {
           throw new Error("AssertionError: Expected linkedBy user to exist");
         }
-        const user = await this.#hammerfestArchive.getShortUserById({server: row.hammerfest_server, id: row.hammerfest_user_id});
+        const user = await this.#hammerfestArchive.getShortUser({server: row.hammerfest_server, id: row.hammerfest_user_id});
         if (user === null) {
           throw new Error("AssertionError: Expected Hammerfest user to exist");
         }
@@ -368,7 +368,7 @@ export class PgLinkService implements LinkService {
         if (linkedBy === null) {
           throw new Error("AssertionError: Expected linkedBy user to exist");
         }
-        const user = await this.#twinoidArchive.getUserRefById(row.twinoid_user_id);
+        const user = await this.#twinoidArchive.getShortUser({id: row.twinoid_user_id});
         if (user === null) {
           throw new Error("AssertionError: Expected Twinoid user to exist");
         }

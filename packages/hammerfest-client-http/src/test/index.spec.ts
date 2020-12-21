@@ -1,10 +1,10 @@
 import chai from "chai";
 
-import { HttpHammerfestClientService } from "../lib/index.js";
+import { HttpHammerfestClient } from "../lib/index.js";
 
-describe("HttpHammerfestClientService", () => {
+describe("HttpHammerfestClient", () => {
   it("exists", async () => {
-    const hammerfest = new HttpHammerfestClientService();
+    const hammerfest = new HttpHammerfestClient();
     chai.assert.isDefined(hammerfest);
   });
 });

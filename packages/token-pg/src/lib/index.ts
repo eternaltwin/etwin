@@ -3,11 +3,11 @@ import { DinoparcSession } from "@eternal-twin/core/lib/dinoparc/dinoparc-sessio
 import { DinoparcSessionKey } from "@eternal-twin/core/lib/dinoparc/dinoparc-session-key.js";
 import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
-import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { RfcOauthRefreshTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-refresh-token-key.js";
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
@@ -23,13 +23,13 @@ export class PgTokenService implements TokenService {
   readonly #database: Database;
   readonly #dbSecret: string;
   readonly #dinoparcStore: DinoparcStore;
-  readonly #hammerfestArchive: HammerfestArchiveService;
+  readonly #hammerfestStore: HammerfestStore;
 
-  constructor(database: Database, dbSecret: string, dinoparcStore: DinoparcStore, hammerfestArchive: HammerfestArchiveService) {
+  constructor(database: Database, dbSecret: string, dinoparcStore: DinoparcStore, hammerfestArchive: HammerfestStore) {
     this.#database = database;
     this.#dbSecret = dbSecret;
     this.#dinoparcStore = dinoparcStore;
-    this.#hammerfestArchive = hammerfestArchive;
+    this.#hammerfestStore = hammerfestArchive;
   }
 
   async touchTwinoidOauth(options: TouchOauthTokenOptions): Promise<void> {
@@ -351,7 +351,7 @@ export class PgTokenService implements TokenService {
     if (row === undefined) {
       return null;
     }
-    const user = await this.#hammerfestArchive.getShortUserById({server: hfServer, id: hfUserId});
+    const user = await this.#hammerfestStore.getShortUser({server: hfServer, id: hfUserId});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -414,7 +414,7 @@ export class PgTokenService implements TokenService {
         hfUserId,
       ],
     );
-    const user = await this.#hammerfestArchive.getShortUserById({server: hfServer, id: row.hammerfest_user_id});
+    const user = await this.#hammerfestStore.getShortUser({server: hfServer, id: row.hammerfest_user_id});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }

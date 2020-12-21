@@ -4,11 +4,11 @@ import { DinoparcSession } from "@eternal-twin/core/lib/dinoparc/dinoparc-sessio
 import { DinoparcSessionKey } from "@eternal-twin/core/lib/dinoparc/dinoparc-session-key.js";
 import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
-import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { RfcOauthRefreshTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-refresh-token-key.js";
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
@@ -70,17 +70,17 @@ interface MemRefreshTokens {
 export class InMemoryTokenService implements TokenService {
   readonly #clock: ClockService;
   readonly #dinoparcStore: DinoparcStore;
-  readonly #hammerfestArchive: HammerfestArchiveService;
+  readonly #hammerfestStore: HammerfestStore;
 
   readonly #dinoparcSessions: Map<DinoparcServer, MemDinoparcTokens>;
   readonly #hammerfestSessions: Map<HammerfestServer, MemHammerfestTokens>;
   readonly #twinoidAccessTokens: MemAccessTokens;
   readonly #twinoidRefreshTokens: MemRefreshTokens;
 
-  constructor(clock: ClockService, dinoparcStore: DinoparcStore, hammerfestArchive: HammerfestArchiveService) {
+  constructor(clock: ClockService, dinoparcStore: DinoparcStore, hammerfestStore: HammerfestStore) {
     this.#clock = clock;
     this.#dinoparcStore = dinoparcStore;
-    this.#hammerfestArchive = hammerfestArchive;
+    this.#hammerfestStore = hammerfestStore;
 
     this.#dinoparcSessions = new Map([
       ["dinoparc.com", {byKey: new Map(), byUserId: new Map()}],
@@ -265,7 +265,7 @@ export class InMemoryTokenService implements TokenService {
         session = oldSession;
       }
     }
-    const user = await this.#hammerfestArchive.getShortUserById({server: hfServer, id: session.hfUserId});
+    const user = await this.#hammerfestStore.getShortUser({server: hfServer, id: session.hfUserId});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -291,7 +291,7 @@ export class InMemoryTokenService implements TokenService {
     if (session === undefined) {
       return null;
     }
-    const user = await this.#hammerfestArchive.getShortUserById({server: hfServer, id: session.hfUserId});
+    const user = await this.#hammerfestStore.getShortUser({server: hfServer, id: session.hfUserId});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }

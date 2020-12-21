@@ -1827,15 +1827,15 @@ __metadata:
     "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
-    "@eternal-twin/hammerfest-archive-in-memory": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-mem": "workspace:*"
     "@eternal-twin/link-in-memory": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
-    "@eternal-twin/twinoid-archive-in-memory": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-core": "workspace:*"
+    "@eternal-twin/twinoid-store-mem": "workspace:*"
     "@eternal-twin/user-store-mem": "workspace:*"
     "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
@@ -1863,16 +1863,16 @@ __metadata:
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
-    "@eternal-twin/hammerfest-archive-pg": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-pg": "workspace:*"
     "@eternal-twin/link-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
-    "@eternal-twin/twinoid-archive-pg": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-core": "workspace:*"
+    "@eternal-twin/twinoid-store-pg": "workspace:*"
     "@eternal-twin/user-store-pg": "workspace:*"
     "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
@@ -1895,7 +1895,7 @@ __metadata:
   dependencies:
     "@eternal-twin/core": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2008,7 +2008,7 @@ __metadata:
   resolution: "@eternal-twin/dinoparc-store-test@workspace:packages/dinoparc-store-test"
   dependencies:
     "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
@@ -2161,15 +2161,15 @@ __metadata:
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/forum-test": "workspace:*"
-    "@eternal-twin/hammerfest-archive-in-memory": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-mem": "workspace:*"
     "@eternal-twin/link-in-memory": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
-    "@eternal-twin/twinoid-archive-in-memory": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
+    "@eternal-twin/twinoid-store-mem": "workspace:*"
     "@eternal-twin/user-store-mem": "workspace:*"
     "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
@@ -2194,16 +2194,16 @@ __metadata:
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
     "@eternal-twin/forum-test": "workspace:*"
-    "@eternal-twin/hammerfest-archive-pg": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-pg": "workspace:*"
     "@eternal-twin/link-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
-    "@eternal-twin/twinoid-archive-pg": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
+    "@eternal-twin/twinoid-store-pg": "workspace:*"
     "@eternal-twin/user-store-pg": "workspace:*"
     "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
@@ -2227,58 +2227,6 @@ __metadata:
     chai: ^4.2.0
     eslint: ^7.14.0
     kryo: ^0.11.1
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/hammerfest-archive-in-memory@workspace:*, @eternal-twin/hammerfest-archive-in-memory@workspace:packages/hammerfest-archive-in-memory":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/hammerfest-archive-in-memory@workspace:packages/hammerfest-archive-in-memory"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/hammerfest-archive-test": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/hammerfest-archive-pg@workspace:*, @eternal-twin/hammerfest-archive-pg@workspace:packages/hammerfest-archive-pg":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/hammerfest-archive-pg@workspace:packages/hammerfest-archive-pg"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/etwin-pg": "workspace:*"
-    "@eternal-twin/hammerfest-archive-test": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/pg-db": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/hammerfest-archive-test@workspace:*, @eternal-twin/hammerfest-archive-test@workspace:packages/hammerfest-archive-test":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/hammerfest-archive-test@workspace:packages/hammerfest-archive-test"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
     mocha: ^8.2.1
     typescript: ^4.1.2
   languageName: unknown
@@ -2309,11 +2257,62 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/hammerfest-client-in-memory@workspace:*, @eternal-twin/hammerfest-client-in-memory@workspace:packages/hammerfest-client-in-memory":
+"@eternal-twin/hammerfest-client-mem@workspace:*, @eternal-twin/hammerfest-client-mem@workspace:packages/hammerfest-client-mem":
   version: 0.0.0-use.local
-  resolution: "@eternal-twin/hammerfest-client-in-memory@workspace:packages/hammerfest-client-in-memory"
+  resolution: "@eternal-twin/hammerfest-client-mem@workspace:packages/hammerfest-client-mem"
   dependencies:
     "@eternal-twin/core": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/hammerfest-store-mem@workspace:*, @eternal-twin/hammerfest-store-mem@workspace:packages/hammerfest-store-mem":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/hammerfest-store-mem@workspace:packages/hammerfest-store-mem"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/hammerfest-store-test": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/hammerfest-store-pg@workspace:*, @eternal-twin/hammerfest-store-pg@workspace:packages/hammerfest-store-pg":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/hammerfest-store-pg@workspace:packages/hammerfest-store-pg"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/etwin-pg": "workspace:*"
+    "@eternal-twin/hammerfest-store-test": "workspace:*"
+    "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/pg-db": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/hammerfest-store-test@workspace:*, @eternal-twin/hammerfest-store-test@workspace:packages/hammerfest-store-test":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/hammerfest-store-test@workspace:packages/hammerfest-store-test"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/local-config": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2334,14 +2333,14 @@ __metadata:
     "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
-    "@eternal-twin/hammerfest-archive-in-memory": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-mem": "workspace:*"
     "@eternal-twin/link-test": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
-    "@eternal-twin/twinoid-archive-in-memory": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
+    "@eternal-twin/twinoid-store-mem": "workspace:*"
     "@eternal-twin/user-store-mem": "workspace:*"
     "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
@@ -2366,15 +2365,15 @@ __metadata:
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
-    "@eternal-twin/hammerfest-archive-pg": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-pg": "workspace:*"
     "@eternal-twin/link-test": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
-    "@eternal-twin/twinoid-archive-pg": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
+    "@eternal-twin/twinoid-store-pg": "workspace:*"
     "@eternal-twin/user-store-pg": "workspace:*"
     "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
@@ -2575,17 +2574,17 @@ __metadata:
     "@eternal-twin/etwin-client-in-memory": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
     "@eternal-twin/forum-pg": "workspace:*"
-    "@eternal-twin/hammerfest-archive-pg": "workspace:*"
     "@eternal-twin/hammerfest-client-http": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-pg": "workspace:*"
     "@eternal-twin/link-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/token-pg": "workspace:*"
-    "@eternal-twin/twinoid-archive-pg": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
+    "@eternal-twin/twinoid-store-pg": "workspace:*"
     "@eternal-twin/user-store-pg": "workspace:*"
     "@eternal-twin/uuid4-generator": "workspace:*"
     "@koa/cors": ^3.1.0
@@ -2624,7 +2623,7 @@ __metadata:
   dependencies:
     "@eternal-twin/core": "workspace:*"
     "@eternal-twin/dinoparc-store-mem": "workspace:*"
-    "@eternal-twin/hammerfest-archive-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-store-mem": "workspace:*"
     "@eternal-twin/token-test": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
@@ -2643,7 +2642,7 @@ __metadata:
     "@eternal-twin/core": "workspace:*"
     "@eternal-twin/dinoparc-store-pg": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
-    "@eternal-twin/hammerfest-archive-pg": "workspace:*"
+    "@eternal-twin/hammerfest-store-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/token-test": "workspace:*"
@@ -2668,57 +2667,6 @@ __metadata:
     chai: ^4.2.0
     eslint: ^7.14.0
     kryo: ^0.11.1
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/twinoid-archive-in-memory@workspace:*, @eternal-twin/twinoid-archive-in-memory@workspace:packages/twinoid-archive-in-memory":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/twinoid-archive-in-memory@workspace:packages/twinoid-archive-in-memory"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/twinoid-archive-test": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/twinoid-archive-pg@workspace:*, @eternal-twin/twinoid-archive-pg@workspace:packages/twinoid-archive-pg":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/twinoid-archive-pg@workspace:packages/twinoid-archive-pg"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/etwin-pg": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/pg-db": "workspace:*"
-    "@eternal-twin/twinoid-archive-test": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/twinoid-archive-test@workspace:*, @eternal-twin/twinoid-archive-test@workspace:packages/twinoid-archive-test":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/twinoid-archive-test@workspace:packages/twinoid-archive-test"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
     mocha: ^8.2.1
     typescript: ^4.1.2
   languageName: unknown
@@ -2758,6 +2706,57 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@eternal-twin/twinoid-store-mem@workspace:*, @eternal-twin/twinoid-store-mem@workspace:packages/twinoid-store-mem":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/twinoid-store-mem@workspace:packages/twinoid-store-mem"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/twinoid-store-test": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/twinoid-store-pg@workspace:*, @eternal-twin/twinoid-store-pg@workspace:packages/twinoid-store-pg":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/twinoid-store-pg@workspace:packages/twinoid-store-pg"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/etwin-pg": "workspace:*"
+    "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/pg-db": "workspace:*"
+    "@eternal-twin/twinoid-store-test": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
+"@eternal-twin/twinoid-store-test@workspace:*, @eternal-twin/twinoid-store-test@workspace:packages/twinoid-store-test":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/twinoid-store-test@workspace:packages/twinoid-store-test"
+  dependencies:
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/local-config": "workspace:*"
+    "@types/chai": ^4.2.14
+    "@types/mocha": ^8.0.4
+    "@types/node": ^14.14.10
+    chai: ^4.2.0
+    eslint: ^7.14.0
+    mocha: ^8.2.1
+    typescript: ^4.1.2
+  languageName: unknown
+  linkType: soft
+
 "@eternal-twin/user-store-mem@workspace:*, @eternal-twin/user-store-mem@workspace:packages/user-store-mem":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/user-store-mem@workspace:packages/user-store-mem"
@@ -2768,14 +2767,14 @@ __metadata:
     "@eternal-twin/dinoparc-store-mem": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
-    "@eternal-twin/hammerfest-archive-in-memory": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-mem": "workspace:*"
     "@eternal-twin/link-in-memory": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
-    "@eternal-twin/twinoid-archive-in-memory": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
+    "@eternal-twin/twinoid-store-mem": "workspace:*"
     "@eternal-twin/user-store-test": "workspace:*"
     "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
@@ -2799,15 +2798,15 @@ __metadata:
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
-    "@eternal-twin/hammerfest-archive-pg": "workspace:*"
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*"
+    "@eternal-twin/hammerfest-client-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-pg": "workspace:*"
     "@eternal-twin/link-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
-    "@eternal-twin/twinoid-archive-pg": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
+    "@eternal-twin/twinoid-store-pg": "workspace:*"
     "@eternal-twin/user-store-test": "workspace:*"
     "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
@@ -2880,9 +2879,9 @@ __metadata:
     "@eternal-twin/email-template-etwin": "workspace:*"
     "@eternal-twin/forum-in-memory": "workspace:*"
     "@eternal-twin/forum-pg": "workspace:*"
-    "@eternal-twin/hammerfest-archive-in-memory": "workspace:*"
-    "@eternal-twin/hammerfest-archive-pg": "workspace:*"
     "@eternal-twin/hammerfest-client-http": "workspace:*"
+    "@eternal-twin/hammerfest-store-mem": "workspace:*"
+    "@eternal-twin/hammerfest-store-pg": "workspace:*"
     "@eternal-twin/link-in-memory": "workspace:*"
     "@eternal-twin/link-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
@@ -2894,10 +2893,10 @@ __metadata:
     "@eternal-twin/rest-server": "workspace:*"
     "@eternal-twin/token-in-memory": "workspace:*"
     "@eternal-twin/token-pg": "workspace:*"
-    "@eternal-twin/twinoid-archive-in-memory": "workspace:*"
-    "@eternal-twin/twinoid-archive-pg": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-core": "workspace:*"
+    "@eternal-twin/twinoid-store-mem": "workspace:*"
+    "@eternal-twin/twinoid-store-pg": "workspace:*"
     "@eternal-twin/user-store-mem": "workspace:*"
     "@eternal-twin/user-store-pg": "workspace:*"
     "@eternal-twin/uuid4-generator": "workspace:*"

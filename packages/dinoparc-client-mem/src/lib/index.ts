@@ -1,5 +1,5 @@
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { DinoparcClientService } from "@eternal-twin/core/lib/dinoparc/client.js";
+import { DinoparcClient } from "@eternal-twin/core/lib/dinoparc/client.js";
 import { DinoparcCredentials } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials.js";
 import { DinoparcPassword } from "@eternal-twin/core/lib/dinoparc/dinoparc-password.js";
 import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
@@ -30,7 +30,7 @@ function makeSessionKey(): DinoparcSessionKey {
   return key;
 }
 
-export class MemDinoparcClient implements DinoparcClientService {
+export class MemDinoparcClient implements DinoparcClient {
   readonly #servers: Map<DinoparcServer, MemServer>;
 
   constructor() {

@@ -23,17 +23,17 @@ import { $UserLogin, UserLogin } from "@eternal-twin/core/lib/auth/user-login.js
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
-import { DinoparcClientService } from "@eternal-twin/core/lib/dinoparc/client.js";
+import { DinoparcClient } from "@eternal-twin/core/lib/dinoparc/client.js";
 import { DinoparcCredentials } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials.js";
 import { DinoparcSession } from "@eternal-twin/core/lib/dinoparc/dinoparc-session.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { $EmailAddress, EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
 import { EmailService } from "@eternal-twin/core/lib/email/service.js";
 import { EmailTemplateService } from "@eternal-twin/core/lib/email-template/service.js";
-import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
-import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
+import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
+import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
@@ -41,7 +41,7 @@ import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-serv
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
-import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
+import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
 import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
@@ -73,17 +73,17 @@ export interface PgAuthServiceOptions {
   database: Database;
   databaseSecret: string;
   dinoparcStore: DinoparcStore;
-  dinoparcClient: DinoparcClientService;
+  dinoparcClient: DinoparcClient;
   email: EmailService;
   emailTemplate: EmailTemplateService;
-  hammerfestArchive: HammerfestArchiveService;
-  hammerfestClient: HammerfestClientService;
+  hammerfestStore: HammerfestStore;
+  hammerfestClient: HammerfestClient;
   link: LinkService;
   oauthProvider: OauthProviderService;
   password: PasswordService;
   userStore: UserStore;
   tokenSecret: Uint8Array;
-  twinoidArchive: TwinoidArchiveService;
+  twinoidStore: TwinoidStore;
   twinoidClient: TwinoidClientService;
   uuidGenerator: UuidGenerator;
 }
@@ -92,17 +92,17 @@ export class PgAuthService implements AuthService {
   readonly #database: Database;
   readonly #dbSecret: string;
   readonly #dinoparcStore: DinoparcStore;
-  readonly #dinoparcClient: DinoparcClientService;
+  readonly #dinoparcClient: DinoparcClient;
   readonly #email: EmailService;
   readonly #emailTemplate: EmailTemplateService;
-  readonly #hammerfestArchive: HammerfestArchiveService;
-  readonly #hammerfestClient: HammerfestClientService;
+  readonly #hammerfestStore: HammerfestStore;
+  readonly #hammerfestClient: HammerfestClient;
   readonly #link: LinkService;
   readonly #oauthProvider: OauthProviderService;
   readonly #password: PasswordService;
   readonly #userStore: UserStore;
   readonly #tokenSecret: Buffer;
-  readonly #twinoidArchive: TwinoidArchiveService;
+  readonly #twinoidStore: TwinoidStore;
   readonly #twinoidClient: TwinoidClientService;
   readonly #uuidGen: UuidGenerator;
 
@@ -118,14 +118,14 @@ export class PgAuthService implements AuthService {
     this.#dinoparcClient = options.dinoparcClient;
     this.#email = options.email;
     this.#emailTemplate = options.emailTemplate;
-    this.#hammerfestArchive = options.hammerfestArchive;
+    this.#hammerfestStore = options.hammerfestStore;
     this.#hammerfestClient = options.hammerfestClient;
     this.#link = options.link;
     this.#oauthProvider = options.oauthProvider;
     this.#password = options.password;
     this.#userStore = options.userStore;
     this.#tokenSecret = Buffer.from(options.tokenSecret);
-    this.#twinoidArchive = options.twinoidArchive;
+    this.#twinoidStore = options.twinoidStore;
     this.#twinoidClient = options.twinoidClient;
     this.#uuidGen = options.uuidGenerator;
     this.#defaultLocale = "en-US";
@@ -279,7 +279,7 @@ export class PgAuthService implements AuthService {
       const displayName = hammerfestToUserDisplayName(hfSession.user);
       const user = await this.#userStore.createUser({displayName, email: null, username: null});
       try {
-        await this.#hammerfestArchive.touchShortUser(hfSession.user);
+        await this.#hammerfestStore.touchShortUser(hfSession.user);
         await this.#link.linkToHammerfest({
           userId: user.id,
           hammerfestServer: hfSession.user.server,
@@ -326,7 +326,7 @@ export class PgAuthService implements AuthService {
       const displayName = twinoidToUserDisplayName(tidUser);
       const user = await this.#userStore.createUser({displayName, email: null, username: null});
       try {
-        await this.#twinoidArchive.createOrUpdateUserRef({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
+        await this.#twinoidStore.touchShortUser({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
         await this.#link.linkToTwinoid({
           userId: user.id,
           twinoidUserId: tidUser.id.toString(10),

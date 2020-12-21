@@ -1,5 +1,5 @@
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { DinoparcClientService } from "@eternal-twin/core/lib/dinoparc/client.js";
+import { DinoparcClient } from "@eternal-twin/core/lib/dinoparc/client.js";
 import { DinoparcCredentials } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials.js";
 import { DinoparcMachineId } from "@eternal-twin/core/lib/dinoparc/dinoparc-machine-id.js";
 import { $DinoparcPassword } from "@eternal-twin/core/lib/dinoparc/dinoparc-password.js";
@@ -52,7 +52,7 @@ function deriveMachineId(server: DinoparcServer, username: DinoparcUsername): Di
   return mid;
 }
 
-export class HttpDinoparcClientService implements DinoparcClientService {
+export class HttpDinoparcClient implements DinoparcClient {
   private readonly uri: DinoparcUri;
 
   constructor() {

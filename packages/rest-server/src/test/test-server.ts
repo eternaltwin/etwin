@@ -10,16 +10,16 @@ import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { PgForumService } from "@eternal-twin/forum-pg";
-import { PgHammerfestArchiveService } from "@eternal-twin/hammerfest-archive-pg";
-import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
+import { MemHammerfestClient } from "@eternal-twin/hammerfest-client-mem";
+import { PgHammerfestStore } from "@eternal-twin/hammerfest-store-pg";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { PgTokenService } from "@eternal-twin/token-pg";
-import { PgTwinoidArchiveService } from "@eternal-twin/twinoid-archive-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
+import { PgTwinoidStore } from "@eternal-twin/twinoid-store-pg";
 import { PgUserStore } from "@eternal-twin/user-store-pg";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import http from "http";
@@ -30,7 +30,7 @@ import { KoaAuth } from "../lib/helpers/koa-auth.js";
 import { Api, createApiRouter } from "../lib/index.js";
 
 export interface TestServer {
-  hammerfestClient: InMemoryHammerfestClientService,
+  hammerfestClient: MemHammerfestClient,
   server: http.Server,
 }
 
@@ -57,20 +57,20 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const userStore = new PgUserStore({database, databaseSecret: secretKeyStr, uuidGenerator});
     const dinoparcClient = new MemDinoparcClient();
     const dinoparcStore = new PgDinoparcStore(database);
-    const hammerfestClient = new InMemoryHammerfestClientService();
-    const hammerfestArchive = new PgHammerfestArchiveService(database);
+    const hammerfestClient = new MemHammerfestClient();
+    const hammerfestStore = new PgHammerfestStore(database);
     const twinoidClient = new HttpTwinoidClientService();
-    const twinoidArchive = new PgTwinoidArchiveService(database);
-    const link = new PgLinkService({database, dinoparcStore, hammerfestArchive, twinoidArchive, userStore});
+    const twinoidStore = new PgTwinoidStore(database);
+    const link = new PgLinkService({database, dinoparcStore, hammerfestStore, twinoidStore, userStore});
     const dinoparc = new DinoparcService({dinoparcStore, link});
-    const hammerfest = new HammerfestService({hammerfestArchive, hammerfestClient, link});
+    const hammerfest = new HammerfestService({hammerfestStore, hammerfestClient, link});
     const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
     const oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
-    const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestArchive, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidArchive, twinoidClient, uuidGenerator});
+    const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});
     const koaAuth = new KoaAuth(auth);
-    const token = new PgTokenService(database, secretKeyStr, dinoparcStore, hammerfestArchive);
+    const token = new PgTokenService(database, secretKeyStr, dinoparcStore, hammerfestStore);
     const forum = new PgForumService(database, uuidGenerator, userStore, {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage});
-    const user = new UserService({auth, dinoparcClient, dinoparcStore, hammerfestArchive, hammerfestClient, link, userStore, token, twinoidArchive, twinoidClient});
+    const user = new UserService({auth, dinoparcClient, dinoparcStore, hammerfestStore, hammerfestClient, link, userStore, token, twinoidStore, twinoidClient});
     const api: Api = {auth, dinoparc, forum, hammerfest, koaAuth, user};
 
     const app: Koa = new Koa();

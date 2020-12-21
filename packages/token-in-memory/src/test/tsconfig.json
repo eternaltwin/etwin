@@ -17,7 +17,7 @@
       "path": "../../../dinoparc-store-mem/src/lib"
     },
     {
-      "path": "../../../hammerfest-archive-in-memory/src/lib"
+      "path": "../../../hammerfest-store-mem/src/lib"
     },
     {
       "path": "../../../token-test/src/lib"

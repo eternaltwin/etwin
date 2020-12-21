@@ -13,13 +13,13 @@ import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
-import { InMemoryHammerfestClientService } from "@eternal-twin/hammerfest-client-in-memory";
+import { MemHammerfestClient } from "@eternal-twin/hammerfest-client-mem";
 import chai from "chai";
 
 export interface Api {
   auth: AuthService;
   email: InMemoryEmailService;
-  hammerfestClient: InMemoryHammerfestClientService;
+  hammerfestClient: MemHammerfestClient;
   link: LinkService;
 }
 

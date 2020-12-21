@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@eternal-twin/dinoparc-store-mem": "workspace:*",
-    "@eternal-twin/hammerfest-archive-in-memory": "workspace:*",
+    "@eternal-twin/hammerfest-store-mem": "workspace:*",
     "@eternal-twin/token-test": "workspace:*",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.0.4",

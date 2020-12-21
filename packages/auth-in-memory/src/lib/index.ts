@@ -22,7 +22,7 @@ import { $UserLogin, UserLogin } from "@eternal-twin/core/lib/auth/user-login.js
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
-import { DinoparcClientService } from "@eternal-twin/core/lib/dinoparc/client.js";
+import { DinoparcClient } from "@eternal-twin/core/lib/dinoparc/client.js";
 import { DinoparcCredentials } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials.js";
 import { DinoparcSession } from "@eternal-twin/core/lib/dinoparc/dinoparc-session.js";
 import { ShortDinoparcUser } from "@eternal-twin/core/lib/dinoparc/short-dinoparc-user.js";
@@ -30,11 +30,11 @@ import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { $EmailAddress, EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
 import { EmailService } from "@eternal-twin/core/lib/email/service.js";
 import { EmailTemplateService } from "@eternal-twin/core/lib/email-template/service.js";
-import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
-import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
+import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
+import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { CompleteOauthAccessToken } from "@eternal-twin/core/lib/oauth/complete-oauth-access-token.js";
@@ -44,7 +44,7 @@ import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-serv
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
-import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
+import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { DEFAULT_USER_FIELDS } from "@eternal-twin/core/lib/user/default-user-fields.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
@@ -75,34 +75,34 @@ const SYSTEM_AUTH: SystemAuthContext = {
 
 export interface InMemoryAuthServiceOptions {
   dinoparcStore: DinoparcStore;
-  dinoparcClient: DinoparcClientService;
+  dinoparcClient: DinoparcClient;
   email: EmailService,
   emailTemplate: EmailTemplateService,
-  hammerfestArchive: HammerfestArchiveService,
-  hammerfestClient: HammerfestClientService,
+  hammerfestStore: HammerfestStore,
+  hammerfestClient: HammerfestClient,
   link: LinkService,
   oauthProvider: OauthProviderService,
   password: PasswordService,
   userStore: UserStore,
   tokenSecret: Uint8Array,
-  twinoidArchive: TwinoidArchiveService,
+  twinoidStore: TwinoidStore,
   twinoidClient: TwinoidClientService,
   uuidGenerator: UuidGenerator,
 }
 
 export class InMemoryAuthService implements AuthService {
   readonly #dinoparcStore: DinoparcStore;
-  readonly #dinoparcClient: DinoparcClientService;
+  readonly #dinoparcClient: DinoparcClient;
   readonly #email: EmailService;
   readonly #emailTemplate: EmailTemplateService;
-  readonly #hammerfestArchive: HammerfestArchiveService;
-  readonly #hammerfestClient: HammerfestClientService;
+  readonly #hammerfestStore: HammerfestStore;
+  readonly #hammerfestClient: HammerfestClient;
   readonly #link: LinkService;
   readonly #oauthProvider: OauthProviderService;
   readonly #password: PasswordService;
   readonly #userStore: UserStore;
   readonly #tokenSecret: Buffer;
-  readonly #twinoidArchive: TwinoidArchiveService;
+  readonly #twinoidStore: TwinoidStore;
   readonly #twinoidClient: TwinoidClientService;
   readonly #uuidGen: UuidGenerator;
 
@@ -120,14 +120,14 @@ export class InMemoryAuthService implements AuthService {
     this.#dinoparcClient = options.dinoparcClient;
     this.#email = options.email;
     this.#emailTemplate = options.emailTemplate;
-    this.#hammerfestArchive = options.hammerfestArchive;
+    this.#hammerfestStore = options.hammerfestStore;
     this.#hammerfestClient = options.hammerfestClient;
     this.#link = options.link;
     this.#oauthProvider = options.oauthProvider;
     this.#password = options.password;
     this.#userStore = options.userStore;
     this.#tokenSecret = Buffer.from(options.tokenSecret);
-    this.#twinoidArchive = options.twinoidArchive;
+    this.#twinoidStore = options.twinoidStore;
     this.#twinoidClient = options.twinoidClient;
     this.#uuidGen = options.uuidGenerator;
     this.#defaultLocale = "en-US";
@@ -287,7 +287,7 @@ export class InMemoryAuthService implements AuthService {
     }
     const hfSession: HammerfestSession = await this.#hammerfestClient.createSession(credentials);
     const hfUser: ShortHammerfestUser = hfSession.user;
-    await this.#hammerfestArchive.touchShortUser(hfUser);
+    await this.#hammerfestStore.touchShortUser(hfUser);
 
     const link: VersionedEtwinLink = await this.#link.getLinkFromHammerfest(hfUser.server, hfUser.id);
 
@@ -312,7 +312,7 @@ export class InMemoryAuthService implements AuthService {
       throw Error("Forbidden: Only guests can authenticate");
     }
     const tidUser: Partial<TidUser> = await this.#twinoidClient.getMe(at);
-    await this.#twinoidArchive.createOrUpdateUserRef({type: ObjectType.TwinoidUser, id: tidUser.id!.toString(10), displayName: tidUser.name!});
+    await this.#twinoidStore.touchShortUser({type: ObjectType.TwinoidUser, id: tidUser.id!.toString(10), displayName: tidUser.name!});
 
     const link: VersionedEtwinLink = await this.#link.getLinkFromTwinoid(tidUser.id!.toString(10));
 

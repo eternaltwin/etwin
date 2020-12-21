@@ -32,10 +32,10 @@
       "path": "../../../forum-test/src/lib"
     },
     {
-      "path": "../../../hammerfest-archive-pg/src/lib"
+      "path": "../../../hammerfest-store-pg/src/lib"
     },
     {
-      "path": "../../../hammerfest-client-in-memory/src/lib"
+      "path": "../../../hammerfest-client-mem/src/lib"
     },
     {
       "path": "../../../link-pg/src/lib"
@@ -50,7 +50,7 @@
       "path": "../../../password-scrypt/src/lib"
     },
     {
-      "path": "../../../twinoid-archive-pg/src/lib"
+      "path": "../../../twinoid-store-pg/src/lib"
     },
     {
       "path": "../../../twinoid-client-http/src/lib"

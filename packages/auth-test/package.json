@@ -31,7 +31,7 @@
   "dependencies": {
     "@eternal-twin/core": "workspace:*",
     "@eternal-twin/email-in-memory": "workspace:*",
-    "@eternal-twin/hammerfest-client-in-memory": "workspace:*",
+    "@eternal-twin/hammerfest-client-mem": "workspace:*",
     "@types/chai": "^4.2.14",
     "chai": "^4.2.0"
   },

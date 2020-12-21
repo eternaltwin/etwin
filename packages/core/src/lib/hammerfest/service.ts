@@ -1,38 +1,38 @@
 import { AuthContext } from "../auth/auth-context.js";
 import { LinkService } from "../link/service.js";
-import { HammerfestArchiveService } from "./archive.js";
-import { HammerfestClientService } from "./client.js";
+import { HammerfestClient } from "./client.js";
 import { GetHammerfestUserOptions } from "./get-hammerfest-user-options.js";
 import { HammerfestProfile } from "./hammerfest-profile.js";
 import { HammerfestUser } from "./hammerfest-user.js";
 import { ShortHammerfestUser } from "./short-hammerfest-user.js";
+import { HammerfestStore } from "./store.js";
 
 export interface HammerfestServiceOptions {
-  hammerfestArchive: HammerfestArchiveService;
-  hammerfestClient: HammerfestClientService;
+  hammerfestStore: HammerfestStore;
+  hammerfestClient: HammerfestClient;
   link: LinkService;
 }
 
 export class HammerfestService {
-  readonly #hammerfestArchive: HammerfestArchiveService;
-  readonly #hammerfestClient: HammerfestClientService;
+  readonly #hammerfestStore: HammerfestStore;
+  readonly #hammerfestClient: HammerfestClient;
   readonly #link: LinkService;
 
   public constructor(options: Readonly<HammerfestServiceOptions>) {
-    this.#hammerfestArchive = options.hammerfestArchive;
+    this.#hammerfestStore = options.hammerfestStore;
     this.#hammerfestClient = options.hammerfestClient;
     this.#link = options.link;
   }
 
   async getUserById(_acx: AuthContext, options: Readonly<GetHammerfestUserOptions>): Promise<HammerfestUser | null> {
-    let user: ShortHammerfestUser | null = await this.#hammerfestArchive.getUserById(options);
+    let user: ShortHammerfestUser | null = await this.#hammerfestStore.getShortUser(options);
     if (user === null) {
       const profile: HammerfestProfile | null = await this.#hammerfestClient.getProfileById(
         null,
         {server: options.server, userId: options.id},
       );
       if (profile !== null) {
-        user = await this.#hammerfestArchive.touchShortUser(profile.user);
+        user = await this.#hammerfestStore.touchShortUser(profile.user);
       }
     }
     if (user === null) {

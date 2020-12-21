@@ -5,16 +5,16 @@ import { AuthContext } from "../auth/auth-context.js";
 import { AuthType } from "../auth/auth-type.js";
 import { AuthService } from "../auth/service.js";
 import { ObjectType } from "../core/object-type.js";
-import { DinoparcClientService } from "../dinoparc/client.js";
+import { DinoparcClient } from "../dinoparc/client.js";
 import { DinoparcStore } from "../dinoparc/store.js";
-import { HammerfestArchiveService } from "../hammerfest/archive.js";
-import { HammerfestClientService } from "../hammerfest/client.js";
+import { HammerfestClient } from "../hammerfest/client.js";
+import { HammerfestStore } from "../hammerfest/store.js";
 import { LinkService } from "../link/service.js";
 import { VersionedDinoparcLink } from "../link/versioned-dinoparc-link.js";
 import { VersionedHammerfestLink } from "../link/versioned-hammerfest-link.js";
 import { VersionedTwinoidLink } from "../link/versioned-twinoid-link";
 import { TokenService } from "../token/service.js";
-import { TwinoidArchiveService } from "../twinoid/archive.js";
+import { TwinoidStore } from "../twinoid/store.js";
 import { CompleteIfSelfUserFields } from "./complete-if-self-user-fields.js";
 import { COMPLETE_USER_FIELDS, CompleteUserFields } from "./complete-user-fields.js";
 import { DEFAULT_USER_FIELDS, DefaultUserFields } from "./default-user-fields.js";
@@ -37,40 +37,40 @@ import { UserFieldsType } from "./user-fields-type.js";
 
 export interface UserServiceOptions {
   auth: AuthService;
-  dinoparcClient: DinoparcClientService;
+  dinoparcClient: DinoparcClient;
   dinoparcStore: DinoparcStore;
-  hammerfestArchive: HammerfestArchiveService;
-  hammerfestClient: HammerfestClientService;
+  hammerfestClient: HammerfestClient;
+  hammerfestStore: HammerfestStore;
   link: LinkService;
   userStore: UserStore;
   token: TokenService;
-  twinoidArchive: TwinoidArchiveService;
   twinoidClient: TwinoidClientService;
+  twinoidStore: TwinoidStore;
 }
 
 export class UserService {
   readonly #auth: AuthService;
-  readonly #dinoparcClient: DinoparcClientService;
+  readonly #dinoparcClient: DinoparcClient;
   readonly #dinoparcStore: DinoparcStore;
-  readonly #hammerfestArchive: HammerfestArchiveService;
-  readonly #hammerfestClient: HammerfestClientService;
+  readonly #hammerfestClient: HammerfestClient;
+  readonly #hammerfestStore: HammerfestStore;
   readonly #link: LinkService;
   readonly #userStore: UserStore;
   readonly #token: TokenService;
-  readonly #twinoidArchive: TwinoidArchiveService;
   readonly #twinoidClient: TwinoidClientService;
+  readonly #twinoidStore: TwinoidStore;
 
   public constructor(options: Readonly<UserServiceOptions>) {
     this.#auth = options.auth;
     this.#dinoparcClient = options.dinoparcClient;
     this.#dinoparcStore = options.dinoparcStore;
-    this.#hammerfestArchive = options.hammerfestArchive;
     this.#hammerfestClient = options.hammerfestClient;
+    this.#hammerfestStore = options.hammerfestStore;
     this.#link = options.link;
     this.#userStore = options.userStore;
     this.#token = options.token;
-    this.#twinoidArchive = options.twinoidArchive;
     this.#twinoidClient = options.twinoidClient;
+    this.#twinoidStore = options.twinoidStore;
   }
 
   async getUserById(acx: AuthContext, options: Readonly<GetUserByIdOptions>): Promise<MaybeCompleteUser | null> {
@@ -169,7 +169,7 @@ export class UserService {
       username: options.hammerfestUsername,
       password: options.hammerfestPassword,
     });
-    await this.#hammerfestArchive.touchShortUser(hfSession.user);
+    await this.#hammerfestStore.touchShortUser(hfSession.user);
     await this.#token.touchHammerfest(hfSession.user.server, hfSession.key, hfSession.user.id);
     return await this.#link.linkToHammerfest({
       userId: acx.user.id,
@@ -191,7 +191,7 @@ export class UserService {
       await this.#token.revokeHammerfest(options.hammerfestServer, options.hammerfestSessionKey);
       throw new Error("InvalidHammerfestSession");
     }
-    await this.#hammerfestArchive.touchShortUser(hfSession.user);
+    await this.#hammerfestStore.touchShortUser(hfSession.user);
     await this.#token.touchHammerfest(hfSession.user.server, hfSession.key, hfSession.user.id);
     return await this.#link.linkToHammerfest({
       userId: acx.user.id,
@@ -212,7 +212,7 @@ export class UserService {
     if (hfProfile === null) {
       throw new Error("InvalidHammerfestRef");
     }
-    await this.#hammerfestArchive.touchShortUser(hfProfile.user);
+    await this.#hammerfestStore.touchShortUser(hfProfile.user);
     return await this.#link.linkToHammerfest({
       userId: options.userId,
       hammerfestServer: hfProfile.user.server,
@@ -230,7 +230,7 @@ export class UserService {
     }
 
     const tidUser: Pick<TidUser, "id" | "name"> = await this.#twinoidClient.getMe(options.accessToken.accessToken);
-    await this.#twinoidArchive.createOrUpdateUserRef({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
+    await this.#twinoidStore.touchShortUser({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
     await this.#token.touchTwinoidOauth({
       accessToken: options.accessToken.accessToken,
       expirationTime: new Date(Date.now() + options.accessToken.expiresIn * 1000),

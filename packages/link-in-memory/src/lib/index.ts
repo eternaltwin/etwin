@@ -1,9 +1,9 @@
 import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
 import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
-import { HammerfestArchiveService } from "@eternal-twin/core/lib/hammerfest/archive.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
 import { DinoparcLink } from "@eternal-twin/core/lib/link/dinoparc-link.js";
 import { EtwinLink } from "@eternal-twin/core/lib/link/etwin-link.js";
 import { HammerfestLink } from "@eternal-twin/core/lib/link/hammerfest-link.js";
@@ -17,7 +17,7 @@ import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-
 import { VersionedHammerfestLink } from "@eternal-twin/core/lib/link/versioned-hammerfest-link.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
-import { TwinoidArchiveService } from "@eternal-twin/core/lib/twinoid/archive.js";
+import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
 import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
@@ -46,15 +46,15 @@ interface MemTwinoidUserLink extends MemBaseLink {
 
 export interface MemLinkServiceOptions {
   dinoparcStore: DinoparcStore,
-  hammerfestArchive: HammerfestArchiveService,
-  twinoidArchive: TwinoidArchiveService,
+  hammerfestStore: HammerfestStore,
+  twinoidStore: TwinoidStore,
   userStore: UserStore,
 }
 
 export class InMemoryLinkService implements LinkService {
   readonly #dinoparcStore: DinoparcStore;
-  readonly #hammerfestArchive: HammerfestArchiveService;
-  readonly #twinoidArchive: TwinoidArchiveService;
+  readonly #hammerfestStore: HammerfestStore;
+  readonly #twinoidStore: TwinoidStore;
   readonly #userStore: UserStore;
   readonly #dinoparcUserLinks: Set<MemDinoparcUserLink>;
   readonly #hammerfestUserLinks: Set<MemHammerfestUserLink>;
@@ -62,8 +62,8 @@ export class InMemoryLinkService implements LinkService {
 
   public constructor(options: Readonly<MemLinkServiceOptions>) {
     this.#dinoparcStore = options.dinoparcStore;
-    this.#hammerfestArchive = options.hammerfestArchive;
-    this.#twinoidArchive = options.twinoidArchive;
+    this.#hammerfestStore = options.hammerfestStore;
+    this.#twinoidStore = options.twinoidStore;
     this.#userStore = options.userStore;
     this.#dinoparcUserLinks = new Set();
     this.#hammerfestUserLinks = new Set();
@@ -296,7 +296,7 @@ export class InMemoryLinkService implements LinkService {
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.#hammerfestArchive.getShortUserById({server: imLink.hfServer, id: imLink.hfUserId});
+    const user = await this.#hammerfestStore.getShortUser({server: imLink.hfServer, id: imLink.hfUserId});
     if (user === null) {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
@@ -315,7 +315,7 @@ export class InMemoryLinkService implements LinkService {
     if (linkedBy === null) {
       throw new Error("AssertionError: Expected user to exist");
     }
-    const user = await this.#twinoidArchive.getUserRefById(imLink.tidUserId);
+    const user = await this.#twinoidStore.getShortUser({id: imLink.tidUserId});
     if (user === null) {
       throw new Error("AssertionError: Expected Twinoid user to exist");
     }

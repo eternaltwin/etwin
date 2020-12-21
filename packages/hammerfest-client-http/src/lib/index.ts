@@ -1,5 +1,5 @@
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { HammerfestClientService } from "@eternal-twin/core/lib/hammerfest/client.js";
+import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestTimeoutError } from "@eternal-twin/core/lib/hammerfest/errors/hammerfest-timeout.js";
 import { HammerfestUnknownError } from "@eternal-twin/core/lib/hammerfest/errors/hammerfest-unknown.js";
 import { InvalidHammerfestCredentialsError } from "@eternal-twin/core/lib/hammerfest/errors/invalid-hammerfest-credentials.js";
@@ -50,7 +50,7 @@ async function callHammerfest<T>(server: HammerfestServer, timeout: number, fn: 
   }
 }
 
-export class HttpHammerfestClientService implements HammerfestClientService {
+export class HttpHammerfestClient implements HammerfestClient {
   private readonly uri: HammerfestUri;
 
   constructor() {

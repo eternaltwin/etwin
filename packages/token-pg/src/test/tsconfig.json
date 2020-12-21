@@ -17,7 +17,7 @@
       "path": "../../../dinoparc-store-pg/src/lib"
     },
     {
-      "path": "../../../hammerfest-archive-pg/src/lib"
+      "path": "../../../hammerfest-store-pg/src/lib"
     },
     {
       "path": "../../../token-test/src/lib"

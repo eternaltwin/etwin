@@ -12,7 +12,7 @@ import { HammerfestSession } from "./hammerfest-session.js";
 import { HammerfestSessionKey } from "./hammerfest-session-key.js";
 import { HammerfestShop } from "./hammerfest-shop.js";
 
-export interface HammerfestClientService {
+export interface HammerfestClient {
   /**
    * Create a new Hammerfest session from credentials.
    *

@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@eternal-twin/dinoparc-store-pg": "workspace:*",
-    "@eternal-twin/hammerfest-archive-pg": "workspace:*",
+    "@eternal-twin/hammerfest-store-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/token-test": "workspace:*",
     "@types/chai": "^4.2.14",
