@@ -1,23 +1,23 @@
-use std::error::Error;
-use std::path::{Path, PathBuf};
-use std::collections::{HashMap, BTreeMap};
-use url::Url;
-use walkdir::WalkDir;
-use std::fs;
-use std::io;
-use html5ever::serialize::TraversalScope as HtmlTraversalScope;
+use html5ever::local_name;
+use html5ever::namespace_url;
+use html5ever::ns;
 use html5ever::serialize::Serialize as HtmlSerialize;
 use html5ever::serialize::Serializer as HtmlSerializer;
-use html5ever::QualName;
+use html5ever::serialize::TraversalScope as HtmlTraversalScope;
 use html5ever::LocalName;
-use html5ever::local_name;
-use html5ever::ns;
-use html5ever::namespace_url;
-use pulldown_cmark::OffsetIter as MdIter;
+use html5ever::QualName;
 use pulldown_cmark as md;
+use pulldown_cmark::OffsetIter as MdIter;
+use regex::Regex;
 use std::borrow::Borrow;
 use std::cmp::min;
-use regex::Regex;
+use std::collections::{BTreeMap, HashMap};
+use std::error::Error;
+use std::fs;
+use std::io;
+use std::path::{Path, PathBuf};
+use url::Url;
+use walkdir::WalkDir;
 
 pub fn docs() -> Result<(), Box<dyn Error>> {
   let docs_root: PathBuf = fs::canonicalize("docs").unwrap();
@@ -43,13 +43,21 @@ pub fn docs() -> Result<(), Box<dyn Error>> {
     ng_case_children.extend(dom.children.into_iter());
     ng_case_children.push(HtmlNode::new_text(String::from("\n")));
     let escaped_short = serde_json::to_string(&short).unwrap();
-    switches.push(HtmlNode::new_elem("ng-container", vec![("*ngSwitchCase", escaped_short)], ng_case_children));
+    switches.push(HtmlNode::new_elem(
+      "ng-container",
+      vec![("*ngSwitchCase", escaped_short)],
+      ng_case_children,
+    ));
     switches.push(HtmlNode::new_text(String::from("\n")));
   }
   switches.push(HtmlNode::new_elem(
     "ng-container",
     vec![("*ngSwitchDefault", String::new())],
-    vec![HtmlNode::new_elem("etwin-docs-not-found", vec![("[path]", String::from("path"))], vec![])],
+    vec![HtmlNode::new_elem(
+      "etwin-docs-not-found",
+      vec![("[path]", String::from("path"))],
+      vec![],
+    )],
   ));
   switches.push(HtmlNode::new_text(String::from("\n")));
   let container = HtmlNode::new_elem("ng-container", vec![("[ngSwitch]", String::from("path"))], switches);
@@ -76,13 +84,17 @@ fn remap_links(root: &Url, meta: &HashMap<Url, String>, uri: &Url, dom: &mut Htm
   fn remap_node(root: &Url, meta: &HashMap<Url, String>, uri: &Url, node: &mut HtmlNode) {
     match node {
       HtmlNode::Elem(e) => remap_elem(root, meta, uri, e),
-      HtmlNode::Text(_) => {},
+      HtmlNode::Text(_) => {}
     }
   }
 
   fn remap_elem(root: &Url, meta: &HashMap<Url, String>, uri: &Url, node: &mut HtmlElem) {
     let (a_name, href_name, router_link_name) = {
-      let dummy = HtmlElem::new("a", vec![("href", String::new()), ("routerLink", String::new())], vec![]);
+      let dummy = HtmlElem::new(
+        "a",
+        vec![("href", String::new()), ("routerLink", String::new())],
+        vec![],
+      );
       (dummy.name, dummy.attrs[0].0.clone(), dummy.attrs[1].0.clone())
     };
     if node.name == a_name {
@@ -101,13 +113,13 @@ fn remap_links(root: &Url, meta: &HashMap<Url, String>, uri: &Url, dom: &mut Htm
               eprintln!("Invalid link target: {}", resolved);
               String::new()
             }
-          },
+          }
           "http" => value.clone(),
           "https" => value.clone(),
           _ => {
             eprintln!("Invalid link target: {}", resolved);
             String::new()
-          },
+          }
         };
       }
     }
@@ -154,7 +166,7 @@ fn load_input_files(root: &Path) -> Result<HashMap<Url, String>, Box<dyn Error>>
   for entry in walker {
     let entry = entry.unwrap();
     if !entry.file_type().is_file() {
-      continue
+      continue;
     }
     let file_name = entry.file_name().to_str().unwrap();
     if !file_name.ends_with(".md") {
@@ -254,7 +266,7 @@ fn md_to_dom(md: &str) -> HtmlDocument {
   }
 
   struct State {
-    in_table: bool
+    in_table: bool,
   }
 
   fn pull<'a>(it: &mut MdIter<'a>, state: &mut State) -> Result<HtmlNode, Option<md::Tag<'a>>> {
@@ -267,11 +279,9 @@ fn md_to_dom(md: &str) -> HtmlDocument {
         let text = HtmlNode::new_text(text.into_string());
         let pre = HtmlNode::new_elem("code", vec![], vec![text]);
         Ok(pre)
-      },
+      }
       md::Event::End(t) => Err(Some(t)),
-      md::Event::SoftBreak => {
-        Ok(HtmlNode::new_text(String::from("\n")))
-      },
+      md::Event::SoftBreak => Ok(HtmlNode::new_text(String::from("\n"))),
       md::Event::Start(start) => {
         if matches!(&start, md::Tag::TableHead) {
           state.in_table = true;
@@ -307,7 +317,13 @@ fn md_to_dom(md: &str) -> HtmlDocument {
           md::Tag::Paragraph => "p",
           md::Tag::Strong => "strong",
           md::Tag::Table(_) => "table",
-          md::Tag::TableCell => if state.in_table { "th" } else { "td" },
+          md::Tag::TableCell => {
+            if state.in_table {
+              "th"
+            } else {
+              "td"
+            }
+          }
           md::Tag::TableHead => "tr",
           md::Tag::TableRow => "tr",
           t => panic!("Unexpected tag: {:?}", t),
@@ -315,14 +331,12 @@ fn md_to_dom(md: &str) -> HtmlDocument {
         let attrs = match start {
           md::Tag::Link(_ty, dest, _title) => {
             vec![("href", dest.into_string())]
-          },
-          _ => Vec::new()
+          }
+          _ => Vec::new(),
         };
         Ok(HtmlNode::new_elem(name, attrs, children))
-      },
-      md::Event::Text(text) => {
-        Ok(HtmlNode::new_text(text.into_string()))
-      },
+      }
+      md::Event::Text(text) => Ok(HtmlNode::new_text(text.into_string())),
       ev => panic!("Unexpected ev: {:?}", ev),
     }
   }
@@ -346,13 +360,15 @@ struct HtmlNodeSlice<'a>(&'a [HtmlNode]);
 
 impl<'a> HtmlNodeSlice<'a> {
   pub fn new(nodes: &'a [HtmlNode]) -> Self {
-    Self (nodes)
+    Self(nodes)
   }
 }
 
 impl HtmlSerialize for HtmlDocument {
   fn serialize<S>(&self, serializer: &mut S, traversal_scope: HtmlTraversalScope) -> io::Result<()>
-    where S: HtmlSerializer {
+  where
+    S: HtmlSerializer,
+  {
     HtmlNodeSlice::new(&self.children).serialize(serializer, traversal_scope)
   }
 }
@@ -375,7 +391,9 @@ impl HtmlNode {
 
 impl HtmlSerialize for HtmlNode {
   fn serialize<S>(&self, serializer: &mut S, traversal_scope: HtmlTraversalScope) -> io::Result<()>
-    where S: HtmlSerializer {
+  where
+    S: HtmlSerializer,
+  {
     match self {
       Self::Elem(n) => n.serialize(serializer, traversal_scope),
       Self::Text(n) => n.serialize(serializer, traversal_scope),
@@ -385,7 +403,9 @@ impl HtmlSerialize for HtmlNode {
 
 impl HtmlSerialize for HtmlNodeSlice<'_> {
   fn serialize<S>(&self, serializer: &mut S, traversal_scope: HtmlTraversalScope) -> io::Result<()>
-    where S: HtmlSerializer {
+  where
+    S: HtmlSerializer,
+  {
     for n in self.0.iter() {
       n.serialize(serializer, traversal_scope.clone())?
     }
@@ -433,14 +453,27 @@ impl HtmlElem {
       .iter()
       .map(|(name, value)| (QualName::new(None, ns!(), to_local_name(name)), value.clone()))
       .collect();
-    Self { name: QualName { prefix: None, ns: ns!(html), local }, attrs, children }
+    Self {
+      name: QualName {
+        prefix: None,
+        ns: ns!(html),
+        local,
+      },
+      attrs,
+      children,
+    }
   }
 }
 
 impl HtmlSerialize for HtmlElem {
   fn serialize<S>(&self, serializer: &mut S, traversal_scope: HtmlTraversalScope) -> io::Result<()>
-    where S: HtmlSerializer {
-    serializer.start_elem(self.name.clone(), self.attrs.iter().map(|(name, val)| (name, val.as_str())))?;
+  where
+    S: HtmlSerializer,
+  {
+    serializer.start_elem(
+      self.name.clone(),
+      self.attrs.iter().map(|(name, val)| (name, val.as_str())),
+    )?;
     HtmlNodeSlice::new(&self.children).serialize(serializer, traversal_scope)?;
     serializer.end_elem(self.name.clone())?;
     Ok(())
@@ -460,7 +493,9 @@ impl HtmlText {
 
 impl HtmlSerialize for HtmlText {
   fn serialize<S>(&self, serializer: &mut S, _traversal_scope: HtmlTraversalScope) -> io::Result<()>
-    where S: HtmlSerializer {
+  where
+    S: HtmlSerializer,
+  {
     serializer.write_text(self.text.borrow())?;
     Ok(())
   }

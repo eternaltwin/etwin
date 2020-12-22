@@ -1,0 +1,22 @@
+[package]
+name = "etwin_dinoparc_store"
+version = "0.0.1"
+authors = ["Charles Samborski <demurgos@demurgos.net>"]
+description = "Dinoparc store implementation"
+documentation = "https://github.com/eternal-twin/etwin"
+homepage = "https://github.com/eternal-twin/etwin"
+repository = "https://github.com/eternal-twin/etwin"
+readme = "./README.md"
+keywords = ["etwin"]
+license = "AGPL-3.0-or-later"
+edition = "2018"
+
+[dependencies]
+async-trait = "^0.1.42"
+etwin_core = { path = "../etwin_core" }
+neon = { version = "^0.6.0", default-features = false, features = ["legacy-runtime"], optional = true }
+regex = "^1.4.2"
+
+[dev-dependencies]
+chrono = "^0.4.19"
+tokio = { version = "^0.2.23", features = ["macros", "rt-core"] }

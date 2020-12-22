@@ -1,15 +1,15 @@
-use std::error::Error;
-use etwin_core::core::{Get, With};
-use etwin_core::clock::{VirtualClock, Clock, SystemClock};
-use chrono::{Utc, TimeZone};
-use std::sync::Arc;
-use std::future::Future;
-use std::pin::Pin;
-use std::marker::PhantomData;
-use std::fmt::Debug;
+use chrono::{TimeZone, Utc};
 use etwin_core::async_fn::AsyncFnOnce;
+use etwin_core::clock::{Clock, SystemClock, VirtualClock};
+use etwin_core::core::{Get, With};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
+use std::error::Error;
+use std::fmt::Debug;
+use std::future::Future;
+use std::marker::PhantomData;
+use std::pin::Pin;
+use std::sync::Arc;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -26,8 +26,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
 }
 
 async fn with_clock_async<E, F, R>(use_system: bool, env: E, f: F) -> R
-  where
-    F: for<'a> AsyncFnOnce<(E, &'a dyn Clock), Output = R>,
+where
+  F: for<'a> AsyncFnOnce<(E, &'a dyn Clock), Output = R>,
 {
   if use_system {
     f.call_once((env, &SystemClock)).await
@@ -37,9 +37,9 @@ async fn with_clock_async<E, F, R>(use_system: bool, env: E, f: F) -> R
   }
 }
 
-async fn with_user_store_async<E, F, R>(use_pg: bool, env: E, f: F) -> R
-  where
-    F: for<'a> AsyncFnOnce<(E, &'a dyn Clock), Output = R>,
+async fn with_user_store_async<E, F, R>(use_system: bool, env: E, f: F) -> R
+where
+  F: for<'a> AsyncFnOnce<(E, &'a dyn Clock), Output = R>,
 {
   if use_system {
     f.call_once((env, &SystemClock)).await

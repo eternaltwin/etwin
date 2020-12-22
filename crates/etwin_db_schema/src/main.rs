@@ -1,7 +1,7 @@
-use std::error::Error;
+use etwin_db_schema::{force_create_latest, get_state};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
-use etwin_db_schema::{get_state, force_create_latest};
+use std::error::Error;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

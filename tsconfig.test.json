@@ -64,6 +64,9 @@
       "path": "packages/link-pg/src/test"
     },
     {
+      "path": "packages/native/src/test"
+    },
+    {
       "path": "packages/oauth-provider-in-memory/src/test"
     },
     {

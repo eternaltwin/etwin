@@ -17,7 +17,7 @@
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
-    "prepack": "yarn run prepack",
+    "prepack": "yarn run build",
     "test:build": "tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha --experimental-wasm-modules \"test/**/*.spec.js\""
   },

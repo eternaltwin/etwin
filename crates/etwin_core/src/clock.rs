@@ -1,6 +1,6 @@
-use chrono::{DateTime, Utc, Duration};
-use std::sync::atomic::{Ordering, AtomicI64};
 use crate::core::With;
+use chrono::{DateTime, Duration, Utc};
+use std::sync::atomic::{AtomicI64, Ordering};
 
 pub trait Clock: Send + Sync + With {
   fn now(&self) -> DateTime<Utc>;
@@ -13,7 +13,10 @@ pub struct VirtualClock {
 
 impl VirtualClock {
   pub fn new(start: DateTime<Utc>) -> Self {
-    Self { start, offset: AtomicI64::new(0) }
+    Self {
+      start,
+      offset: AtomicI64::new(0),
+    }
   }
 }
 
@@ -26,6 +29,9 @@ impl Clock for VirtualClock {
   }
 }
 
+// #[cfg(feature = "neon")]
+// impl neon::prelude::Finalize for VirtualClock {}
+
 pub struct SystemClock;
 
 impl With for SystemClock {}
@@ -35,3 +41,6 @@ impl Clock for SystemClock {
     Utc::now()
   }
 }
+
+// #[cfg(feature = "neon")]
+// impl neon::prelude::Finalize for SystemClock {}

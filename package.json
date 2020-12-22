@@ -5,12 +5,13 @@
     "lint": "eslint \"packages/*/src/**/*.ts\"",
     "format": "eslint --fix \"packages/*/src/**/*.ts\"",
     "start": "cd packages/website && yarn run start",
-    "clean": "rimraf \"packages/*/@(lib|main|test)\" \"packages/website/app/@(browser|server)\"",
+    "clean": "rimraf \"packages/*/@(lib|main|test)\" \"packages/website/app/@(browser|server)\" \"packages/native/native/@(artifacts.json|index.node)\" \"target\"",
     "build:production": "cd packages/website && yarn run build",
     "db:check": "cd packages/etwin-pg && yarn run start check",
     "db:create": "cd packages/etwin-pg && yarn run start create",
+    "native:build": "cd packages/native && yarn run native:build",
     "db:upgrade": "cd packages/etwin-pg && yarn run start upgrade",
-    "test:build": "tsc --build ./tsconfig.test.json",
+    "test:build": "yarn run native:build && tsc --build ./tsconfig.test.json",
     "test": "yarn run test:build && mocha --experimental-wasm-modules \"packages/*/test/**/*.spec.js\"",
     "doctor": "yarn dlx @yarnpkg/doctor@2.1.2"
   },
@@ -29,7 +30,8 @@
   "workspaces": {
     "packages": [
       "!examples/ts",
-      "packages/*"
+      "packages/*",
+      "packages/native/foo"
     ]
   }
 }

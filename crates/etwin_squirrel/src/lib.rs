@@ -1,22 +1,22 @@
-use sqlx::{PgPool, Transaction, Postgres};
 use include_dir::Dir;
-use petgraph::graphmap::DiGraphMap;
-use std::num::NonZeroU32;
-use std::collections::HashMap;
-use regex::Regex;
 use once_cell::sync::Lazy;
-use std::str::FromStr;
-use std::cmp::{max, Ordering};
-use std::error::Error;
-use serde::{Deserialize, Serialize};
 use petgraph::algo::astar;
-use std::fmt::Debug;
+use petgraph::graphmap::DiGraphMap;
+use regex::Regex;
 use serde::export::Formatter;
-use sqlx::Executor;
-use tokio::stream::{StreamExt, Stream};
-use std::pin::Pin;
+use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgDone;
+use sqlx::Executor;
+use sqlx::{PgPool, Postgres, Transaction};
+use std::cmp::{max, Ordering};
+use std::collections::HashMap;
 use std::convert::TryInto;
+use std::error::Error;
+use std::fmt::Debug;
+use std::num::NonZeroU32;
+use std::pin::Pin;
+use std::str::FromStr;
+use tokio::stream::{Stream, StreamExt};
 
 const SQL_NODE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{1,4})\.sql$").unwrap());
 const SQL_EDGE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{1,4})-([0-9]{1,4})\.sql$").unwrap());
@@ -38,7 +38,11 @@ impl<'r> Eq for SchemaStateRef<'r> {}
 
 impl<'r> Debug for SchemaStateRef<'r> {
   fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-    write!(f, "SchemaStateRef {{ resolver: {:?}, state: {:?} }}", self.resolver as *const _, self.state)
+    write!(
+      f,
+      "SchemaStateRef {{ resolver: {:?}, state: {:?} }}",
+      self.resolver as *const _, self.state
+    )
   }
 }
 
@@ -59,13 +63,20 @@ impl<'r> Eq for SchemaVersionRef<'r> {}
 
 impl<'r> Debug for SchemaVersionRef<'r> {
   fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-    write!(f, "SchemaVersionRef {{ resolver: {:?}, version: {:?} }}", self.resolver as *const _, self.version)
+    write!(
+      f,
+      "SchemaVersionRef {{ resolver: {:?}, version: {:?} }}",
+      self.resolver as *const _, self.version
+    )
   }
 }
 
 impl<'r> From<SchemaVersionRef<'r>> for SchemaStateRef<'r> {
   fn from(version: SchemaVersionRef<'r>) -> Self {
-    Self { resolver: version.resolver, state: version.version.into() }
+    Self {
+      resolver: version.resolver,
+      state: version.version.into(),
+    }
   }
 }
 
@@ -101,7 +112,11 @@ pub struct SchemaMigration<'a> {
 
 impl<'r> Debug for SchemaMigration<'r> {
   fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-    write!(f, "SchemaMigration {{ resolver: {:?}, states: [", self.resolver as *const _)?;
+    write!(
+      f,
+      "SchemaMigration {{ resolver: {:?}, states: [",
+      self.resolver as *const _
+    )?;
     for (i, s) in self.states.iter().enumerate() {
       write!(f, "{}{:?}", if i == 0 { "" } else { ", " }, s)?;
     }
@@ -124,8 +139,7 @@ impl core::ops::Add for SaturatingU32 {
   }
 }
 
-#[derive(Serialize, Deserialize)]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct SchemaMeta {
   version: NonZeroU32,
 }
@@ -199,14 +213,19 @@ impl SchemaResolver {
         latest = max(latest, end);
       }
     }
-    let drop = d.get_file("drop.sql").map(|f| {
-      f.contents_utf8().expect("Invalid drop script encoding")
-    });
+    let drop = d
+      .get_file("drop.sql")
+      .map(|f| f.contents_utf8().expect("Invalid drop script encoding"));
     let latest = match latest {
       SchemaState::Empty => panic!("No schema version found"),
       SchemaState::Version(v) => v,
     };
-    SchemaResolver { graph, states, latest, drop }
+    SchemaResolver {
+      graph,
+      states,
+      latest,
+      drop,
+    }
   }
 
   pub fn get_version(&self, v: NonZeroU32) -> Option<SchemaVersionRef> {
@@ -241,38 +260,57 @@ impl SchemaResolver {
   }
 
   fn issue_version(&self, version: SchemaVersion) -> SchemaVersionRef {
-    SchemaVersionRef { resolver: self, version }
+    SchemaVersionRef {
+      resolver: self,
+      version,
+    }
   }
 
-  pub fn create_migration(&self, start: SchemaStateRef, end: SchemaVersionRef, dir: MigrationDirection) -> Option<SchemaMigration> {
+  pub fn create_migration(
+    &self,
+    start: SchemaStateRef,
+    end: SchemaVersionRef,
+    dir: MigrationDirection,
+  ) -> Option<SchemaMigration> {
     let start = self.validate_state(start);
     let end = self.validate_version(end).into();
     self.inner_create_migration(start, end, dir)
   }
 
-  fn inner_create_migration(&self, start: SchemaState, end: SchemaState, dir: MigrationDirection) -> Option<SchemaMigration> {
+  fn inner_create_migration(
+    &self,
+    start: SchemaState,
+    end: SchemaState,
+    dir: MigrationDirection,
+  ) -> Option<SchemaMigration> {
     let edge_cost: Box<dyn FnMut((SchemaState, SchemaState, &EdgeState)) -> SaturatingU32> = match dir {
-      MigrationDirection::UpgradeOnly => Box::new(|(source, target, _): (SchemaState, SchemaState, &EdgeState)| -> SaturatingU32 {
-        match source.cmp(&target) {
-          Ordering::Less => SaturatingU32(1),
-          Ordering::Equal => SaturatingU32(0),
-          Ordering::Greater => SaturatingU32::MAX,
-        }
-      }),
-      MigrationDirection::DowngradeOnly => Box::new(|(source, target, _): (SchemaState, SchemaState, &EdgeState)| -> SaturatingU32 {
-        match source.cmp(&target) {
-          Ordering::Less => SaturatingU32::MAX,
-          Ordering::Equal => SaturatingU32(0),
-          Ordering::Greater => SaturatingU32(1),
-        }
-      }),
+      MigrationDirection::UpgradeOnly => Box::new(
+        |(source, target, _): (SchemaState, SchemaState, &EdgeState)| -> SaturatingU32 {
+          match source.cmp(&target) {
+            Ordering::Less => SaturatingU32(1),
+            Ordering::Equal => SaturatingU32(0),
+            Ordering::Greater => SaturatingU32::MAX,
+          }
+        },
+      ),
+      MigrationDirection::DowngradeOnly => Box::new(
+        |(source, target, _): (SchemaState, SchemaState, &EdgeState)| -> SaturatingU32 {
+          match source.cmp(&target) {
+            Ordering::Less => SaturatingU32::MAX,
+            Ordering::Equal => SaturatingU32(0),
+            Ordering::Greater => SaturatingU32(1),
+          }
+        },
+      ),
     };
     let estimate_cost = match dir {
       MigrationDirection::UpgradeOnly => |_| SaturatingU32(1),
       MigrationDirection::DowngradeOnly => |_| SaturatingU32(1),
     };
     let (cost, path) = astar(&self.graph, start, |n| n == end, edge_cost, estimate_cost)?;
-    if cost == SaturatingU32::MAX { return None; }
+    if cost == SaturatingU32::MAX {
+      return None;
+    }
     let migration = SchemaMigration {
       resolver: self,
       states: path,
@@ -281,18 +319,23 @@ impl SchemaResolver {
   }
 
   pub async fn get_state(&self, db: &PgPool) -> Result<SchemaStateRef<'_>, Box<dyn Error>> {
-    let state= self.inner_get_state(db).await?;
+    let state = self.inner_get_state(db).await?;
     Ok(self.issue_state(state))
   }
 
-  async fn inner_get_state<'e, E: Executor<'e, Database=Postgres>>(&self, db: E) -> Result<SchemaState, Box<dyn Error>> {
-    let row: Option<(String,)> = sqlx::query_as(r"
+  async fn inner_get_state<'e, E: Executor<'e, Database = Postgres>>(
+    &self,
+    db: E,
+  ) -> Result<SchemaState, Box<dyn Error>> {
+    let row: Option<(String,)> = sqlx::query_as(
+      r"
       SELECT description AS meta
       FROM   pg_catalog.pg_namespace INNER JOIN pg_catalog.pg_description ON (oid = objoid)
       WHERE  nspname = CURRENT_SCHEMA();
-    ")
-      .fetch_optional(db)
-      .await?;
+    ",
+    )
+    .fetch_optional(db)
+    .await?;
 
     let state: SchemaState = match row {
       Some(row) => {
@@ -319,7 +362,7 @@ impl SchemaResolver {
 
   async fn tx_empty(&self, tx: &mut Transaction<'_, Postgres>) -> Result<(), Box<dyn Error>> {
     let drop_sql = self.drop.unwrap();
-    let mut stream: Pin<Box<dyn Stream<Item=Result<PgDone, sqlx::Error>> + Send>> = tx.execute_many(drop_sql);
+    let mut stream: Pin<Box<dyn Stream<Item = Result<PgDone, sqlx::Error>> + Send>> = tx.execute_many(drop_sql);
     while let Some(r) = stream.next().await {
       r.unwrap();
     }
@@ -335,11 +378,9 @@ impl SchemaResolver {
   }
 
   async fn inner_force_create(&self, db: &PgPool, state: SchemaState) -> Result<(), Box<dyn Error>> {
-    let migration = self.inner_create_migration(
-      SchemaState::Empty,
-      state,
-      MigrationDirection::UpgradeOnly,
-    ).expect("Unreachable state from empty DB");
+    let migration = self
+      .inner_create_migration(SchemaState::Empty, state, MigrationDirection::UpgradeOnly)
+      .expect("Unreachable state from empty DB");
     let mut tx = db.begin().await?;
     self.tx_empty(&mut tx).await?;
     self.tx_apply_migration(&mut tx, &migration).await?;
@@ -347,7 +388,11 @@ impl SchemaResolver {
     Ok(())
   }
 
-  async fn tx_apply_migration(&self, tx: &mut Transaction<'_, Postgres>, migration: &'_ SchemaMigration<'_>) -> Result<(), Box<dyn Error>> {
+  async fn tx_apply_migration(
+    &self,
+    tx: &mut Transaction<'_, Postgres>,
+    migration: &'_ SchemaMigration<'_>,
+  ) -> Result<(), Box<dyn Error>> {
     for w in migration.states.windows(2) {
       let [start, end] = *TryInto::<&[SchemaState; 2]>::try_into(w).unwrap();
       self.tx_apply_edge(tx, start, end).await?;
@@ -355,12 +400,17 @@ impl SchemaResolver {
     Ok(())
   }
 
-  async fn tx_apply_edge(&self, tx: &mut Transaction<'_, Postgres>, start: SchemaState, end: SchemaState) -> Result<(), Box<dyn Error>> {
+  async fn tx_apply_edge(
+    &self,
+    tx: &mut Transaction<'_, Postgres>,
+    start: SchemaState,
+    end: SchemaState,
+  ) -> Result<(), Box<dyn Error>> {
     let old_state = self.inner_get_state(&mut *tx).await?;
     assert_eq!(start, old_state);
     {
       let edge = self.graph.edge_weight(start, end).unwrap();
-      let mut stream: Pin<Box<dyn Stream<Item=Result<PgDone, sqlx::Error>> + Send>> = tx.execute_many(edge.schema);
+      let mut stream: Pin<Box<dyn Stream<Item = Result<PgDone, sqlx::Error>> + Send>> = tx.execute_many(edge.schema);
       while let Some(r) = stream.next().await {
         r.unwrap();
       }

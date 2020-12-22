@@ -1,0 +1,48 @@
+{
+  "name": "@eternal-twin/native",
+  "version": "0.1.0",
+  "description": "Native module for Eternal-Twin",
+  "main": "lib/index.js",
+  "author": "Charles Samborski <demurgos@demurgos.net>",
+  "licenses": [
+    {
+      "type": "AGPL-3.0-or-later",
+      "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
+    }
+  ],
+  "scripts": {
+    "lint": "eslint \"./src/**/*.ts\"",
+    "format": "eslint --fix \"./src/**/*.ts\"",
+    "native:build": "neon build",
+    "build": "yarn run native:build && tsc --build src/lib/tsconfig.json",
+    "prepack": "yarn run build",
+    "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
+    "test": "yarn run test:build && mocha \"test/**/*.spec.js\"",
+    "main:build": "yarn run build",
+    "start": "yarn run main:build && node --experimental-wasm-modules src/main/main.js"
+  },
+  "dependencies": {
+    "@eternal-twin/core": "workspace:*",
+    "kryo": "^0.11.1",
+    "kryo-json": "^0.11.0",
+    "neon-cli": "^0.6.0"
+  },
+  "devDependencies": {
+    "@eternal-twin/dinoparc-store-test": "workspace:*",
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.0.4",
+    "@types/node": "^14.14.10",
+    "chai": "^4.2.0",
+    "eslint": "^7.14.0",
+    "mocha": "^8.2.1",
+    "typescript": "^4.1.2"
+  },
+  "type": "module",
+  "exports": {
+    "./lib/": "./lib/"
+  },
+  "files": [
+    "./lib/",
+    "./native/"
+  ]
+}

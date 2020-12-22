@@ -1,9 +1,18 @@
-use etwin_core::user::{UserStore, CreateUserOptions, UserDisplayName, UserDisplayNameVersions, UserDisplayNameVersion, Username, CompleteSimpleUser};
 use etwin_core::clock::{Clock, VirtualClock};
+use etwin_core::user::{
+  CompleteSimpleUser, CreateUserOptions, UserDisplayName, UserDisplayNameVersion, UserDisplayNameVersions, UserStore,
+  Username,
+};
+use std::ops::Deref;
 
-pub(crate) struct TestApi<'a> {
-  pub(crate) clock: &'a VirtualClock,
-  pub(crate) user_store: &'a dyn UserStore,
+pub(crate) struct TestApi<TyClock, TyUserStore>
+where
+  TyClock: Deref<Target = VirtualClock> + Send + Sync,
+  TyUserStore: Deref + Send + Sync,
+  <TyUserStore as Deref>::Target: UserStore,
+{
+  pub(crate) clock: TyClock,
+  pub(crate) user_store: TyUserStore,
 }
 
 // pub(crate) async fn inner_test_user_store<Api>(create_api: fn() -> Api)
@@ -12,7 +21,12 @@ pub(crate) struct TestApi<'a> {
 //   // test_register_the_admin_and_retrieve_complete(create_api()).await;
 // }
 
-pub(crate) async fn test_register_the_admin_and_retrieve_ref(api: TestApi<'_>) {
+pub(crate) async fn test_register_the_admin_and_retrieve_ref<TyClock, TyUserStore>(api: TestApi<TyClock, TyUserStore>)
+where
+  TyClock: Deref<Target = VirtualClock> + Send + Sync,
+  TyUserStore: Deref + Send + Sync,
+  <TyUserStore as Deref>::Target: UserStore,
+{
   let options = CreateUserOptions {
     display_name: UserDisplayName::from_str("Alice").unwrap(),
     username: Some(Username::from_str("alice").unwrap()),
@@ -23,7 +37,7 @@ pub(crate) async fn test_register_the_admin_and_retrieve_ref(api: TestApi<'_>) {
     display_name: UserDisplayNameVersions {
       current: UserDisplayNameVersion {
         value: UserDisplayName::from_str("Alice").unwrap(),
-      }
+      },
     },
     id: alice.id,
     is_administrator: true,

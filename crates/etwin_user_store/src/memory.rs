@@ -1,12 +1,16 @@
 use async_trait::async_trait;
-use etwin_core::user::{GetUserOptions, UserId, UserDisplayName, UserStore, CreateUserOptions, SimpleUser, UserDisplayNameVersions, UserDisplayNameVersion, Username, CompleteSimpleUser};
-use std::error::Error;
-use etwin_core::clock::Clock;
-use std::collections::HashMap;
-use std::sync::{Mutex};
 use chrono::{DateTime, Utc};
+use core::ops::Deref;
+use etwin_core::clock::Clock;
 use etwin_core::email::EmailAddress;
+use etwin_core::user::{
+  CompleteSimpleUser, CreateUserOptions, GetUserOptions, SimpleUser, UserDisplayName, UserDisplayNameVersion,
+  UserDisplayNameVersions, UserId, UserStore, Username,
+};
 use etwin_core::uuid::UuidGenerator;
+use std::collections::HashMap;
+use std::error::Error;
+use std::sync::Mutex;
 
 pub(crate) struct InMemoryUser {
   id: UserId,
@@ -48,25 +52,26 @@ impl From<&InMemoryUser> for CompleteSimpleUser {
   }
 }
 
-pub struct InMemorySimpleUserService<'a, C, U>
-  where
-    C: Clock + ?Sized,
-    U: UuidGenerator + ?Sized,
+pub struct InMemorySimpleUserService<C, U>
+where
+  C: Deref + Send + Sync,
+  <C as Deref>::Target: Clock,
+  U: Deref + Send + Sync,
+  <U as Deref>::Target: UuidGenerator,
 {
-  pub(crate) clock: &'a C,
-  pub(crate) uuid_generator: &'a U,
+  pub(crate) clock: C,
+  pub(crate) uuid_generator: U,
   pub(crate) users: Mutex<HashMap<UserId, InMemoryUser>>,
 }
 
-impl<'a, C, U> InMemorySimpleUserService<'a, C, U>
-  where
-    C: Clock + ?Sized,
-    U: UuidGenerator + ?Sized
+impl<C, U> InMemorySimpleUserService<C, U>
+where
+  C: Deref + Send + Sync,
+  <C as Deref>::Target: Clock,
+  U: Deref + Send + Sync,
+  <U as Deref>::Target: UuidGenerator,
 {
-  pub fn new(
-    clock: &'a C,
-    uuid_generator: &'a U,
-  ) -> Self {
+  pub fn new(clock: C, uuid_generator: U) -> Self {
     Self {
       clock,
       uuid_generator,
@@ -76,13 +81,15 @@ impl<'a, C, U> InMemorySimpleUserService<'a, C, U>
 }
 
 #[async_trait]
-impl<'a, C, U> UserStore for InMemorySimpleUserService<'a, C, U>
-  where
-    C: Clock + ?Sized,
-    U: UuidGenerator + ?Sized
+impl<C, U> UserStore for InMemorySimpleUserService<C, U>
+where
+  C: Deref + Send + Sync,
+  <C as Deref>::Target: Clock,
+  U: Deref + Send + Sync,
+  <U as Deref>::Target: UuidGenerator,
 {
   async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, Box<dyn Error>> {
-    let user_id = UserId::from(self.uuid_generator.next());
+    let user_id = UserId::from((*self.uuid_generator).next());
     let time = self.clock.now();
     let mut users = self.users.lock().unwrap();
     let im_user = InMemoryUser {
@@ -115,31 +122,28 @@ impl<'a, C, U> UserStore for InMemorySimpleUserService<'a, C, U>
 
 #[cfg(test)]
 mod test {
-  use etwin_core::clock::VirtualClock;
-  use chrono::{Utc, TimeZone};
   use crate::memory::InMemorySimpleUserService;
+  use crate::test::{test_register_the_admin_and_retrieve_ref, TestApi};
+  use chrono::{TimeZone, Utc};
+  use etwin_core::clock::VirtualClock;
+  use etwin_core::user::UserStore;
   use etwin_core::uuid::Uuid4Generator;
-  use crate::test::{TestApi, test_register_the_admin_and_retrieve_ref};
-  use etwin_core::async_fn::AsyncFnOnce;
+  use std::sync::Arc;
 
-  async fn with_test_api<F, R>(f: F) -> R
-    where
-      F: for<'a> AsyncFnOnce<TestApi<'a>, Output = R>,
-  {
-    let clock = VirtualClock::new(Utc.timestamp(1607531946, 0));
-    let uuid_generator = Uuid4Generator;
-    let user_store = InMemorySimpleUserService::new(&clock, &uuid_generator);
+  fn make_test_api() -> TestApi<Arc<VirtualClock>, Arc<dyn UserStore>> {
+    let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+    let uuid_generator = Arc::new(Uuid4Generator);
+    let user_store: Arc<dyn UserStore> = Arc::new(InMemorySimpleUserService::new(clock.clone(), uuid_generator));
 
-    let api = TestApi {
-      clock: &clock,
-      user_store: &user_store,
-    };
-
-    f.call_once(api).await
+    TestApi {
+      clock: clock,
+      user_store: user_store,
+    }
   }
 
   #[tokio::test]
   async fn test_user_store() {
-    with_test_api(test_register_the_admin_and_retrieve_ref).await;
+    let api = make_test_api();
+    test_register_the_admin_and_retrieve_ref(api).await;
   }
 }

@@ -1,6 +1,6 @@
 use clap::Clap;
-use xtask;
 use std::error::Error;
+use xtask;
 
 #[derive(Debug, Clap)]
 #[clap(author = "Charles \"Demurgos\" Samborski")]
@@ -18,8 +18,7 @@ enum Task {
 
 /// Arguments to the `docs` task.
 #[derive(Debug, Clap)]
-struct DocsArgs {
-}
+struct DocsArgs {}
 
 fn main() {
   let args: CliArgs = CliArgs::parse();
@@ -29,7 +28,7 @@ fn main() {
   };
 
   match res {
-    Ok(_) =>  std::process::exit(0),
+    Ok(_) => std::process::exit(0),
     Err(_) => res.unwrap(),
   }
 }

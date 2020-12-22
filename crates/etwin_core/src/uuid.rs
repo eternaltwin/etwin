@@ -12,3 +12,6 @@ impl UuidGenerator for Uuid4Generator {
     uuid::Uuid::new_v4()
   }
 }
+
+// #[cfg(feature = "neon")]
+// impl neon::prelude::Finalize for Uuid4Generator {}

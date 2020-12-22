@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc, TimeZone};
+use chrono::{DateTime, TimeZone, Utc};
 
 ///////////////////////////////////////
 // library code                      //
@@ -36,7 +36,10 @@ impl Clock for SystemClock {
 // user code                         //
 ///////////////////////////////////////
 
-fn print_time<C>(clock: &C) -> () where C: Clock + ?Sized {
+fn print_time<C>(clock: &C) -> ()
+where
+  C: Clock + ?Sized,
+{
   println!("Time: {:?}", clock.now())
 }
 

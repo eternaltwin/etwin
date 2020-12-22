@@ -7,6 +7,7 @@ services:
 cache:
   paths:
     - "node_modules/"
+    - "target/"
 
 variables:
   POSTGRES_DB: "etwindb"

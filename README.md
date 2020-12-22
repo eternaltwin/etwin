@@ -26,6 +26,7 @@ The `website` package has more advanced tasks described in its `README.md`, all 
 - `yarn lint`: Check for common errors and style issues.
 - `yarn format`: Attempt to fix style issues automatically.
 - `yarn up '@!(eternal-twin)/*'`: Update all dependencies.
+- `yarn workspaces foreach --no-private --verbose npm publish --tolerate-republish`: Publish all packages
 
 ## Configuration
 

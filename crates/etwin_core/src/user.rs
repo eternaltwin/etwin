@@ -1,10 +1,10 @@
+use crate::email::EmailAddress;
 use async_trait::async_trait;
+use chrono::{DateTime, Utc};
+use once_cell::sync::Lazy;
+use regex::Regex;
 use std::error::Error;
 use uuid::Uuid;
-use chrono::{DateTime, Utc};
-use crate::email::EmailAddress;
-use regex::Regex;
-use once_cell::sync::Lazy;
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CompleteSimpleUser {

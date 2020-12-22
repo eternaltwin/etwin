@@ -1,15 +1,13 @@
-use sqlx::{PgPool};
-use include_dir::{include_dir, Dir};
 use etwin_squirrel::{SchemaResolver, SchemaStateRef};
-use std::error::Error;
+use include_dir::{include_dir, Dir};
 use lazy_static::lazy_static;
+use sqlx::PgPool;
+use std::error::Error;
 
 const DB_SCRIPTS: Dir = include_dir!("../../db/scripts");
 
 lazy_static! {
-    static ref SQUIRREL: SchemaResolver = {
-        SchemaResolver::new(&DB_SCRIPTS)
-    };
+  static ref SQUIRREL: SchemaResolver = { SchemaResolver::new(&DB_SCRIPTS) };
 }
 
 pub async fn get_state(db: &PgPool) -> Result<SchemaStateRef<'static>, Box<dyn Error>> {
