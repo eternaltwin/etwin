@@ -23,8 +23,8 @@
   },
   "dependencies": {
     "@eternal-twin/core": "workspace:*",
-    "kryo": "^0.11.1",
-    "kryo-json": "^0.11.0",
+    "kryo": "^0.11.2",
+    "kryo-json": "^0.11.2",
     "neon-cli": "^0.6.0"
   },
   "devDependencies": {

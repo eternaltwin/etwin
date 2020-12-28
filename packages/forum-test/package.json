@@ -31,7 +31,7 @@
     "@eternal-twin/core": "workspace:*",
     "@types/chai": "^4.2.14",
     "chai": "^4.2.0",
-    "kryo": "^0.11.1"
+    "kryo": "^0.11.2"
   },
   "devDependencies": {
     "@types/mocha": "^8.0.4",

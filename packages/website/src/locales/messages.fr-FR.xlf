@@ -5,63 +5,81 @@
       <trans-unit id="app.menu.toggle" datatype="html">
         <source>Menu</source>
         <target state="translated">Menu</target>
+        <note priority="1" from="description">Button to toggle the main menu</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">11</context>
         </context-group>
-        <note priority="1" from="description">Button to toggle the main menu</note>
       </trans-unit>
       <trans-unit id="app.menu.nexus" datatype="html">
         <source>Nexus</source>
         <target state="translated">Nexus</target>
+        <note priority="1" from="description">Menu link to the nexus (feed) page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
-        <note priority="1" from="description">Menu link to the nexus (feed) page</note>
       </trans-unit>
       <trans-unit id="app.menu.games" datatype="html">
         <source>Games</source>
         <target state="translated">Jeux</target>
+        <note priority="1" from="description">Menu link to the games page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">14</context>
         </context-group>
-        <note priority="1" from="description">Menu link to the games page</note>
       </trans-unit>
       <trans-unit id="app.menu.forum" datatype="html">
         <source>Forum</source>
         <target state="translated">Forum</target>
+        <note priority="1" from="description">Menu link to the forum page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
-        <note priority="1" from="description">Menu link to the forum page</note>
       </trans-unit>
       <trans-unit id="app.menu.groups" datatype="html">
         <source>Groups</source>
         <target state="translated">Groupes</target>
+        <note priority="1" from="description">Menu link to the groups page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">16</context>
         </context-group>
-        <note priority="1" from="description">Menu link to the groups page</note>
       </trans-unit>
       <trans-unit id="app.menu.donate" datatype="html">
         <source>Contribute</source>
         <target state="translated">Contribuer</target>
+        <note priority="1" from="description">Menu link to the donation page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
-        <note priority="1" from="description">Menu link to the donation page</note>
+      </trans-unit>
+      <trans-unit id="app.menu.docs" datatype="html">
+        <source>Docs</source>
+        <target state="new">Docs</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <note priority="1" from="description">Menu link to the docs page</note>
+      </trans-unit>
+      <trans-unit id="app.menu.archive" datatype="html">
+        <source>Archive</source>
+        <target state="translated">Archives</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <note priority="1" from="description">Menu link to the archive</note>
       </trans-unit>
       <trans-unit id="shared.pagination.first" datatype="html">
         <source>First</source>
         <target state="translated">Première page</target>
         <note priority="1" from="description">Pagination link to the first page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/pagination.component.html</context>
+          <context context-type="sourcefile">src/app/shared/pagination.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
@@ -70,7 +88,7 @@
         <target state="translated">Page précédente</target>
         <note priority="1" from="description">Pagination link to the previous page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/pagination.component.html</context>
+          <context context-type="sourcefile">src/app/shared/pagination.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
@@ -79,7 +97,7 @@
         <target state="translated">Page <x id="INTERPOLATION" equiv-text="{{page1}}"/> / <x id="INTERPOLATION_1" equiv-text="{{pageCount}}"/></target>
         <note priority="1" from="description">Current page label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/pagination.component.html</context>
+          <context context-type="sourcefile">src/app/shared/pagination.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
@@ -88,7 +106,7 @@
         <target state="translated">Page suivante</target>
         <note priority="1" from="description">Pagination link to the next page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/pagination.component.html</context>
+          <context context-type="sourcefile">src/app/shared/pagination.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
@@ -97,53 +115,59 @@
         <target state="translated">Dernière page</target>
         <note priority="1" from="description">Pagination link to the last page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/pagination.component.html</context>
+          <context context-type="sourcefile">src/app/shared/pagination.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="register.username.heading" datatype="html">
+        <source> Eternal-Twin registration </source>
+        <target state="translated">Inscription à Eternal-Twin</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">11,12</context>
+        </context-group>
+        <note priority="1" from="description">Registration page heading (with a username)</note>
       </trans-unit>
       <trans-unit id="app.loginNav" datatype="html">
         <source>Sign in</source>
         <target state="translated">Se connecter</target>
         <note priority="1" from="description">Top-bar button to the login page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/etwin-bar.component.html</context>
+          <context context-type="sourcefile">src/app/shared/etwin-bar.component.html</context>
           <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="footer.description" datatype="html">
+        <source> Eternal-Twin is a non-commercial website operate by hobbyists. Its the goal to archive Motion-Twin's games. This means we want to ensure they remain available even if the official website closes.<x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong> "/> We are not related to Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.</source>
+        <target state="translated">Eternal-Twin est un site web non-commercial géré par des amateurs. Son but est d'archiver les jeux de Motion Twin, c'est à dire les garder accessibles même en cas de fermeture du site officiel. <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/>Nous ne sommes pas liés à Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/etwin-footer.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+        <note priority="1" from="description">Eternal-Twin description in the footer</note>
+      </trans-unit>
       <trans-unit id="register.heading" datatype="html">
-        <source>
-      Eternal-Twin registration
-    </source>
+        <source> Eternal-Twin registration </source>
         <target state="translated">Inscription à Eternal-Twin</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
-          <context context-type="linenumber">3</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-email.component.html</context>
-          <context context-type="linenumber">8</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
-          <context context-type="linenumber">10</context>
-        </context-group>
         <note priority="1" from="description">Registration page heading</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/register/register.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="register.efWarning" datatype="html">
-        <source>
-      If you played on Eternalfest, your account was imported automatically and you should <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>sign-in with Hammerfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>.
-    </source>
+        <source> If you played on Eternalfest, your account was imported automatically and you should <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/login&quot; [queryParams]=&quot;{method: 'hammerfest'}&quot;>"/>sign-in with Hammerfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>. </source>
         <target state="translated">Si vous avez joué sur Eternalfest, votre compte a été importé automatiquement et vous devriez <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>vous connecter avec Hammerfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
-          <context context-type="linenumber">6</context>
+          <context context-type="sourcefile">src/app/auth/register/register.component.html</context>
+          <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.selectMethod" datatype="html">
         <source>Select your preferred authentication method</source>
         <target state="translated">Choisissez votre méthode de connexion préférée.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
       </trans-unit>
@@ -151,7 +175,7 @@
         <source>Pick a username</source>
         <target state="translated">Choisir un nom d'utilisateur</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
@@ -159,7 +183,7 @@
         <source>Use my email address (Soon)</source>
         <target state="translated">Utiliser mon adresse email (Bientôt)</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
@@ -167,24 +191,24 @@
         <source>Already have an account? Sign-in</source>
         <target state="translated">Avez-vous déjà un compte ? Connectez vous</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="label.emailAddress" datatype="html">
         <source>Email address</source>
         <target state="translated">Adresse email</target>
+        <note priority="1" from="description">Email address field label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-email.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-email.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
-        <note priority="1" from="description">Email address field label</note>
       </trans-unit>
       <trans-unit id="register.email.submit" datatype="html">
         <source>Register (Soon)</source>
         <target state="translated">S'inscrire (Bientôt)</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-email.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-email.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
@@ -192,229 +216,195 @@
         <source>Back</source>
         <target state="translated">Retour</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-email.component.html</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">85</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
-          <context context-type="linenumber">85</context>
+          <context context-type="sourcefile">src/app/auth/register/register-email.component.html</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.editableProfileInfo" datatype="html">
         <source>Don't worry: you'll be able to edit all the values below in your profile if you ever want to.</source>
         <target state="translated">Ne vous inquiétez pas : vous pourrez éditer les valeurs ci-dessous dans votre page de profil si jamais vous souhaitez les changer.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
       </trans-unit>
       <trans-unit id="label.username" datatype="html">
         <source>Username</source>
         <target state="translated">Nom d'utilisateur</target>
+        <note priority="1" from="description">Username field label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">16</context>
         </context-group>
-        <note priority="1" from="description">Username field label</note>
       </trans-unit>
       <trans-unit id="register.usernameInfo" datatype="html">
         <source>The identifier you want to use to sign-in. It must be a unique name containing only "a-z", "0-9" or "_".</source>
         <target state="translated">L'identifiant à utiliser pour vous connecter. Il doit être unique et ne contenir que "a-z", "0-9" ou "_".</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.usernameRequired" datatype="html">
-        <source>
-              The username is required.
-            </source>
+        <source> The username is required. </source>
         <target state="translated">Le nom d'utilisateur est requis.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.usernameMinLength" datatype="html">
-        <source>
-              The username must be at least <x id="INTERPOLATION" equiv-text="{{$RawUsername.minLength}}"/> characters long.
-            </source>
+        <source> The username must be at least <x id="INTERPOLATION" equiv-text="{{$RawUsername.minLength}}"/> characters long. </source>
         <target state="translated">Le nom d'utilisateur doit avoir au moins <x id="INTERPOLATION" equiv-text="{{$RawUsername.minLength}}"/> caractères.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.usernameMaxLength" datatype="html">
-        <source>
-              The username must be at most <x id="INTERPOLATION" equiv-text="{{$RawUsername.maxLength}}"/> characters long.
-            </source>
+        <source> The username must be at most <x id="INTERPOLATION" equiv-text="{{$RawUsername.maxLength}}"/> characters long. </source>
         <target state="translated">Le nom d'utilisateur doit avoir au plus <x id="INTERPOLATION" equiv-text="{{$RawUsername.maxLength}}"/> caractères.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.usernamePattern" datatype="html">
-        <source>
-              The username can only use the lowercase english letters "a-z" and digits "0-9" (it must start with a
-              letter).
-            </source>
+        <source> The username can only use the lowercase english letters "a-z" and digits "0-9" (it must start with a letter). </source>
         <target state="translated">Le nom d'utilisateur ne peut que contenir les lettres minuscules "a-z", les chiffres "0-9" ou "_" (il doit commencer par une lettre).</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
-          <context context-type="linenumber">30</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
       <trans-unit id="displayName" datatype="html">
         <source>Display name</source>
         <target state="translated">Nom affiché</target>
+        <note priority="1" from="description">Display name field label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">38</context>
         </context-group>
-        <note priority="1" from="description">Display name field label</note>
       </trans-unit>
       <trans-unit id="register.displayNameInfo" datatype="html">
         <source>How your name should be displayed to other players. You can use any letter, spaces and parenthesis.</source>
         <target state="translated">Comment votre nom devrait être affiché aux autres joueurs. Vous pouvez utilisez toutes les lettres, des espaces et des parenthèses.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.displayNameMinLength" datatype="html">
-        <source>
-            The display name must be at least <x id="INTERPOLATION" equiv-text="{{$UserDisplayName.minLength}}"/> characters long.
-          </source>
+        <source> The display name must be at least <x id="INTERPOLATION" equiv-text="{{$UserDisplayName.minLength}}"/> characters long. </source>
         <target state="translated">Le nom affiché doit avoir au moins <x id="INTERPOLATION" equiv-text="{{$UserDisplayName.minLength}}"/> caractères.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.displayNameMaxLength" datatype="html">
-        <source>
-            The display name must be at most <x id="INTERPOLATION" equiv-text="{{$UserDisplayName.maxLength}}"/> characters long.
-          </source>
+        <source> The display name must be at most <x id="INTERPOLATION" equiv-text="{{$UserDisplayName.maxLength}}"/> characters long. </source>
         <target state="translated">Le nom affiché doit avoir au plus <x id="INTERPOLATION" equiv-text="{{$UserDisplayName.maxLength}}"/> caractères.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.displayNamePattern" datatype="html">
-        <source>
-            The display name can only use letters, spaces or parenthesis.
-          </source>
+        <source> The display name can only use letters, spaces or parenthesis. </source>
         <target state="translated">Le nom affiché ne peut utiliser que des lettres, espaces ou parenthèses.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="label.password" datatype="html">
         <source>Password</source>
         <target state="translated">Mot de passe</target>
+        <note priority="1" from="description">Password field label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">56</context>
         </context-group>
-        <note priority="1" from="description">Password field label</note>
       </trans-unit>
       <trans-unit id="register.passwordRequired" datatype="html">
-        <source>
-            The password is required.
-          </source>
+        <source> The password is required. </source>
         <target state="translated">Le mot de passe est requis</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
-          <context context-type="linenumber">60</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.passwordMinLength" datatype="html">
-        <source>
-            The password must be at least <x id="INTERPOLATION" equiv-text="{{PASSWORD_LEN}}"/> characters long.
-          </source>
+        <source> The password must be at least <x id="INTERPOLATION" equiv-text="{{PASSWORD_LEN}}"/> characters long. </source>
         <target state="translated">Le mot de passe doit faire au moins <x id="INTERPOLATION" equiv-text="{{PASSWORD_LEN}}"/> caractères.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">63</context>
         </context-group>
       </trans-unit>
       <trans-unit id="label.passwordConfirmation" datatype="html">
         <source>Password confirmation</source>
         <target state="translated">Confirmation du mot de passe</target>
+        <note priority="1" from="description">Password field label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">69</context>
         </context-group>
-        <note priority="1" from="description">Password field label</note>
       </trans-unit>
       <trans-unit id="register.passwordConfirmationRequired" datatype="html">
-        <source>
-            The password confirmation is required.
-          </source>
+        <source> The password confirmation is required. </source>
         <target state="translated">La confirmation du mot de passe est requise.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">73</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.passwordConfirmationMatch" datatype="html">
-        <source>
-            The password confirmation does not match the password.
-          </source>
+        <source> The password confirmation does not match the password. </source>
         <target state="translated">La confirmation du mot de passe ne correspond pas au mot de passe.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
-          <context context-type="linenumber">75</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">76</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.username.submit" datatype="html">
         <source>Register</source>
         <target state="translated">S'inscrire</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
           <context context-type="linenumber">80</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.username.unknownError" datatype="html">
-        <source>
-        Registration error: the username is invalid or already used, please report this error if it persists.
-      </source>
+        <source> Registration error: the username is invalid or already used, please report this error if it persists. </source>
         <target state="translated">Échec d'inscription : le nom d'utilisateur est invalide ou déjà utilisé, veuillez signaler cette erreur si elle persiste.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/register/register-username.component.html</context>
-          <context context-type="linenumber">81</context>
+          <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
+          <context context-type="linenumber">82</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="register.email.heading" datatype="html">
+        <source> Eternal-Twin registration </source>
+        <target state="new">Inscription à Eternal-Twin</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/register/register-email.component.html</context>
+          <context context-type="linenumber">9,10</context>
+        </context-group>
+        <note priority="1" from="description">Registration page heading (with an email)</note>
+      </trans-unit>
       <trans-unit id="home.presentation" datatype="html">
-        <source>
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
-      On March 27th 2020, Motion-Twin published <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>a message<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> on its
-      platform Twinoid about the end of Flash by the end of 2020. Their games will be gradually closed based on how the
-      player-base dwindles.
-    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
-      Faced with the situation, a few players decided to start a project to save those games: the project Eternal-Twin.
-      Their goal is to keep the corresponding online communities alive and avoid losing this part of video-gaming
-      history.
-    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
-      This project is lead by Demurgos and TheMoa59, for the technical and organizational side respectively. We also
-      want to thank MrPapy for helping to start the project.
-      Anyone is free to join and help.
-    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
-      Useful links:
-    <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-    <x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/>
-      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>Eternal-Twin Discord server<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Main communication channel<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
-      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a>"/>Eternal Twinpedia<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Wiki for the Motion-Twin games<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
-      <x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a>"/>Eternal-Twin Gitlab organization<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: All our source-code<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/>
-    <x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/>
-  </source>
+        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>
+      "/> On March 27th 2020, Motion-Twin published <x id="START_LINK" ctype="x-a" equiv-text="&lt;a
+      href=&quot;https://twinoid.com/fr/article-fr/6437/twinoid-et-les-jeux-web-de-motion-twin-evoluent&quot;>"/>a message<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> on its platform Twinoid about the end of Flash by the end of 2020. Their games will be gradually closed based on how the player-base dwindles. <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>
+      "/> Faced with the situation, a few players decided to start a project to save those games: the project Eternal-Twin. Their goal is to keep the corresponding online communities alive and avoid losing this part of video-gaming history. <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>
+      "/> This project is lead by Demurgos and TheMoa59, for the technical and organizational side respectively. We also want to thank MrPapy for helping to start the project. Anyone is free to join and help. <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>
+      "/> Useful links: <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>
+      "/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_1" equiv-text="&lt;a href=&quot;https://discord.gg/ERc3svy&quot;>"/>Eternal-Twin Discord server<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Main communication channel<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_2" equiv-text="&lt;a href=&quot;https://wiki.eternal-twin.net/&quot;>"/>Eternal Twinpedia<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Wiki for the Motion-Twin games<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_3" equiv-text="&lt;a href=&quot;https://gitlab.com/eternal-twin&quot;>"/>Eternal-Twin Gitlab organization<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: All our source-code<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/></source>
         <target state="translated"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       Le 27 mars 2020, Motion-Twin a publié sur sa plate-forme Twinoid <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>une annonce<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> relative à l'arrêt du support de Flash d'ici fin 2020. Leurs jeux seront progressivement fermés à mesure que leurs audiences respectives se réduiront.
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
@@ -428,51 +418,35 @@
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>Serveur Discord Eternal-Twin<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Canal de communication principal<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a>"/>Eternal Twinpedia<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Wiki pour les jeux Motion-Twin<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a>"/>Organisation Eternal-Twin sur Gitlab<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> : Tout notre code source<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/></target>
         <note priority="1" from="description">Presentation of the Eternal-Twin project</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">2</context>
+          <context context-type="sourcefile">src/app/home/home.component.html</context>
+          <context context-type="linenumber">3</context>
         </context-group>
       </trans-unit>
       <trans-unit id="home.generalTitle" datatype="html">
-        <source>
-    General informations
-  </source>
+        <source> General informations </source>
         <target state="translated">Informations générales</target>
         <note priority="1" from="description">Title of the general informations section</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="sourcefile">src/app/home/home.component.html</context>
+          <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="home.generalWhoAreWe" datatype="html">
-        <source>
-    Eternal-Twin is a non-commercial website operate by hobbyists. Its the goal to archive Motion-Twin's games. This means we want to ensure they remain available even if the official website closes.<x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/> We are not related to Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.</source>
+        <source> Eternal-Twin is a non-commercial website operate by hobbyists. Its the goal to archive Motion-Twin's games. This means we want to ensure they remain available even if the official website closes. <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/>We are not related to Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>. </source>
         <target state="translated">Eternal-Twin est un site web non-commercial géré par des amateurs. Son but est d'archiver les jeux de Motion Twin, c'est à dire les garder accessibles même en cas de fermeture du site officiel. <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong>"/>Nous ne sommes pas liés à Motion-Twin<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong>"/>.</target>
         <note priority="1" from="description">Section describing who we are</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/main-layout.component.html</context>
-          <context context-type="linenumber">51</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/small-layout.component.html</context>
-          <context context-type="linenumber">12</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">31</context>
+          <context context-type="sourcefile">src/app/home/home.component.html</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="home.generalNoCheating" datatype="html">
-        <source>
-    We reverse engineered some of the games: this is done with the sole purpose of archiving them. We oppose anyone
-    using information we found in order to gain an unfair advantage in any game (even single-player games). We base our
-    judgement on the expectation of the community, not on what is technically possible or not: something may be possible
-    while still being considered cheating.
-  </source>
+        <source> We reverse engineered some of the games: this is done with the sole purpose of archiving them. We oppose anyone using information we found in order to gain an unfair advantage in any game (even single-player games). We base our judgement on the expectation of the community, not on what is technically possible or not: something may be possible while still being considered cheating. </source>
         <target state="translated">Nous avons étudié certains jeux par rétro-ingénierie : l'unique but de cette analyse était l'archivage. Nous nous opposons à quiconque utilisant les informations trouvées afin de gagner un avantage en jeu (même pour les jeux à un seul joueur). Nous basons notre jugement sur les attentes de la communauté, pas sur ce qui est techniquement possible : quelque chose peut être possible et pourtant considéré comme de la triche.</target>
         <note priority="1" from="description">Section explaining we're against cheating</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/home/home.component.html</context>
-          <context context-type="linenumber">36</context>
+          <context context-type="sourcefile">src/app/home/home.component.html</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="legalLink" datatype="html">
@@ -480,300 +454,379 @@
         <target state="translated">Mentions légales</target>
         <note priority="1" from="description">Link to legal notices</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/home/home.component.html</context>
+          <context context-type="sourcefile">src/app/home/home.component.html</context>
           <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
       <trans-unit id="donate.title" datatype="html">
         <source>Contribute to the Eternal-Twin project</source>
         <target state="translated">Contribuer au projet Eternal-Twin</target>
+        <note priority="1" from="description">Title of the donation section</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
-        <note priority="1" from="description">Title of the donation section</note>
       </trans-unit>
       <trans-unit id="donate.introduction" datatype="html">
         <source>If you are interested by the project and wish to contribute to it, several choices are offered to you :</source>
         <target state="translated">Si vous êtes intéressé par le projet et souhaitez offrir votre contribution, plusieurs choix s’offrent à vous :</target>
+        <note priority="1" from="description">Introduction to the donation section</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
           <context context-type="linenumber">3</context>
         </context-group>
-        <note priority="1" from="description">Introduction to the donation section</note>
       </trans-unit>
       <trans-unit id="donate.team.title" datatype="html">
         <source>Enter the team</source>
         <target state="translated">Intégrer l'équipe</target>
+        <note priority="1" from="description">Title of the Integrate the team item</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
-        <note priority="1" from="description">Title of the Integrate the team item</note>
       </trans-unit>
       <trans-unit id="donate.team.content" datatype="html">
-        <source>
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>The Eternal-Twin team is formed by enthusiasts who wish to see their favorite games persist despite the discontinuation of Flash technology.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Join our Discord server if you also want to get into the adventure, we are always happy to welcome you !<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-      </source>
+        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>The Eternal-Twin team is formed by enthusiasts who wish to see their favorite games persist despite the discontinuation of Flash technology.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Join our Discord server if you also want to get into the adventure, we are always happy to welcome you !<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></source>
         <target state="translated">
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>L’équipe du projet Eternal-Twin est composée de passionnés qui souhaitent voir leurs jeux favoris persister malgré l’arrêt de la technologie Flash.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Rejoignez notre serveur Discord si vous souhaitez également vous investir dans l’aventure, nos portes sont toujours ouvertes !<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
       </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
-          <context context-type="linenumber">9</context>
-        </context-group>
         <note priority="1" from="description">Content of the Integrate the team item</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="donate.team.button" datatype="html">
         <source>Join the Discord</source>
         <target state="translated">Rejoindre le Discord</target>
+        <note priority="1" from="description">Button of the Integrate the team item</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
           <context context-type="linenumber">14</context>
         </context-group>
-        <note priority="1" from="description">Button of the Integrate the team item</note>
       </trans-unit>
       <trans-unit id="donate.dev.title" datatype="html">
         <source>Support the development</source>
         <target state="translated">Aider au développement</target>
+        <note priority="1" from="description">Title of the Help development item</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
           <context context-type="linenumber">19</context>
         </context-group>
-        <note priority="1" from="description">Title of the Help development item</note>
       </trans-unit>
       <trans-unit id="donate.dev.content" datatype="html">
-        <source>
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>As Eternal-Twin is an ambitious project, all help for developing is welcome.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>If you are interested in browser games and have web develpment skills, feel free to contact our devs and read the documentation !<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-      </source>
+        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>As Eternal-Twin is an ambitious project, all help for developing is welcome.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>If you are interested in browser games and have web develpment skills, feel free to contact our devs and read the documentation !<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></source>
         <target state="translated">
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin étant un projet ambitieux, toute aide au développement est la bienvenue.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Si vous êtes intéressé par les browser games et avez des compétences en développement web, n’hésitez pas prendre contact avec nos devs et à lire la documentation !<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
       </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
-          <context context-type="linenumber">20</context>
-        </context-group>
         <note priority="1" from="description">Content of the Help development item</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="donate.dev.button" datatype="html">
         <source>Read the documentation</source>
         <target state="translated">Lire la documentation</target>
+        <note priority="1" from="description">Button of the Help development item</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
           <context context-type="linenumber">25</context>
         </context-group>
-        <note priority="1" from="description">Button of the Help development item</note>
       </trans-unit>
       <trans-unit id="donate.cheer.title" datatype="html">
         <source>Encourage us</source>
         <target state="translated">Nous encourager</target>
+        <note priority="1" from="description">Title of the Encourage item</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
           <context context-type="linenumber">30</context>
         </context-group>
-        <note priority="1" from="description">Title of the Encourage item</note>
       </trans-unit>
       <trans-unit id="donate.cheer.content" datatype="html">
-        <source>
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Small actions are sometimes the best ! The community is the core element of Eternal-Twin, which is why your feedback, your opinions and your encouragements are so important to us.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Create an account and take part to the forum's activity !<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-      </source>
+        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Small actions are sometimes the best ! The community is the core element of Eternal-Twin, which is why your feedback, your opinions and your encouragements are so important to us.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Create an account and take part to the forum's activity !<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></source>
         <target state="translated">
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Les petites actions sont parfois les meilleures ! La communauté est l’élément central d’Eternal-Twin, c’est pourquoi vos retours, vos avis et vos encouragements nous tiennent particulièrement à cœur.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Faites-vous un compte, et allez participer à l’activité du forum !<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
       </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
-          <context context-type="linenumber">31</context>
-        </context-group>
         <note priority="1" from="description">Content of the Encourage item</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="donate.cheer.button" datatype="html">
         <source>Visit the forum</source>
         <target state="translated">Visiter le forum</target>
+        <note priority="1" from="description">Button of the Encourage item</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
           <context context-type="linenumber">36</context>
         </context-group>
-        <note priority="1" from="description">Button of the Encourage item</note>
       </trans-unit>
       <trans-unit id="donate.donate.title" datatype="html">
         <source>Fund us</source>
         <target state="translated">Nous soutenir financièrement</target>
+        <note priority="1" from="description">Title of the Donate item</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
           <context context-type="linenumber">41</context>
         </context-group>
-        <note priority="1" from="description">Title of the Donate item</note>
       </trans-unit>
       <trans-unit id="donate.donate.content" datatype="html">
-        <source>
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>All Eternal-Twin games are entirely free, we depend entirely on your donations for our financial sustainability. We do not seek profit, so the money donated to the project will be used to maintain the required servers and services. Please note that donations are voluntary and do not bring any in-game benefits.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>For the sake of transparency, we have opted to use <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>OpenCollective<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> for donations and expenses management. OpenCollective is a reliable platform that lets you know exactly where your money is going.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Our current objective is 50 € per month. This amount will be split as follows : 20 € for servers, 15 € for email service, 10 € for backups, 5 to 10 € for domain names. The extra funds will be used to either provide better servers or saved for future expenses.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-      </source>
+        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>All Eternal-Twin games are entirely free, we depend entirely on your donations for our financial sustainability. We do not seek profit, so the money donated to the project will be used to maintain the required servers and services. Please note that donations are voluntary and do not bring any in-game benefits.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>For the sake of transparency, we have opted to use <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://opencollective.com/eternal-twin&quot;>"/>OpenCollective<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a> "/> for donations and expenses management. OpenCollective is a reliable platform that lets you know exactly where your money is going.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Our current objective is 50 € per month. This amount will be split as follows : 20 € for servers, 15 € for email service, 10 € for backups, 5 to 10 € for domain names. The extra funds will be used to either provide better servers or saved for future expenses.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></source>
         <target state="translated">
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Tous les jeux de Eternal-Twin étant entièrement gratuits, notre survie financière dépend entièrement de vos dons. Notre objectif n’est pas le profit, l’argent versé au projet servira donc au maintien des serveurs et des services nécessaires. Notez que les dons sont volontaires et n’entraînent aucun avantage en jeu.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Par souci de transparence, nous avons choisi de passer par <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>OpenCollective<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> pour la gestion des donations et dépenses. OpenCollective est une plateforme fiable qui vous permet de savoir exactement où va votre argent.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Notre objectif actuel est de 50 € par mois. Ce montant sera réparti de la manière suivante : 20 € pour les serveurs, 15 € pour le service d’emails, 10 € pour nos backups, 5 à 10 € pour les noms de domaine. Les fonds supplémentaires serviront à fournir de meilleurs serveurs ou seront économisés pour de futures dépenses.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
       </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
-          <context context-type="linenumber">42</context>
-        </context-group>
         <note priority="1" from="description">Content of the Donate item</note>
-      </trans-unit>
-      <trans-unit id="donate.progress.remaining" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>XX<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/><x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/>"/>months reserve</source>
-        <target state="translated"><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>XX<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/><x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/>"/>mois de réserve</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
+          <context context-type="linenumber">43</context>
         </context-group>
-        <note priority="1" from="description">Remaining funded months</note>
-      </trans-unit>
-      <trans-unit id="donate.progress.additional" datatype="html">
-        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>XX € remaining<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/><x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/>"/>for an additional month</source>
-        <target state="translated"><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span>"/>XX € restants<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span>"/><x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br/>"/>pour un mois supplémentaire</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
-          <context context-type="linenumber">51</context>
-        </context-group>
-        <note priority="1" from="description">Additional month</note>
       </trans-unit>
       <trans-unit id="donate.donate.button" datatype="html">
         <source>Donate</source>
         <target state="translated">Faire un don</target>
+        <note priority="1" from="description">Button of the Donate item</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/donate/donate.component.html</context>
+          <context context-type="sourcefile">src/app/donate/donate.component.html</context>
           <context context-type="linenumber">72</context>
         </context-group>
-        <note priority="1" from="description">Button of the Donate item</note>
+      </trans-unit>
+      <trans-unit id="archive.home.dinoparcLink" datatype="html">
+        <source>Dinoparc</source>
+        <target state="new">Dinoparc</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/archive/archive-home.view.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <note priority="1" from="description">Link to the Dinoparc archive</note>
+      </trans-unit>
+      <trans-unit id="archive.home.hammerfestLink" datatype="html">
+        <source>Hammmerfest</source>
+        <target state="new">Hammmerfest</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/archive/archive-home.view.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+        <note priority="1" from="description">Link to the Hammerfest archive</note>
+      </trans-unit>
+      <trans-unit id="archive.home.twinoidLink" datatype="html">
+        <source>Twinoid</source>
+        <target state="new">Twinoid</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/archive/archive-home.view.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+        <note priority="1" from="description">Link to the Twinoid archive</note>
+      </trans-unit>
+      <trans-unit id="archive.dinoparc.error.userNotFound" datatype="html">
+        <source>Dinoparc user not found</source>
+        <target state="new">Utilisateur Dinoparc non trouvé</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/archive/dinoparc/dinoparc-user.view.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <note priority="1" from="description">Dinoparc user not found error message</note>
+      </trans-unit>
+      <trans-unit id="archive.hammerfest.error.userNotFound" datatype="html">
+        <source>Hammerfest user not found</source>
+        <target state="new">Utilisateur Hammerfest non trouvé</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/archive/hammerfest/hammerfest-user.view.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <note priority="1" from="description">Hammerfest user not found error message</note>
+      </trans-unit>
+      <trans-unit id="archive.twinoid.error.userNotFound" datatype="html">
+        <source>Twinoid user not found</source>
+        <target state="new">Utilisateur Twinoid non trouvé</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/archive/twinoid/twinoid-user.view.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+        <note priority="1" from="description">Twinoid user not found error message</note>
       </trans-unit>
       <trans-unit id="app.settingsNav" datatype="html">
         <source>Settings</source>
         <target state="translated">Paramètres</target>
+        <note priority="1" from="description">Top-bar link to the user settings page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/etwin-bar.component.html</context>
+          <context context-type="sourcefile">src/app/shared/etwin-bar.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
-        <note priority="1" from="description">Top-bar link to the user settings page</note>
       </trans-unit>
       <trans-unit id="login.registrationLink" datatype="html">
         <source>Need an account? Register</source>
         <target state="translated">Besoin d'un compte ? Inscrivez vous</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.method.etwin" datatype="html">
         <source>Sign in with Eternal-Twin</source>
         <target state="translated">Se connecter avec Eternal-Twin</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login.component.html</context>
-          <context context-type="linenumber">21</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
+          <context context-type="sourcefile">src/app/auth/login/login-etwin.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
-      </trans-unit>
-      <trans-unit id="login.password" datatype="html">
-        <source>Password</source>
-        <target state="translated">Mot de passe</target>
-        <note priority="1" from="description">Password field label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
-          <context context-type="linenumber">22</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
-          <context context-type="linenumber">30</context>
+          <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.passwordRequired" datatype="html">
-        <source>
-        The password is required.
-      </source>
+        <source> The password is required. </source>
         <target state="translated">Le mot de passe est requis.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="sourcefile">src/app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">34</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
-          <context context-type="linenumber">33</context>
+          <context context-type="sourcefile">src/app/auth/login/login-etwin.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
+          <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.etwin.submit" datatype="html">
         <source>Sign in</source>
         <target state="translated">Se connecter</target>
+        <note priority="1" from="description">Submit the Eternal-Twin login form label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
+          <context context-type="sourcefile">src/app/auth/login/login-etwin.component.html</context>
           <context context-type="linenumber">31</context>
         </context-group>
-        <note priority="1" from="description">Submit the Eternal-Twin login form label</note>
       </trans-unit>
       <trans-unit id="login.etwin.unknownError" datatype="html">
-        <source>
-    Failed to authenticate: please check your credentials.
-  </source>
+        <source> Failed to authenticate: please check your credentials. </source>
         <target state="translated">Échec de connexion : veuillez vérifier vos identifiants.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
+          <context context-type="sourcefile">src/app/auth/login/login-etwin.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.method.dinoparc" datatype="html">
+        <source>Sign in with Dinoparc</source>
+        <target state="new">Sign in with Dinoparc</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
           <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.dinoparcServer" datatype="html">
+        <source>Server</source>
+        <target state="new">Server</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+        <note priority="1" from="description">Dinoparc server label</note>
+      </trans-unit>
+      <trans-unit id="login.dinoparcUsername" datatype="html">
+        <source>Dinoparc username</source>
+        <target state="new">Dinoparc username</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <note priority="1" from="description">Dinoparc username address field label</note>
+      </trans-unit>
+      <trans-unit id="login.dinoparc.password" datatype="html">
+        <source>Dinoparc password</source>
+        <target state="new">Dinoparc password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <note priority="1" from="description">Password field label</note>
+      </trans-unit>
+      <trans-unit id="login.dinoparc.submit" datatype="html">
+        <source>Sign in</source>
+        <target state="new">Sign in</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+        <note priority="1" from="description">Submit the Dinoparc login form label</note>
+      </trans-unit>
+      <trans-unit id="login.dinoparcUsernameRequired" datatype="html">
+        <source> The Dinoparc username is required. </source>
+        <target state="new"> The Dinoparc username is required. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
+          <context context-type="linenumber">25,26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="login.dinoparc.unknownError" datatype="html">
+        <source> Failed to authenticate: please check your credentials. </source>
+        <target state="new"> Failed to authenticate: please check your credentials. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
+          <context context-type="linenumber">41,42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.hammerfestServer" datatype="html">
         <source>Server</source>
         <target state="translated">Serveur</target>
+        <note priority="1" from="description">Hammerfest server label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="sourcefile">src/app/auth/login/login-hammerfest.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
-        <note priority="1" from="description">Hammerfest server label</note>
       </trans-unit>
-      <trans-unit id="login.hammfestUsername" datatype="html">
+      <trans-unit id="login.hammerfestUsername" datatype="html">
         <source>Hammerfest username</source>
-        <target state="translated">Nom d'utilisateur Hammerfest</target>
+        <target state="new">Hammerfest username</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="sourcefile">src/app/auth/login/login-hammerfest.component.html</context>
           <context context-type="linenumber">21</context>
         </context-group>
         <note priority="1" from="description">Hammerfest username address field label</note>
       </trans-unit>
+      <trans-unit id="login.hammerfest.password" datatype="html">
+        <source>Hammerfest password</source>
+        <target state="new">Hammerfest password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+        <note priority="1" from="description">Password field label</note>
+      </trans-unit>
       <trans-unit id="login.hammerfestUsernameRequired" datatype="html">
-        <source>
-        The username is required.
-      </source>
+        <source> The username is required. </source>
         <target state="translated">Le nom d'utilisateur est requis</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="sourcefile">src/app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.hammerfest.submit" datatype="html">
         <source>Sign in</source>
         <target state="translated">Se connecter</target>
+        <note priority="1" from="description">Submit the Hammerfest login form label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="sourcefile">src/app/auth/login/login-hammerfest.component.html</context>
           <context context-type="linenumber">39</context>
         </context-group>
-        <note priority="1" from="description">Submit the Hammerfest login form label</note>
       </trans-unit>
       <trans-unit id="login.hammerfest.unknownError" datatype="html">
-        <source>
-    Failed to authenticate: please check your credentials.
-  </source>
+        <source> Failed to authenticate: please check your credentials. </source>
         <target state="translated">Échec de connexion : veuillez vérifier vos identifiants.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="sourcefile">src/app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.twinoid.submit" datatype="html">
@@ -781,7 +834,7 @@
         <target state="translated">Se connecter</target>
         <note priority="1" from="description">Submit the Twinoid login form label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-twinoid.component.html</context>
+          <context context-type="sourcefile">src/app/auth/login/login-twinoid.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
       </trans-unit>
@@ -790,7 +843,7 @@
         <target state="translated">Déconnexion</target>
         <note priority="1" from="description">Label of the sign out button</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/etwin-bar.component.html</context>
+          <context context-type="sourcefile">src/app/shared/etwin-bar.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
@@ -799,7 +852,7 @@
         <target state="translated">Déconnexion</target>
         <note priority="1" from="description">Title of the sign out button</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/etwin-bar.component.html</context>
+          <context context-type="sourcefile">src/app/shared/etwin-bar.component.html</context>
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
@@ -808,7 +861,7 @@
         <target state="translated">S'inscrire</target>
         <note priority="1" from="description">Top-bar button to the login page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/shared/etwin-bar.component.html</context>
+          <context context-type="sourcefile">src/app/shared/etwin-bar.component.html</context>
           <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
@@ -816,43 +869,50 @@
         <source>Sign in with Twinoid</source>
         <target state="translated">Se connecter avec Twinoid</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login.component.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="sourcefile">src/app/auth/login/login-twinoid.component.html</context>
+          <context context-type="linenumber">9</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-twinoid.component.html</context>
-          <context context-type="linenumber">9</context>
+          <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.method.hammerfest" datatype="html">
         <source>Sign in with Hammerfest</source>
         <target state="translated">Se connecter avec Hammerfest</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login.component.html</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="sourcefile">src/app/auth/login/login-hammerfest.component.html</context>
+          <context context-type="linenumber">10</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-hammerfest.component.html</context>
-          <context context-type="linenumber">10</context>
+          <context context-type="sourcefile">src/app/auth/login/login.component.html</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.usernameOrEmail" datatype="html">
         <source>Username or email address</source>
         <target state="translated">Nom d'utilisateur ou adresse email</target>
+        <note priority="1" from="description">Username or email address field label</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
+          <context context-type="sourcefile">src/app/auth/login/login-etwin.component.html</context>
           <context context-type="linenumber">13</context>
         </context-group>
-        <note priority="1" from="description">Username or email address field label</note>
+      </trans-unit>
+      <trans-unit id="login.etwin.password" datatype="html">
+        <source>Password</source>
+        <target state="new">Password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/auth/login/login-etwin.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+        <note priority="1" from="description">Password field label</note>
       </trans-unit>
       <trans-unit id="login.usernameOrEmailRequired" datatype="html">
-        <source>
-        The username or email is required.
-      </source>
+        <source> The username or email is required. </source>
         <target state="translated">Le nom d'utilisateur ou l'adresse email est requis.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/auth/login/login-etwin.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="sourcefile">src/app/auth/login/login-etwin.component.html</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="legal.title" datatype="html">
@@ -860,7 +920,7 @@
         <target state="translated">Mentions légales</target>
         <note priority="1" from="description">Title of the legal notices section</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="sourcefile">src/app/legal/legal-view.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
       </trans-unit>
@@ -869,7 +929,7 @@
         <target state="translated">Hébergeur</target>
         <note priority="1" from="description">Title of the web hosting provider section</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="sourcefile">src/app/legal/legal-view.component.html</context>
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
@@ -878,7 +938,7 @@
         <target state="translated">Eternal-Twin est hébergé auprès d'OVH. Veuillez trouvez ci-dessous leurs données de contact :</target>
         <note priority="1" from="description">Introduction paragraph of the web hosting provider section</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="sourcefile">src/app/legal/legal-view.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
@@ -887,7 +947,7 @@
         <target state="translated">Nom</target>
         <note priority="1" from="description">Label for the hosting provider name</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="sourcefile">src/app/legal/legal-view.component.html</context>
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
@@ -896,7 +956,7 @@
         <target state="translated">Adresse</target>
         <note priority="1" from="description">Label for the hosting provider address</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="sourcefile">src/app/legal/legal-view.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
       </trans-unit>
@@ -905,25 +965,17 @@
         <target state="translated">Cookies</target>
         <note priority="1" from="description">Title of the section on cookies</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="sourcefile">src/app/legal/legal-view.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="legal.cookiesBody" datatype="html">
-        <source>
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin avoids any non-necessary cookies.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-
-    <x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Necessary cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/>
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin uses cookies to support authentication and remember the user's preferred language. Those are first-party cookies required for the website to work. You may still disable them in your browser settings, but this may prevent the website from working.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-
-    <x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Other cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/>
-    <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>There are no other cookies: no tracking, no analytics, no advertisement.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-  </source>
+        <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin avoids any non-necessary cookies.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Necessary cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin uses cookies to support authentication and remember the user's preferred language. Those are first-party cookies required for the website to work. You may still disable them in your browser settings, but this may prevent the website from working.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Other cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>There are no other cookies: no tracking, no analytics, no advertisement.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></source>
         <target state="translated"><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin évite tout n'étant pas nécessaire à la navigation.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Cookies nécessaires<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Eternal-Twin utilise des cookies pour permettre l'authentification et retenir la langue préférée de l'utilisateur. Ces cookies sont nécessaires au fonctionnement du site web. Vous pouvez les désactiver dans les paramètres de votre navigateur, cependant cela peut empêcher le site de fonctionner correctement..<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;h3>"/>Autres cookies<x id="CLOSE_HEADING_LEVEL3" ctype="x-h3" equiv-text="&lt;/h3>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Il n'y a pas d'autres cookies : pas de pistage, pas d'analyse, pas de pub.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></target>
         <note priority="1" from="description">Body of the section on cookies</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="sourcefile">src/app/legal/legal-view.component.html</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="legal.personalDataTitle" datatype="html">
@@ -931,7 +983,7 @@
         <target state="translated">Données personnelles</target>
         <note priority="1" from="description">Title of the personal data section</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="sourcefile">src/app/legal/legal-view.component.html</context>
           <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
@@ -940,331 +992,331 @@
         <target state="translated">Eternal-Twin stocke l'email de ses utilisateurs pour les besoins de l'authentification (connexion et récupération de mot de passe). Aucune autre donnée personnelle n'est stockée. Nous ne partageons, vendons ou analysons pas de données personnelles.</target>
         <note priority="1" from="description">Body of the personal data section</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/legal/legal-view.component.html</context>
+          <context context-type="sourcefile">src/app/legal/legal-view.component.html</context>
           <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.title" datatype="html">
         <source>Games</source>
         <target state="translated">Jeux</target>
+        <note priority="1" from="description">Title of the games section</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">2</context>
         </context-group>
-        <note priority="1" from="description">Title of the games section</note>
       </trans-unit>
       <trans-unit id="games.eternalfestTitle" datatype="html">
         <source>Eternalfest</source>
         <target state="translated">Eternalfest</target>
         <note priority="1" from="description">Title of the Eternalfest game description</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.eternalfestDescription" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> is a reimplementation of <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Hammerfest<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/>. It has both the official levels, and new content!</source>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="nalfestDescription&quot;>&lt;a href=&quot;https:"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="st.ne"/> is a reimplementation of <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="reim"/>Hammerfest<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="on of"/>. It has both the official levels, and new content!</source>
         <target state="translated"><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>Eternalfest<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> est une recréation de <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Hammerfest<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/>, avec les niveaux officiels ainsi que du nouveau contenu !</target>
         <note priority="1" from="description">Description of the Eternalfest game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.eternalfestButton" datatype="html">
         <source>Play now !</source>
         <target state="translated">Jouez maintenant !</target>
+        <note priority="1" from="description">Button to access the Eternalfest game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">23</context>
         </context-group>
-        <note priority="1" from="description">Button to access the Eternalfest game</note>
       </trans-unit>
       <trans-unit id="games.myhordesTitle" datatype="html">
         <source>MyHordes</source>
         <target state="translated">MyHordes</target>
+        <note priority="1" from="description">Title of the MyHordes game description</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">46</context>
         </context-group>
-        <note priority="1" from="description">Title of the MyHordes game description</note>
       </trans-unit>
       <trans-unit id="games.myhordesDescription" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>MyHordes<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> is an open implementation of the browser game "Die2Nite" and its other versions by MotionTwin and developed by the community.</source>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="the MyHordes game@@games.myhordesDescript"/>MyHordes<x id="CLOSE_LINK" ctype="x-a" equiv-text="href="/> is an open implementation of the browser game "Die2Nite" and its other versions by MotionTwin and developed by the community.</source>
         <target state="translated"><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>MyHordes<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> est une implémentation libre développée par la communauté du jeu "Hordes.fr" et de ses autres versions de MotionTwin.</target>
+        <note priority="1" from="description">Description of the MyHordes game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">47</context>
         </context-group>
-        <note priority="1" from="description">Description of the MyHordes game</note>
       </trans-unit>
       <trans-unit id="games.myhordesStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="us o"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="sStat"/></source>
         <target state="translated"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Ce jeu est actuellement en développement.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <note priority="1" from="description">Current status of the MyHordes game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">48</context>
         </context-group>
-        <note priority="1" from="description">Current status of the MyHordes game</note>
       </trans-unit>
       <trans-unit id="games.myhordesButton" datatype="html">
         <source>Test the alpha !</source>
         <target state="translated">Testez l'alpha !</target>
+        <note priority="1" from="description">Button to access the MyHordes game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">50</context>
         </context-group>
-        <note priority="1" from="description">Button to access the MyHordes game</note>
       </trans-unit>
       <trans-unit id="games.directquizTitle" datatype="html">
         <source>Directquiz</source>
         <target state="translated">Directquiz</target>
+        <note priority="1" from="description">Title of the Directquiz game description</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">73</context>
         </context-group>
-        <note priority="1" from="description">Title of the Directquiz game description</note>
       </trans-unit>
       <trans-unit id="games.directquizDescription" datatype="html">
         <source>Jeu de quiz : votre culture mise à rude épreuve !</source>
         <target state="new">Jeu de quiz : votre culture mise à rude épreuve !</target>
+        <note priority="1" from="description">Description of the Directquiz game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">74</context>
         </context-group>
-        <note priority="1" from="description">Description of the Directquiz game</note>
       </trans-unit>
       <trans-unit id="games.directquizStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is available in french only.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="  &lt;p"/>This game is available in french only.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="z gam"/></source>
         <target state="translated"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Ce jeu est disponible uniquement en français.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <note priority="1" from="description">Current status of the Directquiz game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">75</context>
         </context-group>
-        <note priority="1" from="description">Current status of the Directquiz game</note>
       </trans-unit>
       <trans-unit id="games.directquizButton" datatype="html">
         <source>Play now !</source>
         <target state="translated">Jouez maintenant !</target>
+        <note priority="1" from="description">Button to access the Directquiz game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">77</context>
         </context-group>
-        <note priority="1" from="description">Button to access the Directquiz game</note>
       </trans-unit>
       <trans-unit id="games.mjrtTitle" datatype="html">
         <source>Mjrt</source>
         <target state="translated">Mjrt</target>
+        <note priority="1" from="description">Title of the Mjrt game description</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">100</context>
         </context-group>
-        <note priority="1" from="description">Title of the Mjrt game description</note>
       </trans-unit>
       <trans-unit id="games.mjrtDescription" datatype="html">
         <source>Une question, trois réponses. Combien de tours survivrez-vous ?</source>
         <target state="new">Une question, trois réponses. Combien de tours survivrez-vous ?</target>
+        <note priority="1" from="description">Description of the Mjrt game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">101</context>
         </context-group>
-        <note priority="1" from="description">Description of the Mjrt game</note>
       </trans-unit>
       <trans-unit id="games.mjrtStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is available in french only.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="ien "/>This game is available in french only.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="p i18"/></source>
         <target state="translated"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Ce jeu est disponible uniquement en français.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <note priority="1" from="description">Current status of the Mjrt game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">102</context>
         </context-group>
-        <note priority="1" from="description">Current status of the Mjrt game</note>
       </trans-unit>
       <trans-unit id="games.mjrtButton" datatype="html">
         <source>Play now !</source>
         <target state="translated">Jouez maintenant !</target>
+        <note priority="1" from="description">Button to access the Mjrt game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">104</context>
         </context-group>
-        <note priority="1" from="description">Button to access the Mjrt game</note>
       </trans-unit>
       <trans-unit id="games.dinoparcTitle" datatype="html">
         <source>Dinoparc</source>
         <target state="translated">Dinoparc</target>
+        <note priority="1" from="description">Title of the Dinoparc game description</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">127</context>
         </context-group>
-        <note priority="1" from="description">Title of the Dinoparc game description</note>
       </trans-unit>
       <trans-unit id="games.dinoparcStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="ame "/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="Dinop"/></source>
         <target state="translated"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Ce jeu est actuellement en développement.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <note priority="1" from="description">Current status of the Dinoparc game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">128</context>
         </context-group>
-        <note priority="1" from="description">Current status of the Dinoparc game</note>
       </trans-unit>
       <trans-unit id="games.dinoparcButton" datatype="html">
         <source>Coming soon...</source>
         <target state="translated">Prochainement...</target>
+        <note priority="1" from="description">Button to access the Dinoparc game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">130</context>
         </context-group>
-        <note priority="1" from="description">Button to access the Dinoparc game</note>
       </trans-unit>
       <trans-unit id="games.dinorpgTitle" datatype="html">
         <source>DinoRPG</source>
         <target state="translated">DinoRPG</target>
+        <note priority="1" from="description">Title of the DinoRPG game description</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">153</context>
         </context-group>
-        <note priority="1" from="description">Title of the DinoRPG game description</note>
       </trans-unit>
       <trans-unit id="games.dinorpgDescription" datatype="html">
         <source>Train your dinoz and set off on an extraordinary adventure...</source>
         <target state="translated">Élevez vos dinoz dans un jeu d'aventure extraordinaire !</target>
+        <note priority="1" from="description">Description of the DinoRPG game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">154</context>
         </context-group>
-        <note priority="1" from="description">Description of the DinoRPG game</note>
       </trans-unit>
       <trans-unit id="games.dinorpgStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="pgDe"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="t off"/></source>
         <target state="translated"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Ce jeu est actuellement en développement.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <note priority="1" from="description">Current status of the DinoRPG game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">155</context>
         </context-group>
-        <note priority="1" from="description">Current status of the DinoRPG game</note>
       </trans-unit>
       <trans-unit id="games.dinorpgButton" datatype="html">
         <source>Coming soon...</source>
         <target state="translated">Prochainement...</target>
+        <note priority="1" from="description">Button to access the DinoRPG game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">157</context>
         </context-group>
-        <note priority="1" from="description">Button to access the DinoRPG game</note>
       </trans-unit>
       <trans-unit id="games.cafejeuxTitle" datatype="html">
         <source>CaféJeux</source>
         <target state="translated">CaféJeux</target>
+        <note priority="1" from="description">Title of the CafeJeux game description</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">180</context>
         </context-group>
-        <note priority="1" from="description">Title of the CafeJeux game description</note>
       </trans-unit>
       <trans-unit id="games.cafejeuxDescription" datatype="html">
         <source>Jeux multi-joueurs, bonne humeur et défis entre amis !</source>
         <target state="new">Jeux multi-joueurs, bonne humeur et défis entre amis !</target>
+        <note priority="1" from="description">Description of the CafeJeux game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">181</context>
         </context-group>
-        <note priority="1" from="description">Description of the CafeJeux game</note>
       </trans-unit>
       <trans-unit id="games.cafejeuxStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text=" the"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="ripti"/></source>
         <target state="translated"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Ce jeu est actuellement en développement.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <note priority="1" from="description">Current status of the CafeJeux game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">182</context>
         </context-group>
-        <note priority="1" from="description">Current status of the CafeJeux game</note>
       </trans-unit>
       <trans-unit id="games.cafejeuxButton" datatype="html">
         <source>Coming soon...</source>
         <target state="translated">Prochainement...</target>
+        <note priority="1" from="description">Button to access the CafeJeux game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">184</context>
         </context-group>
-        <note priority="1" from="description">Button to access the CafeJeux game</note>
       </trans-unit>
       <trans-unit id="games.emushTitle" datatype="html">
         <source>eMush</source>
         <target state="translated">eMush</target>
+        <note priority="1" from="description">Title of the eMush game description</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">207</context>
         </context-group>
-        <note priority="1" from="description">Title of the eMush game description</note>
       </trans-unit>
       <trans-unit id="games.emushDescription" datatype="html">
         <source>Co-operative multiplayer space survival and escape game</source>
         <target state="translated">Jeu multijoueur de coopération : survie et fuite dans l'espace !</target>
+        <note priority="1" from="description">Description of the eMush game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">208</context>
         </context-group>
-        <note priority="1" from="description">Description of the eMush game</note>
       </trans-unit>
       <trans-unit id="games.emushStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="sh&lt;/"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text=" the "/></source>
         <target state="translated"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Ce jeu est actuellement en développement.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <note priority="1" from="description">Current status of the eMush game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">209</context>
         </context-group>
-        <note priority="1" from="description">Current status of the eMush game</note>
       </trans-unit>
       <trans-unit id="games.emushButton" datatype="html">
         <source>Coming soon...</source>
         <target state="translated">Prochainement...</target>
+        <note priority="1" from="description">Button to access the eMush game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">211</context>
         </context-group>
-        <note priority="1" from="description">Button to access the eMush game</note>
       </trans-unit>
       <trans-unit id="games.labruteTitle" datatype="html">
         <source>My Brute</source>
         <target state="translated">La Brute</target>
+        <note priority="1" from="description">Title of the Labrute game description</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">234</context>
         </context-group>
-        <note priority="1" from="description">Title of the Labrute game description</note>
       </trans-unit>
       <trans-unit id="games.labruteDescription" datatype="html">
         <source>A free combat game: Create the most brutal fighter ever!</source>
         <target state="translated">Jeu de baston gratuit : battez-vous avec votre personnage !</target>
+        <note priority="1" from="description">Description of the Labrute game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">235</context>
         </context-group>
-        <note priority="1" from="description">Description of the Labrute game</note>
       </trans-unit>
       <trans-unit id="games.labruteStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="brut"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="8n=&quot;D"/></source>
         <target state="translated"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>Ce jeu est actuellement en développement.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <note priority="1" from="description">Current status of the Labrute game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">236</context>
         </context-group>
-        <note priority="1" from="description">Current status of the Labrute game</note>
       </trans-unit>
       <trans-unit id="games.labruteButton" datatype="html">
         <source>Coming soon...</source>
         <target state="translated">Prochainement...</target>
+        <note priority="1" from="description">Button to access the Labrute game</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">238</context>
         </context-group>
-        <note priority="1" from="description">Button to access the Labrute game</note>
       </trans-unit>
       <trans-unit id="games.moreTitle" datatype="html">
         <source>More to come</source>
         <target state="translated">Plus</target>
         <note priority="1" from="description">Title of the "more games" section</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">261</context>
         </context-group>
       </trans-unit>
@@ -1273,24 +1325,24 @@
         <target state="translated">Cette section sera étendue au fur et à mesure que les nouveaux jeux seront publiés.</target>
         <note priority="1" from="description">Explanation that more games will be added to the list</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/games/games.component.html</context>
+          <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">262</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.addModerator.userLabel" datatype="html">
         <source>New moderator</source>
         <target state="translated">Nouveau modérateur</target>
+        <note priority="1" from="description">Label for the new moderator user selection</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/add-moderator.component.html</context>
+          <context context-type="sourcefile">src/app/forum/add-moderator.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
-        <note priority="1" from="description">Label for the new moderator user selection</note>
       </trans-unit>
       <trans-unit id="forum.addModerator.submit" datatype="html">
         <source>Add moderator</source>
         <target state="translated">Ajouter un modérateur</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/add-moderator.component.html</context>
+          <context context-type="sourcefile">src/app/forum/add-moderator.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
@@ -1299,7 +1351,7 @@
         <target state="translated">Échec de l'ajout de modérateur : erreur serveur inconnue.</target>
         <note priority="1" from="description">Error message displayed when the server rejects the moderator addition</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/add-moderator.component.html</context>
+          <context context-type="sourcefile">src/app/forum/add-moderator.component.html</context>
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
@@ -1307,44 +1359,36 @@
         <source>Delete moderator</source>
         <target state="translated">Supprimer le modérateur</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/delete-moderator.component.html</context>
+          <context context-type="sourcefile">src/app/forum/delete-moderator.component.html</context>
           <context context-type="linenumber">14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.deleteModerator.unknownError" datatype="html">
-        <source>
-    Moderator deletion failure: unknown server error.
-  </source>
+        <source> Moderator deletion failure: unknown server error. </source>
         <target state="translated">Échec de la suppression de modérateur : erreur serveur inconnue.</target>
         <note priority="1" from="description">Error message displayed when the server rejects the moderator deletion</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/delete-moderator.component.html</context>
-          <context context-type="linenumber">16</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="sourcefile">src/app/forum/delete-moderator.component.html</context>
+          <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.homeTitle" datatype="html">
-        <source>
-    Forum
-  </source>
+        <source> Forum </source>
         <target state="translated">
     Forum
   </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/forum-home.component.html</context>
-          <context context-type="linenumber">2</context>
-        </context-group>
         <note priority="1" from="description">Title of the main page of the forum</note>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/forum/forum-home.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="forum.newPostLink" datatype="html">
         <source>Reply</source>
         <target state="translated">Répondre</target>
         <note priority="1" from="description">Link to the thread reply (new post) page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/forum-thread.component.html</context>
+          <context context-type="sourcefile">src/app/forum/forum-thread.component.html</context>
           <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
@@ -1353,7 +1397,7 @@
         <target state="translated">Se connecter pour répondre</target>
         <note priority="1" from="description">Link to the thread reply (new post) page for guests (redirect through login)</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/forum-thread.component.html</context>
+          <context context-type="sourcefile">src/app/forum/forum-thread.component.html</context>
           <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
@@ -1362,12 +1406,12 @@
         <target state="translated">Sujet de forum non trouvé</target>
         <note priority="1" from="description">Forum thread not found error message</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/forum-thread.component.html</context>
-          <context context-type="linenumber">33</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-post.component.html</context>
+          <context context-type="linenumber">27</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
-          <context context-type="linenumber">27</context>
+          <context context-type="sourcefile">src/app/forum/forum-thread.component.html</context>
+          <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.newThreadLink" datatype="html">
@@ -1375,7 +1419,7 @@
         <target state="translated">Nouveau sujet</target>
         <note priority="1" from="description">Link to the thread creation page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
+          <context context-type="sourcefile">src/app/forum/forum-section.component.html</context>
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
@@ -1384,7 +1428,7 @@
         <target state="translated">Se connecter pour créer un nouveau sujet</target>
         <note priority="1" from="description">Link to the thread creation page for guests (redirect through login)</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
+          <context context-type="sourcefile">src/app/forum/forum-section.component.html</context>
           <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
@@ -1393,19 +1437,17 @@
         <target state="translated">Modérateurs</target>
         <note priority="1" from="description">Title of the moderator list section (on a section page)</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
+          <context context-type="sourcefile">src/app/forum/forum-section.component.html</context>
           <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.noModerators" datatype="html">
-        <source>
-            There are no users with elevated privilege on this forum section. Only administrators can manage this section.
-          </source>
+        <source> There are no users with elevated privilege on this forum section. Only administrators can manage this section. </source>
         <target state="translated">Il n'y a pas d'utilisateurs avec droits avancés sur cette section du forum. Seuls les administrateurs peuvent gérer cette section.</target>
         <note priority="1" from="description">Message indicating that the thread section moderator list is empty</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
-          <context context-type="linenumber">43</context>
+          <context context-type="sourcefile">src/app/forum/forum-section.component.html</context>
+          <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.error.sectionNotFound" datatype="html">
@@ -1413,49 +1455,47 @@
         <target state="translated">Section de forum non trouvée</target>
         <note priority="1" from="description">Forum section not found error message</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/forum-section.component.html</context>
-          <context context-type="linenumber">52</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-thread.component.html</context>
+          <context context-type="linenumber">42</context>
         </context-group>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
-          <context context-type="linenumber">42</context>
+          <context context-type="sourcefile">src/app/forum/forum-section.component.html</context>
+          <context context-type="linenumber">52</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.newPost.title" datatype="html">
         <source>Post a reply for <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{thread.title}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></source>
         <target state="translated">Envoyer une réponse dans <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{thread.title}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
+        <note priority="1" from="description">Title for the thread reply (new post) form</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-post.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
-        <note priority="1" from="description">Title for the thread reply (new post) form</note>
       </trans-unit>
       <trans-unit id="forum.newPost.content" datatype="html">
         <source>Body</source>
         <target state="translated">Corps</target>
+        <note priority="1" from="description">Content of the thread reply (new post)</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-post.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
-        <note priority="1" from="description">Content of the thread reply (new post)</note>
       </trans-unit>
       <trans-unit id="forum.newPost.submit" datatype="html">
         <source>Post the reply</source>
         <target state="translated">Envoyer la réponse</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-post.component.html</context>
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.newPost.unknownError" datatype="html">
-        <source>
-            Post creation failure: unknown server error on reply.
-          </source>
+        <source> Post creation failure: unknown server error on reply. </source>
         <target state="translated">Échec de la création du message : erreur serveur inconnue.</target>
         <note priority="1" from="description">Error message displayed when the server rejects the new post</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-post.component.html</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-post.component.html</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.newThread.title" datatype="html">
@@ -1463,109 +1503,101 @@
         <target state="translated">Nouveau sujet de discussion dans <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/><x id="INTERPOLATION" equiv-text="{{section.displayName}}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
         <note priority="1" from="description">Title for the thread creation form</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.newThread.titleLabel" datatype="html">
         <source>Thread title</source>
         <target state="translated">Titre du sujet de discussion</target>
+        <note priority="1" from="description">Title of the new thread</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">15</context>
         </context-group>
-        <note priority="1" from="description">Title of the new thread</note>
       </trans-unit>
       <trans-unit id="forum.newThread.titleRequired" datatype="html">
-        <source>
-                The title is required.
-              </source>
+        <source> The title is required. </source>
         <target state="translated">Le titre est requis.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-thread.component.html</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.newThread.titleMinLength" datatype="html">
-        <source>
-                The title must be at least <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.minLength}}"/> characters long.
-              </source>
+        <source> The title must be at least <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.minLength}}"/> characters long. </source>
         <target state="translated">Le titre doit avoir au moins <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.minLength}}"/> caractères.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.newThread.titleMaxLength" datatype="html">
-        <source>
-                The title must be at most <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.maxLength}}"/> characters long.
-              </source>
+        <source> The title must be at most <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.maxLength}}"/> characters long. </source>
         <target state="translated">Le titre doit avoir au plus <x id="INTERPOLATION" equiv-text="{{$ForumThreadTitle.maxLength}}"/> caractères.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.newThread.content" datatype="html">
         <source>Body</source>
         <target state="translated">Corps</target>
+        <note priority="1" from="description">Content of the first post of the new thread</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">30</context>
         </context-group>
-        <note priority="1" from="description">Content of the first post of the new thread</note>
       </trans-unit>
       <trans-unit id="forum.newThread.submit" datatype="html">
         <source>Create a new thread</source>
         <target state="translated">Créer un nouveau sujet de discussion</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-thread.component.html</context>
           <context context-type="linenumber">34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.newThread.unknownError" datatype="html">
-        <source>
-            Thread creation error: unknown server error on creation.
-          </source>
+        <source> Thread creation error: unknown server error on creation. </source>
         <target state="translated">Échec de la création du sujet de discussion : erreur serveur inconnue.</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/new-forum-thread.component.html</context>
-          <context context-type="linenumber">36</context>
+          <context context-type="sourcefile">src/app/forum/new-forum-thread.component.html</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forum.post.editLink" datatype="html">
         <source>Edit</source>
         <target state="translated">Éditer</target>
+        <note priority="1" from="description">Link to the post edition page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/short-forum-post.component.html</context>
+          <context context-type="sourcefile">src/app/forum/short-forum-post.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
-        <note priority="1" from="description">Link to the post edition page</note>
       </trans-unit>
       <trans-unit id="forum.post.deleted" datatype="html">
         <source>Deleted post</source>
         <target state="translated">Message supprimé</target>
+        <note priority="1" from="description">Message replacing the content of a deleted post</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/short-forum-post.component.html</context>
+          <context context-type="sourcefile">src/app/forum/short-forum-post.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
-        <note priority="1" from="description">Message replacing the content of a deleted post</note>
       </trans-unit>
       <trans-unit id="forum.post.title" datatype="html">
-        <source>Update post in <x id="INTERPOLATION" equiv-text="{{post.thread.title}}"/>, by <x id="START_TAG_ETWIN-FORUM-ACTOR" ctype="x-etwin-forum-actor" equiv-text="&lt;etwin-forum-actor>"/><x id="CLOSE_TAG_ETWIN-FORUM-ACTOR" ctype="x-etwin-forum-actor" equiv-text="&lt;/etwin-forum-actor>"/>, at <x id="INTERPOLATION_1" equiv-text="{{post.ctime | date : &quot;short&quot;}}"/></source>
+        <source>Update post in <x id="INTERPOLATION" equiv-text="{{post.thread.title}}"/>, by <x id="START_TAG_ETWIN_FORUM_ACTOR" ctype="x-etwin_forum_actor" equiv-text="&lt;etwin-forum-actor [actor]=&quot;post.author&quot;>"/><x id="CLOSE_TAG_ETWIN_FORUM_ACTOR" ctype="x-etwin_forum_actor" equiv-text="&lt;/etwin-forum-actor>"/>, at <x id="INTERPOLATION_1" equiv-text="{{post.ctime | date : &quot;short&quot;}}"/></source>
         <target state="translated">Éditer le message dans <x id="INTERPOLATION" equiv-text="{{post.thread.title}}"/>, par <x id="START_TAG_ETWIN-FORUM-ACTOR" ctype="x-etwin-forum-actor" equiv-text="&lt;etwin-forum-actor>"/><x id="CLOSE_TAG_ETWIN-FORUM-ACTOR" ctype="x-etwin-forum-actor" equiv-text="&lt;/etwin-forum-actor>"/>, à <x id="INTERPOLATION_1" equiv-text="{{post.ctime | date : &quot;short&quot;}}"/></target>
+        <note priority="1" from="description">Title for the post details and edition page</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
+          <context context-type="sourcefile">src/app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
-        <note priority="1" from="description">Title for the post details and edition page</note>
       </trans-unit>
       <trans-unit id="forum.updatePost.hideContent" datatype="html">
         <source>Hide message content</source>
         <target state="translated">Masquer le contenu du message</target>
         <note priority="1" from="description">Label for the checkbox to update the forum post and hide (soft remove) its content</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
+          <context context-type="sourcefile">src/app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
@@ -1574,7 +1606,7 @@
         <target state="translated">Avertissement de modération</target>
         <note priority="1" from="description">Label to update the moderation warning linked to a post</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
+          <context context-type="sourcefile">src/app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
@@ -1583,7 +1615,7 @@
         <target state="translated">Commentaire expliquant la raison de la modification</target>
         <note priority="1" from="description">Label for the comment explaining why a post was updated</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
+          <context context-type="sourcefile">src/app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
@@ -1591,45 +1623,81 @@
         <source>Update post</source>
         <target state="translated">Mettre à jour le message</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/forum/update-forum-post.component.html</context>
+          <context context-type="sourcefile">src/app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">30</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="forum.updatePost.unknownError" datatype="html">
+        <source> Post update failure: unknown server error. </source>
+        <target state="new"> Post update failure: unknown server error. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/forum/update-forum-post.component.html</context>
+          <context context-type="linenumber">33,34</context>
+        </context-group>
+        <note priority="1" from="description">Error message displayed when the server rejects the post update</note>
       </trans-unit>
       <trans-unit id="settings.link.hammerfest.username" datatype="html">
         <source>Hammerfest username</source>
         <target state="translated">Nom d'utilisateur Hammerfest</target>
+        <note priority="1" from="description">Hammerfest username (link Hammerfest)</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/settings/linked-hammerfest-settings.component.html</context>
+          <context context-type="sourcefile">src/app/settings/linked-hammerfest-settings.component.html</context>
           <context context-type="linenumber">21</context>
         </context-group>
-        <note priority="1" from="description">Hammerfest username (link Hammerfest)</note>
       </trans-unit>
       <trans-unit id="settings.link.hammerfest.password" datatype="html">
         <source>Hammerfest password</source>
         <target state="translated">Mot de passe Hammerfest</target>
+        <note priority="1" from="description">Hammerfest password (link Hammerfest)</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/settings/linked-hammerfest-settings.component.html</context>
+          <context context-type="sourcefile">src/app/settings/linked-hammerfest-settings.component.html</context>
           <context context-type="linenumber">25</context>
         </context-group>
-        <note priority="1" from="description">Hammerfest password (link Hammerfest)</note>
       </trans-unit>
       <trans-unit id="settings.link.hammerfest.submit" datatype="html">
         <source>Link with <x id="INTERPOLATION" equiv-text="{{server}}"/></source>
         <target state="translated">Lier avec <x id="INTERPOLATION" equiv-text="{{server}}"/></target>
+        <note priority="1" from="description">Submit the form to link a Hammerfest user</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/settings/linked-hammerfest-settings.component.html</context>
+          <context context-type="sourcefile">src/app/settings/linked-hammerfest-settings.component.html</context>
           <context context-type="linenumber">29</context>
         </context-group>
-        <note priority="1" from="description">Submit the form to link a Hammerfest user</note>
+      </trans-unit>
+      <trans-unit id="settings.link.dinoparc.username" datatype="html">
+        <source>Dinoparc username</source>
+        <target state="new">Dinoparc username</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/settings/linked-dinoparc-settings.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <note priority="1" from="description">Dinoparc username (link Dinoparc)</note>
+      </trans-unit>
+      <trans-unit id="settings.link.dinoparc.password" datatype="html">
+        <source>Dinoparc password</source>
+        <target state="new">Dinoparc password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/settings/linked-dinoparc-settings.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <note priority="1" from="description">Dinoparc password (link Dinoparc)</note>
+      </trans-unit>
+      <trans-unit id="settings.link.dinoparc.submit" datatype="html">
+        <source>Link with <x id="INTERPOLATION" equiv-text="{{server}}"/></source>
+        <target state="new">Link with <x id="INTERPOLATION" equiv-text="{{server}}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/settings/linked-dinoparc-settings.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <note priority="1" from="description">Submit the form to link a Dinoparc user</note>
       </trans-unit>
       <trans-unit id="settings.link.twinoid.submit" datatype="html">
         <source>Link with Twinoid</source>
         <target state="translated">Lier avec Twinoid</target>
+        <note priority="1" from="description">Submit the form to link a Twinoid user</note>
         <context-group purpose="location">
-          <context context-type="sourcefile">../app/settings/linked-twinoid-settings.component.html</context>
+          <context context-type="sourcefile">src/app/settings/linked-twinoid-settings.component.html</context>
           <context context-type="linenumber">18</context>
         </context-group>
-        <note priority="1" from="description">Submit the form to link a Twinoid user</note>
       </trans-unit>
     </body>
   </file>

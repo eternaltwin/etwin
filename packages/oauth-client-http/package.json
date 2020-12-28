@@ -38,7 +38,7 @@
     "auth-header": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "jws": "^4.0.0",
-    "kryo-json": "^0.11.0",
+    "kryo-json": "^0.11.2",
     "superagent": "^6.1.0"
   },
   "devDependencies": {

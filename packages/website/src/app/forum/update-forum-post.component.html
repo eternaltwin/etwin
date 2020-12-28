@@ -29,7 +29,7 @@
           <div class="actionBox">
             <input type="submit" class="btn primary" name="update_post" [disabled]="updatePostForm.invalid || pendingSubscription !== null" i18n-value="@@forum.updatePost.submit" value="Update post"/>
           </div>
-          <div *ngIf="serverError" class="error" i18n="Error message displayed when the server rejects the post update@@forum.deleteModerator.unknownError">
+          <div *ngIf="serverError" class="error" i18n="Error message displayed when the server rejects the post update@@forum.updatePost.unknownError">
             Post update failure: unknown server error.
           </div>
         </form>

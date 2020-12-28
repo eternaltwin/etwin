@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@eternal-twin/core": "workspace:*",
-    "kryo": "^0.11.1"
+    "kryo": "^0.11.2"
   },
   "devDependencies": {
     "@eternal-twin/auth-in-memory": "workspace:*",
