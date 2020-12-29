@@ -6,6 +6,7 @@ Welcome to the Eternal-Twin documentation. This section describes various techni
 
 ## General
 
+- [Desktop Application](./desktop.md)
 - [API](./api/index.md)
 
 ## [Application development](./app/index.md)
