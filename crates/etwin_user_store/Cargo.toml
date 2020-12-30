@@ -17,7 +17,7 @@ chrono = "^0.4.19"
 etwin_core = { path = "../etwin_core" }
 etwin_db_schema = { path = "../etwin_db_schema" }
 regex = "^1.4.2"
-sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "postgres", "runtime-tokio-rustls", "uuid"] }
+sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 tokio = { version = "^0.2.23", features = ["macros"] }
 uuid = { version = "^0.8.1", default-features = false, features = ["serde", "v4"] }
 warp = "^0.2.5"

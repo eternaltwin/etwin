@@ -18,5 +18,5 @@ petgraph = "^0.5.1"
 regex = "^1.4.2"
 serde = { version = "^1.0.118", default-features = false, features = ["derive"] }
 serde_json = { version = "^1.0.60" }
-sqlx = { version = "^0.4.1", default-features = false, features = ["postgres", "runtime-tokio-rustls"] }
+sqlx = { version = "^0.4.1", default-features = false, features = ["offline", "postgres", "runtime-tokio-rustls"] }
 tokio = { version = "^0.2.23" }

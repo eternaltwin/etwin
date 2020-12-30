@@ -1,0 +1,39 @@
+{
+  "db": "PostgreSQL",
+  "ab168002e61a3d3e1595ab04aae558a74db39fa9115c1cf7d1decd3ec9484495": {
+    "query": "\n      WITH administrator_exists AS (SELECT 1 FROM users WHERE is_administrator)\n      INSERT\n      INTO users(\n        user_id, ctime, display_name, display_name_mtime,\n        email_address, email_address_mtime,\n        username, username_mtime,\n        password, password_mtime,\n        is_administrator\n      )\n      VALUES (\n        $2::UUID, NOW(), $3::VARCHAR, NOW(),\n        (CASE WHEN $4::TEXT IS NULL THEN NULL ELSE pgp_sym_encrypt($4::TEXT, $1::TEXT) END), NOW(),\n        $5::VARCHAR, NOW(),\n        NULL, NOW(),\n        (NOT EXISTS(SELECT 1 FROM administrator_exists))\n      )\n      RETURNING user_id, display_name, is_administrator;\n    ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "user_id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 1,
+          "name": "display_name",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "is_administrator",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid",
+          "Varchar",
+          "Text",
+          "Varchar"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false
+      ]
+    }
+  }
+}
