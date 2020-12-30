@@ -8,5 +8,6 @@ pub mod clock;
 pub mod core;
 pub mod dinoparc;
 pub mod email;
+pub mod hammerfest;
 pub mod user;
 pub mod uuid;
