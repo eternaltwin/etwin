@@ -1,0 +1,24 @@
+[package]
+name = "hammerfest_client"
+version = "0.0.1"
+authors = ["Moulins <arthur.heuillard@orange.fr>"]
+description = "HammerfestClient implementations"
+documentation = "https://github.com/eternal-twin/etwin"
+homepage = "https://github.com/eternal-twin/etwin"
+repository = "https://github.com/eternal-twin/etwin"
+readme = "./README.md"
+keywords = ["etwin"]
+license = "AGPL-3.0-or-later"
+edition = "2018"
+
+[features]
+default = ["http-client"]
+
+http-client = []
+
+[dependencies]
+async-trait = "^0.1.42"
+chrono = "^0.4.19"
+etwin_core = { path = "../etwin_core" }
+rand = "^0.8.0"
+thiserror = "^1.0.23"

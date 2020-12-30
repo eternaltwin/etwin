@@ -9,7 +9,7 @@ use serde::{ Deserialize, Serialize };
 
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum HammerfestServer {
   #[cfg_attr(feature = "serde", serde(rename="hammerfest.fr"))]
   HammerfestFr,
@@ -134,16 +134,19 @@ pub struct HammerfestGetProfileByIdOptions {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HammerfestProfile {
-  user: ShortHammerfestUser,
-  email: Option<String>,
-  best_score: u32,
-  best_level: u32,
-  has_carrot: bool,
-  season_score: u32,
-  rank: u8, // TODO: limit 0 <= r <= 4
-  hall_of_fame: HammerfestHallOfFameMessage,
-  items: HashSet<HammerfestItemId>, // TODO: limit size <= 1000
-  quests: HashMap<HammerfestQuestId, HammerfestQuestStatus>, // TODO: limit size <= 100
+  pub user: ShortHammerfestUser,
+  #[cfg_attr(feature = "serde", serde(default))]
+  #[cfg_attr(feature = "serde", serde(skip_serializing_if="Option::is_none"))]
+  #[cfg_attr(feature = "serde", serde(deserialize_with="deserialize_optional"))]
+  pub email: Option<Option<String>>,
+  pub best_score: u32,
+  pub best_level: u32,
+  pub has_carrot: bool,
+  pub season_score: u32,
+  pub rank: u8, // TODO: limit 0 <= r <= 4
+  pub hall_of_fame: Option<HammerfestHallOfFameMessage>,
+  pub items: HashSet<HammerfestItemId>, // TODO: limit size <= 1000
+  pub quests: HashMap<HammerfestQuestId, HammerfestQuestStatus>, // TODO: limit size <= 100
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -177,8 +180,8 @@ pub enum HammerfestQuestStatus {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestHallOfFameMessage {
-  date: Instant,
-  message: String,
+  pub date: Instant,
+  pub message: String,
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -337,8 +340,28 @@ pub struct HammerfestForumPostListing {
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HammerfestForumPostId(String);
+
+impl HammerfestForumPostId {
+  pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[0-9]{1,9}$").unwrap());
+
+  pub fn try_from_string(raw: String) -> Result<Self, ()> {
+    if Self::PATTERN.is_match(&raw) {
+      Ok(Self(raw))
+    } else {
+      Err(())
+    }
+  }
+
+  pub fn as_str(&self) -> &str {
+    &self.0
+  }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumPost {
-  pub id: Option<HammerfestForumThreadId>,
+  pub id: Option<HammerfestForumPostId>,
   pub author: HammerfestForumPostAuthor,
   pub ctime: HammerfestForumDate,
   pub content: String, // TODO: HtmlText?
@@ -364,21 +387,27 @@ pub enum HammerfestForumRole {
 
 #[async_trait]
 pub trait HammerfestClient: Send + Sync {
-  async fn create_session(options: &HammerfestCredentials) -> Result<HammerfestSession, Box<dyn Error>>;
+  async fn create_session(&self, options: &HammerfestCredentials) -> Result<HammerfestSession, Box<dyn Error>>;
 
-  async fn test_session(server: HammerfestServer, key: &HammerfestSessionKey) -> Result<Option<HammerfestSession>, Box<dyn Error>>;
+  async fn test_session(&self, server: HammerfestServer, key: &HammerfestSessionKey) -> Result<Option<HammerfestSession>, Box<dyn Error>>;
 
-  async fn get_profile_by_id(session: Option<&HammerfestSession>, options: &HammerfestGetProfileByIdOptions) -> Result<Option<HammerfestProfile>, Box<dyn Error>>;
+  async fn get_profile_by_id(&self, session: Option<&HammerfestSession>, options: &HammerfestGetProfileByIdOptions) -> Result<Option<HammerfestProfile>, Box<dyn Error>>;
 
-  async fn get_own_items(session: &HammerfestSession) -> Result<HashMap<HammerfestItemId, u32>, Box<dyn Error>>;
+  async fn get_own_items(&self, session: &HammerfestSession) -> Result<HashMap<HammerfestItemId, u32>, Box<dyn Error>>;
 
-  async fn get_own_god_children(session: &HammerfestSession) -> Result<Vec<HammerfestGodChild>, Box<dyn Error>>;
+  async fn get_own_god_children(&self, session: &HammerfestSession) -> Result<Vec<HammerfestGodChild>, Box<dyn Error>>;
 
-  async fn get_own_shop(session: &HammerfestSession) -> Result<HammerfestShop, Box<dyn Error>>;
+  async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShop, Box<dyn Error>>;
 
-  async fn get_forum_themes(session: Option<&HammerfestSession>, server: HammerfestServer) -> Result<Vec<HammerfestForumTheme>, Box<dyn Error>>;
+  async fn get_forum_themes(&self, session: Option<&HammerfestSession>, server: HammerfestServer) -> Result<Vec<HammerfestForumTheme>, Box<dyn Error>>;
 
-  async fn get_forum_theme_page(session: Option<&HammerfestSession>, server: HammerfestServer, theme_id: HammerfestForumThemeId, first_page: u32) -> Result<HammerfestForumThemePage, Box<dyn Error>>;
+  async fn get_forum_theme_page(&self, session: Option<&HammerfestSession>, server: HammerfestServer, theme_id: HammerfestForumThemeId, page1: u32) -> Result<HammerfestForumThemePage, Box<dyn Error>>;
 
-  async fn get_forum_thread_page(session: Option<&HammerfestSession>, server: HammerfestServer, theme_id: HammerfestForumThemeId, first_page: u32) -> Result<HammerfestForumThreadPage, Box<dyn Error>>;
+  async fn get_forum_thread_page(&self, session: Option<&HammerfestSession>, server: HammerfestServer, thread_id: HammerfestForumThreadId, page1: u32) -> Result<HammerfestForumThreadPage, Box<dyn Error>>;
+}
+
+#[cfg(feature = "serde")]
+fn deserialize_optional<'de, T, D>(deserializer: D) -> Result<Option<Option<T>>, D::Error> 
+    where T: Deserialize<'de>, D: serde::Deserializer<'de> {
+  Ok(Some(Option::deserialize(deserializer)?))
 }
