@@ -6,11 +6,11 @@ Eternal-Twin provides a desktop application. It allows you to play Motion Twin's
 
 ## Download
 
-Latest version: 0.4.0
+Latest version: 0.4.1 (2020-12-30)
 
-- [Windows](https://eternal-twin.net/assets/app/etwin-0.4.0-windows-x64.zip)
-- [Linux](https://eternal-twin.net/assets/app/etwin-0.4.0-linux-x64.zip)
-- [Mac](https://eternal-twin.net/assets/app/etwin-0.4.0-mac-x64.zip)
+- [Windows](https://eternal-twin.net/assets/app/etwin-0.4.1-windows-x64.zip)
+- [Linux](https://eternal-twin.net/assets/app/etwin-0.4.1-linux-x64.zip)
+- [Mac](https://eternal-twin.net/assets/app/etwin-0.4.1-mac-x64.zip)
 
 ## Contribute
 
