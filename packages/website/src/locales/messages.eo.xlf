@@ -1119,25 +1119,25 @@
         <note priority="1" from="description">Title of the MyHordes game description</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">46</context>
+          <context context-type="linenumber">73</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.myhordesDescription" datatype="html">
-        <source><x id="START_LINK" ctype="x-a" equiv-text="the MyHordes game@@games.myhordesDescript"/>MyHordes<x id="CLOSE_LINK" ctype="x-a" equiv-text="href="/> is an open implementation of the browser game "Die2Nite" and its other versions by MotionTwin and developed by the community.</source>
+        <source><x id="START_LINK" ctype="x-a" equiv-text="   &lt;p i18n=&quot;Description of the MyHordes g"/>MyHordes<x id="CLOSE_LINK" ctype="x-a" equiv-text="es.my"/> is an open implementation of the browser game "Die2Nite" and its other versions by MotionTwin and developed by the community.</source>
         <target state="new"><x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>MyHordes<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> is an open implementation of the browser game "Die2Nite" and its other versions by MotionTwin and developed by the community.</target>
         <note priority="1" from="description">Description of the MyHordes game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">47</context>
+          <context context-type="linenumber">74</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.myhordesStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="us o"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="sStat"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="    "/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="yHord"/></source>
         <target state="new"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
         <note priority="1" from="description">Current status of the MyHordes game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="linenumber">75</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.myhordesButton" datatype="html">
@@ -1146,7 +1146,7 @@
         <note priority="1" from="description">Button to access the MyHordes game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">77</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.directquizTitle" datatype="html">
@@ -1155,7 +1155,7 @@
         <note priority="1" from="description">Title of the Directquiz game description</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">73</context>
+          <context context-type="linenumber">100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.directquizDescription" datatype="html">
@@ -1164,16 +1164,16 @@
         <note priority="1" from="description">Description of the Directquiz game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">74</context>
+          <context context-type="linenumber">101</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.directquizStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="  &lt;p"/>This game is available in french only.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="z gam"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text=" à r"/>This game is available in french only.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="ent s"/></source>
         <target state="new"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is available in french only.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
         <note priority="1" from="description">Current status of the Directquiz game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">75</context>
+          <context context-type="linenumber">102</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.directquizButton" datatype="html">
@@ -1182,7 +1182,7 @@
         <note priority="1" from="description">Button to access the Directquiz game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">104</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.mjrtTitle" datatype="html">
@@ -1191,7 +1191,7 @@
         <note priority="1" from="description">Title of the Mjrt game description</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">100</context>
+          <context context-type="linenumber">127</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.mjrtDescription" datatype="html">
@@ -1200,16 +1200,16 @@
         <note priority="1" from="description">Description of the Mjrt game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">101</context>
+          <context context-type="linenumber">128</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.mjrtStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="ien "/>This game is available in french only.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="p i18"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="stio"/>This game is available in french only.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="rvivr"/></source>
         <target state="new"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is available in french only.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
         <note priority="1" from="description">Current status of the Mjrt game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">102</context>
+          <context context-type="linenumber">129</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.mjrtButton" datatype="html">
@@ -1218,7 +1218,7 @@
         <note priority="1" from="description">Button to access the Mjrt game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">104</context>
+          <context context-type="linenumber">131</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.dinoparcTitle" datatype="html">
@@ -1227,16 +1227,16 @@
         <note priority="1" from="description">Title of the Dinoparc game description</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">127</context>
+          <context context-type="linenumber">154</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.dinoparcStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="ame "/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="Dinop"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="8n=&quot;"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="tion@"/></source>
         <target state="new"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
         <note priority="1" from="description">Current status of the Dinoparc game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">128</context>
+          <context context-type="linenumber">155</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.dinoparcButton" datatype="html">
@@ -1245,7 +1245,7 @@
         <note priority="1" from="description">Button to access the Dinoparc game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">130</context>
+          <context context-type="linenumber">157</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.dinorpgTitle" datatype="html">
@@ -1254,7 +1254,7 @@
         <note priority="1" from="description">Title of the DinoRPG game description</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">153</context>
+          <context context-type="linenumber">180</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.dinorpgDescription" datatype="html">
@@ -1263,16 +1263,16 @@
         <note priority="1" from="description">Description of the DinoRPG game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">154</context>
+          <context context-type="linenumber">181</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.dinorpgStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="pgDe"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="t off"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="e Di"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="on&quot;>T"/></source>
         <target state="new"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
         <note priority="1" from="description">Current status of the DinoRPG game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">155</context>
+          <context context-type="linenumber">182</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.dinorpgButton" datatype="html">
@@ -1281,7 +1281,7 @@
         <note priority="1" from="description">Button to access the DinoRPG game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">157</context>
+          <context context-type="linenumber">184</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.cafejeuxTitle" datatype="html">
@@ -1290,7 +1290,7 @@
         <note priority="1" from="description">Title of the CafeJeux game description</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">180</context>
+          <context context-type="linenumber">207</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.cafejeuxDescription" datatype="html">
@@ -1299,16 +1299,16 @@
         <note priority="1" from="description">Description of the CafeJeux game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">181</context>
+          <context context-type="linenumber">208</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.cafejeuxStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text=" the"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="ripti"/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="    "/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="ux ga"/></source>
         <target state="new"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
         <note priority="1" from="description">Current status of the CafeJeux game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">182</context>
+          <context context-type="linenumber">209</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.cafejeuxButton" datatype="html">
@@ -1317,7 +1317,7 @@
         <note priority="1" from="description">Button to access the CafeJeux game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">184</context>
+          <context context-type="linenumber">211</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.emushTitle" datatype="html">
@@ -1326,7 +1326,7 @@
         <note priority="1" from="description">Title of the eMush game description</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">207</context>
+          <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.emushDescription" datatype="html">
@@ -1335,25 +1335,25 @@
         <note priority="1" from="description">Description of the eMush game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">208</context>
+          <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.emushStatus" datatype="html">
-        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="sh&lt;/"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text=" the "/></source>
+        <source><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="t st"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="hStat"/></source>
         <target state="new"><x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em>"/>This game is still in development.<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em>"/></target>
         <note priority="1" from="description">Current status of the eMush game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">209</context>
+          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.emushButton" datatype="html">
-        <source>Coming soon...</source>
+        <source>Test the beta!</source>
         <target state="new">Coming soon...</target>
-        <note priority="1" from="description">Button to access the eMush game</note>
+        <note priority="1" from="description">Button to access the MyHordes game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
-          <context context-type="linenumber">211</context>
+          <context context-type="linenumber">50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="games.labruteTitle" datatype="html">
