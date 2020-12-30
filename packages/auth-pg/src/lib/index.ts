@@ -376,7 +376,7 @@ export class PgAuthService implements AuthService {
         throw new Error("AssertionError: UserNotFound");
       }
 
-      return $UserAndSession.clone({user, isAdministrator: true, session});
+      return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
     });
   }
 

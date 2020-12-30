@@ -224,4 +224,46 @@ describe("/auth", () => {
       }
     });
   });
+
+  it("should register a regular user and authenticate with a session", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withTestServer(async ({server}) => {
+      const aliceAgent: TestAgent = new TestAgent(chai.request.agent(server));
+      await aliceAgent.post(
+        "/users",
+        $RegisterWithUsernameOptions,
+        {
+          username: "alice",
+          displayName: "Alice",
+          password: Buffer.from("aaaaaaaaaa"),
+        },
+        $SimpleUser,
+      );
+      const bobAgent: TestAgent = new TestAgent(chai.request.agent(server));
+      const bobUser: SimpleUser = await bobAgent.post(
+        "/users",
+        $RegisterWithUsernameOptions,
+        {
+          username: "bob",
+          displayName: "Bob",
+          password: Buffer.from("bbbbbbbbbb"),
+        },
+        $SimpleUser,
+      );
+      {
+        const actual: AuthContext = await bobAgent.get("/auth/self", $AuthContext);
+        const expected: AuthContext = {
+          type: AuthType.User,
+          scope: AuthScope.Default,
+          user: {
+            type: ObjectType.User,
+            id: bobUser.id,
+            displayName: {current: {value: "Bob"}},
+          },
+          isAdministrator: false,
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
 });
