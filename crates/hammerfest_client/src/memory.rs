@@ -128,7 +128,7 @@ impl HammerfestClientMemBuilder {
     self
   }
 
-  pub fn create_user(mut self, server: HammerfestServer, id: HammerfestUserId, user: HammerfestUserName, password: String) -> Self {
+  pub fn create_user(mut self, server: HammerfestServer, id: HammerfestUserId, user: HammerfestUsername, password: String) -> Self {
     let s = self.0.get_mut(&server).expect("Can't add users to disabled server");
     match s.users.entry(id.clone()) {
       Entry::Occupied(_) => panic!("HammerfestUserId conflict"),
@@ -279,7 +279,7 @@ fn make_session_key() -> HammerfestSessionKey {
 }
 
 #[async_trait]
-impl<TyClock> HammerfestClient for HammerfestClientMem<TyClock> 
+impl<TyClock> HammerfestClient for HammerfestClientMem<TyClock>
     where TyClock: Deref + Send + Sync, TyClock::Target: Clock {
   async fn create_session(&self, options: &HammerfestCredentials) -> Result<HammerfestSession> {
     let mut server = self.get_server(options.server)?.write().unwrap();
@@ -329,7 +329,7 @@ impl<TyClock> HammerfestClient for HammerfestClientMem<TyClock>
     let is_self = self.check_opt_session(session, options.server)
       .filter(|user_id| **user_id == options.user_id)
       .is_some();
-    
+
     Ok(server.users.get(&options.user_id).map(|user| HammerfestProfile {
       user: user.user.clone(),
       email: if is_self { Some(None) } else { None },

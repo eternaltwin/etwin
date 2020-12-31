@@ -67,7 +67,9 @@ impl DinoparcUsername {
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct TaggedShortDinoparcUser {
+  #[allow(unused)]
   r#type: String,
+  #[allow(unused)]
   #[cfg_attr(feature = "serde", serde(flatten))]
   inner: ShortDinoparcUser,
 }

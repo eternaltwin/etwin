@@ -12,7 +12,7 @@ pub async fn sqlx() -> Result<(), Box<dyn Error>> {
   env::set_var("DATABASE_URL", db_url);
   let project_root = env::current_dir().unwrap();
   let crates = project_root.join("crates");
-  let sqlx_crates = vec!["etwin_db_schema", "etwin_squirrel", "etwin_user_store"];
+  let sqlx_crates = vec!["etwin_db_schema", "etwin_hammerfest_store", "etwin_squirrel", "etwin_user_store"];
   for sqlx_crate in sqlx_crates {
     env::set_current_dir(crates.join(sqlx_crate)).unwrap();
     let opts = sqlx_cli::Opt::parse_from(vec!["cargo-sqlx", "prepare", "--", "--lib"].into_iter());

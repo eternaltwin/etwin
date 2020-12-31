@@ -7,7 +7,7 @@ use std::error::Error;
 const DB_SCRIPTS: Dir = include_dir!("../../db/scripts");
 
 lazy_static! {
-  static ref SQUIRREL: SchemaResolver = { SchemaResolver::new(&DB_SCRIPTS) };
+  static ref SQUIRREL: SchemaResolver = SchemaResolver::new(&DB_SCRIPTS);
 }
 
 pub async fn get_state(db: &PgPool) -> Result<SchemaStateRef<'static>, Box<dyn Error>> {

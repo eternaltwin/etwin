@@ -3,27 +3,95 @@ use async_trait::async_trait;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use std::error::Error;
-use std::collections::{ HashMap, HashSet };
+use std::collections::{HashMap, HashSet};
 #[cfg(feature = "serde")]
-use serde::{ Deserialize, Serialize };
-
+use serde::{Deserialize, Serialize};
+#[cfg(feature = "sqlx")]
+use sqlx::{Database, database, Postgres, postgres};
+use std::str::FromStr;
+use std::fmt;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum HammerfestServer {
-  #[cfg_attr(feature = "serde", serde(rename="hammerfest.fr"))]
+  #[cfg_attr(feature = "serde", serde(rename = "hammerfest.fr"))]
   HammerfestFr,
-  #[cfg_attr(feature = "serde", serde(rename="hfest.net"))]
+  #[cfg_attr(feature = "serde", serde(rename = "hfest.net"))]
   HfestNet,
-  #[cfg_attr(feature = "serde", serde(rename="hammerfest.es"))]
+  #[cfg_attr(feature = "serde", serde(rename = "hammerfest.es"))]
   HammerfestEs,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct HammerfestUserName(String);
+impl HammerfestServer {
+  pub const fn as_str(&self) -> &'static str {
+    match self {
+      Self::HammerfestFr => "hammerfest.fr",
+      Self::HfestNet => "hfest.net",
+      Self::HammerfestEs => "hammerfest.es",
+    }
+  }
+}
 
-impl HammerfestUserName {
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HammerfestServerParseError;
+
+impl fmt::Display for HammerfestServerParseError {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "HammerfestServerParseError")
+  }
+}
+
+impl Error for HammerfestServerParseError {}
+
+impl FromStr for HammerfestServer {
+  type Err = HammerfestServerParseError;
+
+  fn from_str(s: &str) -> Result<Self, Self::Err> {
+    match s {
+      "hammerfest.fr" => Ok(Self::HammerfestFr),
+      "hfest.net" => Ok(Self::HfestNet),
+      "hammerfest.es" => Ok(Self::HammerfestEs),
+      _ => Err(HammerfestServerParseError),
+    }
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl sqlx::Type<Postgres> for HammerfestServer {
+  fn type_info() -> postgres::PgTypeInfo {
+    postgres::PgTypeInfo::with_name("hammerfest_server")
+  }
+
+  fn compatible(ty: &postgres::PgTypeInfo) -> bool {
+    *ty == Self::type_info() || <&str as sqlx::Type<Postgres>>::compatible(ty)
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'r, Db: Database> sqlx::Decode<'r, Db> for HammerfestServer
+  where &'r str: sqlx::Decode<'r, Db>
+{
+  fn decode(value: <Db as database::HasValueRef<'r>>::ValueRef) -> Result<HammerfestServer, Box<dyn Error + 'static + Send + Sync>> {
+    let value: &str = <&str as sqlx::Decode<Db>>::decode(value)?;
+    Ok(value.parse()?)
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'q, Db: Database> sqlx::Encode<'q, Db> for HammerfestServer
+  where &'q str: sqlx::Encode<'q, Db>
+{
+  fn encode_by_ref(&self, buf: &mut <Db as database::HasArguments<'q>>::ArgumentBuffer) -> sqlx::encode::IsNull {
+    self.as_str().encode(buf)
+  }
+}
+
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type), sqlx(transparent, rename = "hammerfest_username"))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, )]
+pub struct HammerfestUsername(String);
+
+impl HammerfestUsername {
   pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[0-9A-Za-z]{1,12}$").unwrap());
 
   pub fn try_from_string(raw: String) -> Result<Self, ()> {
@@ -40,6 +108,7 @@ impl HammerfestUserName {
 }
 
 
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type), sqlx(transparent, rename = "hammerfest_user_id"))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestUserId(String);
@@ -84,7 +153,7 @@ impl HammerfestSessionKey {
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestCredentials {
   pub server: HammerfestServer,
-  pub username: HammerfestUserName,
+  pub username: HammerfestUsername,
   pub password: String,
 }
 
@@ -100,7 +169,7 @@ impl TaggedShortHammerfestUser {
   pub fn new(inner: ShortHammerfestUser) -> Self {
     Self {
       r#type: String::from("HammerfestUser"),
-      inner
+      inner,
     }
   }
 }
@@ -110,7 +179,7 @@ impl TaggedShortHammerfestUser {
 pub struct ShortHammerfestUser {
   pub server: HammerfestServer,
   pub id: HammerfestUserId,
-  pub username: HammerfestUserName,
+  pub username: HammerfestUsername,
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -130,22 +199,23 @@ pub struct HammerfestGetProfileByIdOptions {
 }
 
 
-
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HammerfestProfile {
   pub user: ShortHammerfestUser,
   #[cfg_attr(feature = "serde", serde(default))]
-  #[cfg_attr(feature = "serde", serde(skip_serializing_if="Option::is_none"))]
-  #[cfg_attr(feature = "serde", serde(deserialize_with="deserialize_optional"))]
+  #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+  #[cfg_attr(feature = "serde", serde(deserialize_with = "deserialize_optional"))]
   pub email: Option<Option<String>>,
   pub best_score: u32,
   pub best_level: u32,
   pub has_carrot: bool,
   pub season_score: u32,
-  pub rank: u8, // TODO: limit 0 <= r <= 4
+  pub rank: u8,
+  // TODO: limit 0 <= r <= 4
   pub hall_of_fame: Option<HammerfestHallOfFameMessage>,
-  pub items: HashSet<HammerfestItemId>, // TODO: limit size <= 1000
+  pub items: HashSet<HammerfestItemId>,
+  // TODO: limit size <= 1000
   pub quests: HashMap<HammerfestQuestId, HammerfestQuestStatus>, // TODO: limit size <= 100
 }
 
@@ -223,10 +293,14 @@ pub struct HammerfestShop {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumDate {
-  pub month: u8, // TODO: limit 1 <= m <= 12
-  pub day: u8, // TODO: limit 1 <= d <= 31
-  pub weekday: u8, // TODO: limit 1 <= w <= 7
-  pub hour: u8, // TODO: limit 0 <= h <= 23
+  pub month: u8,
+  // TODO: limit 1 <= m <= 12
+  pub day: u8,
+  // TODO: limit 1 <= d <= 31
+  pub weekday: u8,
+  // TODO: limit 1 <= w <= 7
+  pub hour: u8,
+  // TODO: limit 0 <= h <= 23
   pub minute: u8, // TODO: limit 0 <= m <= 59
 }
 
@@ -270,7 +344,8 @@ pub struct HammerfestForumTheme {
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumThemePage {
   pub theme: ShortHammerfestForumTheme,
-  pub sticky: Vec<HammerfestForumThread>, // TODO: limit size <= 15
+  pub sticky: Vec<HammerfestForumThread>,
+  // TODO: limit size <= 15
   pub threads: HammerfestForumThreadListing,
 }
 
@@ -373,7 +448,8 @@ pub struct HammerfestForumPostAuthor {
   #[cfg_attr(feature = "serde", serde(flatten))]
   pub user: ShortHammerfestUser,
   pub has_carrot: bool,
-  pub rank: u8, // TODO: limit 0 <= r <= 4
+  pub rank: u8,
+  // TODO: limit 0 <= r <= 4
   pub role: HammerfestForumRole,
 }
 
@@ -383,6 +459,14 @@ pub enum HammerfestForumRole {
   None,
   Moderator,
   Administrator,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct GetHammerfestUserOptions {
+  pub server: HammerfestServer,
+  pub id: HammerfestUserId,
+  pub time: Option<Instant>,
 }
 
 #[async_trait]
@@ -407,7 +491,14 @@ pub trait HammerfestClient: Send + Sync {
 }
 
 #[cfg(feature = "serde")]
-fn deserialize_optional<'de, T, D>(deserializer: D) -> Result<Option<Option<T>>, D::Error> 
-    where T: Deserialize<'de>, D: serde::Deserializer<'de> {
+fn deserialize_optional<'de, T, D>(deserializer: D) -> Result<Option<Option<T>>, D::Error>
+  where T: Deserialize<'de>, D: serde::Deserializer<'de> {
   Ok(Some(Option::deserialize(deserializer)?))
+}
+
+#[async_trait]
+pub trait HammerfestStore: Send + Sync {
+  async fn get_short_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ShortHammerfestUser>, Box<dyn Error>>;
+
+  async fn touch_short_user(&self, options: &ShortHammerfestUser) -> Result<ShortHammerfestUser, Box<dyn Error>>;
 }
