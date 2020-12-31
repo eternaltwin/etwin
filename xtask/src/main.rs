@@ -14,26 +14,17 @@ enum Task {
   /// Compile documentation into Angular
   #[clap(name = "docs")]
   Docs(DocsArgs),
-  /// Prepare the SQLx data for offline compilation
-  #[clap(name = "sqlx")]
-  Sqlx(SqlxArgs),
 }
 
 /// Arguments to the `docs` task.
 #[derive(Debug, Clap)]
 struct DocsArgs {}
 
-/// Arguments to the `sqlx` task.
-#[derive(Debug, Clap)]
-struct SqlxArgs {}
-
-#[tokio::main]
-async fn main() {
+fn main() {
   let args: CliArgs = CliArgs::parse();
 
   let res = match &args.task {
     Task::Docs(ref args) => docs(args),
-    Task::Sqlx(ref args) => sqlx(args).await,
   };
 
   match res {
@@ -46,6 +37,3 @@ fn docs(_args: &DocsArgs) -> Result<(), Box<dyn Error>> {
   xtask::docs()
 }
 
-async fn sqlx(_args: &SqlxArgs) -> Result<(), Box<dyn Error>> {
-  xtask::sqlx().await
-}
