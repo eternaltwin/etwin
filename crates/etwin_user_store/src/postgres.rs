@@ -10,12 +10,12 @@ use sqlx::postgres::PgPool;
 use std::error::Error;
 
 pub struct PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
-where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
-  TyUuidGenerator: Deref + Send + Sync,
-  <TyUuidGenerator as Deref>::Target: UuidGenerator,
+  where
+    TyClock: Deref + Send + Sync,
+    <TyClock as Deref>::Target: Clock,
+    TyDatabase: Deref<Target=PgPool> + Send + Sync,
+    TyUuidGenerator: Deref + Send + Sync,
+    <TyUuidGenerator as Deref>::Target: UuidGenerator,
 {
   clock: TyClock,
   database: TyDatabase,
@@ -23,12 +23,12 @@ where
 }
 
 impl<TyClock, TyDatabase, TyUuidGenerator> PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
-where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
-  TyUuidGenerator: Deref + Send + Sync,
-  <TyUuidGenerator as Deref>::Target: UuidGenerator,
+  where
+    TyClock: Deref + Send + Sync,
+    <TyClock as Deref>::Target: Clock,
+    TyDatabase: Deref<Target=PgPool> + Send + Sync,
+    TyUuidGenerator: Deref + Send + Sync,
+    <TyUuidGenerator as Deref>::Target: UuidGenerator,
 {
   pub fn new(clock: TyClock, database: TyDatabase, uuid_generator: TyUuidGenerator) -> Self {
     Self {
@@ -41,17 +41,24 @@ where
 
 #[async_trait]
 impl<TyClock, TyDatabase, TyUuidGenerator> UserStore for PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
-where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
-  TyUuidGenerator: Deref + Send + Sync,
-  <TyUuidGenerator as Deref>::Target: UuidGenerator,
+  where
+    TyClock: Deref + Send + Sync,
+    <TyClock as Deref>::Target: Clock,
+    TyDatabase: Deref<Target=PgPool> + Send + Sync,
+    TyUuidGenerator: Deref + Send + Sync,
+    <TyUuidGenerator as Deref>::Target: UuidGenerator,
 {
   async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, Box<dyn Error>> {
     let user_id = (*self.uuid_generator).next();
 
-    let row = sqlx::query!(
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      user_id: String,
+      display_name: String,
+      is_administrator: bool,
+    }
+
+    let row = sqlx::query_as::<_, Row>(
       r"
       WITH administrator_exists AS (SELECT 1 FROM users WHERE is_administrator)
       INSERT
@@ -70,15 +77,14 @@ where
         (NOT EXISTS(SELECT 1 FROM administrator_exists))
       )
       RETURNING user_id, display_name, is_administrator;
-    ",
-      "dev_secret",
-      user_id,
-      options.display_name.as_str(),
-      options.username.as_ref().map(|x| x.as_str()),
-      None::<&str>
-    )
-    .fetch_one(&*self.database)
-    .await?;
+    ")
+      .bind("dev_secret")
+      .bind(user_id)
+      .bind(options.display_name.as_str())
+      .bind(options.username.as_ref().map(|x| x.as_str()))
+      .bind(None::<&str>)
+      .fetch_one(&*self.database)
+      .await?;
 
     let user = CompleteSimpleUser {
       id: UserId::from_uuid(user_id),
