@@ -27,8 +27,6 @@ pub struct HammerfestClientHttp<TyClock> {
   clock: TyClock,
 }
 
-      
-
 impl<TyClock> HammerfestClientHttp<TyClock>
     where TyClock: Deref + Send + Sync, TyClock::Target: Clock {
   pub fn new(clock: TyClock) -> Result<Self> {
@@ -94,8 +92,8 @@ impl<TyClock> HammerfestClient for HammerfestClientHttp<TyClock>
     let session_key = HammerfestSessionKey::try_from_string(session_key)
       .map_err(|_| ScraperError::InvalidSessionCookie)?;
 
-    let html = self.get_html(urls.play(), Some(&session_key)).await?;
-    let user = scraper::scrape_username(options.server, &html)?.ok_or(ScraperError::LoginSessionRevoked)?;
+    let html = self.get_html(urls.root(), Some(&session_key)).await?;
+    let user = scraper::scrape_user_base(options.server, &html)?.ok_or(ScraperError::LoginSessionRevoked)?;
     Ok(HammerfestSession {
       ctime: now,
       atime: now,
@@ -108,7 +106,7 @@ impl<TyClock> HammerfestClient for HammerfestClientHttp<TyClock>
     let urls = HammerfestUrls::new(server);
     let now = self.clock.now();
     let html = self.get_html(urls.root(), Some(key)).await?;
-    Ok(scraper::scrape_username(server, &html)?.map(|user| HammerfestSession {
+    Ok(scraper::scrape_user_base(server, &html)?.map(|user| HammerfestSession {
       ctime: now,
       atime: now,
       key: key.clone(),
@@ -116,8 +114,10 @@ impl<TyClock> HammerfestClient for HammerfestClientHttp<TyClock>
     }))
   }
 
-  async fn get_profile_by_id(&self, _session: Option<&HammerfestSession>, _options: &HammerfestGetProfileByIdOptions) -> Result<Option<HammerfestProfile>> {
-    Err(UnimplementedError::new("http", "get_profile_by_id").into())
+  async fn get_profile_by_id(&self, session: Option<&HammerfestSession>, options: &HammerfestGetProfileByIdOptions) -> Result<Option<HammerfestProfile>> {
+    let urls = HammerfestUrls::new(options.server);
+    let html = self.get_html(urls.user(&options.user_id), session.map(|sess| &sess.key)).await?;
+    Ok(scraper::scrape_user_profile(options.server, options.user_id.clone(), &html)?)
   }
 
   async fn get_own_items(&self, _session: &HammerfestSession) -> Result<HashMap<HammerfestItemId, u32>> {

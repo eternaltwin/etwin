@@ -31,10 +31,6 @@ impl HammerfestUrls {
     self.make_url(&["login.html"])
   }
 
-  pub fn play(&self) -> Url {
-    self.make_url(&["play.html"])
-  }
-
   pub fn user(&self, user: &HammerfestUserId) -> Url {
     self.make_url(&["user.html", user.as_str()])
   }

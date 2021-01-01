@@ -18,8 +18,20 @@ pub enum ScraperError {
   UnexpectedResponse(Url),
   #[error("Failed to find fragment in HTML for {}", .0)]
   HtmlFragmentNotFound(String),
-  #[error("Failed too many fragments in HTML for {}", .0)]
+  #[error("Found too many fragments in HTML for {}", .0)]
   TooManyHtmlFragments(String),
-  #[error("A scraped value is invalid")]
-  InvalidValue,
+  #[error("Failed to parse integer value '{}'", .0)]
+  InvalidInteger(String, #[source] std::num::ParseIntError),
+  #[error("Failed to parse date '{}'", .0)]
+  InvalidDate(String, #[source] chrono::format::ParseError),
+  #[error("Invalid item id '{}'", .0)]
+  InvalidItemId(String, () /* future parse error type */),
+  #[error("Invalid user id '{}'", .0)]
+  InvalidUserId(String, () /* future parse error type */),
+  #[error("Invalid username '{}'", .0)]
+  InvalidUsername(String, () /* future parse error type */),
+  #[error("Unknown quest name '{}'", .0)]
+  UnknownQuestName(String),
+  #[error("Unknown rank CSS class '{}'", .0)]
+  UnknownRankClass(String),
 }
