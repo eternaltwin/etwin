@@ -1,0 +1,16 @@
+{
+  "user": {
+    "type": "HammerfestUser",
+    "server": "hammerfest.es",
+    "id": "248939",
+    "username": "ipixel"
+  },
+  "best_score": 0,
+  "best_level": 0,
+  "has_carrot": false,
+  "season_score": 0,
+  "rank": 4,
+  "hall_of_fame": null,
+  "items": [],
+  "quests": {}
+}

@@ -2,6 +2,8 @@
 mod errors;
 mod scraper;
 mod url;
+#[cfg(test)]
+mod tests;
 
 use std::collections::HashMap;
 use std::time::Duration;
