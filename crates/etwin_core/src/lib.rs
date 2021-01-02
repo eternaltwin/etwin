@@ -9,5 +9,10 @@ pub mod core;
 pub mod dinoparc;
 pub mod email;
 pub mod hammerfest;
+pub mod link;
+pub mod services {
+  pub mod hammerfest;
+}
+pub mod twinoid;
 pub mod user;
 pub mod uuid;

@@ -91,6 +91,13 @@ pub struct ShortDinoparcUser {
   pub username: DinoparcUsername,
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcUserIdRef {
+  pub server: DinoparcServer,
+  pub id: DinoparcUserId,
+}
+
 #[async_trait]
 pub trait DinoparcStore: Send + Sync {
   async fn get_short_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ShortDinoparcUser>, Box<dyn Error>>;

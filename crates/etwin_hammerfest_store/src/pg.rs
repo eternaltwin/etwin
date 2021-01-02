@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
-use etwin_core::hammerfest::{HammerfestStore, HammerfestUserId, GetHammerfestUserOptions, ShortHammerfestUser, HammerfestServer, HammerfestUsername};
+use etwin_core::hammerfest::{HammerfestStore, HammerfestUserId, GetHammerfestUserOptions, ShortHammerfestUser, HammerfestServer, HammerfestUsername, ArchivedHammerfestUser};
 use std::error::Error;
 use std::ops::Deref;
 use sqlx;
@@ -65,7 +65,12 @@ impl<TyClock, TyDatabase> HammerfestStore for PgHammerfestStore<TyClock, TyDatab
     }))
   }
 
-  async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<ShortHammerfestUser, Box<dyn Error>> {
+  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>> {
+    unimplemented!()
+  }
+
+  async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<ArchivedHammerfestUser, Box<dyn Error>> {
+    let now = self.clock.now();
     sqlx::query(
       r"
       INSERT INTO hammerfest_users(hammerfest_server, hammerfest_user_id, username, archived_at)
@@ -76,10 +81,17 @@ impl<TyClock, TyDatabase> HammerfestStore for PgHammerfestStore<TyClock, TyDatab
       .bind(&short.server)
       .bind(&short.id)
       .bind(&short.username)
-      .bind(self.clock.now())
+      .bind(now)
       .fetch_optional(&*self.database)
       .await?;
-    Ok(short.clone())
+    Ok(ArchivedHammerfestUser {
+      server: short.server,
+      id: short.id.clone(),
+      username: short.username.clone(),
+      archived_at: now,
+      profile: None,
+      items: None
+    })
   }
 }
 

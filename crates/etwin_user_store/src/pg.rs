@@ -1,10 +1,7 @@
 use async_trait::async_trait;
 use core::ops::Deref;
 use etwin_core::clock::Clock;
-use etwin_core::user::{
-  CompleteSimpleUser, CreateUserOptions, GetUserOptions, SimpleUser, UserDisplayNameVersion, UserDisplayNameVersions,
-  UserId, UserStore,
-};
+use etwin_core::user::{CompleteSimpleUser, CreateUserOptions, GetUserOptions, SimpleUser, UserDisplayNameVersion, UserDisplayNameVersions, UserId, UserStore, UserDisplayName};
 use etwin_core::uuid::UuidGenerator;
 use sqlx::postgres::PgPool;
 use std::error::Error;
@@ -49,12 +46,12 @@ impl<TyClock, TyDatabase, TyUuidGenerator> UserStore for PgUserStore<TyClock, Ty
     <TyUuidGenerator as Deref>::Target: UuidGenerator,
 {
   async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, Box<dyn Error>> {
-    let user_id = (*self.uuid_generator).next();
+    let user_id = UserId::from_uuid((*self.uuid_generator).next());
 
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
-      user_id: String,
-      display_name: String,
+      user_id: UserId,
+      display_name: UserDisplayName,
       is_administrator: bool,
     }
 
@@ -87,7 +84,7 @@ impl<TyClock, TyDatabase, TyUuidGenerator> UserStore for PgUserStore<TyClock, Ty
       .await?;
 
     let user = CompleteSimpleUser {
-      id: UserId::from_uuid(user_id),
+      id: user_id,
       display_name: UserDisplayNameVersions {
         current: UserDisplayNameVersion {
           value: options.display_name.clone(),

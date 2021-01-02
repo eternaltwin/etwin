@@ -1,20 +1,20 @@
 use chrono::{DateTime, Utc};
+use crate::user::{ShortUser, UserIdRef};
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
 
 pub type Instant = DateTime<Utc>;
 
-pub trait Get<T> {
-  fn get(&self) -> T;
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct UserDot {
+  pub time: Instant,
+  pub user: ShortUser,
 }
 
-pub trait GetRef<T> {
-  fn get(&self) -> &T;
-}
-
-pub trait With {
-  fn with<R>(&self, f: impl FnOnce(&Self) -> R) -> R
-  where
-    Self: Sized,
-  {
-    f(self)
-  }
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawUserDot {
+  pub time: Instant,
+  pub user: UserIdRef,
 }

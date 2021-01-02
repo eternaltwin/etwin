@@ -5,7 +5,11 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 use std::error::Error;
 use uuid::Uuid;
+use crate::core::Instant;
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CompleteSimpleUser {
   pub id: UserId,
@@ -16,6 +20,7 @@ pub struct CompleteSimpleUser {
   pub email_address: Option<EmailAddress>,
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CompleteUser {
   pub id: UserId,
@@ -23,6 +28,7 @@ pub struct CompleteUser {
   // ...
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CreateUserOptions {
   pub display_name: UserDisplayName,
@@ -30,23 +36,34 @@ pub struct CreateUserOptions {
   pub username: Option<Username>,
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GetUserOptions {
   pub id: UserId,
+  pub time: Option<Instant>,
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum MaybeCompleteSimpleUser {
   Complete(CompleteSimpleUser),
   Default(SimpleUser),
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortUser {
   pub id: UserId,
   pub display_name: UserDisplayNameVersions,
 }
 
+impl From<SimpleUser> for ShortUser {
+  fn from(user: SimpleUser) -> Self {
+    Self { id: user.id, display_name: user.display_name }
+  }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SimpleUser {
   pub id: UserId,
@@ -54,6 +71,7 @@ pub struct SimpleUser {
   pub is_administrator: bool,
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct User {
   pub id: UserId,
@@ -62,6 +80,8 @@ pub struct User {
   pub is_administrator: bool,
 }
 
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type), sqlx(transparent, rename = "user_display_name"))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct UserDisplayName(String);
 
@@ -81,16 +101,20 @@ impl UserDisplayName {
   }
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct UserDisplayNameVersion {
   pub value: UserDisplayName,
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct UserDisplayNameVersions {
   pub current: UserDisplayNameVersion,
 }
 
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type), sqlx(transparent, rename = "user_id"))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct UserId(Uuid);
 
@@ -110,6 +134,13 @@ impl From<Uuid> for UserId {
   }
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct UserIdRef {
+  pub id: UserId,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Username(String);
 

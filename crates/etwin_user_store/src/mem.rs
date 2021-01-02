@@ -122,7 +122,7 @@ where
 
 #[cfg(test)]
 mod test {
-  use crate::memory::InMemorySimpleUserService;
+  use crate::mem::InMemorySimpleUserService;
   use crate::test::{test_register_the_admin_and_retrieve_ref, TestApi};
   use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;

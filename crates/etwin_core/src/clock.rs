@@ -1,18 +1,18 @@
-use crate::core::With;
-use chrono::{DateTime, Duration, Utc};
+use chrono::{Duration, Utc};
 use std::sync::atomic::{AtomicI64, Ordering};
+use crate::core::Instant;
 
-pub trait Clock: Send + Sync + With {
-  fn now(&self) -> DateTime<Utc>;
+pub trait Clock: Send + Sync {
+  fn now(&self) -> Instant;
 }
 
 pub struct VirtualClock {
-  start: DateTime<Utc>,
+  start: Instant,
   offset: AtomicI64,
 }
 
 impl VirtualClock {
-  pub fn new(start: DateTime<Utc>) -> Self {
+  pub fn new(start: Instant) -> Self {
     Self {
       start,
       offset: AtomicI64::new(0),
@@ -20,10 +20,8 @@ impl VirtualClock {
   }
 }
 
-impl With for VirtualClock {}
-
 impl Clock for VirtualClock {
-  fn now(&self) -> DateTime<Utc> {
+  fn now(&self) -> Instant {
     let offset = self.offset.load(Ordering::SeqCst);
     self.start + Duration::microseconds(offset)
   }
@@ -34,10 +32,8 @@ impl Clock for VirtualClock {
 
 pub struct SystemClock;
 
-impl With for SystemClock {}
-
 impl Clock for SystemClock {
-  fn now(&self) -> DateTime<Utc> {
+  fn now(&self) -> Instant {
     Utc::now()
   }
 }

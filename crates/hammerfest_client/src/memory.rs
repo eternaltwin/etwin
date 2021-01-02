@@ -76,7 +76,7 @@ pub struct HammerfestClientMem<TyClock> {
 }
 
 impl<TyClock> HammerfestClientMem<TyClock> {
-  pub fn new(self, clock: TyClock) -> Self
+  pub fn new(clock: TyClock) -> Self
       where TyClock: Deref + Send + Sync, TyClock::Target: Clock {
     let mut servers = HashMap::new();
     for server_name in SERVER_NAMES {

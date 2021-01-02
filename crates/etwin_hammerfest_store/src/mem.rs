@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
-use etwin_core::hammerfest::{HammerfestStore, HammerfestUserId, GetHammerfestUserOptions, ShortHammerfestUser};
+use etwin_core::hammerfest::{HammerfestStore, HammerfestUserId, GetHammerfestUserOptions, ShortHammerfestUser, ArchivedHammerfestUser};
 use std::collections::HashMap;
 use std::error::Error;
 use std::ops::Deref;
@@ -29,7 +29,7 @@ pub struct MemHammerfestStore<TyClock>
     TyClock: Deref + Send + Sync,
     <TyClock as Deref>::Target: Clock,
 {
-  _clock: TyClock,
+  clock: TyClock,
   state: Mutex<StoreState>,
 }
 
@@ -40,7 +40,7 @@ impl<TyClock> MemHammerfestStore<TyClock>
 {
   pub fn new(clock: TyClock) -> Self {
     Self {
-      _clock: clock,
+      clock,
       state: Mutex::new(StoreState::new()),
     }
   }
@@ -57,10 +57,22 @@ impl<TyClock> HammerfestStore for MemHammerfestStore<TyClock>
     Ok(state.get_user(&options.id).cloned())
   }
 
-  async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<ShortHammerfestUser, Box<dyn Error>> {
+  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>> {
+    unimplemented!()
+  }
+
+  async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<ArchivedHammerfestUser, Box<dyn Error>> {
     let mut state = self.state.lock().unwrap();
     state.touch_user(short.clone());
-    Ok(short.clone())
+    let now = self.clock.now();
+    Ok(ArchivedHammerfestUser {
+      server: short.server,
+      id: short.id.clone(),
+      username: short.username.clone(),
+      archived_at: now,
+      profile: None,
+      items: None
+    })
   }
 }
 

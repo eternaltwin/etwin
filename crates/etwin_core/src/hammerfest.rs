@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{Database, database, Postgres, postgres};
 use std::str::FromStr;
 use std::fmt;
+use crate::link::VersionedEtwinLink;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -107,7 +108,6 @@ impl HammerfestUsername {
   }
 }
 
-
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type), sqlx(transparent, rename = "hammerfest_user_id"))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -127,6 +127,13 @@ impl HammerfestUserId {
   pub fn as_str(&self) -> &str {
     &self.0
   }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HammerfestUserIdRef {
+  pub server: HammerfestServer,
+  pub id: HammerfestUserId,
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -180,6 +187,49 @@ pub struct ShortHammerfestUser {
   pub server: HammerfestServer,
   pub id: HammerfestUserId,
   pub username: HammerfestUsername,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ArchivedHammerfestUser {
+  pub server: HammerfestServer,
+  pub id: HammerfestUserId,
+  pub username: HammerfestUsername,
+  pub archived_at: Instant,
+  pub profile: Option<ArchivedHammerfestProfile>,
+  pub items: Option<ArchivedHammerfestItems>,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct HammerfestUser {
+  pub server: HammerfestServer,
+  pub id: HammerfestUserId,
+  pub username: HammerfestUsername,
+  pub archived_at: Instant,
+  pub profile: Option<ArchivedHammerfestProfile>,
+  pub items: Option<ArchivedHammerfestItems>,
+  pub etwin: VersionedEtwinLink,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ArchivedHammerfestProfile {
+  pub first_archived_at: Instant,
+  pub last_archived_at: Instant,
+  pub best_score: u32,
+  pub best_level: u32,
+  pub game_completed: bool,
+  pub items: HashMap<HammerfestItemId, bool>,
+  pub quests: HashMap<HammerfestQuestId, HammerfestQuestStatus>,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ArchivedHammerfestItems {
+  pub first_archived_at: Instant,
+  pub last_archived_at: Instant,
+  pub items: HashMap<HammerfestItemId, u32>,
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -500,5 +550,7 @@ fn deserialize_optional<'de, T, D>(deserializer: D) -> Result<Option<Option<T>>,
 pub trait HammerfestStore: Send + Sync {
   async fn get_short_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ShortHammerfestUser>, Box<dyn Error>>;
 
-  async fn touch_short_user(&self, options: &ShortHammerfestUser) -> Result<ShortHammerfestUser, Box<dyn Error>>;
+  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>>;
+
+  async fn touch_short_user(&self, options: &ShortHammerfestUser) -> Result<ArchivedHammerfestUser, Box<dyn Error>>;
 }
