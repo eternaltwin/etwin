@@ -17,8 +17,8 @@ crate-type = ["cdylib"]
 neon-build = "0.6.0"
 
 [dependencies]
-etwin_core = { path = "../../../crates/etwin_core", features = ["neon", "serde"] }
-etwin_dinoparc_store = { path = "../../../crates/etwin_dinoparc_store", features = ["neon"] }
+etwin_core = { path = "../../../crates/core", features = ["neon", "serde"] }
+etwin_dinoparc_store = { path = "../../../crates/dinoparc_store", features = ["neon"] }
 neon = { version = "^0.6.0", default-features = false, features = ["event-handler-api", "legacy-runtime"] }
 serde_json = "^1.0.60"
 tokio = { version = "^0.2.23", features = ["full"] }

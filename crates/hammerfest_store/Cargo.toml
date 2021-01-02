@@ -1,8 +1,8 @@
 [package]
-name = "etwin_dinoparc_store"
+name = "etwin_hammerfest_store"
 version = "0.0.1"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
-description = "Dinoparc store implementation"
+description = "Hammerfest store implementation"
 documentation = "https://github.com/eternal-twin/etwin"
 homepage = "https://github.com/eternal-twin/etwin"
 repository = "https://github.com/eternal-twin/etwin"
@@ -13,10 +13,13 @@ edition = "2018"
 
 [dependencies]
 async-trait = "^0.1.42"
-etwin_core = { path = "../etwin_core" }
+etwin_core = { path = "../core", features = ["sqlx"] }
+etwin_db_schema = { path = "../db_schema" }
 neon = { version = "^0.6.0", default-features = false, features = ["legacy-runtime"], optional = true }
 regex = "^1.4.2"
+sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 
 [dev-dependencies]
 chrono = "^0.4.19"
+serial_test = "^0.5.1"
 tokio = { version = "^0.2.23", features = ["macros", "rt-core"] }

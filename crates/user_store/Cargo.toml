@@ -14,8 +14,8 @@ edition = "2018"
 [dependencies]
 async-trait = "^0.1.42"
 chrono = "^0.4.19"
-etwin_core = { path = "../etwin_core" }
-etwin_db_schema = { path = "../etwin_db_schema" }
+etwin_core = { path = "../core" }
+etwin_db_schema = { path = "../db_schema" }
 regex = "^1.4.2"
 sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 tokio = { version = "^0.2.23", features = ["macros"] }
