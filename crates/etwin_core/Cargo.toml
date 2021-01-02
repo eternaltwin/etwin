@@ -27,7 +27,7 @@ etwin_db_schema = { path = "../etwin_db_schema" }
 etwin_link_store = { path = "../etwin_link_store" }
 etwin_hammerfest_store = { path = "../etwin_hammerfest_store" }
 etwin_user_store = { path = "../etwin_user_store" }
-hammerfest_client = { path = "../hammerfest_client" }
+etwin_hammerfest_client = { path = "../etwin_hammerfest_client" }
 serial_test = "^0.5.1"
 sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 tokio = { version = "^0.2.23", features = ["macros", "rt-core"] }

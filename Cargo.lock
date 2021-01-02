@@ -482,10 +482,10 @@ dependencies = [
  "async-trait",
  "chrono",
  "etwin_db_schema",
+ "etwin_hammerfest_client",
  "etwin_hammerfest_store",
  "etwin_link_store",
  "etwin_user_store",
- "hammerfest_client",
  "neon",
  "once_cell",
  "regex",
@@ -518,6 +518,23 @@ dependencies = [
  "neon",
  "regex",
  "tokio",
+]
+
+[[package]]
+name = "etwin_hammerfest_client"
+version = "0.0.1"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "cssparser",
+ "etwin_core",
+ "once_cell",
+ "rand 0.8.0",
+ "reqwest",
+ "scraper",
+ "serde",
+ "serde_json",
+ "thiserror",
 ]
 
 [[package]]
@@ -852,23 +869,6 @@ dependencies = [
  "tokio-util",
  "tracing",
  "tracing-futures",
-]
-
-[[package]]
-name = "hammerfest_client"
-version = "0.0.1"
-dependencies = [
- "async-trait",
- "chrono",
- "cssparser",
- "etwin_core",
- "once_cell",
- "rand 0.8.0",
- "reqwest",
- "scraper",
- "serde",
- "serde_json",
- "thiserror",
 ]
 
 [[package]]

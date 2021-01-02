@@ -1,5 +1,5 @@
 [package]
-name = "hammerfest_client"
+name = "etwin_hammerfest_client"
 version = "0.0.1"
 authors = ["Moulins <arthur.heuillard@orange.fr>"]
 description = "HammerfestClient implementations"
