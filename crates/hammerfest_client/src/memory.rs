@@ -76,60 +76,26 @@ pub struct HammerfestClientMem<TyClock> {
 }
 
 impl<TyClock> HammerfestClientMem<TyClock> {
-  pub fn builder() -> HammerfestClientMemBuilder {
+  pub fn new(self, clock: TyClock) -> Self
+      where TyClock: Deref + Send + Sync, TyClock::Target: Clock {
     let mut servers = HashMap::new();
     for server_name in SERVER_NAMES {
-      servers.insert(*server_name, InMemoryServer {
+      servers.insert(*server_name, RwLock::new(InMemoryServer {
         users: HashMap::new(),
         forum_themes: HashMap::new(),
         forum_threads: HashMap::new(),
         active_sessions: HashMap::new(),
-      });
+      }));
     }
-    HammerfestClientMemBuilder(servers)
+    Self { servers, clock }
   }
 
-  fn get_server(&self, server: HammerfestServer) -> Result<&RwLock<InMemoryServer>> {
-    self.servers.get(&server)
-      .ok_or_else(|| Error::ServerNotFound(server).into())
+  pub fn disable_server(&mut self, server: HammerfestServer) {
+    self.servers.remove(&server);
   }
 
-  fn check_session<'a>(&self, session: &'a HammerfestSession) -> Result<&'a HammerfestUserId> {
-    let server = self.get_server(session.user.server)?.read().unwrap();
-    if let Some(sess) = server.active_sessions.get(&session.key) {
-      if sess.user_id == session.user.id {
-        return Ok(&session.user.id)
-      }
-    }
-    Err(Error::InvalidSession.into())
-  }
-
-  fn check_opt_session<'a>(&self, session: Option<&'a HammerfestSession>, server: HammerfestServer) -> Option<&'a HammerfestUserId> {
-    session.filter(|sess| sess.user.server == server)
-      .and_then(|sess| self.check_session(sess).ok())
-  }
-}
-
-pub struct HammerfestClientMemBuilder(HashMap<HammerfestServer, InMemoryServer>);
-
-impl HammerfestClientMemBuilder {
-  pub fn build<TyClock>(self, clock: TyClock) -> HammerfestClientMem<TyClock>
-      where TyClock: Deref + Send + Sync, TyClock::Target: Clock {
-    HammerfestClientMem {
-      clock,
-      servers: self.0.into_iter()
-        .map(|(k, s)| (k, RwLock::new(s)))
-        .collect(),
-    }
-  }
-
-  pub fn disable_server(mut self, server: HammerfestServer) -> Self {
-    self.0.remove(&server);
-    self
-  }
-
-  pub fn create_user(mut self, server: HammerfestServer, id: HammerfestUserId, user: HammerfestUsername, password: String) -> Self {
-    let s = self.0.get_mut(&server).expect("Can't add users to disabled server");
+  pub fn create_user(&mut self, server: HammerfestServer, id: HammerfestUserId, user: HammerfestUsername, password: String) {
+    let s = self.get_server_mut(server).expect("Can't add users to disabled server");
     match s.users.entry(id.clone()) {
       Entry::Occupied(_) => panic!("HammerfestUserId conflict"),
       Entry::Vacant(e) => e.insert(InMemoryUser {
@@ -140,15 +106,14 @@ impl HammerfestClientMemBuilder {
         }
       }),
     };
-    self
   }
 
-  pub fn create_forum_theme(mut self,
+  pub fn create_forum_theme(&mut self,
       server: HammerfestServer,
       id: HammerfestForumThemeId, name: String,
       description: String, hidden_by: Option<HammerfestUserId>
-  ) -> Self {
-    let s = self.0.get_mut(&server).expect("Can't add forum themes to disabled server");
+  ) {
+    let s = self.get_server_mut(server).expect("Can't add forum themes to disabled server");
     if let Some(user) = &hidden_by {
       if !s.users.contains_key(user) {
         panic!("Unknown user id for hidden_by: {}", user.as_str());
@@ -165,17 +130,16 @@ impl HammerfestClientMemBuilder {
         hidden_by,
       }),
     };
-    self
   }
 
-  pub fn create_forum_thread(mut self,
+  pub fn create_forum_thread(&mut self,
       server: HammerfestServer, theme: HammerfestForumThemeId,
       id: HammerfestForumThreadId, name: String,
       author: HammerfestUserId, date: Instant,
       is_closed: bool, is_sticky: bool,
       content: String,
-  ) -> Self {
-    let s = self.0.get_mut(&server).expect("Can't add forum threads to disabled server");
+  ) {
+    let s = self.get_server_mut(server).expect("Can't add forum threads to disabled server");
     if !s.forum_themes.contains_key(&theme) {
       panic!("Unknown theme id for forum thread: {:?}", theme);
     }
@@ -205,16 +169,14 @@ impl HammerfestClientMemBuilder {
         }],
       }),
     };
-
-    self
   }
 
-  pub fn create_forum_post(mut self,
+  pub fn create_forum_post(&mut self,
     server: HammerfestServer, thread: HammerfestForumThreadId,
     author: HammerfestUserId, date: Instant,
     content: String
-  ) -> Self {
-    let s = self.0.get_mut(&server).expect("Can't add forum posts to disabled server");
+  ) {
+    let s = self.get_server_mut(server).expect("Can't add forum posts to disabled server");
     let thread = match s.forum_threads.get_mut(&thread) {
       Some(thread) => thread,
       None => panic!("Unknown thread_id id for forum post: {:?}", thread),
@@ -239,8 +201,34 @@ impl HammerfestClientMemBuilder {
       ctime: forum_date,
       content,
     });
+  }
+}
 
-    self
+impl<TyClock> HammerfestClientMem<TyClock> {
+  fn get_server(&self, server: HammerfestServer) -> Result<&RwLock<InMemoryServer>> {
+    self.servers.get(&server)
+      .ok_or_else(|| Error::ServerNotFound(server).into())
+  }
+
+  fn get_server_mut(&mut self, server: HammerfestServer) -> Result<&mut InMemoryServer> {
+    self.servers.get_mut(&server)
+      .ok_or_else(|| Error::ServerNotFound(server).into())
+      .map(|server| server.get_mut().unwrap())
+  }
+
+  fn check_session<'a>(&self, session: &'a HammerfestSession) -> Result<&'a HammerfestUserId> {
+    let server = self.get_server(session.user.server)?.read().unwrap();
+    if let Some(sess) = server.active_sessions.get(&session.key) {
+      if sess.user_id == session.user.id {
+        return Ok(&session.user.id)
+      }
+    }
+    Err(Error::InvalidSession.into())
+  }
+
+  fn check_opt_session<'a>(&self, session: Option<&'a HammerfestSession>, server: HammerfestServer) -> Option<&'a HammerfestUserId> {
+    session.filter(|sess| sess.user.server == server)
+      .and_then(|sess| self.check_session(sess).ok())
   }
 }
 
