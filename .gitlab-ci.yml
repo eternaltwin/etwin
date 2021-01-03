@@ -7,9 +7,14 @@ services:
 cache:
   paths:
     - "node_modules/"
+    - ".cargo/bin/"
+    - ".cargo/registry/index/"
+    - ".cargo/registry/cache/"
+    - ".cargo/git/db/"
     - "target/"
 
 variables:
+  CARGO_HOME: ".cargo"
   POSTGRES_DB: "etwindb"
   POSTGRES_USER: "runner"
   POSTGRES_PASSWORD: "dev"
