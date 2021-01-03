@@ -8,7 +8,6 @@ use html5ever::LocalName;
 use html5ever::QualName;
 use pulldown_cmark as md;
 use pulldown_cmark::OffsetIter as MdIter;
-use regex::Regex;
 use std::borrow::Borrow;
 use std::cmp::min;
 use std::collections::{BTreeMap, HashMap};
@@ -152,9 +151,9 @@ fn escape_angular(dom: &mut HtmlDocument) {
   }
 
   fn remap_text(node: &mut HtmlText) {
-    let re = Regex::new("\\{").unwrap();
-    let new_t = re.replace_all(&node.text, "{{ \"{\" }}");
-    node.text = new_t.to_string();
+    if node.text.contains('{') {
+      node.text = node.text.replace("{", "{{ \"{\" }}");
+    }
   }
 }
 
@@ -184,10 +183,10 @@ fn load_input_files(root: &Path) -> Result<HashMap<Url, String>, Box<dyn Error>>
 }
 
 fn get_short_path(root: &Url, file: &Url) -> String {
-  const SLASH_INDEX_DOT_MD: &'static str = "/index.md";
-  const DOT_MD: &'static str = ".md";
-  const DOT: &'static str = ".";
-  const DOT_SLASH: &'static str = "./";
+  const SLASH_INDEX_DOT_MD: &str = "/index.md";
+  const DOT_MD: &str = ".md";
+  const DOT: &str = ".";
+  const DOT_SLASH: &str = "./";
 
   let rel = relative_furi(root, file);
   let rel = &rel;
@@ -199,10 +198,10 @@ fn get_short_path(root: &Url, file: &Url) -> String {
   } else {
     rel
   };
-  let rel = if rel.starts_with(DOT_SLASH) {
-    &rel[DOT_SLASH.len()..]
-  } else if rel.ends_with(DOT) {
-    &rel[DOT.len()..]
+  let rel = if let Some(r) = rel.strip_prefix(DOT_SLASH) {
+    r
+  } else if let Some(r) = rel.strip_prefix(DOT) {
+    r
   } else {
     rel
   };
@@ -242,9 +241,7 @@ fn relative_furi(from: &Url, to: &Url) -> String {
     }
     out_segments.push(".");
   } else {
-    for _ in shared_segments..from_segments.len() {
-      out_segments.push("..");
-    }
+    out_segments.resize(out_segments.len() + (from_segments.len() - shared_segments), "..")
   }
   out_segments.extend(to_segments[shared_segments..].iter());
   out_segments.join("/")

@@ -1,6 +1,5 @@
 use clap::Clap;
 use std::error::Error;
-use xtask;
 
 #[derive(Debug, Clap)]
 #[clap(author = "Charles \"Demurgos\" Samborski")]
