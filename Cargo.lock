@@ -476,11 +476,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "etwin_config"
+version = "0.0.1"
+dependencies = [
+ "once_cell",
+ "serde",
+ "toml",
+ "url",
+]
+
+[[package]]
 name = "etwin_core"
 version = "0.0.1"
 dependencies = [
  "async-trait",
  "chrono",
+ "etwin_config",
  "etwin_db_schema",
  "etwin_hammerfest_client",
  "etwin_hammerfest_store",
@@ -501,6 +512,7 @@ dependencies = [
 name = "etwin_db_schema"
 version = "0.0.1"
 dependencies = [
+ "etwin_config",
  "etwin_squirrel",
  "include_dir",
  "lazy_static",
@@ -514,6 +526,7 @@ version = "0.0.1"
 dependencies = [
  "async-trait",
  "chrono",
+ "etwin_config",
  "etwin_core",
  "etwin_db_schema",
  "neon 0.6.0 (git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301)",
@@ -546,6 +559,7 @@ version = "0.0.1"
 dependencies = [
  "async-trait",
  "chrono",
+ "etwin_config",
  "etwin_core",
  "etwin_db_schema",
  "neon 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -561,6 +575,7 @@ version = "0.0.1"
 dependencies = [
  "async-trait",
  "chrono",
+ "etwin_config",
  "etwin_core",
  "etwin_db_schema",
  "etwin_hammerfest_store",
@@ -606,6 +621,7 @@ version = "0.0.1"
 dependencies = [
  "async-trait",
  "chrono",
+ "etwin_config",
  "etwin_core",
  "etwin_db_schema",
  "regex",
@@ -3069,6 +3085,7 @@ dependencies = [
  "idna",
  "matches",
  "percent-encoding",
+ "serde",
 ]
 
 [[package]]

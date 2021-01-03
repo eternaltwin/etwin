@@ -1,0 +1,18 @@
+[package]
+name = "etwin_config"
+version = "0.0.1"
+authors = ["Charles Samborski <demurgos@demurgos.net>"]
+description = "Config crate for Eternal-Twin"
+documentation = "https://github.com/eternal-twin/etwin"
+homepage = "https://github.com/eternal-twin/etwin"
+repository = "https://github.com/eternal-twin/etwin"
+readme = "./README.md"
+keywords = ["etwin"]
+license = "AGPL-3.0-or-later"
+edition = "2018"
+
+[dependencies]
+once_cell = "^1.5.2"
+serde = { version = "^1.0.115", features = ["derive"] }
+toml = "^0.5.8"
+url = { version = "^2.2.0", features = ["serde"] }

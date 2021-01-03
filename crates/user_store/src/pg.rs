@@ -121,14 +121,22 @@ mod test {
   use etwin_core::user::UserStore;
   use etwin_core::uuid::Uuid4Generator;
   use etwin_db_schema::force_create_latest;
-  use sqlx::postgres::PgPoolOptions;
+  use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
   use sqlx::PgPool;
   use std::sync::Arc;
 
   async fn make_test_api() -> TestApi<Arc<VirtualClock>, Arc<dyn UserStore>> {
+    let config = etwin_config::find_config(std::env::current_dir().unwrap()).unwrap();
     let database: PgPool = PgPoolOptions::new()
       .max_connections(5)
-      .connect("postgresql://etwin:dev@localhost:5432/etwindb")
+      .connect_with(
+        PgConnectOptions::new()
+          .host(&config.db.host)
+          .port(config.db.port)
+          .database(&config.db.name)
+          .username(&config.db.user)
+          .password(&config.db.password),
+      )
       .await
       .unwrap();
     force_create_latest(&database).await.unwrap();

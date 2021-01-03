@@ -1,13 +1,21 @@
 use etwin_db_schema::{force_create_latest, get_state};
-use sqlx::postgres::PgPoolOptions;
+use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::PgPool;
 use std::error::Error;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+  let config = etwin_config::find_config(std::env::current_dir().unwrap()).unwrap();
   let database: PgPool = PgPoolOptions::new()
     .max_connections(5)
-    .connect("postgresql://etwin:dev@localhost:5432/etwindb")
+    .connect_with(
+      PgConnectOptions::new()
+        .host(&config.db.host)
+        .port(config.db.port)
+        .database(&config.db.name)
+        .username(&config.db.user)
+        .password(&config.db.password),
+    )
     .await
     .unwrap();
   let database = &database;

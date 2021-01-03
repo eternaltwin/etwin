@@ -10,7 +10,7 @@ use etwin_hammerfest_client::HammerfestClientMem;
 use etwin_hammerfest_store::pg::PgHammerfestStore;
 use etwin_link_store::pg::PgLinkStore;
 use etwin_user_store::pg::PgUserStore;
-use sqlx::postgres::PgPoolOptions;
+use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::PgPool;
 use std::any::Any;
 use std::ops::Deref;
@@ -24,9 +24,17 @@ async fn make_test_api() -> TestApi<
   Arc<dyn LinkStore>,
   Arc<dyn UserStore>,
 > {
+  let config = etwin_config::find_config(std::env::current_dir().unwrap()).unwrap();
   let database: PgPool = PgPoolOptions::new()
     .max_connections(5)
-    .connect("postgresql://etwin:dev@localhost:5432/etwindb")
+    .connect_with(
+      PgConnectOptions::new()
+        .host(&config.db.host)
+        .port(config.db.port)
+        .database(&config.db.name)
+        .username(&config.db.user)
+        .password(&config.db.password),
+    )
     .await
     .unwrap();
   force_create_latest(&database).await.unwrap();

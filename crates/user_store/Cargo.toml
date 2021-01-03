@@ -21,3 +21,6 @@ sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "of
 tokio = { version = "^0.2.23", features = ["macros"] }
 uuid = { version = "^0.8.1", default-features = false, features = ["serde", "v4"] }
 warp = "^0.2.5"
+
+[dev-dependencies]
+etwin_config = { path = "../config" }

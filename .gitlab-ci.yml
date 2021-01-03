@@ -63,9 +63,9 @@ stages:
 ci:
   stage: "ci"
   script:
-    - "cargo build"
-#    - "cargo clippy --all-targets --all-features -- -D warnings"
     - "cargo fmt -- --check"
+#    - "cargo clippy --all-targets --all-features -- -D warnings"
+    - "cargo test --no-fail-fast -- -Z unstable-options --report-time"
     - "yarn run lint"
     - "yarn run test"
     - 'yarn --cwd packages/rest-server run main:build'
