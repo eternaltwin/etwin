@@ -515,8 +515,11 @@ dependencies = [
  "async-trait",
  "chrono",
  "etwin_core",
+ "etwin_db_schema",
  "neon 0.6.0 (git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301)",
  "regex",
+ "serial_test",
+ "sqlx",
  "tokio",
 ]
 
@@ -577,6 +580,7 @@ dependencies = [
  "neon 0.6.0 (git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301)",
  "neon-build 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "once_cell",
+ "serde",
  "serde_json",
  "sqlx",
  "tokio",

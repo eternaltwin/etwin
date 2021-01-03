@@ -4,7 +4,11 @@ use once_cell::sync::Lazy;
 use regex::Regex;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "sqlx")]
+use sqlx::{database, postgres, Database, Postgres};
 use std::error::Error;
+use std::fmt;
+use std::str::FromStr;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -15,7 +19,7 @@ pub struct GetDinoparcUserOptions {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum DinoparcServer {
   #[cfg_attr(feature = "serde", serde(rename = "dinoparc.com"))]
   DinoparcCom,
@@ -25,6 +29,79 @@ pub enum DinoparcServer {
   SpDinoparcCom,
 }
 
+impl DinoparcServer {
+  pub const fn as_str(&self) -> &'static str {
+    match self {
+      Self::DinoparcCom => "dinoparc.com",
+      Self::EnDinoparcCom => "en.dinoparc.com",
+      Self::SpDinoparcCom => "sp.dinoparc.com",
+    }
+  }
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcServerParseError;
+
+impl fmt::Display for DinoparcServerParseError {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "DinoparcServerParseError")
+  }
+}
+
+impl Error for DinoparcServerParseError {}
+
+impl FromStr for DinoparcServer {
+  type Err = DinoparcServerParseError;
+
+  fn from_str(s: &str) -> Result<Self, Self::Err> {
+    match s {
+      "dinoparc.com" => Ok(Self::DinoparcCom),
+      "en.dinoparc.com" => Ok(Self::EnDinoparcCom),
+      "sp.dinoparc.com" => Ok(Self::SpDinoparcCom),
+      _ => Err(DinoparcServerParseError),
+    }
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl sqlx::Type<Postgres> for DinoparcServer {
+  fn type_info() -> postgres::PgTypeInfo {
+    postgres::PgTypeInfo::with_name("dinoparc_server")
+  }
+
+  fn compatible(ty: &postgres::PgTypeInfo) -> bool {
+    *ty == Self::type_info() || <&str as sqlx::Type<Postgres>>::compatible(ty)
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'r, Db: Database> sqlx::Decode<'r, Db> for DinoparcServer
+where
+  &'r str: sqlx::Decode<'r, Db>,
+{
+  fn decode(
+    value: <Db as database::HasValueRef<'r>>::ValueRef,
+  ) -> Result<DinoparcServer, Box<dyn Error + 'static + Send + Sync>> {
+    let value: &str = <&str as sqlx::Decode<Db>>::decode(value)?;
+    Ok(value.parse()?)
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'q, Db: Database> sqlx::Encode<'q, Db> for DinoparcServer
+where
+  &'q str: sqlx::Encode<'q, Db>,
+{
+  fn encode_by_ref(&self, buf: &mut <Db as database::HasArguments<'q>>::ArgumentBuffer) -> sqlx::encode::IsNull {
+    self.as_str().encode(buf)
+  }
+}
+
+#[cfg_attr(
+  feature = "sqlx",
+  derive(sqlx::Type),
+  sqlx(transparent, rename = "hammerfest_user_id")
+)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcUserId(String);
@@ -45,6 +122,11 @@ impl DinoparcUserId {
   }
 }
 
+#[cfg_attr(
+  feature = "sqlx",
+  derive(sqlx::Type),
+  sqlx(transparent, rename = "hammerfest_user_id")
+)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcUsername(String);

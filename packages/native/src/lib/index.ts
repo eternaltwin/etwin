@@ -80,3 +80,63 @@ export class MemDinoparcStore implements DinoparcStore {
     return $ShortDinoparcUser.read(JSON_READER, rawOut);
   }
 }
+
+export interface PgDinoparcStoreOptions {
+  clock: SystemClock;
+  database: Database;
+}
+
+declare const PgDinoparcStoreBox: unique symbol;
+
+export class PgDinoparcStore implements DinoparcStore {
+  public readonly box: typeof PgDinoparcStoreBox;
+  private static GET_SHORT_USER = promisify(native.dinoparcStore.pg.getShortUser);
+  private static TOUCH_SHORT_USER = promisify(native.dinoparcStore.pg.touchShortUser);
+
+  constructor(options: Readonly<PgDinoparcStoreOptions>) {
+    this.box = native.dinoparcStore.pg.new(options.clock.box, options.database.box);
+  }
+
+  async getShortUser(options: Readonly<GetDinoparcUserOptions>): Promise<ShortDinoparcUser | null> {
+    const rawOptions: string = $GetDinoparcUserOptions.write(JSON_WRITER, options);
+    const rawOut = await PgDinoparcStore.GET_SHORT_USER(this.box, rawOptions);
+    return $NullableShortDinoparcUser.read(JSON_READER, rawOut);
+  }
+
+  async touchShortUser(short: Readonly<ShortDinoparcUser>): Promise<ShortDinoparcUser> {
+    const rawShort: string = $ShortDinoparcUser.write(JSON_WRITER, short);
+    const rawOut = await PgDinoparcStore.TOUCH_SHORT_USER(this.box, rawShort);
+    return $ShortDinoparcUser.read(JSON_READER, rawOut);
+  }
+}
+
+export interface DatabaseOptions {
+  host: string;
+  port: number;
+  name: string;
+  user: string;
+  password: string;
+}
+
+declare const DatabaseBox: unique symbol;
+
+export class Database {
+  public readonly box: typeof DatabaseBox;
+  private static NEW = promisify(native.database.new);
+
+  private constructor(box: typeof DatabaseBox) {
+    this.box = box;
+  }
+
+  static async create(options: Readonly<DatabaseOptions>): Promise<Database> {
+    const rawOptions: string = JSON.stringify({
+      host: options.host,
+      port: options.port,
+      name: options.name,
+      user: options.user,
+      password: options.password,
+    });
+    const box = await Database.NEW(rawOptions);
+    return new Database(box);
+  }
+}
