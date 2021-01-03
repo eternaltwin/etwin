@@ -15,7 +15,7 @@ edition = "2018"
 async-trait = "^0.1.42"
 chrono = { version = "^0.4.19", features = ["serde"] }
 thiserror = { version = "^1.0.0" }
-neon = { version = "^0.6.0", default-features = false, features = ["legacy-runtime"], optional = true }
+neon = { git = "https://github.com/neon-bindings/neon.git", rev = "ab9ff258cdf86d9622d552073efe034602c16301", optional = true, default-features = false, features = ["napi-runtime"] }
 once_cell = "^1.5.2"
 regex = "^1.4.2"
 serde = { version = "^1.0.115", optional = true, features = ["derive"] }

@@ -1,7 +1,7 @@
 use neon::prelude::*;
-use neon::register_module;
 
 mod clock;
+mod database;
 mod dinoparc_store;
 mod neon_namespace;
 mod tokio_runtime;
@@ -18,11 +18,7 @@ fn export(mut cx: ModuleContext) -> NeonResult<()> {
   Ok(())
 }
 
-register_module!(cx, {
+#[neon::main]
+fn main(cx: ModuleContext) -> NeonResult<()> {
   export(cx)
-});
-
-// #[neon::main]
-// fn main(mut cx: ModuleContext) -> NeonResult<()> {
-//   export(cx)
-// }
+}

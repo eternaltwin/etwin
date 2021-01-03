@@ -27,8 +27,8 @@ impl Clock for VirtualClock {
   }
 }
 
-// #[cfg(feature = "neon")]
-// impl neon::prelude::Finalize for VirtualClock {}
+#[cfg(feature = "neon")]
+impl neon::prelude::Finalize for VirtualClock {}
 
 pub struct SystemClock;
 
@@ -38,5 +38,5 @@ impl Clock for SystemClock {
   }
 }
 
-// #[cfg(feature = "neon")]
-// impl neon::prelude::Finalize for SystemClock {}
+#[cfg(feature = "neon")]
+impl neon::prelude::Finalize for SystemClock {}

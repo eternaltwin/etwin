@@ -486,7 +486,7 @@ dependencies = [
  "etwin_hammerfest_store",
  "etwin_link_store",
  "etwin_user_store",
- "neon",
+ "neon 0.6.0 (git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301)",
  "once_cell",
  "regex",
  "serde",
@@ -515,7 +515,7 @@ dependencies = [
  "async-trait",
  "chrono",
  "etwin_core",
- "neon",
+ "neon 0.6.0 (git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301)",
  "regex",
  "tokio",
 ]
@@ -545,7 +545,7 @@ dependencies = [
  "chrono",
  "etwin_core",
  "etwin_db_schema",
- "neon",
+ "neon 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex",
  "serial_test",
  "sqlx",
@@ -561,7 +561,7 @@ dependencies = [
  "etwin_core",
  "etwin_db_schema",
  "etwin_hammerfest_store",
- "neon",
+ "neon 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex",
  "serial_test",
  "sqlx",
@@ -574,10 +574,11 @@ version = "0.1.0"
 dependencies = [
  "etwin_core",
  "etwin_dinoparc_store",
- "neon",
- "neon-build",
+ "neon 0.6.0 (git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301)",
+ "neon-build 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "once_cell",
  "serde_json",
+ "sqlx",
  "tokio",
 ]
 
@@ -1149,6 +1150,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4d58d1b70b004888f764dfbf6a26a3b0342a1632d33968e4a179d8011c760614"
 
 [[package]]
+name = "libloading"
+version = "0.6.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9367bdfa836b7e3cf895867f7a570283444da90562980ec2263d6e1569b16bc"
+dependencies = [
+ "cfg-if 1.0.0",
+ "winapi 0.3.9",
+]
+
+[[package]]
 name = "linked-hash-map"
 version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1362,8 +1373,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ade23143c81b3d3e7648521e06f63d6ce055059e5280451282f16b61fadd99b0"
 dependencies = [
  "cslice",
- "neon-build",
- "neon-runtime",
+ "neon-build 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "neon-runtime 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "semver",
+ "smallvec",
+]
+
+[[package]]
+name = "neon"
+version = "0.6.0"
+source = "git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301#ab9ff258cdf86d9622d552073efe034602c16301"
+dependencies = [
+ "cslice",
+ "neon-build 0.6.0 (git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301)",
+ "neon-macros",
+ "neon-runtime 0.6.0 (git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301)",
  "semver",
  "smallvec",
 ]
@@ -1378,6 +1402,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "neon-build"
+version = "0.6.0"
+source = "git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301#ab9ff258cdf86d9622d552073efe034602c16301"
+
+[[package]]
+name = "neon-macros"
+version = "0.6.0"
+source = "git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301#ab9ff258cdf86d9622d552073efe034602c16301"
+dependencies = [
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "neon-runtime"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1385,6 +1423,16 @@ checksum = "bcddb16d2645a7fa148c87b61555b21c9c5b926b842df93a0a46f8be342f8733"
 dependencies = [
  "cfg-if 0.1.10",
  "neon-sys",
+ "smallvec",
+]
+
+[[package]]
+name = "neon-runtime"
+version = "0.6.0"
+source = "git+https://github.com/neon-bindings/neon.git?rev=ab9ff258cdf86d9622d552073efe034602c16301#ab9ff258cdf86d9622d552073efe034602c16301"
+dependencies = [
+ "cfg-if 1.0.0",
+ "libloading",
  "smallvec",
 ]
 

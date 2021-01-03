@@ -22,33 +22,21 @@ pub mod system_clock {
     Ok(ns)
   }
 
-  pub type SystemClockBox = Arc<SystemClock>;
-
-  declare_types! {
-    pub class JsSystemClock for SystemClockBox {
-      init(_cx) {
-        Ok(Arc::new(SystemClock))
-      }
-    }
-  }
+  pub type JsSystemClock = JsBox<Arc<SystemClock>>;
 
   pub fn new(mut cx: FunctionContext) -> JsResult<JsSystemClock> {
-    let ctr = JsSystemClock::constructor(&mut cx)?;
-    let args: Vec<Handle<JsValue>> = vec![];
-    let js_box = ctr.construct(&mut cx, args)?;
-    Ok(js_box)
+    let inner: Arc<SystemClock> = Arc::new(SystemClock);
+    Ok(cx.boxed(inner))
   }
 
   pub fn now(mut cx: FunctionContext) -> JsResult<JsObject> {
-    let boxed = cx.argument::<JsSystemClock>(0)?;
-    let res = cx.borrow(&boxed, |boxed: neon::borrow::Ref<&mut SystemClockBox>| {
-      boxed.now()
-    });
+    let inner = cx.argument::<JsSystemClock>(0)?;
+    let res = inner.now();
     let res: i64 = res.timestamp_millis();
     let res: f64 = res as f64;
     let res = {
       let global = cx.global();
-      let date: Handle<JsFunction> = global.get(&mut cx, "Date")?.downcast().unwrap();
+      let date: Handle<JsFunction> = global.get(&mut cx, "Date")?.downcast(&mut cx).unwrap();
       let args = vec![cx.number(res)];
       date.construct(&mut cx, args)?
     };
@@ -56,18 +44,14 @@ pub mod system_clock {
   }
 
   pub fn now_unix_s(mut cx: FunctionContext) -> JsResult<JsNumber> {
-    let boxed = cx.argument::<JsSystemClock>(0)?;
-    let res = cx.borrow(&boxed, |boxed: neon::borrow::Ref<&mut SystemClockBox>| {
-      boxed.now()
-    });
+    let inner = cx.argument::<JsSystemClock>(0)?;
+    let res = inner.now();
     Ok(cx.number((res.timestamp_millis() as f64) / 1000f64))
   }
 
   pub fn now_unix_ms(mut cx: FunctionContext) -> JsResult<JsNumber> {
-    let boxed = cx.argument::<JsSystemClock>(0)?;
-    let res = cx.borrow(&boxed, |boxed: neon::borrow::Ref<&mut SystemClockBox>| {
-      boxed.now()
-    });
+    let inner = cx.argument::<JsSystemClock>(0)?;
+    let res = inner.now();
     Ok(cx.number(res.timestamp_millis() as f64))
   }
 }

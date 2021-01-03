@@ -24,21 +24,21 @@ impl StoreState {
   }
 }
 
-pub struct MemDinoparcStore<C>
+pub struct MemDinoparcStore<TyClock>
   where
-    C: Deref + Send + Sync,
-    <C as Deref>::Target: Clock,
+    TyClock: Deref + Send + Sync,
+    <TyClock as Deref>::Target: Clock,
 {
-  _clock: C,
+  _clock: TyClock,
   state: Mutex<StoreState>,
 }
 
-impl<C> MemDinoparcStore<C>
+impl<TyClock> MemDinoparcStore<TyClock>
   where
-    C: Deref + Send + Sync,
-    <C as Deref>::Target: Clock,
+    TyClock: Deref + Send + Sync,
+    <TyClock as Deref>::Target: Clock,
 {
-  pub fn new(clock: C) -> Self {
+  pub fn new(clock: TyClock) -> Self {
     Self {
       _clock: clock,
       state: Mutex::new(StoreState::new()),
@@ -47,10 +47,10 @@ impl<C> MemDinoparcStore<C>
 }
 
 #[async_trait]
-impl<C> DinoparcStore for MemDinoparcStore<C>
+impl<TyClock> DinoparcStore for MemDinoparcStore<TyClock>
   where
-    C: Deref + Send + Sync,
-    <C as Deref>::Target: Clock,
+    TyClock: Deref + Send + Sync,
+    <TyClock as Deref>::Target: Clock,
 {
   async fn get_short_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ShortDinoparcUser>, Box<dyn Error>> {
     let state = self.state.lock().unwrap();
@@ -63,6 +63,13 @@ impl<C> DinoparcStore for MemDinoparcStore<C>
     Ok(short.clone())
   }
 }
+
+#[cfg(feature = "neon")]
+impl<TyClock> neon::prelude::Finalize for MemDinoparcStore<TyClock>
+  where
+    TyClock: Deref + Send + Sync,
+    <TyClock as Deref>::Target: Clock,
+{}
 
 #[cfg(test)]
 mod test {

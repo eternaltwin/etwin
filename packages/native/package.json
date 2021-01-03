@@ -13,7 +13,7 @@
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
-    "native:build": "neon build",
+    "native:build": "cd native && cargo build",
     "build": "yarn run native:build && tsc --build src/lib/tsconfig.json",
     "prepack": "yarn run build",
     "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",

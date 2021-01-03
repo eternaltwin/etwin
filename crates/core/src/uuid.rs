@@ -13,5 +13,5 @@ impl UuidGenerator for Uuid4Generator {
   }
 }
 
-// #[cfg(feature = "neon")]
-// impl neon::prelude::Finalize for Uuid4Generator {}
+#[cfg(feature = "neon")]
+impl neon::prelude::Finalize for Uuid4Generator {}
