@@ -18,7 +18,8 @@
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
     "prepack": "yarn run build",
-    "test:build": "tsc --build src/test/tsconfig.json",
+    "native:build": "cd ../native && yarn run native:build",
+    "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha \"test/**/*.spec.js\""
   },
   "publishConfig": {
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@eternal-twin/auth-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
+    "@eternal-twin/native": "workspace:*",
     "@eternal-twin/oauth-provider-test": "workspace:*",
     "@eternal-twin/password-scrypt": "workspace:*",
     "@eternal-twin/uuid4-generator": "workspace:*",

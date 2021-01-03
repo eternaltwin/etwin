@@ -2,7 +2,6 @@
   "name": "@eternal-twin/native",
   "version": "0.1.0",
   "description": "Native module for Eternal-Twin",
-  "main": "lib/index.js",
   "author": "Charles Samborski <demurgos@demurgos.net>",
   "licenses": [
     {
@@ -42,8 +41,12 @@
   },
   "type": "module",
   "exports": {
+    ".": "./lib/index.js",
     "./lib/": "./lib/"
   },
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "files": [
     "./lib/",
     "./native/"

@@ -18,7 +18,8 @@
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
     "prepack": "yarn run build",
-    "test:build": "tsc --build src/test/tsconfig.json",
+    "native:build": "cd ../native && yarn run native:build",
+    "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha \"test/**/*.spec.js\""
   },
   "publishConfig": {
@@ -37,13 +38,13 @@
   "devDependencies": {
     "@eternal-twin/auth-pg": "workspace:*",
     "@eternal-twin/dinoparc-client-mem": "workspace:*",
-    "@eternal-twin/dinoparc-store-pg": "workspace:*",
     "@eternal-twin/email-in-memory": "workspace:*",
     "@eternal-twin/email-template-json": "workspace:*",
     "@eternal-twin/hammerfest-client-mem": "workspace:*",
     "@eternal-twin/hammerfest-store-pg": "workspace:*",
     "@eternal-twin/link-test": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
+    "@eternal-twin/native": "workspace:*",
     "@eternal-twin/oauth-provider-pg": "workspace:*",
     "@eternal-twin/password-scrypt": "workspace:*",
     "@eternal-twin/twinoid-client-http": "workspace:*",

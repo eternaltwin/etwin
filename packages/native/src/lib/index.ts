@@ -39,6 +39,30 @@ export class SystemClock implements ClockService {
   }
 }
 
+declare const VirtualClockBox: unique symbol;
+
+export class VirtualClock implements ClockService {
+  public readonly box: typeof VirtualClockBox;
+
+  constructor() {
+    this.box = native.clock.virtualClock.new();
+  }
+
+  now(): Date {
+    return native.clock.virtualClock.now(this.box);
+  }
+
+  nowUnixS(): number {
+    return native.clock.virtualClock.nowUnixS(this.box);
+  }
+
+  nowUnixMs(): number {
+    return native.clock.virtualClock.nowUnixMs(this.box);
+  }
+}
+
+export type NativeClock = SystemClock | VirtualClock;
+
 declare const Uuid4GeneratorBox: unique symbol;
 
 export class Uuid4Generator implements UuidGenerator {
@@ -54,7 +78,7 @@ export class Uuid4Generator implements UuidGenerator {
 }
 
 export interface MemDinoparcStoreOptions {
-  clock: SystemClock;
+  clock: NativeClock;
 }
 
 declare const MemDinoparcStoreBox: unique symbol;
@@ -82,7 +106,7 @@ export class MemDinoparcStore implements DinoparcStore {
 }
 
 export interface PgDinoparcStoreOptions {
-  clock: SystemClock;
+  clock: NativeClock;
   database: Database;
 }
 

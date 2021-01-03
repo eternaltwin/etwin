@@ -1,14 +1,13 @@
 import { Api, testAuthService } from "@eternal-twin/auth-test";
-import { VirtualClockService } from "@eternal-twin/core/lib/clock/virtual.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { MemDinoparcClient } from "@eternal-twin/dinoparc-client-mem";
-import { MemDinoparcStore } from "@eternal-twin/dinoparc-store-mem";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { MemHammerfestClient } from "@eternal-twin/hammerfest-client-mem";
 import { MemHammerfestStore } from "@eternal-twin/hammerfest-store-mem";
 import { InMemoryLinkService } from "@eternal-twin/link-in-memory";
 import { getLocalConfig } from "@eternal-twin/local-config";
+import { MemDinoparcStore, VirtualClock } from "@eternal-twin/native";
 import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
@@ -22,14 +21,14 @@ import { InMemoryAuthService } from "../lib/index.js";
 async function withInMemoryAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const config = await getLocalConfig();
 
-  const clock = new VirtualClockService(new Date("2020-10-22T19:28:22.976Z"));
+  const clock = new VirtualClock();
   const uuidGenerator = UUID4_GENERATOR;
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new InMemoryEmailService();
   const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
   const password = new ScryptPasswordService();
-  const dinoparcStore = new MemDinoparcStore();
+  const dinoparcStore = new MemDinoparcStore({clock});
   const hammerfestStore = new MemHammerfestStore();
   const twinoidStore = new MemTwinoidStore();
   const dinoparcClient = new MemDinoparcClient();

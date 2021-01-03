@@ -18,9 +18,10 @@
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
     "prepack": "yarn run build",
-    "test:build": "tsc --build src/test/tsconfig.json",
+    "native:build": "cd ../native && yarn run native:build",
+    "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha --experimental-wasm-modules \"test/**/*.spec.js\"",
-    "main:build": "tsc --build src/main/tsconfig.json",
+    "main:build": "yarn run native:build && tsc --build src/main/tsconfig.json",
     "start": "yarn run main:build && node --experimental-wasm-modules main/main.js"
   },
   "publishConfig": {
@@ -55,7 +56,6 @@
     "@eternal-twin/auth-pg": "workspace:*",
     "@eternal-twin/dinoparc-client-http": "workspace:*",
     "@eternal-twin/dinoparc-client-mem": "workspace:*",
-    "@eternal-twin/dinoparc-store-pg": "workspace:*",
     "@eternal-twin/email-console": "workspace:*",
     "@eternal-twin/email-in-memory": "workspace:*",
     "@eternal-twin/email-template-etwin": "workspace:*",
@@ -68,6 +68,7 @@
     "@eternal-twin/hammerfest-store-pg": "workspace:*",
     "@eternal-twin/link-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
+    "@eternal-twin/native": "workspace:*",
     "@eternal-twin/oauth-provider-pg": "workspace:*",
     "@eternal-twin/password-scrypt": "workspace:*",
     "@eternal-twin/pg-db": "workspace:*",

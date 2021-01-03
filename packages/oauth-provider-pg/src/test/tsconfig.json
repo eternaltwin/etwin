@@ -29,6 +29,9 @@
       "path": "../../../local-config/src/lib"
     },
     {
+      "path": "../../../native/src/lib"
+    },
+    {
       "path": "../../../oauth-provider-test/src/lib"
     },
     {

@@ -44,7 +44,6 @@ describe("/auth", () => {
         $SimpleUser,
       );
       {
-        console.error("ERR1");
         const expected: SimpleUser = {
           type: ObjectType.User,
           id: actualUser.id,
@@ -71,7 +70,6 @@ describe("/auth", () => {
         chai.assert.deepEqual(actualUser, expected);
       }
       {
-        console.error("ERR2");
         const actual: AuthContext = await agent.get("/auth/self", $AuthContext);
         const expected: AuthContext = {
           type: AuthType.User,

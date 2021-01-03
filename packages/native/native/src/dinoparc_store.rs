@@ -9,10 +9,12 @@ pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject
 }
 
 pub mod mem {
+  use crate::clock::get_native_clock;
   use crate::clock::system_clock::JsSystemClock;
+  use crate::clock::virtual_clock::JsVirtualClock;
   use crate::neon_namespace::NeonNamespace;
   use crate::tokio_runtime::spawn_future;
-  use etwin_core::clock::Clock;
+  use etwin_core::clock::{Clock, SystemClock, VirtualClock};
   use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser, TaggedShortDinoparcUser};
   use etwin_dinoparc_store::mem::MemDinoparcStore;
   use neon::prelude::*;
@@ -29,8 +31,8 @@ pub mod mem {
   pub type JsMemDinoparcStore = JsBox<Arc<MemDinoparcStore<Arc<dyn Clock>>>>;
 
   pub fn new(mut cx: FunctionContext) -> JsResult<JsMemDinoparcStore> {
-    let clock = cx.argument::<JsSystemClock>(0)?;
-    let clock = Arc::clone(&*clock);
+    let clock = cx.argument::<JsValue>(0)?;
+    let clock: Arc<dyn Clock> = get_native_clock(&mut cx, clock)?;
     let inner: Arc<MemDinoparcStore<Arc<dyn Clock>>> = Arc::new(MemDinoparcStore::new(clock));
     Ok(cx.boxed(inner))
   }
@@ -93,11 +95,13 @@ pub mod mem {
 }
 
 pub mod pg {
+  use crate::clock::get_native_clock;
   use crate::clock::system_clock::JsSystemClock;
+  use crate::clock::virtual_clock::JsVirtualClock;
   use crate::database::JsPgPool;
   use crate::neon_namespace::NeonNamespace;
   use crate::tokio_runtime::spawn_future;
-  use etwin_core::clock::Clock;
+  use etwin_core::clock::{Clock, SystemClock, VirtualClock};
   use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser, TaggedShortDinoparcUser};
   use etwin_dinoparc_store::pg::PgDinoparcStore;
   use neon::prelude::*;
@@ -115,9 +119,9 @@ pub mod pg {
   pub type JsPgDinoparcStore = JsBox<Arc<PgDinoparcStore<Arc<dyn Clock>, Arc<PgPool>>>>;
 
   pub fn new(mut cx: FunctionContext) -> JsResult<JsPgDinoparcStore> {
-    let clock = cx.argument::<JsSystemClock>(0)?;
+    let clock = cx.argument::<JsValue>(0)?;
     let database = cx.argument::<JsPgPool>(1)?;
-    let clock = Arc::clone(&*clock);
+    let clock: Arc<dyn Clock> = get_native_clock(&mut cx, clock)?;
     let database = Arc::new(PgPool::clone(&database));
     let inner: Arc<PgDinoparcStore<Arc<dyn Clock>, Arc<PgPool>>> = Arc::new(PgDinoparcStore::new(clock, database));
     Ok(cx.boxed(inner))

@@ -4,7 +4,6 @@ import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { SystemClockService } from "@eternal-twin/core/lib/clock/system.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
@@ -22,8 +21,6 @@ import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { HttpDinoparcClient } from "@eternal-twin/dinoparc-client-http";
-import { MemDinoparcStore } from "@eternal-twin/dinoparc-store-mem";
-import { PgDinoparcStore } from "@eternal-twin/dinoparc-store-pg";
 import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
@@ -34,6 +31,7 @@ import { PgHammerfestStore } from "@eternal-twin/hammerfest-store-pg";
 import { InMemoryLinkService } from "@eternal-twin/link-in-memory";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { ApiType, Config } from "@eternal-twin/local-config";
+import { Database as NativeDatabase, MemDinoparcStore, PgDinoparcStore, SystemClock } from "@eternal-twin/native";
 import { HttpOauthClientService } from "@eternal-twin/oauth-client-http";
 import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
@@ -70,7 +68,7 @@ export interface Api {
 }
 
 async function createApi(config: Config): Promise<{ api: Api; teardown(): Promise<void> }> {
-  const clock = new SystemClockService();
+  const clock = new SystemClock();
   const uuidGenerator = UUID4_GENERATOR;
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
@@ -101,7 +99,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
 
   if (config.etwin.api === ApiType.InMemory) {
     userStore = new MemUserStore({clock, uuidGenerator});
-    dinoparcStore = new MemDinoparcStore();
+    dinoparcStore = new MemDinoparcStore({clock});
     hammerfestStore = new MemHammerfestStore();
     twinoidStore = new MemTwinoidStore();
     link = new InMemoryLinkService({dinoparcStore, hammerfestStore, twinoidStore, userStore});
@@ -144,7 +142,14 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
       password: config.db.password,
     });
     const database = new Database(pool);
-    dinoparcStore = new PgDinoparcStore(database);
+    const nativeDatabase = await NativeDatabase.create({
+      host: config.db.host,
+      port: config.db.port,
+      name: config.db.name,
+      user: config.db.user,
+      password: config.db.password,
+    });
+    dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
     hammerfestStore = new PgHammerfestStore(database);
     twinoidStore = new PgTwinoidStore(database);
     userStore = new PgUserStore({clock, database, databaseSecret: secretKeyStr, uuidGenerator});

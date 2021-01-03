@@ -14,10 +14,10 @@
       "path": "../lib"
     },
     {
-      "path": "../../../dinoparc-store-mem/src/lib"
+      "path": "../../../hammerfest-store-mem/src/lib"
     },
     {
-      "path": "../../../hammerfest-store-mem/src/lib"
+      "path": "../../../native/src/lib"
     },
     {
       "path": "../../../token-test/src/lib"

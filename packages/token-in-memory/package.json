@@ -18,7 +18,8 @@
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
     "prepack": "yarn run build",
-    "test:build": "tsc --build src/test/tsconfig.json",
+    "native:build": "cd ../native && yarn run native:build",
+    "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha \"test/**/*.spec.js\""
   },
   "publishConfig": {
@@ -33,8 +34,8 @@
     "@eternal-twin/core": "workspace:*"
   },
   "devDependencies": {
-    "@eternal-twin/dinoparc-store-mem": "workspace:*",
     "@eternal-twin/hammerfest-store-mem": "workspace:*",
+    "@eternal-twin/native": "workspace:*",
     "@eternal-twin/token-test": "workspace:*",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.0.4",

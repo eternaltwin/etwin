@@ -20,9 +20,6 @@
       "path": "../../../auth-pg/src/lib"
     },
     {
-      "path": "../../../dinoparc-store-pg/src/lib"
-    },
-    {
       "path": "../../../dinoparc-client-mem/src/lib"
     },
     {
@@ -45,6 +42,9 @@
     },
     {
       "path": "../../../local-config/src/lib"
+    },
+    {
+      "path": "../../../native/src/lib"
     },
     {
       "path": "../../../oauth-provider-pg/src/lib"

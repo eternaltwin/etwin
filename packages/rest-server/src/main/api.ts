@@ -1,6 +1,5 @@
 import { PgAnnouncementService } from "@eternal-twin/announcement-pg";
 import { PgAuthService } from "@eternal-twin/auth-pg";
-import { SystemClockService } from "@eternal-twin/core/lib/clock/system.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
@@ -8,7 +7,6 @@ import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-serv
 import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { HttpDinoparcClient } from "@eternal-twin/dinoparc-client-http";
-import { PgDinoparcStore } from "@eternal-twin/dinoparc-store-pg";
 import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { PgForumService } from "@eternal-twin/forum-pg";
@@ -16,6 +14,7 @@ import { HttpHammerfestClient } from "@eternal-twin/hammerfest-client-http";
 import { PgHammerfestStore } from "@eternal-twin/hammerfest-store-pg";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { Config } from "@eternal-twin/local-config";
+import { Database as NativeDatabase, PgDinoparcStore, SystemClock } from "@eternal-twin/native";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
@@ -36,8 +35,15 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
     user: config.db.user,
     password: config.db.password,
   });
+  const nativeDatabase = await NativeDatabase.create({
+    host: config.db.host,
+    port: config.db.port,
+    name: config.db.name,
+    user: config.db.user,
+    password: config.db.password,
+  });
 
-  const clock = new SystemClockService();
+  const clock = new SystemClock();
   const uuidGenerator = UUID4_GENERATOR;
   const database = new Database(pool);
   const secretKeyStr: string = config.etwin.secret;
@@ -47,7 +53,7 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
   const password = new ScryptPasswordService();
   const userStore = new PgUserStore({clock, database, databaseSecret: secretKeyStr, uuidGenerator});
   const dinoparcClient = new HttpDinoparcClient();
-  const dinoparcStore = new PgDinoparcStore(database);
+  const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
   const hammerfestStore = new PgHammerfestStore(database);
   const hammerfestClient = new HttpHammerfestClient();
   const twinoidStore = new PgTwinoidStore(database);

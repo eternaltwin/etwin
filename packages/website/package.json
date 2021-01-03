@@ -16,7 +16,8 @@
     "etwin": "./bin/etwin.js"
   },
   "scripts": {
-    "app:deps": "tsc --build tsconfig.deps.json",
+    "native:build": "cd ../native && yarn run native:build",
+    "app:deps": "yarn run native:build && tsc --build tsconfig.deps.json",
     "app:serve:browser": "ng serve",
     "app:serve:server": "ng run etwin:serve-ssr",
     "app:dev:build": "yarn run app:dev:build:browser && yarn run app:dev:build:server",
@@ -49,8 +50,6 @@
     "@eternal-twin/auth-pg": "workspace:*",
     "@eternal-twin/core": "workspace:*",
     "@eternal-twin/dinoparc-client-http": "workspace:*",
-    "@eternal-twin/dinoparc-store-mem": "workspace:*",
-    "@eternal-twin/dinoparc-store-pg": "workspace:*",
     "@eternal-twin/email-console": "workspace:*",
     "@eternal-twin/email-template-etwin": "workspace:*",
     "@eternal-twin/forum-in-memory": "workspace:*",
@@ -61,6 +60,7 @@
     "@eternal-twin/link-in-memory": "workspace:*",
     "@eternal-twin/link-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
+    "@eternal-twin/native": "workspace:*",
     "@eternal-twin/oauth-client-http": "workspace:*",
     "@eternal-twin/oauth-provider-in-memory": "workspace:*",
     "@eternal-twin/oauth-provider-pg": "workspace:*",

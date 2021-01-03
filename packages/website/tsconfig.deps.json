@@ -24,12 +24,6 @@
       "path": "../dinoparc-client-http/src/lib"
     },
     {
-      "path": "../dinoparc-store-mem/src/lib"
-    },
-    {
-      "path": "../dinoparc-store-pg/src/lib"
-    },
-    {
       "path": "../forum-in-memory/src/lib"
     },
     {
@@ -49,6 +43,9 @@
     },
     {
       "path": "../link-pg/src/lib"
+    },
+    {
+      "path": "../native/src/lib"
     },
     {
       "path": "../oauth-provider-in-memory/src/lib"

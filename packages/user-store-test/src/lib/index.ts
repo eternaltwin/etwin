@@ -5,7 +5,7 @@ import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/registe
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
-import { VirtualClockService } from "@eternal-twin/core/lib/clock/virtual.js";
+import { ClockService } from "@eternal-twin/core/lib/clock/service";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { $CompleteSimpleUser, CompleteSimpleUser } from "@eternal-twin/core/lib/user/complete-simple-user.js";
 import { COMPLETE_USER_FIELDS } from "@eternal-twin/core/lib/user/complete-user-fields.js";
@@ -21,7 +21,7 @@ import chai from "chai";
 
 export interface Api {
   auth: AuthService;
-  clock: VirtualClockService;
+  clock: ClockService;
   userStore: UserStore;
 }
 

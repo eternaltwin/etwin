@@ -1,6 +1,6 @@
-import { VirtualClockService } from "@eternal-twin/core/lib/clock/virtual.js";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
+import { VirtualClock } from "@eternal-twin/native";
 import { Api, testOauthProviderStore } from "@eternal-twin/oauth-provider-test";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
@@ -24,7 +24,7 @@ async function withPgOauthProviderStore<R>(fn: (api: Api) => Promise<R>): Promis
     const secretKeyStr: string = config.etwin.secret;
     const password = new ScryptPasswordService();
     const uuidGenerator = UUID4_GENERATOR;
-    const clock = new VirtualClockService(new Date("2020-10-22T19:28:22.976Z"));
+    const clock = new VirtualClock();
     const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
     return fn({clock, oauthProviderStore});
   });

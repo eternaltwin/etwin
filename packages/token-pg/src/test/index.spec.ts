@@ -1,7 +1,7 @@
-import { PgDinoparcStore } from "@eternal-twin/dinoparc-store-pg";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { PgHammerfestStore } from "@eternal-twin/hammerfest-store-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
+import { Database as NativeDatabase, PgDinoparcStore, SystemClock } from "@eternal-twin/native";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { Api, testTokenService } from "@eternal-twin/token-test";
 
@@ -18,12 +18,15 @@ async function withPgTokenService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   };
 
   return withPgPool(dbConfig, async (pool) => {
-    const db = new Database(pool);
+    const database = new Database(pool);
+    const nativeDatabase = await NativeDatabase.create(dbConfig);
+    await forceCreateLatest(database);
+
     const dbSecretStr: string = config.etwin.secret;
-    await forceCreateLatest(db);
-    const dinoparcStore = new PgDinoparcStore(db);
-    const hammerfestStore = new PgHammerfestStore(db);
-    const token = new PgTokenService(db, dbSecretStr, dinoparcStore, hammerfestStore);
+    const clock = new SystemClock();
+    const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
+    const hammerfestStore = new PgHammerfestStore(database);
+    const token = new PgTokenService(database, dbSecretStr, dinoparcStore, hammerfestStore);
     return fn({hammerfestStore, token});
   });
 }

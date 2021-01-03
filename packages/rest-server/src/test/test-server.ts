@@ -1,6 +1,5 @@
 import { PgAnnouncementService } from "@eternal-twin/announcement-pg";
 import { PgAuthService } from "@eternal-twin/auth-pg";
-import { SystemClockService } from "@eternal-twin/core/lib/clock/system.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
@@ -8,7 +7,6 @@ import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-serv
 import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { MemDinoparcClient } from "@eternal-twin/dinoparc-client-mem";
-import { PgDinoparcStore } from "@eternal-twin/dinoparc-store-pg";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
@@ -17,6 +15,7 @@ import { MemHammerfestClient } from "@eternal-twin/hammerfest-client-mem";
 import { PgHammerfestStore } from "@eternal-twin/hammerfest-store-pg";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
+import { Database as NativeDatabase, PgDinoparcStore, SystemClock } from "@eternal-twin/native";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
@@ -48,18 +47,20 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
   };
 
   return withPgPool(dbConfig, async (pool) => {
-    const clock = new SystemClockService();
-    const uuidGenerator = UUID4_GENERATOR;
     const database = new Database(pool);
+    const nativeDatabase = await NativeDatabase.create(dbConfig);
+    await forceCreateLatest(database);
+
+    const clock = new SystemClock();
+    const uuidGenerator = UUID4_GENERATOR;
     const secretKeyStr: string = config.etwin.secret;
     const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
-    await forceCreateLatest(database);
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
     const password = new ScryptPasswordService();
     const userStore = new PgUserStore({clock, database, databaseSecret: secretKeyStr, uuidGenerator});
     const dinoparcClient = new MemDinoparcClient();
-    const dinoparcStore = new PgDinoparcStore(database);
+    const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
     const hammerfestClient = new MemHammerfestClient();
     const hammerfestStore = new PgHammerfestStore(database);
     const twinoidClient = new HttpTwinoidClientService();

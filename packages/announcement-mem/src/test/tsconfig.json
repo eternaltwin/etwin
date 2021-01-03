@@ -23,9 +23,6 @@
       "path": "../../../dinoparc-client-mem/src/lib"
     },
     {
-      "path": "../../../dinoparc-store-mem/src/lib"
-    },
-    {
       "path": "../../../email-in-memory/src/lib"
     },
     {
@@ -45,6 +42,9 @@
     },
     {
       "path": "../../../local-config/src/lib"
+    },
+    {
+      "path": "../../../native/src/lib"
     },
     {
       "path": "../../../oauth-provider-in-memory/src/lib"
