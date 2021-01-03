@@ -21,6 +21,7 @@ before_script:
   - "rustup --version"
   - "cargo --version"
   - "rustc --version"
+  - "rustup component add rustfmt"
   - "yarn install --immutable"
   - |
     cat >etwin.toml <<EOL
@@ -62,6 +63,9 @@ stages:
 ci:
   stage: "ci"
   script:
+    - "cargo build"
+#    - "cargo clippy --all-targets --all-features -- -D warnings"
+    - "cargo fmt -- --check"
     - "yarn run lint"
     - "yarn run test"
     - 'yarn --cwd packages/rest-server run main:build'

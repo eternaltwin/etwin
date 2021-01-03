@@ -8,14 +8,14 @@ pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject
 }
 
 pub mod mem {
+  use crate::clock::system_clock::JsSystemClock;
   use crate::neon_namespace::NeonNamespace;
+  use crate::tokio_runtime::spawn_future;
   use etwin_core::clock::Clock;
+  use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser, TaggedShortDinoparcUser};
+  use etwin_dinoparc_store::mem::MemDinoparcStore;
   use neon::prelude::*;
   use std::sync::Arc;
-  use etwin_dinoparc_store::mem::MemDinoparcStore;
-  use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser, TaggedShortDinoparcUser};
-  use crate::clock::system_clock::JsSystemClock;
-  use crate::tokio_runtime::spawn_future;
 
   pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject> {
     let ns = cx.empty_object();
@@ -46,9 +46,7 @@ pub mod mem {
     spawn_future(Box::pin(async move {
       let user = store.get_short_user(&options).await.unwrap();
       let user_json = match user {
-        Some(user) => {
-          Some(serde_json::to_string(&TaggedShortDinoparcUser::new(user)).unwrap())
-        },
+        Some(user) => Some(serde_json::to_string(&TaggedShortDinoparcUser::new(user)).unwrap()),
         None => None,
       };
       queue.send(move |mut cx| {
@@ -56,9 +54,7 @@ pub mod mem {
         let this = cx.null();
         let err: Handle<JsValue> = cx.null().upcast();
         let res: Handle<JsValue> = match user_json {
-          Some(user) => {
-            cx.string(user).upcast()
-          },
+          Some(user) => cx.string(user).upcast(),
           None => cx.null().upcast(),
         };
         let _ = cb.call(&mut cx, this, vec![err, res])?;

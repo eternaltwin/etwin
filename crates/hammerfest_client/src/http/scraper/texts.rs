@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use etwin_core::hammerfest::{ HammerfestServer, HammerfestQuestId };
+use etwin_core::hammerfest::{HammerfestQuestId, HammerfestServer};
 use once_cell::sync::Lazy;
 
 pub struct ScraperTexts {
@@ -29,7 +29,7 @@ impl ScraperTexts {
   }
 }
 
-static TEXTS_FR: Lazy<ScraperTexts> = Lazy::new(||
+static TEXTS_FR: Lazy<ScraperTexts> = Lazy::new(|| {
   ScraperTexts::empty()
     .quest("Les constellations", "0")
     .quest("Mixtures du zodiaque", "1")
@@ -107,9 +107,9 @@ static TEXTS_FR: Lazy<ScraperTexts> = Lazy::new(||
     .quest("Rapide comme l'éclair !", "73")
     .quest("Maître des Bombes", "74")
     .quest("Tombeau de Tuberculoz", "75")
-);
+});
 
-static TEXTS_ES: Lazy<ScraperTexts> = Lazy::new(||
+static TEXTS_ES: Lazy<ScraperTexts> = Lazy::new(|| {
   ScraperTexts::empty()
     .quest("Las constelaciones", "0")
     .quest("Influencias del zodíaco", "1")
@@ -187,9 +187,9 @@ static TEXTS_ES: Lazy<ScraperTexts> = Lazy::new(||
     .quest("Rápido como el rayo...", "73")
     .quest("Maestro de Bombas", "74")
     .quest("Tumba de Tubérculo", "75")
-);
+});
 
-static TEXTS_EN: Lazy<ScraperTexts> = Lazy::new(||
+static TEXTS_EN: Lazy<ScraperTexts> = Lazy::new(|| {
   ScraperTexts::empty()
     .quest("Constellations", "0")
     .quest("Zodiac mixture", "1")
@@ -267,4 +267,4 @@ static TEXTS_EN: Lazy<ScraperTexts> = Lazy::new(||
     .quest("As quick as the lightning!", "73")
     .quest("Bomb Master", "74")
     .quest("Tuber's tomb", "75")
-);
+});

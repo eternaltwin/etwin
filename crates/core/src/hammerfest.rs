@@ -1,16 +1,16 @@
 use crate::core::Instant;
+use crate::link::VersionedEtwinLink;
 use async_trait::async_trait;
 use once_cell::sync::Lazy;
 use regex::Regex;
-use std::error::Error;
-use std::collections::{HashMap, HashSet};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "sqlx")]
-use sqlx::{Database, database, Postgres, postgres};
-use std::str::FromStr;
+use sqlx::{database, postgres, Database, Postgres};
+use std::collections::{HashMap, HashSet};
+use std::error::Error;
 use std::fmt;
-use crate::link::VersionedEtwinLink;
+use std::str::FromStr;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -70,9 +70,12 @@ impl sqlx::Type<Postgres> for HammerfestServer {
 
 #[cfg(feature = "sqlx")]
 impl<'r, Db: Database> sqlx::Decode<'r, Db> for HammerfestServer
-  where &'r str: sqlx::Decode<'r, Db>
+where
+  &'r str: sqlx::Decode<'r, Db>,
 {
-  fn decode(value: <Db as database::HasValueRef<'r>>::ValueRef) -> Result<HammerfestServer, Box<dyn Error + 'static + Send + Sync>> {
+  fn decode(
+    value: <Db as database::HasValueRef<'r>>::ValueRef,
+  ) -> Result<HammerfestServer, Box<dyn Error + 'static + Send + Sync>> {
     let value: &str = <&str as sqlx::Decode<Db>>::decode(value)?;
     Ok(value.parse()?)
   }
@@ -80,16 +83,21 @@ impl<'r, Db: Database> sqlx::Decode<'r, Db> for HammerfestServer
 
 #[cfg(feature = "sqlx")]
 impl<'q, Db: Database> sqlx::Encode<'q, Db> for HammerfestServer
-  where &'q str: sqlx::Encode<'q, Db>
+where
+  &'q str: sqlx::Encode<'q, Db>,
 {
   fn encode_by_ref(&self, buf: &mut <Db as database::HasArguments<'q>>::ArgumentBuffer) -> sqlx::encode::IsNull {
     self.as_str().encode(buf)
   }
 }
 
-#[cfg_attr(feature = "sqlx", derive(sqlx::Type), sqlx(transparent, rename = "hammerfest_username"))]
+#[cfg_attr(
+  feature = "sqlx",
+  derive(sqlx::Type),
+  sqlx(transparent, rename = "hammerfest_username")
+)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, )]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestUsername(String);
 
 impl HammerfestUsername {
@@ -108,7 +116,11 @@ impl HammerfestUsername {
   }
 }
 
-#[cfg_attr(feature = "sqlx", derive(sqlx::Type), sqlx(transparent, rename = "hammerfest_user_id"))]
+#[cfg_attr(
+  feature = "sqlx",
+  derive(sqlx::Type),
+  sqlx(transparent, rename = "hammerfest_user_id")
+)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestUserId(String);
@@ -247,7 +259,6 @@ pub struct HammerfestGetProfileByIdOptions {
   pub server: HammerfestServer,
   pub user_id: HammerfestUserId,
 }
-
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -523,9 +534,17 @@ pub struct GetHammerfestUserOptions {
 pub trait HammerfestClient: Send + Sync {
   async fn create_session(&self, options: &HammerfestCredentials) -> Result<HammerfestSession, Box<dyn Error>>;
 
-  async fn test_session(&self, server: HammerfestServer, key: &HammerfestSessionKey) -> Result<Option<HammerfestSession>, Box<dyn Error>>;
+  async fn test_session(
+    &self,
+    server: HammerfestServer,
+    key: &HammerfestSessionKey,
+  ) -> Result<Option<HammerfestSession>, Box<dyn Error>>;
 
-  async fn get_profile_by_id(&self, session: Option<&HammerfestSession>, options: &HammerfestGetProfileByIdOptions) -> Result<Option<HammerfestProfile>, Box<dyn Error>>;
+  async fn get_profile_by_id(
+    &self,
+    session: Option<&HammerfestSession>,
+    options: &HammerfestGetProfileByIdOptions,
+  ) -> Result<Option<HammerfestProfile>, Box<dyn Error>>;
 
   async fn get_own_items(&self, session: &HammerfestSession) -> Result<HashMap<HammerfestItemId, u32>, Box<dyn Error>>;
 
@@ -533,24 +552,49 @@ pub trait HammerfestClient: Send + Sync {
 
   async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShop, Box<dyn Error>>;
 
-  async fn get_forum_themes(&self, session: Option<&HammerfestSession>, server: HammerfestServer) -> Result<Vec<HammerfestForumTheme>, Box<dyn Error>>;
+  async fn get_forum_themes(
+    &self,
+    session: Option<&HammerfestSession>,
+    server: HammerfestServer,
+  ) -> Result<Vec<HammerfestForumTheme>, Box<dyn Error>>;
 
-  async fn get_forum_theme_page(&self, session: Option<&HammerfestSession>, server: HammerfestServer, theme_id: HammerfestForumThemeId, page1: u32) -> Result<HammerfestForumThemePage, Box<dyn Error>>;
+  async fn get_forum_theme_page(
+    &self,
+    session: Option<&HammerfestSession>,
+    server: HammerfestServer,
+    theme_id: HammerfestForumThemeId,
+    page1: u32,
+  ) -> Result<HammerfestForumThemePage, Box<dyn Error>>;
 
-  async fn get_forum_thread_page(&self, session: Option<&HammerfestSession>, server: HammerfestServer, thread_id: HammerfestForumThreadId, page1: u32) -> Result<HammerfestForumThreadPage, Box<dyn Error>>;
+  async fn get_forum_thread_page(
+    &self,
+    session: Option<&HammerfestSession>,
+    server: HammerfestServer,
+    thread_id: HammerfestForumThreadId,
+    page1: u32,
+  ) -> Result<HammerfestForumThreadPage, Box<dyn Error>>;
 }
 
 #[cfg(feature = "serde")]
 fn deserialize_optional<'de, T, D>(deserializer: D) -> Result<Option<Option<T>>, D::Error>
-  where T: Deserialize<'de>, D: serde::Deserializer<'de> {
+where
+  T: Deserialize<'de>,
+  D: serde::Deserializer<'de>,
+{
   Ok(Some(Option::deserialize(deserializer)?))
 }
 
 #[async_trait]
 pub trait HammerfestStore: Send + Sync {
-  async fn get_short_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ShortHammerfestUser>, Box<dyn Error>>;
+  async fn get_short_user(
+    &self,
+    options: &GetHammerfestUserOptions,
+  ) -> Result<Option<ShortHammerfestUser>, Box<dyn Error>>;
 
-  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>>;
+  async fn get_user(
+    &self,
+    options: &GetHammerfestUserOptions,
+  ) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>>;
 
   async fn touch_short_user(&self, options: &ShortHammerfestUser) -> Result<ArchivedHammerfestUser, Box<dyn Error>>;
 }

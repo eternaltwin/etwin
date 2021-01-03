@@ -1,6 +1,6 @@
+use crate::core::Instant;
 use chrono::{Duration, Utc};
 use std::sync::atomic::{AtomicI64, Ordering};
-use crate::core::Instant;
 
 pub trait Clock: Send + Sync {
   fn now(&self) -> Instant;

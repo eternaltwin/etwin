@@ -1,18 +1,21 @@
 use async_trait::async_trait;
 use core::ops::Deref;
 use etwin_core::clock::Clock;
-use etwin_core::user::{CompleteSimpleUser, CreateUserOptions, GetUserOptions, SimpleUser, UserDisplayNameVersion, UserDisplayNameVersions, UserId, UserStore, UserDisplayName};
+use etwin_core::user::{
+  CompleteSimpleUser, CreateUserOptions, GetUserOptions, SimpleUser, UserDisplayName, UserDisplayNameVersion,
+  UserDisplayNameVersions, UserId, UserStore,
+};
 use etwin_core::uuid::UuidGenerator;
 use sqlx::postgres::PgPool;
 use std::error::Error;
 
 pub struct PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
-  where
-    TyClock: Deref + Send + Sync,
-    <TyClock as Deref>::Target: Clock,
-    TyDatabase: Deref<Target=PgPool> + Send + Sync,
-    TyUuidGenerator: Deref + Send + Sync,
-    <TyUuidGenerator as Deref>::Target: UuidGenerator,
+where
+  TyClock: Deref + Send + Sync,
+  <TyClock as Deref>::Target: Clock,
+  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyUuidGenerator: Deref + Send + Sync,
+  <TyUuidGenerator as Deref>::Target: UuidGenerator,
 {
   clock: TyClock,
   database: TyDatabase,
@@ -20,12 +23,12 @@ pub struct PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
 }
 
 impl<TyClock, TyDatabase, TyUuidGenerator> PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
-  where
-    TyClock: Deref + Send + Sync,
-    <TyClock as Deref>::Target: Clock,
-    TyDatabase: Deref<Target=PgPool> + Send + Sync,
-    TyUuidGenerator: Deref + Send + Sync,
-    <TyUuidGenerator as Deref>::Target: UuidGenerator,
+where
+  TyClock: Deref + Send + Sync,
+  <TyClock as Deref>::Target: Clock,
+  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyUuidGenerator: Deref + Send + Sync,
+  <TyUuidGenerator as Deref>::Target: UuidGenerator,
 {
   pub fn new(clock: TyClock, database: TyDatabase, uuid_generator: TyUuidGenerator) -> Self {
     Self {
@@ -38,12 +41,12 @@ impl<TyClock, TyDatabase, TyUuidGenerator> PgUserStore<TyClock, TyDatabase, TyUu
 
 #[async_trait]
 impl<TyClock, TyDatabase, TyUuidGenerator> UserStore for PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
-  where
-    TyClock: Deref + Send + Sync,
-    <TyClock as Deref>::Target: Clock,
-    TyDatabase: Deref<Target=PgPool> + Send + Sync,
-    TyUuidGenerator: Deref + Send + Sync,
-    <TyUuidGenerator as Deref>::Target: UuidGenerator,
+where
+  TyClock: Deref + Send + Sync,
+  <TyClock as Deref>::Target: Clock,
+  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyUuidGenerator: Deref + Send + Sync,
+  <TyUuidGenerator as Deref>::Target: UuidGenerator,
 {
   async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, Box<dyn Error>> {
     let user_id = UserId::from_uuid((*self.uuid_generator).next());
@@ -74,14 +77,15 @@ impl<TyClock, TyDatabase, TyUuidGenerator> UserStore for PgUserStore<TyClock, Ty
         (NOT EXISTS(SELECT 1 FROM administrator_exists))
       )
       RETURNING user_id, display_name, is_administrator;
-    ")
-      .bind("dev_secret")
-      .bind(user_id)
-      .bind(options.display_name.as_str())
-      .bind(options.username.as_ref().map(|x| x.as_str()))
-      .bind(None::<&str>)
-      .fetch_one(&*self.database)
-      .await?;
+    ",
+    )
+    .bind("dev_secret")
+    .bind(user_id)
+    .bind(options.display_name.as_str())
+    .bind(options.username.as_ref().map(|x| x.as_str()))
+    .bind(None::<&str>)
+    .fetch_one(&*self.database)
+    .await?;
 
     let user = CompleteSimpleUser {
       id: user_id,

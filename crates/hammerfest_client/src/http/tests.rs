@@ -1,14 +1,13 @@
-
-use std::path::{ Path, PathBuf };
 use std::fs::File;
-use std::io::{ BufReader, BufWriter };
+use std::io::{BufReader, BufWriter};
+use std::path::{Path, PathBuf};
 
 use once_cell::sync::Lazy;
-use serde::{ Serialize, Deserialize, de::DeserializeOwned };
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
-use etwin_core::hammerfest::*;
-use super::scraper;
 use super::errors::ScraperError;
+use super::scraper;
+use etwin_core::hammerfest::*;
 
 macro_rules! declare_scraper_tests {
   ($($test_type:ident($test_name:ident);)*) => { $(
@@ -57,24 +56,22 @@ declare_scraper_tests! {
 mod tests_helpers {
   use super::*;
 
-  pub static RESOURCES_ROOT: Lazy<PathBuf> = Lazy::new(|| {
-    PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap())
-      .join("test-resources/scraping")
-  });
+  pub static RESOURCES_ROOT: Lazy<PathBuf> =
+    Lazy::new(|| PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap()).join("test-resources/scraping"));
 
   // Converts a test function name into a path: `__` becomes `/`, and `_` becomes `-`.
   pub fn parse_path_from_fn_name(root: &Path, name: &str) -> PathBuf {
     let mut path = root.to_owned();
-    path.extend(name.split("__").map(|part| {
-      part.replace('_', "-")
-    }));
+    path.extend(name.split("__").map(|part| part.replace('_', "-")));
     path
   }
 
-  pub fn test_scraper<T, O, F>(mut path: PathBuf, scraper: F) where
-      T: Serialize + DeserializeOwned + Eq,
-      O: DeserializeOwned,
-      F: FnOnce(O, &scraper::Html) -> Result<T, ScraperError> {
+  pub fn test_scraper<T, O, F>(mut path: PathBuf, scraper: F)
+  where
+    T: Serialize + DeserializeOwned + Eq,
+    O: DeserializeOwned,
+    F: FnOnce(O, &scraper::Html) -> Result<T, ScraperError>,
+  {
     path.push("input.html");
     let input = std::fs::read_to_string(&path).unwrap();
     let input = scraper::Html::parse_document(&input);
@@ -110,7 +107,7 @@ mod tests_impl {
 
     #[derive(Serialize, Deserialize, PartialEq, Eq)]
     struct Output {
-      #[serde(rename="self")]
+      #[serde(rename = "self")]
       this: Option<ShortHammerfestUser>,
       is_error: bool,
     }
@@ -122,7 +119,7 @@ mod tests_impl {
       })
     });
   }
-  
+
   pub fn profile(path: PathBuf) {
     #[derive(Deserialize)]
     struct Options {
@@ -135,4 +132,3 @@ mod tests_impl {
     });
   }
 }
-

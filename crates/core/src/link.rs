@@ -1,13 +1,13 @@
-use crate::hammerfest::{ShortHammerfestUser, HammerfestServer, HammerfestUserId, HammerfestUserIdRef};
-use crate::core::{UserDot, Instant, RawUserDot};
-use crate::dinoparc::{ShortDinoparcUser, DinoparcServer, DinoparcUserId, DinoparcUserIdRef};
-use crate::user::{ShortUser, UserId, UserIdRef};
+use crate::core::{Instant, RawUserDot, UserDot};
+use crate::dinoparc::{DinoparcServer, DinoparcUserId, DinoparcUserIdRef, ShortDinoparcUser};
+use crate::hammerfest::{HammerfestServer, HammerfestUserId, HammerfestUserIdRef, ShortHammerfestUser};
 use crate::twinoid::{ShortTwinoidUser, TwinoidUserId, TwinoidUserIdRef};
+use crate::user::{ShortUser, UserId, UserIdRef};
 use async_trait::async_trait;
-use std::error::Error;
-use std::fmt;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
+use std::error::Error;
+use std::fmt;
 use thiserror::Error;
 
 #[cfg(feature = "serde")]
@@ -47,7 +47,6 @@ pub struct VersionedRawLink<T: RemoteUserIdRef> {
   #[cfg_attr(feature = "serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub old: Vec<OldRawLink<T>>,
 }
-
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -173,8 +172,20 @@ pub enum TouchLinkError<T: RemoteUserIdRef> {
 
 #[async_trait]
 pub trait LinkStore: Send + Sync {
-  async fn touch_dinoparc_link(&self, options: &TouchLinkOptions<DinoparcUserIdRef>) -> Result<VersionedRawLink<DinoparcUserIdRef>, TouchLinkError<DinoparcUserIdRef>>;
-  async fn touch_hammerfest_link(&self, options: &TouchLinkOptions<HammerfestUserIdRef>) -> Result<VersionedRawLink<HammerfestUserIdRef>, TouchLinkError<HammerfestUserIdRef>>;
-  async fn touch_twinoid_link(&self, options: &TouchLinkOptions<TwinoidUserIdRef>) -> Result<VersionedRawLink<TwinoidUserIdRef>, TouchLinkError<TwinoidUserIdRef>>;
-  async fn get_link_from_hammerfest(&self, options: &GetLinkOptions<HammerfestUserIdRef>) -> Result<VersionedRawLink<HammerfestUserIdRef>, Box<dyn Error>>;
+  async fn touch_dinoparc_link(
+    &self,
+    options: &TouchLinkOptions<DinoparcUserIdRef>,
+  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, TouchLinkError<DinoparcUserIdRef>>;
+  async fn touch_hammerfest_link(
+    &self,
+    options: &TouchLinkOptions<HammerfestUserIdRef>,
+  ) -> Result<VersionedRawLink<HammerfestUserIdRef>, TouchLinkError<HammerfestUserIdRef>>;
+  async fn touch_twinoid_link(
+    &self,
+    options: &TouchLinkOptions<TwinoidUserIdRef>,
+  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, TouchLinkError<TwinoidUserIdRef>>;
+  async fn get_link_from_hammerfest(
+    &self,
+    options: &GetLinkOptions<HammerfestUserIdRef>,
+  ) -> Result<VersionedRawLink<HammerfestUserIdRef>, Box<dyn Error>>;
 }

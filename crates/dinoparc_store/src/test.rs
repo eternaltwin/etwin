@@ -1,12 +1,12 @@
 use etwin_core::clock::VirtualClock;
+use etwin_core::dinoparc::{DinoparcServer, DinoparcStore, DinoparcUserId, GetDinoparcUserOptions};
 use std::ops::Deref;
-use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, DinoparcServer, DinoparcUserId};
 
 pub(crate) struct TestApi<TyClock, TyDinoparcStore>
-  where
-    TyClock: Deref<Target=VirtualClock> + Send + Sync,
-    TyDinoparcStore: Deref + Send + Sync,
-    <TyDinoparcStore as Deref>::Target: DinoparcStore,
+where
+  TyClock: Deref<Target = VirtualClock> + Send + Sync,
+  TyDinoparcStore: Deref + Send + Sync,
+  <TyDinoparcStore as Deref>::Target: DinoparcStore,
 {
   pub(crate) _clock: TyClock,
   pub(crate) dinoparc_store: TyDinoparcStore,
@@ -19,10 +19,10 @@ pub(crate) struct TestApi<TyClock, TyDinoparcStore>
 // }
 
 pub(crate) async fn test_empty<TyClock, TyDinoparcStore>(api: TestApi<TyClock, TyDinoparcStore>)
-  where
-    TyClock: Deref<Target=VirtualClock> + Send + Sync,
-    TyDinoparcStore: Deref + Send + Sync,
-    <TyDinoparcStore as Deref>::Target: DinoparcStore,
+where
+  TyClock: Deref<Target = VirtualClock> + Send + Sync,
+  TyDinoparcStore: Deref + Send + Sync,
+  <TyDinoparcStore as Deref>::Target: DinoparcStore,
 {
   let options = GetDinoparcUserOptions {
     server: DinoparcServer::DinoparcCom,

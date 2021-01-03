@@ -1,4 +1,3 @@
-
 pub(crate) mod errors;
 
 #[cfg(feature = "http-client")]

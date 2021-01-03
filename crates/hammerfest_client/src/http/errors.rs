@@ -1,4 +1,4 @@
-use etwin_core::hammerfest::{ HammerfestServer, HammerfestUsername };
+use etwin_core::hammerfest::{HammerfestServer, HammerfestUsername};
 use reqwest::Url;
 use thiserror::Error;
 

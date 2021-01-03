@@ -1,6 +1,8 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
-use etwin_core::hammerfest::{HammerfestStore, HammerfestUserId, GetHammerfestUserOptions, ShortHammerfestUser, ArchivedHammerfestUser};
+use etwin_core::hammerfest::{
+  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestStore, HammerfestUserId, ShortHammerfestUser,
+};
 use std::collections::HashMap;
 use std::error::Error;
 use std::ops::Deref;
@@ -25,18 +27,18 @@ impl StoreState {
 }
 
 pub struct MemHammerfestStore<TyClock>
-  where
-    TyClock: Deref + Send + Sync,
-    <TyClock as Deref>::Target: Clock,
+where
+  TyClock: Deref + Send + Sync,
+  <TyClock as Deref>::Target: Clock,
 {
   clock: TyClock,
   state: Mutex<StoreState>,
 }
 
 impl<TyClock> MemHammerfestStore<TyClock>
-  where
-    TyClock: Deref + Send + Sync,
-    <TyClock as Deref>::Target: Clock,
+where
+  TyClock: Deref + Send + Sync,
+  <TyClock as Deref>::Target: Clock,
 {
   pub fn new(clock: TyClock) -> Self {
     Self {
@@ -48,16 +50,22 @@ impl<TyClock> MemHammerfestStore<TyClock>
 
 #[async_trait]
 impl<TyClock> HammerfestStore for MemHammerfestStore<TyClock>
-  where
-    TyClock: Deref + Send + Sync,
-    <TyClock as Deref>::Target: Clock,
+where
+  TyClock: Deref + Send + Sync,
+  <TyClock as Deref>::Target: Clock,
 {
-  async fn get_short_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ShortHammerfestUser>, Box<dyn Error>> {
+  async fn get_short_user(
+    &self,
+    options: &GetHammerfestUserOptions,
+  ) -> Result<Option<ShortHammerfestUser>, Box<dyn Error>> {
     let state = self.state.lock().unwrap();
     Ok(state.get_user(&options.id).cloned())
   }
 
-  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>> {
+  async fn get_user(
+    &self,
+    options: &GetHammerfestUserOptions,
+  ) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>> {
     unimplemented!()
   }
 
@@ -71,25 +79,28 @@ impl<TyClock> HammerfestStore for MemHammerfestStore<TyClock>
       username: short.username.clone(),
       archived_at: now,
       profile: None,
-      items: None
+      items: None,
     })
   }
 }
 
 #[cfg(test)]
 mod test {
-  use crate::test::{TestApi};
-  use etwin_core::clock::VirtualClock;
-  use chrono::{TimeZone, Utc};
-  use std::sync::Arc;
-  use etwin_core::hammerfest::HammerfestStore;
   use crate::mem::MemHammerfestStore;
+  use crate::test::TestApi;
+  use chrono::{TimeZone, Utc};
+  use etwin_core::clock::VirtualClock;
+  use etwin_core::hammerfest::HammerfestStore;
+  use std::sync::Arc;
 
   fn make_test_api() -> TestApi<Arc<VirtualClock>, Arc<dyn HammerfestStore>> {
     let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
     let hammerfest_store: Arc<dyn HammerfestStore> = Arc::new(MemHammerfestStore::new(Arc::clone(&clock)));
 
-    TestApi { _clock: clock, hammerfest_store }
+    TestApi {
+      _clock: clock,
+      hammerfest_store,
+    }
   }
 
   #[tokio::test]

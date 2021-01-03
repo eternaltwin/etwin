@@ -2,9 +2,9 @@ use crate::core::Instant;
 use async_trait::async_trait;
 use once_cell::sync::Lazy;
 use regex::Regex;
-use std::error::Error;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
+use std::error::Error;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -78,7 +78,7 @@ impl TaggedShortDinoparcUser {
   pub fn new(inner: ShortDinoparcUser) -> Self {
     Self {
       r#type: String::from("DinoparcUser"),
-      inner
+      inner,
     }
   }
 }
@@ -100,7 +100,8 @@ pub struct DinoparcUserIdRef {
 
 #[async_trait]
 pub trait DinoparcStore: Send + Sync {
-  async fn get_short_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ShortDinoparcUser>, Box<dyn Error>>;
+  async fn get_short_user(&self, options: &GetDinoparcUserOptions)
+    -> Result<Option<ShortDinoparcUser>, Box<dyn Error>>;
 
   async fn touch_short_user(&self, options: &ShortDinoparcUser) -> Result<ShortDinoparcUser, Box<dyn Error>>;
 }

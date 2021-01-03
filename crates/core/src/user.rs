@@ -1,13 +1,13 @@
+use crate::core::Instant;
 use crate::email::EmailAddress;
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use once_cell::sync::Lazy;
 use regex::Regex;
-use std::error::Error;
-use uuid::Uuid;
-use crate::core::Instant;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
+use std::error::Error;
+use uuid::Uuid;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -59,7 +59,10 @@ pub struct ShortUser {
 
 impl From<SimpleUser> for ShortUser {
   fn from(user: SimpleUser) -> Self {
-    Self { id: user.id, display_name: user.display_name }
+    Self {
+      id: user.id,
+      display_name: user.display_name,
+    }
   }
 }
 
@@ -80,7 +83,11 @@ pub struct User {
   pub is_administrator: bool,
 }
 
-#[cfg_attr(feature = "sqlx", derive(sqlx::Type), sqlx(transparent, rename = "user_display_name"))]
+#[cfg_attr(
+  feature = "sqlx",
+  derive(sqlx::Type),
+  sqlx(transparent, rename = "user_display_name")
+)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct UserDisplayName(String);

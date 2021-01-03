@@ -1,12 +1,12 @@
-use std::pin::Pin;
-use std::future::Future;
-use tokio::sync::mpsc;
 use once_cell::sync::OnceCell;
+use std::future::Future;
+use std::pin::Pin;
 use tokio::runtime::Runtime;
+use tokio::sync::mpsc;
 use tokio::sync::mpsc::error::SendError;
 
 pub(crate) enum Message {
-  Task(Pin<Box<dyn Future<Output=()> + Send>>),
+  Task(Pin<Box<dyn Future<Output = ()> + Send>>),
   // Shutdown,
 }
 
@@ -19,9 +19,7 @@ fn get_tokio_sender() -> &'static mpsc::UnboundedSender<Message> {
       rt.block_on(async {
         loop {
           match receiver.recv().await {
-            Some(Message::Task(fut)) => {
-              fut.await
-            }
+            Some(Message::Task(fut)) => fut.await,
             // Some(Message::Shutdown) => break,
             None => {}
           }
@@ -34,11 +32,11 @@ fn get_tokio_sender() -> &'static mpsc::UnboundedSender<Message> {
   })
 }
 
-pub(crate) fn try_spawn_future(task: Pin<Box<dyn Future<Output=()> + Send>>) -> Result<(), SendError<Message>> {
+pub(crate) fn try_spawn_future(task: Pin<Box<dyn Future<Output = ()> + Send>>) -> Result<(), SendError<Message>> {
   get_tokio_sender().clone().send(Message::Task(task))
 }
 
-pub(crate) fn spawn_future(task: Pin<Box<dyn Future<Output=()> + Send>>) {
+pub(crate) fn spawn_future(task: Pin<Box<dyn Future<Output = ()> + Send>>) {
   match try_spawn_future(task) {
     Ok(_) => {}
     Err(_) => panic!("Failed to schedule async task on Tokio runtime"),

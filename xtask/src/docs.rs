@@ -329,9 +329,7 @@ fn md_to_dom(md: &str) -> HtmlDocument {
           t => panic!("Unexpected tag: {:?}", t),
         };
         let attrs = match start {
-          md::Tag::Link(_ty, dest, _title) => {
-            vec![("href", dest.into_string())]
-          }
+          md::Tag::Link(_ty, dest, _title) => vec![("href", dest.into_string())],
           _ => Vec::new(),
         };
         Ok(HtmlNode::new_elem(name, attrs, children))
@@ -366,8 +364,8 @@ impl<'a> HtmlNodeSlice<'a> {
 
 impl HtmlSerialize for HtmlDocument {
   fn serialize<S>(&self, serializer: &mut S, traversal_scope: HtmlTraversalScope) -> io::Result<()>
-    where
-      S: HtmlSerializer,
+  where
+    S: HtmlSerializer,
   {
     HtmlNodeSlice::new(&self.children).serialize(serializer, traversal_scope)
   }
@@ -391,8 +389,8 @@ impl HtmlNode {
 
 impl HtmlSerialize for HtmlNode {
   fn serialize<S>(&self, serializer: &mut S, traversal_scope: HtmlTraversalScope) -> io::Result<()>
-    where
-      S: HtmlSerializer,
+  where
+    S: HtmlSerializer,
   {
     match self {
       Self::Elem(n) => n.serialize(serializer, traversal_scope),
@@ -403,8 +401,8 @@ impl HtmlSerialize for HtmlNode {
 
 impl HtmlSerialize for HtmlNodeSlice<'_> {
   fn serialize<S>(&self, serializer: &mut S, traversal_scope: HtmlTraversalScope) -> io::Result<()>
-    where
-      S: HtmlSerializer,
+  where
+    S: HtmlSerializer,
   {
     for n in self.0.iter() {
       n.serialize(serializer, traversal_scope.clone())?
@@ -467,8 +465,8 @@ impl HtmlElem {
 
 impl HtmlSerialize for HtmlElem {
   fn serialize<S>(&self, serializer: &mut S, traversal_scope: HtmlTraversalScope) -> io::Result<()>
-    where
-      S: HtmlSerializer,
+  where
+    S: HtmlSerializer,
   {
     serializer.start_elem(
       self.name.clone(),
@@ -493,8 +491,8 @@ impl HtmlText {
 
 impl HtmlSerialize for HtmlText {
   fn serialize<S>(&self, serializer: &mut S, _traversal_scope: HtmlTraversalScope) -> io::Result<()>
-    where
-      S: HtmlSerializer,
+  where
+    S: HtmlSerializer,
   {
     serializer.write_text(self.text.borrow())?;
     Ok(())

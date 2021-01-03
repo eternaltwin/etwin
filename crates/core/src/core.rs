@@ -1,5 +1,5 @@
-use chrono::{DateTime, Utc};
 use crate::user::{ShortUser, UserIdRef};
+use chrono::{DateTime, Utc};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 

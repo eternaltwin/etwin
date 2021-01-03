@@ -1,17 +1,16 @@
-
-mod utils;
 mod texts;
+mod utils;
 
-use std::collections::{ HashMap, HashSet };
+use std::collections::{HashMap, HashSet};
 
-use etwin_core::hammerfest::*;
 use etwin_core::core::Instant;
-use scraper::Selector;
+use etwin_core::hammerfest::*;
 use once_cell::sync::Lazy;
+use scraper::Selector;
 
-use super::errors::ScraperError;
-use self::utils::*;
 use self::texts::ScraperTexts;
+use self::utils::*;
+use super::errors::ScraperError;
 
 pub type Html = scraper::Html;
 
@@ -58,7 +57,11 @@ impl Selectors {
 }
 
 pub fn is_login_page_error(html: &Html) -> bool {
-  html.root_element().select(&Selectors::get().login_error).next().is_some()
+  html
+    .root_element()
+    .select(&Selectors::get().login_error)
+    .next()
+    .is_some()
 }
 
 struct RawTopBar<'a> {
@@ -79,10 +82,12 @@ fn scrape_raw_top_bar(html: &Html) -> Result<Option<RawTopBar>, ScraperError> {
     None => {
       select_one(&top_bar, &selectors.signin_in_top_bar)?;
       Ok(None)
-    },
+    }
     Some(user_link) => {
       let user_name = get_inner_text(&user_link)?.trim();
-      let user_id = user_link.value().attr("href")
+      let user_id = user_link
+        .value()
+        .attr("href")
         .and_then(|s| s.rsplit("user.html/").next())
         .unwrap_or("<missing href>");
       Ok(Some(RawTopBar { user_id, user_name }))
@@ -114,13 +119,20 @@ fn parse_item_url(url: &str) -> Option<Result<HammerfestItemId, ScraperError>> {
       "a" => return None,
       item => item,
     }
-  } else { "<missing-src>" };
+  } else {
+    "<missing-src>"
+  };
 
-  Some(HammerfestItemId::try_from_string(item.to_owned())
-    .map_err(|err| ScraperError::InvalidItemId(item.to_owned(), err)))
+  Some(
+    HammerfestItemId::try_from_string(item.to_owned()).map_err(|err| ScraperError::InvalidItemId(item.to_owned(), err)),
+  )
 }
 
-pub fn scrape_user_profile(server: HammerfestServer, id: HammerfestUserId, html: &Html) -> Result<Option<HammerfestProfile>, ScraperError> {
+pub fn scrape_user_profile(
+  server: HammerfestServer,
+  id: HammerfestUserId,
+  html: &Html,
+) -> Result<Option<HammerfestProfile>, ScraperError> {
   let selectors = Selectors::get();
   let texts = ScraperTexts::get(server);
   let root = html.root_element();
@@ -133,20 +145,27 @@ pub fn scrape_user_profile(server: HammerfestServer, id: HammerfestUserId, html:
 
   let mut email_elem = None;
   let (username_elem, best_score_elem, best_level_elem, season_score_elem, rank_elem) = {
-    let mut it =  root.select(&selectors.basic_data_in_profile)
-      .filter_map(|elem| if let Some(email_link) = elem.select(&selectors.simple_link).next() {
+    let mut it = root.select(&selectors.basic_data_in_profile).filter_map(|elem| {
+      if let Some(email_link) = elem.select(&selectors.simple_link).next() {
         email_elem = Some(email_link);
         None
       } else {
         Some(elem)
-      });
-    
+      }
+    });
+
     match (it.next(), it.next(), it.next(), it.next(), it.next(), it.next()) {
       (Some(a), Some(b), Some(c), Some(d), Some(e), None) => (a, b, c, d, e),
-      (_, _, _, _, _, None) => return Err(ScraperError::HtmlFragmentNotFound(
-        selector_to_string(&selectors.simple_link))),
-      (_, _, _, _, _, Some(_)) => return Err(ScraperError::TooManyHtmlFragments(
-        selector_to_string(&selectors.simple_link))),
+      (_, _, _, _, _, None) => {
+        return Err(ScraperError::HtmlFragmentNotFound(selector_to_string(
+          &selectors.simple_link,
+        )))
+      }
+      (_, _, _, _, _, Some(_)) => {
+        return Err(ScraperError::TooManyHtmlFragments(selector_to_string(
+          &selectors.simple_link,
+        )))
+      }
     }
   };
 
@@ -178,26 +197,31 @@ pub fn scrape_user_profile(server: HammerfestServer, id: HammerfestUserId, html:
     class => return Err(ScraperError::UnknownRankClass(class.unwrap_or("<empty>").to_owned())),
   };
 
-  let hall_of_fame = if rank != 0 { None } else { Some({
-    let words_fame_info_elem = select_one(&root, &selectors.words_fame_info_in_profile)?;
-    let words_fame_msg_elem = select_one(&root, &selectors.words_fame_msg_in_profile)?;
-    
-    let raw_date = get_inner_text(&words_fame_info_elem)?.split(' ').last().unwrap_or("");
-    let date = match chrono::NaiveDate::parse_from_str(raw_date, "%Y-%m-%d") {
-      Ok(date) => Ok(Instant::from_utc(date.and_hms(0, 0, 0), chrono::Utc)),
-      Err(err) => Err(ScraperError::InvalidDate(raw_date.to_owned(), err)),
-    }?;
-    let message = get_inner_text(&words_fame_msg_elem)?.trim().to_owned();
+  let hall_of_fame = if rank != 0 {
+    None
+  } else {
+    Some({
+      let words_fame_info_elem = select_one(&root, &selectors.words_fame_info_in_profile)?;
+      let words_fame_msg_elem = select_one(&root, &selectors.words_fame_msg_in_profile)?;
 
-    HammerfestHallOfFameMessage { date, message }
-  })};
+      let raw_date = get_inner_text(&words_fame_info_elem)?.split(' ').last().unwrap_or("");
+      let date = match chrono::NaiveDate::parse_from_str(raw_date, "%Y-%m-%d") {
+        Ok(date) => Ok(Instant::from_utc(date.and_hms(0, 0, 0), chrono::Utc)),
+        Err(err) => Err(ScraperError::InvalidDate(raw_date.to_owned(), err)),
+      }?;
+      let message = get_inner_text(&words_fame_msg_elem)?.trim().to_owned();
 
-  let items = root.select(&selectors.item_icons_in_profile)
+      HammerfestHallOfFameMessage { date, message }
+    })
+  };
+
+  let items = root
+    .select(&selectors.item_icons_in_profile)
     .filter_map(|item_elem| match item_elem.value().attr("src") {
       Some(src) => parse_item_url(src),
-      None => Some(Err(
-        ScraperError::HtmlFragmentNotFound(selector_to_string(&selectors.item_icons_in_profile))
-      )),
+      None => Some(Err(ScraperError::HtmlFragmentNotFound(selector_to_string(
+        &selectors.item_icons_in_profile,
+      )))),
     })
     .collect::<Result<HashSet<_>, _>>()?;
 
@@ -205,30 +229,47 @@ pub fn scrape_user_profile(server: HammerfestServer, id: HammerfestUserId, html:
     let mut it = root.select(&selectors.quests_in_profile);
     match (it.next(), it.next(), it.next()) {
       (Some(quest_complete_elem), Some(quest_pending_elem), None) => {
-        let complete = quest_complete_elem.select(&selectors.quest_item_in_list)
+        let complete = quest_complete_elem
+          .select(&selectors.quest_item_in_list)
           .map(|elem| (elem, HammerfestQuestStatus::Complete));
-        let pending = quest_pending_elem.select(&selectors.quest_item_in_list)
+        let pending = quest_pending_elem
+          .select(&selectors.quest_item_in_list)
           .map(|elem| (elem, HammerfestQuestStatus::Pending));
         complete.chain(pending)
-      },
-      (_, _, None) => return Err(ScraperError::HtmlFragmentNotFound(
-        selector_to_string(&selectors.quests_in_profile))),
-      (_, _, Some(_)) => return Err(ScraperError::TooManyHtmlFragments(
-        selector_to_string(&selectors.quests_in_profile))),
+      }
+      (_, _, None) => {
+        return Err(ScraperError::HtmlFragmentNotFound(selector_to_string(
+          &selectors.quests_in_profile,
+        )))
+      }
+      (_, _, Some(_)) => {
+        return Err(ScraperError::TooManyHtmlFragments(selector_to_string(
+          &selectors.quests_in_profile,
+        )))
+      }
     }
   };
 
-  let quests = quest_elems.map(|(name, status)| {
-    let name = get_inner_text(&name)?.trim();
-    match texts.quest_names.get(name) {
-      Some(id) => Ok((id.clone(), status)),
-      None => Err(ScraperError::UnknownQuestName(name.to_owned())),
-    }
-  }).collect::<Result<HashMap<_, _>, _>>()?;
+  let quests = quest_elems
+    .map(|(name, status)| {
+      let name = get_inner_text(&name)?.trim();
+      match texts.quest_names.get(name) {
+        Some(id) => Ok((id.clone(), status)),
+        None => Err(ScraperError::UnknownQuestName(name.to_owned())),
+      }
+    })
+    .collect::<Result<HashMap<_, _>, _>>()?;
 
   Ok(Some(HammerfestProfile {
     user: ShortHammerfestUser { server, id, username },
-    email, best_level, best_score, season_score, has_carrot, rank,
-    hall_of_fame, items, quests,
+    email,
+    best_level,
+    best_score,
+    season_score,
+    has_carrot,
+    rank,
+    hall_of_fame,
+    items,
+    quests,
   }))
 }

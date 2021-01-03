@@ -36,4 +36,3 @@ fn main() {
 fn docs(_args: &DocsArgs) -> Result<(), Box<dyn Error>> {
   xtask::docs()
 }
-

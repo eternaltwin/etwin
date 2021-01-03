@@ -1,7 +1,6 @@
 use etwin_core::hammerfest::{HammerfestServer, HammerfestUserId};
 use reqwest::Url;
 
-
 pub struct HammerfestUrls {
   root: &'static str,
 }
@@ -13,7 +12,7 @@ impl HammerfestUrls {
         HammerfestServer::HammerfestFr => "http://www.hammerfest.fr",
         HammerfestServer::HammerfestEs => "http://www.hammerfest.es",
         HammerfestServer::HfestNet => "http://www.hfest.net",
-      }
+      },
     }
   }
 
