@@ -15,7 +15,7 @@ pub mod mem {
   use crate::neon_namespace::NeonNamespace;
   use crate::tokio_runtime::spawn_future;
   use etwin_core::clock::{Clock, SystemClock, VirtualClock};
-  use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser, TaggedShortDinoparcUser};
+  use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser};
   use etwin_dinoparc_store::mem::MemDinoparcStore;
   use neon::prelude::*;
   use std::sync::Arc;
@@ -49,7 +49,7 @@ pub mod mem {
     spawn_future(Box::pin(async move {
       let user = store.get_short_user(&options).await.unwrap();
       let user_json = match user {
-        Some(user) => Some(serde_json::to_string(&TaggedShortDinoparcUser::new(user)).unwrap()),
+        Some(user) => Some(serde_json::to_string(&user).unwrap()),
         None => None,
       };
       queue.send(move |mut cx| {
@@ -79,7 +79,7 @@ pub mod mem {
     let queue = cx.queue();
     spawn_future(Box::pin(async move {
       let user = store.touch_short_user(&short).await.unwrap();
-      let user_json = serde_json::to_string(&TaggedShortDinoparcUser::new(user)).unwrap();
+      let user_json = serde_json::to_string(&user).unwrap();
       queue.send(move |mut cx| {
         let cb = cb.into_inner(&mut cx);
         let this = cx.null();
@@ -102,7 +102,7 @@ pub mod pg {
   use crate::neon_namespace::NeonNamespace;
   use crate::tokio_runtime::spawn_future;
   use etwin_core::clock::{Clock, SystemClock, VirtualClock};
-  use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser, TaggedShortDinoparcUser};
+  use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser};
   use etwin_dinoparc_store::pg::PgDinoparcStore;
   use neon::prelude::*;
   use sqlx::PgPool;
@@ -139,7 +139,7 @@ pub mod pg {
     spawn_future(Box::pin(async move {
       let user = store.get_short_user(&options).await.unwrap();
       let user_json = match user {
-        Some(user) => Some(serde_json::to_string(&TaggedShortDinoparcUser::new(user)).unwrap()),
+        Some(user) => Some(serde_json::to_string(&user).unwrap()),
         None => None,
       };
       queue.send(move |mut cx| {
@@ -169,7 +169,7 @@ pub mod pg {
     let queue = cx.queue();
     spawn_future(Box::pin(async move {
       let user = store.touch_short_user(&short).await.unwrap();
-      let user_json = serde_json::to_string(&TaggedShortDinoparcUser::new(user)).unwrap();
+      let user_json = serde_json::to_string(&user).unwrap();
       queue.send(move |mut cx| {
         let cb = cb.into_inner(&mut cx);
         let this = cx.null();

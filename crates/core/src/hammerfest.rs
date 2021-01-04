@@ -177,23 +177,7 @@ pub struct HammerfestCredentials {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct TaggedShortHammerfestUser {
-  r#type: String,
-  #[cfg_attr(feature = "serde", serde(flatten))]
-  inner: ShortHammerfestUser,
-}
-
-impl TaggedShortHammerfestUser {
-  pub fn new(inner: ShortHammerfestUser) -> Self {
-    Self {
-      r#type: String::from("HammerfestUser"),
-      inner,
-    }
-  }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "HammerfestUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortHammerfestUser {
   pub server: HammerfestServer,

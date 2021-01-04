@@ -148,24 +148,7 @@ impl DinoparcUsername {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-pub struct TaggedShortDinoparcUser {
-  #[allow(unused)]
-  r#type: String,
-  #[allow(unused)]
-  #[cfg_attr(feature = "serde", serde(flatten))]
-  inner: ShortDinoparcUser,
-}
-
-impl TaggedShortDinoparcUser {
-  pub fn new(inner: ShortDinoparcUser) -> Self {
-    Self {
-      r#type: String::from("DinoparcUser"),
-      inner,
-    }
-  }
-}
-
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortDinoparcUser {
   pub server: DinoparcServer,

@@ -2,7 +2,7 @@ use crate::clock::system_clock::JsSystemClock;
 use crate::neon_namespace::NeonNamespace;
 use crate::tokio_runtime::spawn_future;
 use etwin_core::clock::Clock;
-use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser, TaggedShortDinoparcUser};
+use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser};
 use etwin_dinoparc_store::mem::MemDinoparcStore;
 use neon::prelude::*;
 use serde::{Deserialize, Serialize};
