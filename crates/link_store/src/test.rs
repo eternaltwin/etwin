@@ -1,18 +1,16 @@
+use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
 use etwin_core::hammerfest::{
   GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId, HammerfestUserIdRef,
   HammerfestUsername, ShortHammerfestUser,
 };
 use etwin_core::link::{GetLinkOptions, LinkStore, VersionedRawLink};
-use std::ops::Deref;
 
 pub(crate) struct TestApi<TyClock, TyHammerfestStore, TyLinkStore>
 where
-  TyClock: Deref<Target = VirtualClock> + Send + Sync,
-  TyHammerfestStore: Deref + Send + Sync,
-  <TyHammerfestStore as Deref>::Target: HammerfestStore,
-  TyLinkStore: Deref + Send + Sync,
-  <TyLinkStore as Deref>::Target: LinkStore,
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
+  TyLinkStore: LinkStore,
 {
   pub(crate) _clock: TyClock,
   pub(crate) hammerfest_store: TyHammerfestStore,
@@ -22,11 +20,9 @@ where
 pub(crate) async fn test_empty<TyClock, TyHammerfestStore, TyLinkStore>(
   api: TestApi<TyClock, TyHammerfestStore, TyLinkStore>,
 ) where
-  TyClock: Deref<Target = VirtualClock> + Send + Sync,
-  TyHammerfestStore: Deref + Send + Sync,
-  <TyHammerfestStore as Deref>::Target: HammerfestStore,
-  TyLinkStore: Deref + Send + Sync,
-  <TyLinkStore as Deref>::Target: LinkStore,
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
+  TyLinkStore: LinkStore,
 {
   api
     .hammerfest_store

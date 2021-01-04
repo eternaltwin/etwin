@@ -28,19 +28,14 @@ impl StoreState {
   }
 }
 
-pub struct MemLinkStore<TyClock>
-where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-{
+pub struct MemLinkStore<TyClock: Clock> {
   clock: TyClock,
   state: RwLock<StoreState>,
 }
 
 impl<TyClock> MemLinkStore<TyClock>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
+  TyClock: Clock,
 {
   pub fn new(clock: TyClock) -> Self {
     Self {
@@ -53,8 +48,7 @@ where
 #[async_trait]
 impl<TyClock> LinkStore for MemLinkStore<TyClock>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
+  TyClock: Clock,
 {
   async fn touch_dinoparc_link(
     &self,

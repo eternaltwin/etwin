@@ -52,13 +52,7 @@ impl From<&InMemoryUser> for CompleteSimpleUser {
   }
 }
 
-pub struct InMemorySimpleUserService<C, U>
-where
-  C: Deref + Send + Sync,
-  <C as Deref>::Target: Clock,
-  U: Deref + Send + Sync,
-  <U as Deref>::Target: UuidGenerator,
-{
+pub struct InMemorySimpleUserService<C: Clock, U: UuidGenerator> {
   pub(crate) clock: C,
   pub(crate) uuid_generator: U,
   pub(crate) users: Mutex<HashMap<UserId, InMemoryUser>>,
@@ -66,10 +60,8 @@ where
 
 impl<C, U> InMemorySimpleUserService<C, U>
 where
-  C: Deref + Send + Sync,
-  <C as Deref>::Target: Clock,
-  U: Deref + Send + Sync,
-  <U as Deref>::Target: UuidGenerator,
+  C: Clock,
+  U: UuidGenerator,
 {
   pub fn new(clock: C, uuid_generator: U) -> Self {
     Self {
@@ -83,13 +75,11 @@ where
 #[async_trait]
 impl<C, U> UserStore for InMemorySimpleUserService<C, U>
 where
-  C: Deref + Send + Sync,
-  <C as Deref>::Target: Clock,
-  U: Deref + Send + Sync,
-  <U as Deref>::Target: UuidGenerator,
+  C: Clock,
+  U: UuidGenerator,
 {
   async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, Box<dyn Error>> {
-    let user_id = UserId::from((*self.uuid_generator).next());
+    let user_id = UserId::from(self.uuid_generator.next());
     let time = self.clock.now();
     let mut users = self.users.lock().unwrap();
     let im_user = InMemoryUser {

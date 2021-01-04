@@ -1,6 +1,7 @@
 use crate::core::Instant;
 use crate::link::VersionedEtwinLink;
 use async_trait::async_trait;
+use auto_impl::auto_impl;
 use once_cell::sync::Lazy;
 use regex::Regex;
 #[cfg(feature = "serde")]
@@ -514,7 +515,17 @@ pub struct GetHammerfestUserOptions {
   pub time: Option<Instant>,
 }
 
+#[cfg(feature = "serde")]
+fn deserialize_optional<'de, T, D>(deserializer: D) -> Result<Option<Option<T>>, D::Error>
+where
+  T: Deserialize<'de>,
+  D: serde::Deserializer<'de>,
+{
+  Ok(Some(Option::deserialize(deserializer)?))
+}
+
 #[async_trait]
+#[auto_impl(&, Arc)]
 pub trait HammerfestClient: Send + Sync {
   async fn create_session(&self, options: &HammerfestCredentials) -> Result<HammerfestSession, Box<dyn Error>>;
 
@@ -559,16 +570,8 @@ pub trait HammerfestClient: Send + Sync {
   ) -> Result<HammerfestForumThreadPage, Box<dyn Error>>;
 }
 
-#[cfg(feature = "serde")]
-fn deserialize_optional<'de, T, D>(deserializer: D) -> Result<Option<Option<T>>, D::Error>
-where
-  T: Deserialize<'de>,
-  D: serde::Deserializer<'de>,
-{
-  Ok(Some(Option::deserialize(deserializer)?))
-}
-
 #[async_trait]
+#[auto_impl(&, Arc)]
 pub trait HammerfestStore: Send + Sync {
   async fn get_short_user(
     &self,

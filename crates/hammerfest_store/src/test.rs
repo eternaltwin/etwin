@@ -1,15 +1,14 @@
+use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
 use etwin_core::hammerfest::{
   GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId, HammerfestUsername,
   ShortHammerfestUser,
 };
-use std::ops::Deref;
 
 pub(crate) struct TestApi<TyClock, TyHammerfestStore>
 where
-  TyClock: Deref<Target = VirtualClock> + Send + Sync,
-  TyHammerfestStore: Deref + Send + Sync,
-  <TyHammerfestStore as Deref>::Target: HammerfestStore,
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
 {
   pub(crate) _clock: TyClock,
   pub(crate) hammerfest_store: TyHammerfestStore,
@@ -17,9 +16,8 @@ where
 
 pub(crate) async fn test_empty<TyClock, TyHammerfestStore>(api: TestApi<TyClock, TyHammerfestStore>)
 where
-  TyClock: Deref<Target = VirtualClock> + Send + Sync,
-  TyHammerfestStore: Deref + Send + Sync,
-  <TyHammerfestStore as Deref>::Target: HammerfestStore,
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
 {
   let options = GetHammerfestUserOptions {
     server: HammerfestServer::HammerfestFr,
@@ -33,9 +31,8 @@ where
 
 pub(crate) async fn test_touch_user<TyClock, TyHammerfestStore>(api: TestApi<TyClock, TyHammerfestStore>)
 where
-  TyClock: Deref<Target = VirtualClock> + Send + Sync,
-  TyHammerfestStore: Deref + Send + Sync,
-  <TyHammerfestStore as Deref>::Target: HammerfestStore,
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
 {
   api
     .hammerfest_store

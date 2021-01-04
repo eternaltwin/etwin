@@ -26,19 +26,14 @@ impl StoreState {
   }
 }
 
-pub struct MemDinoparcStore<TyClock>
-where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-{
+pub struct MemDinoparcStore<TyClock: Clock> {
   clock: TyClock,
   state: Mutex<StoreState>,
 }
 
 impl<TyClock> MemDinoparcStore<TyClock>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
+  TyClock: Clock,
 {
   pub fn new(clock: TyClock) -> Self {
     Self {
@@ -51,8 +46,7 @@ where
 #[async_trait]
 impl<TyClock> DinoparcStore for MemDinoparcStore<TyClock>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
+  TyClock: Clock,
 {
   async fn get_short_user(
     &self,
@@ -76,12 +70,7 @@ where
 }
 
 #[cfg(feature = "neon")]
-impl<TyClock> neon::prelude::Finalize for MemDinoparcStore<TyClock>
-where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-{
-}
+impl<TyClock> neon::prelude::Finalize for MemDinoparcStore<TyClock> where TyClock: Clock {}
 
 #[cfg(test)]
 mod test {

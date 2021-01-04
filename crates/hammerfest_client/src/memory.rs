@@ -78,8 +78,7 @@ pub struct HammerfestClientMem<TyClock> {
 impl<TyClock> HammerfestClientMem<TyClock> {
   pub fn new(clock: TyClock) -> Self
   where
-    TyClock: Deref + Send + Sync,
-    TyClock::Target: Clock,
+    TyClock: Clock,
   {
     let mut servers = HashMap::new();
     for server_name in SERVER_NAMES {
@@ -310,8 +309,7 @@ fn make_session_key() -> HammerfestSessionKey {
 #[async_trait]
 impl<TyClock> HammerfestClient for HammerfestClientMem<TyClock>
 where
-  TyClock: Deref + Send + Sync,
-  TyClock::Target: Clock,
+  TyClock: Clock,
 {
   async fn create_session(&self, options: &HammerfestCredentials) -> Result<HammerfestSession> {
     let mut server = self.get_server(options.server)?.write().unwrap();

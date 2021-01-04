@@ -1,6 +1,7 @@
 use crate::core::Instant;
 use crate::email::EmailAddress;
 use async_trait::async_trait;
+use auto_impl::auto_impl;
 use chrono::{DateTime, Utc};
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -168,6 +169,7 @@ impl Username {
 }
 
 #[async_trait]
+#[auto_impl(&, Arc)]
 pub trait UserStore: Send + Sync {
   async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, Box<dyn Error>>;
 

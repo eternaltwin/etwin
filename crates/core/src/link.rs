@@ -4,6 +4,7 @@ use crate::hammerfest::{HammerfestServer, HammerfestUserId, HammerfestUserIdRef,
 use crate::twinoid::{ShortTwinoidUser, TwinoidUserId, TwinoidUserIdRef};
 use crate::user::{ShortUser, UserId, UserIdRef};
 use async_trait::async_trait;
+use auto_impl::auto_impl;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 use std::error::Error;
@@ -171,6 +172,7 @@ pub enum TouchLinkError<T: RemoteUserIdRef> {
 }
 
 #[async_trait]
+#[auto_impl(&, Arc)]
 pub trait LinkStore: Send + Sync {
   async fn touch_dinoparc_link(
     &self,

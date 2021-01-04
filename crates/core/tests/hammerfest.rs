@@ -1,4 +1,5 @@
 use chrono::{TimeZone, Utc};
+use etwin_core::api::ApiRef;
 use etwin_core::hammerfest::{HammerfestClient, HammerfestStore};
 use etwin_core::link::LinkStore;
 use etwin_core::services::hammerfest::HammerfestService;
@@ -16,7 +17,7 @@ use etwin_link_store::{mem::MemLinkStore, pg::PgLinkStore};
 use etwin_user_store::{mem::InMemorySimpleUserService, pg::PgUserStore};
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::PgPool;
-use std::ops::Deref;
+use std::marker::PhantomData;
 use std::sync::Arc;
 
 async fn make_test_api() -> TestApi<
@@ -67,27 +68,26 @@ async fn make_test_api() -> TestApi<
     hammerfest_client,
     hammerfest_store,
     hammerfest,
+    _link_store: PhantomData,
+    _user_store: PhantomData,
   }
 }
 
 struct TestApi<TyClock, TyHammerfestClient, TyHammerfestStore, TyHammerfest, TyLinkStore, TyUserStore>
 where
-  TyClock: Deref<Target = VirtualClock> + Send + Sync,
-  TyHammerfestClient: Deref + Send + Sync,
-  <TyHammerfestClient as Deref>::Target: HammerfestClient,
-  TyHammerfestStore: Deref + Send + Sync,
-  <TyHammerfestStore as Deref>::Target: HammerfestStore,
-  TyLinkStore: Deref + Send + Sync,
-  <TyLinkStore as Deref>::Target: LinkStore,
-  TyUserStore: Deref + Send + Sync,
-  <TyUserStore as Deref>::Target: UserStore,
-  TyHammerfest:
-    Deref<Target = HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>> + Send + Sync,
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestClient: HammerfestClient,
+  TyHammerfestStore: HammerfestStore,
+  TyLinkStore: LinkStore,
+  TyUserStore: UserStore,
+  TyHammerfest: ApiRef<HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>>,
 {
   pub(crate) clock: TyClock,
   pub(crate) hammerfest_client: TyHammerfestClient,
   pub(crate) hammerfest_store: TyHammerfestStore,
   pub(crate) hammerfest: TyHammerfest,
+  pub(crate) _link_store: PhantomData<TyLinkStore>,
+  pub(crate) _user_store: PhantomData<TyUserStore>,
 }
 
 #[tokio::test]
@@ -98,17 +98,12 @@ async fn test_empty() {
 async fn inner_test_empty<TyClock, TyHammerfestClient, TyHammerfestStore, TyHammerfest, TyLinkStore, TyUserStore>(
   api: TestApi<TyClock, TyHammerfestClient, TyHammerfestStore, TyHammerfest, TyLinkStore, TyUserStore>,
 ) where
-  TyClock: Deref<Target = VirtualClock> + Send + Sync,
-  TyHammerfestClient: Deref + Send + Sync,
-  <TyHammerfestClient as Deref>::Target: HammerfestClient,
-  TyHammerfestStore: Deref + Send + Sync,
-  <TyHammerfestStore as Deref>::Target: HammerfestStore,
-  TyLinkStore: Deref + Send + Sync,
-  <TyLinkStore as Deref>::Target: LinkStore,
-  TyUserStore: Deref + Send + Sync,
-  <TyUserStore as Deref>::Target: UserStore,
-  TyHammerfest:
-    Deref<Target = HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>> + Send + Sync,
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestClient: HammerfestClient,
+  TyHammerfestStore: HammerfestStore,
+  TyLinkStore: LinkStore,
+  TyUserStore: UserStore,
+  TyHammerfest: ApiRef<HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>>,
 {
   let actual: Option<()> = None;
   let expected: Option<()> = None;

@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, RawUserDot};
 use etwin_core::dinoparc::DinoparcUserIdRef;
@@ -12,13 +13,11 @@ use etwin_core::user::{UserId, UserIdRef};
 use sqlx;
 use sqlx::PgPool;
 use std::error::Error;
-use std::ops::Deref;
 
 pub struct PgLinkStore<TyClock, TyDatabase>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
 {
   clock: TyClock,
   database: TyDatabase,
@@ -26,9 +25,8 @@ where
 
 impl<TyClock, TyDatabase> PgLinkStore<TyClock, TyDatabase>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
 {
   pub fn new(clock: TyClock, database: TyDatabase) -> Self {
     Self { clock, database }
@@ -38,9 +36,8 @@ where
 #[async_trait]
 impl<TyClock, TyDatabase> LinkStore for PgLinkStore<TyClock, TyDatabase>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
 {
   async fn touch_dinoparc_link(
     &self,
@@ -73,7 +70,7 @@ where
     .bind(&options.remote.id)
     .bind(&now)
     .bind(&options.linked_by.id)
-    .fetch_optional(&*self.database)
+    .fetch_optional(self.database.as_ref())
     .await
     .map_err(|e: sqlx::Error| TouchLinkError::Other(Box::new(e)))?;
 
@@ -128,7 +125,7 @@ where
     )
     .bind(&options.remote.server)
     .bind(&options.remote.id)
-    .fetch_optional(&*self.database)
+    .fetch_optional(self.database.as_ref())
     .await?;
 
     match row {

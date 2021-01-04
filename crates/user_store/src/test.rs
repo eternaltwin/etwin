@@ -1,15 +1,14 @@
+use etwin_core::api::ApiRef;
 use etwin_core::clock::{Clock, VirtualClock};
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, UserDisplayName, UserDisplayNameVersion, UserDisplayNameVersions, UserStore,
   Username,
 };
-use std::ops::Deref;
 
 pub(crate) struct TestApi<TyClock, TyUserStore>
 where
-  TyClock: Deref<Target = VirtualClock> + Send + Sync,
-  TyUserStore: Deref + Send + Sync,
-  <TyUserStore as Deref>::Target: UserStore,
+  TyClock: ApiRef<VirtualClock>,
+  TyUserStore: UserStore,
 {
   pub(crate) clock: TyClock,
   pub(crate) user_store: TyUserStore,
@@ -23,9 +22,8 @@ where
 
 pub(crate) async fn test_register_the_admin_and_retrieve_ref<TyClock, TyUserStore>(api: TestApi<TyClock, TyUserStore>)
 where
-  TyClock: Deref<Target = VirtualClock> + Send + Sync,
-  TyUserStore: Deref + Send + Sync,
-  <TyUserStore as Deref>::Target: UserStore,
+  TyClock: ApiRef<VirtualClock>,
+  TyUserStore: UserStore,
 {
   let options = CreateUserOptions {
     display_name: UserDisplayName::from_str("Alice").unwrap(),
@@ -41,7 +39,7 @@ where
     },
     id: alice.id,
     is_administrator: true,
-    ctime: api.clock.now(),
+    ctime: api.clock.as_ref().now(),
     username: Some(Username::from_str("alice").unwrap()),
     email_address: None,
   };

@@ -12,14 +12,10 @@ use std::ops::Deref;
 
 pub struct HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>
 where
-  TyHammerfestClient: Deref + Send + Sync,
-  <TyHammerfestClient as Deref>::Target: HammerfestClient,
-  TyHammerfestStore: Deref + Send + Sync,
-  <TyHammerfestStore as Deref>::Target: HammerfestStore,
-  TyLinkStore: Deref + Send + Sync,
-  <TyLinkStore as Deref>::Target: LinkStore,
-  TyUserStore: Deref + Send + Sync,
-  <TyUserStore as Deref>::Target: UserStore,
+  TyHammerfestClient: HammerfestClient,
+  TyHammerfestStore: HammerfestStore,
+  TyLinkStore: LinkStore,
+  TyUserStore: UserStore,
 {
   hammerfest_client: TyHammerfestClient,
   hammerfest_store: TyHammerfestStore,
@@ -30,14 +26,10 @@ where
 impl<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>
   HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>
 where
-  TyHammerfestClient: Deref + Send + Sync,
-  <TyHammerfestClient as Deref>::Target: HammerfestClient,
-  TyHammerfestStore: Deref + Send + Sync,
-  <TyHammerfestStore as Deref>::Target: HammerfestStore,
-  TyLinkStore: Deref + Send + Sync,
-  <TyLinkStore as Deref>::Target: LinkStore,
-  TyUserStore: Deref + Send + Sync,
-  <TyUserStore as Deref>::Target: UserStore,
+  TyHammerfestClient: HammerfestClient,
+  TyHammerfestStore: HammerfestStore,
+  TyLinkStore: LinkStore,
+  TyUserStore: UserStore,
 {
   pub fn new(
     hammerfest_client: TyHammerfestClient,

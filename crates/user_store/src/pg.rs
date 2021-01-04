@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use core::ops::Deref;
+use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, GetUserOptions, SimpleUser, UserDisplayName, UserDisplayNameVersion,
@@ -11,11 +11,9 @@ use std::error::Error;
 
 pub struct PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
-  TyUuidGenerator: Deref + Send + Sync,
-  <TyUuidGenerator as Deref>::Target: UuidGenerator,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
+  TyUuidGenerator: UuidGenerator,
 {
   clock: TyClock,
   database: TyDatabase,
@@ -24,11 +22,9 @@ where
 
 impl<TyClock, TyDatabase, TyUuidGenerator> PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
-  TyUuidGenerator: Deref + Send + Sync,
-  <TyUuidGenerator as Deref>::Target: UuidGenerator,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
+  TyUuidGenerator: UuidGenerator,
 {
   pub fn new(clock: TyClock, database: TyDatabase, uuid_generator: TyUuidGenerator) -> Self {
     Self {
@@ -42,14 +38,12 @@ where
 #[async_trait]
 impl<TyClock, TyDatabase, TyUuidGenerator> UserStore for PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
-  TyUuidGenerator: Deref + Send + Sync,
-  <TyUuidGenerator as Deref>::Target: UuidGenerator,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
+  TyUuidGenerator: UuidGenerator,
 {
   async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, Box<dyn Error>> {
-    let user_id = UserId::from_uuid((*self.uuid_generator).next());
+    let user_id = UserId::from_uuid(self.uuid_generator.next());
 
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
@@ -84,7 +78,7 @@ where
     .bind(options.display_name.as_str())
     .bind(options.username.as_ref().map(|x| x.as_str()))
     .bind(None::<&str>)
-    .fetch_one(&*self.database)
+    .fetch_one(self.database.as_ref())
     .await?;
 
     let user = CompleteSimpleUser {

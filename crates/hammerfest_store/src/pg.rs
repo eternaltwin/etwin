@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
 use etwin_core::hammerfest::{
   ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId,
@@ -7,13 +8,11 @@ use etwin_core::hammerfest::{
 use sqlx;
 use sqlx::PgPool;
 use std::error::Error;
-use std::ops::Deref;
 
 pub struct PgHammerfestStore<TyClock, TyDatabase>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
 {
   clock: TyClock,
   database: TyDatabase,
@@ -21,9 +20,8 @@ where
 
 impl<TyClock, TyDatabase> PgHammerfestStore<TyClock, TyDatabase>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
 {
   pub fn new(clock: TyClock, database: TyDatabase) -> Self {
     Self { clock, database }
@@ -33,9 +31,8 @@ where
 #[async_trait]
 impl<TyClock, TyDatabase> HammerfestStore for PgHammerfestStore<TyClock, TyDatabase>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
 {
   async fn get_short_user(
     &self,
@@ -57,7 +54,7 @@ where
     )
     .bind(&options.server)
     .bind(&options.id)
-    .fetch_optional(&*self.database)
+    .fetch_optional(self.database.as_ref())
     .await?;
 
     Ok(row.map(|r| ShortHammerfestUser {
@@ -88,7 +85,7 @@ where
     .bind(&short.id)
     .bind(&short.username)
     .bind(now)
-    .fetch_optional(&*self.database)
+    .fetch_optional(self.database.as_ref())
     .await?;
     Ok(ArchivedHammerfestUser {
       server: short.server,

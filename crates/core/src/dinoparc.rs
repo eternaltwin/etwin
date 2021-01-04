@@ -1,5 +1,6 @@
 use crate::core::Instant;
 use async_trait::async_trait;
+use auto_impl::auto_impl;
 use once_cell::sync::Lazy;
 use regex::Regex;
 #[cfg(feature = "serde")]
@@ -8,7 +9,9 @@ use serde::{Deserialize, Serialize};
 use sqlx::{database, postgres, Database, Postgres};
 use std::error::Error;
 use std::fmt;
+use std::ops::Deref;
 use std::str::FromStr;
+use std::sync::Arc;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -174,6 +177,7 @@ pub struct DinoparcUserIdRef {
 }
 
 #[async_trait]
+#[auto_impl(&, Arc)]
 pub trait DinoparcStore: Send + Sync {
   async fn get_short_user(
     &self,

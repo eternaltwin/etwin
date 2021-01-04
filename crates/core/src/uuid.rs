@@ -1,10 +1,11 @@
+use auto_impl::auto_impl;
 use uuid::Uuid;
 
 /// Infinite UUID generator
+#[auto_impl(&, Arc)]
 pub trait UuidGenerator: Send + Sync {
   fn next(&self) -> Uuid;
 }
-
 pub struct Uuid4Generator;
 
 impl UuidGenerator for Uuid4Generator {

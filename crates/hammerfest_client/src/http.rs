@@ -30,8 +30,7 @@ pub struct HammerfestClientHttp<TyClock> {
 
 impl<TyClock> HammerfestClientHttp<TyClock>
 where
-  TyClock: Deref + Send + Sync,
-  TyClock::Target: Clock,
+  TyClock: Clock,
 {
   pub fn new(clock: TyClock) -> Result<Self> {
     Ok(Self {
@@ -66,8 +65,7 @@ where
 #[async_trait]
 impl<TyClock> HammerfestClient for HammerfestClientHttp<TyClock>
 where
-  TyClock: Deref + Send + Sync,
-  TyClock::Target: Clock,
+  TyClock: Clock,
 {
   async fn create_session(&self, options: &HammerfestCredentials) -> Result<HammerfestSession> {
     #[derive(Serialize)]

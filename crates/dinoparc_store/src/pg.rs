@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
 use etwin_core::core::Instant;
 use etwin_core::dinoparc::{
@@ -8,13 +9,11 @@ use etwin_core::dinoparc::{
 use sqlx;
 use sqlx::PgPool;
 use std::error::Error;
-use std::ops::Deref;
 
 pub struct PgDinoparcStore<TyClock, TyDatabase>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
 {
   clock: TyClock,
   database: TyDatabase,
@@ -22,9 +21,8 @@ where
 
 impl<TyClock, TyDatabase> PgDinoparcStore<TyClock, TyDatabase>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
 {
   pub fn new(clock: TyClock, database: TyDatabase) -> Self {
     Self { clock, database }
@@ -34,9 +32,8 @@ where
 #[async_trait]
 impl<TyClock, TyDatabase> DinoparcStore for PgDinoparcStore<TyClock, TyDatabase>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
 {
   async fn get_short_user(
     &self,
@@ -59,7 +56,7 @@ where
     )
     .bind(&options.server)
     .bind(&options.id)
-    .fetch_optional(&*self.database)
+    .fetch_optional(self.database.as_ref())
     .await?;
 
     Ok(row.map(|r| ArchivedDinoparcUser {
@@ -84,7 +81,7 @@ where
     .bind(&short.id)
     .bind(&short.username)
     .bind(now)
-    .fetch_optional(&*self.database)
+    .fetch_optional(self.database.as_ref())
     .await?;
     Ok(ArchivedDinoparcUser {
       server: short.server,
@@ -98,9 +95,8 @@ where
 #[cfg(feature = "neon")]
 impl<TyClock, TyDatabase> neon::prelude::Finalize for PgDinoparcStore<TyClock, TyDatabase>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-  TyDatabase: Deref<Target = PgPool> + Send + Sync,
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
 {
 }
 

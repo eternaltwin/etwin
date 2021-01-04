@@ -26,19 +26,14 @@ impl StoreState {
   }
 }
 
-pub struct MemHammerfestStore<TyClock>
-where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
-{
+pub struct MemHammerfestStore<TyClock: Clock> {
   clock: TyClock,
   state: Mutex<StoreState>,
 }
 
 impl<TyClock> MemHammerfestStore<TyClock>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
+  TyClock: Clock,
 {
   pub fn new(clock: TyClock) -> Self {
     Self {
@@ -51,8 +46,7 @@ where
 #[async_trait]
 impl<TyClock> HammerfestStore for MemHammerfestStore<TyClock>
 where
-  TyClock: Deref + Send + Sync,
-  <TyClock as Deref>::Target: Clock,
+  TyClock: Clock,
 {
   async fn get_short_user(
     &self,
