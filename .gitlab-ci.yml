@@ -11,6 +11,7 @@ cache:
     - ".cargo/registry/index/"
     - ".cargo/registry/cache/"
     - ".cargo/git/db/"
+    - ".yarn/"
     - "node_modules/"
     - "target/"
 
@@ -19,8 +20,6 @@ variables:
   POSTGRES_DB: "etwindb"
   POSTGRES_USER: "etwin"
   POSTGRES_PASSWORD: "dev"
-  SCCACHE_DIR: ".cache/sccache"
-  RUSTC_WRAPPER: "sccache"
 
 before_script:
   - "node --version"
@@ -29,6 +28,8 @@ before_script:
   - "cargo --version"
   - "cargo fmt --version"
   - "cargo clippy --version"
+  - "export SCCACHE_DIR=\"$(pwd)/.cache/sccache\""
+  - "export RUSTC_WRAPPER=sccache"
   - "yarn install --immutable"
   - |
     cat >etwin.toml <<EOL
@@ -70,10 +71,12 @@ stages:
 ci:
   stage: "ci"
   script:
-    - "cargo fmt -- --check"
-#    - "cargo clippy --all-targets --all-features -- -D warnings"
-    - "cargo test --no-fail-fast -- -Z unstable-options --report-time"
-    - "yarn run lint"
-    - "yarn run test"
-    - 'yarn --cwd packages/rest-server run main:build'
-    - 'yarn --cwd packages/website run build'
+    - |
+      sccache --start-server \
+      && cargo fmt -- --check \
+      && cargo test --no-fail-fast -- -Z unstable-options --report-time \
+      && yarn run lint \
+      && yarn run test \
+      && yarn --cwd packages/rest-server run main:build \
+      && yarn --cwd packages/website run build \
+      && sccache --stop-server
