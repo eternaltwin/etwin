@@ -12,8 +12,6 @@ cache:
     - ".cargo/registry/cache/"
     - ".cargo/git/db/"
     - ".yarn/"
-    - "node_modules/"
-    - "target/"
 
 variables:
   CARGO_HOME: ".cargo"
