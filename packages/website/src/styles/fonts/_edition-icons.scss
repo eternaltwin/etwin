@@ -1,0 +1,29 @@
+/* Edition icons by A7 v1.0 - made with Fontello and Font Awesome */
+
+@font-face {
+  font-family: 'fontello';
+  font-weight: normal;
+  font-style: normal;
+  src: url('/assets/fonts/edition-icons-a7-fontello.eot?27046898');
+  src: url('/assets/fonts/edition-icons-a7-fontello.eot?27046898#iefix') format('embedded-opentype'),
+       url('/assets/fonts/edition-icons-a7-fontello.woff2?27046898') format('woff2'),
+       url('/assets/fonts/edition-icons-a7-fontello.woff?27046898') format('woff'),
+       url('/assets/fonts/edition-icons-a7-fontello.ttf?27046898') format('truetype'),
+       url('/assets/fonts/edition-icons-a7-fontello.svg?27046898#fontello') format('svg');
+}
+
+.icon-1-bold:before { content: '\e800'; } /* '' */
+.icon-2-italic:before { content: '\e801'; } /* '' */
+.icon-3-underscore:before { content: '\e802'; } /* '' */
+.icon-4-striketrough:before { content: '\e803'; } /* '' */
+.icon-5-quote:before { content: '\e804'; } /* '' */
+.icon-6-spoiler:before { content: '\e805'; } /* '' */
+.icon-7-aside:before { content: '\e806'; } /* '' */
+.icon-8-roleplay:before { content: '\e807'; } /* '' */
+.icon-9-link:before { content: '\e808'; } /* '' */
+.icon-10-user:before { content: '\e809'; } /* '' */
+.icon-11-question:before { content: '\e80a'; } /* '' */
+.icon-12-flag:before { content: '\e80b'; } /* '' */
+.icon-13-flag-rod:before { content: '\e80c'; } /* '' */
+.icon-14-flag-header:before { content: '\e80d'; } /* '' */
+.icon-15-downarrow:before { content: '\e80e'; } /* '' */

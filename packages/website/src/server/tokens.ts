@@ -16,6 +16,8 @@ export const FORUM: InjectionToken<ForumService> = new InjectionToken("ForumServ
 
 export const HAMMERFEST: InjectionToken<HammerfestService> = new InjectionToken("HammerfestService");
 
+export const MARKTWIN: InjectionToken<typeof import("@eternal-twin/marktwin")> = new InjectionToken("Marktwin");
+
 export const TWINOID: InjectionToken<DinoparcService> = new InjectionToken("TwinoidService");
 
 export const USER: InjectionToken<UserService> = new InjectionToken("UserService");

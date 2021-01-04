@@ -104,3 +104,230 @@ etwin-forum-post, .etwin-forum-post {
 
   }
 }
+
+/* NEW THREAD STYLING */
+
+etwin-new-forum-thread {
+
+  @mixin tooltip {
+    $tt-speed: .1s;
+    $tt-delay: .25s;
+
+    .name {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      pointer-events: none;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -2em;
+      margin: 0;
+      padding: .25em .7em;
+      color: $lightWhite;
+      background: $mediumViolet;
+      border-radius: 4px;
+      font-size: .85em;
+      letter-spacing: .04em;
+      box-shadow: 0 0 5px 0 $deepBlack;
+
+      transition: visibility 0s $tt-speed, opacity $tt-speed 0s, top $tt-speed 0s;
+
+      &::after { //triangle
+        content:"";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -6px;
+        border-width: 6px;
+        border-style: solid;
+        border-color: $mediumViolet transparent transparent transparent;
+      }
+    }
+
+    &:hover, &:focus, &:active {
+      .name {
+        visibility: visible;
+        opacity: 1;
+
+        transition: visibility 0s $tt-delay, opacity $tt-speed $tt-delay, top $tt-speed $tt-delay;
+      }
+    }
+  }
+
+  .editor { //same styling as the standard textarea
+    background-color: $darkGrey;
+    margin: .4em 0 .25em 0;
+    padding: 2px;
+    border-radius: .25em;
+    outline: none;
+    box-shadow: inset 0 0 0 1px $lightViolet;  /*Inset shadow, simulates a white border*/
+
+    &:hover, &:focus, &:focus-within, &:active {
+      box-shadow: inset 0 0 0 2px $lightViolet;
+    }
+
+    &:focus, &:focus-within, &:active {
+      textarea.field {
+        background-color: $deepViolet;
+        border-top-color: transparentize($lightViolet, .5);
+      }
+    }
+
+    textarea.field {
+      display: block;
+      box-shadow: none !important;
+      background: none;
+      margin: 0;
+      border-radius: 0 0 .25em .25em;
+      border-top: 1px solid transparent;
+
+      transition: all .1s, border .25s;
+    }
+  }
+
+  .toolbar, .toolbar-extended {
+    display: flex;
+    justify-content: center;
+    background: $deepBlack;
+    padding: 0 .15em;
+
+    .tools {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      padding: .3em 0;
+    }
+
+    button {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 1.8em;
+      margin: .15em 0;
+      padding: .1em .75em;
+      color: $lightGrey;
+      cursor: pointer;
+
+      transition: all .1s;
+
+      &[disabled] {
+        color: mix($deepBlack, $lightGrey, 80%);
+        cursor: default;
+        pointer-events: none;
+      }
+
+      &:hover, &:focus { color: $lightWhite }
+
+      span.icon, span.icon:before {
+        position: relative;
+        font-family: 'fontello';
+        font-size: 1.5em;
+        line-height: 1;
+        speak: never; //for accessibility
+      }
+    }
+  }
+
+  .toolbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-height: 2.6em;
+
+    .tools > div { display: flex; }
+
+    button {
+      @include tooltip;
+
+      &.extend {
+        letter-spacing: .02em;
+        .icon {
+          margin: -.25em;
+          padding: 0 .15em;
+          &.more { transform: translateY(.1em); }
+          &.less { transform: rotate(180deg); }
+        }
+      }
+    }
+
+    .show-preview {
+      flex: 1;
+      justify-content: flex-start;
+    }
+  }
+
+  .toolbar-extended {
+    flex-direction: column;
+
+    .tools {
+      border-top: 2px solid $darkGrey;
+      justify-content: flex-start;
+
+      button .name { margin-left: .15em; }
+
+      &.flags button {
+        .icon:before {
+          content: "\e80d";
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          width: 100%;
+          font-size: 1em;
+          opacity: .7;
+
+          transition: all .1s;
+        }
+
+        &:hover, &:focus { .icon:before { opacity: 1; }}
+
+        &.admin      .icon:before { color: #f7ca58; }
+        &.moderation .icon:before { color: #d11a26; }
+        &.animation  .icon:before { color: #5bd87c; }
+        &.notice     .icon:before { color: #68b8cd; }
+      }
+    }
+  }
+
+  .show-preview button, .hide-preview {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: $lightGrey;
+    cursor: pointer;
+
+    transition: all .1s;
+
+    &:hover, &:focus { color: $lightWhite }
+  }
+
+  .preview {
+    position: relative;
+    border: dashed 2px $mediumGrey;
+    border-radius: .35em;
+    padding: 1.2em .8em;
+    min-height: 4em;
+
+    .hide-preview {
+      padding: .3em .4em;
+      position: absolute;
+      left: .8em;
+      top: -.9em;
+      background: $deepGrey; //same as the background
+    }
+  }
+
+  @media only screen and (orientation: portrait) {
+    .content textarea.field { height: 40vh; }
+  }
+
+  @media only screen and (max-width: $contentWidth) {
+    .tools button { padding: .1em .55em; }
+    .toolbar .show-preview { justify-content: inherit; }
+  }
+
+  @media only screen and (max-width: $contentWidth / 2) {
+    .tools button { @include tooltip; }
+    .tools div button:nth-child(1n + 5) { display: none; } //hide all buttons from the fifth
+  }
+}

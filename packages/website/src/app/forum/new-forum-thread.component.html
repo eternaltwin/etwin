@@ -26,10 +26,143 @@
               </div>
             </div>
           </label>
-          <label>
-            <span i18n="Content of the first post of the new thread@@forum.newThread.content">Body</span>
-            <textarea name="body" class="field" formControlName="body"></textarea>
-          </label>
+          <label i18n="Content of the first post of the new thread@@forum.newThread.content">Body</label>
+          <div [ngSwitch]="preview !== null" class="editor-container">
+            <div *ngSwitchCase="true" class="preview">
+              <div [innerHTML]="preview">
+                <!-- Will be updated when showed on screen -->
+              </div>
+              <button type="button" class="hide-preview" (click)="togglePreview()">Write</button>
+            </div>
+            <div *ngSwitchDefault>
+              <div [ngSwitch]="extendedEditor" class="editor">
+                <div class="toolbar">
+                  <div class="tools show-preview">
+                    <button type="button" (click)="togglePreview()">Preview</button>
+                  </div>
+                  <div class="tools">
+                    <div *ngSwitchDefault>
+                      <button class="strong" type="button" (click)="toggleStrong(body)">
+                        <span class="icon">&#xe800;</span>
+                        <span class="name">Bold</span>
+                      </button>
+                      <button class="italic" type="button" (click)="toggleEmphasis(body)">
+                        <span class="icon">&#xe801;</span>
+                        <span class="name">Italic</span>
+                      </button>
+                      <button class="underline" type="button" disabled>
+                        <span class="icon">&#xe802;</span>
+                        <span class="name">Underline</span>
+                      </button>
+                      <button class="strikethrough" type="button" (click)="toggleStrikethrough(body)">
+                        <span class="icon">&#xe803;</span>
+                        <span class="name">Strikethrough</span>
+                      </button>
+                      <button class="quote" type="button" disabled>
+                        <span class="icon">&#xe804;</span>
+                        <span class="name">Quote</span>
+                      </button>
+                      <button class="spoiler" type="button" disabled>
+                        <span class="icon">&#xe805;</span>
+                        <span class="name">Spoiler</span>
+                      </button>
+                      <button class="aside" type="button" disabled>
+                        <span class="icon">&#xe806;</span>
+                        <span class="name">Aside</span>
+                      </button>
+                      <button class="roleplay" type="button" disabled>
+                        <span class="icon">&#xe807;</span>
+                        <span class="name">Roleplay</span>
+                      </button>
+                      <button class="link" type="button" disabled>
+                        <span class="icon">&#xe808;</span>
+                        <span class="name">Link</span>
+                      </button>
+                    </div>
+                    <button (click)="extendedEditor = !extendedEditor"  class="extend">
+                      <span *ngIf="extendedEditor; then sayLess else sayMore"></span>
+                      <ng-template #sayLess>
+                        <span>Less</span>
+                        <span class="icon less">&#xe80e;</span>
+                      </ng-template>
+                      <ng-template #sayMore>
+                        <span>More</span>
+                        <span class="icon more">&#xe80e;</span>
+                      </ng-template>
+                    </button>
+                  </div>
+                </div>
+
+                <div *ngSwitchCase="true" class="toolbar-extended">
+                  <div class="tools">
+                    <button class="strong" type="button" (click)="toggleStrong(body)">
+                      <span class="icon">&#xe800;</span>
+                      <span class="name">Bold</span>
+                    </button>
+                    <button class="italic" type="button" (click)="toggleEmphasis(body)">
+                      <span class="icon">&#xe801;</span>
+                      <span class="name">Italic</span>
+                    </button>
+                    <button class="underline" type="button" disabled>
+                      <span class="icon">&#xe802;</span>
+                      <span class="name">Underline</span>
+                    </button>
+                    <button class="strikethrough" type="button" (click)="toggleStrikethrough(body)">
+                      <span class="icon">&#xe803;</span>
+                      <span class="name">Strikethrough</span>
+                    </button>
+                    <button class="quote" type="button" disabled>
+                      <span class="icon">&#xe804;</span>
+                      <span class="name">Quote</span>
+                    </button>
+                    <button class="spoiler" type="button" disabled>
+                      <span class="icon">&#xe805;</span>
+                      <span class="name">Spoiler</span>
+                    </button>
+                    <button class="aside" type="button" disabled>
+                      <span class="icon">&#xe806;</span>
+                      <span class="name">Aside</span>
+                    </button>
+                    <button class="roleplay" type="button" disabled>
+                      <span class="icon">&#xe807;</span>
+                      <span class="name">Roleplay</span>
+                    </button>
+                    <button class="link" type="button" disabled>
+                      <span class="icon">&#xe808;</span>
+                      <span class="name">Link</span>
+                    </button>
+                    <button class="player" type="button" disabled>
+                      <span class="icon">&#xe809;</span>
+                      <span class="name">Player</span>
+                    </button>
+                    <button class="question" type="button" disabled>
+                      <span class="icon">&#xe80a;</span>
+                      <span class="name">Question</span>
+                    </button>
+                  </div>
+                  <div class="tools flags">
+                    <button class="admin" type="button" disabled>
+                      <span class="icon">&#xe80c;</span>
+                      <span class="name">Admin</span>
+                    </button>
+                    <button class="moderation" type="button" disabled>
+                      <span class="icon">&#xe80c;</span>
+                      <span class="name">Moderation</span>
+                    </button>
+                    <button class="animation" type="button" disabled>
+                      <span class="icon">&#xe80c;</span>
+                      <span class="name">Animation</span>
+                    </button>
+                    <button class="notice" type="button" disabled>
+                      <span class="icon">&#xe80c;</span>
+                      <span class="name">Announcement</span>
+                    </button>
+                  </div>
+                </div>
+                <textarea name="body" class="field" formControlName="body" #body></textarea>
+              </div>
+            </div>
+          </div>
           <div class="actionBox">
             <input type="submit" class="btn primary" name="register" [disabled]="newThreadForm.invalid || pendingSubscription !== null" i18n-value="@@forum.newThread.submit" value="Create a new thread"/>
           </div>

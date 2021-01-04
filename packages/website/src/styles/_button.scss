@@ -4,12 +4,14 @@
 // - PRIMARY (default), for call-to-action buttons. Should be used in limited amount to lead users to specific destinations.
 // - SECONDARY, for alternative actions. Can be used when similar actions are proposed, or as alternatives.
 // - TERTIARY, for repulsive or minimal actions. Can be used when the button implies a "step back" or "step out" action.
-//- AGGRESSIVE, for irreversible and negative actions. MUST be used carefully, and very explicitely describe the action consequences.
+// - AGGRESSIVE, for irreversible and negative actions. MUST be used carefully, and very explicitely describe the action consequences.
 
 // BUTTONS CAN ALSO HAVE ADDITIONAL STYLES:
 // - DISABLED, for (yet) unavailable actions.
 // - ICON, for icon-only buttons. Don't forget to add an "alt" text in case the image cannot load.
 // - MULTI (applied to the parent ".actionBox" div) to create a visually linked buttons bar.
+
+button { border: none; background: none; }
 
 .content {
   .box, .actionBox {
@@ -256,6 +258,22 @@
     &:hover, &:focus, &:active {
       clip-path: inset(-4px -4px -4px -4px);
       -webkit-clip-path: inset(-4px -4px -4px -4px);
+    }
+  }
+  
+  .toolbar{
+    .btn {
+      font-weight: normal;
+      padding: 0;
+      max-width: 2.5em;
+      width: 2.5em;
+      height: 2.5em;
+      border: none;
+      margin: 0 0.1em;
+    }
+    
+    .btn:hover{
+      transform: none !important;
     }
   }
 }

@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
+import { MarktwinModule } from "../../modules/marktwin/marktwin.module";
 import { SharedModule } from "../shared/shared.module";
 import { AddModeratorComponent } from "./add-moderator.component";
 import { DeleteModeratorComponent } from "./delete-moderator.component";
@@ -34,6 +35,7 @@ import { UserInputComponent } from "./user-input.component";
     CommonModule,
     FormsModule,
     ForumRoutingModule,
+    MarktwinModule,
     ReactiveFormsModule,
     SharedModule,
   ],

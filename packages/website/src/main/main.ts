@@ -2,6 +2,7 @@ import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
 import { ApiType, Config, getLocalConfig } from "@eternal-twin/local-config";
+import * as marktwin from "@eternal-twin/marktwin";
 import { createApiRouter } from "@eternal-twin/rest-server/lib/index.js";
 import koaCors from "@koa/cors";
 import Router  from "@koa/router";
@@ -87,7 +88,8 @@ async function main(api: Api): Promise<void> {
     isIndexNextToServerMain: true,
     isProduction: IS_PRODUCTION,
     api: api,
-    forum: {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage}
+    forum: {postsPerPage: config.forum.postsPerPage, threadsPerPage: config.forum.threadsPerPage},
+    marktwin,
   };
 
   const prodAppRouters: Map<string, Koa> = new Map();

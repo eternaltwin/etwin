@@ -165,13 +165,23 @@
           "options": {
             "outputPath": "app/server/dev",
             "main": "./src/server/main.ts",
-            "tsConfig": "./src/server/tsconfig.json"
+            "tsConfig": "./src/server/tsconfig.json",
+            "fileReplacements": [
+              {
+                "replace": "src/modules/marktwin/marktwin.module.ts",
+                "with": "src/modules/marktwin/marktwin.module.server.ts"
+              }
+            ]
           },
           "configurations": {
             "production": {
               "outputPath": "app/server",
               "outputHashing": "media",
               "fileReplacements": [
+                {
+                  "replace": "src/modules/marktwin/marktwin.module.ts",
+                  "with": "src/modules/marktwin/marktwin.module.server.ts"
+                },
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"

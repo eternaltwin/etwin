@@ -23,5 +23,6 @@ export interface ServerAppConfig {
   isIndexNextToServerMain: boolean;
   isProduction: boolean;
   api: Api;
+  marktwin: typeof import("@eternal-twin/marktwin");
   forum: ForumConfig;
 }
