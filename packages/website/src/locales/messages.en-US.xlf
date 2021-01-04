@@ -1017,7 +1017,7 @@
         <note priority="1" from="description">Current status of the eMush game</note>
       </trans-unit>
       <trans-unit id="games.emushButton" datatype="html">
-        <source>Test the beta!</source>
+        <source>Test the alpha!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
           <context context-type="linenumber">50</context>
