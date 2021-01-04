@@ -1,32 +1,34 @@
-# demurgos/node:14
-image: "demurgos/node@sha256:19b5be72872291c47fa982d19f88b71c101abdd445bd80a571c34f5a6609c0f5"
+# demurgos/node:latest
+image: "demurgos/node@sha256:20621ec1c96b9bd7f838c179df96c50295c3f119e428477ce501715d76bb81f7"
 
 services:
   - "postgres:latest"
 
 cache:
   paths:
-    - "node_modules/"
+    - ".cache/sccache/"
     - ".cargo/bin/"
     - ".cargo/registry/index/"
     - ".cargo/registry/cache/"
     - ".cargo/git/db/"
+    - "node_modules/"
     - "target/"
 
 variables:
   CARGO_HOME: ".cargo"
   POSTGRES_DB: "etwindb"
-  POSTGRES_USER: "runner"
+  POSTGRES_USER: "etwin"
   POSTGRES_PASSWORD: "dev"
+  SCCACHE_DIR: ".cache/sccache"
+  RUSTC_WRAPPER: "sccache"
 
 before_script:
   - "node --version"
-  - "npm --version"
   - "yarn --version"
-  - "rustup --version"
-  - "cargo --version"
   - "rustc --version"
-  - "rustup component add rustfmt"
+  - "cargo --version"
+  - "cargo fmt --version"
+  - "cargo clippy --version"
   - "yarn install --immutable"
   - |
     cat >etwin.toml <<EOL
