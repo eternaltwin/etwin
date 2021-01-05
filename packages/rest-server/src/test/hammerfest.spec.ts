@@ -22,6 +22,7 @@ describe("/hammerfest", () => {
             server: "hammerfest.fr",
             id: "123",
             username: "alice",
+            archivedAt: actual.archivedAt,
             etwin: {
               current: null,
               old: [],
@@ -44,6 +45,7 @@ describe("/hammerfest", () => {
             server: "hammerfest.fr",
             id: "123",
             username: "alice",
+            archivedAt: actual.archivedAt,
             etwin: {
               current: null,
               old: [],

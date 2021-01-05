@@ -1,5 +1,5 @@
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { ShortDinoparcUser } from "@eternal-twin/core/lib/dinoparc/short-dinoparc-user.js";
+import { ArchivedDinoparcUser } from "@eternal-twin/core/lib/dinoparc/archived-dinoparc-user.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import chai from "chai";
 
@@ -13,13 +13,14 @@ export function testDinoparcStore(withApi: (fn: (api: Api) => Promise<void>) => 
     return withApi(async (api: Api): Promise<void> => {
       await api.dinoparcStore.touchShortUser({type: ObjectType.DinoparcUser, server: "dinoparc.com", id: "123", username: "alice"});
 
-      const actual: ShortDinoparcUser | null = await api.dinoparcStore.getShortUser({server: "dinoparc.com", id: "123"});
+      const actual: ArchivedDinoparcUser | null = await api.dinoparcStore.getShortUser({server: "dinoparc.com", id: "123"});
       {
-        const expected: ShortDinoparcUser = {
+        const expected: ArchivedDinoparcUser = {
           type: ObjectType.DinoparcUser,
           server: "dinoparc.com",
           id: "123",
           username: "alice",
+          archivedAt: actual!.archivedAt,
         };
         chai.assert.deepEqual(actual, expected);
       }
@@ -31,7 +32,7 @@ export function testDinoparcStore(withApi: (fn: (api: Api) => Promise<void>) => 
     return withApi(async (api: Api): Promise<void> => {
       await api.dinoparcStore.touchShortUser({type: ObjectType.DinoparcUser, server: "dinoparc.com", id: "123", username: "alice"});
 
-      const actual: ShortDinoparcUser | null = await api.dinoparcStore.getShortUser({server: "dinoparc.com", id: "999"});
+      const actual: ArchivedDinoparcUser | null = await api.dinoparcStore.getShortUser({server: "dinoparc.com", id: "999"});
       {
         const expected: null = null;
         chai.assert.deepEqual(actual, expected);

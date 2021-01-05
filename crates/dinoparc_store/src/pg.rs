@@ -1,7 +1,9 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
+use etwin_core::core::Instant;
 use etwin_core::dinoparc::{
-  DinoparcServer, DinoparcStore, DinoparcUserId, DinoparcUsername, GetDinoparcUserOptions, ShortDinoparcUser,
+  ArchivedDinoparcUser, DinoparcServer, DinoparcStore, DinoparcUserId, DinoparcUsername, GetDinoparcUserOptions,
+  ShortDinoparcUser,
 };
 use sqlx;
 use sqlx::PgPool;
@@ -39,17 +41,18 @@ where
   async fn get_short_user(
     &self,
     options: &GetDinoparcUserOptions,
-  ) -> Result<Option<ShortDinoparcUser>, Box<dyn Error>> {
+  ) -> Result<Option<ArchivedDinoparcUser>, Box<dyn Error>> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       dinoparc_server: DinoparcServer,
       dinoparc_user_id: DinoparcUserId,
       username: DinoparcUsername,
+      archived_at: Instant,
     }
 
-    let row = sqlx::query_as::<_, Row>(
+    let row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
-      SELECT dinoparc_server, dinoparc_user_id, username
+      SELECT dinoparc_server, dinoparc_user_id, username, archived_at
       FROM dinoparc_users
       WHERE dinoparc_server = $1::DINOPARC_SERVER AND dinoparc_user_id = $2::DINOPARC_USER_ID;
     ",
@@ -59,14 +62,15 @@ where
     .fetch_optional(&*self.database)
     .await?;
 
-    Ok(row.map(|r| ShortDinoparcUser {
+    Ok(row.map(|r| ArchivedDinoparcUser {
       server: r.dinoparc_server,
       id: r.dinoparc_user_id,
       username: r.username,
+      archived_at: r.archived_at,
     }))
   }
 
-  async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ShortDinoparcUser, Box<dyn Error>> {
+  async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, Box<dyn Error>> {
     let now = self.clock.now();
     sqlx::query(
       r"
@@ -82,10 +86,11 @@ where
     .bind(now)
     .fetch_optional(&*self.database)
     .await?;
-    Ok(ShortDinoparcUser {
+    Ok(ArchivedDinoparcUser {
       server: short.server,
       id: short.id.clone(),
       username: short.username.clone(),
+      archived_at: now,
     })
   }
 }

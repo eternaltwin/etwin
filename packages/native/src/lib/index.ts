@@ -1,11 +1,15 @@
 import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
 import {
+  $ArchivedDinoparcUser,
+  $NullableArchivedDinoparcUser,
+  ArchivedDinoparcUser
+} from "@eternal-twin/core/lib/dinoparc/archived-dinoparc-user.js";
+import {
   $GetDinoparcUserOptions,
   GetDinoparcUserOptions
 } from "@eternal-twin/core/lib/dinoparc/get-dinoparc-user-options.js";
 import {
-  $NullableShortDinoparcUser,
   $ShortDinoparcUser,
   ShortDinoparcUser
 } from "@eternal-twin/core/lib/dinoparc/short-dinoparc-user.js";
@@ -92,16 +96,16 @@ export class MemDinoparcStore implements DinoparcStore {
     this.box = native.dinoparcStore.mem.new(options.clock.box);
   }
 
-  async getShortUser(options: Readonly<GetDinoparcUserOptions>): Promise<ShortDinoparcUser | null> {
+  async getShortUser(options: Readonly<GetDinoparcUserOptions>): Promise<ArchivedDinoparcUser | null> {
     const rawOptions: string = $GetDinoparcUserOptions.write(JSON_WRITER, options);
     const rawOut = await MemDinoparcStore.GET_SHORT_USER(this.box, rawOptions);
-    return $NullableShortDinoparcUser.read(JSON_READER, rawOut);
+    return $NullableArchivedDinoparcUser.read(JSON_READER, rawOut);
   }
 
-  async touchShortUser(short: Readonly<ShortDinoparcUser>): Promise<ShortDinoparcUser> {
+  async touchShortUser(short: Readonly<ShortDinoparcUser>): Promise<ArchivedDinoparcUser> {
     const rawShort: string = $ShortDinoparcUser.write(JSON_WRITER, short);
     const rawOut = await MemDinoparcStore.TOUCH_SHORT_USER(this.box, rawShort);
-    return $ShortDinoparcUser.read(JSON_READER, rawOut);
+    return $ArchivedDinoparcUser.read(JSON_READER, rawOut);
   }
 }
 
@@ -121,16 +125,16 @@ export class PgDinoparcStore implements DinoparcStore {
     this.box = native.dinoparcStore.pg.new(options.clock.box, options.database.box);
   }
 
-  async getShortUser(options: Readonly<GetDinoparcUserOptions>): Promise<ShortDinoparcUser | null> {
+  async getShortUser(options: Readonly<GetDinoparcUserOptions>): Promise<ArchivedDinoparcUser | null> {
     const rawOptions: string = $GetDinoparcUserOptions.write(JSON_WRITER, options);
     const rawOut = await PgDinoparcStore.GET_SHORT_USER(this.box, rawOptions);
-    return $NullableShortDinoparcUser.read(JSON_READER, rawOut);
+    return $NullableArchivedDinoparcUser.read(JSON_READER, rawOut);
   }
 
-  async touchShortUser(short: Readonly<ShortDinoparcUser>): Promise<ShortDinoparcUser> {
+  async touchShortUser(short: Readonly<ShortDinoparcUser>): Promise<ArchivedDinoparcUser> {
     const rawShort: string = $ShortDinoparcUser.write(JSON_WRITER, short);
     const rawOut = await PgDinoparcStore.TOUCH_SHORT_USER(this.box, rawShort);
-    return $ShortDinoparcUser.read(JSON_READER, rawOut);
+    return $ArchivedDinoparcUser.read(JSON_READER, rawOut);
   }
 }
 

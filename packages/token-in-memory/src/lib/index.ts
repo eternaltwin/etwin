@@ -3,11 +3,13 @@ import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.
 import { DinoparcSession } from "@eternal-twin/core/lib/dinoparc/dinoparc-session.js";
 import { DinoparcSessionKey } from "@eternal-twin/core/lib/dinoparc/dinoparc-session-key.js";
 import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
+import { $ShortDinoparcUser } from "@eternal-twin/core/lib/dinoparc/short-dinoparc-user.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { $ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { RfcOauthRefreshTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-refresh-token-key.js";
@@ -210,7 +212,7 @@ export class InMemoryTokenService implements TokenService {
       throw new Error("AssertionError: Expected Dinoparc user to exist");
     }
     return {
-      user,
+      user: $ShortDinoparcUser.clone(user),
       key: session.key,
       ctime: new Date(session.ctime),
       atime: new Date(session.atime),
@@ -236,7 +238,7 @@ export class InMemoryTokenService implements TokenService {
       throw new Error("AssertionError: Expected Dinoparc user to exist");
     }
     return {
-      user,
+      user: $ShortDinoparcUser.clone(user),
       key: session.key,
       ctime: new Date(session.ctime),
       atime: new Date(session.atime),
@@ -270,7 +272,7 @@ export class InMemoryTokenService implements TokenService {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
     return {
-      user,
+      user: $ShortHammerfestUser.clone(user),
       key: session.key,
       ctime: new Date(session.ctime),
       atime: new Date(session.atime),
@@ -296,7 +298,7 @@ export class InMemoryTokenService implements TokenService {
       throw new Error("AssertionError: Expected Hammerfest user to exist");
     }
     return {
-      user,
+      user: $ShortHammerfestUser.clone(user),
       key: session.key,
       ctime: new Date(session.ctime),
       atime: new Date(session.atime),

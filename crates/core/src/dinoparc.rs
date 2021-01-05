@@ -157,6 +157,16 @@ pub struct ShortDinoparcUser {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcUser"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ArchivedDinoparcUser {
+  pub server: DinoparcServer,
+  pub id: DinoparcUserId,
+  pub username: DinoparcUsername,
+  pub archived_at: Instant,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcUserIdRef {
   pub server: DinoparcServer,
@@ -165,8 +175,10 @@ pub struct DinoparcUserIdRef {
 
 #[async_trait]
 pub trait DinoparcStore: Send + Sync {
-  async fn get_short_user(&self, options: &GetDinoparcUserOptions)
-    -> Result<Option<ShortDinoparcUser>, Box<dyn Error>>;
+  async fn get_short_user(
+    &self,
+    options: &GetDinoparcUserOptions,
+  ) -> Result<Option<ArchivedDinoparcUser>, Box<dyn Error>>;
 
-  async fn touch_short_user(&self, options: &ShortDinoparcUser) -> Result<ShortDinoparcUser, Box<dyn Error>>;
+  async fn touch_short_user(&self, options: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, Box<dyn Error>>;
 }

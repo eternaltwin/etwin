@@ -1,13 +1,15 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
-use etwin_core::dinoparc::{DinoparcStore, DinoparcUserId, GetDinoparcUserOptions, ShortDinoparcUser};
+use etwin_core::dinoparc::{
+  ArchivedDinoparcUser, DinoparcStore, DinoparcUserId, GetDinoparcUserOptions, ShortDinoparcUser,
+};
 use std::collections::HashMap;
 use std::error::Error;
 use std::ops::Deref;
 use std::sync::Mutex;
 
 struct StoreState {
-  users: HashMap<DinoparcUserId, ShortDinoparcUser>,
+  users: HashMap<DinoparcUserId, ArchivedDinoparcUser>,
 }
 
 impl StoreState {
@@ -15,11 +17,11 @@ impl StoreState {
     Self { users: HashMap::new() }
   }
 
-  fn get_user(&self, id: &DinoparcUserId) -> Option<&ShortDinoparcUser> {
+  fn get_user(&self, id: &DinoparcUserId) -> Option<&ArchivedDinoparcUser> {
     self.users.get(id)
   }
 
-  fn touch_user(&mut self, user: ShortDinoparcUser) {
+  fn touch_user(&mut self, user: ArchivedDinoparcUser) {
     self.users.insert(user.id.clone(), user);
   }
 }
@@ -29,7 +31,7 @@ where
   TyClock: Deref + Send + Sync,
   <TyClock as Deref>::Target: Clock,
 {
-  _clock: TyClock,
+  clock: TyClock,
   state: Mutex<StoreState>,
 }
 
@@ -40,7 +42,7 @@ where
 {
   pub fn new(clock: TyClock) -> Self {
     Self {
-      _clock: clock,
+      clock: clock,
       state: Mutex::new(StoreState::new()),
     }
   }
@@ -55,15 +57,21 @@ where
   async fn get_short_user(
     &self,
     options: &GetDinoparcUserOptions,
-  ) -> Result<Option<ShortDinoparcUser>, Box<dyn Error>> {
+  ) -> Result<Option<ArchivedDinoparcUser>, Box<dyn Error>> {
     let state = self.state.lock().unwrap();
     Ok(state.get_user(&options.id).cloned())
   }
 
-  async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ShortDinoparcUser, Box<dyn Error>> {
+  async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, Box<dyn Error>> {
     let mut state = self.state.lock().unwrap();
-    state.touch_user(short.clone());
-    Ok(short.clone())
+    let user = ArchivedDinoparcUser {
+      server: short.server,
+      id: short.id.clone(),
+      username: short.username.clone(),
+      archived_at: self.clock.now(),
+    };
+    state.touch_user(user.clone());
+    Ok(user)
   }
 }
 

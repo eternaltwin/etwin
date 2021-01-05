@@ -1,8 +1,10 @@
 import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
 import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
+import { $ShortDinoparcUser } from "@eternal-twin/core/lib/dinoparc/short-dinoparc-user.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { $ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
 import { DinoparcLink } from "@eternal-twin/core/lib/link/dinoparc-link.js";
 import { EtwinLink } from "@eternal-twin/core/lib/link/etwin-link.js";
@@ -17,6 +19,7 @@ import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-
 import { VersionedHammerfestLink } from "@eternal-twin/core/lib/link/versioned-hammerfest-link.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
+import { $ShortTwinoidUser } from "@eternal-twin/core/lib/twinoid/short-twinoid-user.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
 import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
@@ -287,7 +290,7 @@ export class InMemoryLinkService implements LinkService {
         user: linkedBy,
       },
       unlink: null,
-      user,
+      user: $ShortDinoparcUser.clone(user),
     };
   }
 
@@ -306,7 +309,7 @@ export class InMemoryLinkService implements LinkService {
         user: linkedBy,
       },
       unlink: null,
-      user,
+      user: $ShortHammerfestUser.clone(user),
     };
   }
 
@@ -325,7 +328,7 @@ export class InMemoryLinkService implements LinkService {
         user: linkedBy,
       },
       unlink: null,
-      user,
+      user: $ShortTwinoidUser.clone(user),
     };
   }
 }

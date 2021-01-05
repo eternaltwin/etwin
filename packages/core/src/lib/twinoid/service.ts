@@ -1,7 +1,7 @@
 import { AuthContext } from "../auth/auth-context.js";
 import { LinkService } from "../link/service.js";
+import { ArchivedTwinoidUser } from "./archived-twinoid-user.js";
 import { GetTwinoidUserOptions } from "./get-twinoid-user-options.js";
-import { ShortTwinoidUser } from "./short-twinoid-user.js";
 import { TwinoidStore } from "./store.js";
 import { TwinoidUser } from "./twinoid-user.js";
 
@@ -20,7 +20,7 @@ export class TwinoidService {
   }
 
   async getUser(_acx: AuthContext, options: Readonly<GetTwinoidUserOptions>): Promise<TwinoidUser | null> {
-    const user: ShortTwinoidUser | null = await this.#twinoidStore.getShortUser(options);
+    const user: ArchivedTwinoidUser | null = await this.#twinoidStore.getShortUser(options);
     if (user === null) {
       return null;
     }

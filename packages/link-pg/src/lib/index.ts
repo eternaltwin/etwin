@@ -1,7 +1,9 @@
 import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
 import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
+import { $ShortDinoparcUser } from "@eternal-twin/core/lib/dinoparc/short-dinoparc-user.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
-import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
+import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { $ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
 import { EtwinLink } from "@eternal-twin/core/lib/link/etwin-link.js";
 import { HammerfestLink, NullableHammerfestLink } from "@eternal-twin/core/lib/link/hammerfest-link.js";
@@ -15,6 +17,7 @@ import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-
 import { VersionedHammerfestLink } from "@eternal-twin/core/lib/link/versioned-hammerfest-link.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
+import { $ShortTwinoidUser } from "@eternal-twin/core/lib/twinoid/short-twinoid-user.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
@@ -296,7 +299,7 @@ export class PgLinkService implements LinkService {
         const link: DinoparcLink = {
           link: {time: row.linked_at, user: linkedBy},
           unlink: null,
-          user,
+          user: $ShortDinoparcUser.clone(user),
         };
         switch (user.server) {
           case "dinoparc.com":
@@ -335,7 +338,7 @@ export class PgLinkService implements LinkService {
         const link: HammerfestLink = {
           link: {time: row.linked_at, user: linkedBy},
           unlink: null,
-          user,
+          user: $ShortHammerfestUser.clone(user),
         };
         switch (user.server) {
           case "hammerfest.es":
@@ -375,7 +378,7 @@ export class PgLinkService implements LinkService {
         twinoid = {
           link: {time: row.linked_at, user: linkedBy},
           unlink: null,
-          user,
+          user: $ShortTwinoidUser.clone(user),
         };
       }
     }

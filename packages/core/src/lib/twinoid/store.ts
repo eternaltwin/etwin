@@ -1,3 +1,4 @@
+import { ArchivedTwinoidUser } from "./archived-twinoid-user.js";
 import { GetTwinoidUserOptions } from "./get-twinoid-user-options.js";
 import { ShortTwinoidUser } from "./short-twinoid-user.js";
 
@@ -7,9 +8,9 @@ export interface TwinoidStore {
    *
    * @returns Twinoid profile or null if not found
    */
-  getUser(options: Readonly<GetTwinoidUserOptions>): Promise<ShortTwinoidUser | null>;
+  getUser(options: Readonly<GetTwinoidUserOptions>): Promise<ArchivedTwinoidUser | null>;
 
-  getShortUser(options: Readonly<GetTwinoidUserOptions>): Promise<ShortTwinoidUser | null>;
+  getShortUser(options: Readonly<GetTwinoidUserOptions>): Promise<ArchivedTwinoidUser | null>;
 
-  touchShortUser(short: Readonly<ShortTwinoidUser>): Promise<ShortTwinoidUser>;
+  touchShortUser(short: Readonly<ShortTwinoidUser>): Promise<ArchivedTwinoidUser>;
 }
