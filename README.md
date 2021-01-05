@@ -1,5 +1,11 @@
 # Eternal-Twin main repository
 
+## Requirements
+
+- Node 14.13.1
+- Rust stable
+- Yarn 1.22
+
 ## Getting started
 
 ```
