@@ -65,17 +65,36 @@ before_script:
     EOL
 
 stages:
-  - "ci"
+  - "check"
 
-ci:
-  stage: "ci"
+lint:
+  stage: "check"
+  script:
+    - |
+      cargo fmt -- --check \
+      && yarn run lint
+
+test-rust:
+  stage: "check"
   script:
     - |
       sccache --start-server \
-      && cargo fmt -- --check \
       && cargo test --no-fail-fast -- -Z unstable-options --report-time \
-      && yarn run lint \
+      && sccache --stop-server
+
+test-node:
+  stage: "check"
+  script:
+    - |
+      sccache --start-server \
       && yarn run test \
+      && sccache --stop-server
+
+build:
+  stage: "check"
+  script:
+    - |
+      sccache --start-server \
       && yarn --cwd packages/rest-server run main:build \
       && yarn --cwd packages/website run build \
       && sccache --stop-server
