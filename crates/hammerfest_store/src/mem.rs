@@ -66,7 +66,7 @@ where
     &self,
     options: &GetHammerfestUserOptions,
   ) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>> {
-    unimplemented!()
+    Ok(None) // TODO: implement this
   }
 
   async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<ArchivedHammerfestUser, Box<dyn Error>> {

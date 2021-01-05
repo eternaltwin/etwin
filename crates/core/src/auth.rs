@@ -1,6 +1,7 @@
 use crate::user::ShortUser;
 
 pub enum AuthContext {
+  Guest,
   User(UserAuthContext),
 }
 

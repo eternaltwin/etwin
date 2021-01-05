@@ -1,18 +1,21 @@
 use chrono::{TimeZone, Utc};
-use etwin_core::clock::{Clock, VirtualClock};
 use etwin_core::hammerfest::{HammerfestClient, HammerfestStore};
 use etwin_core::link::LinkStore;
 use etwin_core::services::hammerfest::HammerfestService;
 use etwin_core::user::UserStore;
 use etwin_core::uuid::Uuid4Generator;
+use etwin_core::{
+  auth::AuthContext,
+  clock::VirtualClock,
+  hammerfest::{GetHammerfestUserOptions, HammerfestServer, HammerfestUserId},
+};
 use etwin_db_schema::force_create_latest;
 use etwin_hammerfest_client::HammerfestClientMem;
-use etwin_hammerfest_store::pg::PgHammerfestStore;
-use etwin_link_store::pg::PgLinkStore;
-use etwin_user_store::pg::PgUserStore;
+use etwin_hammerfest_store::{mem::MemHammerfestStore, pg::PgHammerfestStore};
+use etwin_link_store::{mem::MemLinkStore, pg::PgLinkStore};
+use etwin_user_store::{mem::InMemorySimpleUserService, pg::PgUserStore};
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::PgPool;
-use std::any::Any;
 use std::ops::Deref;
 use std::sync::Arc;
 
@@ -110,4 +113,22 @@ async fn inner_test_empty<TyClock, TyHammerfestClient, TyHammerfestStore, TyHamm
   let actual: Option<()> = None;
   let expected: Option<()> = None;
   assert_eq!(actual, expected);
+}
+
+#[tokio::test]
+async fn test_reference_types() {
+  let uuid = Uuid4Generator;
+  let clock = VirtualClock::new(Utc.timestamp(1607531946, 0));
+  let hammerfest_client = HammerfestClientMem::new(&clock);
+  let hammerfest_store = MemHammerfestStore::new(&clock);
+  let link_store = MemLinkStore::new(&clock);
+  let user_store = InMemorySimpleUserService::new(&clock, &uuid);
+  let hammerfest = HammerfestService::new(&hammerfest_client, &hammerfest_store, &link_store, &user_store);
+
+  let options = &GetHammerfestUserOptions {
+    server: HammerfestServer::HammerfestFr,
+    id: HammerfestUserId::try_from_string("999999".to_owned()).unwrap(),
+    time: None,
+  };
+  assert_eq!(hammerfest.get_user(AuthContext::Guest, &options).await.unwrap(), None);
 }
