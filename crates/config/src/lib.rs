@@ -51,7 +51,7 @@ fn find_config_file(dir: PathBuf) -> Result<(PathBuf, String), FindConfigFileErr
   Err(FindConfigFileError::NotFound(dir))
 }
 
-pub fn parse_config(file: &Path, config_toml: &str) -> Result<Config, toml::de::Error> {
+pub fn parse_config(_file: &Path, config_toml: &str) -> Result<Config, toml::de::Error> {
   let raw: Config = toml::from_str(&config_toml)?;
   Ok(raw)
 }
@@ -84,7 +84,6 @@ pub static DEFAULT: Lazy<Config> = Lazy::new(|| Config {
 #[cfg(test)]
 mod test {
   use crate::{parse_config, DEFAULT};
-  use std::ops::Deref;
 
   #[test]
   fn test_default_config() {

@@ -5,7 +5,7 @@ use etwin_core::dinoparc::{
 };
 use std::collections::HashMap;
 use std::error::Error;
-use std::sync::Mutex;
+use std::sync::RwLock;
 
 struct StoreState {
   users: HashMap<DinoparcUserId, ArchivedDinoparcUser>,
@@ -27,7 +27,7 @@ impl StoreState {
 
 pub struct MemDinoparcStore<TyClock: Clock> {
   clock: TyClock,
-  state: Mutex<StoreState>,
+  state: RwLock<StoreState>,
 }
 
 impl<TyClock> MemDinoparcStore<TyClock>
@@ -37,7 +37,7 @@ where
   pub fn new(clock: TyClock) -> Self {
     Self {
       clock: clock,
-      state: Mutex::new(StoreState::new()),
+      state: RwLock::new(StoreState::new()),
     }
   }
 }
@@ -51,12 +51,12 @@ where
     &self,
     options: &GetDinoparcUserOptions,
   ) -> Result<Option<ArchivedDinoparcUser>, Box<dyn Error>> {
-    let state = self.state.lock().unwrap();
+    let state = self.state.read().unwrap();
     Ok(state.get_user(&options.id).cloned())
   }
 
   async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, Box<dyn Error>> {
-    let mut state = self.state.lock().unwrap();
+    let mut state = self.state.write().unwrap();
     let now = self.clock.now();
     let user = ArchivedDinoparcUser {
       server: short.server,

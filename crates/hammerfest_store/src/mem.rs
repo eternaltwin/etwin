@@ -5,7 +5,7 @@ use etwin_core::hammerfest::{
 };
 use std::collections::HashMap;
 use std::error::Error;
-use std::sync::Mutex;
+use std::sync::RwLock;
 
 struct StoreState {
   users: HashMap<HammerfestUserId, ArchivedHammerfestUser>,
@@ -27,7 +27,7 @@ impl StoreState {
 
 pub struct MemHammerfestStore<TyClock: Clock> {
   clock: TyClock,
-  state: Mutex<StoreState>,
+  state: RwLock<StoreState>,
 }
 
 impl<TyClock> MemHammerfestStore<TyClock>
@@ -37,7 +37,7 @@ where
   pub fn new(clock: TyClock) -> Self {
     Self {
       clock,
-      state: Mutex::new(StoreState::new()),
+      state: RwLock::new(StoreState::new()),
     }
   }
 }
@@ -51,7 +51,7 @@ where
     &self,
     options: &GetHammerfestUserOptions,
   ) -> Result<Option<ShortHammerfestUser>, Box<dyn Error>> {
-    let state = self.state.lock().unwrap();
+    let state = self.state.read().unwrap();
     Ok(state.get_user(&options.id).cloned().map(From::from))
   }
 
@@ -59,12 +59,12 @@ where
     &self,
     options: &GetHammerfestUserOptions,
   ) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>> {
-    let state = self.state.lock().unwrap();
+    let state = self.state.read().unwrap();
     Ok(state.get_user(&options.id).cloned())
   }
 
   async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<ArchivedHammerfestUser, Box<dyn Error>> {
-    let mut state = self.state.lock().unwrap();
+    let mut state = self.state.write().unwrap();
     let now = self.clock.now();
     let user = ArchivedHammerfestUser {
       server: short.server,

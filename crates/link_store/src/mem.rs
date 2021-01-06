@@ -12,7 +12,7 @@ use etwin_core::user::UserId;
 use std::collections::HashMap;
 use std::error::Error;
 use std::ops::Deref;
-use std::sync::{Mutex, RwLock};
+use std::sync::RwLock;
 
 struct StoreState {
   from_hammerfest: HashMap<(HammerfestServer, HammerfestUserId), RawLink<HammerfestUserIdRef>>,
