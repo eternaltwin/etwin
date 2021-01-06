@@ -25,7 +25,7 @@ export class HammerfestService {
   }
 
   async getUserById(_acx: AuthContext, options: Readonly<GetHammerfestUserOptions>): Promise<HammerfestUser | null> {
-    let user: ArchivedHammerfestUser | null = await this.#hammerfestStore.getShortUser(options);
+    let user: ArchivedHammerfestUser | null = await this.#hammerfestStore.getUser(options);
     if (user === null) {
       const profile: HammerfestProfile | null = await this.#hammerfestClient.getProfileById(
         null,

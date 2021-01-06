@@ -1,4 +1,4 @@
-import { Api, testHammerfestArchiveService } from "@eternal-twin/hammerfest-store-test";
+import { Api, testHammerfestStore } from "@eternal-twin/hammerfest-store-test";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 
@@ -22,5 +22,5 @@ async function withPgHammerfestStore<R>(fn: (api: Api) => Promise<R>): Promise<R
 }
 
 describe("PgHammerfestStore", function () {
-  testHammerfestArchiveService(withPgHammerfestStore);
+  testHammerfestStore(withPgHammerfestStore);
 });

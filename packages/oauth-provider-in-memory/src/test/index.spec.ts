@@ -1,4 +1,4 @@
-import { VirtualClock } from "@eternal-twin/native";
+import { VirtualClock } from "@eternal-twin/native/lib/clock.js";
 import { Api, testOauthProviderStore } from "@eternal-twin/oauth-provider-test";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";

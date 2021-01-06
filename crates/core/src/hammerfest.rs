@@ -197,6 +197,7 @@ impl From<ArchivedHammerfestUser> for ShortHammerfestUser {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "HammerfestUser"))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ArchivedHammerfestUser {
   pub server: HammerfestServer,

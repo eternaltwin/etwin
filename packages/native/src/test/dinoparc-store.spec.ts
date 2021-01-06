@@ -1,11 +1,13 @@
 import { Api as DinoparcStoreApi, testDinoparcStore } from "@eternal-twin/dinoparc-store-test";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
-import { Database as NodeDb, DbConfig, withPgPool } from "@eternal-twin/pg-db";
+import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 
-import { Database, MemDinoparcStore, PgDinoparcStore, SystemClock } from "../lib/index.js";
+import { SystemClock } from "../lib/clock.js";
+import { Database as NativeDatabase } from "../lib/database.js";
+import { MemDinoparcStore, PgDinoparcStore } from "../lib/dinoparc-store.js";
 
-describe("EtwinNative", function () {
+describe("NativeDinoparcStore", function () {
   describe("MemDinoparcStore", function () {
     async function withMemDinoparcStore<R>(fn: (api: DinoparcStoreApi) => Promise<R>): Promise<R> {
       const clock = new SystemClock();
@@ -28,9 +30,9 @@ describe("EtwinNative", function () {
       };
 
       return withPgPool(dbConfig, async (pool) => {
-        const db = new NodeDb(pool);
+        const db = new Database(pool);
         await forceCreateLatest(db);
-        const database = await Database.create(dbConfig);
+        const database = await NativeDatabase.create(dbConfig);
         const clock = new SystemClock();
         const dinoparcStore = new PgDinoparcStore({clock, database});
         return fn({dinoparcStore});

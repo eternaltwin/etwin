@@ -1,6 +1,8 @@
 import { CaseStyle } from "kryo";
 import { LiteralType } from "kryo/lib/literal.js";
+import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { TryUnionType } from "kryo/lib/try-union.js";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $HammerfestServer, HammerfestServer } from "./hammerfest-server.js";
@@ -26,3 +28,7 @@ export const $ShortHammerfestUser: RecordIoType<ShortHammerfestUser> = new Recor
   },
   changeCase: CaseStyle.SnakeCase,
 });
+
+export type NullableShortHammerfestUser = null | ShortHammerfestUser;
+
+export const $NullableShortHammerfestUser: TryUnionType<NullableShortHammerfestUser> = new TryUnionType({variants: [$Null, $ShortHammerfestUser]});

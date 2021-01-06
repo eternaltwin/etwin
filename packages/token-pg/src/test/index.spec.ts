@@ -1,7 +1,9 @@
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { PgHammerfestStore } from "@eternal-twin/hammerfest-store-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
-import { Database as NativeDatabase, PgDinoparcStore, SystemClock } from "@eternal-twin/native";
+import { SystemClock } from "@eternal-twin/native/lib/clock.js";
+import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js";
+import { PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { Api, testTokenService } from "@eternal-twin/token-test";
 

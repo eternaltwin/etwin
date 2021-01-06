@@ -2277,6 +2277,7 @@ __metadata:
     "@eternal-twin/core": "workspace:*"
     "@eternal-twin/dinoparc-store-test": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
+    "@eternal-twin/hammerfest-store-test": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@types/chai": ^4.2.14

@@ -10,7 +10,6 @@ pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject
 pub mod uuid4_generator {
   use crate::neon_helpers::NeonNamespace;
   use etwin_core::uuid::{Uuid4Generator, UuidGenerator};
-  use neon::declare_types;
   use neon::prelude::*;
   use std::sync::Arc;
 

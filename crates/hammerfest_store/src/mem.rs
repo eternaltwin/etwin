@@ -5,7 +5,6 @@ use etwin_core::hammerfest::{
 };
 use std::collections::HashMap;
 use std::error::Error;
-use std::ops::Deref;
 use std::sync::Mutex;
 
 struct StoreState {
@@ -79,6 +78,9 @@ where
     Ok(user)
   }
 }
+
+#[cfg(feature = "neon")]
+impl<TyClock> neon::prelude::Finalize for MemHammerfestStore<TyClock> where TyClock: Clock {}
 
 #[cfg(test)]
 mod test {

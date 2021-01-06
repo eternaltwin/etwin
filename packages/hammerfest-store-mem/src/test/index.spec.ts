@@ -1,4 +1,4 @@
-import { Api, testHammerfestArchiveService } from "@eternal-twin/hammerfest-store-test";
+import { Api, testHammerfestStore } from "@eternal-twin/hammerfest-store-test";
 
 import { MemHammerfestStore } from "../lib/index.js";
 
@@ -8,5 +8,5 @@ async function withMemHammerfestStore<R>(fn: (api: Api) => Promise<R>): Promise<
 }
 
 describe("MemHammerfestStore", function () {
-  testHammerfestArchiveService(withMemHammerfestStore);
+  testHammerfestStore(withMemHammerfestStore);
 });

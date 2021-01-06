@@ -7,7 +7,7 @@ export interface Api {
   hammerfestStore: HammerfestStore;
 }
 
-export function testHammerfestArchiveService(withApi: (fn: (api: Api) => Promise<void>) => Promise<void>) {
+export function testHammerfestStore(withApi: (fn: (api: Api) => Promise<void>) => Promise<void>) {
   it("Retrieve an existing Hammerfest user", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {

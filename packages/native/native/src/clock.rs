@@ -62,7 +62,7 @@ pub fn now_unix_ms(mut cx: FunctionContext) -> JsResult<JsNumber> {
 
 pub mod system_clock {
   use crate::neon_helpers::NeonNamespace;
-  use etwin_core::clock::{Clock, SystemClock};
+  use etwin_core::clock::SystemClock;
   use neon::prelude::*;
   use std::sync::Arc;
 
@@ -83,7 +83,7 @@ pub mod system_clock {
 pub mod virtual_clock {
   use crate::neon_helpers::NeonNamespace;
   use chrono::{TimeZone, Utc};
-  use etwin_core::clock::{Clock, VirtualClock};
+  use etwin_core::clock::VirtualClock;
   use neon::prelude::*;
   use std::sync::Arc;
 

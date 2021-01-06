@@ -1,5 +1,6 @@
 import { MemHammerfestStore } from "@eternal-twin/hammerfest-store-mem";
-import { MemDinoparcStore, SystemClock } from "@eternal-twin/native";
+import { SystemClock } from "@eternal-twin/native/lib/clock.js";
+import { MemDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { Api, testTokenService } from "@eternal-twin/token-test";
 
 import { InMemoryTokenService } from "../lib/index.js";

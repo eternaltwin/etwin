@@ -126,6 +126,14 @@ where
   }
 }
 
+#[cfg(feature = "neon")]
+impl<TyClock, TyDatabase> neon::prelude::Finalize for PgHammerfestStore<TyClock, TyDatabase>
+where
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
+{
+}
+
 #[cfg(test)]
 mod test {
   use super::PgHammerfestStore;

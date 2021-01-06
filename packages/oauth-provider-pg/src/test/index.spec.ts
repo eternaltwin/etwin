@@ -1,6 +1,6 @@
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
-import { VirtualClock } from "@eternal-twin/native";
+import { VirtualClock } from "@eternal-twin/native/lib/clock.js";
 import { Api, testOauthProviderStore } from "@eternal-twin/oauth-provider-test";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
