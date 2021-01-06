@@ -186,6 +186,16 @@ pub struct ShortHammerfestUser {
   pub username: HammerfestUsername,
 }
 
+impl From<ArchivedHammerfestUser> for ShortHammerfestUser {
+  fn from(value: ArchivedHammerfestUser) -> Self {
+    Self {
+      server: value.server,
+      id: value.id,
+      username: value.username,
+    }
+  }
+}
+
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ArchivedHammerfestUser {

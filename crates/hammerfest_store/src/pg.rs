@@ -1,6 +1,7 @@
 use async_trait::async_trait;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
+use etwin_core::core::Instant;
 use etwin_core::hammerfest::{
   ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId,
   HammerfestUsername, ShortHammerfestUser,
@@ -45,7 +46,7 @@ where
       username: HammerfestUsername,
     }
 
-    let row = sqlx::query_as::<_, Row>(
+    let row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
       SELECT hammerfest_server, hammerfest_user_id, username
       FROM hammerfest_users
@@ -68,7 +69,34 @@ where
     &self,
     options: &GetHammerfestUserOptions,
   ) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>> {
-    unimplemented!()
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      hammerfest_server: HammerfestServer,
+      hammerfest_user_id: HammerfestUserId,
+      username: HammerfestUsername,
+      archived_at: Instant,
+    }
+
+    let row: Option<Row> = sqlx::query_as::<_, Row>(
+      r"
+      SELECT hammerfest_server, hammerfest_user_id, username, archived_at
+      FROM hammerfest_users
+      WHERE hammerfest_server = $1::HAMMERFEST_SERVER AND hammerfest_user_id = $2::HAMMERFEST_USER_ID;
+    ",
+    )
+    .bind(&options.server)
+    .bind(&options.id)
+    .fetch_optional(self.database.as_ref())
+    .await?;
+
+    Ok(row.map(|r| ArchivedHammerfestUser {
+      server: r.hammerfest_server,
+      id: r.hammerfest_user_id,
+      username: r.username,
+      archived_at: r.archived_at,
+      profile: None,
+      items: None,
+    }))
   }
 
   async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<ArchivedHammerfestUser, Box<dyn Error>> {
@@ -129,12 +157,12 @@ mod test {
 
     let database = Arc::new(database);
 
-    let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+    let clock = Arc::new(VirtualClock::new(Utc.ymd(2020, 1, 1).and_hms(0, 0, 0)));
     let hammerfest_store: Arc<dyn HammerfestStore> =
       Arc::new(PgHammerfestStore::new(Arc::clone(&clock), Arc::clone(&database)));
 
     TestApi {
-      _clock: clock,
+      clock: clock,
       hammerfest_store,
     }
   }
@@ -149,5 +177,11 @@ mod test {
   #[serial]
   async fn test_touch_user() {
     crate::test::test_touch_user(make_test_api().await).await;
+  }
+
+  #[tokio::test]
+  #[serial]
+  async fn test_get_missing_user() {
+    crate::test::test_get_missing_user(make_test_api().await).await;
   }
 }

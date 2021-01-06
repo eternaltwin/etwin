@@ -9,7 +9,7 @@ use std::ops::Deref;
 use std::sync::Mutex;
 
 struct StoreState {
-  users: HashMap<HammerfestUserId, ShortHammerfestUser>,
+  users: HashMap<HammerfestUserId, ArchivedHammerfestUser>,
 }
 
 impl StoreState {
@@ -17,11 +17,11 @@ impl StoreState {
     Self { users: HashMap::new() }
   }
 
-  fn get_user(&self, id: &HammerfestUserId) -> Option<&ShortHammerfestUser> {
+  fn get_user(&self, id: &HammerfestUserId) -> Option<&ArchivedHammerfestUser> {
     self.users.get(id)
   }
 
-  fn touch_user(&mut self, user: ShortHammerfestUser) {
+  fn touch_user(&mut self, user: ArchivedHammerfestUser) {
     self.users.insert(user.id.clone(), user);
   }
 }
@@ -53,28 +53,30 @@ where
     options: &GetHammerfestUserOptions,
   ) -> Result<Option<ShortHammerfestUser>, Box<dyn Error>> {
     let state = self.state.lock().unwrap();
-    Ok(state.get_user(&options.id).cloned())
+    Ok(state.get_user(&options.id).cloned().map(From::from))
   }
 
   async fn get_user(
     &self,
     options: &GetHammerfestUserOptions,
   ) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>> {
-    Ok(None) // TODO: implement this
+    let state = self.state.lock().unwrap();
+    Ok(state.get_user(&options.id).cloned())
   }
 
   async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<ArchivedHammerfestUser, Box<dyn Error>> {
     let mut state = self.state.lock().unwrap();
-    state.touch_user(short.clone());
     let now = self.clock.now();
-    Ok(ArchivedHammerfestUser {
+    let user = ArchivedHammerfestUser {
       server: short.server,
       id: short.id.clone(),
       username: short.username.clone(),
       archived_at: now,
       profile: None,
       items: None,
-    })
+    };
+    state.touch_user(user.clone());
+    Ok(user)
   }
 }
 
@@ -88,11 +90,11 @@ mod test {
   use std::sync::Arc;
 
   fn make_test_api() -> TestApi<Arc<VirtualClock>, Arc<dyn HammerfestStore>> {
-    let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+    let clock = Arc::new(VirtualClock::new(Utc.ymd(2020, 1, 1).and_hms(0, 0, 0)));
     let hammerfest_store: Arc<dyn HammerfestStore> = Arc::new(MemHammerfestStore::new(Arc::clone(&clock)));
 
     TestApi {
-      _clock: clock,
+      clock: clock,
       hammerfest_store,
     }
   }
@@ -105,5 +107,10 @@ mod test {
   #[tokio::test]
   async fn test_touch_user() {
     crate::test::test_touch_user(make_test_api()).await;
+  }
+
+  #[tokio::test]
+  async fn test_get_missing_user() {
+    crate::test::test_get_missing_user(make_test_api()).await;
   }
 }

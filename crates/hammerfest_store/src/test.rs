@@ -1,8 +1,9 @@
+use chrono::{Duration, TimeZone, Utc};
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
 use etwin_core::hammerfest::{
-  GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId, HammerfestUsername,
-  ShortHammerfestUser,
+  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId,
+  HammerfestUsername, ShortHammerfestUser,
 };
 
 pub(crate) struct TestApi<TyClock, TyHammerfestStore>
@@ -10,7 +11,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
-  pub(crate) _clock: TyClock,
+  pub(crate) clock: TyClock,
   pub(crate) hammerfest_store: TyHammerfestStore,
 }
 
@@ -34,60 +35,97 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
-  api
-    .hammerfest_store
-    .touch_short_user(&ShortHammerfestUser {
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_short_user(&ShortHammerfestUser {
+        server: HammerfestServer::HammerfestFr,
+        id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+        username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
+      })
+      .await
+      .unwrap();
+    let expected = ArchivedHammerfestUser {
       server: HammerfestServer::HammerfestFr,
       id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
       username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
-    })
-    .await
-    .unwrap();
-
-  let actual = api
-    .hammerfest_store
-    .get_short_user(&GetHammerfestUserOptions {
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      profile: None,
+      items: None,
+    };
+    assert_eq!(actual, expected);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .hammerfest_store
+      .get_short_user(&GetHammerfestUserOptions {
+        server: HammerfestServer::HammerfestFr,
+        id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = Some(ShortHammerfestUser {
       server: HammerfestServer::HammerfestFr,
       id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
-      time: None,
-    })
-    .await
-    .unwrap();
-  let expected = Some(ShortHammerfestUser {
-    server: HammerfestServer::HammerfestFr,
-    id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
-    username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
-  });
-  assert_eq!(actual, expected);
+      username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
+    });
+    assert_eq!(actual, expected);
+  }
+  {
+    let actual = api
+      .hammerfest_store
+      .get_user(&GetHammerfestUserOptions {
+        server: HammerfestServer::HammerfestFr,
+        id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = Some(ArchivedHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+      username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      profile: None,
+      items: None,
+    });
+    assert_eq!(actual, expected);
+  }
 }
 
-// it("Retrieve an existing Hammerfest user", async function (this: Mocha.Context) {
-// this.timeout(30000);
-// return withApi(async (api: Api): Promise<void> => {
-// await api.hammerfestStore.touchShortUser({type: ObjectType.HammerfestUser, server: "hammerfest.fr", id: "123", username: "alice"});
-//
-// const actual: ShortHammerfestUser | null = await api.hammerfestStore.getUser({server: "hammerfest.fr", id: "123"});
-// {
-// const expected: ShortHammerfestUser = {
-// type: ObjectType.HammerfestUser,
-// server: "hammerfest.fr",
-// id: "123",
-// username: "alice",
-// };
-// chai.assert.deepEqual(actual, expected);
-// }
-// });
-// });
-//
-// it("Retrieve a non-existing Hammerfest user", async function (this: Mocha.Context) {
-// this.timeout(30000);
-// return withApi(async (api: Api): Promise<void> => {
-// await api.hammerfestStore.touchShortUser({type: ObjectType.HammerfestUser, server: "hammerfest.fr", id: "123", username: "alice"});
-//
-// const actual: ShortHammerfestUser | null = await api.hammerfestStore.getUser({server: "hammerfest.fr", id: "999"});
-// {
-// const expected: null = null;
-// chai.assert.deepEqual(actual, expected);
-// }
-// });
-// });
+pub(crate) async fn test_get_missing_user<TyClock, TyHammerfestStore>(api: TestApi<TyClock, TyHammerfestStore>)
+where
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
+{
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .hammerfest_store
+      .get_short_user(&GetHammerfestUserOptions {
+        server: HammerfestServer::HammerfestFr,
+        id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = None;
+    assert_eq!(actual, expected);
+  }
+  {
+    let actual = api
+      .hammerfest_store
+      .get_user(&GetHammerfestUserOptions {
+        server: HammerfestServer::HammerfestFr,
+        id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = None;
+    assert_eq!(actual, expected);
+  }
+}

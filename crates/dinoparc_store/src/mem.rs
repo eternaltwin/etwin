@@ -58,11 +58,12 @@ where
 
   async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, Box<dyn Error>> {
     let mut state = self.state.lock().unwrap();
+    let now = self.clock.now();
     let user = ArchivedDinoparcUser {
       server: short.server,
       id: short.id.clone(),
       username: short.username.clone(),
-      archived_at: self.clock.now(),
+      archived_at: now,
     };
     state.touch_user(user.clone());
     Ok(user)

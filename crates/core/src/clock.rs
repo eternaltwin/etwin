@@ -20,12 +20,26 @@ impl VirtualClock {
       offset: AtomicI64::new(0),
     }
   }
+
+  pub fn advance_by(&self, d: Duration) {
+    let d: i64 = d.num_milliseconds();
+    assert!(d >= 0);
+    self.offset.fetch_add(d, Ordering::SeqCst);
+  }
+
+  pub fn advance_to(&self, t: Instant) {
+    assert!(t >= self.start);
+    let new_duration = t - self.start;
+    let new_offset = new_duration.num_milliseconds();
+    let old_offset = self.offset.fetch_max(new_offset, Ordering::SeqCst);
+    assert!(new_offset >= old_offset);
+  }
 }
 
 impl Clock for VirtualClock {
   fn now(&self) -> Instant {
     let offset = self.offset.load(Ordering::SeqCst);
-    self.start + Duration::microseconds(offset)
+    self.start + Duration::milliseconds(offset)
   }
 }
 
