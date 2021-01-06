@@ -31,15 +31,15 @@ export class SystemClock implements ClockService {
   }
 
   now(): Date {
-    return native.clock.systemClock.now(this.box);
+    return native.clock.now(this.box);
   }
 
   nowUnixS(): number {
-    return native.clock.systemClock.nowUnixS(this.box);
+    return native.clock.nowUnixS(this.box);
   }
 
   nowUnixMs(): number {
-    return native.clock.systemClock.nowUnixMs(this.box);
+    return native.clock.nowUnixMs(this.box);
   }
 }
 
@@ -53,15 +53,15 @@ export class VirtualClock implements ClockService {
   }
 
   now(): Date {
-    return native.clock.virtualClock.now(this.box);
+    return native.clock.now(this.box);
   }
 
   nowUnixS(): number {
-    return native.clock.virtualClock.nowUnixS(this.box);
+    return native.clock.nowUnixS(this.box);
   }
 
   nowUnixMs(): number {
-    return native.clock.virtualClock.nowUnixMs(this.box);
+    return native.clock.nowUnixMs(this.box);
   }
 }
 
@@ -89,8 +89,8 @@ declare const MemDinoparcStoreBox: unique symbol;
 
 export class MemDinoparcStore implements DinoparcStore {
   public readonly box: typeof MemDinoparcStoreBox;
-  private static GET_SHORT_USER = promisify(native.dinoparcStore.mem.getShortUser);
-  private static TOUCH_SHORT_USER = promisify(native.dinoparcStore.mem.touchShortUser);
+  private static GET_SHORT_USER = promisify(native.dinoparcStore.getShortUser);
+  private static TOUCH_SHORT_USER = promisify(native.dinoparcStore.touchShortUser);
 
   constructor(options: Readonly<MemDinoparcStoreOptions>) {
     this.box = native.dinoparcStore.mem.new(options.clock.box);
@@ -118,8 +118,8 @@ declare const PgDinoparcStoreBox: unique symbol;
 
 export class PgDinoparcStore implements DinoparcStore {
   public readonly box: typeof PgDinoparcStoreBox;
-  private static GET_SHORT_USER = promisify(native.dinoparcStore.pg.getShortUser);
-  private static TOUCH_SHORT_USER = promisify(native.dinoparcStore.pg.touchShortUser);
+  private static GET_SHORT_USER = promisify(native.dinoparcStore.getShortUser);
+  private static TOUCH_SHORT_USER = promisify(native.dinoparcStore.touchShortUser);
 
   constructor(options: Readonly<PgDinoparcStoreOptions>) {
     this.box = native.dinoparcStore.pg.new(options.clock.box, options.database.box);
