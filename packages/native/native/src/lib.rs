@@ -3,7 +3,7 @@ use neon::prelude::*;
 mod clock;
 mod database;
 mod dinoparc_store;
-mod neon_namespace;
+mod neon_helpers;
 mod tokio_runtime;
 mod uuid;
 

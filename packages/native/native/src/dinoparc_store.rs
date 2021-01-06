@@ -1,9 +1,10 @@
 use crate::dinoparc_store::mem::JsMemDinoparcStore;
 use crate::dinoparc_store::pg::JsPgDinoparcStore;
-use crate::neon_namespace::NeonNamespace;
+use crate::neon_helpers::{resolve_callback, NeonNamespace};
 use crate::tokio_runtime::spawn_future;
-use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser};
+use etwin_core::dinoparc::{ArchivedDinoparcUser, DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser};
 use neon::prelude::*;
+use std::error::Error;
 use std::sync::Arc;
 
 pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject> {
@@ -42,27 +43,8 @@ pub fn get_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
   let options: GetDinoparcUserOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
-  let queue = cx.queue();
-  spawn_future(Box::pin(async move {
-    let user = inner.get_short_user(&options).await.unwrap();
-    let user_json = match user {
-      Some(user) => Some(serde_json::to_string(&user).unwrap()),
-      None => None,
-    };
-    queue.send(move |mut cx| {
-      let cb = cb.into_inner(&mut cx);
-      let this = cx.null();
-      let err: Handle<JsValue> = cx.null().upcast();
-      let res: Handle<JsValue> = match user_json {
-        Some(user) => cx.string(user).upcast(),
-        None => cx.null().upcast(),
-      };
-      let _ = cb.call(&mut cx, this, vec![err, res])?;
-      Ok(())
-    })
-  }));
-
-  Ok(cx.undefined())
+  let res = async move { inner.get_short_user(&options).await };
+  resolve_callback(&mut cx, res, cb)
 }
 
 pub fn touch_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -73,28 +55,15 @@ pub fn touch_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
   let short: ShortDinoparcUser = serde_json::from_str(&short_json.value(&mut cx)).unwrap();
 
-  let queue = cx.queue();
-  spawn_future(Box::pin(async move {
-    let user = inner.touch_short_user(&short).await.unwrap();
-    let user_json = serde_json::to_string(&user).unwrap();
-    queue.send(move |mut cx| {
-      let cb = cb.into_inner(&mut cx);
-      let this = cx.null();
-      let err: Handle<JsValue> = cx.null().upcast();
-      let res: Handle<JsValue> = cx.string(user_json).upcast();
-      let _ = cb.call(&mut cx, this, vec![err, res])?;
-      Ok(())
-    })
-  }));
-
-  Ok(cx.undefined())
+  let res = async move { inner.touch_short_user(&short).await };
+  resolve_callback(&mut cx, res, cb)
 }
 
 pub mod mem {
   use crate::clock::get_native_clock;
   use crate::clock::system_clock::JsSystemClock;
   use crate::clock::virtual_clock::JsVirtualClock;
-  use crate::neon_namespace::NeonNamespace;
+  use crate::neon_helpers::NeonNamespace;
   use crate::tokio_runtime::spawn_future;
   use etwin_core::clock::{Clock, SystemClock, VirtualClock};
   use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser};
@@ -123,7 +92,7 @@ pub mod pg {
   use crate::clock::system_clock::JsSystemClock;
   use crate::clock::virtual_clock::JsVirtualClock;
   use crate::database::JsPgPool;
-  use crate::neon_namespace::NeonNamespace;
+  use crate::neon_helpers::NeonNamespace;
   use crate::tokio_runtime::spawn_future;
   use etwin_core::clock::{Clock, SystemClock, VirtualClock};
   use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser};

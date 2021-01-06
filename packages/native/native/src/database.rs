@@ -1,5 +1,5 @@
 use crate::clock::system_clock::JsSystemClock;
-use crate::neon_namespace::NeonNamespace;
+use crate::neon_helpers::NeonNamespace;
 use crate::tokio_runtime::spawn_future;
 use etwin_core::clock::Clock;
 use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser};
