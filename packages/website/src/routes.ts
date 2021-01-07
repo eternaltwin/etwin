@@ -4,8 +4,12 @@
 export const ROUTES: readonly string[] = [
   "/",
   "/archive",
+  "/archive/dinoparc",
+  "/archive/dinoparc/:server/users/:user_id",
   "/archive/hammerfest",
   "/archive/hammerfest/:server/users/:user_id",
+  "/archive/twinoid",
+  "/archive/twinoid/users/:user_id",
   "/docs",
   "/docs/:a",
   "/docs/:a/:b",

@@ -31,13 +31,13 @@ export function createDinoparcRouter(api: Api): Router {
     }
     const server: DinoparcServer = rawServer as DinoparcServer;
     const userId: DinoparcUserId = rawUserId;
-    const hfUser: DinoparcUser | null = await api.dinoparc.getUser(auth, {server, id: userId});
-    if (hfUser === null) {
+    const dparcUser: DinoparcUser | null = await api.dinoparc.getUser(auth, {server, id: userId});
+    if (dparcUser === null) {
       cx.response.status = 404;
       cx.response.body = {error: "DinoparcUserNotFound"};
       return;
     }
-    cx.response.body = $DinoparcUser.write(JSON_VALUE_WRITER, hfUser);
+    cx.response.body = $DinoparcUser.write(JSON_VALUE_WRITER, dparcUser);
   }
 
   return router;

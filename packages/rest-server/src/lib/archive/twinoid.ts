@@ -28,13 +28,13 @@ export function createTwinoidRouter(api: Api): Router {
       return;
     }
     const userId: TwinoidUserId = rawUserId;
-    const hfUser: TwinoidUser | null = await api.twinoid.getUser(auth, {id: userId});
-    if (hfUser === null) {
+    const tidUser: TwinoidUser | null = await api.twinoid.getUser(auth, {id: userId});
+    if (tidUser === null) {
       cx.response.status = 404;
-      cx.response.body = {error: "DinoparcUserNotFound"};
+      cx.response.body = {error: "TwinoidUserNotFound"};
       return;
     }
-    cx.response.body = $TwinoidUser.write(JSON_VALUE_WRITER, hfUser);
+    cx.response.body = $TwinoidUser.write(JSON_VALUE_WRITER, tidUser);
   }
 
   return router;

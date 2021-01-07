@@ -18,11 +18,11 @@ export abstract class NativeClock implements ClockService {
   }
 
   nowUnixS(): number {
-    return native.clock.nowUnixS(this.box);
+    return Math.floor(native.clock.nowUnixS(this.box));
   }
 
   nowUnixMs(): number {
-    return native.clock.nowUnixMs(this.box);
+    return Math.floor(native.clock.nowUnixMs(this.box));
   }
 }
 

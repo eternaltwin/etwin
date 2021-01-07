@@ -28,7 +28,7 @@ export class PgTwinoidStore implements TwinoidStore {
     type Row = Pick<TwinoidUserRow, "twinoid_user_id" | "name" | "archived_at">;
     const row: Row | undefined = await queryable.oneOrNone(
       `
-        SELECT twinoid_user_id, name
+        SELECT twinoid_user_id, name, archived_at
         FROM twinoid_users
         WHERE twinoid_user_id = $1::TWINOID_USER_ID;`,
       [options.id],
