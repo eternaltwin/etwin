@@ -100,29 +100,11 @@ where
   }
 }
 
-#[cfg_attr(
-  feature = "sqlx",
-  derive(sqlx::Type),
-  sqlx(transparent, rename = "hammerfest_user_id")
-)]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct DinoparcUserId(String);
-
-impl DinoparcUserId {
-  pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[1-9][0-9]{0,8}$").unwrap());
-
-  pub fn try_from_string(raw: String) -> Result<Self, ()> {
-    if Self::PATTERN.is_match(&raw) {
-      Ok(Self(raw))
-    } else {
-      Err(())
-    }
-  }
-
-  pub fn as_str(&self) -> &str {
-    &self.0
-  }
+declare_decimal_id! {
+  pub struct DinoparcUserId(u32);
+  pub type ParseError = DinoparcUserIdParseError;
+  const BOUNDS = 1..1_000_000_000;
+  const SQL_NAME = "dinoparc_user_id";
 }
 
 #[cfg_attr(

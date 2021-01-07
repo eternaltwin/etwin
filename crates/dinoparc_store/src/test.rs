@@ -24,7 +24,7 @@ where
 {
   let options = GetDinoparcUserOptions {
     server: DinoparcServer::DinoparcCom,
-    id: DinoparcUserId::try_from_string(String::from("123")).unwrap(),
+    id: "123".parse().unwrap(),
     time: None,
   };
   let actual = api.dinoparc_store.get_short_user(&options).await.unwrap();

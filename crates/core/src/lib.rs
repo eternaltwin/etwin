@@ -1,6 +1,9 @@
 // #![feature(auto_traits, negative_impls)]
 // #![feature(once_cell)]
 
+#[macro_use]
+pub mod types;
+
 pub mod api;
 pub mod async_fn;
 pub mod auth;

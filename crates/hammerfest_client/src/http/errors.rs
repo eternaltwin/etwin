@@ -1,4 +1,6 @@
-use etwin_core::hammerfest::{HammerfestServer, HammerfestUsername};
+use etwin_core::hammerfest::{
+  HammerfestItemIdParseError, HammerfestServer, HammerfestUserIdParseError, HammerfestUsername,
+};
 use reqwest::Url;
 use thiserror::Error;
 
@@ -25,9 +27,9 @@ pub enum ScraperError {
   #[error("Failed to parse date '{}'", .0)]
   InvalidDate(String, #[source] chrono::format::ParseError),
   #[error("Invalid item id '{}'", .0)]
-  InvalidItemId(String, () /* future parse error type */),
+  InvalidItemId(String, HammerfestItemIdParseError),
   #[error("Invalid user id '{}'", .0)]
-  InvalidUserId(String, () /* future parse error type */),
+  InvalidUserId(String, HammerfestUserIdParseError),
   #[error("Invalid username '{}'", .0)]
   InvalidUsername(String, () /* future parse error type */),
   #[error("Unknown quest name '{}'", .0)]

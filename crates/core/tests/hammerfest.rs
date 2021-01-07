@@ -122,7 +122,7 @@ async fn test_reference_types() {
 
   let options = &GetHammerfestUserOptions {
     server: HammerfestServer::HammerfestFr,
-    id: HammerfestUserId::try_from_string("999999".to_owned()).unwrap(),
+    id: "999999".parse().unwrap(),
     time: None,
   };
   assert_eq!(hammerfest.get_user(AuthContext::Guest, &options).await.unwrap(), None);

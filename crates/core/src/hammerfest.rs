@@ -117,29 +117,11 @@ impl HammerfestUsername {
   }
 }
 
-#[cfg_attr(
-  feature = "sqlx",
-  derive(sqlx::Type),
-  sqlx(transparent, rename = "hammerfest_user_id")
-)]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct HammerfestUserId(String);
-
-impl HammerfestUserId {
-  pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[1-9][0-9]{0,8}$").unwrap());
-
-  pub fn try_from_string(raw: String) -> Result<Self, ()> {
-    if Self::PATTERN.is_match(&raw) {
-      Ok(Self(raw))
-    } else {
-      Err(())
-    }
-  }
-
-  pub fn as_str(&self) -> &str {
-    &self.0
-  }
+declare_decimal_id! {
+  pub struct HammerfestUserId(u32);
+  pub type ParseError = HammerfestUserIdParseError;
+  const BOUNDS = 1..1_000_000_000;
+  const SQL_NAME = "hammerfest_user_id";
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -276,24 +258,10 @@ pub struct HammerfestProfile {
   pub quests: HashMap<HammerfestQuestId, HammerfestQuestStatus>, // TODO: limit size <= 100
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct HammerfestQuestId(String);
-
-impl HammerfestQuestId {
-  pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[0-9]{1,9}$").unwrap());
-
-  pub fn try_from_string(raw: String) -> Result<Self, ()> {
-    if Self::PATTERN.is_match(&raw) {
-      Ok(Self(raw))
-    } else {
-      Err(())
-    }
-  }
-
-  pub fn as_str(&self) -> &str {
-    &self.0
-  }
+declare_decimal_id! {
+  pub struct HammerfestQuestId(u32);
+  pub type ParseError = HammerfestQuestIdParseError;
+  const BOUNDS = 0..1_000_000_000;
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -311,24 +279,10 @@ pub struct HammerfestHallOfFameMessage {
   pub message: String,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct HammerfestItemId(String);
-
-impl HammerfestItemId {
-  pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^0|[1-9][0-9]{0,3}$").unwrap());
-
-  pub fn try_from_string(raw: String) -> Result<Self, ()> {
-    if Self::PATTERN.is_match(&raw) {
-      Ok(Self(raw))
-    } else {
-      Err(())
-    }
-  }
-
-  pub fn as_str(&self) -> &str {
-    &self.0
-  }
+declare_decimal_id! {
+  pub struct HammerfestItemId(u16);
+  pub type ParseError = HammerfestItemIdParseError;
+  const BOUNDS = 0..10_000;
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -361,24 +315,10 @@ pub struct HammerfestForumDate {
   pub minute: u8, // TODO: limit 0 <= m <= 59
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct HammerfestForumThemeId(String);
-
-impl HammerfestForumThemeId {
-  pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[0-9]{1,2}$").unwrap());
-
-  pub fn try_from_string(raw: String) -> Result<Self, ()> {
-    if Self::PATTERN.is_match(&raw) {
-      Ok(Self(raw))
-    } else {
-      Err(())
-    }
-  }
-
-  pub fn as_str(&self) -> &str {
-    &self.0
-  }
+declare_decimal_id! {
+  pub struct HammerfestForumThemeId(u8);
+  pub type ParseError = HammerfestForumThemeIdParseError;
+  const BOUNDS = 0..100;
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -414,24 +354,10 @@ pub struct HammerfestForumThreadListing {
   pub items: Vec<HammerfestForumThread>, // TODO: limit size <= 15
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct HammerfestForumThreadId(String);
-
-impl HammerfestForumThreadId {
-  pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[0-9]{1,9}$").unwrap());
-
-  pub fn try_from_string(raw: String) -> Result<Self, ()> {
-    if Self::PATTERN.is_match(&raw) {
-      Ok(Self(raw))
-    } else {
-      Err(())
-    }
-  }
-
-  pub fn as_str(&self) -> &str {
-    &self.0
-  }
+declare_decimal_id! {
+  pub struct HammerfestForumThreadId(u32);
+  pub type ParseError = HammerfestForumThreadIdParseError;
+  const BOUNDS = 0..1_000_000_000;
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]

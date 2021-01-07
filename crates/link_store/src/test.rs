@@ -28,7 +28,7 @@ pub(crate) async fn test_empty<TyClock, TyHammerfestStore, TyLinkStore>(
     .hammerfest_store
     .touch_short_user(&ShortHammerfestUser {
       server: HammerfestServer::HammerfestFr,
-      id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+      id: "123".parse().unwrap(),
       username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
     })
     .await
@@ -39,7 +39,7 @@ pub(crate) async fn test_empty<TyClock, TyHammerfestStore, TyLinkStore>(
     .get_link_from_hammerfest(&GetLinkOptions {
       remote: HammerfestUserIdRef {
         server: HammerfestServer::HammerfestFr,
-        id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+        id: "123".parse().unwrap(),
       },
       time: None,
     })

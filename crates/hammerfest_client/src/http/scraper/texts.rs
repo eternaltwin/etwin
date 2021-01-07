@@ -23,8 +23,9 @@ impl ScraperTexts {
   }
 
   fn quest(mut self, name: &'static str, id: &str) -> Self {
-    let id = HammerfestQuestId::try_from_string(id.to_owned()).expect("failed to parse quest id");
-    self.quest_names.insert(name, id);
+    self
+      .quest_names
+      .insert(name, id.parse().expect("failed to parse quest id"));
     self
   }
 }

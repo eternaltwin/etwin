@@ -22,7 +22,7 @@ where
 {
   let options = GetHammerfestUserOptions {
     server: HammerfestServer::HammerfestFr,
-    id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+    id: "123".parse().unwrap(),
     time: None,
   };
   let actual = api.hammerfest_store.get_short_user(&options).await.unwrap();
@@ -41,14 +41,14 @@ where
       .hammerfest_store
       .touch_short_user(&ShortHammerfestUser {
         server: HammerfestServer::HammerfestFr,
-        id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+        id: "123".parse().unwrap(),
         username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
       })
       .await
       .unwrap();
     let expected = ArchivedHammerfestUser {
       server: HammerfestServer::HammerfestFr,
-      id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+      id: "123".parse().unwrap(),
       username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
       archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
       profile: None,
@@ -62,14 +62,14 @@ where
       .hammerfest_store
       .get_short_user(&GetHammerfestUserOptions {
         server: HammerfestServer::HammerfestFr,
-        id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+        id: "123".parse().unwrap(),
         time: None,
       })
       .await
       .unwrap();
     let expected = Some(ShortHammerfestUser {
       server: HammerfestServer::HammerfestFr,
-      id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+      id: "123".parse().unwrap(),
       username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
     });
     assert_eq!(actual, expected);
@@ -79,14 +79,14 @@ where
       .hammerfest_store
       .get_user(&GetHammerfestUserOptions {
         server: HammerfestServer::HammerfestFr,
-        id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+        id: "123".parse().unwrap(),
         time: None,
       })
       .await
       .unwrap();
     let expected = Some(ArchivedHammerfestUser {
       server: HammerfestServer::HammerfestFr,
-      id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+      id: "123".parse().unwrap(),
       username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
       archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
       profile: None,
@@ -107,7 +107,7 @@ where
       .hammerfest_store
       .get_short_user(&GetHammerfestUserOptions {
         server: HammerfestServer::HammerfestFr,
-        id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+        id: "123".parse().unwrap(),
         time: None,
       })
       .await
@@ -120,7 +120,7 @@ where
       .hammerfest_store
       .get_user(&GetHammerfestUserOptions {
         server: HammerfestServer::HammerfestFr,
-        id: HammerfestUserId::try_from_string(String::from("123")).unwrap(),
+        id: "123".parse().unwrap(),
         time: None,
       })
       .await

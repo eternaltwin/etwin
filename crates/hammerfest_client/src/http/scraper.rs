@@ -103,7 +103,9 @@ pub fn scrape_user_base(server: HammerfestServer, html: &Html) -> Result<Option<
 
   let username = HammerfestUsername::try_from_string(top_bar.user_name.to_owned())
     .map_err(|err| ScraperError::InvalidUsername(top_bar.user_name.to_owned(), err))?;
-  let id = HammerfestUserId::try_from_string(top_bar.user_id.to_owned())
+  let id = top_bar
+    .user_id
+    .parse()
     .map_err(|err| ScraperError::InvalidUserId(top_bar.user_id.to_owned(), err))?;
 
   Ok(Some(ShortHammerfestUser { server, id, username }))
@@ -124,7 +126,9 @@ fn parse_item_url(url: &str) -> Option<Result<HammerfestItemId, ScraperError>> {
   };
 
   Some(
-    HammerfestItemId::try_from_string(item.to_owned()).map_err(|err| ScraperError::InvalidItemId(item.to_owned(), err)),
+    item
+      .parse()
+      .map_err(|err| ScraperError::InvalidItemId(item.to_owned(), err)),
   )
 }
 

@@ -134,7 +134,7 @@ impl<TyClock> HammerfestClientMem<TyClock> {
       .expect("Can't add forum themes to disabled server");
     if let Some(user) = &hidden_by {
       if !s.users.contains_key(user) {
-        panic!("Unknown user id for hidden_by: {}", user.as_str());
+        panic!("Unknown user id for hidden_by: {}", user);
       }
     }
 
@@ -397,8 +397,8 @@ where
     self.check_session(session)?;
 
     let mut map = HashMap::new();
-    map.insert(HammerfestItemId::try_from_string("0".to_string()).unwrap(), 5);
-    map.insert(HammerfestItemId::try_from_string("1000".to_string()).unwrap(), 5);
+    map.insert("0".parse().unwrap(), 5);
+    map.insert("1000".parse().unwrap(), 5);
     Ok(map)
   }
 
