@@ -33,4 +33,8 @@ impl HammerfestUrls {
   pub fn user(&self, user: &HammerfestUserId) -> Url {
     user.with_str(|s| self.make_url(&["user.html", s]))
   }
+
+  pub fn inventory(&self) -> Url {
+    self.make_url(&["user.html", "inventory"])
+  }
 }

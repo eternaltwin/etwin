@@ -28,6 +28,8 @@ struct Selectors {
   item_icons_in_profile: Selector,
   quests_in_profile: Selector,
   quest_item_in_list: Selector,
+  fridge_rows_in_inventory: Selector,
+  item_qty_in_fridge_row: Selector,
 }
 
 static SELECTORS: Lazy<Selectors> = Lazy::new(|| Selectors::init().expect("failed to init Selectors"));
@@ -52,6 +54,8 @@ impl Selectors {
       item_icons_in_profile: Selector::parse("div.profileItems img").ok()?,
       quests_in_profile: Selector::parse("ul.profileQuestsTitle").ok()?,
       quest_item_in_list: Selector::parse("li:not(.nothing)").ok()?,
+      fridge_rows_in_inventory: Selector::parse("table.fridge tbody tr").ok()?,
+      item_qty_in_fridge_row: Selector::parse("td.quantity").ok()?,
     })
   }
 }
@@ -111,18 +115,14 @@ pub fn scrape_user_base(server: HammerfestServer, html: &Html) -> Result<Option<
   Ok(Some(ShortHammerfestUser { server, id, username }))
 }
 
-fn parse_item_url(url: &str) -> Option<Result<HammerfestItemId, ScraperError>> {
+fn parse_item_small_url(url: &str) -> Option<Result<HammerfestItemId, ScraperError>> {
   const ITEM_URL_PREFIX: &str = "/img/items/small/";
   const ITEM_URL_POSTFIX: &str = ".gif";
-
-  let item = if url.starts_with(ITEM_URL_PREFIX) && url.ends_with(ITEM_URL_POSTFIX) {
-    match &url[ITEM_URL_PREFIX.len()..(url.len() - ITEM_URL_POSTFIX.len())] {
-      // `a` is the name of the question mark icon used for not-yet-unlocked items.
-      "a" => return None,
-      item => item,
-    }
-  } else {
-    "<missing-src>"
+  let item = match utils::remove_prefix_and_suffix(url, ITEM_URL_PREFIX, ITEM_URL_POSTFIX) {
+    // `a` is the name of the question mark icon used for not-yet-unlocked items.
+    Some("a") => return None,
+    Some(item) => item,
+    None => "<missing-src>",
   };
 
   Some(
@@ -130,6 +130,16 @@ fn parse_item_url(url: &str) -> Option<Result<HammerfestItemId, ScraperError>> {
       .parse()
       .map_err(|err| ScraperError::InvalidItemId(item.to_owned(), err)),
   )
+}
+
+fn parse_item_url(url: &str) -> Result<HammerfestItemId, ScraperError> {
+  const ITEM_URL_PREFIX: &str = "/img/items/";
+  const ITEM_URL_POSTFIX: &str = ".gif";
+  let item = utils::remove_prefix_and_suffix(url, ITEM_URL_PREFIX, ITEM_URL_POSTFIX).unwrap_or("<missing-src>");
+
+  item
+    .parse()
+    .map_err(|err| ScraperError::InvalidItemId(item.to_owned(), err))
 }
 
 pub fn scrape_user_profile(
@@ -222,7 +232,7 @@ pub fn scrape_user_profile(
   let items = root
     .select(&selectors.item_icons_in_profile)
     .filter_map(|item_elem| match item_elem.value().attr("src") {
-      Some(src) => parse_item_url(src),
+      Some(src) => parse_item_small_url(src),
       None => Some(Err(ScraperError::HtmlFragmentNotFound(selector_to_string(
         &selectors.item_icons_in_profile,
       )))),
@@ -276,4 +286,37 @@ pub fn scrape_user_profile(
     items,
     quests,
   }))
+}
+
+pub fn scrape_user_inventory(html: &Html) -> Result<Option<HashMap<HammerfestItemId, u32>>, ScraperError> {
+  let selectors = Selectors::get();
+
+  if scrape_raw_top_bar(html)?.is_none() {
+    return Ok(None);
+  }
+
+  html
+    .select(&selectors.fridge_rows_in_inventory)
+    .map(|row_elem| {
+      let item_elem = utils::select_one(&row_elem, &selectors.simple_img)?;
+      let qty_elem = utils::select_one(&row_elem, &selectors.item_qty_in_fridge_row)?;
+
+      let item = match item_elem.value().attr("src") {
+        Some(src) => parse_item_url(src)?,
+        None => {
+          return Err(ScraperError::HtmlFragmentNotFound(selector_to_string(
+            &selectors.item_icons_in_profile,
+          )))
+        }
+      };
+
+      let qty = utils::get_inner_text(&qty_elem)?;
+      let qty = utils::remove_prefix_and_suffix(qty, "x", "").unwrap_or(qty);
+      let qty = qty
+        .parse()
+        .map_err(|err| ScraperError::InvalidInteger(qty.to_owned(), err))?;
+      Ok((item, qty))
+    })
+    .collect::<Result<HashMap<_, _>, _>>()
+    .map(Some)
 }

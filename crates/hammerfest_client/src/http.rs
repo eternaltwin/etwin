@@ -150,8 +150,10 @@ where
     )?)
   }
 
-  async fn get_own_items(&self, _session: &HammerfestSession) -> Result<HashMap<HammerfestItemId, u32>> {
-    Err(UnimplementedError::new("http", "get_own_items").into())
+  async fn get_own_items(&self, session: &HammerfestSession) -> Result<HashMap<HammerfestItemId, u32>> {
+    let urls = HammerfestUrls::new(session.user.server);
+    let html = self.get_html(urls.inventory(), Some(&session.key)).await?;
+    scraper::scrape_user_inventory(&html)?.ok_or_else(|| ScraperError::InvalidSessionCookie.into())
   }
 
   async fn get_own_god_children(&self, _session: &HammerfestSession) -> Result<Vec<HammerfestGodChild>> {

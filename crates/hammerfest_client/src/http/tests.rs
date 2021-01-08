@@ -51,6 +51,11 @@ declare_scraper_tests! {
   profile(profile__fr_user127_guest);
   profile(profile__fr_user176431_user176431);
   profile(profile__fr_user9999999_user127);
+
+  inventory(inventory__en_user209170_00_one_coin);
+  inventory(inventory__en_user209170_01_coin_and_crystals);
+  inventory(inventory__fr_user127);
+  inventory(inventory__fr_user1041317);
 }
 
 mod tests_helpers {
@@ -130,5 +135,9 @@ mod tests_impl {
     tests_helpers::test_scraper(path, |options: Options, html| {
       scraper::scrape_user_profile(options.server, options.user_id, html)
     });
+  }
+
+  pub fn inventory(path: PathBuf) {
+    tests_helpers::test_scraper(path, |_options: (), html| scraper::scrape_user_inventory(html));
   }
 }
