@@ -15,7 +15,7 @@ edition = "2018"
 async-trait = "^0.1.42"
 etwin_core = { path = "../core", features = ["sqlx"] }
 etwin_db_schema = { path = "../db_schema" }
-neon = { git = "https://github.com/neon-bindings/neon.git", rev = "ab9ff258cdf86d9622d552073efe034602c16301", optional = true, default-features = false, features = ["napi-runtime"] }
+neon = { version = "^0.7.0", optional = true, default-features = false, features = ["napi-runtime"] }
 regex = "^1.4.2"
 sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 
