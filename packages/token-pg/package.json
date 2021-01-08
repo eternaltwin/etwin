@@ -35,7 +35,6 @@
     "@eternal-twin/pg-db": "workspace:*"
   },
   "devDependencies": {
-    "@eternal-twin/hammerfest-store-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/native": "workspace:*",
     "@eternal-twin/token-test": "workspace:*",

@@ -34,7 +34,6 @@
     "@eternal-twin/core": "workspace:*"
   },
   "devDependencies": {
-    "@eternal-twin/hammerfest-store-mem": "workspace:*",
     "@eternal-twin/native": "workspace:*",
     "@eternal-twin/token-test": "workspace:*",
     "@types/chai": "^4.2.14",

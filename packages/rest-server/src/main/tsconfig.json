@@ -35,9 +35,6 @@
       "path": "../../../forum-pg/src/lib"
     },
     {
-      "path": "../../../hammerfest-store-pg/src/lib"
-    },
-    {
       "path": "../../../hammerfest-client-http/src/lib"
     },
     {

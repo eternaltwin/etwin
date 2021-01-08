@@ -65,7 +65,6 @@
     "@eternal-twin/forum-pg": "workspace:*",
     "@eternal-twin/hammerfest-client-http": "workspace:*",
     "@eternal-twin/hammerfest-client-mem": "workspace:*",
-    "@eternal-twin/hammerfest-store-pg": "workspace:*",
     "@eternal-twin/link-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/native": "workspace:*",

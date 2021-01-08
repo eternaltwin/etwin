@@ -32,9 +32,6 @@
       "path": "../../../forum-in-memory/src/lib"
     },
     {
-      "path": "../../../hammerfest-store-mem/src/lib"
-    },
-    {
       "path": "../../../hammerfest-client-mem/src/lib"
     },
     {

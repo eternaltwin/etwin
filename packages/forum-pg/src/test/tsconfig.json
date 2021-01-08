@@ -29,9 +29,6 @@
       "path": "../../../forum-test/src/lib"
     },
     {
-      "path": "../../../hammerfest-store-pg/src/lib"
-    },
-    {
       "path": "../../../hammerfest-client-mem/src/lib"
     },
     {

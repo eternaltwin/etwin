@@ -40,12 +40,6 @@
       "path": "packages/forum-pg/src/test"
     },
     {
-      "path": "packages/hammerfest-store-mem/src/test"
-    },
-    {
-      "path": "packages/hammerfest-store-pg/src/test"
-    },
-    {
       "path": "packages/hammerfest-client-http/src/test"
     },
     {

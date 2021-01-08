@@ -33,12 +33,6 @@
       "path": "../hammerfest-client-http/src/lib"
     },
     {
-      "path": "../hammerfest-store-mem/src/lib"
-    },
-    {
-      "path": "../hammerfest-store-pg/src/lib"
-    },
-    {
       "path": "../link-in-memory/src/lib"
     },
     {

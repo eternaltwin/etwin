@@ -26,14 +26,13 @@ import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
 import { PgForumService } from "@eternal-twin/forum-pg";
 import { HttpHammerfestClient } from "@eternal-twin/hammerfest-client-http";
-import { MemHammerfestStore } from "@eternal-twin/hammerfest-store-mem";
-import { PgHammerfestStore } from "@eternal-twin/hammerfest-store-pg";
 import { InMemoryLinkService } from "@eternal-twin/link-in-memory";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { ApiType, Config } from "@eternal-twin/local-config";
 import { SystemClock } from "@eternal-twin/native/lib/clock.js";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js";
 import { MemDinoparcStore, PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
+import { MemHammerfestStore, PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { HttpOauthClientService } from "@eternal-twin/oauth-client-http";
 import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
@@ -102,7 +101,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   if (config.etwin.api === ApiType.InMemory) {
     userStore = new MemUserStore({clock, uuidGenerator});
     dinoparcStore = new MemDinoparcStore({clock});
-    hammerfestStore = new MemHammerfestStore();
+    hammerfestStore = new MemHammerfestStore({clock});
     twinoidStore = new MemTwinoidStore();
     link = new InMemoryLinkService({dinoparcStore, hammerfestStore, twinoidStore, userStore});
     oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
@@ -152,11 +151,10 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
       password: config.db.password,
     });
     dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
-    hammerfestStore = new PgHammerfestStore(database);
+    hammerfestStore = new PgHammerfestStore({clock, database: nativeDatabase});
     twinoidStore = new PgTwinoidStore(database);
     userStore = new PgUserStore({clock, database, databaseSecret: secretKeyStr, uuidGenerator});
     link = new PgLinkService({database, dinoparcStore, hammerfestStore, twinoidStore, userStore});
-    hammerfestStore = new PgHammerfestStore(database);
     oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
     oauthProvider = new OauthProviderService({
       clock,

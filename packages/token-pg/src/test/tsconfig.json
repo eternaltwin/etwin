@@ -14,9 +14,6 @@
       "path": "../lib"
     },
     {
-      "path": "../../../hammerfest-store-pg/src/lib"
-    },
-    {
       "path": "../../../native/src/lib"
     },
     {
