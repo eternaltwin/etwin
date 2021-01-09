@@ -1,0 +1,20 @@
+{
+  "user": {
+    "type": "HammerfestUser",
+    "server": "hfest.net",
+    "id": "209170",
+    "username": "eternalbot"
+  },
+  "email": null,
+  "best_score": 9000,
+  "best_level": 1,
+  "has_carrot": false,
+  "season_score": 9000,
+  "rank": 4,
+  "hall_of_fame": null,
+  "items": [],
+  "quests": {
+    "6": "Complete",
+    "12": "Complete"
+  }
+}

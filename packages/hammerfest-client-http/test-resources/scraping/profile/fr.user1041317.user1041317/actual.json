@@ -1,0 +1,17 @@
+{
+  "user": {
+    "type": "HammerfestUser",
+    "server": "hammerfest.fr",
+    "id": "1041317",
+    "username": "Eternalfest"
+  },
+  "email": "hammerfest.eternal@gmail.com",
+  "best_score": 0,
+  "best_level": 0,
+  "has_carrot": false,
+  "season_score": 0,
+  "rank": 2,
+  "hall_of_fame": null,
+  "items": [],
+  "quests": {}
+}

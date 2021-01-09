@@ -61,8 +61,9 @@ declare_scraper_tests! {
 mod tests_helpers {
   use super::*;
 
-  pub static RESOURCES_ROOT: Lazy<PathBuf> =
-    Lazy::new(|| PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap()).join("test-resources/scraping"));
+  pub static RESOURCES_ROOT: Lazy<PathBuf> = Lazy::new(|| {
+    PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").unwrap()).join("../../test-resources/scraping/hammerfest")
+  });
 
   // Converts a test function name into a path: `__` becomes `/`, and `_` becomes `-`.
   pub fn parse_path_from_fn_name(root: &Path, name: &str) -> PathBuf {
