@@ -72,12 +72,12 @@ export class MemDinoparcClient implements DinoparcClient {
     throw new Error("UserNotFound");
   }
 
-  public createUser(
+  public async createUser(
     server: DinoparcServer,
     id: DinoparcUserId,
     username: DinoparcUsername,
     password: DinoparcPassword,
-  ): void {
+  ): Promise<void> {
     const srv = this.getServer(server);
     if (srv.users.has(id)) {
       throw new Error("AssertionError: User id conflict");

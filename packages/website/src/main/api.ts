@@ -25,13 +25,13 @@ import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
 import { PgForumService } from "@eternal-twin/forum-pg";
-import { HttpHammerfestClient } from "@eternal-twin/hammerfest-client-http";
 import { InMemoryLinkService } from "@eternal-twin/link-in-memory";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { ApiType, Config } from "@eternal-twin/local-config";
 import { SystemClock } from "@eternal-twin/native/lib/clock.js";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js";
 import { MemDinoparcStore, PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
+import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { MemHammerfestStore, PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { HttpOauthClientService } from "@eternal-twin/oauth-client-http";
 import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
@@ -77,7 +77,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   const emailTemplate = new EtwinEmailTemplateService(new url.URL(config.etwin.externalUri.toString()));
   const password = new ScryptPasswordService();
   const dinoparcClient = new HttpDinoparcClient();
-  const hammerfestClient = new HttpHammerfestClient();
+  const hammerfestClient = new HttpHammerfestClient({clock});
   const twinoidClient = new HttpTwinoidClientService();
   const forumConfig: ForumConfig = {
     postsPerPage: config.forum.postsPerPage,

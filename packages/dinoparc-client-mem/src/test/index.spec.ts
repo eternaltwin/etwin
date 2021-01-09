@@ -8,7 +8,7 @@ describe("MemDinoparcClient", () => {
   it("createSession", async () => {
     const dinoparcClient = new MemDinoparcClient();
 
-    dinoparcClient.createUser("dinoparc.com", "123", "alice", "aaaaa");
+    await dinoparcClient.createUser("dinoparc.com", "123", "alice", "aaaaa");
 
     {
       const actual: DinoparcSession = await dinoparcClient.createSession(

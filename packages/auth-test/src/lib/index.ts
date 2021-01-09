@@ -13,7 +13,7 @@ import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
-import { MemHammerfestClient } from "@eternal-twin/hammerfest-client-mem";
+import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import chai from "chai";
 
 export interface Api {
@@ -149,7 +149,7 @@ export function testAuthService(withApi: (fn: (api: Api) => Promise<void>) => Pr
   it("Registers a user with Hammerfest", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
-      api.hammerfestClient.createUser("hammerfest.fr", "123", "alice", "aaaaa");
+      await api.hammerfestClient.createUser("hammerfest.fr", "123", "alice", "aaaaa");
 
       const credentials: HammerfestCredentials = {
         server: "hammerfest.fr",

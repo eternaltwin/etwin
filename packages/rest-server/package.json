@@ -63,8 +63,6 @@
     "@eternal-twin/etwin-client-in-memory": "workspace:*",
     "@eternal-twin/etwin-pg": "workspace:*",
     "@eternal-twin/forum-pg": "workspace:*",
-    "@eternal-twin/hammerfest-client-http": "workspace:*",
-    "@eternal-twin/hammerfest-client-mem": "workspace:*",
     "@eternal-twin/link-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/native": "workspace:*",

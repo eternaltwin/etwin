@@ -20,9 +20,6 @@
       "path": "../../../email-in-memory/src/lib"
     },
     {
-      "path": "../../../hammerfest-client-mem/src/lib"
-    },
-    {
       "path": "../../../email-template-json/src/lib"
     },
     {

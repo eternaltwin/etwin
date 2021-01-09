@@ -6,19 +6,19 @@ import {
 import {
   $HammerfestForumThemeId,
   HammerfestForumThemeId
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-id";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-id.js";
 import {
   $HammerfestForumThemeListing,
   HammerfestForumThemeListing
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-listing";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-listing.js";
 import {
   $HammerfestForumThemePage,
   HammerfestForumThemePage
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-page";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-page.js";
 import {
   $HammerfestForumThreadId,
   HammerfestForumThreadId
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-id";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-id.js";
 import {
   $HammerfestForumThreadPage,
   HammerfestForumThreadPage
@@ -30,15 +30,16 @@ import {
 import {
   $HammerfestGodChildListing,
   HammerfestGodChildListing
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-god-child-listing";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-god-child-listing.js";
 import {
   $HammerfestItemCounts,
   HammerfestItemCounts
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-item-counts.js";
+import { $HammerfestPassword, HammerfestPassword } from "@eternal-twin/core/lib/hammerfest/hammerfest-password.js";
 import {
   $NullableHammerfestProfile,
   NullableHammerfestProfile
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-profile";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-profile.js";
 import { $HammerfestServer, HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
 import {
   $HammerfestSession,
@@ -50,7 +51,9 @@ import {
   $HammerfestSessionKey,
   HammerfestSessionKey
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
-import { $HammerfestShop, HammerfestShop } from "@eternal-twin/core/lib/hammerfest/hammerfest-shop";
+import { $HammerfestShop, HammerfestShop } from "@eternal-twin/core/lib/hammerfest/hammerfest-shop.js";
+import { $HammerfestUserId, HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
+import { $HammerfestUsername, HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";
 import { JSON_READER } from "kryo-json/lib/json-reader.js";
 import { JSON_WRITER } from "kryo-json/lib/json-writer.js";
 import { promisify } from "util";
@@ -60,7 +63,7 @@ import { NativeClock } from "./clock.js";
 
 declare const HttpHammerfestClientBox: unique symbol;
 declare const MemHammerfestClientBox: unique symbol;
-export type NativeHammerfestClientBox = (typeof HttpHammerfestClientBox) | (typeof MemHammerfestClientBox);
+export type NativeHammerfestClientBox = typeof HttpHammerfestClientBox | typeof MemHammerfestClientBox;
 
 export abstract class NativeHammerfestClient implements HammerfestClient {
   public readonly box: NativeHammerfestClientBox;
@@ -175,5 +178,13 @@ export interface MemHammerfestClientOptions {
 export class MemHammerfestClient extends NativeHammerfestClient {
   constructor(options: Readonly<MemHammerfestClientOptions>) {
     super(native.hammerfestClient.mem.new(options.clock.box));
+  }
+
+  async createUser(server: HammerfestServer, userId: HammerfestUserId, username: HammerfestUsername, password: HammerfestPassword): Promise<void> {
+    const rawServer: string = $HammerfestServer.write(JSON_WRITER, server);
+    const rawUserId: string = $HammerfestUserId.write(JSON_WRITER, userId);
+    const rawUsername: string = $HammerfestUsername.write(JSON_WRITER, username);
+    const rawPassword: string = $HammerfestPassword.write(JSON_WRITER, password);
+    await native.hammerfestClient.mem.createUser(this.box, rawServer, rawUserId, rawUsername, rawPassword);
   }
 }

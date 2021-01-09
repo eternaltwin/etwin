@@ -32,7 +32,7 @@ pub enum Error {
 
 struct InMemoryUser {
   user: ShortHammerfestUser,
-  password: String,
+  password: HammerfestPassword,
   current_session: Option<HammerfestSessionKey>,
 }
 
@@ -100,13 +100,17 @@ impl<TyClock> MemHammerfestClient<TyClock> {
   }
 
   pub fn create_user(
-    &mut self,
+    &self,
     server: HammerfestServer,
     id: HammerfestUserId,
     user: HammerfestUsername,
-    password: String,
+    password: HammerfestPassword,
   ) {
-    let s = self.get_server_mut(server).expect("Can't add users to disabled server");
+    let mut s = self
+      .get_server(server)
+      .expect("Can't add users to disabled server")
+      .write()
+      .unwrap();
     match s.users.entry(id.clone()) {
       Entry::Occupied(_) => panic!("HammerfestUserId conflict"),
       Entry::Vacant(e) => e.insert(InMemoryUser {

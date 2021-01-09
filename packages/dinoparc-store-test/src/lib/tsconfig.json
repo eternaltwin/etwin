@@ -13,9 +13,6 @@
   "references": [
     {
       "path": "../../../core/src/lib"
-    },
-    {
-      "path": "../../../hammerfest-client-mem/src/lib"
     }
   ]
 }

@@ -14,6 +14,20 @@ use std::fmt;
 use std::str::FromStr;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HammerfestPassword(String);
+
+impl HammerfestPassword {
+  pub fn new(raw: String) -> Self {
+    Self(raw)
+  }
+
+  pub fn as_str(&self) -> &str {
+    &self.0
+  }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum HammerfestServer {
   #[cfg_attr(feature = "serde", serde(rename = "hammerfest.fr"))]
@@ -156,7 +170,7 @@ impl HammerfestSessionKey {
 pub struct HammerfestCredentials {
   pub server: HammerfestServer,
   pub username: HammerfestUsername,
-  pub password: String,
+  pub password: HammerfestPassword,
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]

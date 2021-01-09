@@ -1,5 +1,5 @@
 import { CaseStyle, IoType } from "kryo";
-import { IntegerType } from "kryo/lib/integer";
+import { IntegerType } from "kryo/lib/integer.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 
 import { $MonthNumber, MonthNumber } from "../core/month-number.js";

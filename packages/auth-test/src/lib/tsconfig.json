@@ -18,7 +18,7 @@
       "path": "../../../email-in-memory/src/lib"
     },
     {
-      "path": "../../../hammerfest-client-mem/src/lib"
+      "path": "../../../native/src/lib"
     }
   ]
 }

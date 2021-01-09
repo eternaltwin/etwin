@@ -43,7 +43,6 @@
     "@eternal-twin/dinoparc-client-mem": "workspace:*",
     "@eternal-twin/email-in-memory": "workspace:*",
     "@eternal-twin/email-template-json": "workspace:*",
-    "@eternal-twin/hammerfest-client-mem": "workspace:*",
     "@eternal-twin/link-in-memory": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/native": "workspace:*",

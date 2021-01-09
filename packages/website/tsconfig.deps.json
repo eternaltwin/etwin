@@ -30,9 +30,6 @@
       "path": "../forum-pg/src/lib"
     },
     {
-      "path": "../hammerfest-client-http/src/lib"
-    },
-    {
       "path": "../link-in-memory/src/lib"
     },
     {

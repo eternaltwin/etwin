@@ -82,7 +82,7 @@ where
       .post(urls.login())
       .form(&LoginForm {
         login: options.username.as_str(),
-        pass: &options.password,
+        pass: options.password.as_str(),
       })
       .send()
       .await?;

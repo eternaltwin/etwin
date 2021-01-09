@@ -7,12 +7,12 @@ import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { PgForumService } from "@eternal-twin/forum-pg";
-import { MemHammerfestClient } from "@eternal-twin/hammerfest-client-mem";
 import { PgLinkService } from "@eternal-twin/link-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { VirtualClock } from "@eternal-twin/native/lib/clock.js";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js";
 import { PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
+import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
@@ -53,7 +53,7 @@ async function withPgAnnouncementService<R>(fn: (api: Api) => Promise<R>): Promi
     const twinoidStore = new PgTwinoidStore(database);
     const link = new PgLinkService({database, dinoparcStore, hammerfestStore, twinoidStore, userStore});
     const dinoparcClient = new MemDinoparcClient();
-    const hammerfestClient = new MemHammerfestClient();
+    const hammerfestClient = new MemHammerfestClient({clock});
     const twinoidClient = new HttpTwinoidClientService();
     const oauthProviderStore = new PgOauthProviderStore({
       database,

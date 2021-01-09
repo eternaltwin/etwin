@@ -23,7 +23,7 @@ import { Database } from "./database.js";
 
 declare const MemHammerfestStoreBox: unique symbol;
 declare const PgHammerfestStoreBox: unique symbol;
-export type NativeHammerfestStoreBox = (typeof MemHammerfestStoreBox) | (typeof PgHammerfestStoreBox);
+export type NativeHammerfestStoreBox = typeof MemHammerfestStoreBox | typeof PgHammerfestStoreBox;
 
 export abstract class NativeHammerfestStore implements HammerfestStore {
   public readonly box: NativeHammerfestStoreBox;

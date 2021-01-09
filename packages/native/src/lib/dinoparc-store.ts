@@ -19,7 +19,7 @@ import { Database } from "./database.js";
 
 declare const MemDinoparcStoreBox: unique symbol;
 declare const PgDinoparcStoreBox: unique symbol;
-export type NativeDinoparcStoreBox = (typeof MemDinoparcStoreBox) | (typeof PgDinoparcStoreBox);
+export type NativeDinoparcStoreBox = typeof MemDinoparcStoreBox | typeof PgDinoparcStoreBox;
 
 export abstract class NativeDinoparcStore implements DinoparcStore {
   public readonly box: NativeDinoparcStoreBox;

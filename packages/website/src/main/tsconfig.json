@@ -27,9 +27,6 @@
       "path": "../../../email-template-etwin/src/lib"
     },
     {
-      "path": "../../../hammerfest-client-http/src/lib"
-    },
-    {
       "path": "../../../oauth-client-http/src/lib"
     },
     {

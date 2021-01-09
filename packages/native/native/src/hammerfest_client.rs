@@ -212,6 +212,7 @@ pub mod mem {
   use crate::clock::get_native_clock;
   use crate::neon_helpers::NeonNamespace;
   use etwin_core::clock::Clock;
+  use etwin_core::hammerfest::{HammerfestPassword, HammerfestServer, HammerfestUserId, HammerfestUsername};
   use etwin_hammerfest_client::MemHammerfestClient;
   use etwin_hammerfest_store::mem::MemHammerfestStore;
   use neon::prelude::*;
@@ -220,6 +221,7 @@ pub mod mem {
   pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject> {
     let ns = cx.empty_object();
     ns.set_function(cx, "new", new)?;
+    ns.set_function(cx, "createUser", create_user)?;
     Ok(ns)
   }
 
@@ -230,5 +232,22 @@ pub mod mem {
     let clock: Arc<dyn Clock> = get_native_clock(&mut cx, clock)?;
     let inner: Arc<MemHammerfestClient<Arc<dyn Clock>>> = Arc::new(MemHammerfestClient::new(clock));
     Ok(cx.boxed(inner))
+  }
+
+  pub fn create_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+    let inner = cx.argument::<JsMemHammerfestClient>(0)?;
+    let inner = Arc::clone(&inner);
+    let server_json = cx.argument::<JsString>(1)?;
+    let user_id_json = cx.argument::<JsString>(2)?;
+    let username_json = cx.argument::<JsString>(3)?;
+    let password_json = cx.argument::<JsString>(4)?;
+
+    let server: HammerfestServer = serde_json::from_str(&server_json.value(&mut cx)).unwrap();
+    let user_id: HammerfestUserId = serde_json::from_str(&user_id_json.value(&mut cx)).unwrap();
+    let username: HammerfestUsername = serde_json::from_str(&username_json.value(&mut cx)).unwrap();
+    let password: HammerfestPassword = serde_json::from_str(&password_json.value(&mut cx)).unwrap();
+
+    inner.create_user(server, user_id, username, password);
+    Ok(cx.undefined())
   }
 }
