@@ -1,6 +1,8 @@
 import { CaseStyle } from "kryo";
 import { $Date } from "kryo/lib/date.js";
+import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { TryUnionType } from "kryo/lib/try-union.js";
 
 import { $HammerfestSessionKey, HammerfestSessionKey } from "./hammerfest-session-key.js";
 import { $ShortHammerfestUser, ShortHammerfestUser } from "./short-hammerfest-user.js";
@@ -21,3 +23,7 @@ export const $HammerfestSession: RecordIoType<HammerfestSession> = new RecordTyp
   },
   changeCase: CaseStyle.SnakeCase,
 });
+
+export type NullableHammerfestSession = null | HammerfestSession;
+
+export const $NullableHammerfestSession: TryUnionType<NullableHammerfestSession> = new TryUnionType({variants: [$Null, $HammerfestSession]});

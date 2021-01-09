@@ -11,7 +11,7 @@ use etwin_core::{
   hammerfest::{GetHammerfestUserOptions, HammerfestServer, HammerfestUserId},
 };
 use etwin_db_schema::force_create_latest;
-use etwin_hammerfest_client::HammerfestClientMem;
+use etwin_hammerfest_client::MemHammerfestClient;
 use etwin_hammerfest_store::{mem::MemHammerfestStore, pg::PgHammerfestStore};
 use etwin_link_store::{mem::MemLinkStore, pg::PgLinkStore};
 use etwin_user_store::{mem::InMemorySimpleUserService, pg::PgUserStore};
@@ -47,7 +47,7 @@ async fn make_test_api() -> TestApi<
 
   let uuid = Arc::new(Uuid4Generator);
   let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
-  let hammerfest_client: Arc<dyn HammerfestClient> = Arc::new(HammerfestClientMem::new(Arc::clone(&clock)));
+  let hammerfest_client: Arc<dyn HammerfestClient> = Arc::new(MemHammerfestClient::new(Arc::clone(&clock)));
   let hammerfest_store: Arc<dyn HammerfestStore> =
     Arc::new(PgHammerfestStore::new(Arc::clone(&clock), Arc::clone(&database)));
   let link_store: Arc<dyn LinkStore> = Arc::new(PgLinkStore::new(Arc::clone(&clock), Arc::clone(&database)));
@@ -114,7 +114,7 @@ async fn inner_test_empty<TyClock, TyHammerfestClient, TyHammerfestStore, TyHamm
 async fn test_reference_types() {
   let uuid = Uuid4Generator;
   let clock = VirtualClock::new(Utc.timestamp(1607531946, 0));
-  let hammerfest_client = HammerfestClientMem::new(&clock);
+  let hammerfest_client = MemHammerfestClient::new(&clock);
   let hammerfest_store = MemHammerfestStore::new(&clock);
   let link_store = MemLinkStore::new(&clock);
   let user_store = InMemorySimpleUserService::new(&clock, &uuid);

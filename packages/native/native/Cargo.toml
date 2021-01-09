@@ -21,6 +21,7 @@ neon-build = "^0.7.0"
 chrono = "^0.4.19"
 etwin_core = { path = "../../../crates/core", features = ["neon", "serde"] }
 etwin_dinoparc_store = { path = "../../../crates/dinoparc_store", features = ["neon"] }
+etwin_hammerfest_client = { path = "../../../crates/hammerfest_client", features = ["neon"] }
 etwin_hammerfest_store = { path = "../../../crates/hammerfest_store", features = ["neon"] }
 neon = { version = "^0.7.0", default-features = false, features = ["event-queue-api", "napi-runtime"] }
 sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }

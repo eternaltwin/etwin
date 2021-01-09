@@ -2,6 +2,7 @@ import { HammerfestCredentials } from "./hammerfest-credentials.js";
 import { HammerfestForumTheme } from "./hammerfest-forum-theme.js";
 import { HammerfestForumThemeId } from "./hammerfest-forum-theme-id.js";
 import { HammerfestForumThemePage } from "./hammerfest-forum-theme-page.js";
+import { HammerfestForumThreadId } from "./hammerfest-forum-thread-id.js";
 import { HammerfestForumThreadPage } from "./hammerfest-forum-thread-page.js";
 import { HammerfestGetProfileByIdOptions } from "./hammerfest-get-profile-by-id-options.js";
 import { HammerfestGodChild } from "./hammerfest-god-child.js";
@@ -44,5 +45,5 @@ export interface HammerfestClient {
 
   getForumThemePage(session: HammerfestSession | null, server: HammerfestServer, themeId: HammerfestForumThemeId, page1: number): Promise<HammerfestForumThemePage>;
 
-  getForumThreadPage(session: HammerfestSession | null, server: HammerfestServer, themeId: HammerfestForumThemeId, page1: number): Promise<HammerfestForumThreadPage>;
+  getForumThreadPage(session: HammerfestSession | null, server: HammerfestServer, threadId: HammerfestForumThreadId, page1: number): Promise<HammerfestForumThreadPage>;
 }

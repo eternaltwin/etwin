@@ -1,7 +1,9 @@
 import { CaseStyle } from "kryo";
 import { ArrayType } from "kryo/lib/array.js";
 import { $Boolean } from "kryo/lib/boolean.js";
+import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { TryUnionType } from "kryo/lib/try-union.js";
 
 import { $NullableEmailAddress, NullableEmailAddress } from "../email/email-address.js";
 import {
@@ -43,3 +45,7 @@ export const $HammerfestProfile: RecordIoType<HammerfestProfile> = new RecordTyp
   },
   changeCase: CaseStyle.SnakeCase,
 });
+
+export type NullableHammerfestProfile = null | HammerfestProfile;
+
+export const $NullableHammerfestProfile: TryUnionType<NullableHammerfestProfile> = new TryUnionType({variants: [$Null, $HammerfestProfile]});

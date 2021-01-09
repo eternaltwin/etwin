@@ -70,12 +70,12 @@ struct InMemoryServer {
   active_sessions: HashMap<HammerfestSessionKey, InMemorySession>,
 }
 
-pub struct HammerfestClientMem<TyClock> {
+pub struct MemHammerfestClient<TyClock> {
   servers: HashMap<HammerfestServer, RwLock<InMemoryServer>>,
   clock: TyClock,
 }
 
-impl<TyClock> HammerfestClientMem<TyClock> {
+impl<TyClock> MemHammerfestClient<TyClock> {
   pub fn new(clock: TyClock) -> Self
   where
     TyClock: Clock,
@@ -235,7 +235,7 @@ impl<TyClock> HammerfestClientMem<TyClock> {
   }
 }
 
-impl<TyClock> HammerfestClientMem<TyClock> {
+impl<TyClock> MemHammerfestClient<TyClock> {
   fn get_server(&self, server: HammerfestServer) -> Result<&RwLock<InMemoryServer>> {
     self
       .servers
@@ -307,7 +307,7 @@ fn make_session_key() -> HammerfestSessionKey {
 }
 
 #[async_trait]
-impl<TyClock> HammerfestClient for HammerfestClientMem<TyClock>
+impl<TyClock> HammerfestClient for MemHammerfestClient<TyClock>
 where
   TyClock: Clock,
 {
@@ -518,3 +518,6 @@ where
     })
   }
 }
+
+#[cfg(feature = "neon")]
+impl<TyClock> neon::prelude::Finalize for MemHammerfestClient<TyClock> where TyClock: Clock {}

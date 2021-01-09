@@ -3,6 +3,7 @@ use neon::prelude::*;
 mod clock;
 mod database;
 mod dinoparc_store;
+mod hammerfest_client;
 mod hammerfest_store;
 mod neon_helpers;
 mod tokio_runtime;
@@ -16,6 +17,8 @@ fn export(mut cx: ModuleContext) -> NeonResult<()> {
   cx.export_value("database", database)?;
   let dinoparc_store = crate::dinoparc_store::create_namespace(cx)?;
   cx.export_value("dinoparcStore", dinoparc_store)?;
+  let hammerfest_client = crate::hammerfest_client::create_namespace(cx)?;
+  cx.export_value("hammerfestClient", hammerfest_client)?;
   let hammerfest_store = crate::hammerfest_store::create_namespace(cx)?;
   cx.export_value("hammerfestStore", hammerfest_store)?;
   let uuid = crate::uuid::create_namespace(cx)?;

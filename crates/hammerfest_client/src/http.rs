@@ -23,12 +23,12 @@ type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 const USER_AGENT: &str = "EtwinHammerfestScraper";
 const TIMEOUT: Duration = Duration::from_millis(5000);
 
-pub struct HammerfestClientHttp<TyClock> {
+pub struct HttpHammerfestClient<TyClock> {
   client: Client,
   clock: TyClock,
 }
 
-impl<TyClock> HammerfestClientHttp<TyClock>
+impl<TyClock> HttpHammerfestClient<TyClock>
 where
   TyClock: Clock,
 {
@@ -63,7 +63,7 @@ where
 }
 
 #[async_trait]
-impl<TyClock> HammerfestClient for HammerfestClientHttp<TyClock>
+impl<TyClock> HammerfestClient for HttpHammerfestClient<TyClock>
 where
   TyClock: Clock,
 {
@@ -192,3 +192,6 @@ where
     Err(UnimplementedError::new("http", "create_session").into())
   }
 }
+
+#[cfg(feature = "neon")]
+impl<TyClock> neon::prelude::Finalize for HttpHammerfestClient<TyClock> where TyClock: Clock {}
