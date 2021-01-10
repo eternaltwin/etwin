@@ -4,7 +4,6 @@ use etwin_core::core::Instant;
 use etwin_core::hammerfest::*;
 use std::collections::hash_map::Entry;
 use std::collections::{HashMap, HashSet};
-use std::ops::Deref;
 use std::sync::RwLock;
 use thiserror::Error;
 

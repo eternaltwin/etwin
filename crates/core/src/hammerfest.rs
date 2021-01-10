@@ -311,6 +311,8 @@ pub struct HammerfestGodChild {
 pub struct HammerfestShop {
   pub tokens: u32,
   pub weekly_tokens: u32,
+  // If `None`, the user completed all reward steps, meaning
+  // they have bought at least 250 tokens.
   pub purchased_tokens: Option<u32>,
   pub has_quest_bonus: bool,
 }

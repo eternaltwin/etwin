@@ -22,6 +22,7 @@ struct Selectors {
   top_bar_in_page: Selector,
   username_in_top_bar: Selector,
   signin_in_top_bar: Selector,
+  token_count_in_top_bar: Selector,
   basic_data_in_profile: Selector,
   words_fame_info_in_profile: Selector,
   words_fame_msg_in_profile: Selector,
@@ -30,6 +31,10 @@ struct Selectors {
   quest_item_in_list: Selector,
   fridge_rows_in_inventory: Selector,
   item_qty_in_fridge_row: Selector,
+  quest_bonus_in_shop: Selector,
+  shop_status_in_shop: Selector,
+  weekly_tokens_in_shop_status: Selector,
+  step_label_in_shop_status: Selector,
 }
 
 static SELECTORS: Lazy<Selectors> = Lazy::new(|| Selectors::init().expect("failed to init Selectors"));
@@ -48,6 +53,7 @@ impl Selectors {
       top_bar_in_page: Selector::parse("div.topMainBar").ok()?,
       username_in_top_bar: Selector::parse("div.playerInfo > a:nth-child(1)").ok()?,
       signin_in_top_bar: Selector::parse("form span.enter").ok()?,
+      token_count_in_top_bar: Selector::parse("div.playerInfo > a:nth-child(3)").ok()?,
       basic_data_in_profile: Selector::parse("dl.profile dd").ok()?,
       words_fame_info_in_profile: Selector::parse("div.wordsFameInfo").ok()?,
       words_fame_msg_in_profile: Selector::parse("dd.wordsFameUser").ok()?,
@@ -56,6 +62,10 @@ impl Selectors {
       quest_item_in_list: Selector::parse("li:not(.nothing)").ok()?,
       fridge_rows_in_inventory: Selector::parse("table.fridge tbody tr").ok()?,
       item_qty_in_fridge_row: Selector::parse("td.quantity").ok()?,
+      quest_bonus_in_shop: Selector::parse("div.bankBonus > div.pic").ok()?,
+      shop_status_in_shop: Selector::parse("div.freeDays").ok()?,
+      weekly_tokens_in_shop_status: Selector::parse("div.weeklyStatus").ok()?,
+      step_label_in_shop_status: Selector::parse("div.stepLabel").ok()?,
     })
   }
 }
@@ -69,6 +79,7 @@ pub fn is_login_page_error(html: &Html) -> bool {
 }
 
 struct RawTopBar<'a> {
+  top_bar: scraper::ElementRef<'a>,
   user_name: &'a str,
   user_id: &'a str,
 }
@@ -94,7 +105,11 @@ fn scrape_raw_top_bar(html: &Html) -> Result<Option<RawTopBar>, ScraperError> {
         .attr("href")
         .and_then(|s| s.rsplit("user.html/").next())
         .unwrap_or("<missing href>");
-      Ok(Some(RawTopBar { user_id, user_name }))
+      Ok(Some(RawTopBar {
+        top_bar,
+        user_id,
+        user_name,
+      }))
     }
   }
 }
@@ -312,11 +327,85 @@ pub fn scrape_user_inventory(html: &Html) -> Result<Option<HashMap<HammerfestIte
 
       let qty = utils::get_inner_text(&qty_elem)?;
       let qty = utils::remove_prefix_and_suffix(qty, "x", "").unwrap_or(qty);
-      let qty = qty
-        .parse()
-        .map_err(|err| ScraperError::InvalidInteger(qty.to_owned(), err))?;
+      let qty = utils::parse_u32(qty)?;
       Ok((item, qty))
     })
     .collect::<Result<HashMap<_, _>, _>>()
     .map(Some)
+}
+
+fn parse_weekly_tokens_number(text: &str) -> Result<u32, ScraperError> {
+  let text = text.trim();
+  if text.is_empty() {
+    return Ok(0);
+  }
+
+  // Extract the number of tokens from the text.
+  let num = match text.find(|c: char| c.is_ascii_digit()) {
+    Some(num_start) => text[num_start..]
+      .split(|c: char| c.is_ascii_whitespace())
+      .next()
+      .expect("expected non-empty number"),
+    None => text, // No digits, so this will force an error when parsing.
+  };
+
+  utils::parse_u32(num)
+}
+
+fn parse_purchased_tokens_number(text: &str) -> Result<u32, ScraperError> {
+  // The number of purchased tokens is to the left of the separator.
+  // e.g.:  Parties achetées: 153 | Prochain palier: 250 parties
+  let num = match text.find(" |") {
+    Some(sep) => text[..sep].rsplit(' ').next().expect("expected non-empty text"),
+    None => text, // No separator, so use the full text (this will probably force an error when parsing).
+  };
+
+  utils::parse_u32(num)
+}
+
+pub fn scrape_user_shop(html: &Html) -> Result<Option<HammerfestShop>, ScraperError> {
+  let selectors = Selectors::get();
+  let root = html.root_element();
+
+  let top_bar_elem = match scrape_raw_top_bar(html)? {
+    Some(top_bar) => top_bar.top_bar,
+    None => return Ok(None),
+  };
+
+  let tokens_elem = utils::select_one(&top_bar_elem, &selectors.token_count_in_top_bar)?;
+  let tokens = utils::get_inner_text(&tokens_elem)?;
+  let tokens = utils::parse_u32(tokens)?;
+
+  let shop_status_elem = utils::select_one(&root, &selectors.shop_status_in_shop)?;
+
+  let weekly_tokens_elem = utils::select_one_opt(&shop_status_elem, &selectors.weekly_tokens_in_shop_status)?;
+  let weekly_tokens = match weekly_tokens_elem {
+    Some(elem) => utils::get_inner_text(&elem).and_then(parse_weekly_tokens_number)?,
+    None => 0,
+  };
+
+  let purchased_tokens_elem = utils::select_one_opt(&shop_status_elem, &selectors.step_label_in_shop_status)?;
+  let purchased_tokens = match purchased_tokens_elem {
+    Some(elem) => Some(utils::get_inner_text(&elem).and_then(parse_purchased_tokens_number)?),
+    // Couldn't find the number of purchased tokens. This can means two things:
+    // - The user never bought any tokens.
+    // - The user bought enough tokens to complete all reward steps.
+    // We distinguish the two cases by looking at the number of weekly tokens.
+    None => {
+      if weekly_tokens == 0 {
+        Some(0)
+      } else {
+        None
+      }
+    }
+  };
+
+  let has_quest_bonus = utils::select_one_opt(&root, &selectors.quest_bonus_in_shop)?.is_some();
+
+  Ok(Some(HammerfestShop {
+    tokens,
+    weekly_tokens,
+    purchased_tokens,
+    has_quest_bonus,
+  }))
 }

@@ -56,6 +56,11 @@ declare_scraper_tests! {
   inventory(inventory__en_user209170_01_coin_and_crystals);
   inventory(inventory__fr_user127);
   inventory(inventory__fr_user1041317);
+
+  shop(shop__en_user158159);
+  shop(shop__fr_user176431);
+  shop(shop__fr_user778923);
+  shop(shop__fr_user997002);
 }
 
 mod tests_helpers {
@@ -140,5 +145,9 @@ mod tests_impl {
 
   pub fn inventory(path: PathBuf) {
     tests_helpers::test_scraper(path, |_options: (), html| scraper::scrape_user_inventory(html));
+  }
+
+  pub fn shop(path: PathBuf) {
+    tests_helpers::test_scraper(path, |_options: (), html| scraper::scrape_user_shop(html));
   }
 }

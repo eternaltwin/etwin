@@ -79,6 +79,10 @@ pub fn parse_dotted_u32(s: &str) -> Result<u32, ScraperError> {
   }
 }
 
+pub fn parse_u32(s: &str) -> Result<u32, ScraperError> {
+  s.parse().map_err(|err| ScraperError::InvalidInteger(s.to_owned(), err))
+}
+
 pub fn remove_prefix_and_suffix<'a>(s: &'a str, prefix: &str, suffix: &str) -> Option<&'a str> {
   if s.starts_with(prefix) && s.ends_with(suffix) {
     let end = s.len() - suffix.len();

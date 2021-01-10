@@ -37,4 +37,8 @@ impl HammerfestUrls {
   pub fn inventory(&self) -> Url {
     self.make_url(&["user.html", "inventory"])
   }
+
+  pub fn shop(&self) -> Url {
+    self.make_url(&["shop.html"])
+  }
 }

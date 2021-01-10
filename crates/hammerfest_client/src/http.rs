@@ -5,7 +5,6 @@ mod tests;
 mod url;
 
 use std::collections::HashMap;
-use std::ops::Deref;
 use std::time::Duration;
 
 use async_trait::async_trait;
@@ -160,8 +159,10 @@ where
     Err(UnimplementedError::new("http", "get_own_god_children").into())
   }
 
-  async fn get_own_shop(&self, _session: &HammerfestSession) -> Result<HammerfestShop> {
-    Err(UnimplementedError::new("http", "get_own_shop").into())
+  async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShop> {
+    let urls = HammerfestUrls::new(session.user.server);
+    let html = self.get_html(urls.shop(), Some(&session.key)).await?;
+    scraper::scrape_user_shop(&html)?.ok_or_else(|| ScraperError::InvalidSessionCookie.into())
   }
 
   async fn get_forum_themes(
