@@ -57,6 +57,9 @@ declare_scraper_tests! {
   inventory(inventory__fr_user127);
   inventory(inventory__fr_user1041317);
 
+  god_children(godchildren__fr_user176431);
+  god_children(godchildren__fr_user997002);
+
   shop(shop__en_user158159);
   shop(shop__fr_user176431);
   shop(shop__fr_user778923);
@@ -145,6 +148,17 @@ mod tests_impl {
 
   pub fn inventory(path: PathBuf) {
     tests_helpers::test_scraper(path, |_options: (), html| scraper::scrape_user_inventory(html));
+  }
+
+  pub fn god_children(path: PathBuf) {
+    #[derive(Deserialize)]
+    struct Options {
+      server: HammerfestServer,
+    }
+
+    tests_helpers::test_scraper(path, |options: Options, html| {
+      scraper::scrape_user_god_children(options.server, html)
+    });
   }
 
   pub fn shop(path: PathBuf) {

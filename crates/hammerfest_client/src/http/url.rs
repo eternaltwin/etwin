@@ -41,4 +41,8 @@ impl HammerfestUrls {
   pub fn shop(&self) -> Url {
     self.make_url(&["shop.html"])
   }
+
+  pub fn god_children(&self) -> Url {
+    self.make_url(&["user.html", "godChildren"])
+  }
 }

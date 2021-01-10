@@ -6,7 +6,7 @@ use std::collections::{HashMap, HashSet};
 use etwin_core::core::Instant;
 use etwin_core::hammerfest::*;
 use once_cell::sync::Lazy;
-use scraper::Selector;
+use scraper::{ElementRef, Selector};
 
 use self::texts::ScraperTexts;
 use self::utils::*;
@@ -35,6 +35,8 @@ struct Selectors {
   shop_status_in_shop: Selector,
   weekly_tokens_in_shop_status: Selector,
   step_label_in_shop_status: Selector,
+  rows_in_god_children: Selector,
+  token_amount_in_god_child_row: Selector,
 }
 
 static SELECTORS: Lazy<Selectors> = Lazy::new(|| Selectors::init().expect("failed to init Selectors"));
@@ -66,6 +68,8 @@ impl Selectors {
       shop_status_in_shop: Selector::parse("div.freeDays").ok()?,
       weekly_tokens_in_shop_status: Selector::parse("div.weeklyStatus").ok()?,
       step_label_in_shop_status: Selector::parse("div.stepLabel").ok()?,
+      rows_in_god_children: Selector::parse("table.sponsor tbody tr").ok()?,
+      token_amount_in_god_child_row: Selector::parse("td:nth-child(2)").ok()?,
     })
   }
 }
@@ -78,13 +82,34 @@ pub fn is_login_page_error(html: &Html) -> bool {
     .is_some()
 }
 
-struct RawTopBar<'a> {
-  top_bar: scraper::ElementRef<'a>,
+struct RawUserLink<'a> {
   user_name: &'a str,
   user_id: &'a str,
 }
 
-fn scrape_raw_top_bar(html: &Html) -> Result<Option<RawTopBar>, ScraperError> {
+impl<'a> RawUserLink<'a> {
+  fn scrape(user_link: &ElementRef<'a>) -> Result<RawUserLink<'a>, ScraperError> {
+    let user_name = get_inner_text(&user_link)?.trim();
+    let user_id = user_link
+      .value()
+      .attr("href")
+      .and_then(|s| s.rsplit("user.html/").next())
+      .unwrap_or("<missing href>");
+    Ok(Self { user_name, user_id })
+  }
+
+  fn into_user(&self, server: HammerfestServer) -> Result<ShortHammerfestUser, ScraperError> {
+    let username = HammerfestUsername::try_from_string(self.user_name.to_owned())
+      .map_err(|err| ScraperError::InvalidUsername(self.user_name.to_owned(), err))?;
+    let id = self
+      .user_id
+      .parse()
+      .map_err(|err| ScraperError::InvalidUserId(self.user_id.to_owned(), err))?;
+    Ok(ShortHammerfestUser { server, id, username })
+  }
+}
+
+fn scrape_raw_top_bar(html: &Html) -> Result<Option<(ElementRef<'_>, RawUserLink<'_>)>, ScraperError> {
   let selectors = Selectors::get();
   let root = html.root_element();
 
@@ -98,36 +123,15 @@ fn scrape_raw_top_bar(html: &Html) -> Result<Option<RawTopBar>, ScraperError> {
       select_one(&top_bar, &selectors.signin_in_top_bar)?;
       Ok(None)
     }
-    Some(user_link) => {
-      let user_name = get_inner_text(&user_link)?.trim();
-      let user_id = user_link
-        .value()
-        .attr("href")
-        .and_then(|s| s.rsplit("user.html/").next())
-        .unwrap_or("<missing href>");
-      Ok(Some(RawTopBar {
-        top_bar,
-        user_id,
-        user_name,
-      }))
-    }
+    Some(user_link) => Ok(Some((top_bar, RawUserLink::scrape(&user_link)?))),
   }
 }
 
 pub fn scrape_user_base(server: HammerfestServer, html: &Html) -> Result<Option<ShortHammerfestUser>, ScraperError> {
-  let top_bar = match scrape_raw_top_bar(html)? {
-    Some(tp) => tp,
+  match scrape_raw_top_bar(html)? {
+    Some((_, user_link)) => Ok(Some(user_link.into_user(server)?)),
     None => return Ok(None),
-  };
-
-  let username = HammerfestUsername::try_from_string(top_bar.user_name.to_owned())
-    .map_err(|err| ScraperError::InvalidUsername(top_bar.user_name.to_owned(), err))?;
-  let id = top_bar
-    .user_id
-    .parse()
-    .map_err(|err| ScraperError::InvalidUserId(top_bar.user_id.to_owned(), err))?;
-
-  Ok(Some(ShortHammerfestUser { server, id, username }))
+  }
 }
 
 fn parse_item_small_url(url: &str) -> Option<Result<HammerfestItemId, ScraperError>> {
@@ -368,7 +372,7 @@ pub fn scrape_user_shop(html: &Html) -> Result<Option<HammerfestShop>, ScraperEr
   let root = html.root_element();
 
   let top_bar_elem = match scrape_raw_top_bar(html)? {
-    Some(top_bar) => top_bar.top_bar,
+    Some((top_bar, _)) => top_bar,
     None => return Ok(None),
   };
 
@@ -391,13 +395,7 @@ pub fn scrape_user_shop(html: &Html) -> Result<Option<HammerfestShop>, ScraperEr
     // - The user never bought any tokens.
     // - The user bought enough tokens to complete all reward steps.
     // We distinguish the two cases by looking at the number of weekly tokens.
-    None => {
-      if weekly_tokens == 0 {
-        Some(0)
-      } else {
-        None
-      }
-    }
+    None => Some(0).filter(|_| weekly_tokens == 0),
   };
 
   let has_quest_bonus = utils::select_one_opt(&root, &selectors.quest_bonus_in_shop)?.is_some();
@@ -408,4 +406,30 @@ pub fn scrape_user_shop(html: &Html) -> Result<Option<HammerfestShop>, ScraperEr
     purchased_tokens,
     has_quest_bonus,
   }))
+}
+
+pub fn scrape_user_god_children(
+  server: HammerfestServer,
+  html: &Html,
+) -> Result<Option<Vec<HammerfestGodChild>>, ScraperError> {
+  let selectors = Selectors::get();
+
+  if scrape_raw_top_bar(html)?.is_none() {
+    return Ok(None);
+  }
+
+  html
+    .select(&selectors.rows_in_god_children)
+    .map(|row| {
+      let user_elem = utils::select_one(&row, &selectors.simple_link)?;
+      let user = RawUserLink::scrape(&user_elem)?.into_user(server)?;
+
+      let tokens_elem = utils::select_one(&row, &selectors.token_amount_in_god_child_row)?;
+      let tokens = utils::get_inner_text(&tokens_elem)?.trim();
+      let tokens = tokens.parse().unwrap_or(0);
+
+      Ok(HammerfestGodChild { user, tokens })
+    })
+    .collect::<Result<Vec<_>, _>>()
+    .map(Some)
 }

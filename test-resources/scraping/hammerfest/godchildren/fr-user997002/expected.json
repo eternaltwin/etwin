@@ -1,0 +1,56 @@
+[
+  {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hammerfest.fr",
+      "id": "1025645",
+      "username": "Esudem"
+    },
+    "tokens": 2
+  },
+  {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hammerfest.fr",
+      "id": "1002274",
+      "username": "MilanSeguin1"
+    },
+    "tokens": 0
+  },
+  {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hammerfest.fr",
+      "id": "1013069",
+      "username": "milan10"
+    },
+    "tokens": 0
+  },
+  {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hammerfest.fr",
+      "id": "1025646",
+      "username": "frenchhouse"
+    },
+    "tokens": 0
+  },
+  {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hammerfest.fr",
+      "id": "1033318",
+      "username": "luc83120"
+    },
+    "tokens": 0
+  },
+  {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hammerfest.fr",
+      "id": "1044855",
+      "username": "Noobzor"
+    },
+    "tokens": 0
+  }
+]

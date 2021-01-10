@@ -155,8 +155,11 @@ where
     scraper::scrape_user_inventory(&html)?.ok_or_else(|| ScraperError::InvalidSessionCookie.into())
   }
 
-  async fn get_own_god_children(&self, _session: &HammerfestSession) -> Result<Vec<HammerfestGodChild>> {
-    Err(UnimplementedError::new("http", "get_own_god_children").into())
+  async fn get_own_god_children(&self, session: &HammerfestSession) -> Result<Vec<HammerfestGodChild>> {
+    let server = session.user.server;
+    let urls = HammerfestUrls::new(server);
+    let html = self.get_html(urls.god_children(), Some(&session.key)).await?;
+    scraper::scrape_user_god_children(server, &html)?.ok_or_else(|| ScraperError::InvalidSessionCookie.into())
   }
 
   async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShop> {
