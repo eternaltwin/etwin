@@ -4,10 +4,10 @@ import { JSON_WRITER } from "kryo-json/lib/json-writer.js";
 import { registerErrMochaTests, registerMochaSuites, TestItem } from "kryo-testing";
 
 import { ObjectType } from "../../lib/core/object-type.js";
-import { $HammerfestUserRef, HammerfestUserRef } from "../../lib/hammerfest/hammerfest-user-ref.js";
+import { $HammerfestUserIdRef, HammerfestUserIdRef } from "../../lib/hammerfest/hammerfest-user-id-ref.js";
 
-describe("HammerfestUserRef", function () {
-  const items: TestItem<HammerfestUserRef>[] = [
+describe("HammerfestUserIdRef", function () {
+  const items: TestItem<HammerfestUserIdRef>[] = [
     {
       name: "Elseabora",
       value: {
@@ -33,12 +33,12 @@ describe("HammerfestUserRef", function () {
     },
   ];
 
-  registerMochaSuites($HammerfestUserRef, items);
+  registerMochaSuites($HammerfestUserIdRef, items);
 
   describe("Reader", function () {
     const invalids: string[] = [
       "",
     ];
-    registerErrMochaTests(JSON_READER, $HammerfestUserRef, invalids);
+    registerErrMochaTests(JSON_READER, $HammerfestUserIdRef, invalids);
   });
 });

@@ -1,34 +1,29 @@
-import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
-import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
-import { $ShortDinoparcUser } from "@eternal-twin/core/lib/dinoparc/short-dinoparc-user.js";
-import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
-import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
-import { $ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { $DinoparcUserIdRef } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id-ref.js";
+import { $HammerfestUserIdRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id-ref.js";
 import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
-import { EtwinLink } from "@eternal-twin/core/lib/link/etwin-link.js";
-import { HammerfestLink, NullableHammerfestLink } from "@eternal-twin/core/lib/link/hammerfest-link.js";
+import { GetLinkFromDinoparcOptions } from "@eternal-twin/core/lib/link/get-link-from-dinoparc-options.js";
+import { GetLinkFromHammerfestOptions } from "@eternal-twin/core/lib/link/get-link-from-hammerfest-options.js";
+import { GetLinkFromTwinoidOptions } from "@eternal-twin/core/lib/link/get-link-from-twinoid-options.js";
+import { GetLinksFromEtwinOptions } from "@eternal-twin/core/lib/link/get-links-from-etwin-options.js";
+import { NullableRawDinoparcLink, RawDinoparcLink } from "@eternal-twin/core/lib/link/raw-dinoparc-link.js";
+import { NullableRawHammerfestLink, RawHammerfestLink } from "@eternal-twin/core/lib/link/raw-hammerfest-link.js";
+import { NullableRawTwinoidLink } from "@eternal-twin/core/lib/link/raw-twinoid-link.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
-import { SimpleLinkToDinoparcOptions } from "@eternal-twin/core/lib/link/simple-link-to-dinoparc-options.js";
-import { SimpleLinkToHammerfestOptions } from "@eternal-twin/core/lib/link/simple-link-to-hammerfest-options.js";
-import { SimpleLinkToTwinoidOptions } from "@eternal-twin/core/lib/link/simple-link-to-twinoid-options.js";
-import { NullableTwinoidLink, TwinoidLink } from "@eternal-twin/core/lib/link/twinoid-link.js";
-import { VersionedDinoparcLink } from "@eternal-twin/core/lib/link/versioned-dinoparc-link.js";
-import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
-import { VersionedHammerfestLink } from "@eternal-twin/core/lib/link/versioned-hammerfest-link.js";
-import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
-import { VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
-import { $ShortTwinoidUser } from "@eternal-twin/core/lib/twinoid/short-twinoid-user.js";
+import { LinkStore } from "@eternal-twin/core/lib/link/store.js";
+import { TouchDinoparcLinkOptions } from "@eternal-twin/core/lib/link/touch-dinoparc-link-options.js";
+import { TouchHammerfestLinkOptions } from "@eternal-twin/core/lib/link/touch-hammerfest-link-options.js";
+import { TouchTwinoidLinkOptions } from "@eternal-twin/core/lib/link/touch-twinoid-link-options.js";
+import { VersionedRawDinoparcLink } from "@eternal-twin/core/lib/link/versioned-raw-dinoparc-link.js";
+import { VersionedRawHammerfestLink } from "@eternal-twin/core/lib/link/versioned-raw-hammerfest-link.js";
+import { VersionedRawLinks } from "@eternal-twin/core/lib/link/versioned-raw-links.js";
+import { VersionedRawTwinoidLink } from "@eternal-twin/core/lib/link/versioned-raw-twinoid-link.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
-import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
+import { $TwinoidUserIdRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-id-ref.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
-import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
+import { $UserIdRef } from "@eternal-twin/core/lib/user/user-id-ref.js";
 import { DinoparcStore } from "@eternal-twin/core/src/lib/dinoparc/store.js";
-import { DinoparcLink, NullableDinoparcLink } from "@eternal-twin/core/src/lib/link/dinoparc-link.js";
-import {
-  DinoparcUserLinkRow,
-  HammerfestUserLinkRow,
-  TwinoidUserLinkRow
-} from "@eternal-twin/etwin-pg/lib/schema.js";
+import { DinoparcUserLinkRow, HammerfestUserLinkRow, TwinoidUserLinkRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 
 export interface PgLinkServiceOptions {
@@ -39,244 +34,136 @@ export interface PgLinkServiceOptions {
   userStore: UserStore,
 }
 
-export class PgLinkService implements LinkService {
-  readonly #database: Database;
-  readonly #dinoparcStore: DinoparcStore;
-  readonly #hammerfestArchive: HammerfestStore;
-  readonly #twinoidArchive: TwinoidStore;
-  readonly #userStore: UserStore;
-
+export class PgLinkService extends LinkService {
   constructor(options: Readonly<PgLinkServiceOptions>) {
+    const linkStore = new PgLinkStore({database: options.database});
+    super({
+      dinoparcStore: options.dinoparcStore,
+      hammerfestStore: options.hammerfestStore,
+      linkStore,
+      twinoidStore: options.twinoidStore,
+      userStore: options.userStore,
+    });
+  }
+}
+
+export interface PgLinkStoreOptions {
+  database: Database,
+}
+
+export class PgLinkStore implements LinkStore {
+  readonly #database: Database;
+
+  constructor(options: Readonly<PgLinkStoreOptions>) {
     this.#database = options.database;
-    this.#dinoparcStore = options.dinoparcStore;
-    this.#hammerfestArchive = options.hammerfestStore;
-    this.#twinoidArchive = options.twinoidStore;
-    this.#userStore = options.userStore;
   }
 
-  async getLinkFromDinoparc(dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<VersionedEtwinLink> {
-    return this.#database.transaction(TransactionMode.ReadOnly, q => this.getLinkFromDinoparcRo(q, dparcServer, dparcUserId));
-  }
-
-  private async getLinkFromDinoparcRo(queryable: Queryable, dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<VersionedEtwinLink> {
+  async getLinkFromDinoparc(options: Readonly<GetLinkFromDinoparcOptions>): Promise<VersionedRawDinoparcLink> {
     type Row = Pick<DinoparcUserLinkRow, "linked_at" | "linked_by" | "user_id">;
-    const row: Row | undefined = await queryable.oneOrNone(
-      `
+    const row: Row | undefined = await this.#database.oneOrNone(`
         SELECT linked_at, linked_by, user_id
         FROM dinoparc_user_links
         WHERE dinoparc_server = $1::VARCHAR
           AND dinoparc_user_id = $2::VARCHAR;
       `,
-      [dparcServer, dparcUserId],
+    [options.remote.server, options.remote.id],
     );
     if (row === undefined) {
       return {
         current: null,
         old: [],
       };
+    } else {
+      return {
+        current: {
+          link: {
+            time: row.linked_at,
+            user: {type: ObjectType.User, id: row.linked_by},
+          },
+          unlink: null,
+          etwin: {type: ObjectType.User, id: row.user_id},
+          remote: $DinoparcUserIdRef.clone(options.remote),
+        },
+        old: [],
+      };
     }
-    const user = await this.#userStore.getUser({ref: {id: row.user_id}, fields: SHORT_USER_FIELDS});
-    const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
-    if (user === null || linkedBy === null) {
-      throw new Error("AssertionError: Expected user to exist");
-    }
-    const link: EtwinLink = {
-      link: {time: row.linked_at, user: linkedBy},
-      unlink: null,
-      user,
-    };
-    return {
-      current: link,
-      old: [],
-    };
   }
 
-  async getLinkFromHammerfest(hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<VersionedEtwinLink> {
-    return this.#database.transaction(TransactionMode.ReadOnly, q => this.getLinkFromHammerfestTx(q, hfServer, hfUserId));
-  }
-
-  private async getLinkFromHammerfestTx(queryable: Queryable, hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<VersionedEtwinLink> {
+  async getLinkFromHammerfest(options: Readonly<GetLinkFromHammerfestOptions>): Promise<VersionedRawHammerfestLink> {
     type Row = Pick<HammerfestUserLinkRow, "linked_at" | "linked_by" | "user_id">;
-    const row: Row | undefined = await queryable.oneOrNone(
-      `
+    const row: Row | undefined = await this.#database.oneOrNone(`
         SELECT linked_at, linked_by, user_id
         FROM hammerfest_user_links
         WHERE hammerfest_server = $1::VARCHAR
           AND hammerfest_user_id = $2::VARCHAR;
       `,
-      [hfServer, hfUserId],
+    [options.remote.server, options.remote.id],
     );
     if (row === undefined) {
       return {
         current: null,
         old: [],
       };
+    } else {
+      return {
+        current: {
+          link: {
+            time: row.linked_at,
+            user: {type: ObjectType.User, id: row.linked_by},
+          },
+          unlink: null,
+          etwin: {type: ObjectType.User, id: row.user_id},
+          remote: $HammerfestUserIdRef.clone(options.remote),
+        },
+        old: [],
+      };
     }
-    const user = await this.#userStore.getUser({ref: {id: row.user_id}, fields: SHORT_USER_FIELDS});
-    const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
-    if (user === null || linkedBy === null) {
-      throw new Error("AssertionError: Expected user to exist");
-    }
-    const link: EtwinLink = {
-      link: {time: row.linked_at, user: linkedBy},
-      unlink: null,
-      user,
-    };
-    return {
-      current: link,
-      old: [],
-    };
   }
 
-  async getLinkFromTwinoid(twinoidUserId: string): Promise<VersionedEtwinLink> {
-    return this.#database.transaction(TransactionMode.ReadOnly, q => this.getLinkFromTwinoidTx(q, twinoidUserId));
-  }
-
-  private async getLinkFromTwinoidTx(queryable: Queryable, twinoidUserId: string): Promise<VersionedEtwinLink> {
+  async getLinkFromTwinoid(options: Readonly<GetLinkFromTwinoidOptions>): Promise<VersionedRawTwinoidLink> {
     type Row = Pick<TwinoidUserLinkRow, "linked_at" | "linked_by" | "user_id">;
-    const row: Row | undefined = await queryable.oneOrNone(
-      `
+    const row: Row | undefined = await this.#database.oneOrNone(`
         SELECT linked_at, linked_by, user_id
         FROM twinoid_user_links
-        WHERE twinoid_user_links.twinoid_user_id = $1::VARCHAR;
+        WHERE twinoid_user_id = $1::VARCHAR;
       `,
-      [twinoidUserId],
+    [options.remote.id],
     );
     if (row === undefined) {
       return {
         current: null,
         old: [],
       };
+    } else {
+      return {
+        current: {
+          link: {
+            time: row.linked_at,
+            user: {type: ObjectType.User, id: row.linked_by},
+          },
+          unlink: null,
+          etwin: {type: ObjectType.User, id: row.user_id},
+          remote: $TwinoidUserIdRef.clone(options.remote),
+        },
+        old: [],
+      };
     }
-    const user = await this.#userStore.getUser({ref: {id: row.user_id}, fields: SHORT_USER_FIELDS});
-    const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
-    if (user === null || linkedBy === null) {
-      throw new Error("AssertionError: Expected user to exist");
-    }
-    const link: EtwinLink = {
-      link: {time: row.linked_at, user: linkedBy},
-      unlink: null,
-      user,
-    };
-    return {
-      current: link,
-      old: [],
-    };
   }
 
-  async linkToDinoparc(options: Readonly<SimpleLinkToDinoparcOptions>): Promise<VersionedDinoparcLink> {
-    return this.#database.transaction(TransactionMode.ReadWrite, q => this.linkToDinoparcTx(q, options));
-  }
-
-  private async linkToDinoparcTx(queryable: Queryable, options: Readonly<SimpleLinkToDinoparcOptions>): Promise<VersionedDinoparcLink> {
-    type Row = Pick<DinoparcUserLinkRow, "dinoparc_server" | "dinoparc_user_id" | "linked_at">;
-    const row: Row = await queryable.one(
-      `
-        INSERT INTO dinoparc_user_links(user_id, dinoparc_server, dinoparc_user_id, linked_at, linked_by)
-        VALUES ($1::USER_ID, $2::DINOPARC_SERVER, $3::DINOPARC_USER_ID, NOW(), $4::USER_ID)
-        RETURNING dinoparc_server, dinoparc_user_id, linked_at;
-      `,
-      [options.userId, options.dinoparcServer, options.dinoparcUserId, options.linkedBy],
-    );
-    const linkedBy = await this.#userStore.getUser({ref: {id: options.linkedBy}, fields: SHORT_USER_FIELDS});
-    if (linkedBy === null) {
-      throw new Error("AssertionError: Expected user to exist");
-    }
-    const user = await this.#dinoparcStore.getShortUser({server: row.dinoparc_server, id: row.dinoparc_user_id});
-    if (user === null) {
-      throw new Error("AssertionError: Expected Dinoparc user to exist");
-    }
-    const link: DinoparcLink = {
-      link: {time: row.linked_at, user: linkedBy},
-      unlink: null,
-      user,
-    };
-    return {current: link, old: []};
-  }
-
-  async linkToHammerfest(options: Readonly<SimpleLinkToHammerfestOptions>): Promise<VersionedHammerfestLink> {
-    return this.#database.transaction(TransactionMode.ReadWrite, q => this.linkToHammerfestTx(q, options));
-  }
-
-  private async linkToHammerfestTx(queryable: Queryable, options: Readonly<SimpleLinkToHammerfestOptions>): Promise<VersionedHammerfestLink> {
-    type Row = Pick<HammerfestUserLinkRow, "hammerfest_server" | "hammerfest_user_id" | "linked_at">;
-    const row: Row = await queryable.one(
-      `
-        INSERT INTO hammerfest_user_links(user_id, hammerfest_server, hammerfest_user_id, linked_at, linked_by)
-        VALUES ($1::USER_ID, $2::HAMMERFEST_SERVER, $3::HAMMERFEST_USER_ID, NOW(), $4::USER_ID)
-        RETURNING hammerfest_server, hammerfest_user_id, linked_at;
-      `,
-      [options.userId, options.hammerfestServer, options.hammerfestUserId, options.linkedBy],
-    );
-    const linkedBy = await this.#userStore.getUser({ref: {id: options.linkedBy}, fields: SHORT_USER_FIELDS});
-    if (linkedBy === null) {
-      throw new Error("AssertionError: Expected user to exist");
-    }
-    const user = await this.#hammerfestArchive.getShortUser({server: row.hammerfest_server, id: row.hammerfest_user_id});
-    if (user === null) {
-      throw new Error("AssertionError: Expected Hammerfest user to exist");
-    }
-    const link: HammerfestLink = {
-      link: {time: row.linked_at, user: linkedBy},
-      unlink: null,
-      user,
-    };
-    return {current: link, old: []};
-  }
-
-  async linkToTwinoid(options: Readonly<SimpleLinkToTwinoidOptions>): Promise<VersionedTwinoidLink> {
-    return this.#database.transaction(TransactionMode.ReadWrite, q => this.linkToTwinoidTx(q, options));
-  }
-
-  private async linkToTwinoidTx(queryable: Queryable, options: Readonly<SimpleLinkToTwinoidOptions>): Promise<VersionedTwinoidLink> {
-    await queryable.countOne(
-      `
-        INSERT
-        INTO twinoid_user_links(user_id, twinoid_user_id, linked_at, linked_by)
-        VALUES ($1::USER_ID, $2::TWINOID_USER_ID, NOW(), $3::USER_ID);`,
-      [options.userId, options.twinoidUserId, options.linkedBy],
-    );
-
-    type TwinoidRow = Pick<TwinoidUserLinkRow, "twinoid_user_id" | "linked_at">;
-    const row: TwinoidRow = await queryable.one(
-      `
-        SELECT twinoid_user_id, linked_at, name
-        FROM twinoid_user_links
-               INNER JOIN twinoid_users USING (twinoid_user_id)
-        WHERE twinoid_user_links.user_id = $1::UUID;
-      `,
-      [options.userId],
-    );
-    const linkedBy = await this.#userStore.getUser({ref: {id: options.linkedBy}, fields: SHORT_USER_FIELDS});
-    if (linkedBy === null) {
-      throw new Error("AssertionError: Expected user to exist");
-    }
-    const user = await this.#twinoidArchive.getShortUser({id: row.twinoid_user_id});
-    if (user === null) {
-      throw new Error("AssertionError: Expected Twinoid user to exist");
-    }
-    const link: TwinoidLink = {
-      link: {time: row.linked_at, user: linkedBy},
-      unlink: null,
-      user,
-    };
-    return {current: link, old: []};
-  }
-
-  public async getVersionedLinks(userId: UserId): Promise<VersionedLinks> {
+  async getLinksFromEtwin(options: Readonly<GetLinksFromEtwinOptions>): Promise<VersionedRawLinks> {
     return this.#database.transaction(TransactionMode.ReadOnly, async (q: Queryable) => {
-      return this.getVersionedLinksTx(q, userId);
+      return this.getLinksFromEtwinTx(q, options);
     });
   }
 
-  private async getVersionedLinksTx(queryable: Queryable, userId: UserId): Promise<VersionedLinks> {
-    let dparcEn: NullableDinoparcLink = null;
-    let dparcFr: NullableDinoparcLink = null;
-    let dparcSp: NullableDinoparcLink = null;
-    let hammerfestEs: NullableHammerfestLink = null;
-    let hammerfestFr: NullableHammerfestLink = null;
-    let hfestNet: NullableHammerfestLink = null;
-    let twinoid: NullableTwinoidLink = null;
+  private async getLinksFromEtwinTx(queryable: Queryable, options: Readonly<GetLinksFromEtwinOptions>): Promise<VersionedRawLinks> {
+    let dparcEn: NullableRawDinoparcLink = null;
+    let dparcFr: NullableRawDinoparcLink = null;
+    let dparcSp: NullableRawDinoparcLink = null;
+    let hammerfestEs: NullableRawHammerfestLink = null;
+    let hammerfestFr: NullableRawHammerfestLink = null;
+    let hfestNet: NullableRawHammerfestLink = null;
+    let twinoid: NullableRawTwinoidLink = null;
     {
       type DinoparcRow = Pick<DinoparcUserLinkRow, "dinoparc_server" | "dinoparc_user_id" | "linked_at" | "linked_by">;
       const rows: DinoparcRow[] = await queryable.many(
@@ -285,23 +172,16 @@ export class PgLinkService implements LinkService {
           FROM dinoparc_user_links
           WHERE dinoparc_user_links.user_id = $1::UUID;
         `,
-        [userId],
+        [options.etwin.id],
       );
       for (const row of rows) {
-        const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
-        if (linkedBy === null) {
-          throw new Error("AssertionError: Expected linkedBy user to exist");
-        }
-        const user = await this.#dinoparcStore.getShortUser({server: row.dinoparc_server, id: row.dinoparc_user_id});
-        if (user === null) {
-          throw new Error("AssertionError: Expected Hammerfest user to exist");
-        }
-        const link: DinoparcLink = {
-          link: {time: row.linked_at, user: linkedBy},
+        const link: RawDinoparcLink = {
+          link: {time: row.linked_at, user: {type: ObjectType.User, id: row.linked_by}},
           unlink: null,
-          user: $ShortDinoparcUser.clone(user),
+          etwin: $UserIdRef.clone(options.etwin),
+          remote: {type: ObjectType.DinoparcUser, server: row.dinoparc_server, id: row.dinoparc_user_id},
         };
-        switch (user.server) {
+        switch (link.remote.server) {
           case "dinoparc.com":
             dparcFr = link;
             break;
@@ -312,7 +192,7 @@ export class PgLinkService implements LinkService {
             dparcSp = link;
             break;
           default:
-            throw new Error("AssertionError: Unexpected hammerfest server");
+            throw new Error("AssertionError: Unexpected dinoparc server");
         }
       }
     }
@@ -324,23 +204,16 @@ export class PgLinkService implements LinkService {
           FROM hammerfest_user_links
           WHERE hammerfest_user_links.user_id = $1::UUID;
         `,
-        [userId],
+        [options.etwin.id],
       );
       for (const row of rows) {
-        const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
-        if (linkedBy === null) {
-          throw new Error("AssertionError: Expected linkedBy user to exist");
-        }
-        const user = await this.#hammerfestArchive.getShortUser({server: row.hammerfest_server, id: row.hammerfest_user_id});
-        if (user === null) {
-          throw new Error("AssertionError: Expected Hammerfest user to exist");
-        }
-        const link: HammerfestLink = {
-          link: {time: row.linked_at, user: linkedBy},
+        const link: RawHammerfestLink = {
+          link: {time: row.linked_at, user: {type: ObjectType.User, id: row.linked_by}},
           unlink: null,
-          user: $ShortHammerfestUser.clone(user),
+          etwin: $UserIdRef.clone(options.etwin),
+          remote: {type: ObjectType.HammerfestUser, server: row.hammerfest_server, id: row.hammerfest_user_id},
         };
-        switch (user.server) {
+        switch (link.remote.server) {
           case "hammerfest.es":
             hammerfestEs = link;
             break;
@@ -364,21 +237,14 @@ export class PgLinkService implements LinkService {
                  INNER JOIN twinoid_users USING (twinoid_user_id)
           WHERE twinoid_user_links.user_id = $1::UUID;
         `,
-        [userId],
+        [options.etwin.id],
       );
       if (row !== undefined) {
-        const linkedBy = await this.#userStore.getUser({ref: {id: row.linked_by}, fields: SHORT_USER_FIELDS});
-        if (linkedBy === null) {
-          throw new Error("AssertionError: Expected linkedBy user to exist");
-        }
-        const user = await this.#twinoidArchive.getShortUser({id: row.twinoid_user_id});
-        if (user === null) {
-          throw new Error("AssertionError: Expected Twinoid user to exist");
-        }
         twinoid = {
-          link: {time: row.linked_at, user: linkedBy},
+          link: {time: row.linked_at, user: {type: ObjectType.User, id: row.linked_by}},
           unlink: null,
-          user: $ShortTwinoidUser.clone(user),
+          etwin: $UserIdRef.clone(options.etwin),
+          remote: {type: ObjectType.TwinoidUser, id: row.twinoid_user_id},
         };
       }
     }
@@ -412,6 +278,78 @@ export class PgLinkService implements LinkService {
         current: twinoid,
         old: [],
       }
+    };
+  }
+
+  async touchDinoparcLink(options: Readonly<TouchDinoparcLinkOptions>): Promise<VersionedRawDinoparcLink> {
+    type Row = Pick<DinoparcUserLinkRow, "linked_at">;
+    const row: Row = await this.#database.one(
+      `
+        INSERT INTO dinoparc_user_links(user_id, dinoparc_server, dinoparc_user_id, linked_at, linked_by)
+        VALUES ($1::USER_ID, $2::DINOPARC_SERVER, $3::HAMMERFEST_USER_ID, NOW(), $4::USER_ID)
+        RETURNING linked_at;
+      `,
+      [options.etwin.id, options.remote.server, options.remote.id, options.linkedBy.id],
+    );
+    return {
+      current: {
+        link: {
+          time: row.linked_at,
+          user: $UserIdRef.clone(options.linkedBy),
+        },
+        unlink: null,
+        etwin: $UserIdRef.clone(options.etwin),
+        remote: $DinoparcUserIdRef.clone(options.remote),
+      },
+      old: [],
+    };
+  }
+
+  async touchHammerfestLink(options: Readonly<TouchHammerfestLinkOptions>): Promise<VersionedRawHammerfestLink> {
+    type Row = Pick<HammerfestUserLinkRow, "linked_at">;
+    const row: Row = await this.#database.one(
+      `
+        INSERT INTO hammerfest_user_links(user_id, hammerfest_server, hammerfest_user_id, linked_at, linked_by)
+        VALUES ($1::USER_ID, $2::HAMMERFEST_SERVER, $3::HAMMERFEST_USER_ID, NOW(), $4::USER_ID)
+        RETURNING linked_at;
+      `,
+      [options.etwin.id, options.remote.server, options.remote.id, options.linkedBy.id],
+    );
+    return {
+      current: {
+        link: {
+          time: row.linked_at,
+          user: $UserIdRef.clone(options.linkedBy),
+        },
+        unlink: null,
+        etwin: $UserIdRef.clone(options.etwin),
+        remote: $HammerfestUserIdRef.clone(options.remote),
+      },
+      old: [],
+    };
+  }
+
+  async touchTwinoidLink(options: Readonly<TouchTwinoidLinkOptions>): Promise<VersionedRawTwinoidLink> {
+    type Row = Pick<TwinoidUserLinkRow, "linked_at">;
+    const row: Row = await this.#database.one(
+      `
+        INSERT INTO twinoid_user_links(user_id, twinoid_user_id, linked_at, linked_by)
+        VALUES ($1::USER_ID, $3::TWINOID_USER_ID, NOW(), $4::USER_ID)
+        RETURNING linked_at;
+      `,
+      [options.etwin.id, options.remote.id, options.linkedBy.id],
+    );
+    return {
+      current: {
+        link: {
+          time: row.linked_at,
+          user: $UserIdRef.clone(options.linkedBy),
+        },
+        unlink: null,
+        etwin: $UserIdRef.clone(options.etwin),
+        remote: $TwinoidUserIdRef.clone(options.remote),
+      },
+      old: [],
     };
   }
 }
