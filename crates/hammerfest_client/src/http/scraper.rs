@@ -88,8 +88,8 @@ struct RawUserLink<'a> {
 }
 
 impl<'a> RawUserLink<'a> {
-  fn scrape(user_link: &ElementRef<'a>) -> Result<RawUserLink<'a>, ScraperError> {
-    let user_name = get_inner_text(&user_link)?.trim();
+  fn scrape(user_link: ElementRef<'a>) -> Result<RawUserLink<'a>, ScraperError> {
+    let user_name = get_inner_text(user_link)?.trim();
     let user_id = user_link
       .value()
       .attr("href")
@@ -117,13 +117,13 @@ fn scrape_raw_top_bar(html: &Html) -> Result<Option<(ElementRef<'_>, RawUserLink
     return Err(ScraperError::Evni);
   }
 
-  let top_bar = select_one(&root, &selectors.top_bar_in_page)?;
-  match select_one_opt(&root, &selectors.username_in_top_bar)? {
+  let top_bar = select_one(root, &selectors.top_bar_in_page)?;
+  match select_one_opt(root, &selectors.username_in_top_bar)? {
     None => {
-      select_one(&top_bar, &selectors.signin_in_top_bar)?;
+      select_one(top_bar, &selectors.signin_in_top_bar)?;
       Ok(None)
     }
-    Some(user_link) => Ok(Some((top_bar, RawUserLink::scrape(&user_link)?))),
+    Some(user_link) => Ok(Some((top_bar, RawUserLink::scrape(user_link)?))),
   }
 }
 
@@ -202,11 +202,11 @@ pub fn scrape_user_profile(
     }
   };
 
-  let username = get_inner_text(&username_elem)?.trim();
+  let username = get_inner_text(username_elem)?.trim();
   let username = HammerfestUsername::try_from_string(username.to_owned())
     .map_err(|err| ScraperError::InvalidUsername(username.to_owned(), err))?;
-  let best_score = parse_dotted_u32(get_inner_text(&best_score_elem)?)?;
-  let season_score = parse_dotted_u32(get_inner_text(&season_score_elem)?)?;
+  let best_score = parse_dotted_u32(get_inner_text(best_score_elem)?)?;
+  let season_score = parse_dotted_u32(get_inner_text(season_score_elem)?)?;
   let best_level = {
     let raw_best_level = best_level_elem.text().next().unwrap_or("").trim();
     if raw_best_level.is_empty() {
@@ -219,9 +219,9 @@ pub fn scrape_user_profile(
   let email = match (email_elem, is_logged_in) {
     (None, true) => Some(None),
     (None, false) => None,
-    (Some(email), _) => Some(Some(get_inner_text(&email)?.to_owned())),
+    (Some(email), _) => Some(Some(get_inner_text(email)?.to_owned())),
   };
-  let rank = match select_one(&rank_elem, &selectors.simple_img)?.value().attr("class") {
+  let rank = match select_one(rank_elem, &selectors.simple_img)?.value().attr("class") {
     Some("icon_pyramid icon_pyramid_hof") => 0,
     Some("icon_pyramid icon_pyramid_1") => 1,
     Some("icon_pyramid icon_pyramid_2") => 2,
@@ -234,15 +234,15 @@ pub fn scrape_user_profile(
     None
   } else {
     Some({
-      let words_fame_info_elem = select_one(&root, &selectors.words_fame_info_in_profile)?;
-      let words_fame_msg_elem = select_one(&root, &selectors.words_fame_msg_in_profile)?;
+      let words_fame_info_elem = select_one(root, &selectors.words_fame_info_in_profile)?;
+      let words_fame_msg_elem = select_one(root, &selectors.words_fame_msg_in_profile)?;
 
-      let raw_date = get_inner_text(&words_fame_info_elem)?.split(' ').last().unwrap_or("");
+      let raw_date = get_inner_text(words_fame_info_elem)?.split(' ').last().unwrap_or("");
       let date = match chrono::NaiveDate::parse_from_str(raw_date, "%Y-%m-%d") {
         Ok(date) => Ok(Instant::from_utc(date.and_hms(0, 0, 0), chrono::Utc)),
         Err(err) => Err(ScraperError::InvalidDate(raw_date.to_owned(), err)),
       }?;
-      let message = get_inner_text(&words_fame_msg_elem)?.trim().to_owned();
+      let message = get_inner_text(words_fame_msg_elem)?.trim().to_owned();
 
       HammerfestHallOfFameMessage { date, message }
     })
@@ -285,7 +285,7 @@ pub fn scrape_user_profile(
 
   let quests = quest_elems
     .map(|(name, status)| {
-      let name = get_inner_text(&name)?.trim();
+      let name = get_inner_text(name)?.trim();
       match texts.quest_names.get(name) {
         Some(id) => Ok((id.clone(), status)),
         None => Err(ScraperError::UnknownQuestName(name.to_owned())),
@@ -317,8 +317,8 @@ pub fn scrape_user_inventory(html: &Html) -> Result<Option<HashMap<HammerfestIte
   html
     .select(&selectors.fridge_rows_in_inventory)
     .map(|row_elem| {
-      let item_elem = utils::select_one(&row_elem, &selectors.simple_img)?;
-      let qty_elem = utils::select_one(&row_elem, &selectors.item_qty_in_fridge_row)?;
+      let item_elem = utils::select_one(row_elem, &selectors.simple_img)?;
+      let qty_elem = utils::select_one(row_elem, &selectors.item_qty_in_fridge_row)?;
 
       let item = match item_elem.value().attr("src") {
         Some(src) => parse_item_url(src)?,
@@ -329,7 +329,7 @@ pub fn scrape_user_inventory(html: &Html) -> Result<Option<HashMap<HammerfestIte
         }
       };
 
-      let qty = utils::get_inner_text(&qty_elem)?;
+      let qty = utils::get_inner_text(qty_elem)?;
       let qty = utils::remove_prefix_and_suffix(qty, "x", "").unwrap_or(qty);
       let qty = utils::parse_u32(qty)?;
       Ok((item, qty))
@@ -376,21 +376,21 @@ pub fn scrape_user_shop(html: &Html) -> Result<Option<HammerfestShop>, ScraperEr
     None => return Ok(None),
   };
 
-  let tokens_elem = utils::select_one(&top_bar_elem, &selectors.token_count_in_top_bar)?;
-  let tokens = utils::get_inner_text(&tokens_elem)?;
+  let tokens_elem = utils::select_one(top_bar_elem, &selectors.token_count_in_top_bar)?;
+  let tokens = utils::get_inner_text(tokens_elem)?;
   let tokens = utils::parse_u32(tokens)?;
 
-  let shop_status_elem = utils::select_one(&root, &selectors.shop_status_in_shop)?;
+  let shop_status_elem = utils::select_one(root, &selectors.shop_status_in_shop)?;
 
-  let weekly_tokens_elem = utils::select_one_opt(&shop_status_elem, &selectors.weekly_tokens_in_shop_status)?;
+  let weekly_tokens_elem = utils::select_one_opt(shop_status_elem, &selectors.weekly_tokens_in_shop_status)?;
   let weekly_tokens = match weekly_tokens_elem {
-    Some(elem) => utils::get_inner_text(&elem).and_then(parse_weekly_tokens_number)?,
+    Some(elem) => utils::get_inner_text(elem).and_then(parse_weekly_tokens_number)?,
     None => 0,
   };
 
-  let purchased_tokens_elem = utils::select_one_opt(&shop_status_elem, &selectors.step_label_in_shop_status)?;
+  let purchased_tokens_elem = utils::select_one_opt(shop_status_elem, &selectors.step_label_in_shop_status)?;
   let purchased_tokens = match purchased_tokens_elem {
-    Some(elem) => Some(utils::get_inner_text(&elem).and_then(parse_purchased_tokens_number)?),
+    Some(elem) => Some(utils::get_inner_text(elem).and_then(parse_purchased_tokens_number)?),
     // Couldn't find the number of purchased tokens. This can means two things:
     // - The user never bought any tokens.
     // - The user bought enough tokens to complete all reward steps.
@@ -398,7 +398,7 @@ pub fn scrape_user_shop(html: &Html) -> Result<Option<HammerfestShop>, ScraperEr
     None => Some(0).filter(|_| weekly_tokens == 0),
   };
 
-  let has_quest_bonus = utils::select_one_opt(&root, &selectors.quest_bonus_in_shop)?.is_some();
+  let has_quest_bonus = utils::select_one_opt(root, &selectors.quest_bonus_in_shop)?.is_some();
 
   Ok(Some(HammerfestShop {
     tokens,
@@ -421,11 +421,11 @@ pub fn scrape_user_god_children(
   html
     .select(&selectors.rows_in_god_children)
     .map(|row| {
-      let user_elem = utils::select_one(&row, &selectors.simple_link)?;
-      let user = RawUserLink::scrape(&user_elem)?.into_user(server)?;
+      let user_elem = utils::select_one(row, &selectors.simple_link)?;
+      let user = RawUserLink::scrape(user_elem)?.into_user(server)?;
 
-      let tokens_elem = utils::select_one(&row, &selectors.token_amount_in_god_child_row)?;
-      let tokens = utils::get_inner_text(&tokens_elem)?.trim();
+      let tokens_elem = utils::select_one(row, &selectors.token_amount_in_god_child_row)?;
+      let tokens = utils::get_inner_text(tokens_elem)?.trim();
       let tokens = tokens.parse().unwrap_or(0);
 
       Ok(HammerfestGodChild { user, tokens })

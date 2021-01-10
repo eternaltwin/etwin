@@ -13,7 +13,7 @@ pub fn selector_to_string(selector: &Selector) -> String {
     .join(", ")
 }
 
-pub fn select_one_opt<'a>(node: &ElementRef<'a>, selector: &Selector) -> Result<Option<ElementRef<'a>>, ScraperError> {
+pub fn select_one_opt<'a>(node: ElementRef<'a>, selector: &Selector) -> Result<Option<ElementRef<'a>>, ScraperError> {
   let mut it = node.select(selector);
   match (it.next(), it.next()) {
     (None, _) => Ok(None),
@@ -22,7 +22,7 @@ pub fn select_one_opt<'a>(node: &ElementRef<'a>, selector: &Selector) -> Result<
   }
 }
 
-pub fn select_one<'a>(node: &ElementRef<'a>, selector: &Selector) -> Result<ElementRef<'a>, ScraperError> {
+pub fn select_one<'a>(node: ElementRef<'a>, selector: &Selector) -> Result<ElementRef<'a>, ScraperError> {
   match select_one_opt(node, selector) {
     Ok(None) => Err(ScraperError::HtmlFragmentNotFound(selector_to_string(selector))),
     Ok(Some(elem)) => Ok(elem),
@@ -30,7 +30,7 @@ pub fn select_one<'a>(node: &ElementRef<'a>, selector: &Selector) -> Result<Elem
   }
 }
 
-pub fn get_inner_text<'a>(node: &ElementRef<'a>) -> Result<&'a str, ScraperError> {
+pub fn get_inner_text<'a>(node: ElementRef<'a>) -> Result<&'a str, ScraperError> {
   let mut it = node.text();
   match (it.next(), it.next()) {
     (None, _) => Ok(""),
