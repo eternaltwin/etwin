@@ -1,5 +1,5 @@
 use crate::core::{Instant, RawUserDot, UserDot};
-use crate::dinoparc::{DinoparcServer, DinoparcUserId, DinoparcUserIdRef, ShortDinoparcUser};
+use crate::dinoparc::{DinoparcUserIdRef, ShortDinoparcUser};
 use crate::hammerfest::{HammerfestServer, HammerfestUserId, HammerfestUserIdRef, ShortHammerfestUser};
 use crate::twinoid::{ShortTwinoidUser, TwinoidUserId, TwinoidUserIdRef};
 use crate::user::{ShortUser, UserId, UserIdRef};
@@ -41,7 +41,7 @@ pub struct OldRawLink<T: RemoteUserIdRef> {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct VersionedRawLink<T: RemoteUserIdRef> {
   #[cfg_attr(feature = "serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub current: Option<RawLink<T>>,

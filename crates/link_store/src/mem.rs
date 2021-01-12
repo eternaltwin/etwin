@@ -1,13 +1,15 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::core::RawUserDot;
-use etwin_core::dinoparc::DinoparcUserIdRef;
+use etwin_core::dinoparc::{DinoparcServer, DinoparcUserId, DinoparcUserIdRef};
 use etwin_core::hammerfest::{
   ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId,
   HammerfestUserIdRef, ShortHammerfestUser,
 };
-use etwin_core::link::{GetLinkOptions, LinkStore, RawLink, TouchLinkError, TouchLinkOptions, VersionedRawLink};
-use etwin_core::twinoid::TwinoidUserIdRef;
+use etwin_core::link::{
+  GetLinkOptions, LinkStore, RawLink, RemoteUserIdRef, TouchLinkError, TouchLinkOptions, VersionedRawLink,
+};
+use etwin_core::twinoid::{TwinoidUserId, TwinoidUserIdRef};
 use etwin_core::user::UserId;
 use std::collections::HashMap;
 use std::error::Error;
@@ -15,15 +17,23 @@ use std::ops::Deref;
 use std::sync::RwLock;
 
 struct StoreState {
+  from_dinoparc: HashMap<(DinoparcServer, DinoparcUserId), RawLink<DinoparcUserIdRef>>,
+  to_dinoparc: HashMap<(UserId, DinoparcServer), RawLink<DinoparcUserIdRef>>,
   from_hammerfest: HashMap<(HammerfestServer, HammerfestUserId), RawLink<HammerfestUserIdRef>>,
   to_hammerfest: HashMap<(UserId, HammerfestServer), RawLink<HammerfestUserIdRef>>,
+  from_twinoid: HashMap<TwinoidUserId, RawLink<TwinoidUserIdRef>>,
+  to_twinoid: HashMap<UserId, RawLink<TwinoidUserIdRef>>,
 }
 
 impl StoreState {
   fn new() -> Self {
     Self {
+      from_dinoparc: HashMap::new(),
+      to_dinoparc: HashMap::new(),
       from_hammerfest: HashMap::new(),
       to_hammerfest: HashMap::new(),
+      from_twinoid: HashMap::new(),
+      to_twinoid: HashMap::new(),
     }
   }
 }
@@ -54,7 +64,27 @@ where
     &self,
     options: &TouchLinkOptions<DinoparcUserIdRef>,
   ) -> Result<VersionedRawLink<DinoparcUserIdRef>, TouchLinkError<DinoparcUserIdRef>> {
-    unimplemented!()
+    let mut state = self.state.write().unwrap();
+    let state: &mut StoreState = &mut state;
+    touch_link(
+      &mut state.from_dinoparc,
+      &mut state.to_dinoparc,
+      (options.remote.server, options.remote.id.clone()),
+      (options.etwin.id.clone(), options.remote.server),
+      || {
+        let now = self.clock.now();
+        let link: RawLink<DinoparcUserIdRef> = RawLink {
+          link: RawUserDot {
+            time: now,
+            user: options.linked_by.clone(),
+          },
+          unlink: (),
+          etwin: options.etwin.clone(),
+          remote: options.remote.clone(),
+        };
+        link
+      },
+    )
   }
 
   async fn touch_hammerfest_link(
@@ -62,15 +92,13 @@ where
     options: &TouchLinkOptions<HammerfestUserIdRef>,
   ) -> Result<VersionedRawLink<HammerfestUserIdRef>, TouchLinkError<HammerfestUserIdRef>> {
     let mut state = self.state.write().unwrap();
-    let linked_etwin = state
-      .from_hammerfest
-      .get(&(options.remote.server, options.remote.id.clone()));
-    let linked_hf = state
-      .to_hammerfest
-      .get(&(options.etwin.id.clone(), options.remote.server));
-
-    match (linked_etwin, linked_hf) {
-      (None, None) => {
+    let state: &mut StoreState = &mut state;
+    touch_link(
+      &mut state.from_hammerfest,
+      &mut state.to_hammerfest,
+      (options.remote.server, options.remote.id.clone()),
+      (options.etwin.id.clone(), options.remote.server),
+      || {
         let now = self.clock.now();
         let link: RawLink<HammerfestUserIdRef> = RawLink {
           link: RawUserDot {
@@ -81,25 +109,9 @@ where
           etwin: options.etwin.clone(),
           remote: options.remote.clone(),
         };
-        state
-          .from_hammerfest
-          .insert((link.remote.server, link.remote.id.clone()), link.clone());
-        state
-          .to_hammerfest
-          .insert((link.etwin.id.clone(), link.remote.server), link.clone());
-        let link: VersionedRawLink<HammerfestUserIdRef> = VersionedRawLink {
-          current: Some(link),
-          old: vec![],
-        };
-        Ok(link)
-      }
-      (Some(linked_etwin), None) => Err(TouchLinkError::ConflictEtwin(linked_etwin.etwin.clone())),
-      (None, Some(linked_hf)) => Err(TouchLinkError::ConflictRemote(linked_hf.remote.clone())),
-      (Some(linked_etwin), Some(linked_hf)) => Err(TouchLinkError::ConflictBoth(
-        linked_etwin.etwin.clone(),
-        linked_hf.remote.clone(),
-      )),
-    }
+        link
+      },
+    )
   }
 
   async fn touch_twinoid_link(
@@ -132,6 +144,36 @@ where
         Ok(link)
       }
     }
+  }
+}
+
+fn touch_link<FK: Eq + core::hash::Hash, TK: Eq + core::hash::Hash, R: RemoteUserIdRef>(
+  from: &mut HashMap<FK, RawLink<R>>,
+  to: &mut HashMap<TK, RawLink<R>>,
+  from_key: FK,
+  to_key: TK,
+  link: impl FnOnce() -> RawLink<R>,
+) -> Result<VersionedRawLink<R>, TouchLinkError<R>> {
+  let linked_etwin = from.get(&from_key);
+  let linked_remote = to.get(&to_key);
+
+  match (linked_etwin, linked_remote) {
+    (None, None) => {
+      let link: RawLink<R> = link();
+      from.insert(from_key, link.clone());
+      to.insert(to_key, link.clone());
+      let link: VersionedRawLink<R> = VersionedRawLink {
+        current: Some(link),
+        old: vec![],
+      };
+      Ok(link)
+    }
+    (Some(linked_etwin), None) => Err(TouchLinkError::ConflictEtwin(linked_etwin.etwin.clone())),
+    (None, Some(linked_remote)) => Err(TouchLinkError::ConflictRemote(linked_remote.remote.clone())),
+    (Some(linked_etwin), Some(linked_remote)) => Err(TouchLinkError::ConflictBoth(
+      linked_etwin.etwin.clone(),
+      linked_remote.remote.clone(),
+    )),
   }
 }
 

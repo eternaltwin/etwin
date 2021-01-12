@@ -2,13 +2,11 @@ use crate::auth::AuthContext;
 use crate::core::UserDot;
 use crate::hammerfest::{
   ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestClient, HammerfestGetProfileByIdOptions,
-  HammerfestProfile, HammerfestStore, HammerfestUser, HammerfestUserIdRef, ShortHammerfestUser,
+  HammerfestProfile, HammerfestStore, HammerfestUser, HammerfestUserIdRef,
 };
 use crate::link::{EtwinLink, GetLinkOptions, LinkStore, VersionedEtwinLink, VersionedRawLink};
 use crate::user::{GetUserOptions, ShortUser, UserStore};
-use std::borrow::Borrow;
 use std::error::Error;
-use std::ops::Deref;
 
 pub struct HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>
 where
@@ -47,7 +45,7 @@ where
 
   pub async fn get_user(
     &self,
-    acx: AuthContext,
+    _acx: AuthContext,
     options: &GetHammerfestUserOptions,
   ) -> Result<Option<HammerfestUser>, Box<dyn Error>> {
     let user: Option<ArchivedHammerfestUser> = self.hammerfest_store.get_user(options).await?;

@@ -1,6 +1,5 @@
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
-use core::ops::Deref;
 use etwin_core::clock::Clock;
 use etwin_core::email::EmailAddress;
 use etwin_core::user::{

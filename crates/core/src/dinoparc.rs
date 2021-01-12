@@ -9,9 +9,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{database, postgres, Database, Postgres};
 use std::error::Error;
 use std::fmt;
-use std::ops::Deref;
 use std::str::FromStr;
-use std::sync::Arc;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
