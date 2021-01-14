@@ -3,15 +3,16 @@ use chrono::{DateTime, Utc};
 use etwin_core::clock::Clock;
 use etwin_core::email::EmailAddress;
 use etwin_core::user::{
-  CompleteSimpleUser, CreateUserOptions, GetUserOptions, SimpleUser, UserDisplayName, UserDisplayNameVersion,
-  UserDisplayNameVersions, UserId, UserStore, Username,
+  CompleteSimpleUser, CreateUserOptions, GetShortUserOptions, GetUserOptions, GetUserResult, ShortUser, SimpleUser,
+  UserDisplayName, UserDisplayNameVersion, UserDisplayNameVersions, UserFields, UserId, UserIdRef, UserRef, UserStore,
+  Username,
 };
 use etwin_core::uuid::UuidGenerator;
 use std::collections::HashMap;
 use std::error::Error;
 use std::sync::Mutex;
 
-pub(crate) struct InMemoryUser {
+pub(crate) struct MemUser {
   id: UserId,
   ctime: DateTime<Utc>,
   display_name: UserDisplayName,
@@ -23,9 +24,22 @@ pub(crate) struct InMemoryUser {
   is_administrator: bool,
 }
 
-impl From<&InMemoryUser> for SimpleUser {
-  fn from(im_user: &InMemoryUser) -> Self {
-    SimpleUser {
+impl From<&MemUser> for ShortUser {
+  fn from(im_user: &MemUser) -> Self {
+    Self {
+      id: im_user.id,
+      display_name: UserDisplayNameVersions {
+        current: UserDisplayNameVersion {
+          value: im_user.display_name.clone(),
+        },
+      },
+    }
+  }
+}
+
+impl From<&MemUser> for SimpleUser {
+  fn from(im_user: &MemUser) -> Self {
+    Self {
       id: im_user.id,
       display_name: UserDisplayNameVersions {
         current: UserDisplayNameVersion {
@@ -37,10 +51,10 @@ impl From<&InMemoryUser> for SimpleUser {
   }
 }
 
-impl From<&InMemoryUser> for CompleteSimpleUser {
-  fn from(im_user: &InMemoryUser) -> Self {
+impl From<&MemUser> for CompleteSimpleUser {
+  fn from(im_user: &MemUser) -> Self {
     let simple: SimpleUser = im_user.into();
-    CompleteSimpleUser {
+    Self {
       id: simple.id,
       display_name: simple.display_name,
       is_administrator: simple.is_administrator,
@@ -54,7 +68,7 @@ impl From<&InMemoryUser> for CompleteSimpleUser {
 pub struct InMemorySimpleUserService<C: Clock, U: UuidGenerator> {
   pub(crate) clock: C,
   pub(crate) uuid_generator: U,
-  pub(crate) users: Mutex<HashMap<UserId, InMemoryUser>>,
+  pub(crate) users: Mutex<HashMap<UserId, MemUser>>,
 }
 
 impl<C, U> InMemorySimpleUserService<C, U>
@@ -81,7 +95,7 @@ where
     let user_id = UserId::from(self.uuid_generator.next());
     let time = self.clock.now();
     let mut users = self.users.lock().unwrap();
-    let im_user = InMemoryUser {
+    let im_user = MemUser {
       id: user_id,
       ctime: time,
       display_name: options.display_name.clone(),
@@ -98,21 +112,53 @@ where
     Ok(user)
   }
 
-  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<SimpleUser>, Box<dyn Error>> {
+  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, Box<dyn Error>> {
     let users = self.users.lock().unwrap();
-    Ok(users.get(&options.id).map(SimpleUser::from))
+
+    let mem_user: Option<&MemUser> = match &options.r#ref {
+      UserRef::Id(r) => users.get(&r.id),
+      UserRef::Username(r) => users.values().find(|u| u.username.as_ref() == Some(&r.username)),
+      UserRef::Email(r) => users.values().find(|u| u.email_address.as_ref() == Some(&r.email)),
+    };
+
+    Ok(mem_user.map(|user| match options.fields {
+      UserFields::Complete => GetUserResult::Complete(user.into()),
+      UserFields::CompleteIfSelf(s) => {
+        if s == user.id {
+          GetUserResult::Complete(user.into())
+        } else {
+          GetUserResult::Default(user.into())
+        }
+      }
+      UserFields::Default => GetUserResult::Default(user.into()),
+      UserFields::Short => GetUserResult::Short(user.into()),
+    }))
   }
 
-  async fn get_complete_user(&self, options: &GetUserOptions) -> Result<Option<CompleteSimpleUser>, Box<dyn Error>> {
+  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, Box<dyn Error>> {
     let users = self.users.lock().unwrap();
-    Ok(users.get(&options.id).map(CompleteSimpleUser::from))
+    let mem_user: Option<&MemUser> = match &options.r#ref {
+      UserRef::Id(r) => users.get(&r.id),
+      UserRef::Username(r) => users.values().find(|u| u.username.as_ref() == Some(&r.username)),
+      UserRef::Email(r) => users.values().find(|u| u.email_address.as_ref() == Some(&r.email)),
+    };
+    Ok(mem_user.map(ShortUser::from))
   }
+
+  async fn hard_delete_user_by_id(&self, user_ref: UserIdRef) -> Result<(), Box<dyn Error>> {
+    unimplemented!()
+  }
+
+  // async fn get_complete_user(&self, options: &GetUserOptions) -> Result<Option<CompleteSimpleUser>, Box<dyn Error>> {
+  //   let users = self.users.lock().unwrap();
+  //   Ok(users.get(&options.id).map(CompleteSimpleUser::from))
+  // }
 }
 
 #[cfg(test)]
 mod test {
   use crate::mem::InMemorySimpleUserService;
-  use crate::test::{test_register_the_admin_and_retrieve_ref, TestApi};
+  use crate::test::TestApi;
   use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
   use etwin_core::user::UserStore;
@@ -131,8 +177,22 @@ mod test {
   }
 
   #[tokio::test]
-  async fn test_user_store() {
-    let api = make_test_api();
-    test_register_the_admin_and_retrieve_ref(api).await;
+  async fn test_create_admin() {
+    crate::test::test_create_admin(make_test_api()).await;
+  }
+
+  #[tokio::test]
+  async fn test_register_the_admin_and_retrieve_short() {
+    crate::test::test_register_the_admin_and_retrieve_short(make_test_api()).await;
+  }
+
+  #[tokio::test]
+  async fn test_register_the_admin_and_retrieve_default() {
+    crate::test::test_register_the_admin_and_retrieve_default(make_test_api()).await;
+  }
+
+  #[tokio::test]
+  async fn test_register_the_admin_and_retrieve_complete() {
+    crate::test::test_register_the_admin_and_retrieve_complete(make_test_api()).await;
   }
 }

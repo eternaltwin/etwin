@@ -5,7 +5,7 @@ use crate::hammerfest::{
   HammerfestProfile, HammerfestStore, HammerfestUser, HammerfestUserIdRef,
 };
 use crate::link::{EtwinLink, GetLinkOptions, LinkStore, VersionedEtwinLink, VersionedRawLink};
-use crate::user::{GetUserOptions, ShortUser, UserStore};
+use crate::user::{GetShortUserOptions, ShortUser, UserRef, UserStore};
 use std::error::Error;
 
 pub struct HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>
@@ -84,8 +84,8 @@ where
         Some(l) => {
           let user: ShortUser = self
             .user_store
-            .get_user(&GetUserOptions {
-              id: l.link.user.id,
+            .get_short_user(&GetShortUserOptions {
+              r#ref: UserRef::Id(l.link.user),
               time: options.time,
             })
             .await?
@@ -93,8 +93,8 @@ where
             .into();
           let etwin: ShortUser = self
             .user_store
-            .get_user(&GetUserOptions {
-              id: l.etwin.id,
+            .get_short_user(&GetShortUserOptions {
+              r#ref: UserRef::Id(l.link.user),
               time: options.time,
             })
             .await?

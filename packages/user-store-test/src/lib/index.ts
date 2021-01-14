@@ -46,7 +46,7 @@ async function createUser(
 }
 
 export function testUserService(withApi: (fn: (api: Api) => Promise<void>) => Promise<void>) {
-  it("Register the admin and retrieve itself (ref)", async function (this: Mocha.Context) {
+  it("Register the admin and retrieve itself (short)", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
       const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");

@@ -38,17 +38,35 @@ pub struct CreateUserOptions {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum UserFields {
+  CompleteIfSelf(UserId),
+  Complete,
+  Default,
+  Short,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GetUserOptions {
-  pub id: UserId,
+  pub r#ref: UserRef,
+  pub fields: UserFields,
   pub time: Option<Instant>,
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum MaybeCompleteSimpleUser {
+pub struct GetShortUserOptions {
+  pub r#ref: UserRef,
+  pub time: Option<Instant>,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum GetUserResult {
   Complete(CompleteSimpleUser),
   Default(SimpleUser),
+  Short(ShortUser),
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -67,12 +85,31 @@ impl From<SimpleUser> for ShortUser {
   }
 }
 
+impl From<CompleteSimpleUser> for ShortUser {
+  fn from(user: CompleteSimpleUser) -> Self {
+    Self {
+      id: user.id,
+      display_name: user.display_name,
+    }
+  }
+}
+
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SimpleUser {
   pub id: UserId,
   pub display_name: UserDisplayNameVersions,
   pub is_administrator: bool,
+}
+
+impl From<CompleteSimpleUser> for SimpleUser {
+  fn from(user: CompleteSimpleUser) -> Self {
+    Self {
+      id: user.id,
+      display_name: user.display_name,
+      is_administrator: user.is_administrator,
+    }
+  }
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -148,6 +185,33 @@ pub struct UserIdRef {
   pub id: UserId,
 }
 
+impl UserIdRef {
+  pub const fn new(id: UserId) -> Self {
+    Self { id }
+  }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct UserUsernameRef {
+  pub username: Username,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct UserEmailRef {
+  pub email: EmailAddress,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum UserRef {
+  Id(UserIdRef),
+  Username(UserUsernameRef),
+  Email(UserEmailRef),
+}
+
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type), sqlx(transparent, rename = "username"))]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Username(String);
@@ -173,7 +237,9 @@ impl Username {
 pub trait UserStore: Send + Sync {
   async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, Box<dyn Error>>;
 
-  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<SimpleUser>, Box<dyn Error>>;
+  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, Box<dyn Error>>;
 
-  async fn get_complete_user(&self, options: &GetUserOptions) -> Result<Option<CompleteSimpleUser>, Box<dyn Error>>;
+  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, Box<dyn Error>>;
+
+  async fn hard_delete_user_by_id(&self, user_ref: UserIdRef) -> Result<(), Box<dyn Error>>;
 }

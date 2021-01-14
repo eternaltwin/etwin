@@ -18,9 +18,9 @@ etwin_core = { path = "../core", features = ["sqlx"] }
 etwin_db_schema = { path = "../db_schema" }
 regex = "^1.4.2"
 sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
-tokio = { version = "^0.2.23", features = ["macros"] }
 uuid = { version = "^0.8.1", default-features = false, features = ["serde", "v4"] }
-warp = "^0.2.5"
 
 [dev-dependencies]
 etwin_config = { path = "../config" }
+serial_test = "^0.5.1"
+tokio = { version = "^0.2.23", features = ["macros", "rt-core"] }
