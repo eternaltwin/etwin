@@ -52,6 +52,7 @@ where
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       user_id: UserId,
+      ctime: Instant,
       display_name: UserDisplayName,
       is_administrator: bool,
     }
@@ -74,7 +75,7 @@ where
         NULL, $6::INSTANT,
         (NOT EXISTS(SELECT 1 FROM administrator_exists))
       )
-      RETURNING user_id, display_name, is_administrator;
+      RETURNING user_id, ctime, display_name, is_administrator;
     ",
     )
     .bind("dev_secret")
@@ -94,7 +95,7 @@ where
         },
       },
       is_administrator: row.is_administrator,
-      ctime: now,
+      created_at: row.ctime,
       username: options.username.clone(),
       email_address: None,
     };
@@ -153,15 +154,15 @@ where
         },
       },
       is_administrator: row.is_administrator,
-      ctime: row.ctime,
+      created_at: row.ctime,
       username: row.username,
       email_address: row.email_address,
     };
 
     let user = match options.fields {
       UserFields::Complete => GetUserResult::Complete(user),
-      UserFields::CompleteIfSelf(s) => {
-        if s == user.id {
+      UserFields::CompleteIfSelf { self_user_id } => {
+        if self_user_id == user.id {
           GetUserResult::Complete(user)
         } else {
           GetUserResult::Default(user.into())
@@ -243,6 +244,15 @@ where
 
     Ok(())
   }
+}
+
+#[cfg(feature = "neon")]
+impl<TyClock, TyDatabase, TyUuidGenerator> neon::prelude::Finalize for PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
+where
+  TyClock: Clock,
+  TyDatabase: ApiRef<PgPool>,
+  TyUuidGenerator: UuidGenerator,
+{
 }
 
 #[cfg(test)]

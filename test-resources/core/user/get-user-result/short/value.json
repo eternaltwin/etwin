@@ -1,0 +1,9 @@
+{
+  "type": "User",
+  "id": "e9c17533-633e-4f60-be9e-72883ae0174a",
+  "display_name": {
+    "current": {
+      "value": "Alice"
+    }
+  }
+}

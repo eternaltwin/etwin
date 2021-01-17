@@ -50,20 +50,20 @@ describe("/auth", () => {
           createdAt: actualUser.createdAt,
           displayName: {
             current: {
-              start: {
-                time: actualUser.createdAt,
-                user: {
-                  type: ObjectType.User,
-                  id: actualUser.id,
-                  displayName: {
-                    current: {value: "Alice"},
-                  },
-                }
-              },
-              end: null,
+              // start: {
+              //   time: actualUser.createdAt,
+              //   user: {
+              //     type: ObjectType.User,
+              //     id: actualUser.id,
+              //     displayName: {
+              //       current: {value: "Alice"},
+              //     },
+              //   }
+              // },
+              // end: null,
               value: "Alice"
             },
-            old: []
+            // old: []
           },
           isAdministrator: true,
         };
@@ -128,20 +128,20 @@ describe("/auth", () => {
           createdAt: user.createdAt,
           displayName: {
             current: {
-              start: {
-                time: user.createdAt,
-                user: {
-                  type: ObjectType.User,
-                  id: user.id,
-                  displayName: {
-                    current: {value: "Alice"},
-                  },
-                }
-              },
-              end: null,
+              // start: {
+              //   time: user.createdAt,
+              //   user: {
+              //     type: ObjectType.User,
+              //     id: user.id,
+              //     displayName: {
+              //       current: {value: "Alice"},
+              //     },
+              //   }
+              // },
+              // end: null,
               value: "Alice"
             },
-            old: []
+            // old: []
           },
           isAdministrator: true,
         };
@@ -171,20 +171,20 @@ describe("/auth", () => {
           createdAt: actualUser.createdAt,
           displayName: {
             current: {
-              start: {
-                time: actualUser.createdAt,
-                user: {
-                  type: ObjectType.User,
-                  id: actualUser.id,
-                  displayName: {
-                    current: {value: "Alice"},
-                  },
-                }
-              },
-              end: null,
+              // start: {
+              //   time: actualUser.createdAt,
+              //   user: {
+              //     type: ObjectType.User,
+              //     id: actualUser.id,
+              //     displayName: {
+              //       current: {value: "Alice"},
+              //     },
+              //   }
+              // },
+              // end: null,
               value: "Alice"
             },
-            old: []
+            // old: []
           },
           isAdministrator: true,
         };

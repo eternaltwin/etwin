@@ -99,7 +99,7 @@ export class MemUserStore implements UserStore {
       createdAt: new Date(memUser.ctime),
       displayName: {
         current: this.toCurrentField(memUser.displayName[0]),
-        old: [],
+        // old: [],
       },
       isAdministrator: memUser.isAdministrator,
     };
@@ -187,29 +187,29 @@ export class MemUserStore implements UserStore {
     return null;
   }
 
-  private getRequiredShortUser(userId: UserId): ShortUser {
-    const memUser: MemUser | undefined = this.#users.get(userId);
-    if (memUser === undefined) {
-      throw new Error(`AssertionError: UserNotFound: ${userId}`);
-    }
-    return {
-      type: ObjectType.User,
-      id: memUser.id,
-      displayName: {
-        current: {
-          value: memUser.displayName[0].value,
-        }
-      }
-    };
-  }
+  // private getRequiredShortUser(userId: UserId): ShortUser {
+  //   const memUser: MemUser | undefined = this.#users.get(userId);
+  //   if (memUser === undefined) {
+  //     throw new Error(`AssertionError: UserNotFound: ${userId}`);
+  //   }
+  //   return {
+  //     type: ObjectType.User,
+  //     id: memUser.id,
+  //     displayName: {
+  //       current: {
+  //         value: memUser.displayName[0].value,
+  //       }
+  //     }
+  //   };
+  // }
 
   private toCurrentField<T>(memField: MemField<T>): FieldCurrentVersion<T> {
     return {
-      start: {
-        time: new Date(memField.start.timeMs),
-        user: this.getRequiredShortUser(memField.start.userId),
-      },
-      end: null,
+      // start: {
+      //   time: new Date(memField.start.timeMs),
+      //   user: this.getRequiredShortUser(memField.start.userId),
+      // },
+      // end: null,
       value: memField.value,
     };
   }

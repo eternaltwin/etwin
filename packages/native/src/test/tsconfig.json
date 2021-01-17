@@ -27,6 +27,9 @@
     },
     {
       "path": "../../../pg-db/src/lib"
+    },
+    {
+      "path": "../../../user-store-test/src/lib"
     }
   ]
 }

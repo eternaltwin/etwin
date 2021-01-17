@@ -41,6 +41,7 @@ impl From<&MemUser> for SimpleUser {
   fn from(im_user: &MemUser) -> Self {
     Self {
       id: im_user.id,
+      created_at: im_user.ctime,
       display_name: UserDisplayNameVersions {
         current: UserDisplayNameVersion {
           value: im_user.display_name.clone(),
@@ -58,25 +59,25 @@ impl From<&MemUser> for CompleteSimpleUser {
       id: simple.id,
       display_name: simple.display_name,
       is_administrator: simple.is_administrator,
-      ctime: im_user.ctime,
+      created_at: im_user.ctime,
       username: im_user.username.clone(),
       email_address: im_user.email_address.clone(),
     }
   }
 }
 
-pub struct InMemorySimpleUserService<C: Clock, U: UuidGenerator> {
-  pub(crate) clock: C,
-  pub(crate) uuid_generator: U,
+pub struct MemUserStore<TyClock: Clock, TyUuidGenerator: UuidGenerator> {
+  pub(crate) clock: TyClock,
+  pub(crate) uuid_generator: TyUuidGenerator,
   pub(crate) users: Mutex<HashMap<UserId, MemUser>>,
 }
 
-impl<C, U> InMemorySimpleUserService<C, U>
+impl<TyClock, TyUuidGenerator> MemUserStore<TyClock, TyUuidGenerator>
 where
-  C: Clock,
-  U: UuidGenerator,
+  TyClock: Clock,
+  TyUuidGenerator: UuidGenerator,
 {
-  pub fn new(clock: C, uuid_generator: U) -> Self {
+  pub fn new(clock: TyClock, uuid_generator: TyUuidGenerator) -> Self {
     Self {
       clock,
       uuid_generator,
@@ -86,10 +87,10 @@ where
 }
 
 #[async_trait]
-impl<C, U> UserStore for InMemorySimpleUserService<C, U>
+impl<TyClock, TyUuidGenerator> UserStore for MemUserStore<TyClock, TyUuidGenerator>
 where
-  C: Clock,
-  U: UuidGenerator,
+  TyClock: Clock,
+  TyUuidGenerator: UuidGenerator,
 {
   async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, Box<dyn Error>> {
     let user_id = UserId::from(self.uuid_generator.next());
@@ -123,8 +124,8 @@ where
 
     Ok(mem_user.map(|user| match options.fields {
       UserFields::Complete => GetUserResult::Complete(user.into()),
-      UserFields::CompleteIfSelf(s) => {
-        if s == user.id {
+      UserFields::CompleteIfSelf { self_user_id } => {
+        if self_user_id == user.id {
           GetUserResult::Complete(user.into())
         } else {
           GetUserResult::Default(user.into())
@@ -155,9 +156,17 @@ where
   // }
 }
 
+#[cfg(feature = "neon")]
+impl<TyClock, TyUuidGenerator> neon::prelude::Finalize for MemUserStore<TyClock, TyUuidGenerator>
+where
+  TyClock: Clock,
+  TyUuidGenerator: UuidGenerator,
+{
+}
+
 #[cfg(test)]
 mod test {
-  use crate::mem::InMemorySimpleUserService;
+  use crate::mem::MemUserStore;
   use crate::test::TestApi;
   use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
@@ -168,7 +177,7 @@ mod test {
   fn make_test_api() -> TestApi<Arc<VirtualClock>, Arc<dyn UserStore>> {
     let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
     let uuid_generator = Arc::new(Uuid4Generator);
-    let user_store: Arc<dyn UserStore> = Arc::new(InMemorySimpleUserService::new(clock.clone(), uuid_generator));
+    let user_store: Arc<dyn UserStore> = Arc::new(MemUserStore::new(clock.clone(), uuid_generator));
 
     TestApi {
       clock: clock,

@@ -1,0 +1,13 @@
+{
+  "type": "User",
+  "id": "abeb9363-2035-4c20-9bb8-21edfb432cbf",
+  "created_at": "2021-01-15T14:17:14.015Z",
+  "display_name": {
+    "current": {
+      "value": "Alice"
+    }
+  },
+  "is_administrator": true,
+  "username": "alice",
+  "email_address": null
+}

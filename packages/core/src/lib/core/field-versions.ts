@@ -8,7 +8,7 @@ import { $FieldOldVersion, FieldOldVersion } from "./field-old-version.js";
 
 export interface FieldVersions<T> {
   current: FieldCurrentVersion<T>;
-  old: FieldOldVersion<T>[];
+  old?: FieldOldVersion<T>[];
 }
 
 export const $FieldVersions: GenericIoType<<T>(t: T) => FieldVersions<T>> = new GenericType({
@@ -20,6 +20,7 @@ export const $FieldVersions: GenericIoType<<T>(t: T) => FieldVersions<T>> = new 
           itemType: $FieldOldVersion.apply(t) as RecordIoType<FieldOldVersion<T>>,
           maxLength: 100,
         }),
+        optional: true,
       },
     },
     changeCase: CaseStyle.SnakeCase,

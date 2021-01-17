@@ -7,6 +7,7 @@ mod hammerfest_client;
 mod hammerfest_store;
 mod neon_helpers;
 mod tokio_runtime;
+mod user_store;
 mod uuid;
 
 fn export(mut cx: ModuleContext) -> NeonResult<()> {
@@ -21,6 +22,8 @@ fn export(mut cx: ModuleContext) -> NeonResult<()> {
   cx.export_value("hammerfestClient", hammerfest_client)?;
   let hammerfest_store = crate::hammerfest_store::create_namespace(cx)?;
   cx.export_value("hammerfestStore", hammerfest_store)?;
+  let user_store = crate::user_store::create_namespace(cx)?;
+  cx.export_value("userStore", user_store)?;
   let uuid = crate::uuid::create_namespace(cx)?;
   cx.export_value("uuid", uuid)?;
   Ok(())

@@ -31,6 +31,7 @@ etwin_link_store = { path = "../link_store" }
 etwin_hammerfest_store = { path = "../hammerfest_store" }
 etwin_user_store = { path = "../user_store" }
 etwin_hammerfest_client = { path = "../hammerfest_client" }
+serde_json = "^1.0.61"
 serial_test = "^0.5.1"
 sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 tokio = { version = "^0.2.23", features = ["macros", "rt-core"] }

@@ -85,18 +85,18 @@ export class PgUserStore implements UserStore {
       createdAt: new Date(row.ctime),
       displayName: {
         current: {
-          start: {
-            time: new Date(row.ctime),
-            user: {
-              type: ObjectType.User,
-              id: row.user_id,
-              displayName: {current: {value: row.display_name}},
-            },
-          },
-          end: null,
+          // start: {
+          //   time: new Date(row.ctime),
+          //   user: {
+          //     type: ObjectType.User,
+          //     id: row.user_id,
+          //     displayName: {current: {value: row.display_name}},
+          //   },
+          // },
+          // end: null,
           value: row.display_name
         },
-        old: []
+        // old: []
       },
       isAdministrator: row.is_administrator,
     };
@@ -146,18 +146,18 @@ export class PgUserStore implements UserStore {
         id: row.user_id,
         displayName: {
           current: {
-            start: {
-              time: row.display_name_mtime,
-              user: {
-                type: ObjectType.User,
-                id: row.user_id,
-                displayName: {current: {value: row.display_name}},
-              }
-            },
-            end: null,
+            // start: {
+            //   time: row.display_name_mtime,
+            //   user: {
+            //     type: ObjectType.User,
+            //     id: row.user_id,
+            //     displayName: {current: {value: row.display_name}},
+            //   }
+            // },
+            // end: null,
             value: row.display_name,
           },
-          old: [],
+          // old: [],
         },
         isAdministrator: row.is_administrator,
         createdAt: row.ctime,
@@ -169,18 +169,18 @@ export class PgUserStore implements UserStore {
         id: row.user_id,
         displayName: {
           current: {
-            start: {
-              time: row.display_name_mtime,
-              user: {
-                type: ObjectType.User,
-                id: row.user_id,
-                displayName: {current: {value: row.display_name}},
-              }
-            },
-            end: null,
+            // start: {
+            //   time: row.display_name_mtime,
+            //   user: {
+            //     type: ObjectType.User,
+            //     id: row.user_id,
+            //     displayName: {current: {value: row.display_name}},
+            //   }
+            // },
+            // end: null,
             value: row.display_name,
           },
-          old: [],
+          // old: [],
         },
         isAdministrator: row.is_administrator,
         createdAt: row.ctime,

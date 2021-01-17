@@ -14,7 +14,7 @@ use etwin_db_schema::force_create_latest;
 use etwin_hammerfest_client::MemHammerfestClient;
 use etwin_hammerfest_store::{mem::MemHammerfestStore, pg::PgHammerfestStore};
 use etwin_link_store::{mem::MemLinkStore, pg::PgLinkStore};
-use etwin_user_store::{mem::InMemorySimpleUserService, pg::PgUserStore};
+use etwin_user_store::{mem::MemUserStore, pg::PgUserStore};
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::PgPool;
 use std::marker::PhantomData;
@@ -117,7 +117,7 @@ async fn test_reference_types() {
   let hammerfest_client = MemHammerfestClient::new(&clock);
   let hammerfest_store = MemHammerfestStore::new(&clock);
   let link_store = MemLinkStore::new(&clock);
-  let user_store = InMemorySimpleUserService::new(&clock, &uuid);
+  let user_store = MemUserStore::new(&clock, &uuid);
   let hammerfest = HammerfestService::new(&hammerfest_client, &hammerfest_store, &link_store, &user_store);
 
   let options = &GetHammerfestUserOptions {

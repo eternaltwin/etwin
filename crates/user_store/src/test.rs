@@ -45,7 +45,7 @@ where
       },
     },
     is_administrator: true,
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
     username: Some(Username::from_str("alice").unwrap()),
     email_address: None,
   };
@@ -114,6 +114,7 @@ pub(crate) async fn test_register_the_admin_and_retrieve_default<TyClock, TyUser
     .unwrap();
   let expected = Some(GetUserResult::Default(SimpleUser {
     id: alice.id,
+    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
     display_name: UserDisplayNameVersions {
       current: UserDisplayNameVersion {
         value: UserDisplayName::from_str("Alice").unwrap(),
@@ -157,7 +158,7 @@ pub(crate) async fn test_register_the_admin_and_retrieve_complete<TyClock, TyUse
       },
     },
     is_administrator: true,
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
     username: Some(Username::from_str("alice").unwrap()),
     email_address: None,
   }));

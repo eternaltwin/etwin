@@ -24,18 +24,18 @@ describe("/users", () => {
           createdAt: alice.createdAt,
           displayName: {
             current: {
-              start: {
-                time: alice.createdAt,
-                user: {
-                  type: ObjectType.User,
-                  id: alice.id,
-                  displayName: {current: {value: "Alice"}},
-                }
-              },
-              end: null,
+              // start: {
+              //   time: alice.createdAt,
+              //   user: {
+              //     type: ObjectType.User,
+              //     id: alice.id,
+              //     displayName: {current: {value: "Alice"}},
+              //   }
+              // },
+              // end: null,
               value: "Alice",
             },
-            old: [],
+            // old: [],
           },
           isAdministrator: true,
           username: "alice",
@@ -82,18 +82,18 @@ describe("/users", () => {
           createdAt: alice.createdAt,
           displayName: {
             current: {
-              start: {
-                time: alice.createdAt,
-                user: {
-                  type: ObjectType.User,
-                  id: alice.id,
-                  displayName: {current: {value: "Alice"}},
-                }
-              },
-              end: null,
+              // start: {
+              //   time: alice.createdAt,
+              //   user: {
+              //     type: ObjectType.User,
+              //     id: alice.id,
+              //     displayName: {current: {value: "Alice"}},
+              //   }
+              // },
+              // end: null,
               value: "Alice",
             },
-            old: [],
+            // old: [],
           },
           isAdministrator: true,
           links: {
@@ -137,18 +137,18 @@ describe("/users", () => {
           createdAt: alice.createdAt,
           displayName: {
             current: {
-              start: {
-                time: alice.createdAt,
-                user: {
-                  type: ObjectType.User,
-                  id: alice.id,
-                  displayName: {current: {value: "Alice"}},
-                }
-              },
-              end: null,
+              // start: {
+              //   time: alice.createdAt,
+              //   user: {
+              //     type: ObjectType.User,
+              //     id: alice.id,
+              //     displayName: {current: {value: "Alice"}},
+              //   }
+              // },
+              // end: null,
               value: "Alice",
             },
-            old: [],
+            // old: [],
           },
           isAdministrator: true,
           links: {
@@ -192,18 +192,18 @@ describe("/users", () => {
           createdAt: bob.createdAt,
           displayName: {
             current: {
-              start: {
-                time: bob.createdAt,
-                user: {
-                  type: ObjectType.User,
-                  id: bob.id,
-                  displayName: {current: {value: "Bob"}},
-                }
-              },
-              end: null,
+              // start: {
+              //   time: bob.createdAt,
+              //   user: {
+              //     type: ObjectType.User,
+              //     id: bob.id,
+              //     displayName: {current: {value: "Bob"}},
+              //   }
+              // },
+              // end: null,
               value: "Bob",
             },
-            old: [],
+            // old: [],
           },
           isAdministrator: false,
           username: "bob",
@@ -250,18 +250,18 @@ describe("/users", () => {
           createdAt: bob.createdAt,
           displayName: {
             current: {
-              start: {
-                time: bob.createdAt,
-                user: {
-                  type: ObjectType.User,
-                  id: bob.id,
-                  displayName: {current: {value: "Bob"}},
-                }
-              },
-              end: null,
+              // start: {
+              //   time: bob.createdAt,
+              //   user: {
+              //     type: ObjectType.User,
+              //     id: bob.id,
+              //     displayName: {current: {value: "Bob"}},
+              //   }
+              // },
+              // end: null,
               value: "Bob",
             },
-            old: [],
+            // old: [],
           },
           isAdministrator: false,
           username: "bob",
@@ -308,18 +308,18 @@ describe("/users", () => {
           createdAt: bob.createdAt,
           displayName: {
             current: {
-              start: {
-                time: bob.createdAt,
-                user: {
-                  type: ObjectType.User,
-                  id: bob.id,
-                  displayName: {current: {value: "Bob"}},
-                }
-              },
-              end: null,
+              // start: {
+              //   time: bob.createdAt,
+              //   user: {
+              //     type: ObjectType.User,
+              //     id: bob.id,
+              //     displayName: {current: {value: "Bob"}},
+              //   }
+              // },
+              // end: null,
               value: "Bob",
             },
-            old: [],
+            // old: [],
           },
           isAdministrator: false,
           links: {
