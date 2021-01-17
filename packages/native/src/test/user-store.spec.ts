@@ -30,6 +30,7 @@ describe("NativeUserStore", function () {
         user: config.db.user,
         password: config.db.password
       };
+      const secretKeyStr: string = config.etwin.secret;
 
       return withPgPool(dbConfig, async (pool) => {
         const db = new Database(pool);
@@ -37,7 +38,7 @@ describe("NativeUserStore", function () {
         const database = await NativeDatabase.create(dbConfig);
         const clock = new SystemClock();
         const uuidGenerator = new Uuid4Generator();
-        const userStore = new PgUserStore({clock, database, uuidGenerator});
+        const userStore = new PgUserStore({clock, database, databaseSecret: secretKeyStr, uuidGenerator});
         return fn({clock, userStore});
       });
     }

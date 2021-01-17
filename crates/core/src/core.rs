@@ -18,3 +18,16 @@ pub struct RawUserDot {
   pub time: Instant,
   pub user: UserIdRef,
 }
+
+#[derive(Clone)]
+pub struct Secret(String);
+
+impl Secret {
+  pub fn new(str: String) -> Self {
+    Self(str)
+  }
+
+  pub fn as_str(&self) -> &str {
+    &self.0
+  }
+}

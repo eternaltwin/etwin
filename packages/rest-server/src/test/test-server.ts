@@ -18,14 +18,14 @@ import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js
 import { PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
+import { PgUserStore } from "@eternal-twin/native/lib/user-store.js";
+import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { PgTokenService } from "@eternal-twin/token-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import { PgTwinoidStore } from "@eternal-twin/twinoid-store-pg";
-import { PgUserStore } from "@eternal-twin/user-store-pg";
-import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import http from "http";
 import Koa from "koa";
 import url from "url";
@@ -54,13 +54,13 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     await forceCreateLatest(database);
 
     const clock = new SystemClock();
-    const uuidGenerator = UUID4_GENERATOR;
+    const uuidGenerator = new Uuid4Generator();
     const secretKeyStr: string = config.etwin.secret;
     const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
     const password = new ScryptPasswordService();
-    const userStore = new PgUserStore({clock, database, databaseSecret: secretKeyStr, uuidGenerator});
+    const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     const dinoparcClient = new MemDinoparcClient();
     const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
     const hammerfestClient = new MemHammerfestClient({clock});

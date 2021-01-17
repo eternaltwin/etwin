@@ -117,6 +117,7 @@ pub mod pg {
   use crate::neon_helpers::NeonNamespace;
   use crate::uuid::get_native_uuid_generator;
   use etwin_core::clock::Clock;
+  use etwin_core::core::Secret;
   use etwin_core::uuid::UuidGenerator;
   use etwin_user_store::pg::PgUserStore;
   use neon::prelude::*;
@@ -134,12 +135,15 @@ pub mod pg {
   pub fn new(mut cx: FunctionContext) -> JsResult<JsPgUserStore> {
     let clock = cx.argument::<JsValue>(0)?;
     let database = cx.argument::<JsPgPool>(1)?;
-    let uuid_generator = cx.argument::<JsValue>(2)?;
+    let database_secret = cx.argument::<JsString>(2)?;
+    let uuid_generator = cx.argument::<JsValue>(3)?;
     let clock: Arc<dyn Clock> = get_native_clock(&mut cx, clock)?;
     let database = Arc::new(PgPool::clone(&database));
+    let database_secret: String = database_secret.value(&mut cx);
+    let database_secret = Secret::new(database_secret);
     let uuid_generator: Arc<dyn UuidGenerator> = get_native_uuid_generator(&mut cx, uuid_generator)?;
     let inner: Arc<PgUserStore<Arc<dyn Clock>, Arc<PgPool>, Arc<dyn UuidGenerator>>> =
-      Arc::new(PgUserStore::new(clock, database, uuid_generator));
+      Arc::new(PgUserStore::new(clock, database, database_secret, uuid_generator));
     Ok(cx.boxed(inner))
   }
 }

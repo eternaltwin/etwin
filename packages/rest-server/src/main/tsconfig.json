@@ -53,9 +53,6 @@
       "path": "../../../pg-db/src/lib"
     },
     {
-      "path": "../../../user-store-pg/src/lib"
-    },
-    {
       "path": "../../../token-pg/src/lib"
     },
     {
@@ -63,9 +60,6 @@
     },
     {
       "path": "../../../twinoid-client-http/src/lib"
-    },
-    {
-      "path": "../../../uuid4-generator/src/lib"
     }
   ]
 }

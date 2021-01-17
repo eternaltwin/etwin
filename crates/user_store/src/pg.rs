@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
-use etwin_core::core::Instant;
+use etwin_core::core::{Instant, Secret};
 use etwin_core::email::EmailAddress;
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, GetShortUserOptions, GetUserOptions, GetUserResult, ShortUser, SimpleUser,
@@ -20,6 +20,7 @@ where
 {
   clock: TyClock,
   database: TyDatabase,
+  database_secret: Secret,
   uuid_generator: TyUuidGenerator,
 }
 
@@ -29,10 +30,11 @@ where
   TyDatabase: ApiRef<PgPool>,
   TyUuidGenerator: UuidGenerator,
 {
-  pub fn new(clock: TyClock, database: TyDatabase, uuid_generator: TyUuidGenerator) -> Self {
+  pub fn new(clock: TyClock, database: TyDatabase, database_secret: Secret, uuid_generator: TyUuidGenerator) -> Self {
     Self {
       clock,
       database,
+      database_secret,
       uuid_generator,
     }
   }
@@ -78,7 +80,7 @@ where
       RETURNING user_id, ctime, display_name, is_administrator;
     ",
     )
-    .bind("dev_secret")
+    .bind(self.database_secret.as_str())
     .bind(user_id)
     .bind(&options.display_name)
     .bind(None::<&str>)
@@ -133,7 +135,7 @@ where
       pgp_sym_decrypt(email_address, $1::TEXT) = $4::VARCHAR;
       ",
     )
-    .bind("dev_secret")
+    .bind(self.database_secret.as_str())
     .bind(ref_id)
     .bind(ref_username)
     .bind(ref_email)
@@ -205,7 +207,7 @@ where
       pgp_sym_decrypt(email_address, $1::TEXT) = $4::VARCHAR;
       ",
     )
-    .bind("dev_secret")
+    .bind(self.database_secret.as_str())
     .bind(ref_id)
     .bind(ref_username)
     .bind(ref_email)
@@ -261,6 +263,7 @@ mod test {
   use crate::test::TestApi;
   use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
+  use etwin_core::core::Secret;
   use etwin_core::user::UserStore;
   use etwin_core::uuid::Uuid4Generator;
   use etwin_db_schema::force_create_latest;
@@ -289,7 +292,13 @@ mod test {
 
     let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
     let uuid_generator = Arc::new(Uuid4Generator);
-    let user_store: Arc<dyn UserStore> = Arc::new(PgUserStore::new(clock.clone(), database, uuid_generator));
+    let database_secret = Secret::new("dev_secret".to_string());
+    let user_store: Arc<dyn UserStore> = Arc::new(PgUserStore::new(
+      clock.clone(),
+      database,
+      database_secret,
+      uuid_generator,
+    ));
 
     TestApi {
       clock: clock,

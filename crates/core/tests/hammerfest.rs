@@ -1,5 +1,6 @@
 use chrono::{TimeZone, Utc};
 use etwin_core::api::ApiRef;
+use etwin_core::core::Secret;
 use etwin_core::hammerfest::{HammerfestClient, HammerfestStore};
 use etwin_core::link::LinkStore;
 use etwin_core::services::hammerfest::HammerfestService;
@@ -54,6 +55,7 @@ async fn make_test_api() -> TestApi<
   let user_store: Arc<dyn UserStore> = Arc::new(PgUserStore::new(
     Arc::clone(&clock),
     Arc::clone(&database),
+    Secret::new("dev_secret".to_string()),
     Arc::clone(&uuid),
   ));
   let hammerfest = Arc::new(HammerfestService::new(

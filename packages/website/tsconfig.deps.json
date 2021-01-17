@@ -70,15 +70,6 @@
     },
     {
       "path": "../twinoid-core/src/lib"
-    },
-    {
-      "path": "../user-store-mem/src/lib"
-    },
-    {
-      "path": "../user-store-pg/src/lib"
-    },
-    {
-      "path": "../uuid4-generator/src/lib"
     }
   ]
 }

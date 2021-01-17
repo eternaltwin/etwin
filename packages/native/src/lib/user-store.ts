@@ -79,11 +79,12 @@ export class MemUserStore extends NativeUserStore {
 export interface PgUserStoreOptions {
   clock: NativeClock;
   database: Database;
+  databaseSecret: string;
   uuidGenerator: NativeUuidGenerator;
 }
 
 export class PgUserStore extends NativeUserStore {
   constructor(options: Readonly<PgUserStoreOptions>) {
-    super(native.userStore.pg.new(options.clock.box, options.database.box, options.uuidGenerator.box));
+    super(native.userStore.pg.new(options.clock.box, options.database.box, options.databaseSecret, options.uuidGenerator.box));
   }
 }

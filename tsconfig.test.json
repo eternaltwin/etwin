@@ -71,15 +71,6 @@
     },
     {
       "path": "packages/twinoid-store-pg/src/test"
-    },
-    {
-      "path": "packages/user-store-mem/src/test"
-    },
-    {
-      "path": "packages/user-store-pg/src/test"
-    },
-    {
-      "path": "packages/uuid4-generator/src/test"
     }
   ]
 }

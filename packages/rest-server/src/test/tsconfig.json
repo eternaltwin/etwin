@@ -63,12 +63,6 @@
     },
     {
       "path": "../../../twinoid-client-http/src/lib"
-    },
-    {
-      "path": "../../../user-store-pg/src/lib"
-    },
-    {
-      "path": "../../../uuid4-generator/src/lib"
     }
   ]
 }

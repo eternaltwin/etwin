@@ -36,9 +36,6 @@
     },
     {
       "path": "../../../password-scrypt/src/lib"
-    },
-    {
-      "path": "../../../uuid4-generator/src/lib"
     }
   ]
 }

@@ -9,12 +9,12 @@ import { VirtualClock } from "@eternal-twin/native/lib/clock.js";
 import { MemDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { MemHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
+import { MemUserStore } from "@eternal-twin/native/lib/user-store.js";
+import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import { MemTwinoidStore } from "@eternal-twin/twinoid-store-mem";
-import { MemUserStore } from "@eternal-twin/user-store-mem";
-import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 import url from "url";
 
 import { InMemoryLinkService } from "../lib/index.js";
@@ -23,7 +23,7 @@ async function withInMemoryLinkService<R>(fn: (api: Api) => Promise<R>): Promise
   const config = await getLocalConfig();
 
   const clock = new VirtualClock();
-  const uuidGenerator = UUID4_GENERATOR;
+  const uuidGenerator = new Uuid4Generator();
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new InMemoryEmailService();

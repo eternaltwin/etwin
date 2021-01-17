@@ -16,6 +16,8 @@ import { SystemClock } from "@eternal-twin/native/lib/clock.js";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js";
 import { PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
+import { PgUserStore } from "@eternal-twin/native/lib/user-store.js";
+import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { PgHammerfestStore } from "@eternal-twin/native/src/lib/hammerfest-store.js";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
@@ -23,8 +25,6 @@ import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { PgTokenService } from "@eternal-twin/token-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import { PgTwinoidStore } from "@eternal-twin/twinoid-store-pg";
-import { PgUserStore } from "@eternal-twin/user-store-pg";
-import { UUID4_GENERATOR } from "@eternal-twin/uuid4-generator";
 
 import { KoaAuth } from "../lib/helpers/koa-auth.js";
 import { Api } from "../lib/index.js";
@@ -46,14 +46,14 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
   });
 
   const clock = new SystemClock();
-  const uuidGenerator = UUID4_GENERATOR;
+  const uuidGenerator = new Uuid4Generator();
   const database = new Database(pool);
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new ConsoleEmailService();
   const emailTemplate = new EtwinEmailTemplateService(config.etwin.externalUri);
   const password = new ScryptPasswordService();
-  const userStore = new PgUserStore({clock, database, databaseSecret: secretKeyStr, uuidGenerator});
+  const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
   const dinoparcClient = new HttpDinoparcClient();
   const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
   const hammerfestStore = new PgHammerfestStore({clock, database: nativeDatabase});

@@ -1622,8 +1622,6 @@ __metadata:
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-store-mem": "workspace:*"
-    "@eternal-twin/user-store-mem": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -1655,8 +1653,6 @@ __metadata:
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-store-pg": "workspace:*"
-    "@eternal-twin/user-store-pg": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -1700,8 +1696,6 @@ __metadata:
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-core": "workspace:*"
     "@eternal-twin/twinoid-store-mem": "workspace:*"
-    "@eternal-twin/user-store-mem": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/jsonwebtoken": ^8.5.0
     "@types/mocha": ^8.0.4
@@ -1735,8 +1729,6 @@ __metadata:
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-core": "workspace:*"
     "@eternal-twin/twinoid-store-pg": "workspace:*"
-    "@eternal-twin/user-store-pg": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/jsonwebtoken": ^8.5.0
     "@types/mocha": ^8.0.4
@@ -1994,8 +1986,6 @@ __metadata:
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-store-mem": "workspace:*"
-    "@eternal-twin/user-store-mem": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2026,8 +2016,6 @@ __metadata:
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-store-pg": "workspace:*"
-    "@eternal-twin/user-store-pg": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2086,8 +2074,6 @@ __metadata:
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-store-mem": "workspace:*"
-    "@eternal-twin/user-store-mem": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2117,8 +2103,6 @@ __metadata:
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-store-pg": "workspace:*"
-    "@eternal-twin/user-store-pg": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2235,7 +2219,6 @@ __metadata:
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-provider-test": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2261,7 +2244,6 @@ __metadata:
     "@eternal-twin/oauth-provider-test": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2352,8 +2334,6 @@ __metadata:
     "@eternal-twin/token-pg": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@eternal-twin/twinoid-store-pg": "workspace:*"
-    "@eternal-twin/user-store-pg": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@koa/cors": ^3.1.0
     "@koa/router": ^10.0.0
     "@types/auth-header": ^1.0.1
@@ -2522,64 +2502,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/user-store-mem@workspace:*, @eternal-twin/user-store-mem@workspace:packages/user-store-mem":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/user-store-mem@workspace:packages/user-store-mem"
-  dependencies:
-    "@eternal-twin/auth-in-memory": "workspace:*"
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/dinoparc-client-mem": "workspace:*"
-    "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/email-template-json": "workspace:*"
-    "@eternal-twin/link-in-memory": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/oauth-provider-in-memory": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
-    "@eternal-twin/twinoid-client-http": "workspace:*"
-    "@eternal-twin/twinoid-store-mem": "workspace:*"
-    "@eternal-twin/user-store-test": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/user-store-pg@workspace:*, @eternal-twin/user-store-pg@workspace:packages/user-store-pg":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/user-store-pg@workspace:packages/user-store-pg"
-  dependencies:
-    "@eternal-twin/auth-pg": "workspace:*"
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/dinoparc-client-mem": "workspace:*"
-    "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/email-template-json": "workspace:*"
-    "@eternal-twin/etwin-pg": "workspace:*"
-    "@eternal-twin/link-pg": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/oauth-provider-pg": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
-    "@eternal-twin/pg-db": "workspace:*"
-    "@eternal-twin/twinoid-client-http": "workspace:*"
-    "@eternal-twin/twinoid-store-pg": "workspace:*"
-    "@eternal-twin/user-store-test": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
 "@eternal-twin/user-store-test@workspace:*, @eternal-twin/user-store-test@workspace:packages/user-store-test":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/user-store-test@workspace:packages/user-store-test"
@@ -2593,22 +2515,6 @@ __metadata:
     eslint: ^7.14.0
     mocha: ^8.2.1
     typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/uuid4-generator@workspace:*, @eternal-twin/uuid4-generator@workspace:packages/uuid4-generator":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/uuid4-generator@workspace:packages/uuid4-generator"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-    uuidjs: ^4.2.6
   languageName: unknown
   linkType: soft
 
@@ -2656,9 +2562,6 @@ __metadata:
     "@eternal-twin/twinoid-core": "workspace:*"
     "@eternal-twin/twinoid-store-mem": "workspace:*"
     "@eternal-twin/twinoid-store-pg": "workspace:*"
-    "@eternal-twin/user-store-mem": "workspace:*"
-    "@eternal-twin/user-store-pg": "workspace:*"
-    "@eternal-twin/uuid4-generator": "workspace:*"
     "@koa/cors": ^3.1.0
     "@koa/router": ^10.0.0
     "@nguniversal/builders": ^11.0.0

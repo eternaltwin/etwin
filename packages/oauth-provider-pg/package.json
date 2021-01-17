@@ -44,7 +44,6 @@
     "@eternal-twin/native": "workspace:*",
     "@eternal-twin/oauth-provider-test": "workspace:*",
     "@eternal-twin/password-scrypt": "workspace:*",
-    "@eternal-twin/uuid4-generator": "workspace:*",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.0.4",
     "@types/node": "^14.14.10",
