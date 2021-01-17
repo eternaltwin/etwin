@@ -8,6 +8,7 @@ import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import Router, { RouterContext } from "@koa/router";
 
 import { Api as AnnouncementApi, createAnnouncementsRouter } from "./announcements.js";
+import { Api as AppApi, createAppRouter } from "./app.js";
 import { Api as ArchiveApi, createArchiveRouter } from "./archive/index.js";
 import { Api as AuthApi, createAuthRouter } from "./auth.js";
 import { Api as ConfigApi, createConfigRouter } from "./config.js";
@@ -16,7 +17,7 @@ import { KoaAuth } from "./helpers/koa-auth.js";
 import { KoaState } from "./koa-state";
 import { Api as UsersApi, createUsersRouter } from "./users.js";
 
-export interface Api extends AnnouncementApi, AuthApi, ConfigApi, ForumApi, ArchiveApi, UsersApi {
+export interface Api extends AnnouncementApi, AppApi, AuthApi, ConfigApi, ForumApi, ArchiveApi, UsersApi {
   announcement: AnnouncementService;
   auth: AuthService;
   dinoparc: DinoparcService;
@@ -32,6 +33,8 @@ export function createApiRouter(api: Api): Router {
 
   const announcements = createAnnouncementsRouter(api);
   router.use("/announcements", announcements.routes(), announcements.allowedMethods());
+  const app = createAppRouter(api);
+  router.use("/app", app.routes(), app.allowedMethods());
   const archive = createArchiveRouter(api);
   router.use("/archive", archive.routes(), archive.allowedMethods());
   const auth = createAuthRouter(api);
