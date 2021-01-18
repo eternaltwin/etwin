@@ -1,11 +1,11 @@
 use chrono::{TimeZone, Utc};
 use etwin_core::api::ApiRef;
-use etwin_core::clock::{Clock, VirtualClock};
+use etwin_core::clock::VirtualClock;
 use etwin_core::user::{
-  CompleteSimpleUser, CompleteUser, CreateUserOptions, GetUserOptions, GetUserResult, ShortUser, SimpleUser,
-  UserDisplayName, UserDisplayNameVersion, UserDisplayNameVersions, UserFields, UserIdRef, UserRef, UserStore,
-  Username,
+  CompleteSimpleUser, CreateUserOptions, GetUserOptions, GetUserResult, ShortUser, SimpleUser, UserDisplayName,
+  UserDisplayNameVersion, UserDisplayNameVersions, UserFields, UserIdRef, UserRef, UserStore, Username,
 };
+use std::str::FromStr;
 
 pub(crate) struct TestApi<TyClock, TyUserStore>
 where

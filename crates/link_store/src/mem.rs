@@ -2,10 +2,7 @@ use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::core::RawUserDot;
 use etwin_core::dinoparc::{DinoparcServer, DinoparcUserId, DinoparcUserIdRef};
-use etwin_core::hammerfest::{
-  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId,
-  HammerfestUserIdRef, ShortHammerfestUser,
-};
+use etwin_core::hammerfest::{HammerfestServer, HammerfestUserId, HammerfestUserIdRef};
 use etwin_core::link::{
   GetLinkOptions, LinkStore, RawLink, RemoteUserIdRef, TouchLinkError, TouchLinkOptions, VersionedRawLink,
 };
@@ -13,7 +10,6 @@ use etwin_core::twinoid::{TwinoidUserId, TwinoidUserIdRef};
 use etwin_core::user::UserId;
 use std::collections::HashMap;
 use std::error::Error;
-use std::ops::Deref;
 use std::sync::RwLock;
 
 struct StoreState {
@@ -69,17 +65,17 @@ where
     touch_link(
       &mut state.from_dinoparc,
       &mut state.to_dinoparc,
-      (options.remote.server, options.remote.id.clone()),
-      (options.etwin.id.clone(), options.remote.server),
+      (options.remote.server, options.remote.id),
+      (options.etwin.id, options.remote.server),
       || {
         let now = self.clock.now();
         let link: RawLink<DinoparcUserIdRef> = RawLink {
           link: RawUserDot {
             time: now,
-            user: options.linked_by.clone(),
+            user: options.linked_by,
           },
           unlink: (),
-          etwin: options.etwin.clone(),
+          etwin: options.etwin,
           remote: options.remote.clone(),
         };
         link
@@ -96,17 +92,17 @@ where
     touch_link(
       &mut state.from_hammerfest,
       &mut state.to_hammerfest,
-      (options.remote.server, options.remote.id.clone()),
-      (options.etwin.id.clone(), options.remote.server),
+      (options.remote.server, options.remote.id),
+      (options.etwin.id, options.remote.server),
       || {
         let now = self.clock.now();
         let link: RawLink<HammerfestUserIdRef> = RawLink {
           link: RawUserDot {
             time: now,
-            user: options.linked_by.clone(),
+            user: options.linked_by,
           },
           unlink: (),
-          etwin: options.etwin.clone(),
+          etwin: options.etwin,
           remote: options.remote.clone(),
         };
         link
@@ -118,7 +114,27 @@ where
     &self,
     options: &TouchLinkOptions<TwinoidUserIdRef>,
   ) -> Result<VersionedRawLink<TwinoidUserIdRef>, TouchLinkError<TwinoidUserIdRef>> {
-    unimplemented!()
+    let mut state = self.state.write().unwrap();
+    let state: &mut StoreState = &mut state;
+    touch_link(
+      &mut state.from_twinoid,
+      &mut state.to_twinoid,
+      options.remote.id,
+      options.etwin.id,
+      || {
+        let now = self.clock.now();
+        let link: RawLink<TwinoidUserIdRef> = RawLink {
+          link: RawUserDot {
+            time: now,
+            user: options.linked_by,
+          },
+          unlink: (),
+          etwin: options.etwin,
+          remote: options.remote.clone(),
+        };
+        link
+      },
+    )
   }
 
   async fn get_link_from_hammerfest(
@@ -126,10 +142,8 @@ where
     options: &GetLinkOptions<HammerfestUserIdRef>,
   ) -> Result<VersionedRawLink<HammerfestUserIdRef>, Box<dyn Error>> {
     assert!(options.time.is_none());
-    let mut state = self.state.read().unwrap();
-    let link = state
-      .from_hammerfest
-      .get(&(options.remote.server, options.remote.id.clone()));
+    let state = self.state.read().unwrap();
+    let link = state.from_hammerfest.get(&(options.remote.server, options.remote.id));
 
     match link {
       None => Ok(VersionedRawLink {
@@ -168,10 +182,10 @@ fn touch_link<FK: Eq + core::hash::Hash, TK: Eq + core::hash::Hash, R: RemoteUse
       };
       Ok(link)
     }
-    (Some(linked_etwin), None) => Err(TouchLinkError::ConflictEtwin(linked_etwin.etwin.clone())),
+    (Some(linked_etwin), None) => Err(TouchLinkError::ConflictEtwin(linked_etwin.etwin)),
     (None, Some(linked_remote)) => Err(TouchLinkError::ConflictRemote(linked_remote.remote.clone())),
     (Some(linked_etwin), Some(linked_remote)) => Err(TouchLinkError::ConflictBoth(
-      linked_etwin.etwin.clone(),
+      linked_etwin.etwin,
       linked_remote.remote.clone(),
     )),
   }

@@ -55,7 +55,7 @@ where
         let profile: Option<HammerfestProfile> = {
           let options = HammerfestGetProfileByIdOptions {
             server: options.server,
-            user_id: options.id.clone(),
+            user_id: options.id,
           };
           self.hammerfest_client.get_profile_by_id(None, &options).await?
         };
@@ -72,7 +72,7 @@ where
       let options: GetLinkOptions<HammerfestUserIdRef> = GetLinkOptions {
         remote: HammerfestUserIdRef {
           server: user.server,
-          id: user.id.clone(),
+          id: user.id,
         },
         time: None,
       };
@@ -89,8 +89,7 @@ where
               time: options.time,
             })
             .await?
-            .unwrap()
-            .into();
+            .unwrap();
           let etwin: ShortUser = self
             .user_store
             .get_short_user(&GetShortUserOptions {
@@ -98,8 +97,7 @@ where
               time: options.time,
             })
             .await?
-            .unwrap()
-            .into();
+            .unwrap();
           Some(EtwinLink {
             link: UserDot {
               time: l.link.time,

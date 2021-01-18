@@ -1,12 +1,9 @@
 use crate::hammerfest_client::http::JsHttpHammerfestClient;
 use crate::hammerfest_client::mem::JsMemHammerfestClient;
-use crate::hammerfest_store::mem::JsMemHammerfestStore;
-use crate::hammerfest_store::pg::JsPgHammerfestStore;
 use crate::neon_helpers::{resolve_callback, NeonNamespace};
 use etwin_core::hammerfest::{
-  GetHammerfestUserOptions, HammerfestClient, HammerfestCredentials, HammerfestForumThemeId, HammerfestForumThreadId,
-  HammerfestGetProfileByIdOptions, HammerfestServer, HammerfestSession, HammerfestSessionKey, HammerfestStore,
-  ShortHammerfestUser,
+  HammerfestClient, HammerfestCredentials, HammerfestForumThemeId, HammerfestForumThreadId,
+  HammerfestGetProfileByIdOptions, HammerfestServer, HammerfestSession, HammerfestSessionKey,
 };
 use neon::prelude::*;
 use std::sync::Arc;
@@ -183,13 +180,10 @@ pub fn get_own_shop(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
 pub mod http {
   use crate::clock::get_native_clock;
-  use crate::database::JsPgPool;
   use crate::neon_helpers::NeonNamespace;
   use etwin_core::clock::Clock;
   use etwin_hammerfest_client::HttpHammerfestClient;
-  use etwin_hammerfest_store::pg::PgHammerfestStore;
   use neon::prelude::*;
-  use sqlx::PgPool;
   use std::sync::Arc;
 
   pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject> {
@@ -214,7 +208,6 @@ pub mod mem {
   use etwin_core::clock::Clock;
   use etwin_core::hammerfest::{HammerfestPassword, HammerfestServer, HammerfestUserId, HammerfestUsername};
   use etwin_hammerfest_client::MemHammerfestClient;
-  use etwin_hammerfest_store::mem::MemHammerfestStore;
   use neon::prelude::*;
   use std::sync::Arc;
 

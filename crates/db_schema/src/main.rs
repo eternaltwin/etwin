@@ -1,4 +1,4 @@
-use etwin_db_schema::{force_create_latest, get_state};
+use etwin_db_schema::get_state;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::PgPool;
 use std::error::Error;

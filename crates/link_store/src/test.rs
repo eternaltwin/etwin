@@ -1,10 +1,10 @@
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
 use etwin_core::hammerfest::{
-  GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId, HammerfestUserIdRef,
-  HammerfestUsername, ShortHammerfestUser,
+  HammerfestServer, HammerfestStore, HammerfestUserIdRef, HammerfestUsername, ShortHammerfestUser,
 };
 use etwin_core::link::{GetLinkOptions, LinkStore, VersionedRawLink};
+use std::str::FromStr;
 
 pub(crate) struct TestApi<TyClock, TyHammerfestStore, TyLinkStore>
 where
@@ -29,7 +29,7 @@ pub(crate) async fn test_empty<TyClock, TyHammerfestStore, TyLinkStore>(
     .touch_short_user(&ShortHammerfestUser {
       server: HammerfestServer::HammerfestFr,
       id: "123".parse().unwrap(),
-      username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
+      username: HammerfestUsername::from_str("alice").unwrap(),
     })
     .await
     .unwrap();

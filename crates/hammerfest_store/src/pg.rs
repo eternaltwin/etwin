@@ -6,7 +6,6 @@ use etwin_core::hammerfest::{
   ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId,
   HammerfestUsername, ShortHammerfestUser,
 };
-use sqlx;
 use sqlx::PgPool;
 use std::error::Error;
 
@@ -117,7 +116,7 @@ where
     .await?;
     Ok(ArchivedHammerfestUser {
       server: short.server,
-      id: short.id.clone(),
+      id: short.id,
       username: short.username.clone(),
       archived_at: now,
       profile: None,
@@ -170,7 +169,7 @@ mod test {
       Arc::new(PgHammerfestStore::new(Arc::clone(&clock), Arc::clone(&database)));
 
     TestApi {
-      clock: clock,
+      clock,
       hammerfest_store,
     }
   }

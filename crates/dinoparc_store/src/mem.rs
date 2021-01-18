@@ -21,7 +21,7 @@ impl StoreState {
   }
 
   fn touch_user(&mut self, user: ArchivedDinoparcUser) {
-    self.users.insert(user.id.clone(), user);
+    self.users.insert(user.id, user);
   }
 }
 
@@ -36,7 +36,7 @@ where
 {
   pub fn new(clock: TyClock) -> Self {
     Self {
-      clock: clock,
+      clock,
       state: RwLock::new(StoreState::new()),
     }
   }
@@ -60,7 +60,7 @@ where
     let now = self.clock.now();
     let user = ArchivedDinoparcUser {
       server: short.server,
-      id: short.id.clone(),
+      id: short.id,
       username: short.username.clone(),
       archived_at: now,
     };

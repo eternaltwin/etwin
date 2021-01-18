@@ -9,24 +9,11 @@ declare_decimal_id! {
   const BOUNDS = 1..1_000_000_000;
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct TwinoidUserDisplayName(String);
-
-impl TwinoidUserDisplayName {
-  pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^.{1,100}$").unwrap());
-
-  pub fn try_from_string(raw: String) -> Result<Self, ()> {
-    if Self::PATTERN.is_match(&raw) {
-      Ok(Self(raw))
-    } else {
-      Err(())
-    }
-  }
-
-  pub fn as_str(&self) -> &str {
-    &self.0
-  }
+declare_new_string! {
+  pub struct TwinoidUserDisplayName(String);
+  pub type ParseError = TwinoidUserDisplayNameParseError;
+  const PATTERN = r"^.{1,100}$";
+  const SQL_NAME = "twinoid_user_display_name";
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]

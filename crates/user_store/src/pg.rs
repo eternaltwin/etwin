@@ -4,7 +4,7 @@ use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, Secret};
 use etwin_core::email::EmailAddress;
 use etwin_core::user::{
-  CompleteSimpleUser, CreateUserOptions, GetShortUserOptions, GetUserOptions, GetUserResult, ShortUser, SimpleUser,
+  CompleteSimpleUser, CreateUserOptions, GetShortUserOptions, GetUserOptions, GetUserResult, ShortUser,
   UserDisplayName, UserDisplayNameVersion, UserDisplayNameVersions, UserFields, UserId, UserIdRef, UserRef, UserStore,
   Username,
 };
@@ -71,7 +71,7 @@ where
         is_administrator
       )
       VALUES (
-        $2::USER_ID, $6::INSTANT, $3::VARCHAR, $6::INSTANT,
+        $2::USER_ID, $6::INSTANT, $3::USER_DISPLAY_NAME, $6::INSTANT,
         (CASE WHEN $4::TEXT IS NULL THEN NULL ELSE pgp_sym_encrypt($4::TEXT, $1::TEXT) END), $6::INSTANT,
         $5::VARCHAR, $6::INSTANT,
         NULL, $6::INSTANT,
@@ -233,7 +233,7 @@ where
   }
 
   async fn hard_delete_user_by_id(&self, user_ref: UserIdRef) -> Result<(), Box<dyn Error>> {
-    let row = sqlx::query(
+    let _ = sqlx::query(
       r"
         DELETE
         FROM users
@@ -300,10 +300,7 @@ mod test {
       uuid_generator,
     ));
 
-    TestApi {
-      clock: clock,
-      user_store: user_store,
-    }
+    TestApi { clock, user_store }
   }
 
   #[tokio::test]

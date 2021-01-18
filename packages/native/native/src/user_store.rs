@@ -1,5 +1,3 @@
-use crate::hammerfest_store::mem::JsMemHammerfestStore;
-use crate::hammerfest_store::pg::JsPgHammerfestStore;
 use crate::neon_helpers::{resolve_callback, NeonNamespace};
 use crate::user_store::mem::JsMemUserStore;
 use crate::user_store::pg::JsPgUserStore;
@@ -142,6 +140,7 @@ pub mod pg {
     let database_secret: String = database_secret.value(&mut cx);
     let database_secret = Secret::new(database_secret);
     let uuid_generator: Arc<dyn UuidGenerator> = get_native_uuid_generator(&mut cx, uuid_generator)?;
+    #[allow(clippy::type_complexity)]
     let inner: Arc<PgUserStore<Arc<dyn Clock>, Arc<PgPool>, Arc<dyn UuidGenerator>>> =
       Arc::new(PgUserStore::new(clock, database, database_secret, uuid_generator));
     Ok(cx.boxed(inner))

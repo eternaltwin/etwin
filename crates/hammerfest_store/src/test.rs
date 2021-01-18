@@ -2,9 +2,10 @@ use chrono::{Duration, TimeZone, Utc};
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
 use etwin_core::hammerfest::{
-  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId,
-  HammerfestUsername, ShortHammerfestUser,
+  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUsername,
+  ShortHammerfestUser,
 };
+use std::str::FromStr;
 
 pub(crate) struct TestApi<TyClock, TyHammerfestStore>
 where
@@ -42,14 +43,14 @@ where
       .touch_short_user(&ShortHammerfestUser {
         server: HammerfestServer::HammerfestFr,
         id: "123".parse().unwrap(),
-        username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
+        username: HammerfestUsername::from_str("alice").unwrap(),
       })
       .await
       .unwrap();
     let expected = ArchivedHammerfestUser {
       server: HammerfestServer::HammerfestFr,
       id: "123".parse().unwrap(),
-      username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
+      username: HammerfestUsername::from_str("alice").unwrap(),
       archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
       profile: None,
       items: None,
@@ -70,7 +71,7 @@ where
     let expected = Some(ShortHammerfestUser {
       server: HammerfestServer::HammerfestFr,
       id: "123".parse().unwrap(),
-      username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
+      username: HammerfestUsername::from_str("alice").unwrap(),
     });
     assert_eq!(actual, expected);
   }
@@ -87,7 +88,7 @@ where
     let expected = Some(ArchivedHammerfestUser {
       server: HammerfestServer::HammerfestFr,
       id: "123".parse().unwrap(),
-      username: HammerfestUsername::try_from_string(String::from("alice")).unwrap(),
+      username: HammerfestUsername::from_str("alice").unwrap(),
       archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
       profile: None,
       items: None,

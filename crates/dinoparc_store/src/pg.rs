@@ -6,7 +6,6 @@ use etwin_core::dinoparc::{
   ArchivedDinoparcUser, DinoparcServer, DinoparcStore, DinoparcUserId, DinoparcUsername, GetDinoparcUserOptions,
   ShortDinoparcUser,
 };
-use sqlx;
 use sqlx::PgPool;
 use std::error::Error;
 
@@ -85,7 +84,7 @@ where
     .await?;
     Ok(ArchivedDinoparcUser {
       server: short.server,
-      id: short.id.clone(),
+      id: short.id,
       username: short.username.clone(),
       archived_at: now,
     })

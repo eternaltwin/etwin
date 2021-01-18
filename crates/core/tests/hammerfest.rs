@@ -1,7 +1,7 @@
 use chrono::{TimeZone, Utc};
 use etwin_core::api::ApiRef;
 use etwin_core::core::Secret;
-use etwin_core::hammerfest::{HammerfestClient, HammerfestStore};
+use etwin_core::hammerfest::{HammerfestClient, HammerfestStore, HammerfestUser};
 use etwin_core::link::LinkStore;
 use etwin_core::services::hammerfest::HammerfestService;
 use etwin_core::user::UserStore;
@@ -9,7 +9,7 @@ use etwin_core::uuid::Uuid4Generator;
 use etwin_core::{
   auth::AuthContext,
   clock::VirtualClock,
-  hammerfest::{GetHammerfestUserOptions, HammerfestServer, HammerfestUserId},
+  hammerfest::{GetHammerfestUserOptions, HammerfestServer},
 };
 use etwin_db_schema::force_create_latest;
 use etwin_hammerfest_client::MemHammerfestClient;
@@ -66,9 +66,9 @@ async fn make_test_api() -> TestApi<
   ));
 
   TestApi {
-    clock,
-    hammerfest_client,
-    hammerfest_store,
+    _clock: clock,
+    _hammerfest_client: hammerfest_client,
+    _hammerfest_store: hammerfest_store,
     hammerfest,
     _link_store: PhantomData,
     _user_store: PhantomData,
@@ -84,9 +84,9 @@ where
   TyUserStore: UserStore,
   TyHammerfest: ApiRef<HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>>,
 {
-  pub(crate) clock: TyClock,
-  pub(crate) hammerfest_client: TyHammerfestClient,
-  pub(crate) hammerfest_store: TyHammerfestStore,
+  pub(crate) _clock: TyClock,
+  pub(crate) _hammerfest_client: TyHammerfestClient,
+  pub(crate) _hammerfest_store: TyHammerfestStore,
   pub(crate) hammerfest: TyHammerfest,
   pub(crate) _link_store: PhantomData<TyLinkStore>,
   pub(crate) _user_store: PhantomData<TyUserStore>,
@@ -107,8 +107,18 @@ async fn inner_test_empty<TyClock, TyHammerfestClient, TyHammerfestStore, TyHamm
   TyUserStore: UserStore,
   TyHammerfest: ApiRef<HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>>,
 {
-  let actual: Option<()> = None;
-  let expected: Option<()> = None;
+  let options = &GetHammerfestUserOptions {
+    server: HammerfestServer::HammerfestFr,
+    id: "999999".parse().unwrap(),
+    time: None,
+  };
+  let actual = api
+    .hammerfest
+    .as_ref()
+    .get_user(AuthContext::Guest, &options)
+    .await
+    .unwrap();
+  let expected: Option<HammerfestUser> = None;
   assert_eq!(actual, expected);
 }
 

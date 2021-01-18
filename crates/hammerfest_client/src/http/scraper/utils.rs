@@ -30,7 +30,7 @@ pub fn select_one<'a>(node: ElementRef<'a>, selector: &Selector) -> Result<Eleme
   }
 }
 
-pub fn get_inner_text<'a>(node: ElementRef<'a>) -> Result<&'a str, ScraperError> {
+pub fn get_inner_text(node: ElementRef) -> Result<&str, ScraperError> {
   let mut it = node.text();
   match (it.next(), it.next()) {
     (None, _) => Ok(""),
@@ -49,6 +49,8 @@ fn parse_dotted_number_inner<T: FromStr>(mut s: &str, buf: &mut [u8]) -> Result<
     } else {
       (false, &mut buf[..])
     };
+    // TODO: Enable the lint again once rust-lang/rust-clippy#5253 is fixed
+    #[allow(clippy::suspicious_map)]
     let len = s
       .as_bytes()
       .iter()

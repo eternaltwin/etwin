@@ -1,6 +1,6 @@
 use async_trait::async_trait;
-use chrono::{DateTime, Utc};
 use etwin_core::clock::Clock;
+use etwin_core::core::Instant;
 use etwin_core::email::EmailAddress;
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, GetShortUserOptions, GetUserOptions, GetUserResult, ShortUser, SimpleUser,
@@ -14,13 +14,10 @@ use std::sync::Mutex;
 
 pub(crate) struct MemUser {
   id: UserId,
-  ctime: DateTime<Utc>,
+  ctime: Instant,
   display_name: UserDisplayName,
-  display_name_mtime: DateTime<Utc>,
   email_address: Option<EmailAddress>,
-  email_address_mtime: DateTime<Utc>,
   username: Option<Username>,
-  username_mtime: DateTime<Utc>,
   is_administrator: bool,
 }
 
@@ -100,11 +97,8 @@ where
       id: user_id,
       ctime: time,
       display_name: options.display_name.clone(),
-      display_name_mtime: time,
       email_address: options.email.clone(),
-      email_address_mtime: time,
       username: options.username.clone(),
-      username_mtime: time,
       is_administrator: users.is_empty(),
     };
     let user: CompleteSimpleUser = (&im_user).into();
@@ -146,7 +140,7 @@ where
     Ok(mem_user.map(ShortUser::from))
   }
 
-  async fn hard_delete_user_by_id(&self, user_ref: UserIdRef) -> Result<(), Box<dyn Error>> {
+  async fn hard_delete_user_by_id(&self, _user_ref: UserIdRef) -> Result<(), Box<dyn Error>> {
     unimplemented!()
   }
 
@@ -179,10 +173,7 @@ mod test {
     let uuid_generator = Arc::new(Uuid4Generator);
     let user_store: Arc<dyn UserStore> = Arc::new(MemUserStore::new(clock.clone(), uuid_generator));
 
-    TestApi {
-      clock: clock,
-      user_store: user_store,
-    }
+    TestApi { clock, user_store }
   }
 
   #[tokio::test]

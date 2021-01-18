@@ -16,6 +16,7 @@ use serde::Serialize;
 use self::errors::ScraperError;
 use self::url::HammerfestUrls;
 use crate::errors::UnimplementedError;
+use std::str::FromStr;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -104,8 +105,7 @@ where
       .find(|cookie| cookie.name() == "SID")
       .map(|cookie| cookie.value().to_owned())
       .ok_or(ScraperError::MissingSessionCookie)?;
-    let session_key =
-      HammerfestSessionKey::try_from_string(session_key).map_err(|_| ScraperError::InvalidSessionCookie)?;
+    let session_key = HammerfestSessionKey::from_str(&session_key).map_err(|_| ScraperError::InvalidSessionCookie)?;
 
     let html = self.get_html(urls.root(), Some(&session_key)).await?;
     let user = scraper::scrape_user_base(options.server, &html)?.ok_or(ScraperError::LoginSessionRevoked)?;
@@ -142,11 +142,7 @@ where
     let html = self
       .get_html(urls.user(&options.user_id), session.map(|sess| &sess.key))
       .await?;
-    Ok(scraper::scrape_user_profile(
-      options.server,
-      options.user_id.clone(),
-      &html,
-    )?)
+    Ok(scraper::scrape_user_profile(options.server, options.user_id, &html)?)
   }
 
   async fn get_own_items(&self, session: &HammerfestSession) -> Result<HashMap<HammerfestItemId, u32>> {

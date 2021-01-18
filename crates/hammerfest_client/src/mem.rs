@@ -4,12 +4,13 @@ use etwin_core::core::Instant;
 use etwin_core::hammerfest::*;
 use std::collections::hash_map::Entry;
 use std::collections::{HashMap, HashSet};
+use std::str::FromStr;
 use std::sync::RwLock;
 use thiserror::Error;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-const SERVER_NAMES: &'static [HammerfestServer] = &[
+const SERVER_NAMES: &[HammerfestServer] = &[
   HammerfestServer::HammerfestEs,
   HammerfestServer::HammerfestFr,
   HammerfestServer::HfestNet,
@@ -110,7 +111,7 @@ impl<TyClock> MemHammerfestClient<TyClock> {
       .expect("Can't add users to disabled server")
       .write()
       .unwrap();
-    match s.users.entry(id.clone()) {
+    match s.users.entry(id) {
       Entry::Occupied(_) => panic!("HammerfestUserId conflict"),
       Entry::Vacant(e) => e.insert(InMemoryUser {
         password,
@@ -141,7 +142,7 @@ impl<TyClock> MemHammerfestClient<TyClock> {
       }
     }
 
-    match s.forum_themes.entry(id.clone()) {
+    match s.forum_themes.entry(id) {
       Entry::Occupied(_) => panic!("HammerfestForumThemeId conflict"),
       Entry::Vacant(e) => e.insert(InMemoryForumTheme {
         theme: HammerfestForumTheme {
@@ -153,6 +154,8 @@ impl<TyClock> MemHammerfestClient<TyClock> {
     };
   }
 
+  // TODO: Use an options struct to remove the clippy exception
+  #[allow(clippy::too_many_arguments)]
   pub fn create_forum_thread(
     &mut self,
     server: HammerfestServer,
@@ -177,7 +180,7 @@ impl<TyClock> MemHammerfestClient<TyClock> {
     };
 
     let forum_date = make_forum_date(date);
-    match s.forum_threads.entry(id.clone()) {
+    match s.forum_threads.entry(id) {
       Entry::Occupied(_) => panic!("HammerfestForumThreadId conflict"),
       Entry::Vacant(e) => e.insert(InMemoryForumThread {
         theme_id: theme,
@@ -301,12 +304,12 @@ fn make_session_key() -> HammerfestSessionKey {
   const CHARS: &[u8] = b"abcdefghijklmnopqrstuvwxyz0123456789";
   let mut rng = rand::thread_rng();
 
-  let key = std::iter::from_fn(|| CHARS.choose(&mut rng).copied())
+  let key: String = std::iter::from_fn(|| CHARS.choose(&mut rng).copied())
     .map(char::from)
     .take(26)
     .collect();
 
-  HammerfestSessionKey::try_from_string(key).expect("invalid session key")
+  HammerfestSessionKey::from_str(&key).expect("invalid session key")
 }
 
 #[async_trait]
@@ -337,7 +340,7 @@ where
     server.active_sessions.insert(
       key.clone(),
       InMemorySession {
-        user_id: user.id.clone(),
+        user_id: user.id,
         ctime,
       },
     );
@@ -455,7 +458,7 @@ where
       .forum_themes
       .get(&theme_id)
       .filter(|theme| theme.is_visible_by(user))
-      .ok_or_else(|| Error::ForumThemeNotFound(theme_id.clone()))?;
+      .ok_or(Error::ForumThemeNotFound(theme_id))?;
 
     let (mut sticky, mut threads) = server
       .forum_threads
@@ -506,7 +509,7 @@ where
         )
       })
       .filter(|(_, t)| t.is_visible_by(user))
-      .ok_or_else(|| Error::ForumThreadNotFound(thread_id))?;
+      .ok_or(Error::ForumThreadNotFound(thread_id))?;
 
     let messages = if page1 > 1 { thread.messages.clone() } else { Vec::new() };
 

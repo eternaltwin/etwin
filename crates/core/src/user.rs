@@ -7,7 +7,6 @@ use regex::Regex;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 use std::error::Error;
-use uuid::Uuid;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "serde", serde(tag = "type", rename = "User"))]
@@ -127,29 +126,11 @@ pub struct User {
   pub is_administrator: bool,
 }
 
-#[cfg_attr(
-  feature = "sqlx",
-  derive(sqlx::Type),
-  sqlx(transparent, rename = "user_display_name")
-)]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct UserDisplayName(String);
-
-impl UserDisplayName {
-  pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[\p{Letter}_ ()][\p{Letter}_ ()0-9]*$").unwrap());
-
-  pub fn from_str(raw: &str) -> Result<Self, ()> {
-    if Self::PATTERN.is_match(raw) {
-      Ok(Self(String::from(raw)))
-    } else {
-      Err(())
-    }
-  }
-
-  pub fn as_str(&self) -> &str {
-    &self.0
-  }
+declare_new_string! {
+  pub struct UserDisplayName(String);
+  pub type ParseError = UserDisplayNameParseError;
+  const PATTERN = r"^[\p{Letter}_ ()][\p{Letter}_ ()0-9]*$";
+  const SQL_NAME = "user_display_name";
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -164,25 +145,10 @@ pub struct UserDisplayNameVersions {
   pub current: UserDisplayNameVersion,
 }
 
-#[cfg_attr(feature = "sqlx", derive(sqlx::Type), sqlx(transparent, rename = "user_id"))]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct UserId(Uuid);
-
-impl UserId {
-  pub fn from_str(raw: &str) -> Result<Self, ()> {
-    Uuid::parse_str(raw).map(Self).map_err(|_| ())
-  }
-
-  pub const fn from_uuid(inner: Uuid) -> Self {
-    Self(inner)
-  }
-}
-
-impl From<Uuid> for UserId {
-  fn from(inner: Uuid) -> Self {
-    Self::from_uuid(inner)
-  }
+declare_new_uuid! {
+  pub struct UserId(Uuid);
+  pub type ParseError = UserIdParseError;
+  const SQL_NAME = "user_id";
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -220,25 +186,11 @@ pub enum UserRef {
   Email(UserEmailRef),
 }
 
-#[cfg_attr(feature = "sqlx", derive(sqlx::Type), sqlx(transparent, rename = "username"))]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Username(String);
-
-impl Username {
-  pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new("^[a-z_][a-z0-9_]{1,31}$").unwrap());
-
-  pub fn from_str(raw: &str) -> Result<Self, ()> {
-    if Self::PATTERN.is_match(raw) {
-      Ok(Self(String::from(raw)))
-    } else {
-      Err(())
-    }
-  }
-
-  pub fn as_str(&self) -> &str {
-    &self.0
-  }
+declare_new_string! {
+  pub struct Username(String);
+  pub type ParseError = UsernameParseError;
+  const PATTERN = "^[a-z_][a-z0-9_]{1,31}$";
+  const SQL_NAME = "username";
 }
 
 #[async_trait]
@@ -261,6 +213,7 @@ mod test {
   };
   use chrono::{TimeZone, Utc};
   use std::fs;
+  use std::str::FromStr;
 
   fn get_short_user_demurgos() -> ShortUser {
     ShortUser {

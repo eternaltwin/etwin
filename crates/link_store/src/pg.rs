@@ -3,14 +3,10 @@ use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, RawUserDot};
 use etwin_core::dinoparc::DinoparcUserIdRef;
-use etwin_core::hammerfest::{
-  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId,
-  HammerfestUserIdRef, HammerfestUsername, ShortHammerfestUser,
-};
+use etwin_core::hammerfest::HammerfestUserIdRef;
 use etwin_core::link::{GetLinkOptions, LinkStore, RawLink, TouchLinkError, TouchLinkOptions, VersionedRawLink};
 use etwin_core::twinoid::TwinoidUserIdRef;
 use etwin_core::user::{UserId, UserIdRef};
-use sqlx;
 use sqlx::PgPool;
 use std::error::Error;
 
@@ -41,7 +37,7 @@ where
 {
   async fn touch_dinoparc_link(
     &self,
-    options: &TouchLinkOptions<DinoparcUserIdRef>,
+    _options: &TouchLinkOptions<DinoparcUserIdRef>,
   ) -> Result<VersionedRawLink<DinoparcUserIdRef>, TouchLinkError<DinoparcUserIdRef>> {
     unimplemented!()
   }
@@ -87,7 +83,7 @@ where
               user: UserIdRef { id: row.linked_by },
             },
             unlink: (),
-            etwin: options.etwin.clone(),
+            etwin: options.etwin,
             remote: options.remote.clone(),
           }),
           old: vec![],
@@ -99,7 +95,7 @@ where
 
   async fn touch_twinoid_link(
     &self,
-    options: &TouchLinkOptions<TwinoidUserIdRef>,
+    _options: &TouchLinkOptions<TwinoidUserIdRef>,
   ) -> Result<VersionedRawLink<TwinoidUserIdRef>, TouchLinkError<TwinoidUserIdRef>> {
     unimplemented!()
   }

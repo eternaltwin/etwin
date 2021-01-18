@@ -1,8 +1,8 @@
 use crate::core::{Instant, RawUserDot, UserDot};
-use crate::dinoparc::{DinoparcUserIdRef, ShortDinoparcUser};
-use crate::hammerfest::{HammerfestServer, HammerfestUserId, HammerfestUserIdRef, ShortHammerfestUser};
-use crate::twinoid::{ShortTwinoidUser, TwinoidUserId, TwinoidUserIdRef};
-use crate::user::{ShortUser, UserId, UserIdRef};
+use crate::dinoparc::DinoparcUserIdRef;
+use crate::hammerfest::HammerfestUserIdRef;
+use crate::twinoid::TwinoidUserIdRef;
+use crate::user::{ShortUser, UserIdRef};
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 #[cfg(feature = "serde")]
@@ -61,22 +61,6 @@ pub struct VersionedRawLinks {
   twinoid: VersionedRawLink<TwinoidUserIdRef>,
 }
 
-struct DinoparcLink {
-  link: UserDot,
-  user: ShortDinoparcUser,
-}
-
-struct OldDinoparcLink {
-  link: UserDot,
-  unlink: UserDot,
-  user: ShortDinoparcUser,
-}
-
-struct VersionedDinoparcLink {
-  current: Option<DinoparcLink>,
-  old: Vec<OldDinoparcLink>,
-}
-
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TouchLinkOptions<T: RemoteUserIdRef> {
@@ -107,51 +91,6 @@ pub struct OldEtwinLink {
 pub struct VersionedEtwinLink {
   pub current: Option<EtwinLink>,
   pub old: Vec<OldEtwinLink>,
-}
-
-struct HammerfestLink {
-  link: UserDot,
-  user: ShortHammerfestUser,
-}
-
-struct OldHammerfestLink {
-  link: UserDot,
-  unlink: UserDot,
-  user: ShortHammerfestUser,
-}
-
-struct VersionedHammerfestLink {
-  current: Option<HammerfestLink>,
-  old: Vec<OldHammerfestLink>,
-}
-
-struct CreateHammerfestLinkOptions {
-  user_id: UserId,
-  hammerfest_server: HammerfestServer,
-  hammerfest_user_id: HammerfestUserId,
-  linked_by: UserId,
-}
-
-struct TwinoidLink {
-  link: UserDot,
-  user: ShortTwinoidUser,
-}
-
-struct OldTwinoidLink {
-  link: UserDot,
-  unlink: UserDot,
-  user: ShortTwinoidUser,
-}
-
-struct CreateTwinoidLinkOptions {
-  user_id: UserId,
-  twinoid_user_id: TwinoidUserId,
-  linked_by: UserId,
-}
-
-struct VersionedTwinoidLink {
-  current: Option<TwinoidLink>,
-  old: Vec<OldTwinoidLink>,
 }
 
 pub struct GetLinkOptions<T: RemoteUserIdRef> {

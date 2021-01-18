@@ -1,5 +1,6 @@
 use etwin_core::hammerfest::{
   HammerfestItemIdParseError, HammerfestServer, HammerfestUserIdParseError, HammerfestUsername,
+  HammerfestUsernameParseError,
 };
 use reqwest::Url;
 use thiserror::Error;
@@ -31,7 +32,7 @@ pub enum ScraperError {
   #[error("Invalid user id '{}'", .0)]
   InvalidUserId(String, HammerfestUserIdParseError),
   #[error("Invalid username '{}'", .0)]
-  InvalidUsername(String, () /* future parse error type */),
+  InvalidUsername(String, HammerfestUsernameParseError),
   #[error("Unknown quest name '{}'", .0)]
   UnknownQuestName(String),
   #[error("Unknown rank CSS class '{}'", .0)]

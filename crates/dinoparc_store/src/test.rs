@@ -1,6 +1,6 @@
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
-use etwin_core::dinoparc::{DinoparcServer, DinoparcStore, DinoparcUserId, GetDinoparcUserOptions};
+use etwin_core::dinoparc::{DinoparcServer, DinoparcStore, GetDinoparcUserOptions};
 
 pub(crate) struct TestApi<TyClock, TyDinoparcStore>
 where
@@ -10,12 +10,6 @@ where
   pub(crate) _clock: TyClock,
   pub(crate) dinoparc_store: TyDinoparcStore,
 }
-
-// pub(crate) async fn inner_test_user_store<Api>(create_api: fn() -> Api)
-//   where Api: Get<Arc<dyn UserStore>> + Get<Arc<dyn Clock>> {
-//   test_register_the_admin_and_retrieve_ref(create_api()).await;
-//   // test_register_the_admin_and_retrieve_complete(create_api()).await;
-// }
 
 pub(crate) async fn test_empty<TyClock, TyDinoparcStore>(api: TestApi<TyClock, TyDinoparcStore>)
 where

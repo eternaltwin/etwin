@@ -105,29 +105,11 @@ declare_decimal_id! {
   const SQL_NAME = "dinoparc_user_id";
 }
 
-#[cfg_attr(
-  feature = "sqlx",
-  derive(sqlx::Type),
-  sqlx(transparent, rename = "hammerfest_user_id")
-)]
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct DinoparcUsername(String);
-
-impl DinoparcUsername {
-  pub const PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[0-9A-Za-z-]{1,14}$").unwrap());
-
-  pub fn try_from_string(raw: String) -> Result<Self, ()> {
-    if Self::PATTERN.is_match(&raw) {
-      Ok(Self(raw))
-    } else {
-      Err(())
-    }
-  }
-
-  pub fn as_str(&self) -> &str {
-    &self.0
-  }
+declare_new_string! {
+  pub struct DinoparcUsername(String);
+  pub type ParseError = DinoparcUsernameParseError;
+  const PATTERN = r"^[0-9A-Za-z-]{1,14}$";
+  const SQL_NAME = "dinoparc_username";
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]

@@ -18,6 +18,7 @@ fn get_tokio_sender() -> &'static mpsc::UnboundedSender<Message> {
       let mut rt = Runtime::new().expect("Failed to create tokio runtime");
       rt.block_on(async {
         loop {
+          #[allow(clippy::single_match)]
           match receiver.recv().await {
             Some(Message::Task(fut)) => fut.await,
             // Some(Message::Shutdown) => break,

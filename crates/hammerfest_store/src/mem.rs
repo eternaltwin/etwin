@@ -21,7 +21,7 @@ impl StoreState {
   }
 
   fn touch_user(&mut self, user: ArchivedHammerfestUser) {
-    self.users.insert(user.id.clone(), user);
+    self.users.insert(user.id, user);
   }
 }
 
@@ -68,7 +68,7 @@ where
     let now = self.clock.now();
     let user = ArchivedHammerfestUser {
       server: short.server,
-      id: short.id.clone(),
+      id: short.id,
       username: short.username.clone(),
       archived_at: now,
       profile: None,
@@ -96,7 +96,7 @@ mod test {
     let hammerfest_store: Arc<dyn HammerfestStore> = Arc::new(MemHammerfestStore::new(Arc::clone(&clock)));
 
     TestApi {
-      clock: clock,
+      clock,
       hammerfest_store,
     }
   }

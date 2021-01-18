@@ -11,6 +11,7 @@ use scraper::{ElementRef, Selector};
 use self::texts::ScraperTexts;
 use self::utils::*;
 use super::errors::ScraperError;
+use std::str::FromStr;
 
 pub type Html = scraper::Html;
 
@@ -98,8 +99,8 @@ impl<'a> RawUserLink<'a> {
     Ok(Self { user_name, user_id })
   }
 
-  fn into_user(&self, server: HammerfestServer) -> Result<ShortHammerfestUser, ScraperError> {
-    let username = HammerfestUsername::try_from_string(self.user_name.to_owned())
+  fn into_user(self, server: HammerfestServer) -> Result<ShortHammerfestUser, ScraperError> {
+    let username = HammerfestUsername::from_str(self.user_name)
       .map_err(|err| ScraperError::InvalidUsername(self.user_name.to_owned(), err))?;
     let id = self
       .user_id
@@ -130,7 +131,7 @@ fn scrape_raw_top_bar(html: &Html) -> Result<Option<(ElementRef<'_>, RawUserLink
 pub fn scrape_user_base(server: HammerfestServer, html: &Html) -> Result<Option<ShortHammerfestUser>, ScraperError> {
   match scrape_raw_top_bar(html)? {
     Some((_, user_link)) => Ok(Some(user_link.into_user(server)?)),
-    None => return Ok(None),
+    None => Ok(None),
   }
 }
 
@@ -178,6 +179,8 @@ pub fn scrape_user_profile(
 
   let mut email_elem = None;
   let (username_elem, best_score_elem, best_level_elem, season_score_elem, rank_elem) = {
+    // TODO: Remove this clippy exception
+    #[allow(clippy::unnecessary_filter_map)]
     let mut it = root.select(&selectors.basic_data_in_profile).filter_map(|elem| {
       if let Some(email_link) = elem.select(&selectors.simple_link).next() {
         email_elem = Some(email_link);
@@ -188,7 +191,20 @@ pub fn scrape_user_profile(
     });
 
     match (it.next(), it.next(), it.next(), it.next(), it.next(), it.next()) {
-      (Some(a), Some(b), Some(c), Some(d), Some(e), None) => (a, b, c, d, e),
+      (
+        Some(username_elem),
+        Some(best_score_elem),
+        Some(best_level_elem),
+        Some(season_score_elem),
+        Some(rank_elem),
+        None,
+      ) => (
+        username_elem,
+        best_score_elem,
+        best_level_elem,
+        season_score_elem,
+        rank_elem,
+      ),
       (_, _, _, _, _, None) => {
         return Err(ScraperError::HtmlFragmentNotFound(selector_to_string(
           &selectors.simple_link,
@@ -203,8 +219,8 @@ pub fn scrape_user_profile(
   };
 
   let username = get_inner_text(username_elem)?.trim();
-  let username = HammerfestUsername::try_from_string(username.to_owned())
-    .map_err(|err| ScraperError::InvalidUsername(username.to_owned(), err))?;
+  let username =
+    HammerfestUsername::from_str(username).map_err(|err| ScraperError::InvalidUsername(username.to_owned(), err))?;
   let best_score = parse_dotted_u32(get_inner_text(best_score_elem)?)?;
   let season_score = parse_dotted_u32(get_inner_text(season_score_elem)?)?;
   let best_level = {
@@ -215,7 +231,7 @@ pub fn scrape_user_profile(
       parse_dotted_u32(raw_best_level)?
     }
   };
-  let has_carrot = best_level_elem.children().skip(1).next().is_some();
+  let has_carrot = best_level_elem.children().nth(1).is_some();
   let email = match (email_elem, is_logged_in) {
     (None, true) => Some(None),
     (None, false) => None,
@@ -287,7 +303,7 @@ pub fn scrape_user_profile(
     .map(|(name, status)| {
       let name = get_inner_text(name)?.trim();
       match texts.quest_names.get(name) {
-        Some(id) => Ok((id.clone(), status)),
+        Some(id) => Ok((*id, status)),
         None => Err(ScraperError::UnknownQuestName(name.to_owned())),
       }
     })
