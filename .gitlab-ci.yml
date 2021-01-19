@@ -72,6 +72,7 @@ lint:
   script:
     - |
       cargo fmt -- --check \
+      && cargo clippy --all-targets --all-features -- -D warnings \
       && yarn run lint
 
 test-rust:
