@@ -1,6 +1,11 @@
 {
   "name": "@eternal-twin/etwin-monorepo",
   "private": true,
+  "homepage": "https://gitlab.com/eternal-twin/etwin.net",
+  "repository": {
+    "type": "git",
+    "url": "git://gitlab.com:eternal-twin/etwin.git"
+  },
   "scripts": {
     "lint": "eslint \"packages/*/src/**/*.ts\"",
     "format": "eslint --fix \"packages/*/src/**/*.ts\"",
@@ -15,6 +20,12 @@
     "test": "yarn run test:build && mocha --experimental-wasm-modules \"packages/*/test/**/*.spec.js\"",
     "doctor": "yarn dlx @yarnpkg/doctor@2.1.2"
   },
+  "licenses": [
+    {
+      "type": "AGPL-3.0-or-later",
+      "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
+    }
+  ],
   "engines": {
     "node": ">=14.13.1"
   },
