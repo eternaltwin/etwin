@@ -6,6 +6,7 @@ import { PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { Api, testTokenService } from "@eternal-twin/token-test";
+import { PgTwinoidStore } from "@eternal-twin/twinoid-store-pg";
 
 import { PgTokenService } from "../lib/index.js";
 
@@ -28,8 +29,9 @@ async function withPgTokenService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const clock = new SystemClock();
     const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
     const hammerfestStore = new PgHammerfestStore({clock, database: nativeDatabase});
+    const twinoidStore = new PgTwinoidStore(database);
     const token = new PgTokenService(database, dbSecretStr, dinoparcStore, hammerfestStore);
-    return fn({hammerfestStore, token});
+    return fn({hammerfestStore, token, twinoidStore});
   });
 }
 

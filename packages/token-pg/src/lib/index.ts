@@ -39,35 +39,68 @@ export class PgTokenService implements TokenService {
   }
 
   private async touchTwinoidOauthTx(queryable: Queryable, options: TouchOauthTokenOptions): Promise<void> {
-    // Revoke previous if expired or user changed (access_token reuse)
-    await queryable.countOne(
+    // First add a row to the revoked access tokens if the AT exists but the `twinoid_user_id` changed.
+    // Also add a row to the revoked sessions if we get a more recent AT key (one AT per user).
+    await queryable.query(
       `
         WITH revoked AS (
-          INSERT INTO old_twinoid_access_tokens (twinoid_access_token, _twinoid_access_token_hash, twinoid_user_id,
-                                                  ctime, atime, dtime, expiration_time)
-            SELECT tat.twinoid_access_token,
-                   tat._twinoid_access_token_hash,
-                   tat.twinoid_user_id,
-                   tat.ctime,
-                   tat.atime,
-                   NOW(),
-                   tat.expiration_time
-            FROM twinoid_access_tokens AS tat
-            WHERE tat._twinoid_access_token_hash = digest($2::TEXT, 'sha256')
-              AND (NOW() < tat.expiration_time OR tat.twinoid_user_id <> $3::TWINOID_USER_ID)
-            RETURNING _twinoid_access_token_hash, dtime
+          DELETE FROM twinoid_access_tokens AS tat
+            WHERE (
+                (
+                  tat._twinoid_access_token_hash = digest($1::TEXT, 'sha256')
+                    AND tat.twinoid_user_id <> $2::TWINOID_USER_ID
+                  )
+                  OR (
+                  tat._twinoid_access_token_hash <> digest($1::TEXT, 'sha256')
+                    AND tat.twinoid_user_id = $2::TWINOID_USER_ID
+                  )
+                )
+            RETURNING twinoid_access_token, _twinoid_access_token_hash, twinoid_user_id, ctime, atime, NOW() AS dtime, expiration_time
         )
-        INSERT
-        INTO twinoid_access_tokens(twinoid_access_token, _twinoid_access_token_hash, twinoid_user_id, ctime, atime, expiration_time)
+        INSERT INTO old_twinoid_access_tokens(twinoid_access_token, _twinoid_access_token_hash, twinoid_user_id,
+                                              ctime, atime, dtime, expiration_time)
+        SELECT revoked.*
+        FROM revoked;`,
+      [
+        options.accessToken,
+        options.twinoidUserId,
+      ],
+    );
+    // Again for the refresh token
+    await queryable.query(
+      `
+        WITH revoked AS (
+          DELETE FROM twinoid_refresh_tokens AS trt
+            WHERE (
+                (
+                  trt._twinoid_refresh_token_hash = digest($1::TEXT, 'sha256')
+                    AND trt.twinoid_user_id <> $2::TWINOID_USER_ID
+                  )
+                  OR (
+                  trt._twinoid_refresh_token_hash <> digest($1::TEXT, 'sha256')
+                    AND trt.twinoid_user_id = $2::TWINOID_USER_ID
+                  )
+                )
+            RETURNING twinoid_refresh_token, _twinoid_refresh_token_hash, twinoid_user_id, ctime, atime
+        )
+        INSERT INTO old_twinoid_refresh_tokens(twinoid_refresh_token, _twinoid_refresh_token_hash, twinoid_user_id,
+                                              ctime, atime, dtime)
+        SELECT revoked.*, NOW() AS dtime
+        FROM revoked;`,
+      [
+        options.refreshToken,
+        options.twinoidUserId,
+      ],
+    );
+
+    // Then upsert the AT: if the AT did not exist we're done, otherwise update the atime and user to
+    // their latest values and reset the ctime if an AT was revoked.
+    await queryable.countOneOrNone(
+      `
+        INSERT INTO twinoid_access_tokens(twinoid_access_token, _twinoid_access_token_hash, twinoid_user_id, ctime, atime, expiration_time)
         VALUES (pgp_sym_encrypt($2::TEXT, $1::TEXT), digest($2::TEXT, 'sha256'), $3::TWINOID_USER_ID, NOW(), NOW(), $4::INSTANT)
         ON CONFLICT (_twinoid_access_token_hash)
-          DO UPDATE SET (ctime, atime, twinoid_user_id) = (
-          SELECT COALESCE(revoked.dtime, tat.ctime), NOW(), EXCLUDED.twinoid_user_id
-          FROM twinoid_access_tokens AS tat
-                 LEFT OUTER JOIN revoked USING (_twinoid_access_token_hash)
-          WHERE tat._twinoid_access_token_hash = EXCLUDED._twinoid_access_token_hash
-        )
-        RETURNING twinoid_user_id, ctime, atime;`,
+          DO UPDATE SET atime = NOW();`,
       [
         this.#dbSecret,
         options.accessToken,
@@ -75,42 +108,19 @@ export class PgTokenService implements TokenService {
         options.expirationTime,
       ],
     );
-
-    if (options.refreshToken !== undefined) {
-      await queryable.countOne(
-        `
-        WITH revoked AS (
-          INSERT INTO old_twinoid_refresh_tokens (twinoid_refresh_token, _twinoid_refresh_token_hash, twinoid_user_id,
-                                                  ctime, atime, dtime)
-            SELECT trt.twinoid_refresh_token,
-                   trt._twinoid_refresh_token_hash,
-                   trt.twinoid_user_id,
-                   trt.ctime,
-                   trt.atime,
-                   NOW()
-            FROM twinoid_refresh_tokens AS trt
-            WHERE trt._twinoid_refresh_token_hash = digest($2::TEXT, 'sha256')
-              AND trt.twinoid_user_id <> $3::TWINOID_USER_ID
-            RETURNING _twinoid_refresh_token_hash, dtime
-        )
-        INSERT
-        INTO twinoid_refresh_tokens(twinoid_refresh_token, _twinoid_refresh_token_hash, twinoid_user_id, ctime, atime)
+    // Again for refresh tokens
+    await queryable.countOneOrNone(
+      `
+        INSERT INTO twinoid_refresh_tokens(twinoid_refresh_token, _twinoid_refresh_token_hash, twinoid_user_id, ctime, atime)
         VALUES (pgp_sym_encrypt($2::TEXT, $1::TEXT), digest($2::TEXT, 'sha256'), $3::TWINOID_USER_ID, NOW(), NOW())
         ON CONFLICT (_twinoid_refresh_token_hash)
-          DO UPDATE SET (ctime, atime, twinoid_user_id) = (
-          SELECT COALESCE(revoked.dtime, trt.ctime), NOW(), EXCLUDED.twinoid_user_id
-          FROM twinoid_refresh_tokens AS trt
-                 LEFT OUTER JOIN revoked USING (_twinoid_refresh_token_hash)
-          WHERE trt._twinoid_refresh_token_hash = EXCLUDED._twinoid_refresh_token_hash
-        )
-        RETURNING twinoid_user_id, ctime, atime;`,
-        [
-          this.#dbSecret,
-          options.refreshToken,
-          options.twinoidUserId,
-        ],
-      );
-    }
+          DO UPDATE SET atime = NOW();`,
+      [
+        this.#dbSecret,
+        options.refreshToken,
+        options.twinoidUserId,
+      ],
+    );
   }
 
   async revokeTwinoidAccessToken(atKey: RfcOauthAccessTokenKey): Promise<void> {

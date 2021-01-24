@@ -120,10 +120,10 @@ export class InMemoryTokenService implements TokenService {
     if (options.refreshToken !== undefined) {
       const oldToken: MemRefreshToken | undefined = this.#twinoidRefreshTokens.byKey.get(options.refreshToken);
       const time = this.#clock.now();
-      const newToken: MemRefreshToken = {key: options.accessToken, tidUserId: options.twinoidUserId, ctime: new Date(time), atime: new Date(time)};
+      const newToken: MemRefreshToken = {key: options.refreshToken, tidUserId: options.twinoidUserId, ctime: new Date(time), atime: new Date(time)};
       if (oldToken === undefined) {
         // Fresh insert
-        tidRtInsert(this.#twinoidAccessTokens, newToken);
+        tidRtInsert(this.#twinoidRefreshTokens, newToken);
       } else {
         if (oldToken.tidUserId !== options.twinoidUserId) {
           // User changed: revoke and insert

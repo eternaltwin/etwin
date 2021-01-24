@@ -18,6 +18,9 @@
     },
     {
       "path": "../../../token-test/src/lib"
+    },
+    {
+      "path": "../../../twinoid-store-mem/src/lib"
     }
   ]
 }
