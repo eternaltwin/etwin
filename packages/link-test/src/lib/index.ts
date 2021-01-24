@@ -5,8 +5,11 @@ import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/registe
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
+import { ShortTwinoidUser } from "@eternal-twin/core/lib/twinoid/short-twinoid-user.js";
+import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
 import chai from "chai";
@@ -14,6 +17,7 @@ import chai from "chai";
 export interface Api {
   auth: AuthService;
   link: LinkService;
+  twinoidStore: TwinoidStore;
 }
 
 const GUEST_AUTH: GuestAuthContext = {type: AuthType.Guest, scope: AuthScope.Default};
@@ -72,6 +76,77 @@ export function testLinkService(withApi: (fn: (api: Api) => Promise<void>) => Pr
           },
           twinoid: {
             current: null,
+            old: [],
+          },
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
+
+  it("Link to twinoid and retrieve links", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const alice: ShortTwinoidUser = {
+        type: ObjectType.TwinoidUser,
+        id: "1",
+        displayName: "alice",
+      };
+      await api.twinoidStore.touchShortUser(alice);
+      await api.link.linkToTwinoid({
+        userId: aliceAuth.user.id,
+        twinoidUserId: alice.id,
+        linkedBy: aliceAuth.user.id,
+      });
+      {
+        const actual: VersionedLinks = await api.link.getVersionedLinks(aliceAuth.user.id);
+        const expected: VersionedLinks = {
+          dinoparcCom: {
+            current: null,
+            old: [],
+          },
+          enDinoparcCom: {
+            current: null,
+            old: [],
+          },
+          hammerfestEs: {
+            current: null,
+            old: [],
+          },
+          hammerfestFr: {
+            current: null,
+            old: [],
+          },
+          hfestNet: {
+            current: null,
+            old: [],
+          },
+          spDinoparcCom: {
+            current: null,
+            old: [],
+          },
+          twinoid: {
+            current: {
+              link: {
+                time: actual.twinoid.current!.link.time,
+                user: {
+                  type: ObjectType.User,
+                  id: aliceAuth.user.id,
+                  displayName: {
+                    current: {
+                      value: "Alice",
+                    },
+                  },
+                },
+              },
+              unlink: null,
+              user: {
+                type: ObjectType.TwinoidUser,
+                id: "1",
+                displayName: "alice",
+              },
+            },
             old: [],
           },
         };

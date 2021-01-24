@@ -40,7 +40,7 @@ async function withInMemoryLinkService<R>(fn: (api: Api) => Promise<R>): Promise
   const oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
   const oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
   const auth = new InMemoryAuthService({dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});
-  return fn({auth, link});
+  return fn({auth, twinoidStore, link});
 }
 
 describe("InMemoryLinkService", function () {

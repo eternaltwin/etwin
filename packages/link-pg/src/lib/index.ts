@@ -334,7 +334,7 @@ export class PgLinkStore implements LinkStore {
     const row: Row = await this.#database.one(
       `
         INSERT INTO twinoid_user_links(user_id, twinoid_user_id, linked_at, linked_by)
-        VALUES ($1::USER_ID, $3::TWINOID_USER_ID, NOW(), $4::USER_ID)
+        VALUES ($1::USER_ID, $2::TWINOID_USER_ID, NOW(), $3::USER_ID)
         RETURNING linked_at;
       `,
       [options.etwin.id, options.remote.id, options.linkedBy.id],
