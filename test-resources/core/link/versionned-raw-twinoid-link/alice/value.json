@@ -1,0 +1,21 @@
+{
+  "current": {
+    "link": {
+      "time": "2020-12-09T16:39:06Z",
+      "user": {
+        "type": "User",
+        "id": "101149b4-42b8-4c5a-8b76-51962c670165"
+      }
+    },
+    "unlink": null,
+    "etwin": {
+      "type": "User",
+      "id": "101149b4-42b8-4c5a-8b76-51962c670165"
+    },
+    "remote": {
+      "type": "TwinoidUser",
+      "id": "1"
+    }
+  },
+  "old": []
+}

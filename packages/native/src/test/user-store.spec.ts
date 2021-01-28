@@ -35,10 +35,10 @@ describe("NativeUserStore", function () {
       return withPgPool(dbConfig, async (pool) => {
         const db = new Database(pool);
         await forceCreateLatest(db);
-        const database = await NativeDatabase.create(dbConfig);
+        const nativeDatabase = await NativeDatabase.create(dbConfig);
         const clock = new SystemClock();
         const uuidGenerator = new Uuid4Generator();
-        const userStore = new PgUserStore({clock, database, databaseSecret: secretKeyStr, uuidGenerator});
+        const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
         return fn({clock, userStore});
       });
     }

@@ -1749,6 +1749,7 @@ __metadata:
   dependencies:
     "@eternal-twin/core": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
+    "@eternal-twin/native": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2165,12 +2166,24 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@eternal-twin/native@workspace:packages/native"
   dependencies:
+    "@eternal-twin/auth-in-memory": "workspace:*"
+    "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/dinoparc-client-http": "workspace:*"
+    "@eternal-twin/dinoparc-client-mem": "workspace:*"
     "@eternal-twin/dinoparc-store-test": "workspace:*"
+    "@eternal-twin/email-in-memory": "workspace:*"
+    "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
     "@eternal-twin/hammerfest-store-test": "workspace:*"
+    "@eternal-twin/link-test": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/oauth-provider-in-memory": "workspace:*"
+    "@eternal-twin/oauth-provider-pg": "workspace:*"
+    "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
+    "@eternal-twin/twinoid-store-mem": "workspace:*"
+    "@eternal-twin/twinoid-store-pg": "workspace:*"
     "@eternal-twin/user-store-test": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
@@ -2551,6 +2564,7 @@ __metadata:
     "@eternal-twin/link-in-memory": "workspace:*"
     "@eternal-twin/link-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-client-http": "workspace:*"
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"

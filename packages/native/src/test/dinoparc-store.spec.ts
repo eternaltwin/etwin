@@ -32,9 +32,9 @@ describe("NativeDinoparcStore", function () {
       return withPgPool(dbConfig, async (pool) => {
         const db = new Database(pool);
         await forceCreateLatest(db);
-        const database = await NativeDatabase.create(dbConfig);
+        const nativeDatabase = await NativeDatabase.create(dbConfig);
         const clock = new SystemClock();
-        const dinoparcStore = new PgDinoparcStore({clock, database});
+        const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
         return fn({dinoparcStore});
       });
     }

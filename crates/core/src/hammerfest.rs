@@ -2,6 +2,7 @@ use crate::core::Instant;
 use crate::link::VersionedEtwinLink;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
+use enum_iterator::IntoEnumIterator;
 use once_cell::sync::Lazy;
 use regex::Regex;
 #[cfg(feature = "serde")]
@@ -11,6 +12,7 @@ use sqlx::{database, postgres, Database, Postgres};
 use std::collections::{HashMap, HashSet};
 use std::error::Error;
 use std::fmt;
+use std::iter::FusedIterator;
 use std::str::FromStr;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -28,7 +30,7 @@ impl HammerfestPassword {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, IntoEnumIterator)]
 pub enum HammerfestServer {
   #[cfg_attr(feature = "serde", serde(rename = "hammerfest.fr"))]
   HammerfestFr,
@@ -45,6 +47,10 @@ impl HammerfestServer {
       Self::HfestNet => "hfest.net",
       Self::HammerfestEs => "hammerfest.es",
     }
+  }
+
+  pub fn iter() -> impl Iterator<Item = Self> + ExactSizeIterator + FusedIterator + Copy {
+    Self::into_enum_iter()
   }
 }
 

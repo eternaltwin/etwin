@@ -4,7 +4,8 @@ use etwin_core::core::RawUserDot;
 use etwin_core::dinoparc::{DinoparcServer, DinoparcUserId, DinoparcUserIdRef};
 use etwin_core::hammerfest::{HammerfestServer, HammerfestUserId, HammerfestUserIdRef};
 use etwin_core::link::{
-  GetLinkOptions, LinkStore, RawLink, RemoteUserIdRef, TouchLinkError, TouchLinkOptions, VersionedRawLink,
+  GetLinkOptions, GetLinksFromEtwinOptions, LinkStore, RawLink, RemoteUserIdRef, TouchLinkError, TouchLinkOptions,
+  VersionedRawLink, VersionedRawLinks,
 };
 use etwin_core::twinoid::{TwinoidUserId, TwinoidUserIdRef};
 use etwin_core::user::UserId;
@@ -137,11 +138,34 @@ where
     )
   }
 
+  async fn get_link_from_dinoparc(
+    &self,
+    options: &GetLinkOptions<DinoparcUserIdRef>,
+  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, Box<dyn Error>> {
+    // assert!(options.time.is_none());
+    let state = self.state.read().unwrap();
+    let link = state.from_dinoparc.get(&(options.remote.server, options.remote.id));
+
+    match link {
+      None => Ok(VersionedRawLink {
+        current: None,
+        old: vec![],
+      }),
+      Some(link) => {
+        let link: VersionedRawLink<DinoparcUserIdRef> = VersionedRawLink {
+          current: Some(link.clone()),
+          old: vec![],
+        };
+        Ok(link)
+      }
+    }
+  }
+
   async fn get_link_from_hammerfest(
     &self,
     options: &GetLinkOptions<HammerfestUserIdRef>,
   ) -> Result<VersionedRawLink<HammerfestUserIdRef>, Box<dyn Error>> {
-    assert!(options.time.is_none());
+    // assert!(options.time.is_none());
     let state = self.state.read().unwrap();
     let link = state.from_hammerfest.get(&(options.remote.server, options.remote.id));
 
@@ -159,7 +183,71 @@ where
       }
     }
   }
+
+  async fn get_link_from_twinoid(
+    &self,
+    options: &GetLinkOptions<TwinoidUserIdRef>,
+  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, Box<dyn Error>> {
+    // assert!(options.time.is_none());
+    let state = self.state.read().unwrap();
+    let link = state.from_twinoid.get(&options.remote.id);
+
+    match link {
+      None => Ok(VersionedRawLink {
+        current: None,
+        old: vec![],
+      }),
+      Some(link) => {
+        let link: VersionedRawLink<TwinoidUserIdRef> = VersionedRawLink {
+          current: Some(link.clone()),
+          old: vec![],
+        };
+        Ok(link)
+      }
+    }
+  }
+
+  async fn get_links_from_etwin(
+    &self,
+    options: &GetLinksFromEtwinOptions,
+  ) -> Result<VersionedRawLinks, Box<dyn Error>> {
+    let state = self.state.read().unwrap();
+    let mut links = VersionedRawLinks::default();
+
+    for srv in DinoparcServer::iter() {
+      if let Some(link) = state.to_dinoparc.get(&(options.etwin.id, srv)) {
+        let link = link.clone();
+        match link.remote.server {
+          DinoparcServer::DinoparcCom => links.dinoparc_com.current = Some(link),
+          DinoparcServer::EnDinoparcCom => links.en_dinoparc_com.current = Some(link),
+          DinoparcServer::SpDinoparcCom => links.sp_dinoparc_com.current = Some(link),
+        }
+      }
+    }
+
+    for srv in HammerfestServer::iter() {
+      if let Some(link) = state.to_hammerfest.get(&(options.etwin.id, srv)) {
+        let link = link.clone();
+        match link.remote.server {
+          HammerfestServer::HammerfestEs => links.hammerfest_es.current = Some(link),
+          HammerfestServer::HammerfestFr => links.hammerfest_fr.current = Some(link),
+          HammerfestServer::HfestNet => links.hfest_net.current = Some(link),
+        }
+      }
+    }
+
+    {
+      if let Some(link) = state.to_twinoid.get(&options.etwin.id) {
+        links.twinoid.current = Some(link.clone());
+      }
+    }
+
+    Ok(links)
+  }
 }
+
+#[cfg(feature = "neon")]
+impl<TyClock> neon::prelude::Finalize for MemLinkStore<TyClock> where TyClock: Clock {}
 
 fn touch_link<FK: Eq + core::hash::Hash, TK: Eq + core::hash::Hash, R: RemoteUserIdRef>(
   from: &mut HashMap<FK, RawLink<R>>,
@@ -197,25 +285,56 @@ mod test {
   use crate::test::TestApi;
   use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
+  use etwin_core::dinoparc::DinoparcStore;
   use etwin_core::hammerfest::HammerfestStore;
   use etwin_core::link::LinkStore;
+  use etwin_core::user::UserStore;
+  use etwin_core::uuid::Uuid4Generator;
+  use etwin_dinoparc_store::mem::MemDinoparcStore;
   use etwin_hammerfest_store::mem::MemHammerfestStore;
+  use etwin_user_store::mem::MemUserStore;
   use std::sync::Arc;
 
-  fn make_test_api() -> TestApi<Arc<VirtualClock>, Arc<dyn HammerfestStore>, Arc<dyn LinkStore>> {
+  #[allow(clippy::type_complexity)]
+  fn make_test_api() -> TestApi<
+    Arc<VirtualClock>,
+    Arc<dyn DinoparcStore>,
+    Arc<dyn HammerfestStore>,
+    Arc<dyn LinkStore>,
+    Arc<dyn UserStore>,
+  > {
     let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+    let dinoparc_store: Arc<dyn DinoparcStore> = Arc::new(MemDinoparcStore::new(Arc::clone(&clock)));
     let hammerfest_store: Arc<dyn HammerfestStore> = Arc::new(MemHammerfestStore::new(Arc::clone(&clock)));
     let link_store: Arc<dyn LinkStore> = Arc::new(MemLinkStore::new(Arc::clone(&clock)));
+    let user_store: Arc<dyn UserStore> = Arc::new(MemUserStore::new(Arc::clone(&clock), Uuid4Generator));
 
     TestApi {
-      _clock: clock,
+      clock,
+      dinoparc_store,
       hammerfest_store,
       link_store,
+      user_store,
     }
   }
 
   #[tokio::test]
   async fn test_empty() {
     crate::test::test_empty(make_test_api()).await;
+  }
+
+  #[tokio::test]
+  async fn test_empty_etwin() {
+    crate::test::test_empty_etwin(make_test_api()).await;
+  }
+
+  #[tokio::test]
+  async fn test_etwin_linked_to_dinoparc_com() {
+    crate::test::test_etwin_linked_to_dinoparc_com(make_test_api()).await;
+  }
+
+  #[tokio::test]
+  async fn test_etwin_linked_to_hammerfest_fr() {
+    crate::test::test_etwin_linked_to_hammerfest_fr(make_test_api()).await;
   }
 }

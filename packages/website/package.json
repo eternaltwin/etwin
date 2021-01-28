@@ -57,6 +57,7 @@
     "@eternal-twin/link-in-memory": "workspace:*",
     "@eternal-twin/link-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
+    "@eternal-twin/marktwin": "^0.2.0",
     "@eternal-twin/native": "workspace:*",
     "@eternal-twin/oauth-client-http": "workspace:*",
     "@eternal-twin/oauth-provider-in-memory": "workspace:*",

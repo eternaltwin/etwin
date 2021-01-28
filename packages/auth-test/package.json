@@ -18,8 +18,9 @@
     "format": "eslint --fix \"./src/**/*.ts\"",
     "build": "tsc --build src/lib/tsconfig.json",
     "prepack": "yarn run build",
-    "test:build": "tsc --build src/test/tsconfig.json",
-    "test": "yarn run test:build && mocha \"test/**/*.spec.js\""
+    "native:build": "cd ../native && yarn run native:build",
+    "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
+    "test": "yarn run test:build && mocha --experimental-wasm-modules \"test/**/*.spec.js\""
   },
   "publishConfig": {
     "access": "public",
@@ -32,6 +33,7 @@
   "dependencies": {
     "@eternal-twin/core": "workspace:*",
     "@eternal-twin/email-in-memory": "workspace:*",
+    "@eternal-twin/native": "workspace:*",
     "@types/chai": "^4.2.14",
     "chai": "^4.2.0"
   },

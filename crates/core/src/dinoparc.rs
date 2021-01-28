@@ -1,6 +1,7 @@
 use crate::core::Instant;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
+use enum_iterator::IntoEnumIterator;
 use once_cell::sync::Lazy;
 use regex::Regex;
 #[cfg(feature = "serde")]
@@ -9,6 +10,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{database, postgres, Database, Postgres};
 use std::error::Error;
 use std::fmt;
+use std::iter::FusedIterator;
 use std::str::FromStr;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -20,7 +22,7 @@ pub struct GetDinoparcUserOptions {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, IntoEnumIterator)]
 pub enum DinoparcServer {
   #[cfg_attr(feature = "serde", serde(rename = "dinoparc.com"))]
   DinoparcCom,
@@ -37,6 +39,10 @@ impl DinoparcServer {
       Self::EnDinoparcCom => "en.dinoparc.com",
       Self::SpDinoparcCom => "sp.dinoparc.com",
     }
+  }
+
+  pub fn iter() -> impl Iterator<Item = Self> + ExactSizeIterator + FusedIterator + Copy {
+    Self::into_enum_iter()
   }
 }
 

@@ -52,13 +52,48 @@ pub struct VersionedRawLink<T: RemoteUserIdRef> {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VersionedRawLinks {
-  dinoparc_com: VersionedRawLink<DinoparcUserIdRef>,
-  en_dinoparc_com: VersionedRawLink<DinoparcUserIdRef>,
-  hammerfest_es: VersionedRawLink<HammerfestUserIdRef>,
-  hammerfest_fr: VersionedRawLink<HammerfestUserIdRef>,
-  hfest_net: VersionedRawLink<HammerfestUserIdRef>,
-  sp_dinoparc_com: VersionedRawLink<DinoparcUserIdRef>,
-  twinoid: VersionedRawLink<TwinoidUserIdRef>,
+  pub dinoparc_com: VersionedRawLink<DinoparcUserIdRef>,
+  pub en_dinoparc_com: VersionedRawLink<DinoparcUserIdRef>,
+  pub hammerfest_es: VersionedRawLink<HammerfestUserIdRef>,
+  pub hammerfest_fr: VersionedRawLink<HammerfestUserIdRef>,
+  pub hfest_net: VersionedRawLink<HammerfestUserIdRef>,
+  pub sp_dinoparc_com: VersionedRawLink<DinoparcUserIdRef>,
+  pub twinoid: VersionedRawLink<TwinoidUserIdRef>,
+}
+
+impl Default for VersionedRawLinks {
+  fn default() -> Self {
+    VersionedRawLinks {
+      dinoparc_com: VersionedRawLink {
+        current: None,
+        old: vec![],
+      },
+      en_dinoparc_com: VersionedRawLink {
+        current: None,
+        old: vec![],
+      },
+      hammerfest_es: VersionedRawLink {
+        current: None,
+        old: vec![],
+      },
+      hammerfest_fr: VersionedRawLink {
+        current: None,
+        old: vec![],
+      },
+      hfest_net: VersionedRawLink {
+        current: None,
+        old: vec![],
+      },
+      sp_dinoparc_com: VersionedRawLink {
+        current: None,
+        old: vec![],
+      },
+      twinoid: VersionedRawLink {
+        current: None,
+        old: vec![],
+      },
+    }
+  }
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -93,8 +128,18 @@ pub struct VersionedEtwinLink {
   pub old: Vec<OldEtwinLink>,
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GetLinkOptions<T: RemoteUserIdRef> {
+  #[cfg_attr(feature = "serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub remote: T,
+  pub time: Option<Instant>,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct GetLinksFromEtwinOptions {
+  pub etwin: UserIdRef,
   pub time: Option<Instant>,
 }
 
@@ -117,16 +162,32 @@ pub trait LinkStore: Send + Sync {
     &self,
     options: &TouchLinkOptions<DinoparcUserIdRef>,
   ) -> Result<VersionedRawLink<DinoparcUserIdRef>, TouchLinkError<DinoparcUserIdRef>>;
+
   async fn touch_hammerfest_link(
     &self,
     options: &TouchLinkOptions<HammerfestUserIdRef>,
   ) -> Result<VersionedRawLink<HammerfestUserIdRef>, TouchLinkError<HammerfestUserIdRef>>;
+
   async fn touch_twinoid_link(
     &self,
     options: &TouchLinkOptions<TwinoidUserIdRef>,
   ) -> Result<VersionedRawLink<TwinoidUserIdRef>, TouchLinkError<TwinoidUserIdRef>>;
+
+  async fn get_link_from_dinoparc(
+    &self,
+    options: &GetLinkOptions<DinoparcUserIdRef>,
+  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, Box<dyn Error>>;
+
   async fn get_link_from_hammerfest(
     &self,
     options: &GetLinkOptions<HammerfestUserIdRef>,
   ) -> Result<VersionedRawLink<HammerfestUserIdRef>, Box<dyn Error>>;
+
+  async fn get_link_from_twinoid(
+    &self,
+    options: &GetLinkOptions<TwinoidUserIdRef>,
+  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, Box<dyn Error>>;
+
+  async fn get_links_from_etwin(&self, options: &GetLinksFromEtwinOptions)
+    -> Result<VersionedRawLinks, Box<dyn Error>>;
 }

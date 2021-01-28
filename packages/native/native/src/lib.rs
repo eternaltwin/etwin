@@ -5,6 +5,7 @@ mod database;
 mod dinoparc_store;
 mod hammerfest_client;
 mod hammerfest_store;
+mod link_store;
 mod neon_helpers;
 mod tokio_runtime;
 mod user_store;
@@ -22,6 +23,8 @@ fn export(mut cx: ModuleContext) -> NeonResult<()> {
   cx.export_value("hammerfestClient", hammerfest_client)?;
   let hammerfest_store = crate::hammerfest_store::create_namespace(cx)?;
   cx.export_value("hammerfestStore", hammerfest_store)?;
+  let link_store = crate::link_store::create_namespace(cx)?;
+  cx.export_value("linkStore", link_store)?;
   let user_store = crate::user_store::create_namespace(cx)?;
   cx.export_value("userStore", user_store)?;
   let uuid = crate::uuid::create_namespace(cx)?;

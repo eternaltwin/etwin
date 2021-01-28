@@ -7,6 +7,7 @@ declare_decimal_id! {
   pub struct TwinoidUserId(u32);
   pub type ParseError = TwinoidUserIdParseError;
   const BOUNDS = 1..1_000_000_000;
+  const SQL_NAME = "twinoid_user_id";
 }
 
 declare_new_string! {
@@ -17,6 +18,7 @@ declare_new_string! {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortTwinoidUser {
   pub id: TwinoidUserId,
@@ -24,6 +26,7 @@ pub struct ShortTwinoidUser {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TwinoidUserIdRef {
   pub id: TwinoidUserId,

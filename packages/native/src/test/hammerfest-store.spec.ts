@@ -32,9 +32,9 @@ describe("NativeHammerfestStore", function () {
       return withPgPool(dbConfig, async (pool) => {
         const db = new Database(pool);
         await forceCreateLatest(db);
-        const database = await NativeDatabase.create(dbConfig);
+        const nativeDatabase = await NativeDatabase.create(dbConfig);
         const clock = new SystemClock();
-        const hammerfestStore = new PgHammerfestStore({clock, database});
+        const hammerfestStore = new PgHammerfestStore({clock, database: nativeDatabase});
         return fn({hammerfestStore});
       });
     }
