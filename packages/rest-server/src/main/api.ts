@@ -3,6 +3,7 @@ import { PgAuthService } from "@eternal-twin/auth-pg";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
+import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
@@ -10,12 +11,12 @@ import { HttpDinoparcClient } from "@eternal-twin/dinoparc-client-http";
 import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { PgForumService } from "@eternal-twin/forum-pg";
-import { PgLinkService } from "@eternal-twin/link-pg";
 import { Config } from "@eternal-twin/local-config";
 import { SystemClock } from "@eternal-twin/native/lib/clock.js";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js";
 import { PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
+import { PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
 import { PgUserStore } from "@eternal-twin/native/lib/user-store.js";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { PgHammerfestStore } from "@eternal-twin/native/src/lib/hammerfest-store.js";
@@ -60,7 +61,8 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
   const hammerfestClient = new HttpHammerfestClient({clock});
   const twinoidStore = new PgTwinoidStore(database);
   const twinoidClient = new HttpTwinoidClientService();
-  const link = new PgLinkService({database, dinoparcStore, hammerfestStore, twinoidStore, userStore});
+  const linkStore = new PgLinkStore({clock, database: nativeDatabase});
+  const link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
   const oauthProviderStore = new PgOauthProviderStore({
     database,
     databaseSecret: secretKeyStr,

@@ -1,16 +1,17 @@
 import { Api, testAuthService } from "@eternal-twin/auth-test";
+import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { MemDinoparcClient } from "@eternal-twin/dinoparc-client-mem";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
-import { PgLinkService } from "@eternal-twin/link-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { VirtualClock } from "@eternal-twin/native/lib/clock.js";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js";
 import { PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
+import { PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
 import { PgUserStore } from "@eternal-twin/native/lib/user-store.js";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
@@ -48,7 +49,8 @@ async function withPgAuthService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const hammerfestStore = new PgHammerfestStore({clock, database: nativeDatabase});
     const twinoidStore = new PgTwinoidStore(database);
     const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
-    const link = new PgLinkService({database, dinoparcStore, hammerfestStore, twinoidStore, userStore});
+    const linkStore = new PgLinkStore({clock, database: nativeDatabase});
+    const link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
     const dinoparcClient = new MemDinoparcClient();
     const hammerfestClient = new MemHammerfestClient({clock});
     const twinoidClient = new HttpTwinoidClientService();

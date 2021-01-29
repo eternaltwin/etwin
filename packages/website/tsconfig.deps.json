@@ -30,12 +30,6 @@
       "path": "../forum-pg/src/lib"
     },
     {
-      "path": "../link-in-memory/src/lib"
-    },
-    {
-      "path": "../link-pg/src/lib"
-    },
-    {
       "path": "../native/src/lib"
     },
     {

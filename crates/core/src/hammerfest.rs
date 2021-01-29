@@ -127,6 +127,7 @@ declare_decimal_id! {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "HammerfestUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestUserIdRef {
   pub server: HammerfestServer,

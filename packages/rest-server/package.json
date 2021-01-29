@@ -63,7 +63,6 @@
     "@eternal-twin/etwin-client-in-memory": "workspace:*",
     "@eternal-twin/etwin-pg": "workspace:*",
     "@eternal-twin/forum-pg": "workspace:*",
-    "@eternal-twin/link-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/native": "workspace:*",
     "@eternal-twin/oauth-provider-pg": "workspace:*",

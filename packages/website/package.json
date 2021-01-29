@@ -54,8 +54,6 @@
     "@eternal-twin/email-template-etwin": "workspace:*",
     "@eternal-twin/forum-in-memory": "workspace:*",
     "@eternal-twin/forum-pg": "workspace:*",
-    "@eternal-twin/link-in-memory": "workspace:*",
-    "@eternal-twin/link-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/marktwin": "^0.2.0",
     "@eternal-twin/native": "workspace:*",

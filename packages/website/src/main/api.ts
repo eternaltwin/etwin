@@ -12,6 +12,7 @@ import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
+import { LinkStore } from "@eternal-twin/core/lib/link/store.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store.js";
@@ -25,14 +26,13 @@ import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
 import { PgForumService } from "@eternal-twin/forum-pg";
-import { InMemoryLinkService } from "@eternal-twin/link-in-memory";
-import { PgLinkService } from "@eternal-twin/link-pg";
 import { ApiType, Config } from "@eternal-twin/local-config";
 import { SystemClock } from "@eternal-twin/native/lib/clock.js";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js";
 import { MemDinoparcStore, PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { MemHammerfestStore, PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
+import { MemLinkStore, PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
 import { MemUserStore, PgUserStore } from "@eternal-twin/native/lib/user-store.js";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { HttpOauthClientService } from "@eternal-twin/oauth-client-http";
@@ -88,6 +88,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   let forum: ForumService;
   let dinoparcStore: DinoparcStore;
   let hammerfestStore: HammerfestStore;
+  let linkStore: LinkStore;
   let link: LinkService;
   let oauthProviderStore: OauthProviderStore;
   let oauthProvider: OauthProviderService;
@@ -102,7 +103,8 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     dinoparcStore = new MemDinoparcStore({clock});
     hammerfestStore = new MemHammerfestStore({clock});
     twinoidStore = new MemTwinoidStore();
-    link = new InMemoryLinkService({dinoparcStore, hammerfestStore, twinoidStore, userStore});
+    linkStore = new MemLinkStore({clock});
+    link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
     oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
     oauthProvider = new OauthProviderService({
       clock,
@@ -153,7 +155,8 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     hammerfestStore = new PgHammerfestStore({clock, database: nativeDatabase});
     twinoidStore = new PgTwinoidStore(database);
     userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
-    link = new PgLinkService({database, dinoparcStore, hammerfestStore, twinoidStore, userStore});
+    linkStore = new PgLinkStore({clock, database: nativeDatabase});
+    link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
     oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
     oauthProvider = new OauthProviderService({
       clock,

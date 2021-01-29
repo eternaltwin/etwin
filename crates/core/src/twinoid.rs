@@ -18,7 +18,7 @@ declare_new_string! {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcUser"))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "TwinoidUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortTwinoidUser {
   pub id: TwinoidUserId,
@@ -26,7 +26,7 @@ pub struct ShortTwinoidUser {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcUser"))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "TwinoidUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TwinoidUserIdRef {
   pub id: TwinoidUserId,

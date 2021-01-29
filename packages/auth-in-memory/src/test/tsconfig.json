@@ -26,9 +26,6 @@
       "path": "../../../email-template-json/src/lib"
     },
     {
-      "path": "../../../link-in-memory/src/lib"
-    },
-    {
       "path": "../../../local-config/src/lib"
     },
     {

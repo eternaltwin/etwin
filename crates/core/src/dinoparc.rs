@@ -138,6 +138,7 @@ pub struct ArchivedDinoparcUser {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcUserIdRef {
   pub server: DinoparcServer,
