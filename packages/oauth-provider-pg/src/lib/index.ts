@@ -125,8 +125,8 @@ export class PgOauthProviderStore implements OauthProviderStore {
           this.#databaseSecret,
           oauthClientId, options.key,
           options.displayName,
-          options.appUri,
-          options.callbackUri,
+          options.appUri.toString(),
+          options.callbackUri.toString(),
           passwordHash,
         ],
       );
@@ -143,10 +143,10 @@ export class PgOauthProviderStore implements OauthProviderStore {
       const displayName: OauthClientDisplayName | null = oldRow.display_name === options.displayName
         ? null
         : options.displayName;
-      const appUri: Url | null = oldRow.app_uri === options.appUri
+      const appUri: Url | null = oldRow.app_uri === options.appUri.toString()
         ? null
         : options.appUri;
-      const callbackUri: Url | null = oldRow.callback_uri === options.callbackUri
+      const callbackUri: Url | null = oldRow.callback_uri === options.callbackUri.toString()
         ? null
         : options.callbackUri;
       let secret: PasswordHash | null;
@@ -160,10 +160,10 @@ export class PgOauthProviderStore implements OauthProviderStore {
         await updateVarchar("old_oauth_client_display_names", "display_name", oldRow.oauth_client_id, displayName);
       }
       if (appUri !== null) {
-        await updateVarchar("old_oauth_client_app_uris", "app_uri", oldRow.oauth_client_id, appUri);
+        await updateVarchar("old_oauth_client_app_uris", "app_uri", oldRow.oauth_client_id, appUri.toString());
       }
       if (callbackUri !== null) {
-        await updateVarchar("old_oauth_client_callback_uris", "callback_uri", oldRow.oauth_client_id, callbackUri);
+        await updateVarchar("old_oauth_client_callback_uris", "callback_uri", oldRow.oauth_client_id, callbackUri.toString());
       }
       if (secret !== null) {
         await queryable.countOne(
@@ -189,8 +189,8 @@ export class PgOauthProviderStore implements OauthProviderStore {
         id: oldRow.oauth_client_id,
         key: oldRow.key,
         displayName: displayName ?? oldRow.display_name,
-        appUri: appUri ?? oldRow.app_uri,
-        callbackUri: callbackUri ?? oldRow.callback_uri,
+        appUri: appUri ?? new Url(oldRow.app_uri),
+        callbackUri: callbackUri ?? new Url(oldRow.callback_uri),
         owner: null,
       };
     }
@@ -282,8 +282,8 @@ function fromClientRow(row: Pick<OauthClientRow, "oauth_client_id" | "key" | "ct
     id: row.oauth_client_id,
     key: row.key,
     displayName: row.display_name,
-    appUri: row.app_uri,
-    callbackUri: row.callback_uri,
+    appUri: new Url(row.app_uri),
+    callbackUri: new Url(row.callback_uri),
     owner,
   };
 }

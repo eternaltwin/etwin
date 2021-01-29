@@ -1,4 +1,5 @@
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type.js";
 import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input.js";
@@ -7,7 +8,6 @@ import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import Router, { RouterContext } from "@koa/router";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import url from "url";
 
 export interface Api {
   auth: AuthService;
@@ -49,7 +49,7 @@ export async function createLoginRouter(api: Api): Promise<Router> {
         type: EtwinOauthActionType.Login,
       },
     };
-    const reqUrl: url.URL = await api.oauthClient.createAuthorizationRequest(state, ALL_TWINOID_SCOPES);
+    const reqUrl: Url = await api.oauthClient.createAuthorizationRequest(state, ALL_TWINOID_SCOPES);
     cx.response.redirect(reqUrl.toString());
   }
 

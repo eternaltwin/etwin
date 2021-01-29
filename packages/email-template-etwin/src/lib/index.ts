@@ -1,18 +1,18 @@
 import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
 import { EmailTemplateService } from "@eternal-twin/core/lib/email-template/service.js";
-import url from "url";
 import urlJoin from "url-join";
 
 export class EtwinEmailTemplateService implements EmailTemplateService {
-  private readonly baseUrl: url.URL;
+  private readonly baseUrl: Url;
 
-  constructor(baseUrl: url.URL) {
+  constructor(baseUrl: Url) {
     this.baseUrl = baseUrl;
   }
 
   async verifyRegistrationEmail(locale: LocaleId, token: string): Promise<EmailContent> {
-    const registrationUri: url.URL = this.getRegistrationUri(token);
+    const registrationUri: Url = this.getRegistrationUri(token);
     switch (locale) {
       case "fr-FR":
         return {
@@ -27,8 +27,8 @@ export class EtwinEmailTemplateService implements EmailTemplateService {
     }
   }
 
-  private getRegistrationUri(token: string): url.URL {
-    const result: url.URL = new url.URL(urlJoin(this.baseUrl.toString(), "register/verified-email"));
+  private getRegistrationUri(token: string): Url {
+    const result: Url = new Url(urlJoin(this.baseUrl.toString(), "register/verified-email"));
     result.searchParams.set("token", token);
     return result;
   }

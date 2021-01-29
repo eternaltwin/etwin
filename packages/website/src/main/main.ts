@@ -1,6 +1,7 @@
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { ApiType, Config, getLocalConfig } from "@eternal-twin/local-config";
 import * as marktwin from "@eternal-twin/marktwin";
 import { createApiRouter } from "@eternal-twin/rest-server/lib/index.js";
@@ -12,7 +13,6 @@ import Koa from "koa";
 import koaLogger from "koa-logger";
 import koaMount from "koa-mount";
 import koaStaticCache from "koa-static-cache";
-import url from "url";
 
 import { ServerAppConfig } from "../server/config.js";
 import { createActionsRouter } from "./actions/index.js";
@@ -21,10 +21,10 @@ import { createKoaLocaleNegotiator, LocaleNegotiator } from "./koa-locale-negoti
 import { Locale } from "./locales.js";
 import { createOauthRouter } from "./oauth/index.js";
 
-const PROJECT_ROOT: url.URL = furi.join(import .meta.url, "../..");
+const PROJECT_ROOT: Url = furi.join(import .meta.url, "../..");
 const IS_PRODUCTION: boolean = process.env.NODE_ENV === "production";
-const APP_DIR: url.URL = furi.join(PROJECT_ROOT, "app");
-const BROWSER_APP_DIR: url.URL = furi.join(APP_DIR, "browser");
+const APP_DIR: Url = furi.join(PROJECT_ROOT as any, "app");
+const BROWSER_APP_DIR: Url = furi.join(APP_DIR as any, "browser");
 
 const SYSTEM_AUTH: SystemAuthContext = {
   type: AuthType.System,
@@ -117,7 +117,7 @@ async function main(api: Api): Promise<void> {
   }
 
   const ONE_DAY: number = 24 * 3600;
-  router.use(koaStaticCache(furi.toSysPath(BROWSER_APP_DIR), {maxAge: ONE_DAY}));
+  router.use(koaStaticCache(furi.toSysPath(BROWSER_APP_DIR as any), {maxAge: ONE_DAY}));
 
   const apiRouter: Router = await createApiRouter(api);
   router.use(koaMount("/api/v1", apiRouter.routes()));
@@ -171,7 +171,7 @@ function createI18nRouter(defaultRouter: Koa, localizedRouters: Map<Locale, Koa>
   return router;
 }
 
-async function loadAppRouter(serverMain: url.URL, serverAppConfig: ServerAppConfig): Promise<Koa> {
+async function loadAppRouter(serverMain: Url, serverAppConfig: ServerAppConfig): Promise<Koa> {
   const serverMod: unknown = await import(serverMain.toString());
   const appRouterFn: Function = getAppRouterFn(serverMod);
   let appRouter: Koa;
@@ -200,9 +200,9 @@ async function loadAppRouter(serverMain: url.URL, serverAppConfig: ServerAppConf
 
 interface App {
   name: string;
-  browserDir: url.URL;
-  serverDir: url.URL;
-  serverMain: url.URL;
+  browserDir: Url;
+  serverDir: Url;
+  serverMain: Url;
 }
 
 interface Apps {
@@ -211,8 +211,8 @@ interface Apps {
 }
 
 async function findApps(): Promise<Apps> {
-  const browserAppEnts: readonly fs.Dirent[] = await fs.promises.readdir(BROWSER_APP_DIR, {withFileTypes: true});
-  const serverAppEnts: readonly fs.Dirent[] = await fs.promises.readdir(furi.join(APP_DIR, "server"), {withFileTypes: true});
+  const browserAppEnts: readonly fs.Dirent[] = await fs.promises.readdir(BROWSER_APP_DIR as any, {withFileTypes: true});
+  const serverAppEnts: readonly fs.Dirent[] = await fs.promises.readdir(furi.join(APP_DIR as any, "server"), {withFileTypes: true});
 
   const browserApps: ReadonlySet<string> = pickDirectoryNames(browserAppEnts);
   const serverApps: ReadonlySet<string> = pickDirectoryNames(serverAppEnts);
@@ -242,13 +242,13 @@ async function findApps(): Promise<Apps> {
 
   return {dev, prod};
 
-  function resolveApp(appDir: url.URL, name: string): App {
-    const serverDir: url.URL = furi.join(appDir, "server", name);
+  function resolveApp(appDir: Url, name: string): App {
+    const serverDir: Url = furi.join(appDir as any, "server", name);
     return {
       name,
-      browserDir: furi.join(BROWSER_APP_DIR, name),
+      browserDir: furi.join(BROWSER_APP_DIR as any, name),
       serverDir,
-      serverMain: furi.join(serverDir, "main.js"),
+      serverMain: furi.join(serverDir as any, "main.js"),
     };
   }
 

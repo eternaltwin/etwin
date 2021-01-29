@@ -44,7 +44,9 @@ import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-serv
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
+import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
+import { TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user.js";
 import { DEFAULT_USER_FIELDS } from "@eternal-twin/core/lib/user/default-user-fields.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
@@ -53,8 +55,6 @@ import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username.js";
-import { TwinoidClientService } from "@eternal-twin/twinoid-core/src/lib/client.js";
-import { User as TidUser } from "@eternal-twin/twinoid-core/src/lib/user.js";
 import jsonWebToken from "jsonwebtoken";
 import { UuidHex } from "kryo/lib/uuid-hex.js";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
@@ -86,7 +86,7 @@ export interface InMemoryAuthServiceOptions {
   userStore: UserStore,
   tokenSecret: Uint8Array,
   twinoidStore: TwinoidStore,
-  twinoidClient: TwinoidClientService,
+  twinoidClient: TwinoidClient,
   uuidGenerator: UuidGenerator,
 }
 
@@ -103,7 +103,7 @@ export class InMemoryAuthService implements AuthService {
   readonly #userStore: UserStore;
   readonly #tokenSecret: Buffer;
   readonly #twinoidStore: TwinoidStore;
-  readonly #twinoidClient: TwinoidClientService;
+  readonly #twinoidClient: TwinoidClient;
   readonly #uuidGen: UuidGenerator;
 
   readonly #defaultLocale: LocaleId;
@@ -311,18 +311,18 @@ export class InMemoryAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    const tidUser: Partial<TidUser> = await this.#twinoidClient.getMe(at);
-    await this.#twinoidStore.touchShortUser({type: ObjectType.TwinoidUser, id: tidUser.id!.toString(10), displayName: tidUser.name!});
+    const tidUser: Partial<TwinoidUser> = await this.#twinoidClient.getMe(at);
+    await this.#twinoidStore.touchShortUser({type: ObjectType.TwinoidUser, id: tidUser.id!, displayName: tidUser.displayName!});
 
-    const link: VersionedEtwinLink = await this.#link.getLinkFromTwinoid(tidUser.id!.toString(10));
+    const link: VersionedEtwinLink = await this.#link.getLinkFromTwinoid(tidUser.id!);
 
     let userId: UserId;
     if (link.current !== null) {
       userId = link.current.user.id;
     } else {
-      const displayName = twinoidToUserDisplayName(tidUser as Readonly<Pick<TidUser, "id" | "name">>);
+      const displayName = twinoidToUserDisplayName(tidUser as Readonly<Pick<TwinoidUser, "id" | "displayName">>);
       const user = await this.#userStore.createUser({displayName, email: null, username: null});
-      await this.#link.linkToTwinoid({userId: user.id, twinoidUserId: tidUser.id!.toString(10), linkedBy: user.id});
+      await this.#link.linkToTwinoid({userId: user.id, twinoidUserId: tidUser.id!, linkedBy: user.id});
       userId = user.id;
     }
 

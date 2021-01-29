@@ -41,7 +41,9 @@ import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-serv
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
+import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
+import { TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user.js";
 import { DEFAULT_USER_FIELDS } from "@eternal-twin/core/lib/user/default-user-fields.js";
 import { ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { SHORT_USER_FIELDS } from "@eternal-twin/core/lib/user/short-user-fields.js";
@@ -57,8 +59,6 @@ import {
   UserRow,
 } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
-import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
-import { User as TidUser } from "@eternal-twin/twinoid-core/lib/user.js";
 import jsonWebToken from "jsonwebtoken";
 import { UuidHex } from "kryo/lib/uuid-hex.js";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
@@ -85,7 +85,7 @@ export interface PgAuthServiceOptions {
   userStore: UserStore;
   tokenSecret: Uint8Array;
   twinoidStore: TwinoidStore;
-  twinoidClient: TwinoidClientService;
+  twinoidClient: TwinoidClient;
   uuidGenerator: UuidGenerator;
 }
 
@@ -104,7 +104,7 @@ export class PgAuthService implements AuthService {
   readonly #userStore: UserStore;
   readonly #tokenSecret: Buffer;
   readonly #twinoidStore: TwinoidStore;
-  readonly #twinoidClient: TwinoidClientService;
+  readonly #twinoidClient: TwinoidClient;
   readonly #uuidGen: UuidGenerator;
 
   readonly #defaultLocale: LocaleId;
@@ -323,8 +323,8 @@ export class PgAuthService implements AuthService {
     if (acx.type !== AuthType.Guest) {
       throw Error("Forbidden: Only guests can authenticate");
     }
-    const tidUser: Pick<TidUser, "id" | "name"> = await this.#twinoidClient.getMe(at);
-    const link: VersionedEtwinLink = await this.#link.getLinkFromTwinoid(tidUser.id.toString(10));
+    const tidUser: Pick<TwinoidUser, "id" | "displayName"> = await this.#twinoidClient.getMe(at);
+    const link: VersionedEtwinLink = await this.#link.getLinkFromTwinoid(tidUser.id);
     let userId: UserId;
     if (link.current !== null) {
       // TODO: Check that the user is active, otherwise unlink and create a new user
@@ -333,10 +333,10 @@ export class PgAuthService implements AuthService {
       const displayName = twinoidToUserDisplayName(tidUser);
       const user = await this.#userStore.createUser({displayName, email: null, username: null});
       try {
-        await this.#twinoidStore.touchShortUser({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
+        await this.#twinoidStore.touchShortUser({type: ObjectType.TwinoidUser, id: tidUser.id, displayName: tidUser.displayName});
         await this.#link.linkToTwinoid({
           userId: user.id,
-          twinoidUserId: tidUser.id.toString(10),
+          twinoidUserId: tidUser.id,
           linkedBy: user.id,
         });
       } catch (e) {

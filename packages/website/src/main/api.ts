@@ -2,8 +2,9 @@ import { MemAnnouncementService } from "@eternal-twin/announcement-mem";
 import { PgAnnouncementService } from "@eternal-twin/announcement-pg";
 import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
-import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service";
+import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { $Url, Url } from "@eternal-twin/core/lib/core/url.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
@@ -17,6 +18,7 @@ import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store.js";
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
+import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client.js";
 import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
@@ -44,10 +46,8 @@ import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import { InMemoryTokenService } from "@eternal-twin/token-in-memory";
 import { PgTokenService } from "@eternal-twin/token-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
-import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
 import { MemTwinoidStore } from "@eternal-twin/twinoid-store-mem";
 import { PgTwinoidStore } from "@eternal-twin/twinoid-store-pg";
-import url from "url";
 import urljoin from "url-join";
 
 export interface Api {
@@ -62,7 +62,7 @@ export interface Api {
   oauthClient: OauthClientService;
   oauthProvider: OauthProviderService;
   userStore: UserStore;
-  twinoidClient: TwinoidClientService;
+  twinoidClient: TwinoidClient;
   twinoid: TwinoidService;
   user: UserService;
 }
@@ -73,7 +73,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new ConsoleEmailService();
-  const emailTemplate = new EtwinEmailTemplateService(new url.URL(config.etwin.externalUri.toString()));
+  const emailTemplate = new EtwinEmailTemplateService(new Url(config.etwin.externalUri.toString()));
   const password = new ScryptPasswordService();
   const dinoparcClient = new HttpDinoparcClient();
   const hammerfestClient = new HttpHammerfestClient({clock});
@@ -210,12 +210,12 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
 
   const koaAuth = new KoaAuth(auth);
   const oauthClient = new HttpOauthClientService({
-    authorizationUri: new url.URL("https://twinoid.com/oauth/auth"),
-    callbackUri: new url.URL(urljoin(config.etwin.externalUri.toString(), "oauth/callback")),
+    authorizationUri: new Url("https://twinoid.com/oauth/auth"),
+    callbackUri: new Url(urljoin(config.etwin.externalUri.toString(), "oauth/callback")),
     clientId: config.auth.twinoid.clientId,
     clientSecret: config.auth.twinoid.secret,
     clock,
-    grantUri: new url.URL("https://twinoid.com/oauth/token"),
+    grantUri: new Url("https://twinoid.com/oauth/token"),
     tokenSecret: secretKeyBytes,
   });
 
@@ -224,8 +224,8 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
       key,
       {
         displayName: client.displayName,
-        appUri: client.appUri.toString(),
-        callbackUri: client.callbackUri.toString(),
+        appUri: $Url.clone(client.appUri),
+        callbackUri: $Url.clone(client.callbackUri),
         secret: Buffer.from(client.secret),
       }
     );

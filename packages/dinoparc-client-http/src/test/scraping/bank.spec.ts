@@ -21,7 +21,7 @@ export const $DinoparcBankScraping: RecordIoType<DinoparcBankScraping> = new Rec
 describe("Dinoparc bank scraping", () => {
   for (const testItem of getTestItems("bank")) {
     it(testItem.name, async () => {
-      const input: string = await fs.promises.readFile(testItem.inputUri, {encoding: "utf-8"});
+      const input: string = await fs.promises.readFile(testItem.inputUri as fs.PathLike, {encoding: "utf-8"});
       const actual: DinoparcBankScraping = await scrapeBank(input);
       const testErr: Error | undefined = $DinoparcBankScraping.testError!(actual);
       try {
@@ -31,8 +31,8 @@ describe("Dinoparc bank scraping", () => {
         throw err;
       }
       const actualJson: string = `${JSON.stringify($DinoparcBankScraping.write(JSON_VALUE_WRITER, actual), null, 2)}\n`;
-      await fs.promises.writeFile(testItem.actualUri, actualJson, {encoding: "utf-8"});
-      const expectedJson: string = await fs.promises.readFile(testItem.expectedUri, {encoding: "utf-8"});
+      await fs.promises.writeFile(testItem.actualUri as fs.PathLike, actualJson, {encoding: "utf-8"});
+      const expectedJson: string = await fs.promises.readFile(testItem.expectedUri as fs.PathLike, {encoding: "utf-8"});
       const expected: DinoparcBankScraping = $DinoparcBankScraping.read(JSON_READER, expectedJson);
       try {
         chai.assert.isTrue($DinoparcBankScraping.equals(actual, expected));

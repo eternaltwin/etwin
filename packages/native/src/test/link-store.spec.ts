@@ -1,5 +1,6 @@
 import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { MemDinoparcClient } from "@eternal-twin/dinoparc-client-mem";
@@ -15,7 +16,6 @@ import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import { MemTwinoidStore } from "@eternal-twin/twinoid-store-mem";
 import { PgTwinoidStore } from "@eternal-twin/twinoid-store-pg";
-import url from "url";
 
 import { VirtualClock } from "../lib/clock.js";
 import { Database as NativeDatabase } from "../lib/database.js";
@@ -36,7 +36,7 @@ describe("NativeLinkStore", function () {
       const secretKeyStr: string = config.etwin.secret;
       const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
       const email = new InMemoryEmailService();
-      const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
+      const emailTemplate = new JsonEmailTemplateService(new Url("https://eternal-twin.net"));
       const password = new ScryptPasswordService();
       const userStore = new MemUserStore({clock, uuidGenerator});
       const dinoparcStore = new MemDinoparcStore({clock});
@@ -76,7 +76,7 @@ describe("NativeLinkStore", function () {
         const secretKeyStr: string = config.etwin.secret;
         const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
         const email = new InMemoryEmailService();
-        const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
+        const emailTemplate = new JsonEmailTemplateService(new Url("https://eternal-twin.net"));
         const password = new ScryptPasswordService();
         const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
         const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});

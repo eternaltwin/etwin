@@ -1,5 +1,6 @@
 import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
 import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store.js";
 import chai from "chai";
@@ -17,8 +18,8 @@ export function testOauthProviderStore(withApi: (fn: (api: Api) => Promise<void>
         {
           key: "eternalfest@clients",
           displayName: "Eternalfest",
-          appUri: "https://eternalfest.net",
-          callbackUri: "https://eternalfest.net/oauth/callback",
+          appUri: new Url("https://eternalfest.net"),
+          callbackUri: new Url("https://eternalfest.net/oauth/callback"),
           secret: Buffer.from("eternalfest_secret"),
         },
       );
@@ -28,8 +29,8 @@ export function testOauthProviderStore(withApi: (fn: (api: Api) => Promise<void>
           id: client.id,
           key: "eternalfest@clients",
           displayName: "Eternalfest",
-          appUri: "https://eternalfest.net",
-          callbackUri: "https://eternalfest.net/oauth/callback",
+          appUri: new Url("https://eternalfest.net"),
+          callbackUri: new Url("https://eternalfest.net/oauth/callback"),
           owner: null,
         };
         chai.assert.deepEqual(expected, client);
@@ -41,8 +42,8 @@ export function testOauthProviderStore(withApi: (fn: (api: Api) => Promise<void>
           id: client.id,
           key: "eternalfest@clients",
           displayName: "Eternalfest",
-          appUri: "https://eternalfest.net",
-          callbackUri: "https://eternalfest.net/oauth/callback",
+          appUri: new Url("https://eternalfest.net"),
+          callbackUri: new Url("https://eternalfest.net/oauth/callback"),
           owner: null,
         };
         chai.assert.deepEqual(expected, retrieved);
@@ -57,8 +58,8 @@ export function testOauthProviderStore(withApi: (fn: (api: Api) => Promise<void>
         {
           key: "eternalfest@clients",
           displayName: "Eternalfest",
-          appUri: "https://eternalfest.net",
-          callbackUri: "https://eternalfest.net/oauth/callback",
+          appUri: new Url("https://eternalfest.net"),
+          callbackUri: new Url("https://eternalfest.net/oauth/callback"),
           secret: Buffer.from("eternalfest_secret"),
         },
       );
@@ -68,8 +69,8 @@ export function testOauthProviderStore(withApi: (fn: (api: Api) => Promise<void>
           id: first.id,
           key: "eternalfest@clients",
           displayName: "Eternalfest",
-          appUri: "https://eternalfest.net",
-          callbackUri: "https://eternalfest.net/oauth/callback",
+          appUri: new Url("https://eternalfest.net"),
+          callbackUri: new Url("https://eternalfest.net/oauth/callback"),
           owner: null,
         };
         chai.assert.deepEqual(expected, first);
@@ -78,8 +79,8 @@ export function testOauthProviderStore(withApi: (fn: (api: Api) => Promise<void>
         {
           key: "eternalfest@clients",
           displayName: "Eternalfest (Updated)",
-          appUri: "https://eternalfest.net",
-          callbackUri: "https://eternalfest.net/oauth/callback",
+          appUri: new Url("https://eternalfest.net"),
+          callbackUri: new Url("https://eternalfest.net/oauth/callback"),
           secret: Buffer.from("eternalfest_secret"),
         },
       );
@@ -89,8 +90,8 @@ export function testOauthProviderStore(withApi: (fn: (api: Api) => Promise<void>
           id: first.id,
           key: "eternalfest@clients",
           displayName: "Eternalfest (Updated)",
-          appUri: "https://eternalfest.net",
-          callbackUri: "https://eternalfest.net/oauth/callback",
+          appUri: new Url("https://eternalfest.net"),
+          callbackUri: new Url("https://eternalfest.net/oauth/callback"),
           owner: null,
         };
         chai.assert.deepEqual(expected, second);

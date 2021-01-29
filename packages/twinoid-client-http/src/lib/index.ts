@@ -1,10 +1,11 @@
-import { AccessToken } from "@eternal-twin/twinoid-core/lib/access-token.js";
-import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
-import { User } from "@eternal-twin/twinoid-core/lib/user.js";
+import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key";
+import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client.js";
+import { TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user.js";
+import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
 import superagent from "superagent";
 import url from "url";
 
-export class HttpTwinoidClientService implements TwinoidClientService {
+export class HttpTwinoidClientService implements TwinoidClient {
   private readonly agent: superagent.SuperAgent<superagent.SuperAgentRequest>;
   private readonly apiBaseUri: string;
 
@@ -13,9 +14,10 @@ export class HttpTwinoidClientService implements TwinoidClientService {
     this.apiBaseUri = apiBaseUri;
   }
 
-  async getMe(at: AccessToken): Promise<Pick<User, "id" | "name"> & Partial<User>> {
+  async getMe(at: RfcOauthAccessTokenKey): Promise<Pick<TwinoidUser, "id" | "displayName"> & Partial<TwinoidUser>> {
     const uri: url.URL = this.resolveUri(["me"]);
     uri.searchParams.set("access_token", at);
+    console.log(uri.toString());
     const rawResult: unknown = (await this.agent.get(uri.toString()).send()).body;
     if (typeof rawResult !== "object" || rawResult === null) {
       throw new Error("InvalidResultType");
@@ -23,14 +25,14 @@ export class HttpTwinoidClientService implements TwinoidClientService {
     if (Reflect.get(rawResult, "id") === undefined && Reflect.get(rawResult, "name") === undefined) {
       throw new Error("Missing fields: id, name");
     }
-    return rawResult as Pick<User, "id" | "name"> & Partial<User>;
+    return {...rawResult, id: (rawResult as any).id.toString(10), displayName: (rawResult as any).name} as Pick<TwinoidUser, "id" | "displayName"> & Partial<TwinoidUser>;
   }
 
-  async getUser(_at: AccessToken, _id: number): Promise<User | null> {
+  async getUser(_at: RfcOauthAccessTokenKey, _id: TwinoidUserId): Promise<TwinoidUser | null> {
     throw new Error("NotImplemented");
   }
 
-  async getUsers(_at: AccessToken, _ids: readonly number[]): Promise<User[]> {
+  async getUsers(_at: RfcOauthAccessTokenKey, _ids: readonly TwinoidUserId[]): Promise<TwinoidUser[]> {
     throw new Error("NotImplemented");
   }
 

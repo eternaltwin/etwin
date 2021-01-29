@@ -1,12 +1,12 @@
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
 import chai from "chai";
-import url from "url";
 
 import { JsonEmailTemplateService } from "../lib/index.js";
 
 describe("JsonEmailTemplateService", () => {
   it("fr-FR", async () => {
-    const baseUrl: url.URL = new url.URL("https://eternal-twin.net");
+    const baseUrl: Url = new Url("https://eternal-twin.net");
     const emailTemplate = new JsonEmailTemplateService(baseUrl);
 
     const token: string = "abcdef";
@@ -25,7 +25,7 @@ describe("JsonEmailTemplateService", () => {
   });
 
   it("en-US", async () => {
-    const baseUrl: url.URL = new url.URL("https://eternal-twin.net");
+    const baseUrl: Url = new Url("https://eternal-twin.net");
     const emailTemplate = new JsonEmailTemplateService(baseUrl);
 
     const token: string = "abcdef";

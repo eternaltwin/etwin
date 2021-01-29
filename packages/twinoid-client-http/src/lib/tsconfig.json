@@ -12,7 +12,7 @@
   "exclude": [],
   "references": [
     {
-      "path": "../../../twinoid-core/src/lib"
+      "path": "../../../core/src/lib"
     }
   ]
 }

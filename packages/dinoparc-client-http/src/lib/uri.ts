@@ -1,6 +1,6 @@
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { DinoparcMachineId } from "@eternal-twin/core/lib/dinoparc/dinoparc-machine-id";
 import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
-import url from "url";
 
 export class DinoparcUri {
   private readonly servers: ReadonlyMap<DinoparcServer, string>;
@@ -13,24 +13,24 @@ export class DinoparcUri {
     ]);
   }
 
-  index(server: DinoparcServer): url.URL {
-    return new url.URL(this.getServer(server));
+  index(server: DinoparcServer): Url {
+    return new Url(this.getServer(server));
   }
 
-  bank(server: DinoparcServer): url.URL {
-    const uri: url.URL = new url.URL(this.getServer(server));
+  bank(server: DinoparcServer): Url {
+    const uri: Url = new Url(this.getServer(server));
     uri.search = "a=bank";
     return uri;
   }
 
-  login(server: DinoparcServer): url.URL {
-    const uri: url.URL = new url.URL(this.getServer(server));
+  login(server: DinoparcServer): Url {
+    const uri: Url = new Url(this.getServer(server));
     uri.search = "a=login";
     return uri;
   }
 
-  adTracking(server: DinoparcServer, machineId: DinoparcMachineId): url.URL {
-    const uri: url.URL = new url.URL(this.getServer(server));
+  adTracking(server: DinoparcServer, machineId: DinoparcMachineId): Url {
+    const uri: Url = new Url(this.getServer(server));
     uri.search = `a=adtk;m=${machineId}`;
     return uri;
   }

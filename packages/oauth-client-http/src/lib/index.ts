@@ -1,4 +1,5 @@
 import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import { $EtwinOauthState } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state.js";
 import { EtwinOauthStateAndAccessToken } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-and-access-token";
@@ -11,18 +12,17 @@ import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope.js";
 import jsonWebToken from "jsonwebtoken";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
-import url from "url";
 
 import { RfcOauthClient } from "./rfc-oauth-client.js";
 import { expandJwt, shrinkJwt } from "./shrink-jwt.js";
 
 export interface HttpOauthClientServiceOptions {
-  authorizationUri: url.URL;
-  callbackUri: url.URL;
+  authorizationUri: Url;
+  callbackUri: Url;
   clientId: OauthClientId;
   clientSecret: OauthClientSecret;
   clock: ClockService;
-  grantUri: url.URL;
+  grantUri: Url;
   tokenSecret: Uint8Array;
 }
 
@@ -41,7 +41,7 @@ const TWINOID_MAX_STATE_BYTES: number = 255;
 export class HttpOauthClientService implements OauthClientService {
   readonly #rfcClient: RfcOauthClient;
   readonly #clock: ClockService;
-  readonly #authorizationUri: url.URL;
+  readonly #authorizationUri: Url;
   readonly #maxStateBytes: number;
   readonly #tokenSecret: Buffer;
 
@@ -54,7 +54,7 @@ export class HttpOauthClientService implements OauthClientService {
       clientSecret: options.clientSecret,
     });
     this.#clock = options.clock;
-    this.#authorizationUri = Object.freeze(new url.URL(options.authorizationUri.toString()));
+    this.#authorizationUri = Object.freeze(new Url(options.authorizationUri.toString()));
     this.#maxStateBytes = TWINOID_MAX_STATE_BYTES;
     this.#tokenSecret = Buffer.from(options.tokenSecret);
   }
@@ -62,7 +62,7 @@ export class HttpOauthClientService implements OauthClientService {
   public async createAuthorizationRequest(
     state: EtwinOauthStateInput,
     scopes: readonly RfcOauthScope[]
-  ): Promise<url.URL> {
+  ): Promise<Url> {
     const stateJwt: OauthState = await this.createStateJwt(state);
     const shortJwt: string = await shrinkJwt(stateJwt);
     const inLimits: boolean = await this.testLimits({state: shortJwt});

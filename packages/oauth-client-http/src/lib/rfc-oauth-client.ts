@@ -1,3 +1,4 @@
+import { $Url, Url } from "@eternal-twin/core/lib/core/url.js";
 import { $OauthAccessToken, OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
 import { OauthGrantType } from "@eternal-twin/core/lib/oauth/oauth-grant-type.js";
 import {
@@ -8,33 +9,32 @@ import authHeader from "auth-header";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 import superagent from "superagent";
-import { URL } from "url";
 
 export interface RfcOauthClientOptions {
-  authorizationEndpoint: URL;
-  tokenEndpoint: URL;
-  callbackEndpoint: URL;
+  authorizationEndpoint: Url;
+  tokenEndpoint: Url;
+  callbackEndpoint: Url;
   clientId: string;
   clientSecret: string;
 }
 
 export class RfcOauthClient {
-  readonly #authorizationEndpoint: URL;
-  readonly #tokenEndpoint: URL;
-  readonly #callbackEndpoint: URL;
+  readonly #authorizationEndpoint: Url;
+  readonly #tokenEndpoint: Url;
+  readonly #callbackEndpoint: Url;
   readonly #clientId: string;
   readonly #clientSecret: string;
 
   public constructor(options: Readonly<RfcOauthClientOptions>) {
-    this.#authorizationEndpoint = Object.freeze(new URL(options.authorizationEndpoint.toString()));
-    this.#tokenEndpoint = Object.freeze(new URL(options.tokenEndpoint.toString()));
-    this.#callbackEndpoint = Object.freeze(new URL(options.callbackEndpoint.toString()));
+    this.#authorizationEndpoint = Object.freeze(new Url(options.authorizationEndpoint.toString()));
+    this.#tokenEndpoint = Object.freeze(new Url(options.tokenEndpoint.toString()));
+    this.#callbackEndpoint = Object.freeze(new Url(options.callbackEndpoint.toString()));
     this.#clientId = options.clientId;
     this.#clientSecret = options.clientSecret;
   }
 
-  public getAuthorizationUri(scope: string, state: string): URL {
-    const url: URL = new URL(this.#authorizationEndpoint.toString());
+  public getAuthorizationUri(scope: string, state: string): Url {
+    const url: Url = new Url(this.#authorizationEndpoint.toString());
     url.searchParams.set("access_type", "offline");
     url.searchParams.set("response_type", "code");
     url.searchParams.set("redirect_uri", this.#callbackEndpoint.toString());
@@ -48,7 +48,7 @@ export class RfcOauthClient {
     const accessTokenReq: RfcOauthAccessTokenRequest = {
       clientId: this.#clientId,
       clientSecret: this.#clientSecret,
-      redirectUri: this.#callbackEndpoint.toString(),
+      redirectUri: $Url.clone(this.#callbackEndpoint),
       code,
       grantType: OauthGrantType.AuthorizationCode,
     };

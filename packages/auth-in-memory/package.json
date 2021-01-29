@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "@eternal-twin/core": "workspace:*",
-    "@eternal-twin/twinoid-core": "workspace:*",
     "@types/jsonwebtoken": "^8.5.0",
     "jsonwebtoken": "^8.5.1",
     "kryo": "^0.11.2",

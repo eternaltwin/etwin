@@ -1,5 +1,6 @@
 import { PgAnnouncementService } from "@eternal-twin/announcement-pg";
 import { PgAuthService } from "@eternal-twin/auth-pg";
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
@@ -29,7 +30,6 @@ import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import { PgTwinoidStore } from "@eternal-twin/twinoid-store-pg";
 import http from "http";
 import Koa from "koa";
-import url from "url";
 
 import { KoaAuth } from "../lib/helpers/koa-auth.js";
 import { Api, createApiRouter } from "../lib/index.js";
@@ -59,7 +59,7 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const secretKeyStr: string = config.etwin.secret;
     const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
     const email = new InMemoryEmailService();
-    const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
+    const emailTemplate = new JsonEmailTemplateService(new Url("https://eternal-twin.net"));
     const password = new ScryptPasswordService();
     const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     const dinoparcClient = new MemDinoparcClient();

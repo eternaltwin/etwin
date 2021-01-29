@@ -1,0 +1,154 @@
+{
+  "id": 1548,
+  "name": "Ludum Daristes",
+  "link": "http://twinoid.com/g/ludum-daristes",
+  "banner": {
+    "url": "//imgup.motion-twin.com/twinoid/3/7/a6866b8b_8297.jpg"
+  },
+  "roles": [
+    {
+      "name": "Observateur"
+    },
+    {
+      "name": "First Timer"
+    },
+    {
+      "name": "Dariste"
+    },
+    {
+      "name": "Regular Dariste"
+    },
+    {
+      "name": "Grand-Maitre"
+    }
+  ],
+  "owner": {
+    "id": 8297
+  },
+  "size": 25,
+  "members": [
+    {
+      "user": {
+        "id": 5
+      }
+    },
+    {
+      "user": {
+        "id": 12
+      }
+    },
+    {
+      "user": {
+        "id": 38
+      }
+    },
+    {
+      "user": {
+        "id": 113
+      }
+    },
+    {
+      "user": {
+        "id": 338
+      }
+    },
+    {
+      "user": {
+        "id": 607
+      }
+    },
+    {
+      "user": {
+        "id": 983
+      }
+    },
+    {
+      "user": null
+    },
+    {
+      "user": {
+        "id": 5124
+      }
+    },
+    {
+      "user": {
+        "id": 8297
+      }
+    },
+    {
+      "user": {
+        "id": 18547
+      }
+    },
+    {
+      "user": {
+        "id": 20333
+      }
+    },
+    {
+      "user": {
+        "id": 26974
+      }
+    },
+    {
+      "user": {
+        "id": 34131
+      }
+    },
+    {
+      "user": {
+        "id": 45643
+      }
+    },
+    {
+      "user": {
+        "id": 91349
+      }
+    },
+    {
+      "user": {
+        "id": 111586
+      }
+    },
+    {
+      "user": {
+        "id": 197731
+      }
+    },
+    {
+      "user": {
+        "id": 684817
+      }
+    },
+    {
+      "user": {
+        "id": 772213
+      }
+    },
+    {
+      "user": {
+        "id": 1722159
+      }
+    },
+    {
+      "user": {
+        "id": 1729138
+      }
+    },
+    {
+      "user": {
+        "id": 1999987
+      }
+    },
+    {
+      "user": {
+        "id": 2992052
+      }
+    },
+    {
+      "user": {
+        "id": 6592950
+      }
+    }
+  ]
+}

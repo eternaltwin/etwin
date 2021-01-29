@@ -1,10 +1,9 @@
-import { User as TidUser } from "@eternal-twin/twinoid-core/lib/user.js";
-
 import { $UuidHex } from "../core/uuid-hex.js";
 import { ShortDinoparcUser } from "../dinoparc/short-dinoparc-user.js";
 import { $EmailAddress } from "../email/email-address.js";
 import { ShortHammerfestUser } from "../hammerfest/short-hammerfest-user.js";
 import { $OauthClientKey } from "../oauth/oauth-client-key.js";
+import { TwinoidUser } from "../twinoid/twinoid-user";
 import { $UserDisplayName, UserDisplayName } from "../user/user-display-name.js";
 import { $Username } from "../user/username.js";
 import { Login } from "./login.js";
@@ -66,11 +65,11 @@ export function hammerfestToUserDisplayName(hfUser: Readonly<ShortHammerfestUser
   throw new Error("AssertionError: Failed to derive user display name from Hammerfest");
 }
 
-export function twinoidToUserDisplayName(tidUser: Readonly<Pick<TidUser, "id" | "name">>): UserDisplayName {
+export function twinoidToUserDisplayName(tidUser: Readonly<Pick<TwinoidUser, "id" | "displayName">>): UserDisplayName {
   const candidates: string[] = [
-    tidUser.name,
-    `tid_${tidUser.name}`,
-    `tid_${tidUser.id.toString(10)}`,
+    tidUser.displayName,
+    `tid_${tidUser.displayName}`,
+    `tid_${tidUser.id}`,
     "twinoidPlayer",
   ];
 

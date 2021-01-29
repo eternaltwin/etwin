@@ -1,0 +1,154 @@
+{
+  "id": 1035,
+  "name": "Hammerfest",
+  "link": "http://twinoid.com/g/hammerfest",
+  "banner": {
+    "url": "//imgup.motion-twin.com/twinoid/3/3/c2ff9763_36482.jpg"
+  },
+  "roles": [
+    {
+      "name": "Flaque d'eau"
+    },
+    {
+      "name": "Boule de neige"
+    },
+    {
+      "name": "Bonhomme de neige"
+    },
+    {
+      "name": "Monstre des glaces"
+    },
+    {
+      "name": "Exterminateur de Tub'Z"
+    }
+  ],
+  "owner": {
+    "id": 38
+  },
+  "size": 25,
+  "members": [
+    {
+      "user": {
+        "id": 38
+      }
+    },
+    {
+      "user": {
+        "id": 262
+      }
+    },
+    {
+      "user": {
+        "id": 1214
+      }
+    },
+    {
+      "user": {
+        "id": 2009
+      }
+    },
+    {
+      "user": {
+        "id": 2174
+      }
+    },
+    {
+      "user": {
+        "id": 4184
+      }
+    },
+    {
+      "user": {
+        "id": 6448
+      }
+    },
+    {
+      "user": {
+        "id": 7037
+      }
+    },
+    {
+      "user": {
+        "id": 8639
+      }
+    },
+    {
+      "user": {
+        "id": 10726
+      }
+    },
+    {
+      "user": {
+        "id": 16051
+      }
+    },
+    {
+      "user": {
+        "id": 18694
+      }
+    },
+    {
+      "user": {
+        "id": 21523
+      }
+    },
+    {
+      "user": {
+        "id": 36482
+      }
+    },
+    {
+      "user": {
+        "id": 37064
+      }
+    },
+    {
+      "user": {
+        "id": 132609
+      }
+    },
+    {
+      "user": {
+        "id": 161457
+      }
+    },
+    {
+      "user": null
+    },
+    {
+      "user": {
+        "id": 620479
+      }
+    },
+    {
+      "user": {
+        "id": 2051835
+      }
+    },
+    {
+      "user": {
+        "id": 2155698
+      }
+    },
+    {
+      "user": {
+        "id": 2178428
+      }
+    },
+    {
+      "user": {
+        "id": 4726180
+      }
+    },
+    {
+      "user": {
+        "id": 6775418
+      }
+    },
+    {
+      "user": {
+        "id": 7318214
+      }
+    }
+  ]
+}

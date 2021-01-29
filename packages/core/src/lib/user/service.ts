@@ -1,6 +1,3 @@
-import { TwinoidClientService } from "@eternal-twin/twinoid-core/lib/client.js";
-import { User as TidUser } from "@eternal-twin/twinoid-core/lib/user.js";
-
 import { AuthContext } from "../auth/auth-context.js";
 import { AuthType } from "../auth/auth-type.js";
 import { AuthService } from "../auth/service.js";
@@ -14,7 +11,9 @@ import { VersionedDinoparcLink } from "../link/versioned-dinoparc-link.js";
 import { VersionedHammerfestLink } from "../link/versioned-hammerfest-link.js";
 import { VersionedTwinoidLink } from "../link/versioned-twinoid-link";
 import { TokenService } from "../token/service.js";
+import { TwinoidClient } from "../twinoid/client.js";
 import { TwinoidStore } from "../twinoid/store.js";
+import { TwinoidUser } from "../twinoid/twinoid-user.js";
 import { CompleteIfSelfUserFields } from "./complete-if-self-user-fields.js";
 import { COMPLETE_USER_FIELDS, CompleteUserFields } from "./complete-user-fields.js";
 import { DEFAULT_USER_FIELDS, DefaultUserFields } from "./default-user-fields.js";
@@ -45,7 +44,7 @@ export interface UserServiceOptions {
   link: LinkService;
   userStore: UserStore;
   token: TokenService;
-  twinoidClient: TwinoidClientService;
+  twinoidClient: TwinoidClient;
   twinoidStore: TwinoidStore;
 }
 
@@ -58,7 +57,7 @@ export class UserService {
   readonly #link: LinkService;
   readonly #userStore: UserStore;
   readonly #token: TokenService;
-  readonly #twinoidClient: TwinoidClientService;
+  readonly #twinoidClient: TwinoidClient;
   readonly #twinoidStore: TwinoidStore;
 
   public constructor(options: Readonly<UserServiceOptions>) {
@@ -233,17 +232,17 @@ export class UserService {
       throw new Error("Forbidden");
     }
 
-    const tidUser: Pick<TidUser, "id" | "name"> = await this.#twinoidClient.getMe(options.accessToken.accessToken);
-    await this.#twinoidStore.touchShortUser({type: ObjectType.TwinoidUser, id: tidUser.id.toString(10), displayName: tidUser.name});
+    const tidUser: Pick<TwinoidUser, "id" | "displayName"> = await this.#twinoidClient.getMe(options.accessToken.accessToken);
+    await this.#twinoidStore.touchShortUser({type: ObjectType.TwinoidUser, id: tidUser.id, displayName: tidUser.displayName});
     await this.#token.touchTwinoidOauth({
       accessToken: options.accessToken.accessToken,
       expirationTime: new Date(Date.now() + options.accessToken.expiresIn * 1000),
       refreshToken: options.accessToken.refreshToken,
-      twinoidUserId: tidUser.id.toString(10),
+      twinoidUserId: tidUser.id,
     });
     return await this.#link.linkToTwinoid({
       userId: acx.user.id,
-      twinoidUserId: tidUser.id.toString(10),
+      twinoidUserId: tidUser.id,
       linkedBy: acx.user.id,
     });
   }

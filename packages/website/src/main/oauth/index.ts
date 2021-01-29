@@ -5,6 +5,7 @@ import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
+import { $Url, Url } from "@eternal-twin/core/lib/core/url.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
 import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type.js";
 import { EtwinOauthStateAndAccessToken } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-and-access-token.js";
@@ -25,10 +26,10 @@ import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
 import { $OauthCode, OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
 import { OauthResponseType } from "@eternal-twin/core/lib/oauth/oauth-response-type.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client.js";
 import { LinkToTwinoidMethod } from "@eternal-twin/core/lib/user/link-to-twinoid-method.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { KoaAuth, SESSION_COOKIE } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
-import { TwinoidClientService } from "@eternal-twin/twinoid-core/src/lib/client.js";
 import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
@@ -38,14 +39,13 @@ import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
 import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader.js";
 import { QS_VALUE_WRITER } from "kryo-qs/lib/qs-value-writer.js";
 import querystring from "querystring";
-import url from "url";
 
 export interface Api {
   auth: AuthService;
   koaAuth: KoaAuth;
   oauthClient: OauthClientService;
   oauthProvider: OauthProviderService;
-  twinoidClient: TwinoidClientService;
+  twinoidClient: TwinoidClient;
   user: UserService;
 }
 
@@ -81,7 +81,7 @@ export async function createOauthRouter(api: Api): Promise<Router> {
     }
     const rawRedirectUri: string | undefined = Reflect.get(cx.request.query, "redirect_uri");
     if (rawRedirectUri !== undefined) {
-      if (rawRedirectUri !== client.callbackUri) {
+      if (rawRedirectUri !== client.callbackUri.toString()) {
         cx.response.status = 422;
         cx.response.body = {error: "RedirectUriMismatch", actual: rawRedirectUri, registered: client.callbackUri};
       }
@@ -95,7 +95,7 @@ export async function createOauthRouter(api: Api): Promise<Router> {
       query = $OauthAuthorizationRequest.read(QS_VALUE_READER, cx.request.query);
     } catch (_err) {
       const error: OauthAuthorizationError = OauthAuthorizationError.InvalidRequest;
-      const targetUri: url.URL = new url.URL(client.callbackUri);
+      const targetUri: Url = $Url.clone(client.callbackUri);
       targetUri.searchParams.set("error", $OauthAuthorizationError.write(QS_VALUE_WRITER, error));
       if (typeof cx.request.query.state === "string") {
         targetUri.searchParams.set("state", cx.request.query.state);
@@ -105,7 +105,7 @@ export async function createOauthRouter(api: Api): Promise<Router> {
     }
     if (query.responseType !== OauthResponseType.Code) {
       const error: OauthAuthorizationError = OauthAuthorizationError.UnsupportedResponseType;
-      const targetUri: url.URL = new url.URL(client.callbackUri);
+      const targetUri: Url = $Url.clone(client.callbackUri);
       targetUri.searchParams.set("error", $OauthAuthorizationError.write(QS_VALUE_WRITER, error));
       if (query.state !== undefined) {
         targetUri.searchParams.set("state", query.state);
@@ -116,7 +116,7 @@ export async function createOauthRouter(api: Api): Promise<Router> {
 
     try {
       const code: OauthCode = await api.oauthProvider.createAuthorizationCode(auth, client.id, query.scope ?? null);
-      const targetUri: url.URL = new url.URL(client.callbackUri);
+      const targetUri: Url = $Url.clone(client.callbackUri);
       targetUri.searchParams.set("code", $OauthCode.write(QS_VALUE_WRITER, code));
       if (query.state !== undefined) {
         targetUri.searchParams.set("state", query.state);

@@ -1,0 +1,7 @@
+{
+  "client_id": "eternalfest",
+  "redirect_uri": "http://localhost:50313/oauth/callback",
+  "response_type": "code",
+  "scope": "",
+  "state": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uU2VydmVyIjoiZXRlcm5hbC10d2luLm5ldCIsInJlcXVlc3RGb3JnZXJ5UHJvdGVjdGlvbiI6Ijc4Nzg4NWIzNDM0YTAzZTlkMjJjZDcyZWFjZWU1ZjQxIiwiaWF0IjoxNTg4ODcwNjMyLCJleHAiOjE1ODg5NTcwMzJ9.bZe_x0elHyaZsS0HL7AcPIN_27V3iWv-DQKTec85IQc"
+}

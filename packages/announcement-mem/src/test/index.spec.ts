@@ -1,5 +1,6 @@
 import { Api, testAnnouncementService } from "@eternal-twin/announcement-test";
 import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
@@ -19,7 +20,6 @@ import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memo
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import { MemTwinoidStore } from "@eternal-twin/twinoid-store-mem";
-import url from "url";
 
 import { MemAnnouncementService } from "../lib/index.js";
 
@@ -31,7 +31,7 @@ async function withMemAnnouncementService<R>(fn: (api: Api) => Promise<R>): Prom
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new InMemoryEmailService();
-  const emailTemplate = new JsonEmailTemplateService(new url.URL("https://eternal-twin.net"));
+  const emailTemplate = new JsonEmailTemplateService(new Url("https://eternal-twin.net"));
   const password = new ScryptPasswordService();
   const dinoparcStore = new MemDinoparcStore({clock});
   const hammerfestStore = new MemHammerfestStore({clock});

@@ -1,4 +1,5 @@
 import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { EtwinClientService } from "@eternal-twin/core/lib/etwin-client/service.js";
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { $ShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
@@ -6,14 +7,13 @@ import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { IoType } from "kryo";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
 import superagent from "superagent";
-import url from "url";
 import urlJoin from "url-join";
 
 export class HttpEtwinClient implements EtwinClientService {
-  private readonly apiUri: url.URL;
+  private readonly apiUri: Url;
 
-  constructor(apiUri: url.URL) {
-    this.apiUri = Object.freeze(new url.URL(apiUri.toString()));
+  constructor(apiUri: Url) {
+    this.apiUri = Object.freeze(new Url(apiUri.toString()));
   }
 
   public async getAuthSelf(accessToken: RfcOauthAccessTokenKey): Promise<AuthContext> {

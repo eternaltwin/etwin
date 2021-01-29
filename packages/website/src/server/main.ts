@@ -6,12 +6,12 @@ import { StaticProvider } from "@angular/core";
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
 import Router, { RouterContext } from "@koa/router";
 import * as furi from "furi";
 import Koa from "koa";
 import koaStaticCache from "koa-static-cache";
-import url from "url";
 
 import { AppServerModule } from "../app/app.server.module";
 import { ROUTES } from "../routes";
@@ -31,7 +31,7 @@ function resolveServerOptions(options?: Partial<ServerAppConfig>): ServerAppConf
   } else {
     isProduction = options.isProduction === true;
   }
-  const externalUri: url.URL | undefined = options.externalUri;
+  const externalUri: Url | undefined = options.externalUri;
   const isIndexNextToServerMain: boolean = options.isIndexNextToServerMain === true;
   if (isProduction) {
     if (externalUri === undefined) {
@@ -59,11 +59,11 @@ function resolveServerOptions(options?: Partial<ServerAppConfig>): ServerAppConf
 /**
  * Resolves the fully qualified URL from the path and query
  */
-function fullyQualifyUrl(options: ServerAppConfig, pathAndQuery: string): url.URL {
+function fullyQualifyUrl(options: ServerAppConfig, pathAndQuery: string): Url {
   if (options.externalUri !== undefined) {
-    return new url.URL(pathAndQuery, options.externalUri);
+    return new Url(pathAndQuery, options.externalUri);
   } else {
-    return new url.URL(pathAndQuery, "http://localhost/");
+    return new Url(pathAndQuery, "http://localhost/");
   }
 }
 
@@ -110,7 +110,7 @@ export async function app(options?: Partial<ServerAppConfig>): Promise<Koa> {
       console.error(err);
       acx = GUEST_AUTH_CONTEXT;
     }
-    const reqUrl: url.URL = fullyQualifyUrl(config, cx.request.originalUrl);
+    const reqUrl: Url = fullyQualifyUrl(config, cx.request.originalUrl);
     cx.response.body = await engine.render({
       url: reqUrl,
       providers: [

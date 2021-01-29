@@ -3,8 +3,10 @@ import { QsValueReader } from "kryo-qs/lib/qs-value-reader.js";
 import { QsWriter } from "kryo-qs/lib/qs-writer.js";
 import { registerErrMochaTests, registerMochaSuites, TestItem } from "kryo-testing";
 
+import { Url } from "../../lib/core/url.js";
 import { $OauthAuthorizationRequest, OauthAuthorizationRequest } from "../../lib/oauth/oauth-authorization-request.js";
 import { OauthResponseType } from "../../lib/oauth/oauth-response-type.js";
+import { registerJsonIoTests } from "../helpers.js";
 
 const QS_WRITER = new QsWriter();
 const QS_READER = new QsReader();
@@ -17,7 +19,7 @@ describe("OauthAuthorizationRequest", function () {
       value: {
         responseType: OauthResponseType.Code,
         clientId: "eternalfest",
-        redirectUri: "http://localhost:50313/oauth/callback",
+        redirectUri: new Url("http://localhost:50313/oauth/callback"),
         scope: "",
         state: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uU2VydmVyIjoiZXRlcm5hbC10d2luLm5ldCIsInJlcXVlc3RGb3JnZXJ5UHJvdGVjdGlvbiI6Ijc4Nzg4NWIzNDM0YTAzZTlkMjJjZDcyZWFjZWU1ZjQxIiwiaWF0IjoxNTg4ODcwNjMyLCJleHAiOjE1ODg5NTcwMzJ9.bZe_x0elHyaZsS0HL7AcPIN_27V3iWv-DQKTec85IQc",
       },
@@ -58,4 +60,21 @@ describe("OauthAuthorizationRequest", function () {
     ];
     registerErrMochaTests(QS_READER, $OauthAuthorizationRequest, invalids);
   });
+
+  registerJsonIoTests(
+    $OauthAuthorizationRequest,
+    "core/oauth/oauth-authorization-request",
+    new Map([
+      [
+        "eternalfest",
+        {
+          responseType: OauthResponseType.Code,
+          clientId: "eternalfest",
+          redirectUri: new Url("http://localhost:50313/oauth/callback"),
+          scope: "",
+          state: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemF0aW9uU2VydmVyIjoiZXRlcm5hbC10d2luLm5ldCIsInJlcXVlc3RGb3JnZXJ5UHJvdGVjdGlvbiI6Ijc4Nzg4NWIzNDM0YTAzZTlkMjJjZDcyZWFjZWU1ZjQxIiwiaWF0IjoxNTg4ODcwNjMyLCJleHAiOjE1ODg5NTcwMzJ9.bZe_x0elHyaZsS0HL7AcPIN_27V3iWv-DQKTec85IQc",
+        },
+      ],
+    ])
+  );
 });

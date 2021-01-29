@@ -13,9 +13,6 @@
   "references": [
     {
       "path": "../../../core/src/lib"
-    },
-    {
-      "path": "../../../twinoid-core/src/lib"
     }
   ]
 }

@@ -30,7 +30,6 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "@eternal-twin/twinoid-core": "workspace:*",
     "jsonwebtoken": "^8.5.1",
     "kryo": "^0.11.2"
   },
