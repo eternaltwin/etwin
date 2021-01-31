@@ -1,6 +1,6 @@
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
-import { Api, testTwinoidArchiveService } from "@eternal-twin/twinoid-store-test";
+import { Api, testTwinoidStore } from "@eternal-twin/twinoid-store-test";
 
 import { PgTwinoidStore } from "../lib/index.js";
 
@@ -22,5 +22,5 @@ async function withPgTwinoidStore<R>(fn: (api: Api) => Promise<R>): Promise<R> {
 }
 
 describe("PgTwinoidStore", function () {
-  testTwinoidArchiveService(withPgTwinoidStore);
+  testTwinoidStore(withPgTwinoidStore);
 });

@@ -10,7 +10,7 @@ export interface TwinoidStore {
    */
   getUser(options: Readonly<GetTwinoidUserOptions>): Promise<ArchivedTwinoidUser | null>;
 
-  getShortUser(options: Readonly<GetTwinoidUserOptions>): Promise<ArchivedTwinoidUser | null>;
+  getShortUser(options: Readonly<GetTwinoidUserOptions>): Promise<ShortTwinoidUser | null>;
 
   touchShortUser(short: Readonly<ShortTwinoidUser>): Promise<ArchivedTwinoidUser>;
 }

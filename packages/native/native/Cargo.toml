@@ -24,6 +24,7 @@ etwin_dinoparc_store = { path = "../../../crates/dinoparc_store", features = ["n
 etwin_hammerfest_client = { path = "../../../crates/hammerfest_client", features = ["neon"] }
 etwin_hammerfest_store = { path = "../../../crates/hammerfest_store", features = ["neon"] }
 etwin_link_store = { path = "../../../crates/link_store", features = ["neon"] }
+etwin_twinoid_store = { path = "../../../crates/twinoid_store", features = ["neon"] }
 etwin_user_store = { path = "../../../crates/user_store", features = ["neon"] }
 neon = { version = "^0.7.0", default-features = false, features = ["event-queue-api", "napi-runtime"] }
 sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }

@@ -65,6 +65,9 @@
       "path": "../../../twinoid-store-pg/src/lib"
     },
     {
+      "path": "../../../twinoid-store-test/src/lib"
+    },
+    {
       "path": "../../../user-store-test/src/lib"
     }
   ]

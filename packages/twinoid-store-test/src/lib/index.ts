@@ -7,7 +7,7 @@ export interface Api {
   twinoidStore: TwinoidStore;
 }
 
-export function testTwinoidArchiveService(withApi: (fn: (api: Api) => Promise<void>) => Promise<void>) {
+export function testTwinoidStore(withApi: (fn: (api: Api) => Promise<void>) => Promise<void>) {
   it("Retrieve an existing Twinoid user", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {

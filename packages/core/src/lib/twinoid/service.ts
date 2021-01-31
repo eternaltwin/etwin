@@ -20,7 +20,7 @@ export class TwinoidService {
   }
 
   async getUser(_acx: AuthContext, options: Readonly<GetTwinoidUserOptions>): Promise<TwinoidUser | null> {
-    const user: ArchivedTwinoidUser | null = await this.#twinoidStore.getShortUser(options);
+    const user: ArchivedTwinoidUser | null = await this.#twinoidStore.getUser(options);
     if (user === null) {
       return null;
     }

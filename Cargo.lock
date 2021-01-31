@@ -574,6 +574,7 @@ dependencies = [
  "etwin_hammerfest_client",
  "etwin_hammerfest_store",
  "etwin_link_store",
+ "etwin_twinoid_store",
  "etwin_user_store",
  "neon",
  "neon-build",
