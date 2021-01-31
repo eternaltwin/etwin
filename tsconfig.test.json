@@ -59,12 +59,6 @@
     },
     {
       "path": "packages/token-pg/src/test"
-    },
-    {
-      "path": "packages/twinoid-store-mem/src/test"
-    },
-    {
-      "path": "packages/twinoid-store-pg/src/test"
     }
   ]
 }

@@ -70,7 +70,6 @@
     "@eternal-twin/pg-db": "workspace:*",
     "@eternal-twin/token-pg": "workspace:*",
     "@eternal-twin/twinoid-client-http": "workspace:*",
-    "@eternal-twin/twinoid-store-pg": "workspace:*",
     "@koa/cors": "^3.1.0",
     "@types/koa-logger": "^3.1.1",
     "@types/koa__cors": "^3.0.2",

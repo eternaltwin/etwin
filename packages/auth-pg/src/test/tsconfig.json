@@ -38,9 +38,6 @@
       "path": "../../../password-scrypt/src/lib"
     },
     {
-      "path": "../../../twinoid-store-pg/src/lib"
-    },
-    {
       "path": "../../../twinoid-client-http/src/lib"
     }
   ]

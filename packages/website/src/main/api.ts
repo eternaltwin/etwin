@@ -35,6 +35,7 @@ import { MemDinoparcStore, PgDinoparcStore } from "@eternal-twin/native/lib/dino
 import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { MemHammerfestStore, PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { MemLinkStore, PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
+import { MemTwinoidStore, PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
 import { MemUserStore, PgUserStore } from "@eternal-twin/native/lib/user-store.js";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { HttpOauthClientService } from "@eternal-twin/oauth-client-http";
@@ -46,8 +47,6 @@ import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import { InMemoryTokenService } from "@eternal-twin/token-in-memory";
 import { PgTokenService } from "@eternal-twin/token-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
-import { MemTwinoidStore } from "@eternal-twin/twinoid-store-mem";
-import { PgTwinoidStore } from "@eternal-twin/twinoid-store-pg";
 import urljoin from "url-join";
 
 export interface Api {
@@ -102,7 +101,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     userStore = new MemUserStore({clock, uuidGenerator});
     dinoparcStore = new MemDinoparcStore({clock});
     hammerfestStore = new MemHammerfestStore({clock});
-    twinoidStore = new MemTwinoidStore();
+    twinoidStore = new MemTwinoidStore({clock});
     linkStore = new MemLinkStore({clock});
     link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
     oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
@@ -153,7 +152,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     });
     dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
     hammerfestStore = new PgHammerfestStore({clock, database: nativeDatabase});
-    twinoidStore = new PgTwinoidStore(database);
+    twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
     userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     linkStore = new PgLinkStore({clock, database: nativeDatabase});
     link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});

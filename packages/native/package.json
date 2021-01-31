@@ -42,8 +42,6 @@
     "@eternal-twin/oauth-provider-pg": "workspace:*",
     "@eternal-twin/password-scrypt": "workspace:*",
     "@eternal-twin/pg-db": "workspace:*",
-    "@eternal-twin/twinoid-store-mem": "workspace:*",
-    "@eternal-twin/twinoid-store-pg": "workspace:*",
     "@eternal-twin/twinoid-store-test": "workspace:*",
     "@eternal-twin/user-store-test": "workspace:*",
     "@types/chai": "^4.2.14",

@@ -66,8 +66,6 @@
     "@eternal-twin/token-in-memory": "workspace:*",
     "@eternal-twin/token-pg": "workspace:*",
     "@eternal-twin/twinoid-client-http": "workspace:*",
-    "@eternal-twin/twinoid-store-mem": "workspace:*",
-    "@eternal-twin/twinoid-store-pg": "workspace:*",
     "@koa/cors": "^3.1.0",
     "@koa/router": "^10.0.0",
     "@nguniversal/common": "^11.0.0",

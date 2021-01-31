@@ -38,7 +38,6 @@
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/native": "workspace:*",
     "@eternal-twin/token-test": "workspace:*",
-    "@eternal-twin/twinoid-store-pg": "workspace:*",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.0.4",
     "@types/node": "^14.14.10",
