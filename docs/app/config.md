@@ -20,7 +20,7 @@ variables with an identifier unique to your application.
 Do not invent your own file format. Use either `.env` files, JSON files or
 TOML files.
 
-Provide and example configuration file in your repository.
+Provide an example configuration file in your repository.
 
 ### Zero configuration
 
@@ -36,7 +36,7 @@ It must check that the configuration is valid and represent it as a single
 value. Pick the representation that best suits your language, usually a class
 instance. Avoid untyped maps.
 
-The goal is to avoid ad-hoc configuration access: the reste of the application
+The goal is to avoid ad-hoc configuration access: the rest of the application
 should only use this configuration value.
 
 ## Configurable values

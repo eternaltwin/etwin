@@ -1,0 +1,26 @@
+[package]
+name = "etwin_twinoid_store"
+version = "0.0.1"
+authors = ["Charles Samborski <demurgos@demurgos.net>"]
+description = "Twinoid store implementation"
+documentation = "https://github.com/eternal-twin/etwin"
+homepage = "https://github.com/eternal-twin/etwin"
+repository = "https://github.com/eternal-twin/etwin"
+readme = "./README.md"
+keywords = ["etwin"]
+license = "AGPL-3.0-or-later"
+edition = "2018"
+
+[dependencies]
+async-trait = "^0.1.42"
+etwin_core = { path = "../core", features = ["sqlx"] }
+etwin_db_schema = { path = "../db_schema" }
+neon = { version = "^0.7.0", optional = true, default-features = false, features = ["napi-runtime"] }
+regex = "^1.4.2"
+sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
+
+[dev-dependencies]
+chrono = "^0.4.19"
+etwin_config = { path = "../config" }
+serial_test = "^0.5.1"
+tokio = { version = "^0.2.23", features = ["macros", "rt-core"] }

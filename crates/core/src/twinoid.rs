@@ -1,7 +1,11 @@
+use crate::core::Instant;
+use async_trait::async_trait;
+use auto_impl::auto_impl;
 use once_cell::sync::Lazy;
 use regex::Regex;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
+use std::error::Error;
 
 declare_decimal_id! {
   pub struct TwinoidUserId(u32);
@@ -25,9 +29,44 @@ pub struct ShortTwinoidUser {
   pub display_name: TwinoidUserDisplayName,
 }
 
+impl From<ArchivedTwinoidUser> for ShortTwinoidUser {
+  fn from(value: ArchivedTwinoidUser) -> Self {
+    Self {
+      id: value.id,
+      display_name: value.display_name,
+    }
+  }
+}
+
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "serde", serde(tag = "type", rename = "TwinoidUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TwinoidUserIdRef {
   pub id: TwinoidUserId,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "TwinoidUser"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ArchivedTwinoidUser {
+  pub id: TwinoidUserId,
+  pub archived_at: Instant,
+  pub display_name: TwinoidUserDisplayName,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct GetTwinoidUserOptions {
+  pub id: TwinoidUserId,
+  pub time: Option<Instant>,
+}
+
+#[async_trait]
+#[auto_impl(&, Arc)]
+pub trait TwinoidStore: Send + Sync {
+  async fn get_short_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ShortTwinoidUser>, Box<dyn Error>>;
+
+  async fn get_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ArchivedTwinoidUser>, Box<dyn Error>>;
+
+  async fn touch_short_user(&self, options: &ShortTwinoidUser) -> Result<ArchivedTwinoidUser, Box<dyn Error>>;
 }

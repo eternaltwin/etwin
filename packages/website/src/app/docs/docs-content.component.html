@@ -151,11 +151,11 @@ Authorization: Bearer 5f6613eb-880f-4b01-8e71-96b644e4584f
 either  environment variables or a configuration file.</p><h2>Configuration format</h2><h3>Environment variable</h3><p>When using environment variables, use <code>UPPER_SNAKE_CASE</code>. Prefix all the
 variables with an identifier unique to your application.</p><ul><li>Example: <code>NEOPARC_EXTERNAL_URI</code> to configure the external URI of Neoparc
 (Dinoparc remake).</li></ul><h3>Configuration file</h3><p>Do not invent your own file format. Use either <code>.env</code> files, JSON files or
-TOML files.</p><p>Provide and example configuration file in your repository.</p><h3>Zero configuration</h3><p>You may allow your application to start without any environement variable or
+TOML files.</p><p>Provide an example configuration file in your repository.</p><h3>Zero configuration</h3><p>You may allow your application to start without any environement variable or
 configuration file. Assume that the application is running locally in
 development mode in such case.</p><h2>Runtime representation</h2><p>Your application must fully load the configuration during its initialization.</p><p>It must check that the configuration is valid and represent it as a single
 value. Pick the representation that best suits your language, usually a class
-instance. Avoid untyped maps.</p><p>The goal is to avoid ad-hoc configuration access: the reste of the application
+instance. Avoid untyped maps.</p><p>The goal is to avoid ad-hoc configuration access: the rest of the application
 should only use this configuration value.</p><h2>Configurable values</h2><p>This section contains a list of values the must configurable.</p><h3>Eternal-Twin URI</h3><p>Eternal-Twin URI, used for OAuth and the API.</p><p>Example values:</p><ul><li><code>http://localhost:50320/</code></li><li><code>https://eternal-twin.net/</code></li></ul><h3>Eternal-Twin OAuth client id</h3><p>OAuth <code>client_id</code> for Eternal-Twin.</p><p>Example values:</p><ul><li><code>eternalfest@clients</code></li><li><code>d19e61a3-83d3-410f-84ec-49aaab841559</code></li></ul><h3>Eternal-Twin OAuth client secret</h3><p>OAuth <code>client_secret</code> for Eternal-Twin.</p><p>Example values:</p><ul><li><code>dev_secret</code></li><li><code>8tbuCjaBVkL2HZDh7cH2m2Fdv3CSEgK8</code></li></ul><h3>External URI</h3><p>Public URI for the root of the application.</p><p>Example values:</p><ul><li><code>http://directquiz.localhost/</code></li><li><code>http://directquiz.eternal-twin.net/</code></li></ul>
 </ng-container>
 <ng-container *ngSwitchCase="&quot;app/etwin-api&quot;">
