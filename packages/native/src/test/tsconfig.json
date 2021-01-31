@@ -23,9 +23,6 @@
       "path": "../../../dinoparc-client-mem/src/lib"
     },
     {
-      "path": "../../../dinoparc-store-test/src/lib"
-    },
-    {
       "path": "../../../email-in-memory/src/lib"
     },
     {
@@ -33,12 +30,6 @@
     },
     {
       "path": "../../../etwin-pg/src/lib"
-    },
-    {
-      "path": "../../../hammerfest-store-test/src/lib"
-    },
-    {
-      "path": "../../../link-test/src/lib"
     },
     {
       "path": "../../../local-config/src/lib"
@@ -57,12 +48,6 @@
     },
     {
       "path": "../../../twinoid-client-http/src/lib"
-    },
-    {
-      "path": "../../../twinoid-store-test/src/lib"
-    },
-    {
-      "path": "../../../user-store-test/src/lib"
     }
   ]
 }

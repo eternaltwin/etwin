@@ -1811,22 +1811,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/dinoparc-store-test@workspace:*, @eternal-twin/dinoparc-store-test@workspace:packages/dinoparc-store-test":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/dinoparc-store-test@workspace:packages/dinoparc-store-test"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
 "@eternal-twin/email-console@workspace:*, @eternal-twin/email-console@workspace:packages/email-console":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/email-console@workspace:packages/email-console"
@@ -2028,38 +2012,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/hammerfest-store-test@workspace:*, @eternal-twin/hammerfest-store-test@workspace:packages/hammerfest-store-test":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/hammerfest-store-test@workspace:packages/hammerfest-store-test"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/link-test@workspace:*, @eternal-twin/link-test@workspace:packages/link-test":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/link-test@workspace:packages/link-test"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
 "@eternal-twin/local-config@workspace:*, @eternal-twin/local-config@workspace:packages/local-config":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/local-config@workspace:packages/local-config"
@@ -2101,19 +2053,14 @@ __metadata:
     "@eternal-twin/core": "workspace:*"
     "@eternal-twin/dinoparc-client-http": "workspace:*"
     "@eternal-twin/dinoparc-client-mem": "workspace:*"
-    "@eternal-twin/dinoparc-store-test": "workspace:*"
     "@eternal-twin/email-in-memory": "workspace:*"
     "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
-    "@eternal-twin/hammerfest-store-test": "workspace:*"
-    "@eternal-twin/link-test": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
-    "@eternal-twin/twinoid-store-test": "workspace:*"
-    "@eternal-twin/user-store-test": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2370,38 +2317,6 @@ __metadata:
     eslint: ^7.14.0
     mocha: ^8.2.1
     superagent: ^6.1.0
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/twinoid-store-test@workspace:*, @eternal-twin/twinoid-store-test@workspace:packages/twinoid-store-test":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/twinoid-store-test@workspace:packages/twinoid-store-test"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/user-store-test@workspace:*, @eternal-twin/user-store-test@workspace:packages/user-store-test":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/user-store-test@workspace:packages/user-store-test"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
     typescript: ^4.1.2
   languageName: unknown
   linkType: soft

@@ -1,19 +1,32 @@
 import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
+import { GUEST_AUTH } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
+import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
+import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
+import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { LinkService } from "@eternal-twin/core/lib/link/service.js";
+import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
 import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { ShortTwinoidUser } from "@eternal-twin/core/lib/twinoid/short-twinoid-user.js";
+import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
+import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
+import { Username } from "@eternal-twin/core/lib/user/username.js";
 import { MemDinoparcClient } from "@eternal-twin/dinoparc-client-mem";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
-import { Api as LinkStoreApi, testLinkService } from "@eternal-twin/link-test";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
+import chai from "chai";
 
 import { VirtualClock } from "../lib/clock.js";
 import { Database as NativeDatabase } from "../lib/database.js";
@@ -27,7 +40,7 @@ import { Uuid4Generator } from "../lib/uuid.js";
 
 describe("NativeLinkStore", function () {
   describe("MemLinkStore", function () {
-    async function withMemLinkStore<R>(fn: (api: LinkStoreApi) => Promise<R>): Promise<R> {
+    async function withMemLinkStore<R>(fn: (api: TestApi) => Promise<R>): Promise<R> {
       const config = await getLocalConfig();
 
       const clock = new VirtualClock();
@@ -56,7 +69,7 @@ describe("NativeLinkStore", function () {
   });
 
   describe("PgLinkStore", function () {
-    async function withPgLinkStore<R>(fn: (api: LinkStoreApi) => Promise<R>): Promise<R> {
+    async function withPgLinkStore<R>(fn: (api: TestApi) => Promise<R>): Promise<R> {
       const config = await getLocalConfig();
       const dbConfig: DbConfig = {
         host: config.db.host,
@@ -96,3 +109,143 @@ describe("NativeLinkStore", function () {
     testLinkService(withPgLinkStore);
   });
 });
+
+interface TestApi {
+  auth: AuthService;
+  link: LinkService;
+  twinoidStore: TwinoidStore;
+}
+
+async function createUser(
+  auth: AuthService,
+  username: Username,
+  displayName: UserDisplayName,
+  password: string,
+): Promise<UserAuthContext> {
+  const usernameOptions: RegisterWithUsernameOptions = {
+    username,
+    displayName,
+    password: Buffer.from(password),
+  };
+  const userAndSession: UserAndSession = await auth.registerWithUsername(GUEST_AUTH, usernameOptions);
+  return {
+    type: AuthType.User,
+    scope: AuthScope.Default,
+    user: userAndSession.user,
+    isAdministrator: userAndSession.isAdministrator,
+  };
+}
+
+function testLinkService(withApi: (fn: (api: TestApi) => Promise<void>) => Promise<void>) {
+  it("Retrieve links for a user with no links", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: TestApi): Promise<void> => {
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      {
+        const actual: VersionedLinks = await api.link.getVersionedLinks(aliceAuth.user.id);
+        const expected: VersionedLinks = {
+          dinoparcCom: {
+            current: null,
+            old: [],
+          },
+          enDinoparcCom: {
+            current: null,
+            old: [],
+          },
+          hammerfestEs: {
+            current: null,
+            old: [],
+          },
+          hammerfestFr: {
+            current: null,
+            old: [],
+          },
+          hfestNet: {
+            current: null,
+            old: [],
+          },
+          spDinoparcCom: {
+            current: null,
+            old: [],
+          },
+          twinoid: {
+            current: null,
+            old: [],
+          },
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
+
+  it("Link to twinoid and retrieve links", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: TestApi): Promise<void> => {
+      const aliceAuth: UserAuthContext = await createUser(api.auth, "alice", "Alice", "aaaaa");
+      const alice: ShortTwinoidUser = {
+        type: ObjectType.TwinoidUser,
+        id: "1",
+        displayName: "alice",
+      };
+      await api.twinoidStore.touchShortUser(alice);
+      await api.link.linkToTwinoid({
+        userId: aliceAuth.user.id,
+        twinoidUserId: alice.id,
+        linkedBy: aliceAuth.user.id,
+      });
+      {
+        const actual: VersionedLinks = await api.link.getVersionedLinks(aliceAuth.user.id);
+        const expected: VersionedLinks = {
+          dinoparcCom: {
+            current: null,
+            old: [],
+          },
+          enDinoparcCom: {
+            current: null,
+            old: [],
+          },
+          hammerfestEs: {
+            current: null,
+            old: [],
+          },
+          hammerfestFr: {
+            current: null,
+            old: [],
+          },
+          hfestNet: {
+            current: null,
+            old: [],
+          },
+          spDinoparcCom: {
+            current: null,
+            old: [],
+          },
+          twinoid: {
+            current: {
+              link: {
+                time: actual.twinoid.current!.link.time,
+                user: {
+                  type: ObjectType.User,
+                  id: aliceAuth.user.id,
+                  displayName: {
+                    current: {
+                      value: "Alice",
+                    },
+                  },
+                },
+              },
+              unlink: null,
+              user: {
+                type: ObjectType.TwinoidUser,
+                id: "1",
+                displayName: "alice",
+              },
+            },
+            old: [],
+          },
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
+}
