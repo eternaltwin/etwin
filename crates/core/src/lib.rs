@@ -12,6 +12,7 @@ pub mod dinoparc;
 pub mod email;
 pub mod hammerfest;
 pub mod link;
+pub mod password;
 pub mod services {
   pub mod hammerfest;
 }

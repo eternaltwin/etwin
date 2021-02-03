@@ -15,6 +15,14 @@ export function testPasswordService(withApi: (fn: (api: Api) => Promise<void>) =
     });
   });
 
+  (it as any).only("verifies a hash", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withApi(async (api: Api): Promise<void> => {
+      const hunterHash: PasswordHash = Buffer.from("736372797074000c0000000800000001c5ec1067adb434a19cb471dcfc13a8cec8c6e935ec7e14eda9f51a386924eeeb9fce39bb3d36f6101cc06189da63e0513a54553efbee9d2a058bafbda5231093c4ae5e9b3f87a2d002fa49ff75b868fd", "hex");
+      chai.assert.isTrue(await api.password.verify(Uint8Array.from(hunterHash), Buffer.from("hunter2")));
+    });
+  });
+
   it("rejects invalid passwords", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: Api): Promise<void> => {
