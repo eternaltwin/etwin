@@ -1,22 +1,20 @@
+use futures_util::stream::StreamExt;
 use include_dir::Dir;
 use once_cell::sync::Lazy;
 use petgraph::algo::astar;
 use petgraph::graphmap::DiGraphMap;
 use regex::Regex;
-use serde::export::Formatter;
 use serde::{Deserialize, Serialize};
-use sqlx::postgres::PgDone;
 use sqlx::Executor;
 use sqlx::{PgPool, Postgres, Transaction};
 use std::cmp::{max, Ordering};
 use std::collections::HashMap;
 use std::convert::TryInto;
 use std::error::Error;
+use std::fmt;
 use std::fmt::Debug;
 use std::num::NonZeroU32;
-use std::pin::Pin;
 use std::str::FromStr;
-use tokio::stream::{Stream, StreamExt};
 
 static SQL_NODE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{1,4})\.sql$").unwrap());
 static SQL_EDGE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{1,4})-([0-9]{1,4})\.sql$").unwrap());
@@ -37,7 +35,7 @@ impl<'r> PartialEq for SchemaStateRef<'r> {
 impl<'r> Eq for SchemaStateRef<'r> {}
 
 impl<'r> Debug for SchemaStateRef<'r> {
-  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> std::fmt::Result {
     write!(
       f,
       "SchemaStateRef {{ resolver: {:?}, state: {:?} }}",
@@ -62,7 +60,7 @@ impl<'r> PartialEq for SchemaVersionRef<'r> {
 impl<'r> Eq for SchemaVersionRef<'r> {}
 
 impl<'r> Debug for SchemaVersionRef<'r> {
-  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> std::fmt::Result {
     write!(
       f,
       "SchemaVersionRef {{ resolver: {:?}, version: {:?} }}",
@@ -111,7 +109,7 @@ pub struct SchemaMigration<'a> {
 }
 
 impl<'r> Debug for SchemaMigration<'r> {
-  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> std::fmt::Result {
     write!(
       f,
       "SchemaMigration {{ resolver: {:?}, states: [",
@@ -362,7 +360,7 @@ impl SchemaResolver {
 
   async fn tx_empty(&self, tx: &mut Transaction<'_, Postgres>) -> Result<(), Box<dyn Error>> {
     let drop_sql = self.drop.unwrap();
-    let mut stream: Pin<Box<dyn Stream<Item = Result<PgDone, sqlx::Error>> + Send>> = tx.execute_many(drop_sql);
+    let mut stream = tx.execute_many(drop_sql);
     while let Some(r) = stream.next().await {
       r.unwrap();
     }
@@ -410,7 +408,7 @@ impl SchemaResolver {
     assert_eq!(start, old_state);
     {
       let edge = self.graph.edge_weight(start, end).unwrap();
-      let mut stream: Pin<Box<dyn Stream<Item = Result<PgDone, sqlx::Error>> + Send>> = tx.execute_many(edge.schema);
+      let mut stream = tx.execute_many(edge.schema);
       while let Some(r) = stream.next().await {
         r.unwrap();
       }

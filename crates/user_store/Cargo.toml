@@ -17,11 +17,11 @@ chrono = "^0.4.19"
 etwin_core = { path = "../core", features = ["sqlx"] }
 etwin_db_schema = { path = "../db_schema" }
 neon = { version = "^0.7.0", optional = true, default-features = false, features = ["napi-runtime"] }
-regex = "^1.4.2"
-sqlx = { version = "^0.4.1", default-features = false, features = ["macros", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
-uuid = { version = "^0.8.1", default-features = false, features = ["serde", "v4"] }
+regex = "^1.4.3"
+sqlx = { version = "^0.5.1", default-features = false, features = ["macros", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
+uuid = { version = "^0.8.2", default-features = false, features = ["serde", "v4"] }
 
 [dev-dependencies]
 etwin_config = { path = "../config" }
 serial_test = "^0.5.1"
-tokio = { version = "^0.2.23", features = ["macros", "rt-core"] }
+tokio = { version = "^1.1.1", features = ["macros", "rt"] }

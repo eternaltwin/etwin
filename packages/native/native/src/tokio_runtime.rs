@@ -15,7 +15,7 @@ fn get_tokio_sender() -> &'static mpsc::UnboundedSender<Message> {
   SENDER.get_or_init(|| {
     let (sender, mut receiver) = mpsc::unbounded_channel();
     std::thread::spawn(move || {
-      let mut rt = Runtime::new().expect("Failed to create tokio runtime");
+      let rt = Runtime::new().expect("Failed to create tokio runtime");
       rt.block_on(async {
         loop {
           #[allow(clippy::single_match)]
