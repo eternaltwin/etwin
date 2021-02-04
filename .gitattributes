@@ -1,5 +1,5 @@
 # Enforce `lf` for text files (even on Windows)
-text eol=lf
+* text=auto eol=lf
 
 # Ignore the following files in language statistics
 ## HTML files used in tests
