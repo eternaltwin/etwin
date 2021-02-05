@@ -19,24 +19,87 @@
       <li><a routerLink="/archive" i18n="Menu link to the archive@@app.menu.archive">Archive</a></li>
     </ul>
 
-    <div class="npc"> <!-- TODO : TRANSLATION AND RANDOMIZER //-->
-      <img src="https://data.twinoid.com/img/characters/dino_mandragore.png" alt="Mandragore">
-      <div class="npcTip">
-        <p>Mandragore, héros et aventurier ayant parcouru la totalité des terres de DinoRPG !</p>
+    <div [ngSwitch]="npc_pick" class="npc">
+
+      <div *ngSwitchCase="0" class="dinorpg">
+        <img src="/assets/npcs/dino_mandragore.png" alt="Mandragore">
+        <div class="npcTip">
+          <p i18n="Text of the DinoRPG npc@@app.npc.dinorpg">Mandragore, a hero and adventurer who has travelled the length and breadth of all DinoRPG lands !</p>
+        </div>
       </div>
+
+      <div *ngSwitchCase="1" class="labrute">
+        <img src="/assets/npcs/labrute_brute.png" alt="Brute">
+        <div class="npcTip">
+          <p i18n="Text of the MyBrute npc@@app.npc.mybrute">My Brute never forgives!</p>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="2" class="hordes">
+        <img src="/assets/npcs/hordes_zonzon.png" alt="Zonzon">
+        <div class="npcTip">
+          <p i18n="Text of the Hordes npc@@app.npc.hordes">A zombie, much like ones that haunt the glacial nights of MyHordes...</p>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="3" class="alphabounce">
+        <img src="/assets/npcs/alphabounce_zoidberg.png" alt="Zoidberg">
+        <div class="npcTip">
+          <p i18n="Text of the Alphabounce npc@@app.npc.alphabounce">Zonkerians come from all over the universe and will always provide you with their overpriced items !</p>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="4" class="fever">
+        <img src="/assets/npcs/fever_pousti.png" alt="Pousti">
+        <div class="npcTip">
+          <p i18n="Text of the Fever npc@@app.npc.fever">Pousty, the last hero battling infamous Bakelites to save his world !</p>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="5" class="instrusion">
+        <img src="/assets/npcs/intrusion_Smith.png" alt="Smith">
+        <div class="npcTip">
+          <p i18n="Text of the Intrusion npc@@app.npc.intrusion">Agent S is keeping an eye on you... He knows when you last showered... And he is appalled !</p>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="6" class="kingdom">
+        <img src="/assets/npcs/kingdom_king.png" alt="King">
+        <div class="npcTip">
+          <p i18n="Text of the Kingdom npc@@app.npc.kingdom">Be a good King in life, and in death they will sing your name !</p>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="7" class="majority">
+        <img src="/assets/npcs/majority_sheep.png" alt="Sheep">
+        <div class="npcTip">
+          <p i18n="Text of the Majority npc@@app.npc.majority">Baaaaaa...</p>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="8" class="mush">
+        <img src="/assets/npcs/mush_mush.png" alt="Mush">
+        <div class="npcTip">
+          <p i18n="Text of the Mush npc@@app.npc.mush">Mushhhhhh...</p>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="9" class="quiz">
+        <img src="/assets/npcs/quiz_james.png" alt="James">
+        <div class="npcTip">
+          <p i18n="Text of the StudioQuiz npc@@app.npc.quiz">"My name is Norray. James Norray".</p>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="10" class="snake">
+        <img src="/assets/npcs/snake_himself.png" alt="Himself">
+        <div class="npcTip">
+          <p i18n="Text of the Snake npc@@app.npc.snake">Glorp... glorp... glorp... glopErk... Splash !</p>
+        </div>
+      </div>
+
     </div>
-<!--    <div class="npc nb2"> &lt;!&ndash; TODO : TRANSLATION AND RANDOMIZER //&ndash;&gt;-->
-<!--      <img src="https://data.twinoid.com/img/characters/labrute_brute.png" alt="Brute">-->
-<!--      <div class="npcTip">-->
-<!--        <p>La Brute : une vraie boucherie !</p>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="npc nb3"> &lt;!&ndash; TODO : TRANSLATION AND RANDOMIZER //&ndash;&gt;-->
-<!--      <img src="https://data.twinoid.com/img/characters/hordes_zonzon.png" alt="Zonzon">-->
-<!--      <div class="npcTip">-->
-<!--        <p>Un zombie, de ceux qui hantent les nuits glaciales de Hordes...</p>-->
-<!--      </div>-->
-<!--    </div>-->
+
   </nav>
 </div>
 

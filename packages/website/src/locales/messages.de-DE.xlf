@@ -74,6 +74,105 @@
         </context-group>
         <note priority="1" from="description">Menu link to the archive</note>
       </trans-unit>
+      <trans-unit id="app.npc.dinorpg" datatype="html">
+        <source>Mandragore, a hero and adventurer who has travelled the length and breadth of all DinoRPG lands !</source>
+        <target state="translated">Mandragore, ein Held und Abenteurer, der alle Länder des DinoRPGs durchquert hat!</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+        <note priority="1" from="description">Text of the DinoRPG npc</note>
+      </trans-unit>
+      <trans-unit id="app.npc.mybrute" datatype="html">
+        <source>My Brute never forgives!</source>
+        <target state="translated">My Brute verzeiht nie!</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <note priority="1" from="description">Text of the MyBrute npc</note>
+      </trans-unit>
+      <trans-unit id="app.npc.hordes" datatype="html">
+        <source>A zombie, much like ones that haunt the glacial nights of MyHordes...</source>
+        <target state="translated">Ein Zombie, ähnlich denen, die die eisigen Nächte von Die2Nite heimsuchen...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+        <note priority="1" from="description">Text of the Hordes npc</note>
+      </trans-unit>
+      <trans-unit id="app.npc.alphabounce" datatype="html">
+        <source>Zonkerians come from all over the universe and will always provide you with their overpriced items !</source>
+        <target state="translated">Einer der Charaktere von Alphabounce!</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+        <note priority="1" from="description">Text of the Alphabounce npc</note>
+      </trans-unit>
+      <trans-unit id="app.npc.fever" datatype="html">
+        <source>Pousty, the last hero battling infamous Bakelites to save his world !</source>
+        <target state="translated">Pousty, der Held von Fever!</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+        <note priority="1" from="description">Text of the Fever npc</note>
+      </trans-unit>
+      <trans-unit id="app.npc.intrusion" datatype="html">
+        <source>Agent S is keeping an eye on you... He knows when you last showered... And he is appalled !</source>
+        <target state="translated">Agent S hat ein Auge auf dich... Er weiß, wann du zuletzt geduscht hast... Und er ist entsetzt!</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+        <note priority="1" from="description">Text of the Intrusion npc</note>
+      </trans-unit>
+      <trans-unit id="app.npc.kingdom" datatype="html">
+        <source>Be a good King in life, and in death they will sing your name !</source>
+        <target state="translated">Sei ein guter König im Leben, und im Tod werden sie deinen Namen singen!</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+        <note priority="1" from="description">Text of the Kingdom npc</note>
+      </trans-unit>
+      <trans-unit id="app.npc.majority" datatype="html">
+        <source>Baaaaaa...</source>
+        <target state="translated">Määäääääh...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+        <note priority="1" from="description">Text of the Majority npc</note>
+      </trans-unit>
+      <trans-unit id="app.npc.mush" datatype="html">
+        <source>Mushhhhhh...</source>
+        <target state="translated">Mushhhhhh...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">83</context>
+        </context-group>
+        <note priority="1" from="description">Text of the Mush npc</note>
+      </trans-unit>
+      <trans-unit id="app.npc.quiz" datatype="html">
+        <source>"My name is Norray. James Norray".</source>
+        <target state="translated">„Mein Name ist Norray. James Norray.“</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">90</context>
+        </context-group>
+        <note priority="1" from="description">Text of the StudioQuiz npc</note>
+      </trans-unit>
+      <trans-unit id="app.npc.snake" datatype="html">
+        <source>Glorp... glorp... glorp... glopErk... Splash !</source>
+        <target state="translated">Schluck... schluck... schluck... schluck... platsch!</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+        <note priority="1" from="description">Text of the Snake npc</note>
+      </trans-unit>
       <trans-unit id="shared.pagination.first" datatype="html">
         <source>First</source>
         <target state="new">First</target>

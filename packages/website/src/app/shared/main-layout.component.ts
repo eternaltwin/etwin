@@ -6,6 +6,8 @@ import { Component } from "@angular/core";
   styleUrls: [],
 })
 export class MainLayoutComponent {
+  public npc_pick: number;
   constructor() {
+    this.npc_pick = Math.floor(Math.random() * 11);
   }
 }
