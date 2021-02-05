@@ -188,8 +188,13 @@ impl<TyClock> MemHammerfestClient<TyClock> {
           short: ShortHammerfestForumThread { server, id, name },
           author: author_user.user.clone(),
           is_closed,
-          is_sticky,
-          last_message_date: forum_date.clone(),
+          kind: if is_sticky {
+            HammerfestForumThreadKind::Sticky
+          } else {
+            HammerfestForumThreadKind::Regular {
+              last_message_date: forum_date.date.clone(),
+            }
+          },
           reply_count: 0,
         },
         true_last_message_date: date,
@@ -230,7 +235,9 @@ impl<TyClock> MemHammerfestClient<TyClock> {
     let forum_date = make_forum_date(date);
 
     thread.true_last_message_date = date;
-    thread.thread.last_message_date = forum_date.clone();
+    if let HammerfestForumThreadKind::Regular { last_message_date } = &mut thread.thread.kind {
+      *last_message_date = forum_date.date.clone();
+    }
     thread.thread.reply_count += 1;
     thread.messages.push(HammerfestForumPost {
       id: None,
@@ -278,12 +285,14 @@ impl<TyClock> MemHammerfestClient<TyClock> {
   }
 }
 
-fn make_forum_date(date: Instant) -> HammerfestForumDate {
+fn make_forum_date(date: Instant) -> HammerfestForumDateTime {
   use chrono::{Datelike, Timelike};
-  HammerfestForumDate {
-    month: date.month() as u8,
-    day: date.day() as u8,
-    weekday: date.weekday().number_from_monday() as u8,
+  HammerfestForumDateTime {
+    date: HammerfestForumDate {
+      month: date.month() as u8,
+      day: date.day() as u8,
+      weekday: date.weekday().number_from_monday() as u8,
+    },
     hour: date.hour() as u8,
     minute: date.minute() as u8,
   }
@@ -464,13 +473,13 @@ where
       .forum_threads
       .iter()
       .filter_map(|(_, t)| {
-        if t.theme_id == theme_id && (t.thread.is_sticky || page1 <= 1) {
+        if t.theme_id == theme_id && (matches!(t.thread.kind, HammerfestForumThreadKind::Sticky) || page1 <= 1) {
           Some(t)
         } else {
           None
         }
       })
-      .partition::<Vec<_>, _>(|t| t.thread.is_sticky);
+      .partition::<Vec<_>, _>(|t| matches!(t.thread.kind, HammerfestForumThreadKind::Sticky));
 
     sticky.sort_by_key(|t| t.true_last_message_date);
     threads.sort_by_key(|t| t.true_last_message_date);

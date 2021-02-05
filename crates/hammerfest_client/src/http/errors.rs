@@ -1,7 +1,4 @@
-use etwin_core::hammerfest::{
-  HammerfestItemIdParseError, HammerfestServer, HammerfestUserIdParseError, HammerfestUsername,
-  HammerfestUsernameParseError,
-};
+use etwin_core::hammerfest::*;
 use reqwest::Url;
 use thiserror::Error;
 
@@ -26,15 +23,25 @@ pub enum ScraperError {
   #[error("Failed to parse integer value '{}'", .0)]
   InvalidInteger(String, #[source] std::num::ParseIntError),
   #[error("Failed to parse date '{}'", .0)]
-  InvalidDate(String, #[source] chrono::format::ParseError),
+  InvalidDate(String, #[source] Option<chrono::format::ParseError>),
   #[error("Invalid item id '{}'", .0)]
   InvalidItemId(String, HammerfestItemIdParseError),
   #[error("Invalid user id '{}'", .0)]
   InvalidUserId(String, HammerfestUserIdParseError),
+  #[error("Invalid forum theme id '{}'", .0)]
+  InvalidForumThemeId(String, HammerfestForumThemeIdParseError),
+  #[error("Invalid forum thread id '{}'", .0)]
+  InvalidForumThreadId(String, HammerfestForumThreadIdParseError),
+  #[error("Invalid forum post id '{}'", .0)]
+  InvalidForumPostId(String, HammerfestForumPostIdParseError),
   #[error("Invalid username '{}'", .0)]
   InvalidUsername(String, HammerfestUsernameParseError),
   #[error("Unknown quest name '{}'", .0)]
   UnknownQuestName(String),
   #[error("Unknown rank CSS class '{}'", .0)]
   UnknownRankClass(String),
+  #[error("Unknown user role")]
+  UnknownUserRole,
+  #[error("Unexpected thread kind: '{}'", .0)]
+  UnexpectedThreadKind(String),
 }

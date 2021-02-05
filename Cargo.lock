@@ -569,7 +569,6 @@ version = "0.0.1"
 dependencies = [
  "async-trait",
  "chrono",
- "cssparser",
  "etwin_core",
  "neon",
  "once_cell",

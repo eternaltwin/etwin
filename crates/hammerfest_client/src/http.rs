@@ -15,7 +15,6 @@ use serde::Serialize;
 
 use self::errors::ScraperError;
 use self::url::HammerfestUrls;
-use crate::errors::UnimplementedError;
 use std::str::FromStr;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -166,30 +165,40 @@ where
 
   async fn get_forum_themes(
     &self,
-    _session: Option<&HammerfestSession>,
-    _server: HammerfestServer,
+    session: Option<&HammerfestSession>,
+    server: HammerfestServer,
   ) -> Result<Vec<HammerfestForumTheme>> {
-    Err(UnimplementedError::new("http", "get_forum_themes").into())
+    let urls = HammerfestUrls::new(server);
+    let html = self.get_html(urls.forum_home(), session.map(|sess| &sess.key)).await?;
+    Ok(scraper::scrape_forum_home(server, &html)?)
   }
 
   async fn get_forum_theme_page(
     &self,
-    _session: Option<&HammerfestSession>,
-    _server: HammerfestServer,
-    _theme_id: HammerfestForumThemeId,
-    _first_page: u32,
+    session: Option<&HammerfestSession>,
+    server: HammerfestServer,
+    theme_id: HammerfestForumThemeId,
+    page1: u32,
   ) -> Result<HammerfestForumThemePage> {
-    Err(UnimplementedError::new("http", "get_forum_theme_page").into())
+    let urls = HammerfestUrls::new(server);
+    let html = self
+      .get_html(urls.forum_theme(theme_id, page1), session.map(|sess| &sess.key))
+      .await?;
+    Ok(scraper::scrape_forum_theme(server, &html)?)
   }
 
   async fn get_forum_thread_page(
     &self,
-    _session: Option<&HammerfestSession>,
-    _server: HammerfestServer,
-    _thread_id: HammerfestForumThreadId,
-    _first_page: u32,
+    session: Option<&HammerfestSession>,
+    server: HammerfestServer,
+    thread_id: HammerfestForumThreadId,
+    page1: u32,
   ) -> Result<HammerfestForumThreadPage> {
-    Err(UnimplementedError::new("http", "create_session").into())
+    let urls = HammerfestUrls::new(server);
+    let html = self
+      .get_html(urls.forum_thread(thread_id, page1), session.map(|sess| &sess.key))
+      .await?;
+    Ok(scraper::scrape_forum_thread(server, thread_id, &html)?)
   }
 }
 

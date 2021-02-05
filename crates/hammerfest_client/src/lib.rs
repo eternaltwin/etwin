@@ -1,5 +1,3 @@
-pub(crate) mod errors;
-
 #[cfg(feature = "http")]
 mod http;
 #[cfg(feature = "mem")]

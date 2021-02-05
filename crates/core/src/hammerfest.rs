@@ -296,11 +296,19 @@ pub struct HammerfestShop {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumDate {
-  pub month: u8,
   // TODO: limit 1 <= m <= 12
-  pub day: u8,
+  pub month: u8,
   // TODO: limit 1 <= d <= 31
+  pub day: u8,
+  // TODO: limit 1 <= w <= 7
   pub weekday: u8,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HammerfestForumDateTime {
+  #[cfg_attr(feature = "serde", serde(flatten))]
+  pub date: HammerfestForumDate,
   // TODO: limit 1 <= w <= 7
   pub hour: u8,
   // TODO: limit 0 <= h <= 23
@@ -363,13 +371,23 @@ pub struct ShortHammerfestForumThread {
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", serde(tag = "kind"))]
+pub enum HammerfestForumThreadKind {
+  #[cfg_attr(feature = "serde", serde(rename = "sticky"))]
+  Sticky,
+  #[cfg_attr(feature = "serde", serde(rename = "regular"))]
+  Regular { last_message_date: HammerfestForumDate },
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumThread {
   #[cfg_attr(feature = "serde", serde(flatten))]
   pub short: ShortHammerfestForumThread,
   pub author: ShortHammerfestUser,
-  pub last_message_date: HammerfestForumDate,
+  #[cfg_attr(feature = "serde", serde(flatten))]
+  pub kind: HammerfestForumThreadKind,
   pub reply_count: u32,
-  pub is_sticky: bool,
   pub is_closed: bool,
 }
 
@@ -401,7 +419,7 @@ declare_decimal_id! {
 pub struct HammerfestForumPost {
   pub id: Option<HammerfestForumPostId>,
   pub author: HammerfestForumPostAuthor,
-  pub ctime: HammerfestForumDate,
+  pub ctime: HammerfestForumDateTime,
   pub content: String, // TODO: HtmlText?
 }
 

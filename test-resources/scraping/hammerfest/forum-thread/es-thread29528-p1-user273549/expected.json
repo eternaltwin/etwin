@@ -1,0 +1,58 @@
+{
+  "theme": {
+    "server": "hammerfest.es",
+    "id": "2",
+    "name": "Caverna del Aprendiz"
+  },
+  "thread": {
+    "server": "hammerfest.es",
+    "id": "29528",
+    "name": "[Lectura Obligatoria] NORMAS"
+  },
+  "messages": {
+    "page1": 1,
+    "pages": 1,
+    "items": [
+      {
+        "id": null,
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.es",
+          "id": "6281",
+          "username": "L0c0",
+          "has_carrot": false,
+          "rank": 0,
+          "role": "Moderator"
+        },
+        "ctime": {
+          "month": 2,
+          "day": 14,
+          "weekday": 6,
+          "hour": 16,
+          "minute": 52
+        },
+        "content": ""
+      },
+      {
+        "id": null,
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.es",
+          "id": "6281",
+          "username": "L0c0",
+          "has_carrot": false,
+          "rank": 0,
+          "role": "Moderator"
+        },
+        "ctime": {
+          "month": 3,
+          "day": 12,
+          "weekday": 4,
+          "hour": 20,
+          "minute": 5
+        },
+        "content": ""
+      }
+    ]
+  }
+}

@@ -64,6 +64,23 @@ declare_scraper_tests! {
   shop(shop__fr_user176431);
   shop(shop__fr_user778923);
   shop(shop__fr_user997002);
+
+  forum_home(forum_home__en_user205769);
+  forum_home(forum_home__es_user273549);
+  forum_home(forum_home__fr_guest);
+  forum_home(forum_home__fr_user127);
+  forum_home(forum_home__fr_user176431);
+
+  forum_theme(forum_theme__en_theme3_p89_user205769);
+  forum_theme(forum_theme__en_theme3_p90_user205769);
+  forum_theme(forum_theme__es_theme2_p1_user273549);
+  forum_theme(forum_theme__fr_theme3_p1_user176431);
+
+  forum_thread(forum_thread__es_thread29528_p1_user273549);
+  forum_thread(forum_thread__es_thread75243_p1_user273549);
+  forum_thread(forum_thread__fr_thread473842_p1_user176431);
+  forum_thread(forum_thread__fr_thread486800_p9);
+  forum_thread(forum_thread__fr_thread487821_p1);
 }
 
 mod tests_helpers {
@@ -163,5 +180,49 @@ mod tests_impl {
 
   pub fn shop(path: PathBuf) {
     tests_helpers::test_scraper(path, |_options: (), html| scraper::scrape_user_shop(html));
+  }
+
+  pub fn forum_home(path: PathBuf) {
+    #[derive(Deserialize)]
+    struct Options {
+      server: HammerfestServer,
+    }
+
+    tests_helpers::test_scraper(path, |options: Options, html| {
+      scraper::scrape_forum_home(options.server, html)
+    });
+  }
+
+  pub fn forum_theme(path: PathBuf) {
+    #[derive(Deserialize)]
+    struct Options {
+      server: HammerfestServer,
+    }
+
+    tests_helpers::test_scraper(path, |options: Options, html| {
+      scraper::scrape_forum_theme(options.server, html)
+    });
+  }
+
+  pub fn forum_thread(path: PathBuf) {
+    #[derive(Deserialize)]
+    struct Options {
+      server: HammerfestServer,
+      thread_id: HammerfestForumThreadId,
+    }
+
+    tests_helpers::test_scraper(path, |options: Options, html| {
+      let mut thread = scraper::scrape_forum_thread(options.server, options.thread_id, html)?;
+
+      // scraper's DOM doesn't maintain the attributes order of HTML elements.
+      // This means that the serialized HTML isn't deterministic, so we can't compare it
+      // for equality and we have to ignore it.
+      // See: https://github.com/causal-agent/scraper/issues/54
+      for msg in &mut thread.messages.items {
+        msg.content.clear();
+      }
+
+      Ok(thread)
+    });
   }
 }

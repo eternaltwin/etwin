@@ -13,12 +13,11 @@ edition = "2018"
 
 [features]
 default = ["http", "mem"]
-http = ["reqwest", "scraper", "serde", "cssparser"]
+http = ["reqwest", "scraper", "serde"]
 mem = []
 
 [dependencies]
 async-trait = "^0.1.42"
-cssparser = { version = "^0.27.2", optional = true }
 chrono = "^0.4.19"
 etwin_core = { path = "../core" }
 neon = { version = "^0.7.0", optional = true, default-features = false, features = ["napi-runtime"] }

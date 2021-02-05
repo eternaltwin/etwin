@@ -1,0 +1,384 @@
+{
+  "theme": {
+    "server": "hammerfest.fr",
+    "id": "3",
+    "name": "Les secrets de Tuberculoz"
+  },
+  "sticky": [
+    {
+      "server": "hammerfest.fr",
+      "id": "474604",
+      "name": "[officiel] Corporate Soccer 2",
+      "author": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "195",
+        "username": "deepnight"
+      },
+      "kind": "sticky",
+      "reply_count": 8,
+      "is_closed": false
+    },
+    {
+      "server": "hammerfest.fr",
+      "id": "269429",
+      "name": "[Aide]Options & Modes de jeu..",
+      "author": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "71652",
+        "username": "Pytytange"
+      },
+      "kind": "sticky",
+      "reply_count": 72,
+      "is_closed": false
+    },
+    {
+      "server": "hammerfest.fr",
+      "id": "272798",
+      "name": "Listing des liens utiles",
+      "author": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "542195",
+        "username": "lyokobis5"
+      },
+      "kind": "sticky",
+      "reply_count": 22,
+      "is_closed": false
+    },
+    {
+      "server": "hammerfest.fr",
+      "id": "304043",
+      "name": "[Astuces] Dimensions",
+      "author": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "210687",
+        "username": "Thepoule"
+      },
+      "kind": "sticky",
+      "reply_count": 96,
+      "is_closed": true
+    },
+    {
+      "server": "hammerfest.fr",
+      "id": "333617",
+      "name": "Règlement Général du Forum",
+      "author": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "698670",
+        "username": "syl57"
+      },
+      "kind": "sticky",
+      "reply_count": 0,
+      "is_closed": true
+    },
+    {
+      "server": "hammerfest.fr",
+      "id": "219173",
+      "name": "Tous les Classements",
+      "author": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "6283",
+        "username": "kahakatashi"
+      },
+      "kind": "sticky",
+      "reply_count": 0,
+      "is_closed": true
+    }
+  ],
+  "threads": {
+    "page1": 1,
+    "pages": 15,
+    "items": [
+      {
+        "server": "hammerfest.fr",
+        "id": "190286",
+        "name": "Les Antiquaires Polaires",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "365286",
+          "username": "GlobZOsiris"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 8,
+          "day": 31,
+          "weekday": 1
+        },
+        "reply_count": 11650,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "488684",
+        "name": "Le Secret de la Pièce d'Or",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "509869",
+          "username": "wismerhill7"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 7,
+          "day": 21,
+          "weekday": 2
+        },
+        "reply_count": 25,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "482820",
+        "name": "Les merveilles du frigo",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "79175",
+          "username": "rollerfou"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 7,
+          "day": 4,
+          "weekday": 6
+        },
+        "reply_count": 269,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "489036",
+        "name": "Requête: installer le jeu.",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "980203",
+          "username": "d123"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 7,
+          "day": 3,
+          "weekday": 5
+        },
+        "reply_count": 4,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "191524",
+        "name": "Les Ig'or scores !",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "194693",
+          "username": "sajd"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 7,
+          "day": 3,
+          "weekday": 5
+        },
+        "reply_count": 6107,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "476324",
+        "name": "Projet Eternalfest",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "176431",
+          "username": "maniaclan"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 6,
+          "day": 16,
+          "weekday": 2
+        },
+        "reply_count": 605,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "489021",
+        "name": "Pocket-Guu",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "907876",
+          "username": "mainer"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 6,
+          "day": 10,
+          "weekday": 3
+        },
+        "reply_count": 0,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "237362",
+        "name": "Le Frigo en Photo",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "160147",
+          "username": "Tolkiendil"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 5,
+          "day": 29,
+          "weekday": 5
+        },
+        "reply_count": 1147,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "406959",
+        "name": "Les Rétros Igors",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "596557",
+          "username": "momo476"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 5,
+          "day": 19,
+          "weekday": 2
+        },
+        "reply_count": 643,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "488336",
+        "name": "EternalFest - Les contrées !!!",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "1041317",
+          "username": "Eternalfest"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 4,
+          "day": 19,
+          "weekday": 7
+        },
+        "reply_count": 77,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "378207",
+        "name": "Pièces d'or secrètes",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "943607",
+          "username": "chassa"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 2,
+          "day": 8,
+          "weekday": 6
+        },
+        "reply_count": 12,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "12773",
+        "name": "[Aide] Sites sur Hammerfest",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "10",
+          "username": "tchong"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 11,
+          "day": 1,
+          "weekday": 5
+        },
+        "reply_count": 579,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "136829",
+        "name": "Vidéos Hammerfest",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "6283",
+          "username": "kahakatashi"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 10,
+          "day": 29,
+          "weekday": 2
+        },
+        "reply_count": 10005,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "488554",
+        "name": "[Eternalfest] Hackfest",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "1041317",
+          "username": "Eternalfest"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 8,
+          "day": 5,
+          "weekday": 1
+        },
+        "reply_count": 6,
+        "is_closed": false
+      },
+      {
+        "server": "hammerfest.fr",
+        "id": "488491",
+        "name": "Tournoi Soccerfest 2019",
+        "author": {
+          "type": "HammerfestUser",
+          "server": "hammerfest.fr",
+          "id": "1057555",
+          "username": "BlessedRacc"
+        },
+        "kind": "regular",
+        "last_message_date": {
+          "month": 7,
+          "day": 28,
+          "weekday": 7
+        },
+        "reply_count": 3,
+        "is_closed": false
+      }
+    ]
+  }
+}

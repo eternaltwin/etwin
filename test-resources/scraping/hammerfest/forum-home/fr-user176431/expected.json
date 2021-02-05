@@ -1,0 +1,38 @@
+[
+  {
+    "server": "hammerfest.fr",
+    "id": "1",
+    "name": "Mises a jour",
+    "description": "Suivez toute l'actualite du site ici !"
+  },
+  {
+    "server": "hammerfest.fr",
+    "id": "2",
+    "name": "Caverne de l'apprenti",
+    "description": "Si vous vous etes perdu(e) dans les Cavernes, c'est ici qu'il faut demander sa route"
+  },
+  {
+    "server": "hammerfest.fr",
+    "id": "3",
+    "name": "Les secrets de Tuberculoz",
+    "description": "Venez debattre des mysteres du jeu avec d'autres courageux explorateurs !"
+  },
+  {
+    "server": "hammerfest.fr",
+    "id": "4",
+    "name": "L'arbre de Wanda la Pomme",
+    "description": "Pour parler de tout ce qui n'a aucun rapport avec le jeu !"
+  },
+  {
+    "server": "hammerfest.fr",
+    "id": "5",
+    "name": "Gardiens du niveau 100",
+    "description": "Moderateurs, cet espace est le votre..."
+  },
+  {
+    "server": "hammerfest.fr",
+    "id": "6",
+    "name": "Perles",
+    "description": "Les perles du forum"
+  }
+]

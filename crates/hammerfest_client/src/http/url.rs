@@ -1,4 +1,4 @@
-use etwin_core::hammerfest::{HammerfestServer, HammerfestUserId};
+use etwin_core::hammerfest::{HammerfestForumThemeId, HammerfestForumThreadId, HammerfestServer, HammerfestUserId};
 use reqwest::Url;
 
 pub struct HammerfestUrls {
@@ -44,5 +44,21 @@ impl HammerfestUrls {
 
   pub fn god_children(&self) -> Url {
     self.make_url(&["user.html", "godChildren"])
+  }
+
+  pub fn forum_home(&self) -> Url {
+    self.make_url(&["forum.html"])
+  }
+
+  pub fn forum_theme(&self, theme: HammerfestForumThemeId, page1: u32) -> Url {
+    let mut url = theme.with_str(|theme| self.make_url(&["forum.html", "theme", theme]));
+    url.set_query(Some(&format!("page={}", page1)));
+    url
+  }
+
+  pub fn forum_thread(&self, thread: HammerfestForumThreadId, page1: u32) -> Url {
+    let mut url = thread.with_str(|thread| self.make_url(&["forum.html", "thread", thread]));
+    url.set_query(Some(&format!("page={}", page1)));
+    url
   }
 }
