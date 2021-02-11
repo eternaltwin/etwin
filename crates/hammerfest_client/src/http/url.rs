@@ -7,7 +7,7 @@ pub struct HammerfestUrls {
 
 impl HammerfestUrls {
   pub fn new(server: HammerfestServer) -> Self {
-    HammerfestUrls {
+    Self {
       root: match server {
         HammerfestServer::HammerfestFr => "http://www.hammerfest.fr",
         HammerfestServer::HammerfestEs => "http://www.hammerfest.es",

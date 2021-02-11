@@ -116,7 +116,7 @@ mod tests_helpers {
     let options: O = serde_json::from_reader(BufReader::new(File::open(&path).unwrap())).unwrap();
     path.pop();
 
-    let actual = scraper(options, &input).expect("scraper failed to scrape input");
+    let actual = scraper(options, &input).expect("scraper_tools failed to scrape input");
 
     if expected != actual {
       path.push("actual.json");
@@ -214,7 +214,7 @@ mod tests_impl {
     tests_helpers::test_scraper(path, |options: Options, html| {
       let mut thread = scraper::scrape_forum_thread(options.server, options.thread_id, html)?;
 
-      // scraper's DOM doesn't maintain the attributes order of HTML elements.
+      // scraper_tools's DOM doesn't maintain the attributes order of HTML elements.
       // This means that the serialized HTML isn't deterministic, so we can't compare it
       // for equality and we have to ignore it.
       // See: https://github.com/causal-agent/scraper/issues/54

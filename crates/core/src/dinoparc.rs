@@ -119,6 +119,62 @@ declare_new_string! {
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcPassword(String);
+
+impl DinoparcPassword {
+  pub fn new(raw: String) -> Self {
+    Self(raw)
+  }
+
+  pub fn as_str(&self) -> &str {
+    &self.0
+  }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcCredentials {
+  pub server: DinoparcServer,
+  pub username: DinoparcUsername,
+  pub password: DinoparcPassword,
+}
+
+declare_new_string! {
+  /// A Dinoparc session key.
+  ///
+  /// It correspond to the value of the `sid` cookie.
+  ///
+  /// - `oetxjSBD3FEqDlLLNffGUY0NLKMmDDjv`
+  /// - `pJ5zOeaKuw0mjGB9xdGVJuRdpCASjmBl`
+  /// - `LlkSCMQW5fESPSOUVt3FMrqBwXwAhwzj`
+  pub struct DinoparcSessionKey(String);
+  pub type ParseError = DinoparcSessionKeyParseError;
+  const PATTERN = r"^[0-9a-zA-Z]{32}$";
+  const SQL_NAME = "dinoparc_session_key";
+}
+
+declare_new_string! {
+  pub struct DinoparcMachineId(String);
+  pub type ParseError = DinoparcMachineIdParseError;
+  const PATTERN = r"^[0-9a-zA-Z]{32}$";
+  const SQL_NAME = "dinoparc_machine_id";
+}
+
+impl DinoparcMachineId {
+  pub const LENGTH: usize = 32;
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcSession {
+  pub ctime: Instant,
+  pub atime: Instant,
+  pub key: DinoparcSessionKey,
+  pub user: ShortDinoparcUser,
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortDinoparcUser {
@@ -143,6 +199,46 @@ pub struct ArchivedDinoparcUser {
 pub struct DinoparcUserIdRef {
   pub server: DinoparcServer,
   pub id: DinoparcUserId,
+}
+
+declare_decimal_id! {
+  pub struct DinoparcDinozId(u32);
+  pub type ParseError = DinoparcDinozIdParseError;
+  const BOUNDS = 1..1_000_000_000;
+  const SQL_NAME = "dinoparc_dinoz_id";
+}
+
+declare_new_string! {
+  pub struct DinoparcDinozName(String);
+  pub type ParseError = DinoparcDinozNameParseError;
+  const PATTERN = r"^[0-9A-Za-z-_é]{1,15}$";
+  const SQL_NAME = "dinoparc_dinoz_name";
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcDinoz"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcDinoz {
+  pub server: DinoparcServer,
+  pub id: DinoparcUserId,
+}
+
+#[async_trait]
+#[auto_impl(&, Arc)]
+pub trait DinoparcClient: Send + Sync {
+  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, Box<dyn Error>>;
+
+  async fn test_session(
+    &self,
+    server: DinoparcServer,
+    key: &DinoparcSessionKey,
+  ) -> Result<Option<DinoparcSession>, Box<dyn Error>>;
+
+  async fn get_dinoz(
+    &self,
+    session: &DinoparcSession,
+    id: DinoparcDinozId,
+  ) -> Result<Option<DinoparcDinoz>, Box<dyn Error>>;
 }
 
 #[async_trait]

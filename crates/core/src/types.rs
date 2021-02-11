@@ -152,7 +152,7 @@ macro_rules! declare_new_string {
     pub struct $struct_name(String);
 
     impl $struct_name {
-      $struct_vis fn pattern() -> &'static Regex {
+      $struct_vis fn pattern() -> &'static ::regex::Regex {
         use ::core::ops::Deref;
         static PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new($pattern).unwrap());
         PATTERN.deref()

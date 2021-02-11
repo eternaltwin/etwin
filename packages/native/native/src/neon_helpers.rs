@@ -41,6 +41,8 @@ impl NeonNamespace for Handle<'_, JsObject> {
   }
 }
 
+// We return a `Result` here even if it never fails to simplify the caller code.
+#[allow(clippy::unnecessary_wraps)]
 pub(crate) fn resolve_callback<'a, C: Context<'a>, T: Serialize>(
   cx: &mut C,
   fut: impl Future<Output = Result<T, Box<dyn Error>>> + Send + 'static,

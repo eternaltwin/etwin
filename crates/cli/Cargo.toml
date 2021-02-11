@@ -1,0 +1,19 @@
+[package]
+name = "etwin_cli"
+version = "0.0.1"
+authors = ["Charles Samborski <demurgos@demurgos.net>"]
+description = "DinoparcClient implementations"
+documentation = "https://github.com/eternal-twin/etwin"
+homepage = "https://github.com/eternal-twin/etwin"
+repository = "https://github.com/eternal-twin/etwin"
+readme = "./README.md"
+keywords = ["etwin"]
+license = "AGPL-3.0-or-later"
+edition = "2018"
+
+[dependencies]
+console = "^0.13.0"
+dialoguer = "^0.7.1"
+etwin_core = { path = "../core" }
+etwin_dinoparc_client = { path = "../dinoparc_client", features = ["http"] }
+tokio = { version = "^1.2.0", features = ["full"] }

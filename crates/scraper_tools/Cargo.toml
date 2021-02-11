@@ -1,0 +1,17 @@
+[package]
+name = "etwin_scraper_tools"
+version = "0.0.1"
+authors = ["Charles Samborski <demurgos@demurgos.net>"]
+description = "DinoparcClient implementations"
+documentation = "https://github.com/eternal-twin/etwin"
+homepage = "https://github.com/eternal-twin/etwin"
+repository = "https://github.com/eternal-twin/etwin"
+readme = "./README.md"
+keywords = ["etwin"]
+license = "AGPL-3.0-or-later"
+edition = "2018"
+
+[dependencies]
+html5ever = "^0.25.1"
+scraper = "^0.12.0"
+tendril = "^0.4.2"

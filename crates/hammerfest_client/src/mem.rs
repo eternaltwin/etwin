@@ -10,12 +10,6 @@ use thiserror::Error;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-const SERVER_NAMES: &[HammerfestServer] = &[
-  HammerfestServer::HammerfestEs,
-  HammerfestServer::HammerfestFr,
-  HammerfestServer::HfestNet,
-];
-
 #[derive(Debug, Error)]
 pub enum Error {
   #[error("Invalid credentials")]
@@ -81,9 +75,9 @@ impl<TyClock> MemHammerfestClient<TyClock> {
     TyClock: Clock,
   {
     let mut servers = HashMap::new();
-    for server_name in SERVER_NAMES {
+    for server_name in HammerfestServer::iter() {
       servers.insert(
-        *server_name,
+        server_name,
         RwLock::new(InMemoryServer {
           users: HashMap::new(),
           forum_themes: HashMap::new(),

@@ -23,7 +23,7 @@ pub fn docs() -> Result<(), Box<dyn Error>> {
   let docs_root = &docs_root;
   let docs_uri = Url::from_file_path(docs_root).unwrap();
   let docs_uri = &docs_uri;
-  let input_files = load_input_files(docs_root).unwrap();
+  let input_files = load_input_files(docs_root);
   let mut out_fragments: BTreeMap<Url, (String, HtmlDocument)> = BTreeMap::new();
   let mut meta: HashMap<Url, String> = HashMap::new();
   for (uri, md) in input_files.into_iter() {
@@ -157,7 +157,7 @@ fn escape_angular(dom: &mut HtmlDocument) {
   }
 }
 
-fn load_input_files(root: &Path) -> Result<HashMap<Url, String>, Box<dyn Error>> {
+fn load_input_files(root: &Path) -> HashMap<Url, String> {
   assert!(root.is_absolute());
   let mut files = HashMap::new();
 
@@ -179,7 +179,7 @@ fn load_input_files(root: &Path) -> Result<HashMap<Url, String>, Box<dyn Error>>
     debug_assert!(old.is_none());
   }
 
-  Ok(files)
+  files
 }
 
 fn get_short_path(root: &Url, file: &Url) -> String {
