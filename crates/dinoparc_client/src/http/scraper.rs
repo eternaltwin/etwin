@@ -1,10 +1,11 @@
 use crate::http::errors::ScraperError;
-use etwin_core::dinoparc::DinoparcUserId;
+use etwin_core::dinoparc::{DinoparcServer, DinoparcUserId, DinoparcUsername};
 use etwin_scraper_tools::ElementRefExt;
+use itertools::Itertools;
 use once_cell::sync::Lazy;
 use percent_encoding::percent_decode_str;
 use regex::Regex;
-use scraper::{Html, Selector};
+use scraper::{ElementRef, Html, Selector};
 #[cfg(test)]
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -12,16 +13,34 @@ use std::str::FromStr;
 
 #[cfg_attr(test, derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub(crate) struct DinoparcBankScraping {
+pub(crate) struct BankScraping {
   pub user_id: DinoparcUserId,
+  pub context: ContextScraping,
 }
 
-pub(crate) fn scrape_bank(doc: &Html) -> Result<DinoparcBankScraping, ScraperError> {
+#[cfg_attr(test, derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub(crate) struct ContextScraping {
+  pub server: DinoparcServer,
+  #[cfg_attr(test, serde(rename = "self"))]
+  pub auth: SelfScraping,
+}
+
+#[cfg_attr(test, derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub(crate) struct SelfScraping {
+  pub username: DinoparcUsername,
+}
+
+pub(crate) fn scrape_bank(doc: &Html) -> Result<BankScraping, ScraperError> {
   // Regular expression for the one-argument cashFrame.launch call.
   // Matches `cashFrame.launch("...")`
   static CASH_FRAME_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r#"cashFrame\.launch\(("(?:[^"\\]|\\.)*")\)"#).unwrap());
 
   let root = doc.root_element();
+
+  let context = scrape_context(root)?;
+
   let selector = Selector::parse("script[type=\"text/javascript\"]").unwrap();
   let mut ids = root
     .select(&selector)
@@ -56,9 +75,9 @@ pub(crate) fn scrape_bank(doc: &Html) -> Result<DinoparcBankScraping, ScraperErr
   let id = match (ids.next(), ids.next()) {
     (Some(Ok(id)), None) => id,
     (Some(Err(e)), None) => return Err(e),
-    _ => return Err(ScraperError::MultipleCashFrameCalls),
+    _ => return Err(ScraperError::NonUniqueCashFrameCall),
   };
-  Ok(DinoparcBankScraping { user_id: id })
+  Ok(BankScraping { user_id: id, context })
 }
 
 fn parse_cash_frame_arg(arg: &str) -> Result<HashMap<String, String>, &'static str> {
@@ -81,6 +100,51 @@ fn parse_cash_frame_arg(arg: &str) -> Result<HashMap<String, String>, &'static s
   Ok(res)
 }
 
+fn scrape_context(doc: ElementRef) -> Result<ContextScraping, ScraperError> {
+  let html = match doc.value().name() {
+    "html" => doc,
+    _ => return Err(ScraperError::NonUniqueHtml),
+  };
+
+  let server = match html.value().attr("lang") {
+    Some("en") => DinoparcServer::EnDinoparcCom,
+    Some("es") => DinoparcServer::SpDinoparcCom,
+    Some("fr") => DinoparcServer::DinoparcCom,
+    _ => return Err(ScraperError::ServerDetectionFailure),
+  };
+
+  let auth = scrape_sidebar(doc)?;
+
+  Ok(ContextScraping { server, auth })
+}
+
+fn scrape_sidebar(doc: ElementRef) -> Result<SelfScraping, ScraperError> {
+  let menu = match doc
+    .select(&Selector::parse("td.leftPane>div.menu").unwrap())
+    .exactly_one()
+  {
+    Ok(menu) => menu,
+    Err(_) => return Err(ScraperError::NonUniqueMenu),
+  };
+
+  let titles = menu
+    .select(&Selector::parse(":scope > div.title").unwrap())
+    .collect_vec();
+
+  let username = match titles.first() {
+    Some(e) => *e,
+    None => return Err(ScraperError::NonUniqueUsername),
+  };
+
+  let username = username
+    .get_one_text()
+    .map_err(|_| ScraperError::NonUniqueUsernameText)?;
+  let username =
+    DinoparcUsername::from_str(&username).map_err(|e| ScraperError::InvalidUsername(username.to_string(), e))?;
+
+  Ok(SelfScraping { username })
+}
+
 /// Reimplementation of `str.split_once`
 /// TODO: Remove it once rust-lang/rust#74773 is stable
 fn str_split_once<'a>(s: &'a str, delimiter: &'a str) -> Option<(&'a str, &'a str)> {
@@ -92,7 +156,7 @@ fn str_split_once<'a>(s: &'a str, delimiter: &'a str) -> Option<(&'a str, &'a st
 
 #[cfg(test)]
 mod test {
-  use crate::http::scraper::{scrape_bank, DinoparcBankScraping};
+  use crate::http::scraper::{scrape_bank, BankScraping};
   use scraper::Html;
   use std::path::{Path, PathBuf};
   use test_generator::test_resources;
@@ -104,8 +168,6 @@ mod test {
     let html_path = path.join("main.utf8.html");
     let actual_path = path.join("rs.actual.json");
 
-    eprintln!("{}", &html_path.display());
-
     let raw_html = ::std::fs::read_to_string(html_path).expect("Failed to read html file");
 
     let html = Html::parse_document(&raw_html);
@@ -115,7 +177,7 @@ mod test {
     ::std::fs::write(actual_path, format!("{}\n", actual_json)).expect("Failed to write actual file");
 
     let value_json = ::std::fs::read_to_string(value_path).expect("Failed to read value file");
-    let expected = serde_json::from_str::<DinoparcBankScraping>(&value_json).expect("Failed to parse value file");
+    let expected = serde_json::from_str::<BankScraping>(&value_json).expect("Failed to parse value file");
 
     assert_eq!(actual, expected);
   }

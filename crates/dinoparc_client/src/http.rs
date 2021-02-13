@@ -137,9 +137,9 @@ where
       atime: now,
       key: session_key,
       user: ShortDinoparcUser {
-        server: options.server,
+        server: user.context.server,
         id: user.user_id,
-        username: options.username.clone(),
+        username: user.context.auth.username,
       },
     })
   }

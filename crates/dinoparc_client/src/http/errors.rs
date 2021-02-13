@@ -1,4 +1,4 @@
-use etwin_core::dinoparc::DinoparcUserIdParseError;
+use etwin_core::dinoparc::{DinoparcUserIdParseError, DinoparcUsernameParseError};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -15,6 +15,10 @@ pub enum ScraperError {
   UnexpectedAdTrackingResponse,
   #[error("Failed to login due to unexpected login confirmation response")]
   UnexpectedLoginConfirmationResponse,
+  #[error("Zero or many <html> nodes, exactly one was expected")]
+  NonUniqueHtml,
+  #[error("Failed to detect server: missing or unknown html[lang]")]
+  ServerDetectionFailure,
   // #[error("Session was revoked by Hammerfest during login")]
   // LoginSessionRevoked,
   // #[error("Hammerfest returned an unexpected response for page {}", .0)]
@@ -29,12 +33,20 @@ pub enum ScraperError {
   // InvalidDate(String, #[source] Option<chrono::format::ParseError>),
   // #[error("Invalid item id '{}'", .0)]
   // InvalidItemId(String, HammerfestItemIdParseError),
-  #[error("Invalid dinoparc user id '{}'", .0)]
+  #[error("Invalid dinoparc user id '{:?}'", .0)]
   InvalidUserId(String, DinoparcUserIdParseError),
+  #[error("Invalid dinoparc username '{:?}'", .0)]
+  InvalidUsername(String, DinoparcUsernameParseError),
   #[error("Unexpected bank cashFrame argument {:?}: {}", .0, .1)]
   UnexpectedCashFrameArgument(String, &'static str),
-  #[error("Multiple cashFrame calls")]
-  MultipleCashFrameCalls,
+  #[error("Zero or many cashFrame calls, exactly one was expected")]
+  NonUniqueCashFrameCall,
+  #[error("Zero or many menus, exactly one was expected")]
+  NonUniqueMenu,
+  #[error("Zero or many usernames in menu, exactly one was expected")]
+  NonUniqueUsername,
+  #[error("Zero or many username text nodes in menu, exactly one was expected")]
+  NonUniqueUsernameText,
   // #[error("Invalid forum theme id '{}'", .0)]
   // InvalidForumThemeId(String, HammerfestForumThemeIdParseError),
   // #[error("Invalid forum thread id '{}'", .0)]
