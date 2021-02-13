@@ -23,7 +23,6 @@ import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
-import { HttpDinoparcClient } from "@eternal-twin/dinoparc-client-http";
 import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
@@ -31,6 +30,7 @@ import { PgForumService } from "@eternal-twin/forum-pg";
 import { ApiType, Config } from "@eternal-twin/local-config";
 import { SystemClock } from "@eternal-twin/native/lib/clock.js";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js";
+import { HttpDinoparcClient } from "@eternal-twin/native/lib/dinoparc-client.js";
 import { MemDinoparcStore, PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { MemHammerfestStore, PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
@@ -74,7 +74,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   const email = new ConsoleEmailService();
   const emailTemplate = new EtwinEmailTemplateService(new Url(config.etwin.externalUri.toString()));
   const password = new ScryptPasswordService();
-  const dinoparcClient = new HttpDinoparcClient();
+  const dinoparcClient = new HttpDinoparcClient({clock});
   const hammerfestClient = new HttpHammerfestClient({clock});
   const twinoidClient = new HttpTwinoidClientService();
   const forumConfig: ForumConfig = {

@@ -22,12 +22,6 @@
       "path": "packages/core/src/test"
     },
     {
-      "path": "packages/dinoparc-client-http/src/test"
-    },
-    {
-      "path": "packages/dinoparc-client-mem/src/test"
-    },
-    {
       "path": "packages/etwin-client-http/src/test"
     },
     {

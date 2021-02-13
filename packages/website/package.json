@@ -49,7 +49,6 @@
     "@eternal-twin/auth-in-memory": "workspace:*",
     "@eternal-twin/auth-pg": "workspace:*",
     "@eternal-twin/core": "workspace:*",
-    "@eternal-twin/dinoparc-client-http": "workspace:*",
     "@eternal-twin/email-console": "workspace:*",
     "@eternal-twin/email-template-etwin": "workspace:*",
     "@eternal-twin/forum-in-memory": "workspace:*",

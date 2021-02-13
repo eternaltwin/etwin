@@ -21,9 +21,6 @@
       "path": "../core/src/lib"
     },
     {
-      "path": "../dinoparc-client-http/src/lib"
-    },
-    {
       "path": "../forum-in-memory/src/lib"
     },
     {

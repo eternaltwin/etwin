@@ -146,19 +146,24 @@ where
 
   async fn test_session(
     &self,
-    _server: DinoparcServer,
-    _key: &DinoparcSessionKey,
+    server: DinoparcServer,
+    session_key: &DinoparcSessionKey,
   ) -> Result<Option<DinoparcSession>, Box<dyn StdError>> {
-    unimplemented!()
-    // let urls = HammerfestUrls::new(server);
-    // let now = self.clock.now();
-    // let html = self.get_html(urls.root(), Some(key)).await?;
-    // Ok(scraper_tools::scrape_user_base(server, &html)?.map(|user| HammerfestSession {
-    //   ctime: now,
-    //   atime: now,
-    //   key: key.clone(),
-    //   user,
-    // }))
+    let now = self.clock.now();
+    let html = self
+      .get_html(DinoparcUrls::new(server).bank(), Some(&session_key))
+      .await?;
+    let user = scraper::scrape_bank(&html)?;
+    Ok(Some(DinoparcSession {
+      ctime: now,
+      atime: now,
+      key: session_key.clone(),
+      user: ShortDinoparcUser {
+        server: user.context.server,
+        id: user.user_id,
+        username: user.context.auth.username,
+      },
+    }))
   }
 
   async fn get_dinoz(

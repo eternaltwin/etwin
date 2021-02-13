@@ -2,6 +2,7 @@ use neon::prelude::*;
 
 mod clock;
 mod database;
+mod dinoparc_client;
 mod dinoparc_store;
 mod hammerfest_client;
 mod hammerfest_store;
@@ -18,6 +19,8 @@ fn export(mut cx: ModuleContext) -> NeonResult<()> {
   cx.export_value("clock", clock)?;
   let database = crate::database::create_namespace(cx)?;
   cx.export_value("database", database)?;
+  let dinoparc_client = crate::dinoparc_client::create_namespace(cx)?;
+  cx.export_value("dinoparcClient", dinoparc_client)?;
   let dinoparc_store = crate::dinoparc_store::create_namespace(cx)?;
   cx.export_value("dinoparcStore", dinoparc_store)?;
   let hammerfest_client = crate::hammerfest_client::create_namespace(cx)?;

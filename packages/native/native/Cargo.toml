@@ -20,6 +20,7 @@ neon-build = "^0.7.0"
 [dependencies]
 chrono = "^0.4.19"
 etwin_core = { path = "../../../crates/core", features = ["neon", "serde"] }
+etwin_dinoparc_client = { path = "../../../crates/dinoparc_client", features = ["neon"] }
 etwin_dinoparc_store = { path = "../../../crates/dinoparc_store", features = ["neon"] }
 etwin_hammerfest_client = { path = "../../../crates/hammerfest_client", features = ["neon"] }
 etwin_hammerfest_store = { path = "../../../crates/hammerfest_store", features = ["neon"] }

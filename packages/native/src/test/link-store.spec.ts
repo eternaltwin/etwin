@@ -16,7 +16,6 @@ import { ShortTwinoidUser } from "@eternal-twin/core/lib/twinoid/short-twinoid-u
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
 import { Username } from "@eternal-twin/core/lib/user/username.js";
-import { MemDinoparcClient } from "@eternal-twin/dinoparc-client-mem";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
@@ -30,6 +29,7 @@ import chai from "chai";
 
 import { VirtualClock } from "../lib/clock.js";
 import { Database as NativeDatabase } from "../lib/database.js";
+import { MemDinoparcClient } from "../lib/dinoparc-client.js";
 import { MemDinoparcStore, PgDinoparcStore } from "../lib/dinoparc-store.js";
 import { MemHammerfestClient } from "../lib/hammerfest-client.js";
 import { MemHammerfestStore, PgHammerfestStore } from "../lib/hammerfest-store.js";
@@ -56,7 +56,7 @@ describe("NativeLinkStore", function () {
       const twinoidStore = new MemTwinoidStore({clock});
       const linkStore = new MemLinkStore({clock});
       const link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
-      const dinoparcClient = new MemDinoparcClient();
+      const dinoparcClient = new MemDinoparcClient({clock});
       const hammerfestClient = new MemHammerfestClient({clock});
       const twinoidClient = new HttpTwinoidClientService();
       const oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
@@ -96,7 +96,7 @@ describe("NativeLinkStore", function () {
         const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
         const linkStore = new PgLinkStore({clock, database: nativeDatabase});
         const link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
-        const dinoparcClient = new MemDinoparcClient();
+        const dinoparcClient = new MemDinoparcClient({clock});
         const hammerfestClient = new MemHammerfestClient({clock});
         const twinoidClient = new HttpTwinoidClientService();
         const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});

@@ -690,6 +690,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "etwin_core",
+ "etwin_dinoparc_client",
  "etwin_dinoparc_store",
  "etwin_hammerfest_client",
  "etwin_hammerfest_store",

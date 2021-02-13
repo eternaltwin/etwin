@@ -39,7 +39,6 @@
   "devDependencies": {
     "@eternal-twin/announcement-test": "workspace:*",
     "@eternal-twin/auth-pg": "workspace:*",
-    "@eternal-twin/dinoparc-client-mem": "workspace:*",
     "@eternal-twin/email-in-memory": "workspace:*",
     "@eternal-twin/email-template-json": "workspace:*",
     "@eternal-twin/forum-pg": "workspace:*",
