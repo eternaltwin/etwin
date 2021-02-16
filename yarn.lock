@@ -1617,7 +1617,6 @@ __metadata:
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
@@ -1644,7 +1643,6 @@ __metadata:
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@types/chai": ^4.2.14
@@ -1684,7 +1682,6 @@ __metadata:
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/jsonwebtoken": ^8.5.0
@@ -1712,7 +1709,6 @@ __metadata:
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@types/chai": ^4.2.14
@@ -1910,7 +1906,6 @@ __metadata:
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
@@ -1936,7 +1931,6 @@ __metadata:
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@types/chai": ^4.2.14
@@ -2057,7 +2051,6 @@ __metadata:
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-provider-test": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2081,7 +2074,6 @@ __metadata:
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-provider-test": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
@@ -2112,22 +2104,6 @@ __metadata:
     kryo: ^0.11.2
     kryo-json: ^0.11.2
     mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/password-scrypt@workspace:*, @eternal-twin/password-scrypt@workspace:packages/password-scrypt":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/password-scrypt@workspace:packages/password-scrypt"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    scrypt-kdf: ^2.0.1
     typescript: ^4.1.2
   languageName: unknown
   linkType: soft
@@ -2165,7 +2141,6 @@ __metadata:
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/token-pg": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
@@ -2302,7 +2277,6 @@ __metadata:
     "@eternal-twin/oauth-client-http": "workspace:*"
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
-    "@eternal-twin/password-scrypt": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/rest-server": "workspace:*"
     "@eternal-twin/token-in-memory": "workspace:*"
@@ -13643,13 +13617,6 @@ resolve@1.18.1:
     ajv: ^6.12.5
     ajv-keywords: ^3.5.2
   checksum: a084f593f222560c412a4d8f40c92386c01c1c709f27c0672c2f02927a4d4d475f57f8b8e91198d0defb452add160476a03f07a05b26200a64b5124fa874e158
-  languageName: node
-  linkType: hard
-
-"scrypt-kdf@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "scrypt-kdf@npm:2.0.1"
-  checksum: 524bc4aaec81138af8d31cc5778ad4d1f7822e352a5eae703bef65c74c50b120f990384d94958841629a20b713c7355c45270aef2027c9a9eb195843285b32f8
   languageName: node
   linkType: hard
 

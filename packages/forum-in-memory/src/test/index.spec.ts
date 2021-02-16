@@ -12,11 +12,11 @@ import { MemDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { MemHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { MemLinkStore } from "@eternal-twin/native/lib/link-store.js";
+import { ScryptPasswordService } from "@eternal-twin/native/lib/password.js";
 import { MemTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
 import { MemUserStore } from "@eternal-twin/native/lib/user-store.js";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
-import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 
 import { InMemoryForumService } from "../lib/index.js";
@@ -30,7 +30,7 @@ async function withInMemoryForumService<R>(fn: (api: Api) => Promise<R>): Promis
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new InMemoryEmailService();
   const emailTemplate = new JsonEmailTemplateService(new Url("https://eternal-twin.net"));
-  const password = new ScryptPasswordService();
+  const password = ScryptPasswordService.recommendedForTests();
   const hammerfestStore = new MemHammerfestStore({clock});
   const twinoidStore = new MemTwinoidStore({clock});
   const dinoparcClient = new MemDinoparcClient({clock});

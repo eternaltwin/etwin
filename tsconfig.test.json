@@ -43,9 +43,6 @@
       "path": "packages/oauth-provider-pg/src/test"
     },
     {
-      "path": "packages/password-scrypt/src/test"
-    },
-    {
       "path": "packages/rest-server/src/test"
     },
     {

@@ -32,9 +32,6 @@
       "path": "../../../oauth-provider-in-memory/src/lib"
     },
     {
-      "path": "../../../password-scrypt/src/lib"
-    },
-    {
       "path": "../../../twinoid-client-http/src/lib"
     }
   ]

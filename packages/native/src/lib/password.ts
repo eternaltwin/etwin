@@ -36,4 +36,8 @@ export class ScryptPasswordService extends NativePasswordService {
   public static recommendedForTests(): ScryptPasswordService {
     return new ScryptPasswordService(native.password.scrypt.recommendedForTests());
   }
+
+  public static withOsRng(maxTime = 1.0, maxMemFrac = 0.5): ScryptPasswordService {
+    return new ScryptPasswordService(native.password.scrypt.withOsRng(maxTime, maxMemFrac));
+  }
 }

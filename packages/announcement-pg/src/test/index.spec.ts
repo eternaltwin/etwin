@@ -16,11 +16,11 @@ import { PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
+import { ScryptPasswordService } from "@eternal-twin/native/lib/password.js";
 import { PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
 import { PgUserStore } from "@eternal-twin/native/lib/user-store.js";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
-import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 
@@ -47,7 +47,7 @@ async function withPgAnnouncementService<R>(fn: (api: Api) => Promise<R>): Promi
     const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
     const email = new InMemoryEmailService();
     const emailTemplate = new JsonEmailTemplateService(new Url("https://eternal-twin.net"));
-    const password = new ScryptPasswordService();
+    const password = ScryptPasswordService.recommendedForTests();
     const userStore = new PgUserStore({clock, database:  nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
     const hammerfestStore = new PgHammerfestStore({clock, database: nativeDatabase});

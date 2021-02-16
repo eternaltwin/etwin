@@ -59,7 +59,6 @@
     "@eternal-twin/oauth-client-http": "workspace:*",
     "@eternal-twin/oauth-provider-in-memory": "workspace:*",
     "@eternal-twin/oauth-provider-pg": "workspace:*",
-    "@eternal-twin/password-scrypt": "workspace:*",
     "@eternal-twin/pg-db": "workspace:*",
     "@eternal-twin/rest-server": "workspace:*",
     "@eternal-twin/token-in-memory": "workspace:*",

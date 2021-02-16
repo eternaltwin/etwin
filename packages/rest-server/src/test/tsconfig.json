@@ -44,9 +44,6 @@
       "path": "../../../oauth-provider-pg/src/lib"
     },
     {
-      "path": "../../../password-scrypt/src/lib"
-    },
-    {
       "path": "../../../pg-db/src/lib"
     },
     {

@@ -35,13 +35,13 @@ import { MemDinoparcStore, PgDinoparcStore } from "@eternal-twin/native/lib/dino
 import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { MemHammerfestStore, PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { MemLinkStore, PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
+import { ScryptPasswordService } from "@eternal-twin/native/lib/password.js";
 import { MemTwinoidStore, PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
 import { MemUserStore, PgUserStore } from "@eternal-twin/native/lib/user-store.js";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { HttpOauthClientService } from "@eternal-twin/oauth-client-http";
 import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
-import { ScryptPasswordService } from "@eternal-twin/password-scrypt";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import { InMemoryTokenService } from "@eternal-twin/token-in-memory";
@@ -73,7 +73,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
   const email = new ConsoleEmailService();
   const emailTemplate = new EtwinEmailTemplateService(new Url(config.etwin.externalUri.toString()));
-  const password = new ScryptPasswordService();
+  const password = ScryptPasswordService.withOsRng();
   const dinoparcClient = new HttpDinoparcClient({clock});
   const hammerfestClient = new HttpHammerfestClient({clock});
   const twinoidClient = new HttpTwinoidClientService();

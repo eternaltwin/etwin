@@ -30,9 +30,6 @@
     },
     {
       "path": "../../../oauth-provider-test/src/lib"
-    },
-    {
-      "path": "../../../password-scrypt/src/lib"
     }
   ]
 }
