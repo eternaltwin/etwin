@@ -1,6 +1,6 @@
 use crate::dinoparc_client::http::JsHttpDinoparcClient;
 use crate::dinoparc_client::mem::JsMemDinoparcClient;
-use crate::neon_helpers::{resolve_callback, NeonNamespace};
+use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
 use etwin_core::dinoparc::{DinoparcClient, DinoparcCredentials, DinoparcServer, DinoparcSessionKey};
 use neon::prelude::*;
 use std::sync::Arc;
@@ -44,7 +44,7 @@ pub fn create_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: DinoparcCredentials = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.create_session(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn test_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -58,7 +58,7 @@ pub fn test_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let key: DinoparcSessionKey = serde_json::from_str(&key_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.test_session(server, &key).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub mod http {

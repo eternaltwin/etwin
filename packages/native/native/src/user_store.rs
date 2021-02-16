@@ -1,4 +1,4 @@
-use crate::neon_helpers::{resolve_callback, NeonNamespace};
+use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
 use crate::user_store::mem::JsMemUserStore;
 use crate::user_store::pg::JsPgUserStore;
 use etwin_core::user::{CreateUserOptions, GetShortUserOptions, GetUserOptions, UserIdRef, UserStore};
@@ -41,7 +41,7 @@ pub fn create_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: CreateUserOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.create_user(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -53,7 +53,7 @@ pub fn get_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: GetUserOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_user(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -65,7 +65,7 @@ pub fn get_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: GetShortUserOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_short_user(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn hard_delete_user_by_id(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -77,7 +77,7 @@ pub fn hard_delete_user_by_id(mut cx: FunctionContext) -> JsResult<JsUndefined> 
   let options: UserIdRef = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.hard_delete_user_by_id(options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub mod mem {

@@ -1,6 +1,6 @@
 use crate::hammerfest_client::http::JsHttpHammerfestClient;
 use crate::hammerfest_client::mem::JsMemHammerfestClient;
-use crate::neon_helpers::{resolve_callback, NeonNamespace};
+use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
 use etwin_core::hammerfest::{
   HammerfestClient, HammerfestCredentials, HammerfestForumThemeId, HammerfestForumThreadId,
   HammerfestGetProfileByIdOptions, HammerfestServer, HammerfestSession, HammerfestSessionKey,
@@ -53,7 +53,7 @@ pub fn create_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: HammerfestCredentials = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.create_session(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn test_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -67,7 +67,7 @@ pub fn test_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let key: HammerfestSessionKey = serde_json::from_str(&key_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.test_session(server, &key).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_profile_by_id(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -81,7 +81,7 @@ pub fn get_profile_by_id(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: HammerfestGetProfileByIdOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_profile_by_id(session.as_ref(), &options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_forum_theme_page(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -103,7 +103,7 @@ pub fn get_forum_theme_page(mut cx: FunctionContext) -> JsResult<JsUndefined> {
       .get_forum_theme_page(session.as_ref(), server, theme_id, page1)
       .await
   };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_forum_themes(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -117,7 +117,7 @@ pub fn get_forum_themes(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let server: HammerfestServer = serde_json::from_str(&server_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_forum_themes(session.as_ref(), server).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_forum_thread_page(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -139,7 +139,7 @@ pub fn get_forum_thread_page(mut cx: FunctionContext) -> JsResult<JsUndefined> {
       .get_forum_thread_page(session.as_ref(), server, thread_id, page1)
       .await
   };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_own_god_children(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -151,7 +151,7 @@ pub fn get_own_god_children(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let session: HammerfestSession = serde_json::from_str(&session_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_own_god_children(&session).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_own_items(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -163,7 +163,7 @@ pub fn get_own_items(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let session: HammerfestSession = serde_json::from_str(&session_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_own_items(&session).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_own_shop(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -175,7 +175,7 @@ pub fn get_own_shop(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let session: HammerfestSession = serde_json::from_str(&session_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_own_shop(&session).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub mod http {

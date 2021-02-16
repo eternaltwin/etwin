@@ -43,7 +43,37 @@ impl NeonNamespace for Handle<'_, JsObject> {
 
 // We return a `Result` here even if it never fails to simplify the caller code.
 #[allow(clippy::unnecessary_wraps)]
-pub(crate) fn resolve_callback<'a, C: Context<'a>, T: Serialize>(
+pub(crate) fn resolve_callback_with<'a, C: Context<'a>, T: 'static + Send, ToJs>(
+  cx: &mut C,
+  fut: impl Future<Output = T> + Send + 'static,
+  cb: Root<JsFunction>,
+  to_js: ToJs,
+) -> JsResult<'a, JsUndefined>
+where
+  ToJs: 'static + Send + for<'r> FnOnce(&mut TaskContext<'r>, T) -> Result<Handle<'r, JsValue>, Handle<'r, JsValue>>,
+{
+  let queue = cx.queue();
+  spawn_future(Box::pin(async move {
+    let res = fut.await;
+    queue.send(move |mut cx| {
+      let res = to_js(&mut cx, res);
+      let cb = cb.into_inner(&mut cx);
+      let this = cx.null();
+      let (err, res): (Handle<JsValue>, Handle<JsValue>) = match res {
+        Ok(value) => (cx.null().upcast(), value),
+        Err(e) => (e, cx.null().upcast()),
+      };
+      let _ = cb.call(&mut cx, this, vec![err, res])?;
+      Ok(())
+    })
+  }));
+
+  Ok(cx.undefined())
+}
+
+// We return a `Result` here even if it never fails to simplify the caller code.
+#[allow(clippy::unnecessary_wraps)]
+pub(crate) fn resolve_callback_serde<'a, C: Context<'a>, T: Serialize>(
   cx: &mut C,
   fut: impl Future<Output = Result<T, Box<dyn Error>>> + Send + 'static,
   cb: Root<JsFunction>,

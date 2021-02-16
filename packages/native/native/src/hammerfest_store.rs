@@ -1,6 +1,6 @@
 use crate::hammerfest_store::mem::JsMemHammerfestStore;
 use crate::hammerfest_store::pg::JsPgHammerfestStore;
-use crate::neon_helpers::{resolve_callback, NeonNamespace};
+use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
 use etwin_core::hammerfest::{GetHammerfestUserOptions, HammerfestStore, ShortHammerfestUser};
 use neon::prelude::*;
 use std::sync::Arc;
@@ -45,7 +45,7 @@ pub fn get_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: GetHammerfestUserOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_user(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -57,7 +57,7 @@ pub fn get_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: GetHammerfestUserOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_short_user(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn touch_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -69,7 +69,7 @@ pub fn touch_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let short: ShortHammerfestUser = serde_json::from_str(&short_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.touch_short_user(&short).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub mod mem {

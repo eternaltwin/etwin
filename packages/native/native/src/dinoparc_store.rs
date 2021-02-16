@@ -1,6 +1,6 @@
 use crate::dinoparc_store::mem::JsMemDinoparcStore;
 use crate::dinoparc_store::pg::JsPgDinoparcStore;
-use crate::neon_helpers::{resolve_callback, NeonNamespace};
+use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
 use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser};
 use neon::prelude::*;
 use std::sync::Arc;
@@ -42,7 +42,7 @@ pub fn get_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: GetDinoparcUserOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_short_user(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn touch_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -54,7 +54,7 @@ pub fn touch_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let short: ShortDinoparcUser = serde_json::from_str(&short_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.touch_short_user(&short).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub mod mem {

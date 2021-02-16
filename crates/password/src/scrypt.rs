@@ -1,12 +1,14 @@
 use etwin_core::password::{Password, PasswordHash, PasswordService};
 use hmac::{Hmac, Mac, NewMac};
-use rand_core::{CryptoRng, OsRng, RngCore};
+use rand_core::{CryptoRng, RngCore};
 use sha2::{Digest, Sha256};
 use std::convert::TryInto;
 use std::sync::Mutex;
 use std::time::Duration;
 use subtle::ConstantTimeEq;
 use sysinfo::{System, SystemExt};
+
+pub use rand_core::OsRng;
 
 type HmacSha256 = Hmac<Sha256>;
 
@@ -132,8 +134,8 @@ impl ScryptPasswordService<OsRng> {
     }
   }
 
-  #[cfg(test)]
-  pub fn recommeded_for_tests() -> Self {
+  #[cfg(any(test, feature = "neon"))]
+  pub fn recommended_for_tests() -> Self {
     Self {
       params: ScryptParams::detect(Duration::from_millis(500), 0.1).unwrap(),
       rng: Mutex::new(OsRng),
@@ -251,7 +253,7 @@ mod test {
   use rand_core::OsRng;
 
   fn make_test_api() -> TestApi<ScryptPasswordService<OsRng>> {
-    let password = ScryptPasswordService::recommeded_for_tests();
+    let password = ScryptPasswordService::recommended_for_tests();
 
     TestApi { password }
   }
@@ -278,7 +280,7 @@ mod test {
 
   #[test]
   fn test_verify_hunter2() {
-    let password = ScryptPasswordService::recommeded_for_tests();
+    let password = ScryptPasswordService::recommended_for_tests();
     let hash: Vec<u8> = hex::decode("736372797074000c0000000800000001c5ec1067adb434a19cb471dcfc13a8cec8c6e935ec7e14eda9f51a386924eeeb9fce39bb3d36f6101cc06189da63e0513a54553efbee9d2a058bafbda5231093c4ae5e9b3f87a2d002fa49ff75b868fd").unwrap();
     assert!(password.verify((&hash[..]).into(), "hunter2".into()));
   }

@@ -1,6 +1,6 @@
 use crate::link_store::mem::JsMemLinkStore;
 use crate::link_store::pg::JsPgLinkStore;
-use crate::neon_helpers::{resolve_callback, NeonNamespace};
+use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
 use etwin_core::dinoparc::DinoparcUserIdRef;
 use etwin_core::hammerfest::HammerfestUserIdRef;
 use etwin_core::link::{GetLinkOptions, GetLinksFromEtwinOptions, LinkStore, TouchLinkOptions};
@@ -48,7 +48,7 @@ pub fn get_link_from_dinoparc(mut cx: FunctionContext) -> JsResult<JsUndefined> 
   let options: GetLinkOptions<DinoparcUserIdRef> = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_link_from_dinoparc(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_link_from_hammerfest(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -60,7 +60,7 @@ pub fn get_link_from_hammerfest(mut cx: FunctionContext) -> JsResult<JsUndefined
   let options: GetLinkOptions<HammerfestUserIdRef> = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_link_from_hammerfest(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_link_from_twinoid(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -72,7 +72,7 @@ pub fn get_link_from_twinoid(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: GetLinkOptions<TwinoidUserIdRef> = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_link_from_twinoid(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn get_links_from_etwin(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -84,7 +84,7 @@ pub fn get_links_from_etwin(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: GetLinksFromEtwinOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_links_from_etwin(&options).await };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn touch_dinoparc_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -101,7 +101,7 @@ pub fn touch_dinoparc_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
       .await
       .map_err(|x| Box::new(x) as Box<dyn Error>)
   };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn touch_hammerfest_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -118,7 +118,7 @@ pub fn touch_hammerfest_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
       .await
       .map_err(|x| Box::new(x) as Box<dyn Error>)
   };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub fn touch_twinoid_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -135,7 +135,7 @@ pub fn touch_twinoid_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
       .await
       .map_err(|x| Box::new(x) as Box<dyn Error>)
   };
-  resolve_callback(&mut cx, res, cb)
+  resolve_callback_serde(&mut cx, res, cb)
 }
 
 pub mod mem {
