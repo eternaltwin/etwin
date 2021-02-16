@@ -19,7 +19,13 @@ module Etwin
       sig(:final) { returns(Etwin::User::ShortUser) }
       attr_reader :user
 
-      sig(:final) { params(scope: AuthScope, client: Etwin::Oauth::ShortOauthClient, user: Etwin::User::ShortUser).void }
+      sig(:final) do
+        params(
+          scope: AuthScope,
+          client: Etwin::Oauth::ShortOauthClient,
+          user: Etwin::User::ShortUser
+        ).void
+      end
       def initialize(scope, client, user)
         @scope = T.let(scope, AuthScope)
         @client = T.let(client, Etwin::Oauth::ShortOauthClient)
@@ -64,22 +70,22 @@ module Etwin
 
       sig(:final) { params(pp: T.untyped).returns(T.untyped) }
       def pretty_print(pp)  # rubocop:disable Metrics/MethodLength
-      pp.group(0, "#{self.class.name}(", ')') do
-        pp.nest 1 do
+        pp.group(0, "#{self.class.name}(", ')') do
+          pp.nest 1 do
+            pp.breakable ''
+            pp.text 'scope='
+            pp.pp @scope
+            pp.text ','
+            pp.breakable ''
+            pp.text 'client='
+            pp.pp @client
+            pp.text ','
+            pp.breakable ''
+            pp.text 'user='
+            pp.pp @user
+          end
           pp.breakable ''
-          pp.text 'scope='
-          pp.pp @scope
-          pp.text ','
-          pp.breakable ''
-          pp.text 'client='
-          pp.pp @client
-          pp.text ','
-          pp.breakable ''
-          pp.text 'user='
-          pp.pp @user
         end
-        pp.breakable ''
-      end
       end
 
       class << self

@@ -19,7 +19,13 @@ module Etwin
       sig(:final) { returns(OauthClientDisplayName) }
       attr_reader :display_name
 
-      sig(:final) { params(id: OauthClientId, key: T.nilable(OauthClientKey), display_name: OauthClientDisplayName).void }
+      sig(:final) do
+        params(
+          id: OauthClientId,
+          key: T.nilable(OauthClientKey),
+          display_name: OauthClientDisplayName
+        ).void
+      end
       def initialize(id, key, display_name)
         @id = T.let(id, OauthClientId)
         @key = T.let(key, T.nilable(OauthClientKey))

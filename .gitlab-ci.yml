@@ -75,20 +75,35 @@ lint:
       && cargo clippy --all-targets --all-features -- -D warnings \
       && yarn run lint
 
-test-rust:
-  stage: "check"
-  script:
-    - |
-      sccache --start-server \
-      && cargo test --no-fail-fast -- -Z unstable-options --report-time \
-      && sccache --stop-server
-
 test-node:
   stage: "check"
   script:
     - |
       sccache --start-server \
       && yarn run test \
+      && sccache --stop-server
+
+test-ruby:
+  stage: "check"
+  # ruby:2.7.2-buster
+  image: "ruby@sha256:19cfb36f6e63fa964c984bd7837d7e2ba18263e34a5da1725324b80271dd475a"
+  before_script:
+    - ruby --version
+    - bundler --version
+    - cd clients/ruby
+    - bundle install
+  script:
+    - bundle exec rubocop
+    - bundle exec rspec
+    - bundle exec srb tc
+  after_script: []
+
+test-rust:
+  stage: "check"
+  script:
+    - |
+      sccache --start-server \
+      && cargo test --no-fail-fast -- -Z unstable-options --report-time \
       && sccache --stop-server
 
 build:

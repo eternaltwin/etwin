@@ -1,7 +1,7 @@
 # typed: false
 # frozen_string_literal: true
 
-RSpec.describe Etwin::Auth::AccessTokenAuthContext do
+RSpec.describe Etwin::Auth::AccessTokenAuthContext do # rubocop:disable Metrics/BlockLength
   items = SerializationTestItem.from_test_dir(
     'auth/access-token-auth-context',
     {

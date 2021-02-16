@@ -3,7 +3,7 @@
 
 RSpec.describe Etwin::User::ShortUser do
   items = SerializationTestItem.from_test_dir(
-    'user/short-user',
+    'core/user/short-user',
     {
       'demurgos' => Etwin::User::ShortUser.new(
         Etwin::User::UserId.new('9f310484-963b-446b-af69-797feec6813f'),
