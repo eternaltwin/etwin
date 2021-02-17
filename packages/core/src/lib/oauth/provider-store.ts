@@ -18,4 +18,6 @@ export interface OauthProviderStore {
   createAccessToken(options: Readonly<CreateStoredOauthAccessTokenOptions>): Promise<StoredOauthAccessToken>;
 
   getAccessTokenByKey(key: RfcOauthAccessTokenKey): Promise<StoredOauthAccessToken | null>;
+
+  getAndTouchAccessTokenByKey(key: RfcOauthAccessTokenKey): Promise<StoredOauthAccessToken | null>;
 }

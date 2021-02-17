@@ -1,4 +1,11 @@
+#[cfg(feature = "serde")]
+use crate::serde_buffer::{buffer_to_hex, hex_to_buffer};
 use auto_impl::auto_impl;
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+#[cfg(feature = "sqlx")]
+use sqlx::{database, postgres, Database, Postgres};
+use std::error::Error;
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Password(pub Vec<u8>);
@@ -15,8 +22,55 @@ impl From<&str> for Password {
   }
 }
 
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct PasswordHash(pub Vec<u8>);
+pub struct PasswordHash(
+  #[cfg_attr(
+    feature = "serde",
+    serde(serialize_with = "buffer_to_hex", deserialize_with = "hex_to_buffer")
+  )]
+  pub Vec<u8>,
+);
+
+impl PasswordHash {
+  pub fn as_slice(&self) -> &[u8] {
+    &self.0
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl sqlx::Type<Postgres> for PasswordHash {
+  fn type_info() -> postgres::PgTypeInfo {
+    postgres::PgTypeInfo::with_name("password_hash")
+  }
+
+  fn compatible(ty: &postgres::PgTypeInfo) -> bool {
+    *ty == Self::type_info() || <&[u8] as sqlx::Type<Postgres>>::compatible(ty)
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'r, Db: Database> sqlx::Decode<'r, Db> for PasswordHash
+where
+  &'r [u8]: sqlx::Decode<'r, Db>,
+{
+  fn decode(
+    value: <Db as database::HasValueRef<'r>>::ValueRef,
+  ) -> Result<PasswordHash, Box<dyn Error + 'static + Send + Sync>> {
+    let value: &[u8] = <&[u8] as sqlx::Decode<Db>>::decode(value)?;
+    Ok(value.into())
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'q, Db: Database> sqlx::Encode<'q, Db> for PasswordHash
+where
+  Vec<u8>: sqlx::Encode<'q, Db>,
+{
+  fn encode_by_ref(&self, buf: &mut <Db as database::HasArguments<'q>>::ArgumentBuffer) -> sqlx::encode::IsNull {
+    self.as_slice().to_vec().encode(buf)
+  }
+}
 
 impl From<&[u8]> for PasswordHash {
   fn from(value: &[u8]) -> Self {

@@ -241,14 +241,29 @@ export class PgOauthProviderStore implements OauthProviderStore {
   public async getAccessTokenByKey(key: RfcOauthAccessTokenKey): Promise<StoredOauthAccessToken | null> {
     return this.#database.transaction(TransactionMode.ReadOnly, async (queryable: Queryable) => {
       type Row = Pick<OauthAccessTokenRow, "oauth_access_token_id" | "oauth_client_id" | "user_id" | "ctime" | "atime">;
-      const row: Row = await queryable.one(
+      const row: Row | undefined = await queryable.oneOrNone(
         `
           SELECT oauth_access_token_id, oauth_client_id, user_id, ctime, atime
           FROM oauth_access_tokens
           WHERE oauth_access_token_id = $1::UUID;`,
         [key],
       );
-      return fromAccessTokenRow(row);
+      return row === undefined ? null : fromAccessTokenRow(row);
+    });
+  }
+
+  public async getAndTouchAccessTokenByKey(key: RfcOauthAccessTokenKey): Promise<StoredOauthAccessToken | null> {
+    return this.#database.transaction(TransactionMode.ReadWrite, async (queryable: Queryable) => {
+      type Row = Pick<OauthAccessTokenRow, "oauth_access_token_id" | "oauth_client_id" | "user_id" | "ctime" | "atime">;
+      const row: Row | undefined = await queryable.oneOrNone(
+        `
+          UPDATE oauth_access_tokens
+          SET atime = NOW()
+          WHERE oauth_access_token_id = $1::UUID
+          RETURNING oauth_access_token_id, oauth_client_id, user_id, ctime, atime;`,
+        [key],
+      );
+      return row === undefined ? null : fromAccessTokenRow(row);
     });
   }
 

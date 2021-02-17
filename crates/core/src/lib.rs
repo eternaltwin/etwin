@@ -19,3 +19,6 @@ pub mod services {
 pub mod twinoid;
 pub mod user;
 pub mod uuid;
+
+#[cfg(all(feature = "serde", feature = "hex"))]
+mod serde_buffer;

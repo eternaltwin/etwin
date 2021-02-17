@@ -34,6 +34,7 @@ where
       display_name: UserDisplayName::from_str("Alice").unwrap(),
       username: Some(Username::from_str("alice").unwrap()),
       email: None,
+      password: None,
     })
     .await
     .unwrap();
@@ -64,6 +65,7 @@ where
       display_name: UserDisplayName::from_str("Alice").unwrap(),
       username: Some(Username::from_str("alice").unwrap()),
       email: None,
+      password: None,
     })
     .await
     .unwrap();
@@ -100,6 +102,7 @@ pub(crate) async fn test_register_the_admin_and_retrieve_default<TyClock, TyUser
       display_name: UserDisplayName::from_str("Alice").unwrap(),
       username: Some(Username::from_str("alice").unwrap()),
       email: None,
+      password: None,
     })
     .await
     .unwrap();
@@ -138,6 +141,7 @@ pub(crate) async fn test_register_the_admin_and_retrieve_complete<TyClock, TyUse
       display_name: UserDisplayName::from_str("Alice").unwrap(),
       username: Some(Username::from_str("alice").unwrap()),
       email: None,
+      password: None,
     })
     .await
     .unwrap();

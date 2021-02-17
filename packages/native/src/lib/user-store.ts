@@ -9,6 +9,10 @@ import { $GetUserOptions, GetUserOptions } from "@eternal-twin/core/lib/user/get
 import { $NullableGetUserResult } from "@eternal-twin/core/lib/user/get-user-result.js";
 import { $NullableShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { ShortUserFields } from "@eternal-twin/core/lib/user/short-user-fields.js";
+import {
+  $NullableShortUserWithPassword,
+  ShortUserWithPassword
+} from "@eternal-twin/core/lib/user/short-user-with-password.js";
 import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
@@ -30,6 +34,7 @@ export abstract class NativeUserStore implements UserStore {
   public readonly box: NativeUserStoreBox;
   private static CREATE_USER = promisify(native.userStore.createUser);
   private static GET_USER = promisify(native.userStore.getUser);
+  private static GET_USER_WITH_PASSWORD = promisify(native.userStore.getUserWithPassword);
   private static GET_SHORT_USER = promisify(native.userStore.getShortUser);
   private static HARD_DELETE_USER_BY_ID = promisify(native.userStore.hardDeleteUserById);
 
@@ -58,6 +63,13 @@ export abstract class NativeUserStore implements UserStore {
     const rawOut = await NativeUserStore.GET_SHORT_USER(this.box, rawOptions);
     return $NullableShortUser.read(JSON_READER, rawOut);
   }
+
+  async getUserWithPassword(options: Readonly<GetUserOptions>): Promise<ShortUserWithPassword | null> {
+    const rawOptions: string = $GetUserOptions.write(JSON_WRITER, options);
+    const rawOut = await NativeUserStore.GET_USER_WITH_PASSWORD(this.box, rawOptions);
+    return $NullableShortUserWithPassword.read(JSON_READER, rawOut);
+  }
+
 
   async hardDeleteUserById(userId: UserId): Promise<void> {
     const rawShort: string = $UserIdRef.write(JSON_WRITER, {type: ObjectType.User, id: userId});

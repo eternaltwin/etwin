@@ -567,6 +567,7 @@ dependencies = [
  "etwin_hammerfest_store",
  "etwin_link_store",
  "etwin_user_store",
+ "hex",
  "itoa",
  "neon",
  "once_cell",

@@ -3,10 +3,11 @@ use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, Secret};
 use etwin_core::email::EmailAddress;
+use etwin_core::password::PasswordHash;
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, GetShortUserOptions, GetUserOptions, GetUserResult, ShortUser,
-  UserDisplayName, UserDisplayNameVersion, UserDisplayNameVersions, UserFields, UserId, UserIdRef, UserRef, UserStore,
-  Username,
+  ShortUserWithPassword, UserDisplayName, UserDisplayNameVersion, UserDisplayNameVersions, UserFields, UserId,
+  UserIdRef, UserRef, UserStore, Username,
 };
 use etwin_core::uuid::UuidGenerator;
 use sqlx::postgres::PgPool;
@@ -71,10 +72,10 @@ where
         is_administrator
       )
       VALUES (
-        $2::USER_ID, $6::INSTANT, $3::USER_DISPLAY_NAME, $6::INSTANT,
-        (CASE WHEN $4::TEXT IS NULL THEN NULL ELSE pgp_sym_encrypt($4::TEXT, $1::TEXT) END), $6::INSTANT,
-        $5::VARCHAR, $6::INSTANT,
-        NULL, $6::INSTANT,
+        $2::USER_ID, $7::INSTANT, $3::USER_DISPLAY_NAME, $7::INSTANT,
+        (CASE WHEN $4::TEXT IS NULL THEN NULL ELSE pgp_sym_encrypt($4::TEXT, $1::TEXT) END), $7::INSTANT,
+        $5::VARCHAR, $7::INSTANT,
+        $6::PASSWORD_HASH, $7::INSTANT,
         (NOT EXISTS(SELECT 1 FROM administrator_exists))
       )
       RETURNING user_id, ctime, display_name, is_administrator;
@@ -85,6 +86,7 @@ where
     .bind(&options.display_name)
     .bind(None::<&str>)
     .bind(options.username.as_ref())
+    .bind(options.password.as_ref())
     .bind(now)
     .fetch_one(self.database.as_ref())
     .await?;
@@ -177,16 +179,15 @@ where
     Ok(Some(user))
   }
 
-  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, Box<dyn Error>> {
+  async fn get_user_with_password(
+    &self,
+    options: &GetUserOptions,
+  ) -> Result<Option<ShortUserWithPassword>, Box<dyn Error>> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       user_id: UserId,
       display_name: UserDisplayName,
-      display_name_mtime: Instant,
-      is_administrator: bool,
-      ctime: Instant,
-      email_address: Option<EmailAddress>,
-      username: Option<Username>,
+      password: Option<PasswordHash>,
     }
 
     let mut ref_id: Option<UserId> = None;
@@ -200,8 +201,57 @@ where
 
     let row = sqlx::query_as::<_, Row>(
       r"
-      SELECT user_id, display_name, display_name_mtime, is_administrator, ctime,
-        pgp_sym_decrypt(email_address, $1::TEXT) AS email_address, username
+      SELECT user_id, display_name, password
+      FROM users
+      WHERE users.user_id = $2::UUID OR username = $3::VARCHAR OR
+      pgp_sym_decrypt(email_address, $1::TEXT) = $4::VARCHAR;
+      ",
+    )
+    .bind(self.database_secret.as_str())
+    .bind(ref_id)
+    .bind(ref_username)
+    .bind(ref_email)
+    .fetch_optional(self.database.as_ref())
+    .await?;
+
+    let row: Row = if let Some(r) = row {
+      r
+    } else {
+      return Ok(None);
+    };
+
+    let user = ShortUserWithPassword {
+      id: row.user_id,
+      display_name: UserDisplayNameVersions {
+        current: UserDisplayNameVersion {
+          value: row.display_name,
+        },
+      },
+      password: row.password,
+    };
+
+    Ok(Some(user))
+  }
+
+  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, Box<dyn Error>> {
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      user_id: UserId,
+      display_name: UserDisplayName,
+    }
+
+    let mut ref_id: Option<UserId> = None;
+    let mut ref_username: Option<Username> = None;
+    let mut ref_email: Option<EmailAddress> = None;
+    match &options.r#ref {
+      UserRef::Id(r) => ref_id = Some(r.id),
+      UserRef::Username(r) => ref_username = Some(r.username.clone()),
+      UserRef::Email(r) => ref_email = Some(r.email.clone()),
+    }
+
+    let row = sqlx::query_as::<_, Row>(
+      r"
+      SELECT user_id, display_name
       FROM users
       WHERE users.user_id = $2::UUID OR username = $3::VARCHAR OR
       pgp_sym_decrypt(email_address, $1::TEXT) = $4::VARCHAR;

@@ -17,3 +17,5 @@ export const $SystemAuthContext: RecordIoType<SystemAuthContext> = new RecordTyp
   },
   changeCase: CaseStyle.SnakeCase,
 });
+
+export const SYSTEM_AUTH: SystemAuthContext = Object.freeze({type: AuthType.System, scope: AuthScope.Default});

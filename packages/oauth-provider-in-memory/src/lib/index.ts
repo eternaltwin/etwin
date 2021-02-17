@@ -144,6 +144,15 @@ export class InMemoryOauthProviderStore implements OauthProviderStore {
     return imAt !== null ? fromImAccessToken(imAt) : null;
   }
 
+  public async getAndTouchAccessTokenByKey(key: RfcOauthAccessTokenKey): Promise<StoredOauthAccessToken | null> {
+    const imAt = this.getImAccessTokenById(key);
+    if (imAt === null) {
+      return null;
+    }
+    imAt.atime = this.#clock.now();
+    return fromImAccessToken(imAt);
+  }
+
   public async verifyClientSecret(id: OauthClientId, secret: Uint8Array): Promise<boolean> {
     const imClient = this.getImClientById(id);
     if (imClient === null) {

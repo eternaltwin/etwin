@@ -15,6 +15,7 @@ import { ShortUser } from "../user/short-user.js";
 import { SHORT_USER_FIELDS } from "../user/short-user-fields.js";
 import { UserStore } from "../user/store.js";
 import { UserId } from "../user/user-id.js";
+import { UserIdRef } from "../user/user-id-ref";
 import { CompleteOauthAccessToken } from "./complete-oauth-access-token.js";
 import { CreateOrUpdateSystemClientOptions } from "./create-or-update-system-client-options.js";
 import { EtwinOauthAccessTokenRequest } from "./etwin-oauth-access-token-request.js";
@@ -22,6 +23,7 @@ import { parseScopeString, toOauthClientTypedKey } from "./helpers.js";
 import { OauthAccessToken } from "./oauth-access-token.js";
 import { OauthClient } from "./oauth-client.js";
 import { $OauthClientId, OauthClientId } from "./oauth-client-id.js";
+import { OauthClientIdRef } from "./oauth-client-id-ref";
 import { OauthClientInputRef } from "./oauth-client-input-ref.js";
 import { OauthClientKey } from "./oauth-client-key.js";
 import { OauthCode } from "./oauth-code.js";
@@ -41,7 +43,7 @@ export interface OauthProviderServiceOptions {
   uuidGenerator: UuidGenerator;
 }
 
-export class OauthProviderService implements OauthProviderService {
+export class OauthProviderService {
   readonly #clock: ClockService;
   readonly #oauthProviderStore: OauthProviderStore;
   readonly #userStore: UserStore;
@@ -143,6 +145,23 @@ export class OauthProviderService implements OauthProviderService {
       accessToken: key,
       expiresIn,
       refreshToken: undefined,
+    };
+  }
+
+  public async getAndTouchAccessToken(_acx: AuthContext, tokenKey: RfcOauthAccessTokenKey): Promise<{token: OauthAccessToken, client: OauthClientIdRef, user: UserIdRef} | null> {
+    const stored = await this.#oauthProviderStore.getAndTouchAccessTokenByKey(tokenKey);
+    if (stored === null) {
+      return null;
+    }
+    return {
+      token: {
+        tokenType: OauthTokenType.Bearer,
+        accessToken: stored.key,
+        expiresIn: Math.floor((stored.expirationTime.getTime() / 1000) - this.#clock.nowUnixS()),
+        refreshToken: undefined,
+      },
+      client: stored.client,
+      user: stored.user,
     };
   }
 

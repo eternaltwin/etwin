@@ -79,6 +79,7 @@ pub(crate) async fn test_empty_etwin<TyClock, TyDinoparcStore, TyHammerfestStore
       display_name: UserDisplayName::from_str("Alice").unwrap(),
       username: Some(Username::from_str("alice").unwrap()),
       email: None,
+      password: None,
     })
     .await
     .unwrap();
@@ -118,6 +119,7 @@ pub(crate) async fn test_etwin_linked_to_dinoparc_com<
       display_name: UserDisplayName::from_str("Alice").unwrap(),
       username: Some(Username::from_str("alice").unwrap()),
       email: None,
+      password: None,
     })
     .await
     .unwrap();
@@ -199,6 +201,7 @@ pub(crate) async fn test_etwin_linked_to_hammerfest_fr<
       display_name: UserDisplayName::from_str("Alice").unwrap(),
       username: Some(Username::from_str("alice").unwrap()),
       email: None,
+      password: None,
     })
     .await
     .unwrap();

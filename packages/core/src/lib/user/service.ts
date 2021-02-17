@@ -1,6 +1,5 @@
 import { AuthContext } from "../auth/auth-context.js";
 import { AuthType } from "../auth/auth-type.js";
-import { AuthService } from "../auth/service.js";
 import { ObjectType } from "../core/object-type.js";
 import { DinoparcClient } from "../dinoparc/client.js";
 import { DinoparcStore } from "../dinoparc/store.js";
@@ -31,12 +30,12 @@ import { LinkToTwinoidWithOauthOptions } from "./link-to-twinoid-with-oauth-opti
 import { LinkToTwinoidWithRefOptions } from "./link-to-twinoid-with-ref-options.js";
 import { MaybeCompleteSimpleUser } from "./maybe-complete-simple-user.js";
 import { MaybeCompleteUser } from "./maybe-complete-user.js";
+import { SHORT_USER_FIELDS } from "./short-user-fields.js";
 import { UserStore } from "./store.js";
 import { User } from "./user.js";
 import { UserFieldsType } from "./user-fields-type.js";
 
 export interface UserServiceOptions {
-  auth: AuthService;
   dinoparcClient: DinoparcClient;
   dinoparcStore: DinoparcStore;
   hammerfestClient: HammerfestClient;
@@ -49,7 +48,6 @@ export interface UserServiceOptions {
 }
 
 export class UserService {
-  readonly #auth: AuthService;
   readonly #dinoparcClient: DinoparcClient;
   readonly #dinoparcStore: DinoparcStore;
   readonly #hammerfestClient: HammerfestClient;
@@ -61,7 +59,6 @@ export class UserService {
   readonly #twinoidStore: TwinoidStore;
 
   public constructor(options: Readonly<UserServiceOptions>) {
-    this.#auth = options.auth;
     this.#dinoparcClient = options.dinoparcClient;
     this.#dinoparcStore = options.dinoparcStore;
     this.#hammerfestClient = options.hammerfestClient;
@@ -95,7 +92,11 @@ export class UserService {
     if (acx.type !== AuthType.User || (!acx.isAdministrator && user.id !== acx.user.id)) {
       return user;
     }
-    const hasPassword = await this.#auth.hasPassword(simpleUser.id);
+    const userWithPassword = await this.#userStore.getUserWithPassword({ref: {id: simpleUser.id}, fields: SHORT_USER_FIELDS, time: undefined});
+    if (userWithPassword === null) {
+      throw new Error("AssertionError: UserNotFound");
+    }
+    const hasPassword = userWithPassword.password !== null;
     return {...user, hasPassword, links};
   }
 

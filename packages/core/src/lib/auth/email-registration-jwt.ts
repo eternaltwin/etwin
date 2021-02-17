@@ -1,6 +1,7 @@
-import { $EmailAddress, EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
 import { $Uint53 } from "kryo/lib/integer.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
+
+import { $EmailAddress, EmailAddress } from "../email/email-address.js";
 
 export interface EmailRegistrationJwt {
   email: EmailAddress;

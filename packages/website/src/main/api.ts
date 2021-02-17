@@ -195,7 +195,6 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   const hammerfest = new HammerfestService({hammerfestStore, hammerfestClient, link});
   const twinoid = new TwinoidService({twinoidStore, link});
   const user = new UserService({
-    auth,
     dinoparcClient,
     dinoparcStore,
     hammerfestStore,

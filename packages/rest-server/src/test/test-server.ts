@@ -113,7 +113,6 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const forum = new PgForumService(database, uuidGenerator, userStore, forumConfig);
     const announcement = new PgAnnouncementService({database, uuidGenerator, forum});
     const user = new UserService({
-      auth,
       dinoparcClient,
       dinoparcStore,
       hammerfestStore,

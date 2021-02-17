@@ -36,6 +36,6 @@ sha2 = "^0.9.3"
 thiserror = "^1.0.23"
 
 [dev-dependencies]
-etwin_core = { path = "../core", features = ["serde"] }
+etwin_core = { path = "../core", features = ["use-serde"] }
 serde = { version = "^1.0.123", features = ["derive"] }
 test-generator = "0.3.0"

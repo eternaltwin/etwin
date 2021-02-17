@@ -1,5 +1,6 @@
 use crate::core::Instant;
 use crate::email::EmailAddress;
+use crate::password::PasswordHash;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 use once_cell::sync::Lazy;
@@ -35,6 +36,7 @@ pub struct CreateUserOptions {
   pub display_name: UserDisplayName,
   pub email: Option<EmailAddress>,
   pub username: Option<Username>,
+  pub password: Option<PasswordHash>,
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize), serde(tag = "type"))]
@@ -93,6 +95,15 @@ impl From<CompleteSimpleUser> for ShortUser {
       display_name: user.display_name,
     }
   }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename = "User"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ShortUserWithPassword {
+  pub id: UserId,
+  pub display_name: UserDisplayNameVersions,
+  pub password: Option<PasswordHash>,
 }
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -201,6 +212,11 @@ pub trait UserStore: Send + Sync {
   async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, Box<dyn Error>>;
 
   async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, Box<dyn Error>>;
+
+  async fn get_user_with_password(
+    &self,
+    options: &GetUserOptions,
+  ) -> Result<Option<ShortUserWithPassword>, Box<dyn Error>>;
 
   async fn hard_delete_user_by_id(&self, user_ref: UserIdRef) -> Result<(), Box<dyn Error>>;
 }

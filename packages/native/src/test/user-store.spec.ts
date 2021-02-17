@@ -3,6 +3,7 @@ import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { $CompleteSimpleUser, CompleteSimpleUser } from "@eternal-twin/core/lib/user/complete-simple-user.js";
 import { COMPLETE_USER_FIELDS } from "@eternal-twin/core/lib/user/complete-user-fields.js";
 import { DEFAULT_USER_FIELDS } from "@eternal-twin/core/lib/user/default-user-fields.js";
@@ -20,6 +21,7 @@ import chai from "chai";
 
 import { SystemClock } from "../lib/clock.js";
 import { Database as NativeDatabase } from "../lib/database.js";
+import { ScryptPasswordService } from "../lib/password.js";
 import { MemUserStore, PgUserStore } from "../lib/user-store.js";
 import { Uuid4Generator } from "../lib/uuid.js";
 
@@ -28,8 +30,9 @@ describe("NativeUserStore", function () {
     async function withMemUserStore<R>(fn: (api: TestApi) => Promise<R>): Promise<R> {
       const clock = new SystemClock();
       const uuidGenerator = new Uuid4Generator();
+      const password = ScryptPasswordService.recommendedForTests();
       const userStore = new MemUserStore({clock, uuidGenerator});
-      return fn({clock, userStore});
+      return fn({clock, password, userStore});
     }
 
     testUserService(withMemUserStore);
@@ -53,8 +56,9 @@ describe("NativeUserStore", function () {
         const nativeDatabase = await NativeDatabase.create(dbConfig);
         const clock = new SystemClock();
         const uuidGenerator = new Uuid4Generator();
+        const password = ScryptPasswordService.recommendedForTests();
         const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
-        return fn({clock, userStore});
+        return fn({clock, password, userStore});
       });
     }
 
@@ -64,19 +68,21 @@ describe("NativeUserStore", function () {
 
 interface TestApi {
   clock: ClockService;
+  password: PasswordService;
   userStore: UserStore;
 }
 
 async function createUser(
-  userStore: UserStore,
+  api: {password: PasswordService; userStore: UserStore},
   username: Username,
   displayName: UserDisplayName,
-  _password: string,
+  password: string,
 ): Promise<UserAuthContext> {
-  const userAndSession = await userStore.createUser({
+  const userAndSession = await api.userStore.createUser({
     displayName,
     username,
     email: null,
+    password: await api.password.hash(Buffer.from(password)),
   });
   return {
     type: AuthType.User,
@@ -90,7 +96,7 @@ function testUserService(withApi: (fn: (api: TestApi) => Promise<void>) => Promi
   it("Register the admin and retrieve itself (short)", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: TestApi): Promise<void> => {
-      const aliceAuth: UserAuthContext = await createUser(api.userStore, "alice", "Alice", "aaaaa");
+      const aliceAuth: UserAuthContext = await createUser(api, "alice", "Alice", "aaaaa");
       {
         const actual: NullableShortUser = await api.userStore.getUser({ref: {id: aliceAuth.user.id}, fields: SHORT_USER_FIELDS});
         chai.assert.isNotNull(actual);
@@ -107,7 +113,7 @@ function testUserService(withApi: (fn: (api: TestApi) => Promise<void>) => Promi
   it("Register the admin and retrieve itself (complete)", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: TestApi): Promise<void> => {
-      const aliceAuth: UserAuthContext = await createUser(api.userStore, "alice", "Alice", "aaaaa");
+      const aliceAuth: UserAuthContext = await createUser(api, "alice", "Alice", "aaaaa");
       {
         const actual: MaybeCompleteSimpleUser | null = await api.userStore.getUser({ref: {id: aliceAuth.user.id}, fields: COMPLETE_USER_FIELDS});
         chai.assert.isNotNull(actual);
@@ -145,7 +151,7 @@ function testUserService(withApi: (fn: (api: TestApi) => Promise<void>) => Promi
   it("Register an admin and user, retrieve its default fields", async function (this: Mocha.Context) {
     this.timeout(30000);
     return withApi(async (api: TestApi): Promise<void> => {
-      const aliceAuth: UserAuthContext = await createUser(api.userStore, "alice", "Alice", "aaaaa");
+      const aliceAuth: UserAuthContext = await createUser(api, "alice", "Alice", "aaaaa");
       {
         const actual: SimpleUser | null = await api.userStore.getUser({ref: {id: aliceAuth.user.id}, fields: DEFAULT_USER_FIELDS});
         chai.assert.isNotNull(actual);

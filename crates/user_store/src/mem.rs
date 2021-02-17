@@ -2,10 +2,11 @@ use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::core::Instant;
 use etwin_core::email::EmailAddress;
+use etwin_core::password::PasswordHash;
 use etwin_core::user::{
-  CompleteSimpleUser, CreateUserOptions, GetShortUserOptions, GetUserOptions, GetUserResult, ShortUser, SimpleUser,
-  UserDisplayName, UserDisplayNameVersion, UserDisplayNameVersions, UserFields, UserId, UserIdRef, UserRef, UserStore,
-  Username,
+  CompleteSimpleUser, CreateUserOptions, GetShortUserOptions, GetUserOptions, GetUserResult, ShortUser,
+  ShortUserWithPassword, SimpleUser, UserDisplayName, UserDisplayNameVersion, UserDisplayNameVersions, UserFields,
+  UserId, UserIdRef, UserRef, UserStore, Username,
 };
 use etwin_core::uuid::UuidGenerator;
 use std::collections::HashMap;
@@ -18,16 +19,17 @@ pub(crate) struct MemUser {
   display_name: UserDisplayName,
   email_address: Option<EmailAddress>,
   username: Option<Username>,
+  password: Option<PasswordHash>,
   is_administrator: bool,
 }
 
 impl From<&MemUser> for ShortUser {
-  fn from(im_user: &MemUser) -> Self {
+  fn from(mem_user: &MemUser) -> Self {
     Self {
-      id: im_user.id,
+      id: mem_user.id,
       display_name: UserDisplayNameVersions {
         current: UserDisplayNameVersion {
-          value: im_user.display_name.clone(),
+          value: mem_user.display_name.clone(),
         },
       },
     }
@@ -35,30 +37,30 @@ impl From<&MemUser> for ShortUser {
 }
 
 impl From<&MemUser> for SimpleUser {
-  fn from(im_user: &MemUser) -> Self {
+  fn from(mem_user: &MemUser) -> Self {
     Self {
-      id: im_user.id,
-      created_at: im_user.ctime,
+      id: mem_user.id,
+      created_at: mem_user.ctime,
       display_name: UserDisplayNameVersions {
         current: UserDisplayNameVersion {
-          value: im_user.display_name.clone(),
+          value: mem_user.display_name.clone(),
         },
       },
-      is_administrator: im_user.is_administrator,
+      is_administrator: mem_user.is_administrator,
     }
   }
 }
 
 impl From<&MemUser> for CompleteSimpleUser {
-  fn from(im_user: &MemUser) -> Self {
-    let simple: SimpleUser = im_user.into();
+  fn from(mem_user: &MemUser) -> Self {
+    let simple: SimpleUser = mem_user.into();
     Self {
       id: simple.id,
       display_name: simple.display_name,
       is_administrator: simple.is_administrator,
-      created_at: im_user.ctime,
-      username: im_user.username.clone(),
-      email_address: im_user.email_address.clone(),
+      created_at: mem_user.ctime,
+      username: mem_user.username.clone(),
+      email_address: mem_user.email_address.clone(),
     }
   }
 }
@@ -99,6 +101,7 @@ where
       display_name: options.display_name.clone(),
       email_address: options.email.clone(),
       username: options.username.clone(),
+      password: options.password.clone(),
       is_administrator: users.is_empty(),
     };
     let user: CompleteSimpleUser = (&im_user).into();
@@ -127,6 +130,29 @@ where
       }
       UserFields::Default => GetUserResult::Default(user.into()),
       UserFields::Short => GetUserResult::Short(user.into()),
+    }))
+  }
+
+  async fn get_user_with_password(
+    &self,
+    options: &GetUserOptions,
+  ) -> Result<Option<ShortUserWithPassword>, Box<dyn Error>> {
+    let users = self.users.lock().unwrap();
+
+    let mem_user: Option<&MemUser> = match &options.r#ref {
+      UserRef::Id(r) => users.get(&r.id),
+      UserRef::Username(r) => users.values().find(|u| u.username.as_ref() == Some(&r.username)),
+      UserRef::Email(r) => users.values().find(|u| u.email_address.as_ref() == Some(&r.email)),
+    };
+
+    Ok(mem_user.map(|user| {
+      let password = user.password.clone();
+      let short: ShortUser = user.into();
+      ShortUserWithPassword {
+        id: short.id,
+        display_name: short.display_name,
+        password,
+      }
     }))
   }
 
