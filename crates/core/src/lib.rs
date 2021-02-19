@@ -1,6 +1,3 @@
-// #![feature(auto_traits, negative_impls)]
-// #![feature(once_cell)]
-
 #[macro_use]
 pub mod types;
 
@@ -16,9 +13,7 @@ pub mod password;
 pub mod services {
   pub mod hammerfest;
 }
+pub mod temporal;
 pub mod twinoid;
 pub mod user;
 pub mod uuid;
-
-#[cfg(all(feature = "serde", feature = "hex"))]
-mod serde_buffer;

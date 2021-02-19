@@ -1,10 +1,10 @@
 use crate::core::Instant;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
+#[cfg(feature = "_serde")]
+use etwin_serde_tools::{Deserialize, Serialize};
 use once_cell::sync::Lazy;
 use regex::Regex;
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
 use std::error::Error;
 
 declare_decimal_id! {
@@ -21,8 +21,8 @@ declare_new_string! {
   const SQL_NAME = "twinoid_user_display_name";
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "TwinoidUser"))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "TwinoidUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortTwinoidUser {
   pub id: TwinoidUserId,
@@ -38,15 +38,15 @@ impl From<ArchivedTwinoidUser> for ShortTwinoidUser {
   }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "TwinoidUser"))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "TwinoidUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TwinoidUserIdRef {
   pub id: TwinoidUserId,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "TwinoidUser"))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "TwinoidUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ArchivedTwinoidUser {
   pub id: TwinoidUserId,
@@ -54,7 +54,7 @@ pub struct ArchivedTwinoidUser {
   pub display_name: TwinoidUserDisplayName,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GetTwinoidUserOptions {
   pub id: TwinoidUserId,

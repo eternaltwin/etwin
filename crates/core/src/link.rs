@@ -5,51 +5,51 @@ use crate::twinoid::TwinoidUserIdRef;
 use crate::user::{ShortUser, UserIdRef};
 use async_trait::async_trait;
 use auto_impl::auto_impl;
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
+#[cfg(feature = "_serde")]
+use etwin_serde_tools::{Deserialize, Serialize};
 use std::error::Error;
 use std::fmt;
 use thiserror::Error;
 
-#[cfg(feature = "serde")]
+#[cfg(feature = "_serde")]
 pub trait RemoteUserIdRef: Clone + fmt::Debug + Serialize + for<'a> Deserialize<'a> {}
-#[cfg(not(feature = "serde"))]
+#[cfg(not(feature = "_serde"))]
 pub trait RemoteUserIdRef: Clone + fmt::Debug {}
 
 impl RemoteUserIdRef for DinoparcUserIdRef {}
 impl RemoteUserIdRef for HammerfestUserIdRef {}
 impl RemoteUserIdRef for TwinoidUserIdRef {}
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RawLink<T: RemoteUserIdRef> {
   pub link: RawUserDot,
   pub unlink: (),
   pub etwin: UserIdRef,
-  #[cfg_attr(feature = "serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
+  #[cfg_attr(feature = "_serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub remote: T,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct OldRawLink<T: RemoteUserIdRef> {
   pub link: RawUserDot,
   pub unlink: RawUserDot,
   pub etwin: UserIdRef,
-  #[cfg_attr(feature = "serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
+  #[cfg_attr(feature = "_serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub remote: T,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
 pub struct VersionedRawLink<T: RemoteUserIdRef> {
-  #[cfg_attr(feature = "serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
+  #[cfg_attr(feature = "_serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub current: Option<RawLink<T>>,
-  #[cfg_attr(feature = "serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
+  #[cfg_attr(feature = "_serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub old: Vec<OldRawLink<T>>,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VersionedRawLinks {
   pub dinoparc_com: VersionedRawLink<DinoparcUserIdRef>,
@@ -96,16 +96,16 @@ impl Default for VersionedRawLinks {
   }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TouchLinkOptions<T: RemoteUserIdRef> {
   pub etwin: UserIdRef,
-  #[cfg_attr(feature = "serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
+  #[cfg_attr(feature = "_serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub remote: T,
   pub linked_by: UserIdRef,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct EtwinLink {
   pub link: UserDot,
@@ -113,7 +113,7 @@ pub struct EtwinLink {
   pub etwin: ShortUser,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct OldEtwinLink {
   pub link: UserDot,
@@ -121,22 +121,22 @@ pub struct OldEtwinLink {
   pub etwin: ShortUser,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VersionedEtwinLink {
   pub current: Option<EtwinLink>,
   pub old: Vec<OldEtwinLink>,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GetLinkOptions<T: RemoteUserIdRef> {
-  #[cfg_attr(feature = "serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
+  #[cfg_attr(feature = "_serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub remote: T,
   pub time: Option<Instant>,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GetLinksFromEtwinOptions {
   pub etwin: UserIdRef,

@@ -2,10 +2,10 @@ use crate::core::Instant;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
+#[cfg(feature = "_serde")]
+use etwin_serde_tools::{Deserialize, Serialize};
 use once_cell::sync::Lazy;
 use regex::Regex;
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
 #[cfg(feature = "sqlx")]
 use sqlx::{database, postgres, Database, Postgres};
 use std::error::Error;
@@ -13,7 +13,7 @@ use std::fmt;
 use std::iter::FusedIterator;
 use std::str::FromStr;
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GetDinoparcUserOptions {
   pub server: DinoparcServer,
@@ -21,14 +21,14 @@ pub struct GetDinoparcUserOptions {
   pub time: Option<Instant>,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, IntoEnumIterator)]
 pub enum DinoparcServer {
-  #[cfg_attr(feature = "serde", serde(rename = "dinoparc.com"))]
+  #[cfg_attr(feature = "_serde", serde(rename = "dinoparc.com"))]
   DinoparcCom,
-  #[cfg_attr(feature = "serde", serde(rename = "en.dinoparc.com"))]
+  #[cfg_attr(feature = "_serde", serde(rename = "en.dinoparc.com"))]
   EnDinoparcCom,
-  #[cfg_attr(feature = "serde", serde(rename = "sp.dinoparc.com"))]
+  #[cfg_attr(feature = "_serde", serde(rename = "sp.dinoparc.com"))]
   SpDinoparcCom,
 }
 
@@ -118,7 +118,7 @@ declare_new_string! {
   const SQL_NAME = "dinoparc_username";
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcPassword(String);
 
@@ -132,7 +132,7 @@ impl DinoparcPassword {
   }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcCredentials {
   pub server: DinoparcServer,
@@ -165,7 +165,7 @@ impl DinoparcMachineId {
   pub const LENGTH: usize = 32;
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcSession {
   pub ctime: Instant,
@@ -174,8 +174,8 @@ pub struct DinoparcSession {
   pub user: ShortDinoparcUser,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcUser"))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortDinoparcUser {
   pub server: DinoparcServer,
@@ -183,8 +183,8 @@ pub struct ShortDinoparcUser {
   pub username: DinoparcUsername,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcUser"))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ArchivedDinoparcUser {
   pub server: DinoparcServer,
@@ -193,8 +193,8 @@ pub struct ArchivedDinoparcUser {
   pub archived_at: Instant,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcUser"))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcUserIdRef {
   pub server: DinoparcServer,
@@ -215,8 +215,8 @@ declare_new_string! {
   const SQL_NAME = "dinoparc_dinoz_name";
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "DinoparcDinoz"))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcDinoz"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcDinoz {
   pub server: DinoparcServer,

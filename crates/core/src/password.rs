@@ -1,8 +1,6 @@
-#[cfg(feature = "serde")]
-use crate::serde_buffer::{buffer_to_hex, hex_to_buffer};
 use auto_impl::auto_impl;
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
+#[cfg(feature = "_serde")]
+use etwin_serde_tools::{buffer_to_hex, hex_to_buffer, Deserialize, Serialize};
 #[cfg(feature = "sqlx")]
 use sqlx::{database, postgres, Database, Postgres};
 use std::error::Error;
@@ -22,11 +20,11 @@ impl From<&str> for Password {
   }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PasswordHash(
   #[cfg_attr(
-    feature = "serde",
+    feature = "_serde",
     serde(serialize_with = "buffer_to_hex", deserialize_with = "hex_to_buffer")
   )]
   pub Vec<u8>,

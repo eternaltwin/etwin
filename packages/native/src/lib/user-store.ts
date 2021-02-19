@@ -36,7 +36,7 @@ export abstract class NativeUserStore implements UserStore {
   private static GET_USER = promisify(native.userStore.getUser);
   private static GET_USER_WITH_PASSWORD = promisify(native.userStore.getUserWithPassword);
   private static GET_SHORT_USER = promisify(native.userStore.getShortUser);
-  private static HARD_DELETE_USER_BY_ID = promisify(native.userStore.hardDeleteUserById);
+  private static HARD_DELETE_USER = promisify(native.userStore.hardDeleteUser);
 
   constructor(box: NativeUserStoreBox) {
     this.box = box;
@@ -73,7 +73,7 @@ export abstract class NativeUserStore implements UserStore {
 
   async hardDeleteUserById(userId: UserId): Promise<void> {
     const rawShort: string = $UserIdRef.write(JSON_WRITER, {type: ObjectType.User, id: userId});
-    await NativeUserStore.HARD_DELETE_USER_BY_ID(this.box, rawShort);
+    await NativeUserStore.HARD_DELETE_USER(this.box, rawShort);
   }
 }
 

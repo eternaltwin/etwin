@@ -3,10 +3,10 @@ use crate::link::VersionedEtwinLink;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
+#[cfg(feature = "_serde")]
+use etwin_serde_tools::{deserialize_nested_option, Deserialize, Serialize};
 use once_cell::sync::Lazy;
 use regex::Regex;
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Serialize};
 #[cfg(feature = "sqlx")]
 use sqlx::{database, postgres, Database, Postgres};
 use std::collections::{HashMap, HashSet};
@@ -15,7 +15,7 @@ use std::fmt;
 use std::iter::FusedIterator;
 use std::str::FromStr;
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestPassword(String);
 
@@ -29,14 +29,14 @@ impl HammerfestPassword {
   }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, IntoEnumIterator)]
 pub enum HammerfestServer {
-  #[cfg_attr(feature = "serde", serde(rename = "hammerfest.fr"))]
+  #[cfg_attr(feature = "_serde", serde(rename = "hammerfest.fr"))]
   HammerfestFr,
-  #[cfg_attr(feature = "serde", serde(rename = "hfest.net"))]
+  #[cfg_attr(feature = "_serde", serde(rename = "hfest.net"))]
   HfestNet,
-  #[cfg_attr(feature = "serde", serde(rename = "hammerfest.es"))]
+  #[cfg_attr(feature = "_serde", serde(rename = "hammerfest.es"))]
   HammerfestEs,
 }
 
@@ -126,8 +126,8 @@ declare_decimal_id! {
   const SQL_NAME = "hammerfest_user_id";
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "HammerfestUser"))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "HammerfestUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestUserIdRef {
   pub server: HammerfestServer,
@@ -141,7 +141,7 @@ declare_new_string! {
   const SQL_NAME = "hammerfest_session_key";
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestCredentials {
   pub server: HammerfestServer,
@@ -149,8 +149,8 @@ pub struct HammerfestCredentials {
   pub password: HammerfestPassword,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "HammerfestUser"))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "HammerfestUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortHammerfestUser {
   pub server: HammerfestServer,
@@ -168,8 +168,8 @@ impl From<ArchivedHammerfestUser> for ShortHammerfestUser {
   }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename = "HammerfestUser"))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "HammerfestUser"))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ArchivedHammerfestUser {
   pub server: HammerfestServer,
@@ -180,7 +180,7 @@ pub struct ArchivedHammerfestUser {
   pub items: Option<ArchivedHammerfestItems>,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HammerfestUser {
   pub server: HammerfestServer,
@@ -192,7 +192,7 @@ pub struct HammerfestUser {
   pub etwin: VersionedEtwinLink,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ArchivedHammerfestProfile {
   pub first_archived_at: Instant,
@@ -204,7 +204,7 @@ pub struct ArchivedHammerfestProfile {
   pub quests: HashMap<HammerfestQuestId, HammerfestQuestStatus>,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ArchivedHammerfestItems {
   pub first_archived_at: Instant,
@@ -212,7 +212,7 @@ pub struct ArchivedHammerfestItems {
   pub items: HashMap<HammerfestItemId, u32>,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestSession {
   pub ctime: Instant,
@@ -221,20 +221,19 @@ pub struct HammerfestSession {
   pub user: ShortHammerfestUser,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestGetProfileByIdOptions {
   pub server: HammerfestServer,
   pub user_id: HammerfestUserId,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HammerfestProfile {
   pub user: ShortHammerfestUser,
-  #[cfg_attr(feature = "serde", serde(default))]
-  #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
-  #[cfg_attr(feature = "serde", serde(deserialize_with = "deserialize_optional"))]
+  #[cfg_attr(feature = "_serde", serde(skip_serializing_if = "Option::is_none"))]
+  #[cfg_attr(feature = "_serde", serde(default, deserialize_with = "deserialize_nested_option"))]
   pub email: Option<Option<String>>,
   pub best_score: u32,
   pub best_level: u32,
@@ -254,7 +253,7 @@ declare_decimal_id! {
   const BOUNDS = 0..1_000_000_000;
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum HammerfestQuestStatus {
   None,
@@ -262,7 +261,7 @@ pub enum HammerfestQuestStatus {
   Complete,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestHallOfFameMessage {
   pub date: Instant,
@@ -275,14 +274,14 @@ declare_decimal_id! {
   const BOUNDS = 0..10_000;
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestGodChild {
   pub user: ShortHammerfestUser,
   pub tokens: u32,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestShop {
   pub tokens: u32,
@@ -293,7 +292,7 @@ pub struct HammerfestShop {
   pub has_quest_bonus: bool,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumDate {
   // TODO: limit 1 <= m <= 12
@@ -304,10 +303,10 @@ pub struct HammerfestForumDate {
   pub weekday: u8,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumDateTime {
-  #[cfg_attr(feature = "serde", serde(flatten))]
+  #[cfg_attr(feature = "_serde", serde(flatten))]
   pub date: HammerfestForumDate,
   // TODO: limit 1 <= w <= 7
   pub hour: u8,
@@ -321,7 +320,7 @@ declare_decimal_id! {
   const BOUNDS = 0..100;
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortHammerfestForumTheme {
   pub server: HammerfestServer,
@@ -329,15 +328,15 @@ pub struct ShortHammerfestForumTheme {
   pub name: String,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumTheme {
-  #[cfg_attr(feature = "serde", serde(flatten))]
+  #[cfg_attr(feature = "_serde", serde(flatten))]
   pub short: ShortHammerfestForumTheme,
   pub description: String,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumThemePage {
   pub theme: ShortHammerfestForumTheme,
@@ -346,7 +345,7 @@ pub struct HammerfestForumThemePage {
   pub threads: HammerfestForumThreadListing,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumThreadListing {
   pub page1: u32,
@@ -361,7 +360,7 @@ declare_decimal_id! {
   const SQL_NAME = "hammerfest_forum_thread_id";
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortHammerfestForumThread {
   pub server: HammerfestServer,
@@ -369,29 +368,29 @@ pub struct ShortHammerfestForumThread {
   pub name: String,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-#[cfg_attr(feature = "serde", serde(tag = "kind"))]
+#[cfg_attr(feature = "_serde", serde(tag = "kind"))]
 pub enum HammerfestForumThreadKind {
-  #[cfg_attr(feature = "serde", serde(rename = "sticky"))]
+  #[cfg_attr(feature = "_serde", serde(rename = "sticky"))]
   Sticky,
-  #[cfg_attr(feature = "serde", serde(rename = "regular"))]
+  #[cfg_attr(feature = "_serde", serde(rename = "regular"))]
   Regular { last_message_date: HammerfestForumDate },
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumThread {
-  #[cfg_attr(feature = "serde", serde(flatten))]
+  #[cfg_attr(feature = "_serde", serde(flatten))]
   pub short: ShortHammerfestForumThread,
   pub author: ShortHammerfestUser,
-  #[cfg_attr(feature = "serde", serde(flatten))]
+  #[cfg_attr(feature = "_serde", serde(flatten))]
   pub kind: HammerfestForumThreadKind,
   pub reply_count: u32,
   pub is_closed: bool,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumThreadPage {
   pub theme: ShortHammerfestForumTheme,
@@ -399,7 +398,7 @@ pub struct HammerfestForumThreadPage {
   pub messages: HammerfestForumPostListing,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumPostListing {
   pub page1: u32,
@@ -414,7 +413,7 @@ declare_decimal_id! {
   const SQL_NAME = "hammerfest_forum_post_id";
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumPost {
   pub id: Option<HammerfestForumPostId>,
@@ -423,10 +422,10 @@ pub struct HammerfestForumPost {
   pub content: String, // TODO: HtmlText?
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumPostAuthor {
-  #[cfg_attr(feature = "serde", serde(flatten))]
+  #[cfg_attr(feature = "_serde", serde(flatten))]
   pub user: ShortHammerfestUser,
   pub has_carrot: bool,
   pub rank: u8,
@@ -434,7 +433,7 @@ pub struct HammerfestForumPostAuthor {
   pub role: HammerfestForumRole,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum HammerfestForumRole {
   None,
@@ -442,21 +441,12 @@ pub enum HammerfestForumRole {
   Administrator,
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GetHammerfestUserOptions {
   pub server: HammerfestServer,
   pub id: HammerfestUserId,
   pub time: Option<Instant>,
-}
-
-#[cfg(feature = "serde")]
-fn deserialize_optional<'de, T, D>(deserializer: D) -> Result<Option<Option<T>>, D::Error>
-where
-  T: Deserialize<'de>,
-  D: serde::Deserializer<'de>,
-{
-  Ok(Some(Option::deserialize(deserializer)?))
 }
 
 #[async_trait]

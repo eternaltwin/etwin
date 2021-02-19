@@ -58,14 +58,14 @@ macro_rules! declare_decimal_id {
       }
     }
 
-    #[cfg(feature="serde")]
+    #[cfg(feature="_serde")]
     impl ::serde::Serialize for $struct_name {
       fn serialize<S: ::serde::Serializer>(&self, serializer: S) ->  ::std::result::Result<S::Ok, S::Error> {
         self.with_str(|s| ::serde::Serialize::serialize(s, serializer))
       }
     }
 
-    #[cfg(feature="serde")]
+    #[cfg(feature="_serde")]
     impl<'de> ::serde::Deserialize<'de> for $struct_name {
       fn deserialize<D: ::serde::Deserializer<'de>>(deserializer: D) ->  ::std::result::Result<Self, D::Error> {
         struct SerdeVisitor;
@@ -190,14 +190,14 @@ macro_rules! declare_new_string {
       }
     }
 
-    #[cfg(feature="serde")]
+    #[cfg(feature="_serde")]
     impl ::serde::Serialize for $struct_name {
       fn serialize<S: ::serde::Serializer>(&self, serializer: S) ->  ::std::result::Result<S::Ok, S::Error> {
         ::serde::Serialize::serialize(self.as_str(), serializer)
       }
     }
 
-    #[cfg(feature="serde")]
+    #[cfg(feature="_serde")]
     impl<'de> ::serde::Deserialize<'de> for $struct_name {
       fn deserialize<D: ::serde::Deserializer<'de>>(deserializer: D) ->  ::std::result::Result<Self, D::Error> {
         struct SerdeVisitor;
@@ -316,14 +316,14 @@ macro_rules! declare_new_uuid {
       }
     }
 
-    #[cfg(feature="serde")]
+    #[cfg(feature="_serde")]
     impl ::serde::Serialize for $struct_name {
       fn serialize<S: ::serde::Serializer>(&self, serializer: S) ->  ::std::result::Result<S::Ok, S::Error> {
         self.0.serialize(serializer)
       }
     }
 
-    #[cfg(feature="serde")]
+    #[cfg(feature="_serde")]
     impl<'de> ::serde::Deserialize<'de> for $struct_name {
       fn deserialize<D: ::serde::Deserializer<'de>>(deserializer: D) ->  ::std::result::Result<Self, D::Error> {
         Ok(Self::from_uuid(::uuid::Uuid::deserialize(deserializer)?))

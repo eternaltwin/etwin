@@ -3,6 +3,7 @@ use crate::user_store::mem::JsMemUserStore;
 use crate::user_store::pg::JsPgUserStore;
 use etwin_core::user::{CreateUserOptions, GetShortUserOptions, GetUserOptions, UserIdRef, UserStore};
 use neon::prelude::*;
+use std::error::Error;
 use std::sync::Arc;
 
 pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject> {
@@ -13,7 +14,7 @@ pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject
   ns.set_function(cx, "getUser", get_user)?;
   ns.set_function(cx, "getShortUser", get_short_user)?;
   ns.set_function(cx, "getUserWithPassword", get_user_with_password)?;
-  ns.set_function(cx, "hardDeleteUserById", hard_delete_user_by_id)?;
+  ns.set_function(cx, "hardDeleteUser", hard_delete_user)?;
   Ok(ns)
 }
 
@@ -81,7 +82,7 @@ pub fn get_user_with_password(mut cx: FunctionContext) -> JsResult<JsUndefined> 
   resolve_callback_serde(&mut cx, res, cb)
 }
 
-pub fn hard_delete_user_by_id(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+pub fn hard_delete_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let inner = cx.argument::<JsValue>(0)?;
   let inner = get_native_user_store(&mut cx, inner)?;
   let options_json = cx.argument::<JsString>(1)?;
@@ -89,7 +90,12 @@ pub fn hard_delete_user_by_id(mut cx: FunctionContext) -> JsResult<JsUndefined> 
 
   let options: UserIdRef = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
-  let res = async move { inner.hard_delete_user_by_id(options).await };
+  let res = async move {
+    inner
+      .hard_delete_user(options)
+      .await
+      .map_err(|x| Box::new(x) as Box<dyn Error>)
+  };
   resolve_callback_serde(&mut cx, res, cb)
 }
 

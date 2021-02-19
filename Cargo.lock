@@ -566,6 +566,7 @@ dependencies = [
  "etwin_hammerfest_client",
  "etwin_hammerfest_store",
  "etwin_link_store",
+ "etwin_serde_tools",
  "etwin_user_store",
  "hex",
  "itoa",
@@ -733,6 +734,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "etwin_serde_tools"
+version = "0.0.1"
+dependencies = [
+ "hex",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "etwin_squirrel"
 version = "0.0.1"
 dependencies = [
@@ -776,6 +786,7 @@ dependencies = [
  "regex",
  "serial_test",
  "sqlx",
+ "thiserror",
  "tokio",
  "uuid",
 ]

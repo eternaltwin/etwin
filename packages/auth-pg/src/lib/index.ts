@@ -100,7 +100,7 @@ class PgAuthStore implements AuthStore {
       VALUES (
         $1::UUID, $2::UUID, NOW(), NOW(), '{}'
       )
-      RETURNING sessions.ctime, (SELECT display_name FROM users WHERE user_id = $2::UUID)`,
+      RETURNING sessions.ctime, (SELECT display_name FROM users_current WHERE user_id = $2::UUID)`,
       [sessionId, userId],
     );
 
@@ -120,7 +120,7 @@ class PgAuthStore implements AuthStore {
       UPDATE sessions
       SET atime = NOW()
       WHERE session_id = $1::UUID
-      RETURNING sessions.ctime, sessions.atime, sessions.user_id, (SELECT display_name FROM users WHERE user_id = sessions.user_id)`,
+      RETURNING sessions.ctime, sessions.atime, sessions.user_id, (SELECT display_name FROM users_current WHERE user_id = sessions.user_id)`,
       [sessionId],
     );
 

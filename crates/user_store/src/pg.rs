@@ -5,12 +5,14 @@ use etwin_core::core::{Instant, Secret};
 use etwin_core::email::EmailAddress;
 use etwin_core::password::PasswordHash;
 use etwin_core::user::{
-  CompleteSimpleUser, CreateUserOptions, GetShortUserOptions, GetUserOptions, GetUserResult, ShortUser,
-  ShortUserWithPassword, UserDisplayName, UserDisplayNameVersion, UserDisplayNameVersions, UserFields, UserId,
-  UserIdRef, UserRef, UserStore, Username,
+  CompleteSimpleUser, CreateUserOptions, DeleteUserError, GetShortUserOptions, GetUserOptions, GetUserResult,
+  ShortUser, ShortUserWithPassword, UpdateUserError, UpdateUserOptions, UserDisplayName, UserDisplayNameVersion,
+  UserDisplayNameVersions, UserFields, UserId, UserIdRef, UserRef, UserStore, Username,
+  USER_DISPLAY_NAME_LOCK_DURATION,
 };
 use etwin_core::uuid::UuidGenerator;
 use sqlx::postgres::PgPool;
+use sqlx::{Postgres, Transaction};
 use std::error::Error;
 
 pub struct PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
@@ -41,6 +43,35 @@ where
   }
 }
 
+async fn touch_email_address(
+  tx: &mut Transaction<'_, Postgres>,
+  secret: &Secret,
+  email: &EmailAddress,
+  now: Instant,
+) -> Result<Vec<u8>, Box<dyn Error>> {
+  #[derive(Debug, sqlx::FromRow)]
+  struct Row {
+    hash: Vec<u8>,
+  }
+  let row = sqlx::query_as::<_, Row>(
+    r"
+          INSERT
+          INTO email_addresses(email_address, _hash, created_at)
+          VALUES (
+            pgp_sym_encrypt($1::EMAIL_ADDRESS, $2::TEXT), digest($1::EMAIL_ADDRESS, 'sha256'), $3::INSTANT
+          )
+          ON CONFLICT (_hash) DO NOTHING
+          RETURNING _hash as hash;
+        ",
+  )
+  .bind(email)
+  .bind(secret.as_str())
+  .bind(now)
+  .fetch_one(tx)
+  .await?;
+  Ok(row.hash)
+}
+
 #[async_trait]
 impl<TyClock, TyDatabase, TyUuidGenerator> UserStore for PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
 where
@@ -52,44 +83,64 @@ where
     let user_id = UserId::from_uuid(self.uuid_generator.next());
     let now = self.clock.now();
 
-    #[derive(Debug, sqlx::FromRow)]
-    struct Row {
-      user_id: UserId,
-      ctime: Instant,
-      display_name: UserDisplayName,
-      is_administrator: bool,
-    }
+    let mut tx = self.database.as_ref().begin().await?;
 
-    let row = sqlx::query_as::<_, Row>(
-      r"
-      WITH administrator_exists AS (SELECT 1 FROM users WHERE is_administrator)
-      INSERT
-      INTO users(
-        user_id, ctime, display_name, display_name_mtime,
-        email_address, email_address_mtime,
-        username, username_mtime,
-        password, password_mtime,
-        is_administrator
-      )
-      VALUES (
-        $2::USER_ID, $7::INSTANT, $3::USER_DISPLAY_NAME, $7::INSTANT,
-        (CASE WHEN $4::TEXT IS NULL THEN NULL ELSE pgp_sym_encrypt($4::TEXT, $1::TEXT) END), $7::INSTANT,
-        $5::VARCHAR, $7::INSTANT,
-        $6::PASSWORD_HASH, $7::INSTANT,
-        (NOT EXISTS(SELECT 1 FROM administrator_exists))
-      )
-      RETURNING user_id, ctime, display_name, is_administrator;
-    ",
-    )
-    .bind(self.database_secret.as_str())
-    .bind(user_id)
-    .bind(&options.display_name)
-    .bind(None::<&str>)
-    .bind(options.username.as_ref())
-    .bind(options.password.as_ref())
-    .bind(now)
-    .fetch_one(self.database.as_ref())
-    .await?;
+    let row = {
+      let email_hash = match &options.email {
+        Some(email) => Some(touch_email_address(&mut tx, &self.database_secret, email, self.clock.now()).await?),
+        None => None,
+      };
+
+      let r = {
+        #[derive(Debug, sqlx::FromRow)]
+        struct Row {
+          created_at: Instant,
+          is_administrator: bool,
+        }
+        let row = sqlx::query_as::<_, Row>(
+          r"
+          WITH administrator_exists AS (SELECT 1 FROM users WHERE is_administrator)
+          INSERT
+          INTO users(user_id, created_at, is_administrator)
+          VALUES (
+            $1::USER_ID, $2::INSTANT, (NOT EXISTS(SELECT 1 FROM administrator_exists))
+          )
+          RETURNING created_at, is_administrator;
+        ",
+        )
+        .bind(user_id)
+        .bind(now)
+        .fetch_one(&mut tx)
+        .await?;
+        row
+      };
+      {
+        #[derive(Debug, sqlx::FromRow)]
+        struct Row {
+          user_id: UserId,
+        }
+        let _row = sqlx::query_as::<_, Row>(
+          r"
+          INSERT
+          INTO users_history(user_id, period, _is_current, updated_by, display_name, username, email, password)
+          VALUES (
+            $1::USER_ID, PERIOD($2::INSTANT, NULL), TRUE, $1::USER_ID, $3::USER_DISPLAY_NAME, $4::USERNAME, $5::EMAIL_ADDRESS_HASH, $6::PASSWORD_HASH
+          )
+          RETURNING user_id;
+        ",
+        )
+          .bind(user_id)
+          .bind(now)
+          .bind(&options.display_name)
+          .bind(options.username.as_ref())
+          .bind(email_hash)
+          .bind(options.password.as_ref())
+          .fetch_one(&mut tx)
+          .await?;
+      }
+      r
+    };
+    tx.commit().await?;
 
     let user = CompleteSimpleUser {
       id: user_id,
@@ -99,7 +150,7 @@ where
         },
       },
       is_administrator: row.is_administrator,
-      created_at: row.ctime,
+      created_at: row.created_at,
       username: options.username.clone(),
       email_address: None,
     };
@@ -111,11 +162,9 @@ where
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       user_id: UserId,
-      display_name: UserDisplayName,
-      display_name_mtime: Instant,
+      created_at: Instant,
       is_administrator: bool,
-      ctime: Instant,
-      email_address: Option<EmailAddress>,
+      display_name: UserDisplayName,
       username: Option<Username>,
     }
 
@@ -127,20 +176,19 @@ where
       UserRef::Username(r) => ref_username = Some(r.username.clone()),
       UserRef::Email(r) => ref_email = Some(r.email.clone()),
     }
+    if ref_email.is_some() {
+      return Ok(None);
+    }
 
     let row = sqlx::query_as::<_, Row>(
       r"
-      SELECT user_id, display_name, display_name_mtime, is_administrator, ctime,
-        pgp_sym_decrypt(email_address, $1::TEXT) AS email_address, username
-      FROM users
-      WHERE users.user_id = $2::UUID OR username = $3::VARCHAR OR
-      pgp_sym_decrypt(email_address, $1::TEXT) = $4::VARCHAR;
+      SELECT user_id, created_at, is_administrator, display_name, username
+      FROM users_current
+      WHERE user_id = $1::USER_ID OR username = $2::USERNAME;
       ",
     )
-    .bind(self.database_secret.as_str())
     .bind(ref_id)
     .bind(ref_username)
-    .bind(ref_email)
     .fetch_optional(self.database.as_ref())
     .await?;
 
@@ -158,9 +206,9 @@ where
         },
       },
       is_administrator: row.is_administrator,
-      created_at: row.ctime,
+      created_at: row.created_at,
       username: row.username,
-      email_address: row.email_address,
+      email_address: None,
     };
 
     let user = match options.fields {
@@ -198,19 +246,19 @@ where
       UserRef::Username(r) => ref_username = Some(r.username.clone()),
       UserRef::Email(r) => ref_email = Some(r.email.clone()),
     }
+    if ref_email.is_some() {
+      return Ok(None);
+    }
 
     let row = sqlx::query_as::<_, Row>(
       r"
       SELECT user_id, display_name, password
-      FROM users
-      WHERE users.user_id = $2::UUID OR username = $3::VARCHAR OR
-      pgp_sym_decrypt(email_address, $1::TEXT) = $4::VARCHAR;
+      FROM users_current
+      WHERE user_id = $1::USER_ID OR username = $2::USERNAME;
       ",
     )
-    .bind(self.database_secret.as_str())
     .bind(ref_id)
     .bind(ref_username)
-    .bind(ref_email)
     .fetch_optional(self.database.as_ref())
     .await?;
 
@@ -248,19 +296,19 @@ where
       UserRef::Username(r) => ref_username = Some(r.username.clone()),
       UserRef::Email(r) => ref_email = Some(r.email.clone()),
     }
+    if ref_email.is_some() {
+      return Ok(None);
+    }
 
     let row = sqlx::query_as::<_, Row>(
       r"
       SELECT user_id, display_name
-      FROM users
-      WHERE users.user_id = $2::UUID OR username = $3::VARCHAR OR
-      pgp_sym_decrypt(email_address, $1::TEXT) = $4::VARCHAR;
+      FROM users_current
+      WHERE user_id = $1::USER_ID OR username = $2::USERNAME;
       ",
     )
-    .bind(self.database_secret.as_str())
     .bind(ref_id)
     .bind(ref_username)
-    .bind(ref_email)
     .fetch_optional(self.database.as_ref())
     .await?;
 
@@ -282,8 +330,207 @@ where
     Ok(Some(user))
   }
 
-  async fn hard_delete_user_by_id(&self, user_ref: UserIdRef) -> Result<(), Box<dyn Error>> {
-    let _ = sqlx::query(
+  async fn update_user(&self, options: &UpdateUserOptions) -> Result<CompleteSimpleUser, UpdateUserError> {
+    let now = self.clock.now();
+
+    let mut tx = self.database.as_ref().begin().await.map_err(UpdateUserError::other)?;
+
+    if options.patch.display_name.is_some() {
+      #[derive(Debug, sqlx::FromRow)]
+      struct Row {
+        start_time: Instant,
+        value: UserDisplayName,
+      }
+
+      let row = sqlx::query_as::<_, Row>(
+        r"
+        SELECT lower(period) AS start_time, display_name AS value FROM users_history AS cur
+        WHERE
+          user_id = $1::USER_ID
+          AND NOT EXISTS(
+            SELECT 1
+            FROM users_history AS next
+            WHERE
+              next.user_id = $1::USER_ID
+              AND next.period >> cur.period
+              AND NOT (next.display_name = cur.display_name)
+          )
+        ORDER BY start_time DESC
+        LIMIT 1;
+      ",
+      )
+      .bind(options.r#ref.id)
+      .fetch_one(&mut tx)
+      .await
+      .map_err(UpdateUserError::other)?;
+
+      let lock_period = row.start_time..(row.start_time + *USER_DISPLAY_NAME_LOCK_DURATION);
+      if lock_period.contains(&now) {
+        return Err(UpdateUserError::LockedDisplayName(
+          options.r#ref,
+          lock_period.into(),
+          now,
+        ));
+      }
+    }
+
+    if options.patch.username.is_some() {
+      #[derive(Debug, sqlx::FromRow)]
+      struct Row {
+        start_time: Instant,
+        value: Username,
+      }
+
+      let row = sqlx::query_as::<_, Row>(
+        r"
+        SELECT lower(period) AS start_time, username AS value FROM users_history AS cur
+        WHERE
+          user_id = $1::USER_ID
+          AND NOT EXISTS(
+            SELECT 1
+            FROM users_history AS next
+            WHERE
+              next.user_id = $1::USER_ID
+              AND next.period >> cur.period
+              AND NOT ((next.username IS NULL AND cur.username IS NULL) OR (next.username IS NOT NULL AND cur.username IS NOT NULL AND next.username = cur.username))
+          )
+        ORDER BY start_time DESC
+        LIMIT 1;
+      ",
+      )
+        .bind(options.r#ref.id)
+        .fetch_one(&mut tx)
+        .await
+        .map_err(UpdateUserError::other)?;
+
+      let lock_period = row.start_time..(row.start_time + *USER_DISPLAY_NAME_LOCK_DURATION);
+      if lock_period.contains(&now) {
+        return Err(UpdateUserError::LockedUsername(options.r#ref, lock_period.into(), now));
+      }
+    }
+
+    if options.patch.password.is_some() {
+      #[derive(Debug, sqlx::FromRow)]
+      struct Row {
+        start_time: Instant,
+        value: PasswordHash,
+      }
+
+      let row = sqlx::query_as::<_, Row>(
+        r"
+        SELECT lower(period) AS start_time, password FROM users_history AS cur
+        WHERE
+          user_id = $1::USER_ID
+          AND NOT EXISTS(
+            SELECT 1
+            FROM users_history AS next
+            WHERE
+              next.user_id = $1::USER_ID
+              AND next.period >> cur.period
+              AND NOT ((next.password IS NULL AND cur.password IS NULL) OR (next.password IS NOT NULL AND cur.password IS NOT NULL AND next.password = cur.password))
+          )
+        ORDER BY start_time DESC
+        LIMIT 1;
+      ",
+      )
+        .bind(options.r#ref.id)
+        .fetch_one(&mut tx)
+        .await
+        .map_err(UpdateUserError::other)?;
+
+      let lock_period = row.start_time..(row.start_time + *USER_DISPLAY_NAME_LOCK_DURATION);
+      if lock_period.contains(&now) {
+        return Err(UpdateUserError::LockedPassword(options.r#ref, lock_period.into(), now));
+      }
+    }
+
+    {
+      #[derive(Debug, sqlx::FromRow)]
+      struct Row {
+        user_id: UserId,
+      }
+
+      let res = sqlx::query(
+        r"
+      WITH prev_state AS (
+        UPDATE users_history SET period = PERIOD(lower(period), $1::INSTANT), _is_current = NULL
+        WHERE user_id = $2::USER_ID AND upper_inf(period)
+        RETURNING display_name, username, password
+      )
+      INSERT INTO users_history(
+        user_id, period, _is_current, updated_by,
+        display_name,
+        username,
+        password
+      )
+      SELECT
+        $2::USER_ID, PERIOD($1::INSTANT, NULL), TRUE, $3::USER_ID,
+        CASE WHEN $4::BOOLEAN THEN $5::USER_DISPLAY_NAME ELSE prev_state.display_name END,
+        CASE WHEN $6::BOOLEAN THEN $7::USERNAME ELSE prev_state.username END,
+        CASE WHEN $8::BOOLEAN THEN $9::PASSWORD_HASH ELSE prev_state.password END
+      FROM prev_state
+      RETURNING user_id;
+      ",
+      )
+      .bind(now)
+      .bind(options.r#ref.id)
+      .bind(options.actor.id)
+      .bind(options.patch.display_name.is_some())
+      .bind(options.patch.display_name.as_ref())
+      .bind(options.patch.username.is_some())
+      .bind(options.patch.username.as_ref())
+      .bind(options.patch.password.is_some())
+      .bind(options.patch.password.as_ref())
+      .execute(&mut tx)
+      .await
+      .map_err(UpdateUserError::other)?;
+      assert!(res.rows_affected() == 1);
+    }
+
+    let row = {
+      #[derive(Debug, sqlx::FromRow)]
+      struct Row {
+        user_id: UserId,
+        created_at: Instant,
+        is_administrator: bool,
+        display_name: UserDisplayName,
+        username: Option<Username>,
+      }
+
+      let row = sqlx::query_as::<_, Row>(
+        r"
+      SELECT user_id, created_at, is_administrator, display_name, username
+      FROM users_current
+      WHERE user_id = $1::USER_ID;
+      ",
+      )
+      .bind(options.r#ref.id)
+      .fetch_one(&mut tx)
+      .await
+      .map_err(UpdateUserError::other)?;
+      row
+    };
+
+    tx.commit().await.map_err(UpdateUserError::other)?;
+
+    let user: CompleteSimpleUser = CompleteSimpleUser {
+      id: row.user_id,
+      display_name: UserDisplayNameVersions {
+        current: UserDisplayNameVersion {
+          value: row.display_name,
+        },
+      },
+      is_administrator: row.is_administrator,
+      created_at: row.created_at,
+      username: row.username,
+      email_address: None,
+    };
+
+    Ok(user)
+  }
+
+  async fn hard_delete_user(&self, user_ref: UserIdRef) -> Result<(), DeleteUserError> {
+    let res = sqlx::query(
       r"
         DELETE
         FROM users
@@ -291,10 +538,15 @@ where
     ",
     )
     .bind(user_ref.id)
-    .fetch_one(self.database.as_ref())
-    .await?;
+    .execute(self.database.as_ref())
+    .await
+    .map_err(DeleteUserError::other)?;
 
-    Ok(())
+    match res.rows_affected() {
+      0 => Err(DeleteUserError::NotFound(user_ref)),
+      1 => Ok(()),
+      _ => panic!("AssertionError: Expected 0 or 1 rows to be affected"),
+    }
   }
 }
 
@@ -353,27 +605,8 @@ mod test {
     TestApi { clock, user_store }
   }
 
-  #[tokio::test]
-  #[serial]
-  async fn test_create_admin() {
-    crate::test::test_create_admin(make_test_api().await).await;
-  }
-
-  #[tokio::test]
-  #[serial]
-  async fn test_register_the_admin_and_retrieve_short() {
-    crate::test::test_register_the_admin_and_retrieve_short(make_test_api().await).await;
-  }
-
-  #[tokio::test]
-  #[serial]
-  async fn test_register_the_admin_and_retrieve_default() {
-    crate::test::test_register_the_admin_and_retrieve_default(make_test_api().await).await;
-  }
-
-  #[tokio::test]
-  #[serial]
-  async fn test_register_the_admin_and_retrieve_complete() {
-    crate::test::test_register_the_admin_and_retrieve_complete(make_test_api().await).await;
-  }
+  test_user_store!(
+    #[serial]
+    || make_test_api().await
+  );
 }
