@@ -11,7 +11,7 @@ chai.use(chaiHttp);
 describe("/config", () => {
   it("should return the app config", async function (this: Mocha.Context) {
     this.timeout(30000);
-    return withTestServer(async ({server}) => {
+    return withTestServer(false, async ({server}) => {
       const guestAgent: TestAgent = new TestAgent(chai.request.agent(server));
       const {aliceAgent, bobAgent} = await populateUsers(server);
       {

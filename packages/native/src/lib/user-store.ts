@@ -15,6 +15,7 @@ import {
 } from "@eternal-twin/core/lib/user/short-user-with-password.js";
 import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
+import { $UpdateStoreUserOptions, UpdateStoreUserOptions } from "@eternal-twin/core/lib/user/update-store-user-options.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { $UserIdRef } from "@eternal-twin/core/lib/user/user-id-ref.js";
 import { JSON_READER } from "kryo-json/lib/json-reader.js";
@@ -37,6 +38,7 @@ export abstract class NativeUserStore implements UserStore {
   private static GET_USER_WITH_PASSWORD = promisify(native.userStore.getUserWithPassword);
   private static GET_SHORT_USER = promisify(native.userStore.getShortUser);
   private static HARD_DELETE_USER = promisify(native.userStore.hardDeleteUser);
+  private static UPDATE_USER = promisify(native.userStore.updateUser);
 
   constructor(box: NativeUserStoreBox) {
     this.box = box;
@@ -70,8 +72,13 @@ export abstract class NativeUserStore implements UserStore {
     return $NullableShortUserWithPassword.read(JSON_READER, rawOut);
   }
 
+  async updateUser(options: Readonly<UpdateStoreUserOptions>): Promise<CompleteSimpleUser> {
+    const rawOptions: string = $UpdateStoreUserOptions.write(JSON_WRITER, options);
+    const rawOut = await NativeUserStore.UPDATE_USER(this.box, rawOptions);
+    return $CompleteSimpleUser.read(JSON_READER, rawOut);
+  }
 
-  async hardDeleteUserById(userId: UserId): Promise<void> {
+  async hardDeleteUser(userId: UserId): Promise<void> {
     const rawShort: string = $UserIdRef.write(JSON_WRITER, {type: ObjectType.User, id: userId});
     await NativeUserStore.HARD_DELETE_USER(this.box, rawShort);
   }

@@ -8,6 +8,7 @@ import { ShortUser } from "./short-user.js";
 import { ShortUserFields } from "./short-user-fields.js";
 import { ShortUserWithPassword } from "./short-user-with-password.js";
 import { SimpleUser } from "./simple-user.js";
+import { UpdateStoreUserOptions } from "./update-store-user-options.js";
 import { UserId } from "./user-id.js";
 
 export interface UserStore {
@@ -21,5 +22,7 @@ export interface UserStore {
   getUser(options: Readonly<GetUserOptions & {fields: DefaultUserFields | CompleteUserFields | CompleteIfSelfUserFields}>): Promise<SimpleUser | CompleteSimpleUser | null>;
   getUser(options: Readonly<GetUserOptions>): Promise<ShortUser | SimpleUser | CompleteSimpleUser | null>;
 
-  hardDeleteUserById(userId: UserId): Promise<void>;
+  hardDeleteUser(userId: UserId): Promise<void>;
+
+  updateUser(options: Readonly<UpdateStoreUserOptions>): Promise<CompleteSimpleUser>;
 }

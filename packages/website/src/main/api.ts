@@ -4,6 +4,7 @@ import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
 import { $Url, Url } from "@eternal-twin/core/lib/core/url.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
@@ -44,6 +45,7 @@ import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memo
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
+import { DevApi } from "@eternal-twin/rest-server/lib/index.js";
 import { InMemoryTokenService } from "@eternal-twin/token-in-memory";
 import { PgTokenService } from "@eternal-twin/token-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
@@ -53,6 +55,8 @@ export interface Api {
   announcement: AnnouncementService;
   auth: AuthService;
   dinoparc: DinoparcService;
+  clock: ClockService;
+  dev: DevApi | null;
   forum: ForumService;
   hammerfest: HammerfestService;
   hammerfestStore: HammerfestStore;
@@ -200,10 +204,11 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     hammerfestStore,
     hammerfestClient,
     link,
-    userStore,
+    password,
     token,
     twinoidStore,
-    twinoidClient
+    twinoidClient,
+    userStore,
   });
 
   const koaAuth = new KoaAuth(auth);
@@ -243,6 +248,8 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     announcement,
     auth,
     dinoparc,
+    clock,
+    dev: null,
     forum,
     hammerfest,
     hammerfestStore,

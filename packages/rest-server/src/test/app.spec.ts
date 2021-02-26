@@ -10,7 +10,7 @@ chai.use(chaiHttp);
 describe("/app", () => {
   it("should return data about the latest app release", async function (this: Mocha.Context) {
     this.timeout(30000);
-    return withTestServer(async ({server}) => {
+    return withTestServer(false, async ({server}) => {
       const guestAgent: TestAgent = new TestAgent(chai.request.agent(server));
       {
         const actual: unknown = await guestAgent.get("/app/releases", $Any);

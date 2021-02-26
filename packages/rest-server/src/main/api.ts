@@ -112,10 +112,11 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
     hammerfestStore,
     hammerfestClient,
     link,
-    userStore,
+    password,
     token,
     twinoidStore,
-    twinoidClient
+    twinoidClient,
+    userStore,
   });
 
   for (const [key, section] of config.forum.sections) {
@@ -128,7 +129,7 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
     );
   }
 
-  const api: Api = {announcement, auth, dinoparc, forum, hammerfest, koaAuth, twinoid, user};
+  const api: Api = {announcement, auth, dinoparc, clock, dev: null, forum, hammerfest, koaAuth, twinoid, user};
 
   async function teardown(): Promise<void> {
     await teardownPool();

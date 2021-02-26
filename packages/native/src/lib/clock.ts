@@ -36,4 +36,8 @@ export class VirtualClock extends NativeClock {
   constructor() {
     super(native.clock.virtualClock.new());
   }
+
+  advanceTo(time: Date): void {
+    native.clock.virtualClock.advanceTo(this.box, JSON.stringify(time.toISOString()));
+  }
 }

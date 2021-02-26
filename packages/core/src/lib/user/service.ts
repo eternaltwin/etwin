@@ -9,6 +9,7 @@ import { LinkService } from "../link/service.js";
 import { VersionedDinoparcLink } from "../link/versioned-dinoparc-link.js";
 import { VersionedHammerfestLink } from "../link/versioned-hammerfest-link.js";
 import { VersionedTwinoidLink } from "../link/versioned-twinoid-link";
+import { PasswordService } from "../password/service";
 import { TokenService } from "../token/service.js";
 import { TwinoidClient } from "../twinoid/client.js";
 import { TwinoidStore } from "../twinoid/store.js";
@@ -32,8 +33,11 @@ import { MaybeCompleteSimpleUser } from "./maybe-complete-simple-user.js";
 import { MaybeCompleteUser } from "./maybe-complete-user.js";
 import { SHORT_USER_FIELDS } from "./short-user-fields.js";
 import { UserStore } from "./store.js";
+import { UpdateStoreUserPatch } from "./update-store-user-patch";
+import { UpdateUserPatch } from "./update-user-patch";
 import { User } from "./user.js";
 import { UserFieldsType } from "./user-fields-type.js";
+import { UserId } from "./user-id";
 
 export interface UserServiceOptions {
   dinoparcClient: DinoparcClient;
@@ -41,10 +45,11 @@ export interface UserServiceOptions {
   hammerfestClient: HammerfestClient;
   hammerfestStore: HammerfestStore;
   link: LinkService;
-  userStore: UserStore;
+  password: PasswordService;
   token: TokenService;
   twinoidClient: TwinoidClient;
   twinoidStore: TwinoidStore;
+  userStore: UserStore;
 }
 
 export class UserService {
@@ -53,10 +58,11 @@ export class UserService {
   readonly #hammerfestClient: HammerfestClient;
   readonly #hammerfestStore: HammerfestStore;
   readonly #link: LinkService;
-  readonly #userStore: UserStore;
+  readonly #password: PasswordService;
   readonly #token: TokenService;
   readonly #twinoidClient: TwinoidClient;
   readonly #twinoidStore: TwinoidStore;
+  readonly #userStore: UserStore;
 
   public constructor(options: Readonly<UserServiceOptions>) {
     this.#dinoparcClient = options.dinoparcClient;
@@ -64,10 +70,11 @@ export class UserService {
     this.#hammerfestClient = options.hammerfestClient;
     this.#hammerfestStore = options.hammerfestStore;
     this.#link = options.link;
-    this.#userStore = options.userStore;
+    this.#password = options.password;
     this.#token = options.token;
     this.#twinoidClient = options.twinoidClient;
     this.#twinoidStore = options.twinoidStore;
+    this.#userStore = options.userStore;
   }
 
   async getUserById(acx: AuthContext, options: Readonly<GetUserByIdOptions>): Promise<MaybeCompleteUser | null> {
@@ -98,6 +105,35 @@ export class UserService {
     }
     const hasPassword = userWithPassword.password !== null;
     return {...user, hasPassword, links};
+  }
+
+  async updateUser(acx: AuthContext, userId: UserId, patch: Readonly<UpdateUserPatch>): Promise<User> {
+    if (acx.type !== AuthType.User) {
+      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    }
+    if (!(acx.isAdministrator || userId === acx.user.id)) {
+      throw new Error("Forbidden");
+    }
+    const storePatch: UpdateStoreUserPatch = {
+      displayName: patch.displayName,
+      username: patch.username,
+    };
+    if (patch.password !== undefined) {
+      if (patch.password === null) {
+        storePatch.password = null;
+      } else {
+        storePatch.password = await this.#password.hash(patch.password);
+      }
+    }
+
+    const storeUser = await this.#userStore.updateUser({
+      ref: {type: ObjectType.User, id: userId},
+      actor: acx.user,
+      patch,
+    });
+    const links = await this.#link.getVersionedLinks(storeUser.id);
+    const user: User = {...storeUser, links};
+    return user;
   }
 
   async linkToDinoparc(acx: AuthContext, options: Readonly<LinkToDinoparcOptions>): Promise<VersionedDinoparcLink> {

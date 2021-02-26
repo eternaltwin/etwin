@@ -15,6 +15,7 @@ import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js"
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { $UpdateUserPatch, UpdateUserPatch } from "@eternal-twin/core/lib/user/update-user-patch.js";
 import { $User, User } from "@eternal-twin/core/lib/user/user.js";
 import { $UserId, UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import Router, { RouterContext } from "@koa/router";
@@ -88,14 +89,14 @@ export function createUsersRouter(api: Api): Router {
 
   async function getUserById(cx: RouterContext<KoaState>): Promise<void> {
     const rawUserId = cx.params["user_id"];
-    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
+    const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$UserId.test(rawUserId)) {
       cx.response.status = 422;
       cx.response.body = {error: "InvalidId"};
       return;
     }
     const userId: UserId = rawUserId;
-    const user: CompleteUser | User | null = await api.user.getUserById(auth, {id: userId});
+    const user: CompleteUser | User | null = await api.user.getUserById(acx, {id: userId});
     if (user === null) {
       cx.response.status = 404;
       cx.response.body = {error: "UserNotFound"};
@@ -106,6 +107,37 @@ export function createUsersRouter(api: Api): Router {
     } else {
       cx.response.body = $User.write(JSON_VALUE_WRITER, user);
     }
+  }
+
+  router.patch("/:user_id", koaCompose([koaBodyParser(), updateUserById]));
+
+  async function updateUserById(cx: RouterContext<KoaState>): Promise<void> {
+    const rawUserId = cx.params["user_id"];
+    const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
+    if (!$UserId.test(rawUserId)) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidId"};
+      return;
+    }
+    const userId: UserId = rawUserId;
+    let body: UpdateUserPatch;
+    try {
+      body = $UpdateUserPatch.read(JSON_VALUE_READER, cx.request.body);
+    } catch (_err) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidRequestBody"};
+      return;
+    }
+    let user: User;
+    try {
+      user = await api.user.updateUser(acx, userId, body);
+    } catch (err) {
+      console.error(err);
+      cx.response.status = 500;
+      cx.response.body = {error: "FailedUserUpdate"};
+      return;
+    }
+    cx.response.body = $User.write(JSON_VALUE_WRITER, user);
   }
 
   return router;

@@ -334,7 +334,7 @@ export class DefaultAuthService implements AuthService {
         // If the exception comes from `link.linkToHammerfest`, the archived user remains: it's OK (no link is created).
         // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
         // any issues.
-        await this.#userStore.hardDeleteUserById(user.id);
+        await this.#userStore.hardDeleteUser(user.id);
         throw e;
       }
       userId = user.id;
@@ -377,7 +377,7 @@ export class DefaultAuthService implements AuthService {
         // If the exception comes from `link.linkToHammerfest`, the archived user remains: it's OK (no link is created).
         // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
         // any issues.
-        await this.#userStore.hardDeleteUserById(user.id);
+        await this.#userStore.hardDeleteUser(user.id);
         throw e;
       }
       userId = user.id;
@@ -416,7 +416,7 @@ export class DefaultAuthService implements AuthService {
         // If the exception comes from `link.linkToTwinoid`, the archived user remains: it's OK (no link is created).
         // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
         // any issues.
-        await this.#userStore.hardDeleteUserById(user.id);
+        await this.#userStore.hardDeleteUser(user.id);
         throw e;
       }
       userId = user.id;

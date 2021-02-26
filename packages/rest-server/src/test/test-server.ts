@@ -13,7 +13,7 @@ import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { PgForumService } from "@eternal-twin/forum-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
-import { SystemClock } from "@eternal-twin/native/lib/clock.js";
+import { SystemClock, VirtualClock } from "@eternal-twin/native/lib/clock.js";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js";
 import { MemDinoparcClient } from "@eternal-twin/native/lib/dinoparc-client.js";
 import { PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
@@ -24,6 +24,7 @@ import { ScryptPasswordService } from "@eternal-twin/native/lib/password.js";
 import { PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
 import { PgUserStore } from "@eternal-twin/native/lib/user-store.js";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
+import { NativeClock } from "@eternal-twin/native/src/lib/clock.js";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import { PgTokenService } from "@eternal-twin/token-pg";
@@ -32,14 +33,14 @@ import http from "http";
 import Koa from "koa";
 
 import { KoaAuth } from "../lib/helpers/koa-auth.js";
-import { Api, createApiRouter } from "../lib/index.js";
+import { Api, createApiRouter, DevApi } from "../lib/index.js";
 
 export interface TestServer {
   hammerfestClient: MemHammerfestClient,
   server: http.Server,
 }
 
-export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>): Promise<R> {
+export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer) => Promise<R>): Promise<R> {
   const config = await getLocalConfig();
   const dbConfig: DbConfig = {
     host: config.db.host,
@@ -54,7 +55,16 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
     const nativeDatabase = await NativeDatabase.create(dbConfig);
     await forceCreateLatest(database);
 
-    const clock = new SystemClock();
+    let dev: DevApi | null;
+    let clock: NativeClock;
+    if (isDev) {
+      const devClock = new VirtualClock();
+      clock = devClock;
+      dev = {clock: devClock};
+    } else {
+      dev = null;
+      clock = new SystemClock();
+    }
     const uuidGenerator = new Uuid4Generator();
     const secretKeyStr: string = config.etwin.secret;
     const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
@@ -118,12 +128,13 @@ export async function withTestServer<R>(fn: (server: TestServer) => Promise<R>):
       hammerfestStore,
       hammerfestClient,
       link,
+      password,
       userStore,
       token,
       twinoidStore,
       twinoidClient
     });
-    const api: Api = {announcement, auth, dinoparc, forum, hammerfest, koaAuth, twinoid, user};
+    const api: Api = {announcement, auth, dinoparc, clock, dev, forum, hammerfest, koaAuth, twinoid, user};
 
     const app: Koa = new Koa();
     const router = createApiRouter(api);

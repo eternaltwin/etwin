@@ -1,5 +1,6 @@
 import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
+import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
@@ -11,21 +12,29 @@ import { Api as AnnouncementApi, createAnnouncementsRouter } from "./announcemen
 import { Api as AppApi, createAppRouter } from "./app.js";
 import { Api as ArchiveApi, createArchiveRouter } from "./archive/index.js";
 import { Api as AuthApi, createAuthRouter } from "./auth.js";
+import { Api as ClockApi, createClockRouter, DevApi as ClockDevApi, VirtualClock } from "./clock.js";
 import { Api as ConfigApi, createConfigRouter } from "./config.js";
 import { Api as ForumApi, createForumRouter } from "./forum.js";
 import { KoaAuth } from "./helpers/koa-auth.js";
 import { KoaState } from "./koa-state";
 import { Api as UsersApi, createUsersRouter } from "./users.js";
 
-export interface Api extends AnnouncementApi, AppApi, AuthApi, ConfigApi, ForumApi, ArchiveApi, UsersApi {
+
+export interface Api extends AnnouncementApi, AppApi, AuthApi, ConfigApi, ClockApi, ForumApi, ArchiveApi, UsersApi {
   announcement: AnnouncementService;
   auth: AuthService;
+  clock: ClockService;
+  dev: DevApi | null;
   dinoparc: DinoparcService;
   forum: ForumService;
   hammerfest: HammerfestService;
   koaAuth: KoaAuth;
   twinoid: TwinoidService;
   user: UserService;
+}
+
+export interface DevApi extends ClockDevApi {
+  clock?: VirtualClock;
 }
 
 export function createApiRouter(api: Api): Router {
@@ -39,6 +48,8 @@ export function createApiRouter(api: Api): Router {
   router.use("/archive", archive.routes(), archive.allowedMethods());
   const auth = createAuthRouter(api);
   router.use("/auth", auth.routes(), auth.allowedMethods());
+  const clock = createClockRouter(api);
+  router.use("/clock", clock.routes(), clock.allowedMethods());
   const config = createConfigRouter(api);
   router.use("/config", config.routes(), config.allowedMethods());
   const users = createUsersRouter(api);

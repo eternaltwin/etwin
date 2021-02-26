@@ -12,7 +12,7 @@ describe("/hammerfest", () => {
   describe("/users", () => {
     it("should load an unlinked profile for the first time", async function (this: Mocha.Context) {
       this.timeout(30000);
-      return withTestServer(async cx => {
+      return withTestServer(false, async cx => {
         await cx.hammerfestClient.createUser("hammerfest.fr", "123", "alice", "aaaaa");
         const guestAgent: TestAgent = new TestAgent(chai.request.agent(cx.server));
         {
@@ -34,7 +34,7 @@ describe("/hammerfest", () => {
     });
     it("should load an unlinked profile for the second time", async function (this: Mocha.Context) {
       this.timeout(30000);
-      return withTestServer(async cx => {
+      return withTestServer(false, async cx => {
         await cx.hammerfestClient.createUser("hammerfest.fr", "123", "alice", "aaaaa");
         const guestAgent: TestAgent = new TestAgent(chai.request.agent(cx.server));
         await guestAgent.get("/archive/hammerfest/hammerfest.fr/users/123", $HammerfestUser);
@@ -57,7 +57,7 @@ describe("/hammerfest", () => {
     });
     it("should return an error on a missing user", async function (this: Mocha.Context) {
       this.timeout(30000);
-      return withTestServer(async cx => {
+      return withTestServer(false, async cx => {
         const guestAgent: TestAgent = new TestAgent(chai.request.agent(cx.server));
         try {
           await guestAgent.get("/archive/hammerfest/hammerfest.fr/users/9999999", $HammerfestUser);

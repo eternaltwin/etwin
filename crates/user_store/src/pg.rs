@@ -7,8 +7,8 @@ use etwin_core::password::PasswordHash;
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, DeleteUserError, GetShortUserOptions, GetUserOptions, GetUserResult,
   ShortUser, ShortUserWithPassword, UpdateUserError, UpdateUserOptions, UserDisplayName, UserDisplayNameVersion,
-  UserDisplayNameVersions, UserFields, UserId, UserIdRef, UserRef, UserStore, Username,
-  USER_DISPLAY_NAME_LOCK_DURATION,
+  UserDisplayNameVersions, UserFields, UserId, UserIdRef, UserRef, UserStore, Username, USERNAME_LOCK_DURATION,
+  USER_DISPLAY_NAME_LOCK_DURATION, USER_PASSWORD_LOCK_DURATION,
 };
 use etwin_core::uuid::UuidGenerator;
 use sqlx::postgres::PgPool;
@@ -378,7 +378,7 @@ where
       #[derive(Debug, sqlx::FromRow)]
       struct Row {
         start_time: Instant,
-        value: Username,
+        value: Option<Username>,
       }
 
       let row = sqlx::query_as::<_, Row>(
@@ -403,7 +403,7 @@ where
         .await
         .map_err(UpdateUserError::other)?;
 
-      let lock_period = row.start_time..(row.start_time + *USER_DISPLAY_NAME_LOCK_DURATION);
+      let lock_period = row.start_time..(row.start_time + *USERNAME_LOCK_DURATION);
       if lock_period.contains(&now) {
         return Err(UpdateUserError::LockedUsername(options.r#ref, lock_period.into(), now));
       }
@@ -413,7 +413,7 @@ where
       #[derive(Debug, sqlx::FromRow)]
       struct Row {
         start_time: Instant,
-        value: PasswordHash,
+        value: Option<PasswordHash>,
       }
 
       let row = sqlx::query_as::<_, Row>(
@@ -438,7 +438,7 @@ where
         .await
         .map_err(UpdateUserError::other)?;
 
-      let lock_period = row.start_time..(row.start_time + *USER_DISPLAY_NAME_LOCK_DURATION);
+      let lock_period = row.start_time..(row.start_time + *USER_PASSWORD_LOCK_DURATION);
       if lock_period.contains(&now) {
         return Err(UpdateUserError::LockedPassword(options.r#ref, lock_period.into(), now));
       }

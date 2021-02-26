@@ -20,6 +20,10 @@ export class TestAgent {
     return this.agent.get(url).send();
   }
 
+  public async rawPatch(url: string, req: object): Promise<ChaiHttp.Response> {
+    return this.agent.patch(url).send(req);
+  }
+
   public async rawPost(url: string, req: object): Promise<ChaiHttp.Response> {
     return this.agent.post(url).send(req);
   }
@@ -55,6 +59,25 @@ export class TestAgent {
         return resType.read(JSON_VALUE_READER, raw);
       } catch (err) {
         console.error(`GET ${url}`);
+        console.error(`Response (${res.status}):`);
+        console.error(JSON.stringify(res.body));
+        throw err;
+      }
+    }
+  }
+
+  public async patch<Req, Res>(url: string, reqType: IoType<Req>, req: Req, resType: IoType<Res>): Promise<Res> {
+    const rawReq: object = reqType.write(JSON_VALUE_WRITER, req);
+    const res: ChaiHttp.Response = await this.rawPatch(url, rawReq);
+    const raw: any = res.body;
+    if (typeof raw.error === "string") {
+      throw new Error(raw.error);
+    } else {
+      try {
+        return resType.read(JSON_VALUE_READER, raw);
+      } catch (err) {
+        console.error(`PATCH ${url}:`);
+        console.error(JSON.stringify(rawReq));
         console.error(`Response (${res.status}):`);
         console.error(JSON.stringify(res.body));
         throw err;

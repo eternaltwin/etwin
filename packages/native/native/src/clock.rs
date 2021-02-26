@@ -84,12 +84,14 @@ pub mod virtual_clock {
   use crate::neon_helpers::NeonNamespace;
   use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
+  use etwin_core::core::Instant;
   use neon::prelude::*;
   use std::sync::Arc;
 
   pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject> {
     let ns = cx.empty_object();
     ns.set_function(cx, "new", new)?;
+    ns.set_function(cx, "advanceTo", advance_to)?;
     Ok(ns)
   }
 
@@ -98,5 +100,13 @@ pub mod virtual_clock {
   pub fn new(mut cx: FunctionContext) -> JsResult<JsVirtualClock> {
     let inner: Arc<VirtualClock> = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
     Ok(cx.boxed(inner))
+  }
+
+  pub fn advance_to(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+    let inner = cx.argument::<JsVirtualClock>(0)?;
+    let time_json = cx.argument::<JsString>(1)?;
+    let time: Instant = serde_json::from_str(&time_json.value(&mut cx)).unwrap();
+    inner.advance_to(time);
+    Ok(cx.undefined())
   }
 }

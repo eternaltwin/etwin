@@ -213,7 +213,7 @@ where
       r#ref: alice.id.into(),
       actor: alice.id.into(),
       patch: UpdateUserPatch {
-        display_name: Some("Alisson".parse().unwrap()),
+        display_name: Some("Allison".parse().unwrap()),
         username: None,
         password: None,
       },
@@ -225,7 +225,7 @@ where
     id: alice.id,
     display_name: UserDisplayNameVersions {
       current: UserDisplayNameVersion {
-        value: "Alisson".parse().unwrap(),
+        value: "Allison".parse().unwrap(),
       },
     },
     is_administrator: true,
@@ -262,7 +262,7 @@ where
       r#ref: alice.id.into(),
       actor: alice.id.into(),
       patch: UpdateUserPatch {
-        display_name: Some("Alisson".parse().unwrap()),
+        display_name: Some("Allison".parse().unwrap()),
         username: None,
         password: None,
       },
@@ -303,7 +303,7 @@ where
       r#ref: alice.id.into(),
       actor: alice.id.into(),
       patch: UpdateUserPatch {
-        display_name: Some("Alisson".parse().unwrap()),
+        display_name: Some("Allison".parse().unwrap()),
         username: None,
         password: None,
       },
@@ -369,7 +369,7 @@ pub(crate) async fn test_update_locked_display_name_after_update<TyClock, TyUser
       r#ref: alice.id.into(),
       actor: alice.id.into(),
       patch: UpdateUserPatch {
-        display_name: Some("Alisson".parse().unwrap()),
+        display_name: Some("Allison".parse().unwrap()),
         username: None,
         password: None,
       },
