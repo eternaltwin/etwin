@@ -124,7 +124,7 @@ where
           INSERT
           INTO users_history(user_id, period, _is_current, updated_by, display_name, username, email, password)
           VALUES (
-            $1::USER_ID, PERIOD($2::INSTANT, NULL), TRUE, $1::USER_ID, $3::USER_DISPLAY_NAME, $4::USERNAME, $5::EMAIL_ADDRESS_HASH, $6::PASSWORD_HASH
+            $1::USER_ID, PERIOD($2::INSTANT, NULL), TRUE, $1::USER_ID, $3::USER_DISPLAY_NAME, $4::USERNAME, $5::EMAIL_ADDRESS_HASH, pgp_sym_encrypt_bytea($6::PASSWORD_HASH, $7::TEXT)
           )
           RETURNING user_id;
         ",
@@ -135,6 +135,7 @@ where
           .bind(options.username.as_ref())
           .bind(email_hash)
           .bind(options.password.as_ref())
+          .bind(self.database_secret.as_str())
           .fetch_one(&mut tx)
           .await?;
       }
@@ -252,11 +253,12 @@ where
 
     let row = sqlx::query_as::<_, Row>(
       r"
-      SELECT user_id, display_name, password
+      SELECT user_id, display_name, pgp_sym_decrypt_bytea(password, $1::TEXT) AS password
       FROM users_current
-      WHERE user_id = $1::USER_ID OR username = $2::USERNAME;
+      WHERE user_id = $2::USER_ID OR username = $3::USERNAME;
       ",
     )
+    .bind(self.database_secret.as_str())
     .bind(ref_id)
     .bind(ref_username)
     .fetch_optional(self.database.as_ref())
@@ -467,7 +469,7 @@ where
         $2::USER_ID, PERIOD($1::INSTANT, NULL), TRUE, $3::USER_ID,
         CASE WHEN $4::BOOLEAN THEN $5::USER_DISPLAY_NAME ELSE prev_state.display_name END,
         CASE WHEN $6::BOOLEAN THEN $7::USERNAME ELSE prev_state.username END,
-        CASE WHEN $8::BOOLEAN THEN $9::PASSWORD_HASH ELSE prev_state.password END
+        CASE WHEN $8::BOOLEAN THEN pgp_sym_encrypt_bytea($9::PASSWORD_HASH, $10::TEXT) ELSE prev_state.password END
       FROM prev_state
       RETURNING user_id;
       ",
@@ -481,6 +483,7 @@ where
       .bind(options.patch.username.as_ref())
       .bind(options.patch.password.is_some())
       .bind(options.patch.password.as_ref())
+      .bind(self.database_secret.as_str())
       .execute(&mut tx)
       .await
       .map_err(UpdateUserError::other)?;
