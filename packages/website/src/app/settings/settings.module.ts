@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { SharedModule } from "../shared/shared.module";
 import { LinkedDinoparcSettingsComponent } from "./linked-dinoparc-settings.component";
@@ -19,6 +20,8 @@ import { SettingsViewComponent } from "./settings-view.component";
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     SettingsRoutingModule,
     SharedModule,
   ],

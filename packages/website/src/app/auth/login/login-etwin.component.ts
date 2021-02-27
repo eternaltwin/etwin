@@ -74,7 +74,6 @@ export class LoginEtwinComponent implements OnDestroy, OnInit {
         this.pendingSubscription = null;
         if (this.nextUri !== undefined) {
           this.document.location.href = this.nextUri;
-          console.log(this.document.location.href);
         } else {
           this.router.navigateByUrl("/");
         }

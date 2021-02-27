@@ -472,7 +472,7 @@ describe("/users", () => {
         chai.assert.deepEqual(actual, expected);
       }
       {
-        const actual: SimpleUser = await aliceAgent.put(
+        const actual: SimpleUser = await bobAgent.put(
           "/auth/self?method=Etwin",
           $UserCredentials,
           {
@@ -491,6 +491,50 @@ describe("/users", () => {
             },
           },
           isAdministrator: true,
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+    });
+  });
+
+  it("should update a user's password", async function (this: Mocha.Context) {
+    this.timeout(30000);
+    return withTestServer(true, async ({server}) => {
+      const guestAgent: TestAgent = new TestAgent(chai.request.agent(server));
+      await guestAgent.rawPut("/clock", {time: new Date("2021-01-01T00:00:00.000Z")});
+      const {bob, bobAgent} = await populateUsers(server);
+      await guestAgent.rawPut("/clock", {time: new Date("2021-01-01T00:10:00.000Z")});
+      await bobAgent.patch(`/users/${bob.id}`, $UpdateUserPatch, {password: Buffer.from("aaaaaaaaaa")}, $User);
+      await guestAgent.rawPut("/clock", {time: new Date("2021-01-01T00:20:00.000Z")});
+      {
+        const actual: AuthContext = await bobAgent.delete("/auth/self", $AuthContext);
+        const expected: AuthContext = {
+          type: AuthType.Guest,
+          scope: AuthScope.Default,
+        };
+        chai.assert.deepEqual(actual, expected);
+      }
+      await guestAgent.rawPut("/clock", {time: new Date("2021-01-01T00:30:00.000Z")});
+      {
+        const actual: SimpleUser = await bobAgent.put(
+          "/auth/self?method=Etwin",
+          $UserCredentials,
+          {
+            login: "bob",
+            password: Buffer.from("aaaaaaaaaa"),
+          },
+          $SimpleUser,
+        );
+        const expected: SimpleUser = {
+          type: ObjectType.User,
+          id: bob.id,
+          createdAt: new Date("2021-01-01T00:00:00.000Z"),
+          displayName: {
+            current: {
+              value: "Bob"
+            },
+          },
+          isAdministrator: false,
         };
         chai.assert.deepEqual(actual, expected);
       }

@@ -11,57 +11,132 @@
         <h2>Profile</h2>
         <p>You can change your name as displayed to other users once every 6 months. Your old names will still be
           displayed on your profile to help others recognize you.</p>
-        <form>
+        <form
+          method="POST"
+          enctype="application/x-www-form-urlencoded"
+          action="/actions/update-user-display-name"
+          [formGroup]="displayNameForm"
+          (ngSubmit)="onSubmitDisplayName($event)"
+        >
+          <input type="hidden" name="user_id" formControlName="userId" required="required" [value]="user.id"/>
           <label>
-            <span>New display name</span>
-            <input type="text" name="display_name" class="field" required="required" [value]="user.displayName.current.value"/>
+            <span i18n="New display name field label@@settings.displayName.label">New display name</span>
+            <div class="info" i18n="@@settings.displayName.info">You can change your display name once every 30 days.
+              You can use any letter, spaces and parenthesis. Your current name is: {{user.displayName.current.value}}.
+            </div>
+            <input type="text" name="display_name" class="field" formControlName="displayName" required="required"
+                   [minlength]="$UserDisplayName.minLength" [maxlength]="$UserDisplayName.maxLength"
+                   [pattern]="$UserDisplayName.pattern"/>
+            <div *ngIf="displayName.invalid && (displayName.dirty || displayName.touched)" class="error">
+              <div *ngIf="displayName.errors?.minlength" i18n="@@settings.displayName.minLength">
+                The display name must be at least {{$UserDisplayName.minLength}} characters long.
+              </div>
+              <div *ngIf="displayName.errors?.maxlength" i18n="@@settings.displayName.maxLength">
+                The display name must be at most {{$UserDisplayName.maxLength}} characters long.
+              </div>
+              <div *ngIf="displayName.errors?.pattern && !displayName.errors?.minlength"
+                   i18n="@@settings.displayName.pattern">
+                The display name can only use letters, spaces or parenthesis.
+              </div>
+            </div>
           </label>
-          <input type="submit" class="btn primary" value="Update my display name" disabled="disabled"/>
+          <input type="submit" class="btn primary" name="update_user_display_name"
+                 [disabled]="displayNameForm.invalid || displayNameSubscription !== null"
+                 i18n-value="@@settings.displayName.submit" value="Update my display name"/>
+          <div *ngIf="displayNameServerError" class="error" i18n="@@settings.displayName.unknownError">
+            Update error: the display name is invalid or was changed too recently.
+          </div>
         </form>
         <hr/>
         <h2>Authentication</h2>
+
         <form>
-          <form>
-            <label>
-              <span>Email address</span>
-              <ng-container *ngIf="user.emailAddress as email; then updateEmail; else setEmail"></ng-container>
-              <ng-template #updateEmail let-email>
-                <input type="email" name="email_address" class="field" required="required" [value]="email"/>
-              </ng-template>
-              <ng-template #setEmail>
-                <input type="email" name="email_address" class="field" required="required"/>
-              </ng-template>
-            </label>
-            <input type="submit" class="btn primary" value="Update my email address" disabled="disabled"/>
-          </form>
+          <label>
+            <span>Email address</span>
+            <ng-container *ngIf="user.emailAddress as email; then updateEmail; else setEmail"></ng-container>
+            <ng-template #updateEmail let-email>
+              <input type="email" name="email_address" class="field" required="required" [value]="email"/>
+            </ng-template>
+            <ng-template #setEmail>
+              <input type="email" name="email_address" class="field" required="required"/>
+            </ng-template>
+          </label>
+          <input type="submit" class="btn primary" value="Update my email address" disabled="disabled"/>
         </form>
-        <form>
-          <form>
-            <label>
-              <span>Username</span>
-              <ng-container *ngIf="user.username as username; then updateUsername; else setUsername"></ng-container>
-              <ng-template #updateUsername let-username>
-                <input type="text" name="username" class="field" required="required" [value]="username"/>
-              </ng-template>
-              <ng-template #setUsername>
-                <input type="text" name="username" class="field" required="required"/>
-              </ng-template>
-            </label>
-            <input type="submit" class="btn primary" value="Update my username" disabled="disabled"/>
-          </form>
+
+        <form
+          method="POST"
+          enctype="application/x-www-form-urlencoded"
+          action="/actions/update-username"
+          [formGroup]="usernameForm"
+          (ngSubmit)="onSubmitUsername($event)"
+        >
+          <input type="hidden" name="user_id" formControlName="userId" required="required" [value]="user.id"/>
+          <label>
+            <span i18n="New username field label@@settings.username.label">New username</span>
+            <div class="info" i18n="@@settings.username.info">You can change your username once every 10 days. You can only use the letters a-z and digits. <ng-container *ngIf="user.username as username; then displayCurrentUsername; else displayNoUsername"></ng-container></div>
+            <ng-template #displayCurrentUsername let-username>Your current username is: {{username}}.</ng-template>
+            <ng-template #displayNoUsername>You do not have any username currently.</ng-template>
+            <input type="text" name="username" class="field" formControlName="username" required="required"
+                   [minlength]="$RawUsername.minLength" [maxlength]="$RawUsername.maxLength"
+                   [pattern]="$RawUsername.pattern"/>
+            <div *ngIf="username.invalid && (username.dirty || username.touched)" class="error">
+              <div *ngIf="username.errors?.minlength" i18n="@@settings.username.minLength">
+                The username must be at least {{$RawUsername.minLength}} characters long.
+              </div>
+              <div *ngIf="username.errors?.maxlength" i18n="@@settings.username.maxLength">
+                The username must be at most {{$RawUsername.maxLength}} characters long.
+              </div>
+              <div *ngIf="username.errors?.pattern && !username.errors?.minlength" i18n="@@settings.username.pattern">
+                The username can only use the lowercase english letters "a-z" and digits "0-9" (it must start with a
+                letter).
+              </div>
+            </div>
+          </label>
+          <input type="submit" class="btn primary" name="update_username" [disabled]="usernameForm.invalid || usernameSubscription !== null" i18n-value="@@settings.username.submit" value="Update my username"/>
+          <div *ngIf="usernameServerError" class="error" i18n="@@settings.username.unknownError">
+            Update error: the username is invalid, was changed too recently or is already used.
+          </div>
         </form>
-        <form>
-          <form>
-            <label>
-              <span>Password</span>
-              <input type="password" name="password" class="field" required="required"/>
-            </label>
-            <label>
-              <span>Password confirmation</span>
-              <input type="password" name="password2" class="field" required="required"/>
-            </label>
-            <input type="submit" class="btn primary" value="Update my password" disabled="disabled"/>
-          </form>
+
+        <form
+          method="POST"
+          enctype="application/x-www-form-urlencoded"
+          action="/actions/update-password"
+          [formGroup]="passwordForm"
+          (ngSubmit)="onSubmitPassword($event)"
+        >
+          <input type="hidden" name="user_id" formControlName="userId" required="required" [value]="user.id"/>
+          <label>
+            <span i18n="New password field label@@settings.password.label">New password</span>
+            <input type="password" name="password" class="field" formControlName="password" required="required"
+                   [minlength]="PASSWORD_LEN"/>
+            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="error">
+              <div *ngIf="password.errors?.required" i18n="@@register.passwordRequired">
+                The password is required.
+              </div>
+              <div *ngIf="password.errors?.minlength" i18n="@@register.passwordMinLength">
+                The password must be at least {{PASSWORD_LEN}} characters long.
+              </div>
+            </div>
+          </label>
+          <label>
+            <span i18n="Password confirmation field label@@settings.passwordConfirmation.label">New password confirmation</span>
+            <input type="password" name="password2" class="field" formControlName="password2" required="required" />
+            <div *ngIf="(password2.invalid || passwordForm.errors?.passwordConfirmationMatch) && (password2.dirty || password2.touched)" class="error">
+              <div *ngIf="password2.errors?.required" i18n="@@settings.passwordConfirmation.required">
+                The password confirmation is required.
+              </div>
+              <div *ngIf="passwordForm.errors?.passwordConfirmationMatch" i18n="@@settings.passwordConfirmation.match">
+                The password confirmation does not match the password.
+              </div>
+            </div>
+          </label>
+
+          <input type="submit" class="btn primary" name="update_password" [disabled]="passwordForm.invalid || passwordSubscription !== null" i18n-value="@@settings.password.submit" value="Update my password"/>
+          <div *ngIf="passwordServerError" class="error" i18n="@@settings.password.unknownError">
+            Update error: the display name is invalid or was changed too recently.
+          </div>
         </form>
         <hr/>
         <etwin-linked-users-settings [userId]="user.id" [links]="user.links"></etwin-linked-users-settings>

@@ -129,7 +129,7 @@ export class UserService {
     const storeUser = await this.#userStore.updateUser({
       ref: {type: ObjectType.User, id: userId},
       actor: acx.user,
-      patch,
+      patch: storePatch,
     });
     const links = await this.#link.getVersionedLinks(storeUser.id);
     const user: User = {...storeUser, links};

@@ -355,7 +355,7 @@ where
               AND next.period >> cur.period
               AND NOT (next.display_name = cur.display_name)
           )
-        ORDER BY start_time DESC
+        ORDER BY start_time ASC
         LIMIT 1;
       ",
       )
@@ -394,7 +394,7 @@ where
               AND next.period >> cur.period
               AND NOT ((next.username IS NULL AND cur.username IS NULL) OR (next.username IS NOT NULL AND cur.username IS NOT NULL AND next.username = cur.username))
           )
-        ORDER BY start_time DESC
+        ORDER BY start_time ASC
         LIMIT 1;
       ",
       )
@@ -418,7 +418,7 @@ where
 
       let row = sqlx::query_as::<_, Row>(
         r"
-        SELECT lower(period) AS start_time, password FROM users_history AS cur
+        SELECT lower(period) AS start_time, password AS value FROM users_history AS cur
         WHERE
           user_id = $1::USER_ID
           AND NOT EXISTS(
@@ -429,7 +429,7 @@ where
               AND next.period >> cur.period
               AND NOT ((next.password IS NULL AND cur.password IS NULL) OR (next.password IS NOT NULL AND cur.password IS NOT NULL AND next.password = cur.password))
           )
-        ORDER BY start_time DESC
+        ORDER BY start_time ASC
         LIMIT 1;
       ",
       )
