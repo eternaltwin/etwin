@@ -4,8 +4,8 @@ use etwin_core::core::RawUserDot;
 use etwin_core::dinoparc::{DinoparcServer, DinoparcUserId, DinoparcUserIdRef};
 use etwin_core::hammerfest::{HammerfestServer, HammerfestUserId, HammerfestUserIdRef};
 use etwin_core::link::{
-  GetLinkOptions, GetLinksFromEtwinOptions, LinkStore, RawLink, RemoteUserIdRef, TouchLinkError, TouchLinkOptions,
-  VersionedRawLink, VersionedRawLinks,
+  DeleteLinkError, DeleteLinkOptions, GetLinkOptions, GetLinksFromEtwinOptions, LinkStore, OldRawLink, RawLink,
+  RemoteUserIdRef, TouchLinkError, TouchLinkOptions, VersionedRawLink, VersionedRawLinks,
 };
 use etwin_core::twinoid::{TwinoidUserId, TwinoidUserIdRef};
 use etwin_core::user::UserId;
@@ -13,13 +13,27 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::sync::RwLock;
 
+struct RawLinkHistory<T: RemoteUserIdRef> {
+  current: Option<RawLink<T>>,
+  old: Vec<OldRawLink<T>>,
+}
+
+impl<T: RemoteUserIdRef> Default for RawLinkHistory<T> {
+  fn default() -> Self {
+    Self {
+      current: None,
+      old: vec![],
+    }
+  }
+}
+
 struct StoreState {
-  from_dinoparc: HashMap<(DinoparcServer, DinoparcUserId), RawLink<DinoparcUserIdRef>>,
-  to_dinoparc: HashMap<(UserId, DinoparcServer), RawLink<DinoparcUserIdRef>>,
-  from_hammerfest: HashMap<(HammerfestServer, HammerfestUserId), RawLink<HammerfestUserIdRef>>,
-  to_hammerfest: HashMap<(UserId, HammerfestServer), RawLink<HammerfestUserIdRef>>,
-  from_twinoid: HashMap<TwinoidUserId, RawLink<TwinoidUserIdRef>>,
-  to_twinoid: HashMap<UserId, RawLink<TwinoidUserIdRef>>,
+  from_dinoparc: HashMap<(DinoparcServer, DinoparcUserId), RawLinkHistory<DinoparcUserIdRef>>,
+  to_dinoparc: HashMap<(UserId, DinoparcServer), RawLinkHistory<DinoparcUserIdRef>>,
+  from_hammerfest: HashMap<(HammerfestServer, HammerfestUserId), RawLinkHistory<HammerfestUserIdRef>>,
+  to_hammerfest: HashMap<(UserId, HammerfestServer), RawLinkHistory<HammerfestUserIdRef>>,
+  from_twinoid: HashMap<TwinoidUserId, RawLinkHistory<TwinoidUserIdRef>>,
+  to_twinoid: HashMap<UserId, RawLinkHistory<TwinoidUserIdRef>>,
 }
 
 impl StoreState {
@@ -138,6 +152,93 @@ where
     )
   }
 
+  async fn delete_dinoparc_link(
+    &self,
+    options: &DeleteLinkOptions<DinoparcUserIdRef>,
+  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, DeleteLinkError<DinoparcUserIdRef>> {
+    let mut state = self.state.write().unwrap();
+    let state: &mut StoreState = &mut state;
+    delete_link(
+      &mut state.from_dinoparc,
+      &mut state.to_dinoparc,
+      (options.remote.server, options.remote.id),
+      (options.etwin.id, options.remote.server),
+      |start| {
+        let now = self.clock.now();
+        let link: OldRawLink<DinoparcUserIdRef> = OldRawLink {
+          link: start.link,
+          unlink: RawUserDot {
+            time: now,
+            user: options.unlinked_by,
+          },
+          etwin: options.etwin,
+          remote: options.remote.clone(),
+        };
+        link
+      },
+      || DeleteLinkError::NotFound(options.etwin, options.remote.clone()),
+    )
+    .map(|_| Default::default())
+  }
+
+  async fn delete_hammerfest_link(
+    &self,
+    options: &DeleteLinkOptions<HammerfestUserIdRef>,
+  ) -> Result<VersionedRawLink<HammerfestUserIdRef>, DeleteLinkError<HammerfestUserIdRef>> {
+    let mut state = self.state.write().unwrap();
+    let state: &mut StoreState = &mut state;
+    delete_link(
+      &mut state.from_hammerfest,
+      &mut state.to_hammerfest,
+      (options.remote.server, options.remote.id),
+      (options.etwin.id, options.remote.server),
+      |start| {
+        let now = self.clock.now();
+        let link: OldRawLink<HammerfestUserIdRef> = OldRawLink {
+          link: start.link,
+          unlink: RawUserDot {
+            time: now,
+            user: options.unlinked_by,
+          },
+          etwin: options.etwin,
+          remote: options.remote.clone(),
+        };
+        link
+      },
+      || DeleteLinkError::NotFound(options.etwin, options.remote.clone()),
+    )
+    .map(|_| Default::default())
+  }
+
+  async fn delete_twinoid_link(
+    &self,
+    options: &DeleteLinkOptions<TwinoidUserIdRef>,
+  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, DeleteLinkError<TwinoidUserIdRef>> {
+    let mut state = self.state.write().unwrap();
+    let state: &mut StoreState = &mut state;
+    delete_link(
+      &mut state.from_twinoid,
+      &mut state.to_twinoid,
+      options.remote.id,
+      options.etwin.id,
+      |start| {
+        let now = self.clock.now();
+        let link: OldRawLink<TwinoidUserIdRef> = OldRawLink {
+          link: start.link,
+          unlink: RawUserDot {
+            time: now,
+            user: options.unlinked_by,
+          },
+          etwin: options.etwin,
+          remote: options.remote.clone(),
+        };
+        link
+      },
+      || DeleteLinkError::NotFound(options.etwin, options.remote.clone()),
+    )
+    .map(|_| Default::default())
+  }
+
   async fn get_link_from_dinoparc(
     &self,
     options: &GetLinkOptions<DinoparcUserIdRef>,
@@ -153,7 +254,7 @@ where
       }),
       Some(link) => {
         let link: VersionedRawLink<DinoparcUserIdRef> = VersionedRawLink {
-          current: Some(link.clone()),
+          current: link.current.clone(),
           old: vec![],
         };
         Ok(link)
@@ -176,7 +277,7 @@ where
       }),
       Some(link) => {
         let link: VersionedRawLink<HammerfestUserIdRef> = VersionedRawLink {
-          current: Some(link.clone()),
+          current: link.current.clone(),
           old: vec![],
         };
         Ok(link)
@@ -199,7 +300,7 @@ where
       }),
       Some(link) => {
         let link: VersionedRawLink<TwinoidUserIdRef> = VersionedRawLink {
-          current: Some(link.clone()),
+          current: link.current.clone(),
           old: vec![],
         };
         Ok(link)
@@ -215,31 +316,29 @@ where
     let mut links = VersionedRawLinks::default();
 
     for srv in DinoparcServer::iter() {
-      if let Some(link) = state.to_dinoparc.get(&(options.etwin.id, srv)) {
-        let link = link.clone();
-        match link.remote.server {
-          DinoparcServer::DinoparcCom => links.dinoparc_com.current = Some(link),
-          DinoparcServer::EnDinoparcCom => links.en_dinoparc_com.current = Some(link),
-          DinoparcServer::SpDinoparcCom => links.sp_dinoparc_com.current = Some(link),
-        }
+      let empty = RawLinkHistory::<DinoparcUserIdRef>::default();
+      let link = state.to_dinoparc.get(&(options.etwin.id, srv)).unwrap_or(&empty);
+      match srv {
+        DinoparcServer::DinoparcCom => links.dinoparc_com.current = link.current.clone(),
+        DinoparcServer::EnDinoparcCom => links.en_dinoparc_com.current = link.current.clone(),
+        DinoparcServer::SpDinoparcCom => links.sp_dinoparc_com.current = link.current.clone(),
       }
     }
 
     for srv in HammerfestServer::iter() {
-      if let Some(link) = state.to_hammerfest.get(&(options.etwin.id, srv)) {
-        let link = link.clone();
-        match link.remote.server {
-          HammerfestServer::HammerfestEs => links.hammerfest_es.current = Some(link),
-          HammerfestServer::HammerfestFr => links.hammerfest_fr.current = Some(link),
-          HammerfestServer::HfestNet => links.hfest_net.current = Some(link),
-        }
+      let empty = RawLinkHistory::<HammerfestUserIdRef>::default();
+      let link = state.to_hammerfest.get(&(options.etwin.id, srv)).unwrap_or(&empty);
+      match srv {
+        HammerfestServer::HammerfestEs => links.hammerfest_es.current = link.current.clone(),
+        HammerfestServer::HammerfestFr => links.hammerfest_fr.current = link.current.clone(),
+        HammerfestServer::HfestNet => links.hfest_net.current = link.current.clone(),
       }
     }
 
     {
-      if let Some(link) = state.to_twinoid.get(&options.etwin.id) {
-        links.twinoid.current = Some(link.clone());
-      }
+      let empty = RawLinkHistory::<TwinoidUserIdRef>::default();
+      let link = state.to_twinoid.get(&options.etwin.id).unwrap_or(&empty);
+      links.twinoid.current = link.current.clone();
     }
 
     Ok(links)
@@ -250,20 +349,20 @@ where
 impl<TyClock> neon::prelude::Finalize for MemLinkStore<TyClock> where TyClock: Clock {}
 
 fn touch_link<FK: Eq + core::hash::Hash, TK: Eq + core::hash::Hash, R: RemoteUserIdRef>(
-  from: &mut HashMap<FK, RawLink<R>>,
-  to: &mut HashMap<TK, RawLink<R>>,
+  from: &mut HashMap<FK, RawLinkHistory<R>>,
+  to: &mut HashMap<TK, RawLinkHistory<R>>,
   from_key: FK,
   to_key: TK,
   link: impl FnOnce() -> RawLink<R>,
 ) -> Result<VersionedRawLink<R>, TouchLinkError<R>> {
-  let linked_etwin = from.get(&from_key);
-  let linked_remote = to.get(&to_key);
+  let linked_etwin = from.entry(from_key).or_default();
+  let linked_remote = to.entry(to_key).or_default();
 
-  match (linked_etwin, linked_remote) {
-    (None, None) => {
+  match (&mut linked_etwin.current, &mut linked_remote.current) {
+    (from @ None, to @ None) => {
       let link: RawLink<R> = link();
-      from.insert(from_key, link.clone());
-      to.insert(to_key, link.clone());
+      *from = Some(link.clone());
+      *to = Some(link.clone());
       let link: VersionedRawLink<R> = VersionedRawLink {
         current: Some(link),
         old: vec![],
@@ -276,6 +375,33 @@ fn touch_link<FK: Eq + core::hash::Hash, TK: Eq + core::hash::Hash, R: RemoteUse
       linked_etwin.etwin,
       linked_remote.remote.clone(),
     )),
+  }
+}
+
+fn delete_link<FK: Eq + core::hash::Hash, TK: Eq + core::hash::Hash, R: RemoteUserIdRef>(
+  from: &mut HashMap<FK, RawLinkHistory<R>>,
+  to: &mut HashMap<TK, RawLinkHistory<R>>,
+  from_key: FK,
+  to_key: TK,
+  old_link: impl FnOnce(RawLink<R>) -> OldRawLink<R>,
+  not_found_err: impl FnOnce() -> DeleteLinkError<R>,
+) -> Result<(), DeleteLinkError<R>> {
+  let linked_etwin = from.get_mut(&from_key);
+  let linked_remote = to.get_mut(&to_key);
+  let (linked_etwin, linked_remote) = match (linked_etwin, linked_remote) {
+    (Some(linked_etwin), Some(linked_remote)) => (linked_etwin, linked_remote),
+    _ => return Err(not_found_err()),
+  };
+
+  match (&mut linked_etwin.current, &mut linked_remote.current) {
+    (from @ Some(_), to @ Some(_)) if from == to => {
+      let link = old_link(from.take().unwrap());
+      *to = None;
+      linked_etwin.old.push(link.clone());
+      linked_remote.old.push(link);
+      Ok(())
+    }
+    _ => Err(not_found_err()),
   }
 }
 
@@ -318,23 +444,5 @@ mod test {
     }
   }
 
-  #[tokio::test]
-  async fn test_empty() {
-    crate::test::test_empty(make_test_api()).await;
-  }
-
-  #[tokio::test]
-  async fn test_empty_etwin() {
-    crate::test::test_empty_etwin(make_test_api()).await;
-  }
-
-  #[tokio::test]
-  async fn test_etwin_linked_to_dinoparc_com() {
-    crate::test::test_etwin_linked_to_dinoparc_com(make_test_api()).await;
-  }
-
-  #[tokio::test]
-  async fn test_etwin_linked_to_hammerfest_fr() {
-    crate::test::test_etwin_linked_to_hammerfest_fr(make_test_api()).await;
-  }
+  test_link_store!(|| make_test_api());
 }

@@ -12,9 +12,9 @@ use std::fmt;
 use thiserror::Error;
 
 #[cfg(feature = "_serde")]
-pub trait RemoteUserIdRef: Clone + fmt::Debug + Serialize + for<'a> Deserialize<'a> {}
+pub trait RemoteUserIdRef: Clone + PartialEq + Eq + fmt::Debug + Serialize + for<'a> Deserialize<'a> {}
 #[cfg(not(feature = "_serde"))]
-pub trait RemoteUserIdRef: Clone + fmt::Debug {}
+pub trait RemoteUserIdRef: Clone + PartialEq + Eq + fmt::Debug {}
 
 impl RemoteUserIdRef for DinoparcUserIdRef {}
 impl RemoteUserIdRef for HammerfestUserIdRef {}
@@ -41,12 +41,21 @@ pub struct OldRawLink<T: RemoteUserIdRef> {
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VersionedRawLink<T: RemoteUserIdRef> {
   #[cfg_attr(feature = "_serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub current: Option<RawLink<T>>,
   #[cfg_attr(feature = "_serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub old: Vec<OldRawLink<T>>,
+}
+
+impl<T: RemoteUserIdRef> Default for VersionedRawLink<T> {
+  fn default() -> Self {
+    Self {
+      current: None,
+      old: vec![],
+    }
+  }
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -63,7 +72,7 @@ pub struct VersionedRawLinks {
 
 impl Default for VersionedRawLinks {
   fn default() -> Self {
-    VersionedRawLinks {
+    Self {
       dinoparc_com: VersionedRawLink {
         current: None,
         old: vec![],
@@ -103,6 +112,15 @@ pub struct TouchLinkOptions<T: RemoteUserIdRef> {
   #[cfg_attr(feature = "_serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
   pub remote: T,
   pub linked_by: UserIdRef,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DeleteLinkOptions<T: RemoteUserIdRef> {
+  pub etwin: UserIdRef,
+  #[cfg_attr(feature = "_serde", serde(bound(deserialize = "T: RemoteUserIdRef")))]
+  pub remote: T,
+  pub unlinked_by: UserIdRef,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -155,6 +173,26 @@ pub enum TouchLinkError<T: RemoteUserIdRef> {
   Other(Box<dyn Error>),
 }
 
+impl<T: RemoteUserIdRef> TouchLinkError<T> {
+  pub fn other<E: 'static + Error>(e: E) -> Self {
+    Self::Other(Box::new(e))
+  }
+}
+
+#[derive(Error, Debug)]
+pub enum DeleteLinkError<T: RemoteUserIdRef> {
+  #[error("link not found for the etwin user {0:?} and remote {1:?}")]
+  NotFound(UserIdRef, T),
+  #[error(transparent)]
+  Other(Box<dyn Error>),
+}
+
+impl<T: RemoteUserIdRef> DeleteLinkError<T> {
+  pub fn other<E: 'static + Error>(e: E) -> Self {
+    Self::Other(Box::new(e))
+  }
+}
+
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait LinkStore: Send + Sync {
@@ -172,6 +210,21 @@ pub trait LinkStore: Send + Sync {
     &self,
     options: &TouchLinkOptions<TwinoidUserIdRef>,
   ) -> Result<VersionedRawLink<TwinoidUserIdRef>, TouchLinkError<TwinoidUserIdRef>>;
+
+  async fn delete_dinoparc_link(
+    &self,
+    options: &DeleteLinkOptions<DinoparcUserIdRef>,
+  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, DeleteLinkError<DinoparcUserIdRef>>;
+
+  async fn delete_hammerfest_link(
+    &self,
+    options: &DeleteLinkOptions<HammerfestUserIdRef>,
+  ) -> Result<VersionedRawLink<HammerfestUserIdRef>, DeleteLinkError<HammerfestUserIdRef>>;
+
+  async fn delete_twinoid_link(
+    &self,
+    options: &DeleteLinkOptions<TwinoidUserIdRef>,
+  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, DeleteLinkError<TwinoidUserIdRef>>;
 
   async fn get_link_from_dinoparc(
     &self,

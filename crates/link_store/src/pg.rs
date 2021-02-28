@@ -5,8 +5,8 @@ use etwin_core::core::{Instant, RawUserDot};
 use etwin_core::dinoparc::{DinoparcServer, DinoparcUserId, DinoparcUserIdRef};
 use etwin_core::hammerfest::{HammerfestServer, HammerfestUserId, HammerfestUserIdRef};
 use etwin_core::link::{
-  GetLinkOptions, GetLinksFromEtwinOptions, LinkStore, RawLink, TouchLinkError, TouchLinkOptions, VersionedRawLink,
-  VersionedRawLinks,
+  DeleteLinkError, DeleteLinkOptions, GetLinkOptions, GetLinksFromEtwinOptions, LinkStore, OldRawLink, RawLink,
+  TouchLinkError, TouchLinkOptions, VersionedRawLink, VersionedRawLinks,
 };
 use etwin_core::twinoid::{TwinoidUserId, TwinoidUserIdRef};
 use etwin_core::user::{UserId, UserIdRef};
@@ -52,9 +52,9 @@ where
 
     let row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
-        INSERT INTO dinoparc_user_links(user_id, dinoparc_server, dinoparc_user_id, linked_at, linked_by)
-        VALUES ($1::USER_ID, $2::DINOPARC_SERVER, $3::DINOPARC_USER_ID, $4::INSTANT, $5::USER_ID)
-        RETURNING linked_at, linked_by;
+        INSERT INTO dinoparc_user_links(user_id, dinoparc_server, dinoparc_user_id, period, linked_by, unlinked_by)
+        VALUES ($1::USER_ID, $2::DINOPARC_SERVER, $3::DINOPARC_USER_ID, PERIOD($4::INSTANT, NULL), $5::USER_ID, NULL)
+        RETURNING lower(period) AS linked_at, linked_by;
     ",
     )
     .bind(&options.etwin.id)
@@ -64,7 +64,7 @@ where
     .bind(&options.linked_by.id)
     .fetch_optional(self.database.as_ref())
     .await
-    .map_err(|e: sqlx::Error| TouchLinkError::Other(Box::new(e)))?;
+    .map_err(TouchLinkError::other)?;
 
     match row {
       None => Ok(VersionedRawLink {
@@ -103,9 +103,9 @@ where
 
     let row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
-        INSERT INTO hammerfest_user_links(user_id, hammerfest_server, hammerfest_user_id, linked_at, linked_by)
-        VALUES ($1::USER_ID, $2::HAMMERFEST_SERVER, $3::HAMMERFEST_USER_ID, $4::INSTANT, $5::USER_ID)
-        RETURNING linked_at, linked_by;
+        INSERT INTO hammerfest_user_links(user_id, hammerfest_server, hammerfest_user_id, period, linked_by, unlinked_by)
+        VALUES ($1::USER_ID, $2::HAMMERFEST_SERVER, $3::HAMMERFEST_USER_ID, PERIOD($4::INSTANT, NULL), $5::USER_ID, NULL)
+        RETURNING lower(period) AS linked_at, linked_by;
     ",
     )
     .bind(&options.etwin.id)
@@ -115,7 +115,7 @@ where
     .bind(&options.linked_by.id)
     .fetch_optional(self.database.as_ref())
     .await
-    .map_err(|e: sqlx::Error| TouchLinkError::Other(Box::new(e)))?;
+    .map_err(TouchLinkError::other)?;
 
     match row {
       None => Ok(VersionedRawLink {
@@ -154,9 +154,9 @@ where
 
     let row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
-        INSERT INTO twinoid_user_links(user_id, twinoid_user_id, linked_at, linked_by)
-        VALUES ($1::USER_ID, $2::TWINOID_USER_ID, $3::INSTANT, $4::USER_ID)
-        RETURNING linked_at, linked_by;
+        INSERT INTO twinoid_user_links(user_id, twinoid_user_id, period, linked_by, unlinked_by)
+        VALUES ($1::USER_ID, $2::TWINOID_USER_ID, PERIOD($3::INSTANT, NULL), $4::USER_ID, NULL)
+        RETURNING lower(period) AS linked_at, linked_by;
     ",
     )
     .bind(&options.etwin.id)
@@ -165,7 +165,7 @@ where
     .bind(&options.linked_by.id)
     .fetch_optional(self.database.as_ref())
     .await
-    .map_err(|e: sqlx::Error| TouchLinkError::Other(Box::new(e)))?;
+    .map_err(TouchLinkError::other)?;
 
     match row {
       None => Ok(VersionedRawLink {
@@ -190,6 +190,155 @@ where
     }
   }
 
+  async fn delete_dinoparc_link(
+    &self,
+    options: &DeleteLinkOptions<DinoparcUserIdRef>,
+  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, DeleteLinkError<DinoparcUserIdRef>> {
+    let now = self.clock.now();
+
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      linked_at: Instant,
+      unlinked_at: Instant,
+      linked_by: UserId,
+    }
+
+    let row: Option<Row> = sqlx::query_as::<_, Row>(
+      r"
+        UPDATE dinoparc_user_links
+        SET period = PERIOD(lower(period), $1::INSTANT), unlinked_by = $2::USER_ID
+        WHERE user_id = $3::USER_ID AND dinoparc_server = $4::DINOPARC_SERVER AND dinoparc_user_id = $5::DINOPARC_USER_ID AND upper_inf(period)
+        RETURNING lower(period) AS linked_at, upper(period) AS unlinked_at, linked_by;
+    ",
+    )
+      .bind(now)
+      .bind(&options.unlinked_by.id)
+      .bind(&options.etwin.id)
+      .bind(&options.remote.server)
+      .bind(&options.remote.id)
+      .fetch_optional(self.database.as_ref())
+      .await
+      .map_err(DeleteLinkError::other)?;
+
+    let row = row.ok_or_else(|| DeleteLinkError::NotFound(options.etwin, options.remote.clone()))?;
+
+    let link: VersionedRawLink<DinoparcUserIdRef> = VersionedRawLink {
+      current: None,
+      old: vec![OldRawLink {
+        link: RawUserDot {
+          time: row.linked_at,
+          user: UserIdRef { id: row.linked_by },
+        },
+        unlink: RawUserDot {
+          time: row.unlinked_at,
+          user: options.unlinked_by,
+        },
+        etwin: options.etwin,
+        remote: options.remote.clone(),
+      }],
+    };
+    Ok(link)
+  }
+
+  async fn delete_hammerfest_link(
+    &self,
+    options: &DeleteLinkOptions<HammerfestUserIdRef>,
+  ) -> Result<VersionedRawLink<HammerfestUserIdRef>, DeleteLinkError<HammerfestUserIdRef>> {
+    let now = self.clock.now();
+
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      linked_at: Instant,
+      unlinked_at: Instant,
+      linked_by: UserId,
+    }
+
+    let row: Option<Row> = sqlx::query_as::<_, Row>(
+      r"
+        UPDATE hammerfest_user_links
+        SET period = PERIOD(lower(period), $1::INSTANT), unlinked_by = $2::USER_ID
+        WHERE user_id = $3::USER_ID AND hammerfest_server = $4::HAMMERFEST_SERVER AND hammerfest_user_id = $5::HAMMERFEST_USER_ID AND upper_inf(period)
+        RETURNING lower(period) AS linked_at, upper(period) AS unlinked_at, linked_by;
+    ",
+    )
+      .bind(now)
+      .bind(&options.unlinked_by.id)
+      .bind(&options.etwin.id)
+      .bind(&options.remote.server)
+      .bind(&options.remote.id)
+      .fetch_optional(self.database.as_ref())
+      .await
+      .map_err(DeleteLinkError::other)?;
+
+    let row = row.ok_or_else(|| DeleteLinkError::NotFound(options.etwin, options.remote.clone()))?;
+
+    let link: VersionedRawLink<HammerfestUserIdRef> = VersionedRawLink {
+      current: None,
+      old: vec![OldRawLink {
+        link: RawUserDot {
+          time: row.linked_at,
+          user: UserIdRef { id: row.linked_by },
+        },
+        unlink: RawUserDot {
+          time: row.unlinked_at,
+          user: options.unlinked_by,
+        },
+        etwin: options.etwin,
+        remote: options.remote.clone(),
+      }],
+    };
+    Ok(link)
+  }
+
+  async fn delete_twinoid_link(
+    &self,
+    options: &DeleteLinkOptions<TwinoidUserIdRef>,
+  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, DeleteLinkError<TwinoidUserIdRef>> {
+    let now = self.clock.now();
+
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      linked_at: Instant,
+      unlinked_at: Instant,
+      linked_by: UserId,
+    }
+
+    let row: Option<Row> = sqlx::query_as::<_, Row>(
+      r"
+        UPDATE twinoid_user_links
+        SET period = PERIOD(lower(period), $1::INSTANT), unlinked_by = $2::USER_ID
+        WHERE user_id = $3::USER_ID AND twinoid_user_id = $4::TWINOID_USER_ID AND upper_inf(period)
+        RETURNING lower(period) AS linked_at, upper(period) AS unlinked_at, linked_by;
+    ",
+    )
+    .bind(now)
+    .bind(&options.unlinked_by.id)
+    .bind(&options.etwin.id)
+    .bind(&options.remote.id)
+    .fetch_optional(self.database.as_ref())
+    .await
+    .map_err(DeleteLinkError::other)?;
+
+    let row = row.ok_or_else(|| DeleteLinkError::NotFound(options.etwin, options.remote.clone()))?;
+
+    let link: VersionedRawLink<TwinoidUserIdRef> = VersionedRawLink {
+      current: None,
+      old: vec![OldRawLink {
+        link: RawUserDot {
+          time: row.linked_at,
+          user: UserIdRef { id: row.linked_by },
+        },
+        unlink: RawUserDot {
+          time: row.unlinked_at,
+          user: options.unlinked_by,
+        },
+        etwin: options.etwin,
+        remote: options.remote.clone(),
+      }],
+    };
+    Ok(link)
+  }
+
   async fn get_link_from_dinoparc(
     &self,
     options: &GetLinkOptions<DinoparcUserIdRef>,
@@ -203,10 +352,11 @@ where
 
     let row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
-        SELECT linked_at, linked_by, user_id
+        SELECT lower(period) AS linked_at, linked_by, user_id
         FROM dinoparc_user_links
         WHERE dinoparc_server = $1::DINOPARC_SERVER
-          AND dinoparc_user_id = $2::DINOPARC_USER_ID;
+          AND dinoparc_user_id = $2::DINOPARC_USER_ID
+          AND upper_inf(period);
     ",
     )
     .bind(&options.remote.server)
@@ -250,10 +400,11 @@ where
 
     let row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
-        SELECT linked_at, linked_by, user_id
+        SELECT lower(period) AS linked_at, linked_by, user_id
         FROM hammerfest_user_links
         WHERE hammerfest_server = $1::HAMMERFEST_SERVER
-          AND hammerfest_user_id = $2::HAMMERFEST_USER_ID;
+          AND hammerfest_user_id = $2::HAMMERFEST_USER_ID
+          AND upper_inf(period);
     ",
     )
     .bind(&options.remote.server)
@@ -297,9 +448,9 @@ where
 
     let row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
-        SELECT linked_at, linked_by, user_id
+        SELECT lower(period) AS linked_at, linked_by, user_id
         FROM twinoid_user_links
-        WHERE twinoid_user_id = $1::TWINOID_USER_ID;
+        WHERE twinoid_user_id = $1::TWINOID_USER_ID AND upper_inf(period);
     ",
     )
     .bind(&options.remote.id)
@@ -346,9 +497,9 @@ where
 
       let rows = sqlx::query_as::<_, Row>(
         r"
-          SELECT dinoparc_server, dinoparc_user_id, linked_at, linked_by
+          SELECT dinoparc_server, dinoparc_user_id, lower(period) AS linked_at, linked_by
           FROM dinoparc_user_links
-          WHERE dinoparc_user_links.user_id = $1::UUID;
+          WHERE dinoparc_user_links.user_id = $1::UUID AND upper_inf(period);
     ",
       )
       .bind(&options.etwin.id)
@@ -386,9 +537,9 @@ where
 
       let rows = sqlx::query_as::<_, Row>(
         r"
-          SELECT hammerfest_server, hammerfest_user_id, linked_at, linked_by
+          SELECT hammerfest_server, hammerfest_user_id, lower(period) AS linked_at, linked_by
           FROM hammerfest_user_links
-          WHERE hammerfest_user_links.user_id = $1::UUID;
+          WHERE hammerfest_user_links.user_id = $1::UUID AND upper_inf(period);
     ",
       )
       .bind(&options.etwin.id)
@@ -425,9 +576,9 @@ where
 
       let row = sqlx::query_as::<_, Row>(
         r"
-          SELECT twinoid_user_id, linked_at, linked_by
+          SELECT twinoid_user_id, lower(period) AS linked_at, linked_by
           FROM twinoid_user_links
-          WHERE twinoid_user_links.user_id = $1::UUID;
+          WHERE twinoid_user_links.user_id = $1::UUID AND upper_inf(period);
     ",
       )
       .bind(&options.etwin.id)
@@ -529,27 +680,8 @@ mod test {
     }
   }
 
-  #[tokio::test]
-  #[serial]
-  async fn test_empty() {
-    crate::test::test_empty(make_test_api().await).await;
-  }
-
-  #[tokio::test]
-  #[serial]
-  async fn test_empty_etwin() {
-    crate::test::test_empty_etwin(make_test_api().await).await;
-  }
-
-  #[tokio::test]
-  #[serial]
-  async fn test_etwin_linked_to_dinoparc_com() {
-    crate::test::test_etwin_linked_to_dinoparc_com(make_test_api().await).await;
-  }
-
-  #[tokio::test]
-  #[serial]
-  async fn test_etwin_linked_to_hammerfest_fr() {
-    crate::test::test_etwin_linked_to_hammerfest_fr(make_test_api().await).await;
-  }
+  test_link_store!(
+    #[serial]
+    || make_test_api().await
+  );
 }
