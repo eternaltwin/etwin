@@ -13,7 +13,24 @@ import {
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
+import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
+import { $DinoparcUserIdRef, DinoparcUserIdRef } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id-ref.js";
+import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
+import { $HammerfestUserIdRef, HammerfestUserIdRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id-ref.js";
+import { $VersionedDinoparcLink, VersionedDinoparcLink } from "@eternal-twin/core/lib/link/versioned-dinoparc-link.js";
+import {
+  $VersionedHammerfestLink,
+  VersionedHammerfestLink
+} from "@eternal-twin/core/lib/link/versioned-hammerfest-link.js";
+import { $VersionedTwinoidLink, VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
+import { $TwinoidUserIdRef, TwinoidUserIdRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-id-ref.js";
 import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
+import { $LinkToDinoparcOptions, LinkToDinoparcOptions } from "@eternal-twin/core/lib/user/link-to-dinoparc-options.js";
+import {
+  $LinkToHammerfestOptions,
+  LinkToHammerfestOptions
+} from "@eternal-twin/core/lib/user/link-to-hammerfest-options.js";
+import { $LinkToTwinoidOptions, LinkToTwinoidOptions } from "@eternal-twin/core/lib/user/link-to-twinoid-options.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
 import { $UpdateUserPatch, UpdateUserPatch } from "@eternal-twin/core/lib/user/update-user-patch.js";
 import { $User, User } from "@eternal-twin/core/lib/user/user.js";
@@ -138,6 +155,207 @@ export function createUsersRouter(api: Api): Router {
       return;
     }
     cx.response.body = $User.write(JSON_VALUE_WRITER, user);
+  }
+
+  router.put("/:user_id/links/:remote", koaCompose([koaBodyParser(), putUserLink]));
+
+  async function putUserLink(cx: RouterContext<KoaState>): Promise<void> {
+    const rawUserId = cx.params["user_id"];
+    const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
+    if (!$UserId.test(rawUserId)) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidId"};
+      return;
+    }
+    const userId: UserId = rawUserId;
+    switch (cx.params["remote"]) {
+      case "dinoparc.com":
+      case "en.dinoparc.com":
+      case "sp.dinoparc.com":
+        return linkDinoparc(cx.params["remote"]);
+      case "hammerfest.es":
+      case "hammerfest.fr":
+      case "hfest.net":
+        return linkHammerfest(cx.params["remote"]);
+      case "twinoid.com":
+        return linkTwinoid();
+    }
+
+    async function linkDinoparc(dinoparcServer: DinoparcServer): Promise<void> {
+      let body: LinkToDinoparcOptions;
+      try {
+        body = $LinkToDinoparcOptions.read(JSON_VALUE_READER, cx.request.body);
+      } catch (_err) {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidRequestBody"};
+        return;
+      }
+      if (body.userId !== userId || body.dinoparcServer !== dinoparcServer) {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidId"};
+        return;
+      }
+      let link: VersionedDinoparcLink;
+      try {
+        link = await api.user.linkToDinoparc(acx, body);
+      } catch (err) {
+        console.error(err);
+        cx.response.status = 500;
+        cx.response.body = {error: "FailedUserUpdate"};
+        return;
+      }
+      cx.response.body = $VersionedDinoparcLink.write(JSON_VALUE_WRITER, link);
+    }
+
+    async function linkHammerfest(hammerfestServer: HammerfestServer): Promise<void> {
+      let body: LinkToHammerfestOptions;
+      try {
+        body = $LinkToHammerfestOptions.read(JSON_VALUE_READER, cx.request.body);
+      } catch (_err) {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidRequestBody"};
+        return;
+      }
+      if (body.userId !== userId || body.hammerfestServer !== hammerfestServer) {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidId"};
+        return;
+      }
+      let link: VersionedHammerfestLink;
+      try {
+        link = await api.user.linkToHammerfest(acx, body);
+      } catch (err) {
+        console.error(err);
+        cx.response.status = 500;
+        cx.response.body = {error: "FailedUserUpdate"};
+        return;
+      }
+      cx.response.body = $VersionedHammerfestLink.write(JSON_VALUE_WRITER, link);
+    }
+
+    async function linkTwinoid(): Promise<void> {
+      let body: LinkToTwinoidOptions;
+      try {
+        body = $LinkToTwinoidOptions.read(JSON_VALUE_READER, cx.request.body);
+      } catch (_err) {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidRequestBody"};
+        return;
+      }
+      if (body.userId !== userId) {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidId"};
+        return;
+      }
+      let link: VersionedTwinoidLink;
+      try {
+        link = await api.user.linkToTwinoid(acx, body);
+      } catch (err) {
+        console.error(err);
+        cx.response.status = 500;
+        cx.response.body = {error: "FailedUserUpdate"};
+        return;
+      }
+      cx.response.body = $VersionedTwinoidLink.write(JSON_VALUE_WRITER, link);
+    }
+  }
+
+  router.delete("/:user_id/links/:remote", koaCompose([koaBodyParser(), deleteUserLink]));
+
+  async function deleteUserLink(cx: RouterContext<KoaState>): Promise<void> {
+    const rawUserId = cx.params["user_id"];
+    const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
+    if (!$UserId.test(rawUserId)) {
+      cx.response.status = 422;
+      cx.response.body = {error: "InvalidId"};
+      return;
+    }
+    const userId: UserId = rawUserId;
+    switch (cx.params["remote"]) {
+      case "dinoparc.com":
+      case "en.dinoparc.com":
+      case "sp.dinoparc.com":
+        return unlinkDinoparc(cx.params["remote"]);
+      case "hammerfest.es":
+      case "hammerfest.fr":
+      case "hfest.net":
+        return unlinkHammerfest(cx.params["remote"]);
+      case "twinoid.com":
+        return unlinkTwinoid();
+    }
+
+    async function unlinkDinoparc(dinoparcServer: DinoparcServer): Promise<void> {
+      let body: DinoparcUserIdRef;
+      try {
+        body = $DinoparcUserIdRef.read(JSON_VALUE_READER, cx.request.body);
+      } catch (_err) {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidRequestBody"};
+        return;
+      }
+      if (body.server !== dinoparcServer) {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidId"};
+        return;
+      }
+      let link: VersionedDinoparcLink;
+      try {
+        link = await api.user.unlinkFromDinoparc(acx, {userId, dinoparcServer, dinoparcUserId: body.id});
+      } catch (err) {
+        console.error(err);
+        cx.response.status = 500;
+        cx.response.body = {error: "FailedUserUpdate"};
+        return;
+      }
+      cx.response.body = $VersionedDinoparcLink.write(JSON_VALUE_WRITER, link);
+    }
+
+    async function unlinkHammerfest(hammerfestServer: HammerfestServer): Promise<void> {
+      let body: HammerfestUserIdRef;
+      try {
+        body = $HammerfestUserIdRef.read(JSON_VALUE_READER, cx.request.body);
+      } catch (_err) {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidRequestBody"};
+        return;
+      }
+      if (body.server !== hammerfestServer) {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidId"};
+        return;
+      }
+      let link: VersionedHammerfestLink;
+      try {
+        link = await api.user.unlinkFromHammerfest(acx, {userId, hammerfestServer, hammerfestUserId: body.id});
+      } catch (err) {
+        console.error(err);
+        cx.response.status = 500;
+        cx.response.body = {error: "FailedUserUpdate"};
+        return;
+      }
+      cx.response.body = $VersionedHammerfestLink.write(JSON_VALUE_WRITER, link);
+    }
+
+    async function unlinkTwinoid(): Promise<void> {
+      let body: TwinoidUserIdRef;
+      try {
+        body = $TwinoidUserIdRef.read(JSON_VALUE_READER, cx.request.body);
+      } catch (_err) {
+        cx.response.status = 422;
+        cx.response.body = {error: "InvalidRequestBody"};
+        return;
+      }
+      let link: VersionedTwinoidLink;
+      try {
+        link = await api.user.unlinkFromTwinoid(acx, {userId, twinoidUserId: body.id});
+      } catch (err) {
+        console.error(err);
+        cx.response.status = 500;
+        cx.response.body = {error: "FailedUserUpdate"};
+        return;
+      }
+      cx.response.body = $VersionedTwinoidLink.write(JSON_VALUE_WRITER, link);
+    }
   }
 
   return router;

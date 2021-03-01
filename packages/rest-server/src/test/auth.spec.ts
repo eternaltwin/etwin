@@ -7,6 +7,7 @@ import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { $SimpleUser, SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import chai from "chai";
 import chaiHttp from "chai-http";
+import { $Null } from "kryo/lib/null.js";
 
 import { TestAgent } from "./test-agent.js";
 import { withTestServer } from "./test-server.js";
@@ -205,7 +206,7 @@ describe("/auth", () => {
         chai.assert.deepEqual(actual, expected);
       }
       {
-        const actual: AuthContext = await agent.delete("/auth/self", $AuthContext);
+        const actual: AuthContext = await agent.delete("/auth/self", $Null, null, $AuthContext);
         const expected: AuthContext = {
           type: AuthType.Guest,
           scope: AuthScope.Default,

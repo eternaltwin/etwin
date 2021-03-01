@@ -1,4 +1,16 @@
 import {
+  $DeleteDinoparcLinkOptions,
+  DeleteDinoparcLinkOptions
+} from "@eternal-twin/core/lib/link/delete-dinoparc-link-options.js";
+import {
+  $DeleteHammerfestLinkOptions,
+  DeleteHammerfestLinkOptions
+} from "@eternal-twin/core/lib/link/delete-hammerfest-link-options.js";
+import {
+  $DeleteTwinoidLinkOptions,
+  DeleteTwinoidLinkOptions
+} from "@eternal-twin/core/lib/link/delete-twinoid-link-options.js";
+import {
   $GetLinkFromDinoparcOptions,
   GetLinkFromDinoparcOptions
 } from "@eternal-twin/core/lib/link/get-link-from-dinoparc-options.js";
@@ -61,6 +73,9 @@ export abstract class NativeLinkStore implements LinkStore {
   private static TOUCH_DINOPARC_LINK = promisify(native.linkStore.touchDinoparcLink);
   private static TOUCH_HAMMERFEST_LINK = promisify(native.linkStore.touchHammerfestLink);
   private static TOUCH_TWINOID_LINK = promisify(native.linkStore.touchTwinoidLink);
+  private static DELETE_DINOPARC_LINK = promisify(native.linkStore.deleteDinoparcLink);
+  private static DELETE_HAMMERFEST_LINK = promisify(native.linkStore.deleteHammerfestLink);
+  private static DELETE_TWINOID_LINK = promisify(native.linkStore.deleteTwinoidLink);
 
   constructor(box: NativeLinkStoreBox) {
     this.box = box;
@@ -105,6 +120,24 @@ export abstract class NativeLinkStore implements LinkStore {
   async touchTwinoidLink(options: Readonly<TouchTwinoidLinkOptions>): Promise<VersionedRawTwinoidLink> {
     const rawOptions: string = $TouchTwinoidLinkOptions.write(JSON_WRITER, options);
     const rawOut = await NativeLinkStore.TOUCH_TWINOID_LINK(this.box, rawOptions);
+    return $VersionedRawTwinoidLink.read(JSON_READER, rawOut);
+  }
+
+  async deleteDinoparcLink(options: Readonly<DeleteDinoparcLinkOptions>): Promise<VersionedRawDinoparcLink> {
+    const rawOptions: string = $DeleteDinoparcLinkOptions.write(JSON_WRITER, options);
+    const rawOut = await NativeLinkStore.DELETE_DINOPARC_LINK(this.box, rawOptions);
+    return $VersionedRawDinoparcLink.read(JSON_READER, rawOut);
+  }
+
+  async deleteHammerfestLink(options: Readonly<DeleteHammerfestLinkOptions>): Promise<VersionedRawHammerfestLink> {
+    const rawOptions: string = $DeleteHammerfestLinkOptions.write(JSON_WRITER, options);
+    const rawOut = await NativeLinkStore.DELETE_HAMMERFEST_LINK(this.box, rawOptions);
+    return $VersionedRawHammerfestLink.read(JSON_READER, rawOut);
+  }
+
+  async deleteTwinoidLink(options: Readonly<DeleteTwinoidLinkOptions>): Promise<VersionedRawTwinoidLink> {
+    const rawOptions: string = $DeleteTwinoidLinkOptions.write(JSON_WRITER, options);
+    const rawOut = await NativeLinkStore.DELETE_TWINOID_LINK(this.box, rawOptions);
     return $VersionedRawTwinoidLink.read(JSON_READER, rawOut);
   }
 }

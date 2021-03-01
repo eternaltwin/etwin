@@ -20,7 +20,7 @@ export interface LinkToTwinoidWithOauthOptions {
   accessToken: OauthAccessToken;
 }
 
-export const $LinkToTwinoidWithRefOptions: RecordIoType<LinkToTwinoidWithOauthOptions> = new RecordType<LinkToTwinoidWithOauthOptions>({
+export const $LinkToTwinoidWithOauthOptions: RecordIoType<LinkToTwinoidWithOauthOptions> = new RecordType<LinkToTwinoidWithOauthOptions>({
   properties: {
     method: {type: new LiteralType({type: $LinkToTwinoidMethod, value: LinkToTwinoidMethod.Oauth})},
     userId: {type: $UserId},

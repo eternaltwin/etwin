@@ -12,8 +12,8 @@ export class TestAgent {
     this.agent = agent;
   }
 
-  public async rawDelete(url: string): Promise<ChaiHttp.Response> {
-    return this.agent.delete(url).send();
+  public async rawDelete(url: string, req: object): Promise<ChaiHttp.Response> {
+    return this.agent.delete(url).send(req);
   }
 
   public async rawGet(url: string): Promise<ChaiHttp.Response> {
@@ -32,8 +32,9 @@ export class TestAgent {
     return this.agent.put(url).send(req);
   }
 
-  public async delete<Res>(url: string, resType: IoType<Res>): Promise<Res> {
-    const res: ChaiHttp.Response = await this.rawDelete(url);
+  public async delete<Req, Res>(url: string, reqType: IoType<Req>, req: Req, resType: IoType<Res>): Promise<Res> {
+    const rawReq: object = reqType.write(JSON_VALUE_WRITER, req);
+    const res: ChaiHttp.Response = await this.rawDelete(url, rawReq);
     const raw: any = res.body;
     if (typeof raw.error === "string") {
       throw new Error(raw.error);
@@ -41,7 +42,8 @@ export class TestAgent {
       try {
         return resType.read(JSON_VALUE_READER, raw);
       } catch (err) {
-        console.error(`DELETE ${url}`);
+        console.error(`DELETE ${url}:`);
+        console.error(JSON.stringify(rawReq));
         console.error(`Response (${res.status}):`);
         console.error(JSON.stringify(res.body));
         throw err;

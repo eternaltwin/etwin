@@ -3,7 +3,7 @@ use crate::link_store::pg::JsPgLinkStore;
 use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
 use etwin_core::dinoparc::DinoparcUserIdRef;
 use etwin_core::hammerfest::HammerfestUserIdRef;
-use etwin_core::link::{GetLinkOptions, GetLinksFromEtwinOptions, LinkStore, TouchLinkOptions};
+use etwin_core::link::{DeleteLinkOptions, GetLinkOptions, GetLinksFromEtwinOptions, LinkStore, TouchLinkOptions};
 use etwin_core::twinoid::TwinoidUserIdRef;
 use neon::prelude::*;
 use std::error::Error;
@@ -20,6 +20,9 @@ pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject
   ns.set_function(cx, "touchDinoparcLink", touch_dinoparc_link)?;
   ns.set_function(cx, "touchHammerfestLink", touch_hammerfest_link)?;
   ns.set_function(cx, "touchTwinoidLink", touch_twinoid_link)?;
+  ns.set_function(cx, "deleteDinoparcLink", delete_dinoparc_link)?;
+  ns.set_function(cx, "deleteHammerfestLink", delete_hammerfest_link)?;
+  ns.set_function(cx, "deleteTwinoidLink", delete_twinoid_link)?;
   Ok(ns)
 }
 
@@ -132,6 +135,57 @@ pub fn touch_twinoid_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let res = async move {
     inner
       .touch_twinoid_link(&options)
+      .await
+      .map_err(|x| Box::new(x) as Box<dyn Error>)
+  };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn delete_dinoparc_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_link_store(&mut cx, inner)?;
+  let options_json = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let options: DeleteLinkOptions<DinoparcUserIdRef> = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
+
+  let res = async move {
+    inner
+      .delete_dinoparc_link(&options)
+      .await
+      .map_err(|x| Box::new(x) as Box<dyn Error>)
+  };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn delete_hammerfest_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_link_store(&mut cx, inner)?;
+  let options_json = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let options: DeleteLinkOptions<HammerfestUserIdRef> = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
+
+  let res = async move {
+    inner
+      .delete_hammerfest_link(&options)
+      .await
+      .map_err(|x| Box::new(x) as Box<dyn Error>)
+  };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn delete_twinoid_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_link_store(&mut cx, inner)?;
+  let options_json = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let options: DeleteLinkOptions<TwinoidUserIdRef> = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
+
+  let res = async move {
+    inner
+      .delete_twinoid_link(&options)
       .await
       .map_err(|x| Box::new(x) as Box<dyn Error>)
   };

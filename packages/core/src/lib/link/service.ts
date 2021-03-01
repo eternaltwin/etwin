@@ -18,6 +18,9 @@ import { HammerfestLink } from "./hammerfest-link.js";
 import { SimpleLinkToDinoparcOptions } from "./simple-link-to-dinoparc-options.js";
 import { SimpleLinkToHammerfestOptions } from "./simple-link-to-hammerfest-options.js";
 import { SimpleLinkToTwinoidOptions } from "./simple-link-to-twinoid-options.js";
+import { SimpleUnlinkFromDinoparcOptions } from "./simple-unlink-from-dinoparc-options.js";
+import { SimpleUnlinkFromHammerfestOptions } from "./simple-unlink-from-hammerfest-options.js";
+import { SimpleUnlinkFromTwinoidOptions } from "./simple-unlink-from-twinoid-options.js";
 import { LinkStore } from "./store.js";
 import { TwinoidLink } from "./twinoid-link.js";
 import { VersionedDinoparcLink } from "./versioned-dinoparc-link.js";
@@ -250,6 +253,33 @@ export class LinkService {
       etwin: {type: ObjectType.User, id: options.userId},
       remote: {type: ObjectType.TwinoidUser, id: options.twinoidUserId},
       linkedBy: {type: ObjectType.User, id: options.linkedBy},
+    });
+    return this.resolveTwinoid(raw);
+  }
+
+  async unlinkFromDinoparc(options: Readonly<SimpleUnlinkFromDinoparcOptions>): Promise<VersionedDinoparcLink> {
+    const raw = await this.#linkStore.deleteDinoparcLink({
+      etwin: {type: ObjectType.User, id: options.userId},
+      remote: {type: ObjectType.DinoparcUser, server: options.dinoparcServer, id: options.dinoparcUserId},
+      unlinkedBy: {type: ObjectType.User, id: options.unlinkedBy},
+    });
+    return this.resolveDinoparc(raw);
+  }
+
+  async unlinkFromHammerfest(options: Readonly<SimpleUnlinkFromHammerfestOptions>): Promise<VersionedHammerfestLink> {
+    const raw = await this.#linkStore.deleteHammerfestLink({
+      etwin: {type: ObjectType.User, id: options.userId},
+      remote: {type: ObjectType.HammerfestUser, server: options.hammerfestServer, id: options.hammerfestUserId},
+      unlinkedBy: {type: ObjectType.User, id: options.unlinkedBy},
+    });
+    return this.resolveHammerfest(raw);
+  }
+
+  async unlinkFromTwinoid(options: Readonly<SimpleUnlinkFromTwinoidOptions>): Promise<VersionedTwinoidLink> {
+    const raw = await this.#linkStore.deleteTwinoidLink({
+      etwin: {type: ObjectType.User, id: options.userId},
+      remote: {type: ObjectType.TwinoidUser, id: options.twinoidUserId},
+      unlinkedBy: {type: ObjectType.User, id: options.unlinkedBy},
     });
     return this.resolveTwinoid(raw);
   }

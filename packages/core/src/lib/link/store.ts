@@ -1,3 +1,6 @@
+import { DeleteDinoparcLinkOptions } from "./delete-dinoparc-link-options.js";
+import { DeleteHammerfestLinkOptions } from "./delete-hammerfest-link-options.js";
+import { DeleteTwinoidLinkOptions } from "./delete-twinoid-link-options.js";
 import { GetLinkFromDinoparcOptions } from "./get-link-from-dinoparc-options.js";
 import { GetLinkFromHammerfestOptions } from "./get-link-from-hammerfest-options.js";
 import { GetLinkFromTwinoidOptions } from "./get-link-from-twinoid-options.js";
@@ -24,4 +27,10 @@ export interface LinkStore {
   touchHammerfestLink(options: Readonly<TouchHammerfestLinkOptions>): Promise<VersionedRawHammerfestLink>;
 
   touchTwinoidLink(options: Readonly<TouchTwinoidLinkOptions>): Promise<VersionedRawTwinoidLink>;
+
+  deleteDinoparcLink(options: Readonly<DeleteDinoparcLinkOptions>): Promise<VersionedRawDinoparcLink>;
+
+  deleteHammerfestLink(options: Readonly<DeleteHammerfestLinkOptions>): Promise<VersionedRawHammerfestLink>;
+
+  deleteTwinoidLink(options: Readonly<DeleteTwinoidLinkOptions>): Promise<VersionedRawTwinoidLink>;
 }

@@ -8,8 +8,8 @@ import { HammerfestStore } from "../hammerfest/store.js";
 import { LinkService } from "../link/service.js";
 import { VersionedDinoparcLink } from "../link/versioned-dinoparc-link.js";
 import { VersionedHammerfestLink } from "../link/versioned-hammerfest-link.js";
-import { VersionedTwinoidLink } from "../link/versioned-twinoid-link";
-import { PasswordService } from "../password/service";
+import { VersionedTwinoidLink } from "../link/versioned-twinoid-link.js";
+import { PasswordService } from "../password/service.js";
 import { TokenService } from "../token/service.js";
 import { TwinoidClient } from "../twinoid/client.js";
 import { TwinoidStore } from "../twinoid/store.js";
@@ -27,17 +27,22 @@ import { LinkToHammerfestOptions } from "./link-to-hammerfest-options.js";
 import { LinkToHammerfestWithCredentialsOptions } from "./link-to-hammerfest-with-credentials-options.js";
 import { LinkToHammerfestWithRefOptions } from "./link-to-hammerfest-with-ref-options.js";
 import { LinkToHammerfestWithSessionKeyOptions } from "./link-to-hammerfest-with-session-key-options.js";
+import { LinkToTwinoidMethod } from "./link-to-twinoid-method.js";
+import { LinkToTwinoidOptions } from "./link-to-twinoid-options.js";
 import { LinkToTwinoidWithOauthOptions } from "./link-to-twinoid-with-oauth-options.js";
 import { LinkToTwinoidWithRefOptions } from "./link-to-twinoid-with-ref-options.js";
 import { MaybeCompleteSimpleUser } from "./maybe-complete-simple-user.js";
 import { MaybeCompleteUser } from "./maybe-complete-user.js";
 import { SHORT_USER_FIELDS } from "./short-user-fields.js";
 import { UserStore } from "./store.js";
-import { UpdateStoreUserPatch } from "./update-store-user-patch";
-import { UpdateUserPatch } from "./update-user-patch";
+import { UnlinkFromDinoparcOptions } from "./unlink-from-dinoparc-options.js";
+import { UnlinkFromHammerfestOptions } from "./unlink-from-hammerfest-options.js";
+import { UnlinkFromTwinoidOptions } from "./unlink-from-twinoid-options.js";
+import { UpdateStoreUserPatch } from "./update-store-user-patch.js";
+import { UpdateUserPatch } from "./update-user-patch.js";
 import { User } from "./user.js";
 import { UserFieldsType } from "./user-fields-type.js";
-import { UserId } from "./user-id";
+import { UserId } from "./user-id.js";
 
 export interface UserServiceOptions {
   dinoparcClient: DinoparcClient;
@@ -184,6 +189,50 @@ export class UserService {
     });
   }
 
+  async unlinkFromDinoparc(acx: AuthContext, options: Readonly<UnlinkFromDinoparcOptions>): Promise<VersionedDinoparcLink> {
+    if (acx.type !== AuthType.User) {
+      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    }
+    if (!(acx.isAdministrator || acx.user.id === options.userId)) {
+      throw new Error("Forbidden");
+    }
+    return await this.#link.unlinkFromDinoparc({
+      userId: options.userId,
+      dinoparcServer: options.dinoparcServer,
+      dinoparcUserId: options.dinoparcUserId,
+      unlinkedBy: acx.user.id,
+    });
+  }
+
+  async unlinkFromHammerfest(acx: AuthContext, options: Readonly<UnlinkFromHammerfestOptions>): Promise<VersionedHammerfestLink> {
+    if (acx.type !== AuthType.User) {
+      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    }
+    if (!(acx.isAdministrator || acx.user.id === options.userId)) {
+      throw new Error("Forbidden");
+    }
+    return await this.#link.unlinkFromHammerfest({
+      userId: options.userId,
+      hammerfestServer: options.hammerfestServer,
+      hammerfestUserId: options.hammerfestUserId,
+      unlinkedBy: acx.user.id,
+    });
+  }
+
+  async unlinkFromTwinoid(acx: AuthContext, options: Readonly<UnlinkFromTwinoidOptions>): Promise<VersionedTwinoidLink> {
+    if (acx.type !== AuthType.User) {
+      throw new Error(acx.type === AuthType.Guest ? "Unauthorized" : "Forbidden");
+    }
+    if (!(acx.isAdministrator || acx.user.id === options.userId)) {
+      throw new Error("Forbidden");
+    }
+    return await this.#link.unlinkFromTwinoid({
+      userId: options.userId,
+      twinoidUserId: options.twinoidUserId,
+      unlinkedBy: acx.user.id,
+    });
+  }
+
   async linkToHammerfest(acx: AuthContext, options: Readonly<LinkToHammerfestOptions>): Promise<VersionedHammerfestLink> {
     switch (options.method) {
       case LinkToHammerfestMethod.Credentials:
@@ -259,6 +308,17 @@ export class UserService {
       hammerfestUserId: hfProfile.user.id,
       linkedBy: acx.user.id,
     });
+  }
+
+  async linkToTwinoid(acx: AuthContext, options: Readonly<LinkToTwinoidOptions>): Promise<VersionedTwinoidLink> {
+    switch (options.method) {
+      case LinkToTwinoidMethod.Oauth:
+        return this.linkToTwinoidWithOauth(acx, options);
+      case LinkToTwinoidMethod.Ref:
+        return this.linkToTwinoidWithRef(acx, options);
+      default:
+        throw new Error("AssertionError: Unexpected `LinkToTwinoidMethod`");
+    }
   }
 
   async linkToTwinoidWithOauth(acx: AuthContext, options: Readonly<LinkToTwinoidWithOauthOptions>): Promise<VersionedTwinoidLink> {
