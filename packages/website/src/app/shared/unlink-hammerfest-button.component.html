@@ -1,0 +1,15 @@
+<form
+  method="POST"
+  enctype="application/x-www-form-urlencoded"
+  action="/actions/unlink-hammerfest"
+  [formGroup]="unlinkHammerfestForm"
+  (ngSubmit)="onSubmitUnlinkHammerfest($event)"
+>
+  <input type="hidden" name="user_id" formControlName="userId" required="required"/>
+  <input type="hidden" name="hammerfest_server" formControlName="hammerfestServer" required="required"/>
+  <input type="hidden" name="hammerfest_user_id" formControlName="hammerfestUserId" required="required"/>
+  <input type="submit" class="btn primary" name="unlink_hammerfest" i18n-value="@@shared.unlinkButton.submit" value="Unlink"/>
+  <div *ngIf="serverError" class="error" i18n="@@shared.unlinkHammerfest.unknownError">
+    Unlink error (unknown reason).
+  </div>
+</form>

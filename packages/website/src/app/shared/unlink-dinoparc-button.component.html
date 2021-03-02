@@ -1,0 +1,15 @@
+<form
+  method="POST"
+  enctype="application/x-www-form-urlencoded"
+  action="/actions/unlink-dinoparc"
+  [formGroup]="unlinkDinoparcForm"
+  (ngSubmit)="onSubmitUnlinkDinoparc($event)"
+>
+  <input type="hidden" name="user_id" formControlName="userId" required="required"/>
+  <input type="hidden" name="dinoparc_server" formControlName="dinoparcServer" required="required"/>
+  <input type="hidden" name="dinoparc_user_id" formControlName="dinoparcUserId" required="required"/>
+  <input type="submit" class="btn primary" name="unlink_dinoparc" i18n-value="@@shared.unlinkButton.submit" value="Unlink"/>
+  <div *ngIf="serverError" class="error" i18n="@@shared.unlinkDinoparc.unknownError">
+    Unlink error (unknown reason).
+  </div>
+</form>

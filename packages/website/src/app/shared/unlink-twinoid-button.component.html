@@ -1,0 +1,14 @@
+<form
+  method="POST"
+  enctype="application/x-www-form-urlencoded"
+  action="/actions/unlink-twinoid"
+  [formGroup]="unlinkTwinoidForm"
+  (ngSubmit)="onSubmitUnlinkTwinoid($event)"
+>
+  <input type="hidden" name="user_id" formControlName="userId" required="required"/>
+  <input type="hidden" name="twinoid_user_id" formControlName="twinoidUserId" required="required"/>
+  <input type="submit" class="btn primary" name="unlink_twinoid" i18n-value="@@shared.unlinkButton.submit" value="Unlink"/>
+  <div *ngIf="serverError" class="error" i18n="@@shared.unlinkTwinoid.unknownError">
+    Unlink error (unknown reason).
+  </div>
+</form>

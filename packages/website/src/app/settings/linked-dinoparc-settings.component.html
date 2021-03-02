@@ -3,7 +3,9 @@
   <h3>{{server}}</h3>
   <ng-container *ngSwitchCase="true">
     <div class="user">{{link.current.user.username}} ({{link.current.user.id}})</div>
-    <div class="actions"></div>
+    <div class="actions">
+      <etwin-unlink-dinoparc-button [userId]="userId" [dinoparcServer]="link.current.user.server" [dinoparcUserId]="link.current.user.id"></etwin-unlink-dinoparc-button>
+    </div>
   </ng-container>
   <ng-container *ngSwitchDefault>
     <div class="user">No linked account.</div>

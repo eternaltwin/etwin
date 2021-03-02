@@ -1,10 +1,20 @@
 import { Injectable } from "@angular/core";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { $DinoparcUserIdRef } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id-ref";
+import { $HammerfestUserIdRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id-ref";
+import { $TwinoidUserIdRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-id-ref";
 import { $MaybeCompleteUser, MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user";
+import { UnlinkFromDinoparcOptions } from "@eternal-twin/core/lib/user/unlink-from-dinoparc-options";
+import {
+  UnlinkFromHammerfestOptions
+} from "@eternal-twin/core/lib/user/unlink-from-hammerfest-options";
+import { UnlinkFromTwinoidOptions } from "@eternal-twin/core/lib/user/unlink-from-twinoid-options";
 import { $UpdateUserPatch, UpdateUserPatch } from "@eternal-twin/core/lib/user/update-user-patch";
 import { $User, User } from "@eternal-twin/core/lib/user/user";
 import { UserId } from "@eternal-twin/core/lib/user/user-id";
+import { $Any } from "kryo/lib/any.js";
 import { Observable, of as rxOf } from "rxjs";
-import { catchError as rxCatchError } from "rxjs/operators";
+import { catchError as rxCatchError, map as rxMap } from "rxjs/operators";
 
 import { RestService } from "../rest/rest.service";
 import { UserService } from "./user.service";
@@ -34,5 +44,40 @@ export class BrowserUserService extends UserService {
       req: patch,
       resType: $User,
     });
+  }
+
+  unlinkFromDinoparc(options: Readonly<UnlinkFromDinoparcOptions>): Observable<null> {
+    return this.#rest.delete(["users", options.userId, "links", options.dinoparcServer], {
+      reqType: $DinoparcUserIdRef,
+      req: {
+        type: ObjectType.DinoparcUser,
+        server: options.dinoparcServer,
+        id: options.dinoparcUserId,
+      },
+      resType: $Any,
+    }).pipe(rxMap(() => null));
+  }
+
+  unlinkFromHammerfest(options: Readonly<UnlinkFromHammerfestOptions>): Observable<null> {
+    return this.#rest.delete(["users", options.userId, "links", options.hammerfestServer], {
+      reqType: $HammerfestUserIdRef,
+      req: {
+        type: ObjectType.HammerfestUser,
+        server: options.hammerfestServer,
+        id: options.hammerfestUserId,
+      },
+      resType: $Any,
+    }).pipe(rxMap(() => null));
+  }
+
+  unlinkFromTwinoid(options: Readonly<UnlinkFromTwinoidOptions>): Observable<null> {
+    return this.#rest.delete(["users", options.userId, "links", "twinoid.com"], {
+      reqType: $TwinoidUserIdRef,
+      req: {
+        type: ObjectType.TwinoidUser,
+        id: options.twinoidUserId,
+      },
+      resType: $Any,
+    }).pipe(rxMap(() => null));
   }
 }

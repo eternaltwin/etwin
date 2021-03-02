@@ -15,8 +15,6 @@ impl<'a> ElementRefExt<'a> for ElementRef<'a> {
   }
 }
 
-// pub fn parse_bytes()
-
 pub fn get_opt_text(node: ElementRef) -> Result<Option<&str>, &'static str> {
   let mut it = node.text();
   match (it.next(), it.next()) {
