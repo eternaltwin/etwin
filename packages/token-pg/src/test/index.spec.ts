@@ -28,7 +28,7 @@ async function withPgTokenService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const dbSecretStr: string = config.etwin.secret;
     const clock = new SystemClock();
     const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
-    const hammerfestStore = new PgHammerfestStore({clock, database: nativeDatabase});
+    const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase});
     const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
     const token = new PgTokenService(database, dbSecretStr, dinoparcStore, hammerfestStore);
     return fn({hammerfestStore, token, twinoidStore});

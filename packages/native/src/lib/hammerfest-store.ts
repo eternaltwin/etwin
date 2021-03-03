@@ -70,7 +70,14 @@ export interface PgHammerfestStoreOptions {
 }
 
 export class PgHammerfestStore extends NativeHammerfestStore {
-  constructor(options: Readonly<PgHammerfestStoreOptions>) {
-    super(native.hammerfestStore.pg.new(options.clock.box, options.database.box));
+  private static NEW = promisify(native.hammerfestStore.pg.new);
+
+  private constructor(box: typeof PgHammerfestStoreBox) {
+    super(box);
+  }
+
+  public static async create(options: Readonly<PgHammerfestStoreOptions>): Promise<PgHammerfestStore> {
+    const box = await PgHammerfestStore.NEW(options.clock.box, options.database.box);
+    return new PgHammerfestStore(box);
   }
 }

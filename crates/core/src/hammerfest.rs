@@ -248,9 +248,10 @@ pub struct HammerfestProfile {
 }
 
 declare_decimal_id! {
-  pub struct HammerfestQuestId(u32);
+  pub struct HammerfestQuestId(u8);
   pub type ParseError = HammerfestQuestIdParseError;
-  const BOUNDS = 0..1_000_000_000;
+  const BOUNDS = 0..76;
+  const SQL_NAME = "hammerfest_quest_id";
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -272,6 +273,7 @@ declare_decimal_id! {
   pub struct HammerfestItemId(u16);
   pub type ParseError = HammerfestItemIdParseError;
   const BOUNDS = 0..10_000;
+  const SQL_NAME = "hammerfest_item_id";
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -308,10 +310,10 @@ pub struct HammerfestForumDate {
 pub struct HammerfestForumDateTime {
   #[cfg_attr(feature = "_serde", serde(flatten))]
   pub date: HammerfestForumDate,
-  // TODO: limit 1 <= w <= 7
-  pub hour: u8,
   // TODO: limit 0 <= h <= 23
-  pub minute: u8, // TODO: limit 0 <= m <= 59
+  pub hour: u8,
+  // TODO: limit 0 <= m <= 59
+  pub minute: u8,
 }
 
 declare_decimal_id! {
@@ -509,4 +511,12 @@ pub trait HammerfestStore: Send + Sync {
   ) -> Result<Option<ArchivedHammerfestUser>, Box<dyn Error>>;
 
   async fn touch_short_user(&self, options: &ShortHammerfestUser) -> Result<ArchivedHammerfestUser, Box<dyn Error>>;
+
+  async fn touch_shop(&self, options: &HammerfestShop) -> Result<(), Box<dyn Error>>;
+
+  async fn touch_profile(&self, options: &HammerfestProfile) -> Result<(), Box<dyn Error>>;
+
+  async fn touch_inventory(&self, options: &HashMap<HammerfestItemId, u32>) -> Result<(), Box<dyn Error>>;
+
+  async fn touch_thread_page(&self, options: &HammerfestForumThreadPage) -> Result<(), Box<dyn Error>>;
 }

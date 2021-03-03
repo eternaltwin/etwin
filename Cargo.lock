@@ -554,6 +554,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "etwin_constants"
+version = "0.0.1"
+dependencies = [
+ "etwin_core",
+ "once_cell",
+]
+
+[[package]]
 name = "etwin_core"
 version = "0.0.1"
 dependencies = [
@@ -640,6 +648,7 @@ version = "0.0.1"
 dependencies = [
  "async-trait",
  "chrono",
+ "etwin_constants",
  "etwin_core",
  "neon",
  "once_cell",
@@ -660,6 +669,7 @@ dependencies = [
  "etwin_config",
  "etwin_core",
  "etwin_db_schema",
+ "etwin_populate",
  "neon",
  "regex",
  "serial_test",
@@ -722,6 +732,15 @@ dependencies = [
  "sha2",
  "subtle",
  "sysinfo",
+]
+
+[[package]]
+name = "etwin_populate"
+version = "0.0.1"
+dependencies = [
+ "etwin_constants",
+ "etwin_core",
+ "sqlx",
 ]
 
 [[package]]

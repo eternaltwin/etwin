@@ -3,10 +3,12 @@ use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
 use etwin_core::core::Instant;
 use etwin_core::hammerfest::{
-  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestServer, HammerfestStore, HammerfestUserId,
-  HammerfestUsername, ShortHammerfestUser,
+  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestForumThreadPage, HammerfestItemId, HammerfestProfile,
+  HammerfestServer, HammerfestShop, HammerfestStore, HammerfestUserId, HammerfestUsername, ShortHammerfestUser,
 };
+use etwin_populate::hammerfest::populate_hammerfest;
 use sqlx::PgPool;
+use std::collections::HashMap;
 use std::error::Error;
 
 pub struct PgHammerfestStore<TyClock, TyDatabase>
@@ -18,13 +20,20 @@ where
   database: TyDatabase,
 }
 
+fn box_sqlx_error(e: sqlx::Error) -> Box<dyn Error + Send> {
+  Box::new(e)
+}
+
 impl<TyClock, TyDatabase> PgHammerfestStore<TyClock, TyDatabase>
 where
   TyClock: Clock,
   TyDatabase: ApiRef<PgPool>,
 {
-  pub fn new(clock: TyClock, database: TyDatabase) -> Self {
-    Self { clock, database }
+  pub async fn new(clock: TyClock, database: TyDatabase) -> Result<Self, Box<dyn Error + Send>> {
+    let mut tx = database.as_ref().begin().await.map_err(box_sqlx_error)?;
+    populate_hammerfest(&mut tx).await?;
+    tx.commit().await.map_err(box_sqlx_error)?;
+    Ok(Self { clock, database })
   }
 }
 
@@ -123,6 +132,22 @@ where
       items: None,
     })
   }
+
+  async fn touch_shop(&self, _options: &HammerfestShop) -> Result<(), Box<dyn Error>> {
+    unimplemented!()
+  }
+
+  async fn touch_profile(&self, _options: &HammerfestProfile) -> Result<(), Box<dyn Error>> {
+    unimplemented!()
+  }
+
+  async fn touch_inventory(&self, _options: &HashMap<HammerfestItemId, u32>) -> Result<(), Box<dyn Error>> {
+    unimplemented!()
+  }
+
+  async fn touch_thread_page(&self, _options: &HammerfestForumThreadPage) -> Result<(), Box<dyn Error>> {
+    unimplemented!()
+  }
 }
 
 #[cfg(feature = "neon")]
@@ -165,8 +190,11 @@ mod test {
     let database = Arc::new(database);
 
     let clock = Arc::new(VirtualClock::new(Utc.ymd(2020, 1, 1).and_hms(0, 0, 0)));
-    let hammerfest_store: Arc<dyn HammerfestStore> =
-      Arc::new(PgHammerfestStore::new(Arc::clone(&clock), Arc::clone(&database)));
+    let hammerfest_store: Arc<dyn HammerfestStore> = Arc::new(
+      PgHammerfestStore::new(Arc::clone(&clock), Arc::clone(&database))
+        .await
+        .unwrap(),
+    );
 
     TestApi {
       clock,

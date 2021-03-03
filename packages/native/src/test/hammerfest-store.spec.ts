@@ -37,7 +37,7 @@ describe("NativeHammerfestStore", function () {
         await forceCreateLatest(db);
         const nativeDatabase = await NativeDatabase.create(dbConfig);
         const clock = new SystemClock();
-        const hammerfestStore = new PgHammerfestStore({clock, database: nativeDatabase});
+        const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase});
         return fn({hammerfestStore});
       });
     }

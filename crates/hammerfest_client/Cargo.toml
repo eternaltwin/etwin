@@ -19,6 +19,7 @@ mem = []
 [dependencies]
 async-trait = "^0.1.42"
 chrono = "^0.4.19"
+etwin_constants = { path = "../constants" }
 etwin_core = { path = "../core" }
 neon = { version = "^0.7.0", optional = true, default-features = false, features = ["napi-runtime"] }
 rand = "^0.8.3"

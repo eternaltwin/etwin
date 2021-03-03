@@ -92,7 +92,7 @@ describe("NativeLinkStore", function () {
         const password = ScryptPasswordService.recommendedForTests();
         const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
         const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
-        const hammerfestStore = new PgHammerfestStore({clock, database: nativeDatabase});
+        const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase});
         const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
         const linkStore = new PgLinkStore({clock, database: nativeDatabase});
         const link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});

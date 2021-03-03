@@ -1,7 +1,8 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::hammerfest::{
-  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestStore, HammerfestUserId, ShortHammerfestUser,
+  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestForumThreadPage, HammerfestItemId, HammerfestProfile,
+  HammerfestShop, HammerfestStore, HammerfestUserId, ShortHammerfestUser,
 };
 use std::collections::HashMap;
 use std::error::Error;
@@ -76,6 +77,22 @@ where
     };
     state.touch_user(user.clone());
     Ok(user)
+  }
+
+  async fn touch_shop(&self, _options: &HammerfestShop) -> Result<(), Box<dyn Error>> {
+    unimplemented!()
+  }
+
+  async fn touch_profile(&self, _options: &HammerfestProfile) -> Result<(), Box<dyn Error>> {
+    unimplemented!()
+  }
+
+  async fn touch_inventory(&self, _options: &HashMap<HammerfestItemId, u32>) -> Result<(), Box<dyn Error>> {
+    unimplemented!()
+  }
+
+  async fn touch_thread_page(&self, _options: &HammerfestForumThreadPage) -> Result<(), Box<dyn Error>> {
+    unimplemented!()
   }
 }
 

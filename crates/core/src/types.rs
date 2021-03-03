@@ -25,11 +25,20 @@ macro_rules! declare_decimal_id {
     pub struct $struct_name($struct_ty);
 
     impl $struct_name {
-      /// Calls `f` with the string representation of this ID as an argument.
+      /// Calls `f` with the string representation of this id as an argument.
       #[inline]
       $struct_vis fn with_str<T>(self, f: impl FnOnce(&str) -> T) -> T {
         let mut buf = ::itoa::Buffer::new();
         f(buf.format(self.0))
+      }
+
+      /// Constructs a id without checking bounds
+      ///
+      /// # Safety
+      ///
+      /// The caller must ensure that the argument is contained in the bounds.
+      $struct_vis const unsafe fn new_unchecked(id: $struct_ty) -> Self {
+        Self(id)
       }
     }
 

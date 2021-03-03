@@ -108,14 +108,14 @@ where
         RETURNING lower(period) AS linked_at, linked_by;
     ",
     )
-    .bind(&options.etwin.id)
-    .bind(&options.remote.server)
-    .bind(&options.remote.id)
-    .bind(&now)
-    .bind(&options.linked_by.id)
-    .fetch_optional(self.database.as_ref())
-    .await
-    .map_err(TouchLinkError::other)?;
+      .bind(&options.etwin.id)
+      .bind(&options.remote.server)
+      .bind(&options.remote.id)
+      .bind(&now)
+      .bind(&options.linked_by.id)
+      .fetch_optional(self.database.as_ref())
+      .await
+      .map_err(TouchLinkError::other)?;
 
     match row {
       None => Ok(VersionedRawLink {
@@ -661,8 +661,11 @@ mod test {
     let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
     let dinoparc_store: Arc<dyn DinoparcStore> =
       Arc::new(PgDinoparcStore::new(Arc::clone(&clock), Arc::clone(&database)));
-    let hammerfest_store: Arc<dyn HammerfestStore> =
-      Arc::new(PgHammerfestStore::new(Arc::clone(&clock), Arc::clone(&database)));
+    let hammerfest_store: Arc<dyn HammerfestStore> = Arc::new(
+      PgHammerfestStore::new(Arc::clone(&clock), Arc::clone(&database))
+        .await
+        .unwrap(),
+    );
     let link_store: Arc<dyn LinkStore> = Arc::new(PgLinkStore::new(Arc::clone(&clock), Arc::clone(&database)));
     let user_store: Arc<dyn UserStore> = Arc::new(PgUserStore::new(
       Arc::clone(&clock),

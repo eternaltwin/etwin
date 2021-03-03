@@ -94,7 +94,7 @@ pub(crate) fn resolve_callback_serde<'a, C: Context<'a>, T: Serialize>(
       let this = cx.null();
       let (err, res): (Handle<JsValue>, Handle<JsValue>) = match res {
         Ok(value) => (cx.null().upcast(), cx.string(value).upcast()),
-        Err(e) => (JsError::type_error(&mut cx, e)?.upcast(), cx.null().upcast()),
+        Err(e) => (JsError::error(&mut cx, e)?.upcast(), cx.null().upcast()),
       };
       let _ = cb.call(&mut cx, this, vec![err, res])?;
       Ok(())
