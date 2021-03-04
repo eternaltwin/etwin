@@ -3,8 +3,6 @@ use async_trait::async_trait;
 use auto_impl::auto_impl;
 #[cfg(feature = "_serde")]
 use etwin_serde_tools::{Deserialize, Serialize};
-use once_cell::sync::Lazy;
-use regex::Regex;
 use std::error::Error;
 
 declare_decimal_id! {

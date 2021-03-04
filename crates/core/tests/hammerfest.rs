@@ -49,10 +49,17 @@ async fn make_test_api() -> TestApi<
   let uuid = Arc::new(Uuid4Generator);
   let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
   let hammerfest_client: Arc<dyn HammerfestClient> = Arc::new(MemHammerfestClient::new(Arc::clone(&clock)));
+  let uuid_generator = Arc::new(Uuid4Generator);
+  let database_secret = Secret::new("dev_secret".to_string());
   let hammerfest_store: Arc<dyn HammerfestStore> = Arc::new(
-    PgHammerfestStore::new(Arc::clone(&clock), Arc::clone(&database))
-      .await
-      .unwrap(),
+    PgHammerfestStore::new(
+      Arc::clone(&clock),
+      Arc::clone(&database),
+      database_secret,
+      uuid_generator,
+    )
+    .await
+    .unwrap(),
   );
   let link_store: Arc<dyn LinkStore> = Arc::new(PgLinkStore::new(Arc::clone(&clock), Arc::clone(&database)));
   let user_store: Arc<dyn UserStore> = Arc::new(PgUserStore::new(

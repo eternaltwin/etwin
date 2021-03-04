@@ -118,18 +118,5 @@ mod test {
     }
   }
 
-  #[tokio::test]
-  async fn test_empty() {
-    crate::test::test_empty(make_test_api()).await;
-  }
-
-  #[tokio::test]
-  async fn test_touch_user() {
-    crate::test::test_touch_user(make_test_api()).await;
-  }
-
-  #[tokio::test]
-  async fn test_get_missing_user() {
-    crate::test::test_get_missing_user(make_test_api()).await;
-  }
+  test_hammerfest_store!(|| make_test_api());
 }

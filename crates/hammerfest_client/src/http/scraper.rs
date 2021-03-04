@@ -10,6 +10,7 @@ use scraper::ElementRef;
 use self::texts::ScraperTexts;
 use self::utils::Selectors;
 use super::errors::ScraperError;
+use etwin_core::email::EmailAddress;
 use std::str::FromStr;
 
 pub type Html = scraper::Html;
@@ -150,14 +151,17 @@ pub fn scrape_user_profile(
     if raw_best_level.is_empty() {
       0
     } else {
-      utils::parse_dotted_u32(raw_best_level)?
+      utils::parse_u8(raw_best_level)?
     }
   };
   let has_carrot = best_level_elem.children().nth(1).is_some();
   let email = match (email_elem, is_logged_in) {
     (None, true) => Some(None),
     (None, false) => None,
-    (Some(email), _) => Some(Some(utils::get_inner_text(email)?.to_owned())),
+    (Some(email), _) => Some(Some({
+      let raw_email = utils::get_inner_text(email)?;
+      EmailAddress::from_str(raw_email).map_err(|err| ScraperError::InvalidEmail(raw_email.to_owned(), err))?
+    })),
   };
   let rank = parse_user_rank(selectors.select_one_attr(rank_elem, "img", "class")?)?;
 

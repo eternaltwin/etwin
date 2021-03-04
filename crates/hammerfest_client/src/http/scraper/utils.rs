@@ -177,3 +177,7 @@ pub fn parse_dotted_u32(s: &str) -> Result<u32> {
 pub fn parse_u32(s: &str) -> Result<u32> {
   s.parse().map_err(|err| ScraperError::InvalidInteger(s.to_owned(), err))
 }
+
+pub fn parse_u8(s: &str) -> Result<u8> {
+  s.parse().map_err(|err| ScraperError::InvalidInteger(s.to_owned(), err))
+}

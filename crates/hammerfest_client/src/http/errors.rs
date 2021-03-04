@@ -1,3 +1,4 @@
+use etwin_core::email::EmailAddressParseError;
 use etwin_core::hammerfest::*;
 use reqwest::Url;
 use thiserror::Error;
@@ -24,18 +25,20 @@ pub enum ScraperError {
   InvalidInteger(String, #[source] std::num::ParseIntError),
   #[error("Failed to parse date '{}'", .0)]
   InvalidDate(String, #[source] Option<chrono::format::ParseError>),
+  #[error("Failed to parse email '{}'", .0)]
+  InvalidEmail(String, #[source] EmailAddressParseError),
   #[error("Invalid item id '{}'", .0)]
-  InvalidItemId(String, HammerfestItemIdParseError),
+  InvalidItemId(String, #[source] HammerfestItemIdParseError),
   #[error("Invalid user id '{}'", .0)]
-  InvalidUserId(String, HammerfestUserIdParseError),
+  InvalidUserId(String, #[source] HammerfestUserIdParseError),
   #[error("Invalid forum theme id '{}'", .0)]
-  InvalidForumThemeId(String, HammerfestForumThemeIdParseError),
+  InvalidForumThemeId(String, #[source] HammerfestForumThemeIdParseError),
   #[error("Invalid forum thread id '{}'", .0)]
-  InvalidForumThreadId(String, HammerfestForumThreadIdParseError),
+  InvalidForumThreadId(String, #[source] HammerfestForumThreadIdParseError),
   #[error("Invalid forum post id '{}'", .0)]
-  InvalidForumPostId(String, HammerfestForumPostIdParseError),
+  InvalidForumPostId(String, #[source] HammerfestForumPostIdParseError),
   #[error("Invalid username '{}'", .0)]
-  InvalidUsername(String, HammerfestUsernameParseError),
+  InvalidUsername(String, #[source] HammerfestUsernameParseError),
   #[error("Unknown quest name '{}'", .0)]
   UnknownQuestName(String),
   #[error("Unknown rank CSS class '{}'", .0)]

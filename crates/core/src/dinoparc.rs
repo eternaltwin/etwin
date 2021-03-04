@@ -4,8 +4,6 @@ use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
 #[cfg(feature = "_serde")]
 use etwin_serde_tools::{Deserialize, Serialize};
-use once_cell::sync::Lazy;
-use regex::Regex;
 #[cfg(feature = "sqlx")]
 use sqlx::{database, postgres, Database, Postgres};
 use std::error::Error;

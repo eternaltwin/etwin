@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, Secret};
-use etwin_core::email::EmailAddress;
+use etwin_core::email::{touch_email_address, EmailAddress};
 use etwin_core::password::PasswordHash;
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, DeleteUserError, GetShortUserOptions, GetUserOptions, GetUserResult,
@@ -12,7 +12,6 @@ use etwin_core::user::{
 };
 use etwin_core::uuid::UuidGenerator;
 use sqlx::postgres::PgPool;
-use sqlx::{Postgres, Transaction};
 use std::error::Error;
 
 pub struct PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
@@ -41,35 +40,6 @@ where
       uuid_generator,
     }
   }
-}
-
-async fn touch_email_address(
-  tx: &mut Transaction<'_, Postgres>,
-  secret: &Secret,
-  email: &EmailAddress,
-  now: Instant,
-) -> Result<Vec<u8>, Box<dyn Error>> {
-  #[derive(Debug, sqlx::FromRow)]
-  struct Row {
-    hash: Vec<u8>,
-  }
-  let row = sqlx::query_as::<_, Row>(
-    r"
-          INSERT
-          INTO email_addresses(email_address, _hash, created_at)
-          VALUES (
-            pgp_sym_encrypt($1::EMAIL_ADDRESS, $2::TEXT), digest($1::EMAIL_ADDRESS, 'sha256'), $3::INSTANT
-          )
-          ON CONFLICT (_hash) DO NOTHING
-          RETURNING _hash as hash;
-        ",
-  )
-  .bind(email)
-  .bind(secret.as_str())
-  .bind(now)
-  .fetch_one(tx)
-  .await?;
-  Ok(row.hash)
 }
 
 #[async_trait]

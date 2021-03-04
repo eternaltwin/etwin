@@ -20,6 +20,7 @@ import { promisify } from "util";
 import native from "../native/index.js";
 import { NativeClock } from "./clock.js";
 import { Database } from "./database.js";
+import { NativeUuidGenerator } from "./uuid";
 
 declare const MemHammerfestStoreBox: unique symbol;
 declare const PgHammerfestStoreBox: unique symbol;
@@ -67,6 +68,8 @@ export class MemHammerfestStore extends NativeHammerfestStore {
 export interface PgHammerfestStoreOptions {
   clock: NativeClock;
   database: Database;
+  databaseSecret: string;
+  uuidGenerator: NativeUuidGenerator;
 }
 
 export class PgHammerfestStore extends NativeHammerfestStore {
@@ -77,7 +80,7 @@ export class PgHammerfestStore extends NativeHammerfestStore {
   }
 
   public static async create(options: Readonly<PgHammerfestStoreOptions>): Promise<PgHammerfestStore> {
-    const box = await PgHammerfestStore.NEW(options.clock.box, options.database.box);
+    const box = await PgHammerfestStore.NEW(options.clock.box, options.database.box, options.databaseSecret, options.uuidGenerator.box);
     return new PgHammerfestStore(box);
   }
 }

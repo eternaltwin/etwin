@@ -155,7 +155,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
       password: config.db.password,
     });
     dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
-    hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase});
+    hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
     userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     linkStore = new PgLinkStore({clock, database: nativeDatabase});

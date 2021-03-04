@@ -9,6 +9,7 @@ import chai from "chai";
 import { SystemClock } from "../lib/clock.js";
 import { Database as NativeDatabase } from "../lib/database.js";
 import { MemHammerfestStore, PgHammerfestStore } from "../lib/hammerfest-store.js";
+import { Uuid4Generator } from "../lib/uuid.js";
 
 describe("NativeHammerfestStore", function () {
   describe("MemHammerfestStore", function () {
@@ -37,7 +38,8 @@ describe("NativeHammerfestStore", function () {
         await forceCreateLatest(db);
         const nativeDatabase = await NativeDatabase.create(dbConfig);
         const clock = new SystemClock();
-        const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase});
+        const uuidGenerator = new Uuid4Generator();
+        const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: config.etwin.secret, uuidGenerator});
         return fn({hammerfestStore});
       });
     }

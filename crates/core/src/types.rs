@@ -22,7 +22,7 @@ macro_rules! declare_decimal_id {
 
     $(#[$struct_meta])*
     #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct $struct_name($struct_ty);
+    $struct_vis struct $struct_name($struct_ty);
 
     impl $struct_name {
       /// Calls `f` with the string representation of this id as an argument.
@@ -158,13 +158,15 @@ macro_rules! declare_new_string {
 
     $(#[$struct_meta])*
     #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct $struct_name(String);
+    $struct_vis struct $struct_name(String);
 
     impl $struct_name {
       $struct_vis fn pattern() -> &'static ::regex::Regex {
-        use ::core::ops::Deref;
-        static PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new($pattern).unwrap());
-        PATTERN.deref()
+        #[allow(clippy::trivial_regex)]
+        static PATTERN: ::once_cell::sync::Lazy<::regex::Regex> = ::once_cell::sync::Lazy::new(||
+          ::regex::Regex::new($pattern).unwrap()
+        );
+        &*PATTERN
       }
 
       #[inline]
@@ -289,7 +291,7 @@ macro_rules! declare_new_uuid {
 
     $(#[$struct_meta])*
     #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct $struct_name(::uuid::Uuid);
+    $struct_vis struct $struct_name(::uuid::Uuid);
 
     impl $struct_name {
       $struct_vis const fn from_uuid(inner: ::uuid::Uuid) -> Self {
@@ -374,6 +376,146 @@ macro_rules! declare_new_uuid {
     impl ::sqlx::Encode<'_, ::sqlx::Postgres> for $struct_name {
       fn encode_by_ref(&self, buf: &mut ::sqlx::postgres::PgArgumentBuffer) -> ::sqlx::encode::IsNull {
         self.0.encode(buf)
+      }
+    }
+  };
+}
+
+#[macro_export]
+macro_rules! declare_new_enum {
+  (
+    $(#[$enum_meta:meta])*
+    $enum_vis:vis enum $enum_name:ident {
+      $(
+        #[str($variant_str:expr)]
+        $(#[$variant_meta:meta])*
+        $variant_name:ident,
+      )*
+    }
+    $(#[$err_meta:meta])*
+    $err_vis:vis type ParseError = $err_name:ident;
+    $(const SQL_NAME = $sql_name:expr;)?
+  ) => {
+    $(#[$err_meta:meta])*
+    #[derive(Debug)]
+    pub struct $err_name(());
+
+    impl ::std::fmt::Display for $err_name {
+      fn fmt(&self, fmt: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        ::std::fmt::Display::fmt(concat!("Invalid ", stringify!($enum_name)), fmt)
+      }
+    }
+
+    impl ::std::error::Error for $err_name {}
+
+    $(#[$enum_meta])*
+    #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+    $enum_vis enum $enum_name {
+      $(
+        $(#[$variant_meta])*
+        $variant_name,
+      )*
+    }
+
+    impl $enum_name {
+      #[inline]
+      $enum_vis const fn as_str(self) -> &'static str {
+        match self {
+          $(Self::$variant_name => $variant_str,)*
+        }
+      }
+    }
+
+    impl ::std::fmt::Display for $enum_name {
+      fn fmt(&self, fmt: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        ::std::fmt::Display::fmt(&self.as_str(), fmt)
+      }
+    }
+
+    impl ::std::str::FromStr for $enum_name {
+      type Err = $err_name;
+
+      fn from_str(s: &str) ->  ::std::result::Result<Self, Self::Err> {
+        match s {
+          $($variant_str => Ok(Self::$variant_name),)*
+          _ => Err($err_name(())),
+        }
+      }
+    }
+
+    impl ::std::convert::TryFrom<&str> for $enum_name {
+      type Error = $err_name;
+
+      fn try_from(s: &str) ->  ::std::result::Result<Self, Self::Error> {
+        s.parse()
+      }
+    }
+
+    #[cfg(feature="_serde")]
+    impl ::serde::Serialize for $enum_name {
+      fn serialize<S: ::serde::Serializer>(&self, serializer: S) ->  ::std::result::Result<S::Ok, S::Error> {
+        ::serde::Serialize::serialize(self.as_str(), serializer)
+      }
+    }
+
+    #[cfg(feature="_serde")]
+    impl<'de> ::serde::Deserialize<'de> for $enum_name {
+      fn deserialize<D: ::serde::Deserializer<'de>>(deserializer: D) ->  ::std::result::Result<Self, D::Error> {
+        struct SerdeVisitor;
+        impl<'de> ::serde::de::Visitor<'de> for SerdeVisitor {
+          type Value = $enum_name;
+
+          fn expecting(&self, fmt: &mut ::std::fmt::Formatter) -> std::fmt::Result {
+            fmt.write_str(concat!("a string for a valid ", stringify!($enum_name)))
+          }
+
+          fn visit_str<E: ::serde::de::Error>(self, value: &str) ->  ::std::result::Result<Self::Value, E> {
+            value.parse().map_err(E::custom)
+          }
+        }
+
+        deserializer.deserialize_str(SerdeVisitor)
+      }
+    }
+
+    $($crate::declare_new_enum! {
+      @impl_sqlx $enum_name $sql_name
+    })?
+  };
+
+  (@impl_sqlx $enum_name:ident $sql_name:expr) => {
+    #[cfg(feature = "sqlx")]
+    impl ::sqlx::Type<sqlx::Postgres> for $enum_name {
+      fn type_info() -> ::sqlx::postgres::PgTypeInfo {
+        ::sqlx::postgres::PgTypeInfo::with_name($sql_name)
+      }
+
+      fn compatible(ty: &::sqlx::postgres::PgTypeInfo) -> bool {
+        *ty == Self::type_info() || <&str as ::sqlx::Type<::sqlx::Postgres>>::compatible(ty)
+      }
+    }
+
+    #[cfg(feature = "sqlx")]
+    impl<'r, Db: ::sqlx::Database> ::sqlx::Decode<'r, Db> for $enum_name
+    where
+      &'r str: ::sqlx::Decode<'r, Db>,
+    {
+      fn decode(
+        value: <Db as ::sqlx::database::HasValueRef<'r>>::ValueRef,
+      ) ->  ::std::result::Result<Self, Box<dyn ::std::error::Error + 'static + Send + Sync>> {
+        let value: &str = <&str as ::sqlx::Decode<Db>>::decode(value)?;
+        Ok(value.parse()?)
+      }
+    }
+
+    // Can't implement generically over `sqlx::Database` because of lifetime issues.
+    #[cfg(feature = "sqlx")]
+    impl<'q, Db: ::sqlx::Database> ::sqlx::Encode<'q, Db> for $enum_name
+    where
+      &'q str: ::sqlx::Encode<'q, Db>,
+    {
+      fn encode_by_ref(&self, buf: &mut <Db as ::sqlx::database::HasArguments<'q>>::ArgumentBuffer) -> ::sqlx::encode::IsNull {
+        self.as_str().encode(buf)
       }
     }
   };

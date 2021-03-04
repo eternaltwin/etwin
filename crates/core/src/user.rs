@@ -7,7 +7,6 @@ use chrono::Duration;
 #[cfg(feature = "_serde")]
 use etwin_serde_tools::{deserialize_explicit_option, deserialize_nested_option, Deserialize, Serialize};
 use once_cell::sync::Lazy;
-use regex::Regex;
 use std::error::Error;
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]

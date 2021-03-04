@@ -75,7 +75,7 @@ export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer)
     const dinoparcClient = new MemDinoparcClient({clock});
     const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
     const hammerfestClient = new MemHammerfestClient({clock});
-    const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase});
+    const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     const twinoidClient = new HttpTwinoidClientService();
     const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
     const linkStore = new PgLinkStore({clock, database: nativeDatabase});

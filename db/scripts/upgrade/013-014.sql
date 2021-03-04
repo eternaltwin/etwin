@@ -4,11 +4,11 @@ CREATE DOMAIN valid_period AS PERIOD CHECK (NOT LOWER_INF(value) AND NOT UPPER_I
 
 CREATE DOMAIN i8 AS INT2 CHECK (-128 <= value AND value < 128);
 CREATE DOMAIN u8 AS INT2 CHECK (0 <= value AND value < 256);
-CREATE DOMAIN i16 AS INT4 CHECK (-32768 <= value AND value < 32768);
+CREATE DOMAIN i16 AS INT2;
 CREATE DOMAIN u16 AS INT4 CHECK (0 <= value AND value < 65536);
-CREATE DOMAIN i32 AS INT8 CHECK (-2147483648 <= value AND value < 2147483648);
+CREATE DOMAIN i32 AS INT4;
 CREATE DOMAIN u32 AS INT8 CHECK (0 <= value AND value < 4294967296);
-
+CREATE DOMAIN i64 AS INT8;
 
 CREATE DOMAIN hammerfest_item_count_map_id AS UUID;
 CREATE DOMAIN hammerfest_quest_status_map_id AS UUID;
@@ -72,18 +72,18 @@ CREATE TABLE hammerfest_quests (
 -- Immutable quest status maps (may be shared by different users)
 CREATE TABLE hammerfest_quest_status_maps (
   hammerfest_quest_status_map_id HAMMERFEST_QUEST_STATUS_MAP_ID NOT NULL,
--- sha256(utf8(json(value)))
+-- sha3_256(utf8(json(value)))
 -- Where `value` is a map from the id to the status, sorted by id and json does not use any whitespace
 -- {"0":"None","1":"Pending",2:"Complete"}
-  _sha256 BYTEA NOT NULL,
+  _sha3_256 BYTEA NOT NULL,
   PRIMARY KEY (hammerfest_quest_status_map_id),
-  UNIQUE (_sha256)
+  UNIQUE (_sha3_256)
 );
 
 -- Content of hammerfest_quest_status_maps
 CREATE TABLE hammerfest_quest_status_map_items (
   hammerfest_quest_status_map_id HAMMERFEST_QUEST_STATUS_MAP_ID NOT NULL,
-  hammerfest_quest_id HAMMERFEST_ITEM_ID NOT NULL,
+  hammerfest_quest_id HAMMERFEST_QUEST_ID NOT NULL,
   status HAMMERFEST_QUEST_STATUS NOT NULL,
   PRIMARY KEY (hammerfest_quest_status_map_id, hammerfest_quest_id),
   CONSTRAINT hammerfest_quest_status_map_item__map__fk FOREIGN KEY (hammerfest_quest_status_map_id) REFERENCES hammerfest_quest_status_maps(hammerfest_quest_status_map_id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -93,12 +93,12 @@ CREATE TABLE hammerfest_quest_status_map_items (
 -- Immutable unlocked items state (may be shared by different users)
 CREATE TABLE hammerfest_unlocked_item_sets (
   hammerfest_unlocked_item_set_id HAMMERFEST_UNLOCKED_ITEM_SET_ID NOT NULL,
--- sha256(utf8(json(value)))
+-- sha3_256(utf8(json(value)))
 -- Where `value` is a sorted list of item ids and json does not use any whitespace
 -- [0,2,100]
-  _sha256 BYTEA NOT NULL,
+  _sha3_256 BYTEA NOT NULL,
   PRIMARY KEY (hammerfest_unlocked_item_set_id),
-  UNIQUE (_sha256)
+  UNIQUE (_sha3_256)
 );
 
 -- Content of hammerfest_unlocked_items_snapshots
@@ -113,12 +113,12 @@ CREATE TABLE hammerfest_unlocked_item_set_items (
 -- Immutable item counts (may be shared by different users)
 CREATE TABLE hammerfest_item_count_maps (
   hammerfest_item_count_map_id HAMMERFEST_ITEM_COUNT_MAP_ID NOT NULL,
--- sha256(utf8(json(value)))
+-- sha3_256(utf8(json(value)))
 -- Where `value` is a map from the item id to the count, sorted by id and json does not use any whitespace
 -- {"0":0,"2":9,2:5}
-  _sha256 BYTEA NOT NULL,
+  _sha3_256 BYTEA NOT NULL,
   PRIMARY KEY (hammerfest_item_count_map_id),
-  UNIQUE (_sha256)
+  UNIQUE (_sha3_256)
 );
 
 -- Content of hammerfest_quest_statuses_snapshots
@@ -152,7 +152,8 @@ CREATE TABLE hammerfest_profiles (
 --
   best_score U32 NOT NULL,
   best_level U8 NOT NULL CHECK (best_level < 120),
-  season_score U32 NOT NULL,
+-- Null if not played
+  season_score U32 NULL,
   quest_statuses HAMMERFEST_QUEST_STATUS_MAP_ID NOT NULL,
   unlocked_items HAMMERFEST_UNLOCKED_ITEM_SET_ID NOT NULL,
   PRIMARY KEY (hammerfest_server, hammerfest_user_id, valid_period),
@@ -171,6 +172,7 @@ CREATE TABLE hammerfest_emails (
   email EMAIL_ADDRESS_HASH NULL,
   PRIMARY KEY (hammerfest_server, hammerfest_user_id, valid_period),
   EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, valid_period WITH &&),
+  EXCLUDE USING gist (hammerfest_server WITH =, email WITH =, valid_period WITH &&),
   CONSTRAINT hammerfest_email__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT hammerfest_email__email__fk FOREIGN KEY (email) REFERENCES email_addresses(_hash) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -183,7 +185,8 @@ CREATE TABLE hammerfest_user_ranks (
 --
   has_carrot BOOLEAN NOT NULL,
   rank HAMMERFEST_RANK NOT NULL,
-  season_rank U32 NOT NULL,
+--   Null if no game played during this season
+  season_rank U32 NULL,
   PRIMARY KEY (hammerfest_server, hammerfest_user_id, valid_period),
   EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, valid_period WITH &&),
   CONSTRAINT hammerfest_user_ranks__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE

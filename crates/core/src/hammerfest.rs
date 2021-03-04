@@ -1,19 +1,14 @@
 use crate::core::Instant;
+use crate::email::EmailAddress;
 use crate::link::VersionedEtwinLink;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
 #[cfg(feature = "_serde")]
 use etwin_serde_tools::{deserialize_nested_option, Deserialize, Serialize};
-use once_cell::sync::Lazy;
-use regex::Regex;
-#[cfg(feature = "sqlx")]
-use sqlx::{database, postgres, Database, Postgres};
 use std::collections::{HashMap, HashSet};
 use std::error::Error;
-use std::fmt;
 use std::iter::FusedIterator;
-use std::str::FromStr;
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -29,88 +24,38 @@ impl HammerfestPassword {
   }
 }
 
-#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, IntoEnumIterator)]
-pub enum HammerfestServer {
-  #[cfg_attr(feature = "_serde", serde(rename = "hammerfest.fr"))]
-  HammerfestFr,
-  #[cfg_attr(feature = "_serde", serde(rename = "hfest.net"))]
-  HfestNet,
-  #[cfg_attr(feature = "_serde", serde(rename = "hammerfest.es"))]
-  HammerfestEs,
-}
+declare_new_enum!(
+  #[derive(IntoEnumIterator)]
+  pub enum HammerfestServer {
+    #[str("hammerfest.fr")]
+    HammerfestFr,
+    #[str("hfest.net")]
+    HfestNet,
+    #[str("hammerfest.es")]
+    HammerfestEs,
+  }
+  pub type ParseError = HammerfestServerParseError;
+  const SQL_NAME = "hammerfest_server";
+);
 
 impl HammerfestServer {
-  pub const fn as_str(&self) -> &'static str {
-    match self {
-      Self::HammerfestFr => "hammerfest.fr",
-      Self::HfestNet => "hfest.net",
-      Self::HammerfestEs => "hammerfest.es",
-    }
-  }
-
   pub fn iter() -> impl Iterator<Item = Self> + ExactSizeIterator + FusedIterator + Copy {
     Self::into_enum_iter()
   }
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct HammerfestServerParseError;
-
-impl fmt::Display for HammerfestServerParseError {
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    write!(f, "HammerfestServerParseError")
+declare_new_enum!(
+  pub enum HammerfestQuestStatus {
+    #[str("None")]
+    None,
+    #[str("Pending")]
+    Pending,
+    #[str("Complete")]
+    Complete,
   }
-}
-
-impl Error for HammerfestServerParseError {}
-
-impl FromStr for HammerfestServer {
-  type Err = HammerfestServerParseError;
-
-  fn from_str(s: &str) -> Result<Self, Self::Err> {
-    match s {
-      "hammerfest.fr" => Ok(Self::HammerfestFr),
-      "hfest.net" => Ok(Self::HfestNet),
-      "hammerfest.es" => Ok(Self::HammerfestEs),
-      _ => Err(HammerfestServerParseError),
-    }
-  }
-}
-
-#[cfg(feature = "sqlx")]
-impl sqlx::Type<Postgres> for HammerfestServer {
-  fn type_info() -> postgres::PgTypeInfo {
-    postgres::PgTypeInfo::with_name("hammerfest_server")
-  }
-
-  fn compatible(ty: &postgres::PgTypeInfo) -> bool {
-    *ty == Self::type_info() || <&str as sqlx::Type<Postgres>>::compatible(ty)
-  }
-}
-
-#[cfg(feature = "sqlx")]
-impl<'r, Db: Database> sqlx::Decode<'r, Db> for HammerfestServer
-where
-  &'r str: sqlx::Decode<'r, Db>,
-{
-  fn decode(
-    value: <Db as database::HasValueRef<'r>>::ValueRef,
-  ) -> Result<HammerfestServer, Box<dyn Error + 'static + Send + Sync>> {
-    let value: &str = <&str as sqlx::Decode<Db>>::decode(value)?;
-    Ok(value.parse()?)
-  }
-}
-
-#[cfg(feature = "sqlx")]
-impl<'q, Db: Database> sqlx::Encode<'q, Db> for HammerfestServer
-where
-  &'q str: sqlx::Encode<'q, Db>,
-{
-  fn encode_by_ref(&self, buf: &mut <Db as database::HasArguments<'q>>::ArgumentBuffer) -> sqlx::encode::IsNull {
-    self.as_str().encode(buf)
-  }
-}
+  pub type ParseError = HammerfestQuestStatusParseError;
+  const SQL_NAME = "hammerfest_quest_status";
+);
 
 declare_new_string! {
   pub struct HammerfestUsername(String);
@@ -234,17 +179,18 @@ pub struct HammerfestProfile {
   pub user: ShortHammerfestUser,
   #[cfg_attr(feature = "_serde", serde(skip_serializing_if = "Option::is_none"))]
   #[cfg_attr(feature = "_serde", serde(default, deserialize_with = "deserialize_nested_option"))]
-  pub email: Option<Option<String>>,
+  pub email: Option<Option<EmailAddress>>,
   pub best_score: u32,
-  pub best_level: u32,
+  pub best_level: u8,
   pub has_carrot: bool,
   pub season_score: u32,
-  pub rank: u8,
   // TODO: limit 0 <= r <= 4
+  pub rank: u8,
   pub hall_of_fame: Option<HammerfestHallOfFameMessage>,
-  pub items: HashSet<HammerfestItemId>,
   // TODO: limit size <= 1000
-  pub quests: HashMap<HammerfestQuestId, HammerfestQuestStatus>, // TODO: limit size <= 100
+  pub items: HashSet<HammerfestItemId>,
+  // TODO: limit size <= 100
+  pub quests: HashMap<HammerfestQuestId, HammerfestQuestStatus>,
 }
 
 declare_decimal_id! {
@@ -252,14 +198,6 @@ declare_decimal_id! {
   pub type ParseError = HammerfestQuestIdParseError;
   const BOUNDS = 0..76;
   const SQL_NAME = "hammerfest_quest_id";
-}
-
-#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
-#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum HammerfestQuestStatus {
-  None,
-  Pending,
-  Complete,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]

@@ -661,10 +661,17 @@ mod test {
     let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
     let dinoparc_store: Arc<dyn DinoparcStore> =
       Arc::new(PgDinoparcStore::new(Arc::clone(&clock), Arc::clone(&database)));
+    let uuid_generator = Arc::new(Uuid4Generator);
+    let database_secret = Secret::new("dev_secret".to_string());
     let hammerfest_store: Arc<dyn HammerfestStore> = Arc::new(
-      PgHammerfestStore::new(Arc::clone(&clock), Arc::clone(&database))
-        .await
-        .unwrap(),
+      PgHammerfestStore::new(
+        Arc::clone(&clock),
+        Arc::clone(&database),
+        database_secret,
+        uuid_generator,
+      )
+      .await
+      .unwrap(),
     );
     let link_store: Arc<dyn LinkStore> = Arc::new(PgLinkStore::new(Arc::clone(&clock), Arc::clone(&database)));
     let user_store: Arc<dyn UserStore> = Arc::new(PgUserStore::new(

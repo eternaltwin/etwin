@@ -17,8 +17,8 @@
 
 # Registering the client
 
-The first to use Eternal-Twin as an OAuth provider is to register you game or app as a client.
-This step is achieved through the `etwin.toml` configuration file.
+The first step to use Eternal-Twin as an OAuth provider is to register your game or app as a client.
+This step is achieved through the `etwin.toml` configuration file (there is no web interface _yet_).
 
 You must add an [OAuth client section](https://gitlab.com/eternal-twin/etwin/-/blob/master/etwin.toml.example#L34)
 and **restart Eternal-Twin**.
