@@ -273,71 +273,13 @@ async fn touch_hammerfest_profile(
   quests: Uuid,
   unlocked_items: Uuid,
 ) -> Result<(), Box<dyn Error>> {
-  let res: PgQueryResult = sqlx::query(
-    r"
-    WITH
-      input_row(
-        hammerfest_server, hammerfest_user_id, period, retrieved_at,
-        best_score, best_level,
-        season_score,
-        quest_statuses, unlocked_items
-      ) AS (
-        VALUES(
-          $1::HAMMERFEST_SERVER, $2::HAMMERFEST_USER_ID, PERIOD($3::INSTANT, NULL), ARRAY[$3::INSTANT],
-          $4::U32, $5::U8,
-          $6::U32,
-          $7::HAMMERFEST_QUEST_STATUS_MAP_ID, $8::HAMMERFEST_UNLOCKED_ITEM_SET_ID
-        )
-      ),
-      current_row AS (
-        SELECT hammerfest_server, hammerfest_user_id, period
-        FROM hammerfest_profiles
-        WHERE $1::HAMMERFEST_SERVER = hammerfest_server AND $2::HAMMERFEST_USER_ID = hammerfest_user_id AND upper_inf(period)
-        LIMIT 1
-      ),
-      matching_current_row AS (
-        SELECT hammerfest_server, hammerfest_user_id, period
-        FROM hammerfest_profiles INNER JOIN current_row USING (hammerfest_server, hammerfest_user_id, period)
-        WHERE
-          $4::U32 = best_score AND $5::U8 = best_level
-          AND $6::U32 = season_score
-          AND $7::HAMMERFEST_QUEST_STATUS_MAP_ID = quest_statuses AND $8::HAMMERFEST_UNLOCKED_ITEM_SET_ID = unlocked_items
-      ),
-      missing_input_row AS (
-        SELECT *
-        FROM input_row
-        WHERE NOT EXISTS (SELECT 1 FROM matching_current_row)
-      ),
-      rows_to_invalidate AS (
-        SELECT * FROM current_row
-        EXCEPT
-        SELECT * FROM matching_current_row
-      ),
-      invalidated_rows AS (
-        UPDATE hammerfest_profiles
-          SET period = PERIOD(lower(period), $3::INSTANT)
-          WHERE ROW(hammerfest_server, hammerfest_user_id, period) IN (SELECT * FROM rows_to_invalidate)
-          RETURNING hammerfest_server, hammerfest_user_id, period
-      ),
-      updated_row AS (
-        UPDATE hammerfest_profiles
-        SET retrieved_at = sampled_instant_set_insert_back(retrieved_at, const_sampling_window(), $3::INSTANT)
-        WHERE ROW(hammerfest_server, hammerfest_user_id, period) = (SELECT * FROM matching_current_row)
-        RETURNING hammerfest_server, hammerfest_user_id, period
-      ),
-      inserted_row AS (
-        INSERT
-        INTO hammerfest_profiles(hammerfest_server, hammerfest_user_id, period, retrieved_at, best_score, best_level, season_score, quest_statuses, unlocked_items)
-        SELECT * FROM missing_input_row
-        RETURNING hammerfest_server, hammerfest_user_id, period
-      )
-    SELECT * FROM invalidated_rows
-    UNION ALL
-    SELECT * FROM updated_row
-    UNION ALL
-    SELECT * FROM inserted_row;
-    ",
-  )
+  let res: PgQueryResult = sqlx::query(upsert_archive_query!(
+    hammerfest_profiles(
+      time($3 period, retrieved_at),
+      primary($1 hammerfest_server::HAMMERFEST_SERVER, $2 hammerfest_user_id::HAMMERFEST_USER_ID),
+      data($4 best_score::U32, $5 best_level::U32, $6 season_score::U32, $7 quest_statuses::HAMMERFEST_QUEST_STATUS_MAP_ID, $8 unlocked_items::HAMMERFEST_UNLOCKED_ITEM_SET_ID),
+    )
+  ))
     .bind(server)
     .bind(id)
     .bind(now)
@@ -363,83 +305,20 @@ async fn touch_hammerfest_email(
   now: Instant,
   email_hash: Option<Vec<u8>>,
 ) -> Result<(), Box<dyn Error>> {
-  // TODO: Handle email uniqueness (insert instead of update)
-  let res: PgQueryResult = sqlx::query(
-    r"
-    WITH
-      input_row(
-        hammerfest_server, hammerfest_user_id, period, retrieved_at,
-        email
-      ) AS (
-        VALUES(
-          $1::HAMMERFEST_SERVER, $2::HAMMERFEST_USER_ID, PERIOD($3::INSTANT, NULL), ARRAY[$3::INSTANT],
-          $4::EMAIL_ADDRESS_HASH
-        )
-      ),
-      current_row_email AS (
-        SELECT hammerfest_server, hammerfest_user_id, period
-        FROM hammerfest_emails
-        WHERE $1::HAMMERFEST_SERVER = hammerfest_server AND $4::EMAIL_ADDRESS_HASH = email AND upper_inf(period)
-        LIMIT 1
-      ),
-      current_row_uid AS (
-        SELECT hammerfest_server, hammerfest_user_id, period
-        FROM hammerfest_emails
-        WHERE $1::HAMMERFEST_SERVER = hammerfest_server AND $2::HAMMERFEST_USER_ID = hammerfest_user_id AND upper_inf(period)
-        LIMIT 1
-      ),
-      matching_current_row AS (
-        SELECT hammerfest_server, hammerfest_user_id, period
-        FROM hammerfest_emails
-          INNER JOIN current_row_email USING (hammerfest_server, hammerfest_user_id, period)
-          INNER JOIN current_row_uid USING (hammerfest_server, hammerfest_user_id, period)
-      ),
-      missing_input_row AS (
-        SELECT *
-        FROM input_row
-        WHERE NOT EXISTS (SELECT 1 FROM matching_current_row)
-      ),
-      current_rows AS (
-        SELECT * FROM current_row_email
-        UNION
-        SELECT * FROM current_row_uid
-      ),
-      rows_to_invalidate AS (
-        SELECT * FROM current_rows
-        EXCEPT
-        SELECT * FROM matching_current_row
-      ),
-      invalidated_rows AS (
-        UPDATE hammerfest_emails
-          SET period = PERIOD(lower(period), $3::INSTANT)
-          WHERE ROW(hammerfest_server, hammerfest_user_id, period) IN (SELECT * FROM rows_to_invalidate)
-          RETURNING hammerfest_server, hammerfest_user_id, period
-      ),
-      updated_row AS (
-        UPDATE hammerfest_emails
-        SET retrieved_at = sampled_instant_set_insert_back(retrieved_at, const_sampling_window(), $3::INSTANT)
-        WHERE ROW(hammerfest_server, hammerfest_user_id, period) = (SELECT * FROM matching_current_row)
-        RETURNING hammerfest_server, hammerfest_user_id, period
-      ),
-      inserted_row AS (
-        INSERT
-        INTO hammerfest_emails(hammerfest_server, hammerfest_user_id, period, retrieved_at, email)
-        SELECT * FROM missing_input_row
-        RETURNING hammerfest_server, hammerfest_user_id, period
-      )
-    SELECT * FROM invalidated_rows
-    UNION ALL
-    SELECT * FROM updated_row
-    UNION ALL
-    SELECT * FROM inserted_row;
-    ",
-  )
+  let res: PgQueryResult = sqlx::query(upsert_archive_query!(
+    hammerfest_emails(
+      time($3 period, retrieved_at),
+      primary($1 hammerfest_server::HAMMERFEST_SERVER, $2 hammerfest_user_id::HAMMERFEST_USER_ID),
+      data($4 email::EMAIL_ADDRESS_HASH),
+      unique(email(hammerfest_server, email)),
+    )
+  ))
   .bind(server)
   .bind(id)
   .bind(now)
   .bind(&email_hash)
   .execute(&mut *tx)
-  .await.unwrap();
+  .await?;
   // Affected row counts:
   // 1 : 1 updated (matching data)
   // 1 : 1 inserted (first insert)
