@@ -277,28 +277,27 @@ async fn touch_hammerfest_profile(
     r"
     WITH
       input_row(
-        hammerfest_server, hammerfest_user_id, valid_period,
+        hammerfest_server, hammerfest_user_id, period, retrieved_at,
         best_score, best_level,
         season_score,
         quest_statuses, unlocked_items
       ) AS (
         VALUES(
-          $1::HAMMERFEST_SERVER, $2::HAMMERFEST_USER_ID, PERIOD($3::INSTANT, $3::INSTANT, '[]'),
+          $1::HAMMERFEST_SERVER, $2::HAMMERFEST_USER_ID, PERIOD($3::INSTANT, NULL), ARRAY[$3::INSTANT],
           $4::U32, $5::U8,
           $6::U32,
           $7::HAMMERFEST_QUEST_STATUS_MAP_ID, $8::HAMMERFEST_UNLOCKED_ITEM_SET_ID
         )
       ),
-      latest_row AS (
-        SELECT hammerfest_server, hammerfest_user_id, valid_period
+      current_row AS (
+        SELECT hammerfest_server, hammerfest_user_id, period
         FROM hammerfest_profiles
-        WHERE $1::HAMMERFEST_SERVER = hammerfest_server AND $2::HAMMERFEST_USER_ID = hammerfest_user_id
-        ORDER BY upper(valid_period) DESC
+        WHERE $1::HAMMERFEST_SERVER = hammerfest_server AND $2::HAMMERFEST_USER_ID = hammerfest_user_id AND upper_inf(period)
         LIMIT 1
       ),
-      matching_latest_row AS (
-        SELECT hammerfest_server, hammerfest_user_id, valid_period
-        FROM hammerfest_profiles INNER JOIN latest_row USING (hammerfest_server, hammerfest_user_id, valid_period)
+      matching_current_row AS (
+        SELECT hammerfest_server, hammerfest_user_id, period
+        FROM hammerfest_profiles INNER JOIN current_row USING (hammerfest_server, hammerfest_user_id, period)
         WHERE
           $4::U32 = best_score AND $5::U8 = best_level
           AND $6::U32 = season_score
@@ -307,23 +306,36 @@ async fn touch_hammerfest_profile(
       missing_input_row AS (
         SELECT *
         FROM input_row
-        WHERE NOT EXISTS (SELECT 1 FROM matching_latest_row)
+        WHERE NOT EXISTS (SELECT 1 FROM matching_current_row)
+      ),
+      rows_to_invalidate AS (
+        SELECT * FROM current_row
+        EXCEPT
+        SELECT * FROM matching_current_row
+      ),
+      invalidated_rows AS (
+        UPDATE hammerfest_profiles
+          SET period = PERIOD(lower(period), $3::INSTANT)
+          WHERE ROW(hammerfest_server, hammerfest_user_id, period) IN (SELECT * FROM rows_to_invalidate)
+          RETURNING hammerfest_server, hammerfest_user_id, period
       ),
       updated_row AS (
         UPDATE hammerfest_profiles
-        SET valid_period = PERIOD(lower(valid_period), $3::INSTANT, '[]')
-        WHERE ROW(hammerfest_server, hammerfest_user_id, valid_period) = (SELECT * FROM matching_latest_row)
-        RETURNING hammerfest_server, hammerfest_user_id, valid_period
+        SET retrieved_at = sampled_instant_set_insert_back(retrieved_at, const_sampling_window(), $3::INSTANT)
+        WHERE ROW(hammerfest_server, hammerfest_user_id, period) = (SELECT * FROM matching_current_row)
+        RETURNING hammerfest_server, hammerfest_user_id, period
       ),
       inserted_row AS (
         INSERT
-        INTO hammerfest_profiles(hammerfest_server, hammerfest_user_id, valid_period, best_score, best_level, season_score, quest_statuses, unlocked_items)
+        INTO hammerfest_profiles(hammerfest_server, hammerfest_user_id, period, retrieved_at, best_score, best_level, season_score, quest_statuses, unlocked_items)
         SELECT * FROM missing_input_row
-        RETURNING hammerfest_server, hammerfest_user_id, valid_period
+        RETURNING hammerfest_server, hammerfest_user_id, period
       )
-    SELECT upper(valid_period) AS end_time FROM updated_row
+    SELECT * FROM invalidated_rows
     UNION ALL
-    SELECT upper(valid_period) AS end_time FROM inserted_row;
+    SELECT * FROM updated_row
+    UNION ALL
+    SELECT * FROM inserted_row;
     ",
   )
     .bind(server)
@@ -336,7 +348,11 @@ async fn touch_hammerfest_profile(
     .bind(unlocked_items)
     .execute(&mut *tx)
     .await?;
-  assert_eq!(res.rows_affected(), 1);
+  // Affected row counts:
+  // 1 : 1 updated (matching data)
+  // 1 : 1 inserted (first insert)
+  // 2 : 1 inserted (data change), 1 invalidated (primary)
+  assert!((1..=2u64).contains(&res.rows_affected()));
   Ok(())
 }
 
@@ -352,54 +368,70 @@ async fn touch_hammerfest_email(
     r"
     WITH
       input_row(
-        hammerfest_server, hammerfest_user_id, valid_period,
+        hammerfest_server, hammerfest_user_id, period, retrieved_at,
         email
       ) AS (
         VALUES(
-          $1::HAMMERFEST_SERVER, $2::HAMMERFEST_USER_ID, PERIOD($3::INSTANT, $3::INSTANT, '[]'),
+          $1::HAMMERFEST_SERVER, $2::HAMMERFEST_USER_ID, PERIOD($3::INSTANT, NULL), ARRAY[$3::INSTANT],
           $4::EMAIL_ADDRESS_HASH
         )
       ),
-      latest_row_email AS (
-        SELECT hammerfest_server, hammerfest_user_id, valid_period
+      current_row_email AS (
+        SELECT hammerfest_server, hammerfest_user_id, period
         FROM hammerfest_emails
-        WHERE $1::HAMMERFEST_SERVER = hammerfest_server AND $4::EMAIL_ADDRESS_HASH = email
-        ORDER BY upper(valid_period) DESC
+        WHERE $1::HAMMERFEST_SERVER = hammerfest_server AND $4::EMAIL_ADDRESS_HASH = email AND upper_inf(period)
         LIMIT 1
       ),
-      latest_row_uid AS (
-        SELECT hammerfest_server, hammerfest_user_id, valid_period
+      current_row_uid AS (
+        SELECT hammerfest_server, hammerfest_user_id, period
         FROM hammerfest_emails
-        WHERE $1::HAMMERFEST_SERVER = hammerfest_server AND $2::HAMMERFEST_USER_ID = hammerfest_user_id
-        ORDER BY upper(valid_period) DESC
+        WHERE $1::HAMMERFEST_SERVER = hammerfest_server AND $2::HAMMERFEST_USER_ID = hammerfest_user_id AND upper_inf(period)
         LIMIT 1
       ),
-      matching_latest_row AS (
-        SELECT hammerfest_server, hammerfest_user_id, valid_period
+      matching_current_row AS (
+        SELECT hammerfest_server, hammerfest_user_id, period
         FROM hammerfest_emails
-          INNER JOIN latest_row_email USING (hammerfest_server, hammerfest_user_id, valid_period)
-          INNER JOIN latest_row_uid USING (hammerfest_server, hammerfest_user_id, valid_period)
+          INNER JOIN current_row_email USING (hammerfest_server, hammerfest_user_id, period)
+          INNER JOIN current_row_uid USING (hammerfest_server, hammerfest_user_id, period)
       ),
       missing_input_row AS (
         SELECT *
         FROM input_row
-        WHERE NOT EXISTS (SELECT 1 FROM matching_latest_row)
+        WHERE NOT EXISTS (SELECT 1 FROM matching_current_row)
+      ),
+      current_rows AS (
+        SELECT * FROM current_row_email
+        UNION
+        SELECT * FROM current_row_uid
+      ),
+      rows_to_invalidate AS (
+        SELECT * FROM current_rows
+        EXCEPT
+        SELECT * FROM matching_current_row
+      ),
+      invalidated_rows AS (
+        UPDATE hammerfest_emails
+          SET period = PERIOD(lower(period), $3::INSTANT)
+          WHERE ROW(hammerfest_server, hammerfest_user_id, period) IN (SELECT * FROM rows_to_invalidate)
+          RETURNING hammerfest_server, hammerfest_user_id, period
       ),
       updated_row AS (
         UPDATE hammerfest_emails
-        SET valid_period = PERIOD(lower(valid_period), $3::INSTANT, '[]')
-        WHERE ROW(hammerfest_server, hammerfest_user_id, valid_period) = (SELECT * FROM matching_latest_row)
-        RETURNING hammerfest_server, hammerfest_user_id, valid_period
+        SET retrieved_at = sampled_instant_set_insert_back(retrieved_at, const_sampling_window(), $3::INSTANT)
+        WHERE ROW(hammerfest_server, hammerfest_user_id, period) = (SELECT * FROM matching_current_row)
+        RETURNING hammerfest_server, hammerfest_user_id, period
       ),
       inserted_row AS (
         INSERT
-        INTO hammerfest_emails(hammerfest_server, hammerfest_user_id, valid_period, email)
+        INTO hammerfest_emails(hammerfest_server, hammerfest_user_id, period, retrieved_at, email)
         SELECT * FROM missing_input_row
-        RETURNING hammerfest_server, hammerfest_user_id, valid_period
+        RETURNING hammerfest_server, hammerfest_user_id, period
       )
-    SELECT upper(valid_period) AS end_time FROM updated_row
+    SELECT * FROM invalidated_rows
     UNION ALL
-    SELECT upper(valid_period) AS end_time FROM inserted_row;
+    SELECT * FROM updated_row
+    UNION ALL
+    SELECT * FROM inserted_row;
     ",
   )
   .bind(server)
@@ -407,8 +439,14 @@ async fn touch_hammerfest_email(
   .bind(now)
   .bind(&email_hash)
   .execute(&mut *tx)
-  .await?;
-  assert_eq!(res.rows_affected(), 1);
+  .await.unwrap();
+  // Affected row counts:
+  // 1 : 1 updated (matching data)
+  // 1 : 1 inserted (first insert)
+  // 2 : 1 inserted (first insert), 1 invalidated (email)
+  // 2 : 1 inserted (data change), 1 invalidated (primary)
+  // 3 : 1 inserted (data change), 1 invalidated (primary), 1 invalidated (email)
+  assert!((1..=3u64).contains(&res.rows_affected()));
   Ok(())
 }
 
@@ -629,10 +667,10 @@ mod test {
     }
   }
 
-  // test_hammerfest_store!(
-  //   #[serial]
-  //   || make_test_api().await
-  // );
+  test_hammerfest_store!(
+    #[serial]
+    || make_test_api().await
+  );
 
   test_hammerfest_store_pg!(
     #[serial]

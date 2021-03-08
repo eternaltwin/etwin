@@ -24,6 +24,63 @@ CREATE DOMAIN hammerfest_rank AS U8 CHECK (value < 5);
 CREATE DOMAIN hammerfest_theme_title AS VARCHAR(100);
 CREATE DOMAIN hammerfest_thread_title AS VARCHAR(100);
 
+--- Checks that arr is ascendingly-sorted array of unique non-null values
+CREATE OR REPLACE FUNCTION array_is_ordered_set(
+  IN arr ANYARRAY
+) RETURNS BOOLEAN
+  LANGUAGE sql
+  IMMUTABLE LEAKPROOF STRICT PARALLEL SAFE AS
+$$
+SELECT arr = (
+  SELECT ARRAY_AGG(item)
+  FROM (
+    SELECT DISTINCT UNNEST(arr) AS item
+    ORDER BY item ASC
+  ) AS items
+  WHERE item IS NOT NULL
+);
+$$;
+
+--- Checks that arr is ascendingly-sorted array of unique non-null instants with at most 2 instants in any period of duration `sampling_window`
+CREATE OR REPLACE FUNCTION array_is_sampled_instant_set(
+  IN arr INSTANT ARRAY,
+  IN sampling_window INTERVAL
+) RETURNS BOOLEAN
+  LANGUAGE sql
+  IMMUTABLE LEAKPROOF STRICT PARALLEL SAFE AS
+$$
+SELECT
+  array_is_ordered_set(arr)
+  AND (
+    SELECT MAX(sample_count_in_window) FROM (
+      SELECT COUNT(item) OVER (ORDER BY item RANGE sampling_window PRECEDING) AS sample_count_in_window
+      FROM (SELECT UNNEST(arr) AS item) AS items
+    ) AS counts
+  ) <= 2;
+$$;
+
+--- Insert a value at the end of a `samplied_instant_set`, see `array_is_sampled_instant_set`
+CREATE OR REPLACE FUNCTION sampled_instant_set_insert_back(
+  IN arr INSTANT ARRAY,
+  IN sampling_window INTERVAL,
+  IN new_value INSTANT
+) RETURNS INSTANT ARRAY
+  LANGUAGE sql
+  IMMUTABLE LEAKPROOF STRICT PARALLEL SAFE AS
+$$
+SELECT CASE
+  WHEN array_length(arr, 1) = 0 THEN ARRAY[new_value]
+  WHEN array_length(arr, 1) = 1 AND arr[1] <> new_value THEN arr || new_value
+  WHEN array_length(arr, 1) >= 1 AND arr[array_length(arr, 1)] = new_value THEN arr
+  WHEN array_length(arr, 1) >= 2 AND new_value - arr[array_length(arr, 1) - 1] < sampling_window THEN arr[1:array_length(arr, 1) - 1] || new_value
+  ELSE arr || new_value
+END
+$$;
+
+-- Ordered set of instants, such as for each period of time T, there are at most 2 values
+-- Where `T` depen
+CREATE DOMAIN sampled_instant_set AS INSTANT ARRAY CHECK (array_is_ordered_set(VALUE));
+
 CREATE TYPE HAMMERFEST_FORUM_ROLE AS ENUM ('User', 'Moderator', 'Administrator');
 CREATE TYPE HAMMERFEST_QUEST_STATUS AS ENUM ('None', 'Pending', 'Complete');
 
@@ -62,6 +119,14 @@ CREATE TABLE hammerfest_items (
   is_hidden BOOLEAN NOT NULL,
   PRIMARY KEY (hammerfest_item_id)
 );
+
+-- Global constant: sampling window size for sampled instant sets
+CREATE OR REPLACE FUNCTION const_sampling_window() RETURNS INTERVAL
+  LANGUAGE sql
+  IMMUTABLE LEAKPROOF STRICT PARALLEL SAFE AS
+$$
+  SELECT '1day'::INTERVAL
+$$;
 
 -- The list of quests in Hammerfest (official game)
 CREATE TABLE hammerfest_quests (
@@ -148,7 +213,8 @@ CREATE TABLE hammerfest_inventories (
 CREATE TABLE hammerfest_profiles (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
-  valid_period VALID_PERIOD NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at sampled_instant_set NOT NULL CHECK(array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   best_score U32 NOT NULL,
   best_level U8 NOT NULL CHECK (best_level < 120),
@@ -156,8 +222,8 @@ CREATE TABLE hammerfest_profiles (
   season_score U32 NULL,
   quest_statuses HAMMERFEST_QUEST_STATUS_MAP_ID NOT NULL,
   unlocked_items HAMMERFEST_UNLOCKED_ITEM_SET_ID NOT NULL,
-  PRIMARY KEY (hammerfest_server, hammerfest_user_id, valid_period),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, valid_period WITH &&),
+  PRIMARY KEY (hammerfest_server, hammerfest_user_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, period WITH &&),
   CONSTRAINT hammerfest_profiles__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT hammerfest_profiles__quest_statuses__fk FOREIGN KEY (quest_statuses) REFERENCES hammerfest_quest_status_maps(hammerfest_quest_status_map_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT hammerfest_profiles__unlocked_items__fk FOREIGN KEY (unlocked_items) REFERENCES hammerfest_unlocked_item_sets(hammerfest_unlocked_item_set_id) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -167,12 +233,13 @@ CREATE TABLE hammerfest_profiles (
 CREATE TABLE hammerfest_emails (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
-  valid_period VALID_PERIOD NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at sampled_instant_set NOT NULL CHECK(array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   email EMAIL_ADDRESS_HASH NULL,
-  PRIMARY KEY (hammerfest_server, hammerfest_user_id, valid_period),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, valid_period WITH &&),
-  EXCLUDE USING gist (hammerfest_server WITH =, email WITH =, valid_period WITH &&),
+  PRIMARY KEY (hammerfest_server, hammerfest_user_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, period WITH &&),
+  EXCLUDE USING gist (hammerfest_server WITH =, email WITH =, period WITH &&),
   CONSTRAINT hammerfest_email__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT hammerfest_email__email__fk FOREIGN KEY (email) REFERENCES email_addresses(_hash) ON DELETE RESTRICT ON UPDATE CASCADE
 );
