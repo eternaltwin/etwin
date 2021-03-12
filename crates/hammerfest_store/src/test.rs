@@ -2,9 +2,10 @@ use chrono::{Duration, TimeZone, Utc};
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
 use etwin_core::hammerfest::{
-  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestProfile, HammerfestServer, HammerfestStore,
-  ShortHammerfestUser,
+  GetHammerfestUserOptions, HammerfestProfile, HammerfestServer, HammerfestStore, ShortHammerfestUser,
+  StoredHammerfestUser,
 };
+use std::convert::TryInto;
 
 #[macro_export]
 macro_rules! test_hammerfest_store {
@@ -38,6 +39,17 @@ macro_rules! register_test {
       crate::test::$test_name($api).await;
     }
   };
+}
+
+macro_rules! assert_ok {
+  ($result:expr $(,)?) => {{
+    match &$result {
+      Err(_) => {
+        panic!("assertion failed: `result.is_ok()`: {:?}", &$result)
+      }
+      Ok(()) => {}
+    }
+  }};
 }
 
 pub(crate) struct TestApi<TyClock, TyHammerfestStore>
@@ -80,7 +92,7 @@ where
       })
       .await
       .unwrap();
-    let expected = ArchivedHammerfestUser {
+    let expected = StoredHammerfestUser {
       server: HammerfestServer::HammerfestFr,
       id: "123".parse().unwrap(),
       username: "alice".parse().unwrap(),
@@ -118,7 +130,7 @@ where
       })
       .await
       .unwrap();
-    let expected = Some(ArchivedHammerfestUser {
+    let expected = Some(StoredHammerfestUser {
       server: HammerfestServer::HammerfestFr,
       id: "123".parse().unwrap(),
       username: "alice".parse().unwrap(),
@@ -184,7 +196,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -214,7 +226,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -237,7 +249,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -266,7 +278,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -289,7 +301,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -318,7 +330,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -341,7 +353,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 100,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -364,7 +376,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -394,7 +406,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -424,7 +436,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -447,7 +459,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -477,13 +489,13 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
   {
@@ -500,7 +512,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -523,7 +535,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -553,7 +565,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -576,7 +588,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),
@@ -599,7 +611,7 @@ where
         best_level: 0,
         has_carrot: false,
         season_score: 0,
-        rank: 0,
+        ladder_level: 0.try_into().unwrap(),
         hall_of_fame: None,
         items: Default::default(),
         quests: Default::default(),

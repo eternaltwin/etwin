@@ -9,155 +9,166 @@
       "server": "hfest.net",
       "id": "30732",
       "name": "Hammerfest Collectors",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "74942",
         "username": "electriczax"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 934,
-      "is_closed": false
+      "reply_count": 934
     },
     {
       "server": "hfest.net",
       "id": "39785",
       "name": "TV Hammerfest",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "126296",
         "username": "wrzosu"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 69,
-      "is_closed": false
+      "reply_count": 69
     },
     {
       "server": "hfest.net",
       "id": "22273",
       "name": "Towers of Greed",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "78227",
         "username": "dAwjbNS"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 986,
-      "is_closed": false
+      "reply_count": 986
     },
     {
       "server": "hfest.net",
       "id": "44893",
       "name": "Useful links",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "183556",
         "username": "fabianh"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 1,
-      "is_closed": false
+      "reply_count": 1
     },
     {
       "server": "hfest.net",
       "id": "30731",
       "name": "Hammerfest Scoreboard",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "74942",
         "username": "electriczax"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 281,
-      "is_closed": false
+      "reply_count": 281
     },
     {
       "server": "hfest.net",
       "id": "6586",
       "name": "*Official* Ask Questions Here!",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "56118",
         "username": "billybob1211"
       },
+      "author_role": "None",
       "kind": "sticky",
-      "reply_count": 2823,
-      "is_closed": false
+      "reply_count": 2823
     },
     {
       "server": "hfest.net",
       "id": "44748",
       "name": "Read this - How to post links!",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "183556",
         "username": "fabianh"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 0,
-      "is_closed": false
+      "reply_count": 0
     },
     {
       "server": "hfest.net",
       "id": "42256",
       "name": "Mirror mode crash - fix.",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "74942",
         "username": "electriczax"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 7,
-      "is_closed": false
+      "reply_count": 7
     },
     {
       "server": "hfest.net",
       "id": "38705",
       "name": "Forum Rules!",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "126296",
         "username": "wrzosu"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 11,
-      "is_closed": false
+      "reply_count": 11
     },
     {
       "server": "hfest.net",
       "id": "17823",
       "name": "Read this before asking!",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "74942",
         "username": "electriczax"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 9,
-      "is_closed": false
+      "reply_count": 9
     },
     {
       "server": "hfest.net",
       "id": "3183",
       "name": "About Current Vers. & Updates",
+      "is_closed": true,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "2",
         "username": "ayame"
       },
+      "author_role": "Administrator",
       "kind": "sticky",
-      "reply_count": 0,
-      "is_closed": true
+      "reply_count": 0
     }
   ],
   "threads": {
@@ -168,248 +179,261 @@
         "server": "hfest.net",
         "id": "43",
         "name": "I am better then all of you !!",
+        "is_closed": true,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "115",
           "username": "Maniac"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 3,
           "day": 16,
           "weekday": 5
         },
-        "reply_count": 83,
-        "is_closed": true
+        "reply_count": 83
       },
       {
         "server": "hfest.net",
         "id": "129",
         "name": "No Red Bombs",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "3669",
           "username": "SPFiredrake"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 3,
           "day": 12,
           "weekday": 1
         },
-        "reply_count": 3,
-        "is_closed": false
+        "reply_count": 3
       },
       {
         "server": "hfest.net",
         "id": "259",
         "name": "Translation/Port Question",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "3669",
           "username": "SPFiredrake"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 3,
           "day": 12,
           "weekday": 1
         },
-        "reply_count": 5,
-        "is_closed": false
+        "reply_count": 5
       },
       {
         "server": "hfest.net",
         "id": "169",
         "name": "Loose a pyramid rank \"?",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "115",
           "username": "Maniac"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 3,
           "day": 12,
           "weekday": 1
         },
-        "reply_count": 7,
-        "is_closed": false
+        "reply_count": 7
       },
       {
         "server": "hfest.net",
         "id": "251",
         "name": "A intresting question",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "1185",
           "username": "AmatsuDark"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 3,
           "day": 12,
           "weekday": 1
         },
-        "reply_count": 19,
-        "is_closed": false
+        "reply_count": 19
       },
       {
         "server": "hfest.net",
         "id": "280",
         "name": "IRC Channel",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "1185",
           "username": "AmatsuDark"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 3,
           "day": 10,
           "weekday": 6
         },
-        "reply_count": 2,
-        "is_closed": false
+        "reply_count": 2
       },
       {
         "server": "hfest.net",
         "id": "220",
         "name": "Soccerfest! XD",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "4313",
           "username": "zoyyyyy"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 3,
           "day": 5,
           "weekday": 1
         },
-        "reply_count": 1,
-        "is_closed": false
+        "reply_count": 1
       },
       {
         "server": "hfest.net",
         "id": "197",
         "name": "friend referrals",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "33",
           "username": "thebird"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 3,
           "day": 5,
           "weekday": 1
         },
-        "reply_count": 2,
-        "is_closed": false
+        "reply_count": 2
       },
       {
         "server": "hfest.net",
         "id": "94",
         "name": "Weekly Updates??",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "1644",
           "username": "ncraig"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 3,
           "day": 5,
           "weekday": 1
         },
-        "reply_count": 19,
-        "is_closed": false
+        "reply_count": 19
       },
       {
         "server": "hfest.net",
         "id": "198",
         "name": "Moon Eclipse... READ NOW!",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "1131",
           "username": "Malli"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 3,
           "day": 4,
           "weekday": 7
         },
-        "reply_count": 2,
-        "is_closed": false
+        "reply_count": 2
       },
       {
         "server": "hfest.net",
         "id": "155",
         "name": "Lets go it",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "115",
           "username": "Maniac"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 2,
           "day": 28,
           "weekday": 3
         },
-        "reply_count": 2,
-        "is_closed": false
+        "reply_count": 2
       },
       {
         "server": "hfest.net",
         "id": "156",
         "name": "forum function request",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "115",
           "username": "Maniac"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 2,
           "day": 28,
           "weekday": 3
         },
-        "reply_count": 0,
-        "is_closed": false
+        "reply_count": 0
       },
       {
         "server": "hfest.net",
         "id": "122",
         "name": "Game Unsavable",
+        "is_closed": false,
         "author": {
           "type": "HammerfestUser",
           "server": "hfest.net",
           "id": "1889",
           "username": "hooman"
         },
+        "author_role": "None",
         "kind": "regular",
         "last_message_date": {
           "month": 2,
           "day": 26,
           "weekday": 1
         },
-        "reply_count": 2,
-        "is_closed": false
+        "reply_count": 2
       }
     ]
   }

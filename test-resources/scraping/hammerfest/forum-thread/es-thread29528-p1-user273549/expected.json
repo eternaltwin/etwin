@@ -7,7 +7,8 @@
   "thread": {
     "server": "hammerfest.es",
     "id": "29528",
-    "name": "[Lectura Obligatoria] NORMAS"
+    "name": "[Lectura Obligatoria] NORMAS",
+    "is_closed": true
   },
   "messages": {
     "page1": 1,
@@ -21,7 +22,8 @@
           "id": "6281",
           "username": "L0c0",
           "has_carrot": false,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "Moderator"
         },
         "ctime": {
@@ -41,7 +43,8 @@
           "id": "6281",
           "username": "L0c0",
           "has_carrot": false,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "Moderator"
         },
         "ctime": {

@@ -1,5 +1,6 @@
 use hex::FromHex;
 pub use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 
 /// Serializes `buffer` to a lowercase hex string.
 pub fn buffer_to_hex<T, S>(buffer: &T, serializer: S) -> Result<S::Ok, S::Error>
@@ -94,6 +95,22 @@ where
   D: serde::Deserializer<'de>,
 {
   Ok(Some(Option::deserialize(deserializer)?))
+}
+
+pub fn serialize_ordered_map<K: Ord + Serialize, V: Serialize, S: Serializer>(
+  value: &HashMap<K, V>,
+  serializer: S,
+) -> Result<S::Ok, S::Error> {
+  let ordered: BTreeMap<_, _> = value.iter().collect();
+  ordered.serialize(serializer)
+}
+
+pub fn serialize_ordered_set<T: Ord + Serialize, S: Serializer>(
+  value: &HashSet<T>,
+  serializer: S,
+) -> Result<S::Ok, S::Error> {
+  let ordered: BTreeSet<_> = value.iter().collect();
+  ordered.serialize(serializer)
 }
 
 #[cfg(test)]

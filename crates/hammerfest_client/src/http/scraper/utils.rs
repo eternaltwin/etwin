@@ -9,6 +9,7 @@ use once_cell::sync::Lazy;
 use scraper::{ElementRef, Selector};
 
 use super::Result;
+use std::num::NonZeroU16;
 
 pub struct Selectors {
   selectors: RwLock<HashMap<&'static str, &'static Selector>>,
@@ -175,6 +176,14 @@ pub fn parse_dotted_u32(s: &str) -> Result<u32> {
 }
 
 pub fn parse_u32(s: &str) -> Result<u32> {
+  s.parse().map_err(|err| ScraperError::InvalidInteger(s.to_owned(), err))
+}
+
+pub fn parse_non_zero_u16(s: &str) -> Result<NonZeroU16> {
+  s.parse().map_err(|err| ScraperError::InvalidInteger(s.to_owned(), err))
+}
+
+pub fn parse_u16(s: &str) -> Result<u16> {
   s.parse().map_err(|err| ScraperError::InvalidInteger(s.to_owned(), err))
 }
 

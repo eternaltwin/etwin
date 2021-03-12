@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufReader, BufWriter};
+use std::io::BufReader;
 use std::path::{Path, PathBuf};
 
 use once_cell::sync::Lazy;
@@ -97,33 +97,29 @@ mod tests_helpers {
     path
   }
 
-  pub fn test_scraper<T, O, F>(mut path: PathBuf, scraper: F)
+  pub fn test_scraper<T, O, F>(path: PathBuf, scraper: F)
   where
-    T: Serialize + DeserializeOwned + Eq,
+    T: Serialize + DeserializeOwned + Eq + core::fmt::Debug,
     O: DeserializeOwned,
     F: FnOnce(O, &scraper::Html) -> Result<T, ScraperError>,
   {
-    path.push("input.html");
-    let input = std::fs::read_to_string(&path).unwrap();
+    let input_path = path.join("input.html");
+    let options_path = path.join("options.json");
+    let actual_path = path.join("rs.actual.json");
+    let expected_path = path.join("expected.json");
+
+    let input = std::fs::read_to_string(&input_path).unwrap();
     let input = scraper::Html::parse_document(&input);
-    path.pop();
 
-    path.push("expected.json");
-    let expected: T = serde_json::from_reader(BufReader::new(File::open(&path).unwrap())).unwrap();
-    path.pop();
+    let options: O = serde_json::from_reader(BufReader::new(File::open(&options_path).unwrap())).unwrap();
 
-    path.push("options.json");
-    let options: O = serde_json::from_reader(BufReader::new(File::open(&path).unwrap())).unwrap();
-    path.pop();
+    let actual = scraper(options, &input).expect("failed to scrape input");
+    let actual_json = serde_json::to_string_pretty(&actual).unwrap();
+    ::std::fs::write(actual_path, format!("{}\n", actual_json)).expect("Failed to write actual file");
 
-    let actual = scraper(options, &input).expect("scraper_tools failed to scrape input");
+    let expected: T = serde_json::from_reader(BufReader::new(File::open(&expected_path).unwrap())).unwrap();
 
-    if expected != actual {
-      path.push("actual.json");
-      serde_json::to_writer_pretty(BufWriter::new(File::create(&path).unwrap()), &actual).unwrap();
-      path.pop();
-      panic!("scraped output was different than expected");
-    }
+    assert_eq!(actual, expected);
   }
 }
 
@@ -136,7 +132,7 @@ mod tests_impl {
       server: HammerfestServer,
     }
 
-    #[derive(Serialize, Deserialize, PartialEq, Eq)]
+    #[derive(Serialize, Deserialize, PartialEq, Eq, Debug)]
     struct Output {
       #[serde(rename = "self")]
       this: Option<ShortHammerfestUser>,

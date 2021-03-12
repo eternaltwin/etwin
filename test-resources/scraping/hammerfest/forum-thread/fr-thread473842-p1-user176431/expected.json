@@ -7,7 +7,8 @@
   "thread": {
     "server": "hammerfest.fr",
     "id": "473842",
-    "name": "[Jeu] Je te bannis"
+    "name": "[Jeu] Je te bannis",
+    "is_closed": false
   },
   "messages": {
     "page1": 1,
@@ -21,7 +22,8 @@
           "id": "877647",
           "username": "6avalanche",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {
@@ -41,7 +43,8 @@
           "id": "877647",
           "username": "6avalanche",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {
@@ -61,7 +64,8 @@
           "id": "804815",
           "username": "rafalon",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {
@@ -81,7 +85,8 @@
           "id": "817587",
           "username": "mrlaventure",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "Moderator"
         },
         "ctime": {
@@ -101,7 +106,8 @@
           "id": "127",
           "username": "Elseabora",
           "has_carrot": true,
-          "rank": 1,
+          "ladder_level": 1,
+          "rank": 78,
           "role": "None"
         },
         "ctime": {
@@ -121,7 +127,8 @@
           "id": "755795",
           "username": "stef87",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {
@@ -141,7 +148,8 @@
           "id": "926873",
           "username": "qruirui",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": null,
           "role": "None"
         },
         "ctime": {
@@ -161,7 +169,8 @@
           "id": "877647",
           "username": "6avalanche",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {
@@ -181,7 +190,8 @@
           "id": "682229",
           "username": "framboiseh",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {
@@ -201,7 +211,8 @@
           "id": "751178",
           "username": "Tchoobaka",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {
@@ -221,7 +232,8 @@
           "id": "804815",
           "username": "rafalon",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {

@@ -1,9 +1,10 @@
 /// Generates the query string for an upsert in an archive table
+#[macro_export]
 macro_rules! upsert_archive_query {
   ($table:ident (
     time ( $($)?$tid:literal $period:ident, $retrieved_at:ident ),
     primary ( $( $($)?$pid:literal $pname:ident :: $pty:ident ),* $(,)? ),
-    data ( $( $($)?$did:literal $dname:ident :: $dty:ident ),* $(,)? )
+    data ( $( $($)?$did:literal $dname:ident :: $dty:ident $(?)? ),* $(,)? )
     $(, unique($(
       $ukey:ident( $( $uname:ident ),* $(,)? )
     ),* $(,)?))?
@@ -60,7 +61,7 @@ macro_rules! upsert_archive_query {
           $($(
           "INNER JOIN current_row_", stringify!($ukey), " USING(", $primary_keys, ") ",
           )*)?
-        "WHERE TRUE" $(, " AND $", stringify!($did), "::", stringify!($dty), " = ", stringify!($table), ".", stringify!($dname))*,
+        "WHERE TRUE" $(, " AND $", stringify!($did), "::", stringify!($dty), " IS NOT DISTINCT FROM ", stringify!($table), ".", stringify!($dname))*,
       "), ",
       "missing_input_row AS (",
         "SELECT * ",

@@ -4,6 +4,8 @@ use etwin_core::core::Instant;
 use etwin_core::hammerfest::*;
 use std::collections::hash_map::Entry;
 use std::collections::{HashMap, HashSet};
+use std::convert::TryInto;
+use std::num::NonZeroU16;
 use std::str::FromStr;
 use std::sync::RwLock;
 use thiserror::Error;
@@ -24,23 +26,23 @@ pub enum Error {
   ForumThreadNotFound(HammerfestForumThreadId),
 }
 
-struct InMemoryUser {
+struct MemUser {
   user: ShortHammerfestUser,
   password: HammerfestPassword,
   current_session: Option<HammerfestSessionKey>,
 }
 
-struct InMemorySession {
+struct MemSession {
   user_id: HammerfestUserId,
   ctime: Instant,
 }
 
-struct InMemoryForumTheme {
+struct MemForumTheme {
   theme: HammerfestForumTheme,
   hidden_by: Option<HammerfestUserId>,
 }
 
-impl InMemoryForumTheme {
+impl MemForumTheme {
   fn is_visible_by(&self, user: Option<&HammerfestUserId>) -> bool {
     match (user, self.hidden_by.as_ref()) {
       (_, None) => true,
@@ -50,22 +52,22 @@ impl InMemoryForumTheme {
   }
 }
 
-struct InMemoryForumThread {
+struct MemForumThread {
   theme_id: HammerfestForumThemeId,
   thread: HammerfestForumThread,
   true_last_message_date: Instant,
-  messages: Vec<HammerfestForumPost>,
+  messages: Vec<HammerfestForumMessage>,
 }
 
-struct InMemoryServer {
-  users: HashMap<HammerfestUserId, InMemoryUser>,
-  forum_themes: HashMap<HammerfestForumThemeId, InMemoryForumTheme>,
-  forum_threads: HashMap<HammerfestForumThreadId, InMemoryForumThread>,
-  active_sessions: HashMap<HammerfestSessionKey, InMemorySession>,
+struct MemServer {
+  users: HashMap<HammerfestUserId, MemUser>,
+  forum_themes: HashMap<HammerfestForumThemeId, MemForumTheme>,
+  forum_threads: HashMap<HammerfestForumThreadId, MemForumThread>,
+  active_sessions: HashMap<HammerfestSessionKey, MemSession>,
 }
 
 pub struct MemHammerfestClient<TyClock> {
-  servers: HashMap<HammerfestServer, RwLock<InMemoryServer>>,
+  servers: HashMap<HammerfestServer, RwLock<MemServer>>,
   clock: TyClock,
 }
 
@@ -78,7 +80,7 @@ impl<TyClock> MemHammerfestClient<TyClock> {
     for server_name in HammerfestServer::iter() {
       servers.insert(
         server_name,
-        RwLock::new(InMemoryServer {
+        RwLock::new(MemServer {
           users: HashMap::new(),
           forum_themes: HashMap::new(),
           forum_threads: HashMap::new(),
@@ -107,7 +109,7 @@ impl<TyClock> MemHammerfestClient<TyClock> {
       .unwrap();
     match s.users.entry(id) {
       Entry::Occupied(_) => panic!("HammerfestUserId conflict"),
-      Entry::Vacant(e) => e.insert(InMemoryUser {
+      Entry::Vacant(e) => e.insert(MemUser {
         password,
         current_session: None,
         user: ShortHammerfestUser {
@@ -123,8 +125,8 @@ impl<TyClock> MemHammerfestClient<TyClock> {
     &mut self,
     server: HammerfestServer,
     id: HammerfestForumThemeId,
-    name: String,
-    description: String,
+    name: HammerfestForumThemeTitle,
+    description: HammerfestForumThemeDescription,
     hidden_by: Option<HammerfestUserId>,
   ) {
     let s = self
@@ -138,7 +140,7 @@ impl<TyClock> MemHammerfestClient<TyClock> {
 
     match s.forum_themes.entry(id) {
       Entry::Occupied(_) => panic!("HammerfestForumThemeId conflict"),
-      Entry::Vacant(e) => e.insert(InMemoryForumTheme {
+      Entry::Vacant(e) => e.insert(MemForumTheme {
         theme: HammerfestForumTheme {
           short: ShortHammerfestForumTheme { server, id, name },
           description,
@@ -155,7 +157,7 @@ impl<TyClock> MemHammerfestClient<TyClock> {
     server: HammerfestServer,
     theme: HammerfestForumThemeId,
     id: HammerfestForumThreadId,
-    name: String,
+    name: HammerfestForumThreadTitle,
     author: HammerfestUserId,
     date: Instant,
     is_closed: bool,
@@ -176,23 +178,28 @@ impl<TyClock> MemHammerfestClient<TyClock> {
     let forum_date = make_forum_date(date);
     match s.forum_threads.entry(id) {
       Entry::Occupied(_) => panic!("HammerfestForumThreadId conflict"),
-      Entry::Vacant(e) => e.insert(InMemoryForumThread {
+      Entry::Vacant(e) => e.insert(MemForumThread {
         theme_id: theme,
         thread: HammerfestForumThread {
-          short: ShortHammerfestForumThread { server, id, name },
+          short: ShortHammerfestForumThread {
+            server,
+            id,
+            name,
+            is_closed,
+          },
           author: author_user.user.clone(),
-          is_closed,
+          author_role: HammerfestForumRole::None,
           kind: if is_sticky {
             HammerfestForumThreadKind::Sticky
           } else {
             HammerfestForumThreadKind::Regular {
-              last_message_date: forum_date.date.clone(),
+              last_message_date: forum_date.date,
             }
           },
           reply_count: 0,
         },
         true_last_message_date: date,
-        messages: vec![HammerfestForumPost {
+        messages: vec![HammerfestForumMessage {
           id: None,
           ctime: forum_date,
           author: make_forum_author(author_user.user.clone()),
@@ -230,10 +237,10 @@ impl<TyClock> MemHammerfestClient<TyClock> {
 
     thread.true_last_message_date = date;
     if let HammerfestForumThreadKind::Regular { last_message_date } = &mut thread.thread.kind {
-      *last_message_date = forum_date.date.clone();
+      *last_message_date = forum_date.date;
     }
     thread.thread.reply_count += 1;
-    thread.messages.push(HammerfestForumPost {
+    thread.messages.push(HammerfestForumMessage {
       id: None,
       author: make_forum_author(author_user.user.clone()),
       ctime: forum_date,
@@ -243,14 +250,14 @@ impl<TyClock> MemHammerfestClient<TyClock> {
 }
 
 impl<TyClock> MemHammerfestClient<TyClock> {
-  fn get_server(&self, server: HammerfestServer) -> Result<&RwLock<InMemoryServer>> {
+  fn get_server(&self, server: HammerfestServer) -> Result<&RwLock<MemServer>> {
     self
       .servers
       .get(&server)
       .ok_or_else(|| Error::ServerNotFound(server).into())
   }
 
-  fn get_server_mut(&mut self, server: HammerfestServer) -> Result<&mut InMemoryServer> {
+  fn get_server_mut(&mut self, server: HammerfestServer) -> Result<&mut MemServer> {
     self
       .servers
       .get_mut(&server)
@@ -279,10 +286,10 @@ impl<TyClock> MemHammerfestClient<TyClock> {
   }
 }
 
-fn make_forum_date(date: Instant) -> HammerfestForumDateTime {
+fn make_forum_date(date: Instant) -> HammerfestDateTime {
   use chrono::{Datelike, Timelike};
-  HammerfestForumDateTime {
-    date: HammerfestForumDate {
+  HammerfestDateTime {
+    date: HammerfestDate {
       month: date.month() as u8,
       day: date.day() as u8,
       weekday: date.weekday().number_from_monday() as u8,
@@ -292,11 +299,12 @@ fn make_forum_date(date: Instant) -> HammerfestForumDateTime {
   }
 }
 
-fn make_forum_author(user: ShortHammerfestUser) -> HammerfestForumPostAuthor {
-  HammerfestForumPostAuthor {
+fn make_forum_author(user: ShortHammerfestUser) -> HammerfestForumMessageAuthor {
+  HammerfestForumMessageAuthor {
     user,
     role: HammerfestForumRole::None,
-    rank: 4,
+    ladder_level: 4.try_into().unwrap(),
+    rank: None,
     has_carrot: false,
   }
 }
@@ -342,7 +350,7 @@ where
     let ctime = self.clock.now();
     server.active_sessions.insert(
       key.clone(),
-      InMemorySession {
+      MemSession {
         user_id: user.id,
         ctime,
       },
@@ -391,7 +399,7 @@ where
     Ok(server.users.get(&options.user_id).map(|user| HammerfestProfile {
       user: user.user.clone(),
       email: if is_self { Some(None) } else { None },
-      rank: 4,
+      ladder_level: 4.try_into().unwrap(),
       hall_of_fame: None,
       has_carrot: false,
       best_score: 0,
@@ -411,7 +419,7 @@ where
     Ok(map)
   }
 
-  async fn get_own_god_children(&self, session: &HammerfestSession) -> Result<Vec<HammerfestGodChild>> {
+  async fn get_own_godchildren(&self, session: &HammerfestSession) -> Result<Vec<HammerfestGodchild>> {
     self.check_session(session)?;
     Ok(Vec::new())
   }
@@ -452,7 +460,7 @@ where
     session: Option<&HammerfestSession>,
     server: HammerfestServer,
     theme_id: HammerfestForumThemeId,
-    page1: u32,
+    page1: NonZeroU16,
   ) -> Result<HammerfestForumThemePage> {
     let user = self.check_opt_session(session, server);
 
@@ -467,7 +475,7 @@ where
       .forum_threads
       .iter()
       .filter_map(|(_, t)| {
-        if t.theme_id == theme_id && (matches!(t.thread.kind, HammerfestForumThreadKind::Sticky) || page1 <= 1) {
+        if t.theme_id == theme_id && (matches!(t.thread.kind, HammerfestForumThreadKind::Sticky) || page1.get() <= 1) {
           Some(t)
         } else {
           None
@@ -483,7 +491,7 @@ where
       sticky: sticky.iter().map(|t| t.thread.clone()).collect(),
       threads: HammerfestForumThreadListing {
         page1,
-        pages: 1,
+        pages: NonZeroU16::new(1).unwrap(),
         items: threads.iter().map(|t| t.thread.clone()).collect(),
       },
     })
@@ -494,7 +502,7 @@ where
     session: Option<&HammerfestSession>,
     server: HammerfestServer,
     thread_id: HammerfestForumThreadId,
-    page1: u32,
+    page1: NonZeroU16,
   ) -> Result<HammerfestForumThreadPage> {
     let user = self.check_opt_session(session, server);
     let server = self.get_server(server)?.read().unwrap();
@@ -514,14 +522,18 @@ where
       .filter(|(_, t)| t.is_visible_by(user))
       .ok_or(Error::ForumThreadNotFound(thread_id))?;
 
-    let messages = if page1 > 1 { thread.messages.clone() } else { Vec::new() };
+    let messages = if page1.get() > 1 {
+      thread.messages.clone()
+    } else {
+      Vec::new()
+    };
 
     Ok(HammerfestForumThreadPage {
       theme: theme.theme.short.clone(),
       thread: thread.thread.short.clone(),
       messages: HammerfestForumPostListing {
         page1,
-        pages: 1,
+        pages: NonZeroU16::new(1).unwrap(),
         items: messages,
       },
     })

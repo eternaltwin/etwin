@@ -14,15 +14,16 @@ CREATE DOMAIN hammerfest_item_count_map_id AS UUID;
 CREATE DOMAIN hammerfest_quest_status_map_id AS UUID;
 CREATE DOMAIN hammerfest_unlocked_item_set_id AS UUID;
 
-CREATE DOMAIN hammerfest_theme_id AS VARCHAR(10) CHECK (value ~ '^[1-9]\d{0,9}$');
-CREATE DOMAIN hammerfest_thread_id AS VARCHAR(10) CHECK (value ~ '^[1-9]\d{0,9}$');
-CREATE DOMAIN hammerfest_message_id AS VARCHAR(10) CHECK (value ~ '^[1-9]\d{0,9}$');
+CREATE DOMAIN hammerfest_forum_theme_id AS VARCHAR(10) CHECK (value ~ '^[1-9]\d{0,9}$');
+CREATE DOMAIN hammerfest_forum_thread_id AS VARCHAR(10) CHECK (value ~ '^[1-9]\d{0,9}$');
+CREATE DOMAIN hammerfest_forum_message_id AS VARCHAR(10) CHECK (value ~ '^[1-9]\d{0,9}$');
 CREATE DOMAIN hammerfest_item_id AS VARCHAR(4) CHECK (value ~ '^(?:0|[1-9]\d{0,3})$');
 CREATE DOMAIN hammerfest_quest_id AS VARCHAR(4) CHECK (value ~ '^(?:0|[1-9]\d{0,3})$');
--- Pyramid rank: 0 (Hall of Fame) to 4 (Level 4).
-CREATE DOMAIN hammerfest_rank AS U8 CHECK (value < 5);
-CREATE DOMAIN hammerfest_theme_title AS VARCHAR(100);
-CREATE DOMAIN hammerfest_thread_title AS VARCHAR(100);
+-- Pyramid level: 0 (Hall of Fame) to 4 (Level 4).
+CREATE DOMAIN hammerfest_ladder_level AS U8 CHECK (value < 5);
+CREATE DOMAIN hammerfest_forum_theme_title AS VARCHAR(100);
+CREATE DOMAIN hammerfest_forum_theme_description AS VARCHAR(500);
+CREATE DOMAIN hammerfest_forum_thread_title AS VARCHAR(100);
 
 --- Checks that arr is ascendingly-sorted array of unique non-null values
 CREATE OR REPLACE FUNCTION array_is_ordered_set(
@@ -49,14 +50,15 @@ CREATE OR REPLACE FUNCTION array_is_sampled_instant_set(
   LANGUAGE sql
   IMMUTABLE LEAKPROOF STRICT PARALLEL SAFE AS
 $$
-SELECT
-  array_is_ordered_set(arr)
-  AND (
-    SELECT MAX(sample_count_in_window) FROM (
-      SELECT COUNT(item) OVER (ORDER BY item RANGE sampling_window PRECEDING) AS sample_count_in_window
-      FROM (SELECT UNNEST(arr) AS item) AS items
-    ) AS counts
-  ) <= 2;
+SELECT array_is_ordered_set(arr) AND (
+  SELECT MAX(sample_count_in_window)
+  FROM (
+    SELECT COUNT(item) OVER (ORDER BY item RANGE sampling_window PRECEDING) AS sample_count_in_window
+    FROM (
+      SELECT UNNEST(arr) AS item
+    ) AS items
+  ) AS counts
+) <= 2;
 $$;
 
 --- Insert a value at the end of a `samplied_instant_set`, see `array_is_sampled_instant_set`
@@ -68,18 +70,20 @@ CREATE OR REPLACE FUNCTION sampled_instant_set_insert_back(
   LANGUAGE sql
   IMMUTABLE LEAKPROOF STRICT PARALLEL SAFE AS
 $$
-SELECT CASE
-  WHEN array_length(arr, 1) = 0 THEN ARRAY[new_value]
-  WHEN array_length(arr, 1) = 1 AND arr[1] <> new_value THEN arr || new_value
-  WHEN array_length(arr, 1) >= 1 AND arr[array_length(arr, 1)] = new_value THEN arr
-  WHEN array_length(arr, 1) >= 2 AND new_value - arr[array_length(arr, 1) - 1] < sampling_window THEN arr[1:array_length(arr, 1) - 1] || new_value
-  ELSE arr || new_value
-END
+SELECT CASE WHEN ARRAY_LENGTH(arr, 1) = 0
+              THEN ARRAY [new_value]
+            WHEN ARRAY_LENGTH(arr, 1) = 1 AND arr[1] <> new_value
+              THEN arr || new_value
+            WHEN ARRAY_LENGTH(arr, 1) >= 1 AND arr[ARRAY_LENGTH(arr, 1)] = new_value
+              THEN arr
+            WHEN ARRAY_LENGTH(arr, 1) >= 2 AND new_value - arr[ARRAY_LENGTH(arr, 1) - 1] < sampling_window
+              THEN arr[1:ARRAY_LENGTH(arr, 1) - 1] || new_value
+            ELSE arr || new_value END
 $$;
 
 -- Ordered set of instants, such as for each period of time T, there are at most 2 values
 -- Where `T` depen
-CREATE DOMAIN sampled_instant_set AS INSTANT ARRAY CHECK (array_is_ordered_set(VALUE));
+CREATE DOMAIN sampled_instant_set AS INSTANT ARRAY CHECK (array_is_ordered_set(value));
 
 CREATE TYPE HAMMERFEST_FORUM_ROLE AS ENUM ('User', 'Moderator', 'Administrator');
 CREATE TYPE HAMMERFEST_QUEST_STATUS AS ENUM ('None', 'Pending', 'Complete');
@@ -125,7 +129,7 @@ CREATE OR REPLACE FUNCTION const_sampling_window() RETURNS INTERVAL
   LANGUAGE sql
   IMMUTABLE LEAKPROOF STRICT PARALLEL SAFE AS
 $$
-  SELECT '1day'::INTERVAL
+SELECT '1day'::INTERVAL
 $$;
 
 -- The list of quests in Hammerfest (official game)
@@ -200,11 +204,12 @@ CREATE TABLE hammerfest_item_count_map_items (
 CREATE TABLE hammerfest_inventories (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
-  valid_period VALID_PERIOD NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   item_counts HAMMERFEST_ITEM_COUNT_MAP_ID NOT NULL,
-  PRIMARY KEY (hammerfest_server, hammerfest_user_id, valid_period),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, valid_period WITH &&),
+  PRIMARY KEY (hammerfest_server, hammerfest_user_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, period WITH &&),
   CONSTRAINT hammerfest_inventory__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT hammerfest_inventory__item_counts__fk FOREIGN KEY (item_counts) REFERENCES hammerfest_item_count_maps(hammerfest_item_count_map_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -214,7 +219,7 @@ CREATE TABLE hammerfest_profiles (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
   period PERIOD_FROM NOT NULL,
-  retrieved_at sampled_instant_set NOT NULL CHECK(array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   best_score U32 NOT NULL,
   best_level U8 NOT NULL CHECK (best_level < 120),
@@ -234,7 +239,7 @@ CREATE TABLE hammerfest_emails (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
   period PERIOD_FROM NOT NULL,
-  retrieved_at sampled_instant_set NOT NULL CHECK(array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   email EMAIL_ADDRESS_HASH NULL,
   PRIMARY KEY (hammerfest_server, hammerfest_user_id, period),
@@ -245,29 +250,43 @@ CREATE TABLE hammerfest_emails (
 );
 
 -- Time-variant data shared by the public profile and forum author
-CREATE TABLE hammerfest_user_ranks (
+CREATE TABLE hammerfest_user_achievements (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
-  valid_period VALID_PERIOD NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   has_carrot BOOLEAN NOT NULL,
-  rank HAMMERFEST_RANK NOT NULL,
---   Null if no game played during this season
-  season_rank U32 NULL,
-  PRIMARY KEY (hammerfest_server, hammerfest_user_id, valid_period),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, valid_period WITH &&),
-  CONSTRAINT hammerfest_user_ranks__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  ladder_level HAMMERFEST_LADDER_LEVEL NOT NULL,
+  PRIMARY KEY (hammerfest_server, hammerfest_user_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, period WITH &&),
+  CONSTRAINT hammerfest_user_achievements__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- Time-variant best season rank, as displayed on the forum
+CREATE TABLE hammerfest_best_season_rank (
+  hammerfest_server HAMMERFEST_SERVER NOT NULL,
+  hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
+--
+--   Null if the forum displayed `--`
+  best_season_rank U32 NULL,
+  PRIMARY KEY (hammerfest_server, hammerfest_user_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, period WITH &&),
+  CONSTRAINT hammerfest_user_achievements__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Time-variant data unique to the forum author
 CREATE TABLE hammerfest_forum_roles (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
-  valid_period VALID_PERIOD NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   role HAMMERFEST_FORUM_ROLE NOT NULL,
-  PRIMARY KEY (hammerfest_server, hammerfest_user_id, valid_period),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, valid_period WITH &&),
+  PRIMARY KEY (hammerfest_server, hammerfest_user_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, period WITH &&),
   CONSTRAINT hammerfest_user_ranks__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -275,14 +294,15 @@ CREATE TABLE hammerfest_forum_roles (
 CREATE TABLE hammerfest_shop_history (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
-  valid_period VALID_PERIOD NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   weekly_tokens U8 NOT NULL,
 --   0-249 is exact, 250 or more is represented with NULL (inf)
   purchased_tokens U8 NULL,
   has_quest_bonus BOOL NOT NULL,
-  PRIMARY KEY (hammerfest_server, hammerfest_user_id, valid_period),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, valid_period WITH &&),
+  PRIMARY KEY (hammerfest_server, hammerfest_user_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, period WITH &&),
   CONSTRAINT hammerfest_shop_history__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -290,26 +310,27 @@ CREATE TABLE hammerfest_shop_history (
 CREATE TABLE hammerfest_tokens (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
-  valid_period VALID_PERIOD NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   tokens U32 NOT NULL,
-  PRIMARY KEY (hammerfest_server, hammerfest_user_id, valid_period),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, valid_period WITH &&),
+  PRIMARY KEY (hammerfest_server, hammerfest_user_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, period WITH &&),
   CONSTRAINT hammerfest_tokens__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
-
 );
 
 -- Time-variant Hammerfest godfather links
 CREATE TABLE hammerfest_godfathers (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
-  valid_period VALID_PERIOD NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   godfather_id HAMMERFEST_USER_ID NOT NULL,
 -- Tokens granted to the godfather
   tokens U32 NOT NULL,
-  PRIMARY KEY (hammerfest_server, hammerfest_user_id, valid_period),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, valid_period WITH &&),
+  PRIMARY KEY (hammerfest_server, hammerfest_user_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_user_id WITH =, period WITH &&),
   CONSTRAINT hammerfest_godfathers__child__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT hammerfest_godfathers__father__fk FOREIGN KEY (hammerfest_server, godfather_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -317,42 +338,80 @@ CREATE TABLE hammerfest_godfathers (
 -- Permanent data for forum themes
 CREATE TABLE hammerfest_forum_themes (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
-  hammerfest_theme_id HAMMERFEST_THEME_ID NOT NULL,
+  hammerfest_theme_id HAMMERFEST_FORUM_THEME_ID NOT NULL,
 --
-  title HAMMERFEST_THEME_TITLE NOT NULL,
+  archived_at INSTANT NOT NULL,
+  title HAMMERFEST_FORUM_THEME_TITLE NOT NULL,
+  description HAMMERFEST_FORUM_THEME_DESCRIPTION NULL,
   is_public BOOLEAN NOT NULL,
   PRIMARY KEY (hammerfest_server, hammerfest_theme_id),
   CONSTRAINT hammerfest_forum_themes__servers__fk FOREIGN KEY (hammerfest_server) REFERENCES hammerfest_servers(hammerfest_server) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
+-- Time-variant meta for forum threads, shared by the thread list and thread page
+CREATE TABLE hammerfest_forum_theme_page_counts (
+  hammerfest_server HAMMERFEST_SERVER NOT NULL,
+  hammerfest_theme_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
+--
+  page_count U32 NOT NULL CHECK (page_count > 0),
+  PRIMARY KEY (hammerfest_server, hammerfest_theme_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_theme_id WITH =, period WITH &&),
+  CONSTRAINT hammerfest_threads_history__theme__fk FOREIGN KEY (hammerfest_server, hammerfest_theme_id) REFERENCES hammerfest_forum_themes(hammerfest_server, hammerfest_theme_id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
 -- Permanent data for forum threads
 CREATE TABLE hammerfest_forum_threads (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
-  hammerfest_thread_id HAMMERFEST_THREAD_ID NOT NULL,
+  hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
+  archived_at INSTANT NOT NULL,
   PRIMARY KEY (hammerfest_server, hammerfest_thread_id),
   CONSTRAINT hammerfest_forum_threads__servers__fk FOREIGN KEY (hammerfest_server) REFERENCES hammerfest_servers(hammerfest_server) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
--- Time-variant data for forum threads
-CREATE TABLE hammerfest_forum_threads_history (
+-- Time-variant meta for forum threads, shared by the thread list and thread page
+CREATE TABLE hammerfest_forum_thread_shared_meta (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
-  hammerfest_thread_id HAMMERFEST_THREAD_ID NOT NULL,
-  valid_period VALID_PERIOD NOT NULL,
+  hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
-  hammerfest_theme_id HAMMERFEST_THEME_ID NOT NULL,
-  title HAMMERFEST_THREAD_TITLE NOT NULL,
-  PRIMARY KEY (hammerfest_server, hammerfest_thread_id, valid_period),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, valid_period WITH &&),
+  hammerfest_theme_id HAMMERFEST_FORUM_THEME_ID NOT NULL,
+  title HAMMERFEST_FORUM_THREAD_TITLE NOT NULL,
+  is_closed BOOLEAN NOT NULL,
+  page_count U32 NOT NULL CHECK (page_count > 0),
+  PRIMARY KEY (hammerfest_server, hammerfest_thread_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, period WITH &&),
   CONSTRAINT hammerfest_threads_history__theme__fk FOREIGN KEY (hammerfest_server, hammerfest_theme_id) REFERENCES hammerfest_forum_themes(hammerfest_server, hammerfest_theme_id) ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- Time-variant meta for forum threads unique to the thread list
+CREATE TABLE hammerfest_forum_thread_list_meta (
+  hammerfest_server HAMMERFEST_SERVER NOT NULL,
+  hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
+--
+  -- Current theme page for this thread
+  page U16 NOT NULL CHECK (page > 0),
+  is_sticky BOOLEAN NOT NULL,
+  last_message HAMMERFEST_DATE NULL,
+  author hammerfest_user_id NOT NULL,
+  reply_count U16 NOT NULL,
+  CHECK ((is_sticky AND last_message IS NULL) OR (NOT is_sticky AND last_message IS NOT NULL)),
+  PRIMARY KEY (hammerfest_server, hammerfest_thread_id, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, period WITH &&)
 );
 
 -- Time-variant data for forum messages
 CREATE TABLE hammerfest_forum_messages_history (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
-  hammerfest_thread_id HAMMERFEST_THREAD_ID NOT NULL,
-  page U16 NOT NULL,
+  hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
+  page U16 NOT NULL CHECK (page > 0),
   offset_in_page U8 NOT NULL,
-  valid_period VALID_PERIOD NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   author HAMMERFEST_USER_ID NOT NULL,
   posted_at HAMMERFEST_DATE NOT NULL,
@@ -362,8 +421,8 @@ CREATE TABLE hammerfest_forum_messages_history (
   _mkt_body TEXT NULL,
   -- Rendered Marktwin body
   _html_body TEXT NULL,
-  PRIMARY KEY (hammerfest_server, hammerfest_thread_id, page, offset_in_page, valid_period),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, page WITH =, offset_in_page WITH =, valid_period WITH &&),
+  PRIMARY KEY (hammerfest_server, hammerfest_thread_id, page, offset_in_page, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, page WITH =, offset_in_page WITH =, period WITH &&),
   CONSTRAINT hammerfest_messages_history__thread__fk FOREIGN KEY (hammerfest_server, hammerfest_thread_id) REFERENCES hammerfest_forum_threads(hammerfest_server, hammerfest_thread_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT hammerfest_messages_history__author__fk FOREIGN KEY (hammerfest_server, author) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -371,13 +430,15 @@ CREATE TABLE hammerfest_forum_messages_history (
 -- Time-variant data for message-position/message id relationship
 CREATE TABLE hammerfest_forum_message_ids (
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
-  hammerfest_thread_id HAMMERFEST_THREAD_ID NOT NULL,
-  page U16 NOT NULL,
+  hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
+  page U16 NOT NULL CHECK (page > 0),
   offset_in_page U8 NOT NULL,
-  valid_period VALID_PERIOD NOT NULL,
+  period PERIOD_FROM NOT NULL,
+  retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
-  hammerfest_message_id HAMMERFEST_MESSAGE_ID NOT NULL,
-  PRIMARY KEY (hammerfest_server, hammerfest_thread_id, page, offset_in_page, valid_period),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, page WITH =, offset_in_page WITH =, valid_period WITH &&),
+  hammerfest_message_id HAMMERFEST_FORUM_MESSAGE_ID NOT NULL,
+  PRIMARY KEY (hammerfest_server, hammerfest_thread_id, page, offset_in_page, period),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, page WITH =, offset_in_page WITH =, period WITH &&),
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_message_id WITH =, period WITH &&),
   CONSTRAINT hammerfest_messages_history__thread__fk FOREIGN KEY (hammerfest_server, hammerfest_thread_id) REFERENCES hammerfest_forum_threads(hammerfest_server, hammerfest_thread_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );

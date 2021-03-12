@@ -7,7 +7,8 @@
   "thread": {
     "server": "hammerfest.fr",
     "id": "487821",
-    "name": "[Épreuve du mois] Octobre"
+    "name": "[Épreuve du mois] Octobre",
+    "is_closed": false
   },
   "messages": {
     "page1": 1,
@@ -21,7 +22,8 @@
           "id": "383128",
           "username": "philippe1",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {
@@ -41,7 +43,8 @@
           "id": "905739",
           "username": "maxdefolsch",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": null,
           "role": "None"
         },
         "ctime": {
@@ -61,7 +64,8 @@
           "id": "1053072",
           "username": "Erneraude",
           "has_carrot": true,
-          "rank": 4,
+          "ladder_level": 4,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {
@@ -81,7 +85,8 @@
           "id": "905739",
           "username": "maxdefolsch",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": null,
           "role": "None"
         },
         "ctime": {
@@ -101,7 +106,8 @@
           "id": "383128",
           "username": "philippe1",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {
@@ -121,7 +127,8 @@
           "id": "383128",
           "username": "philippe1",
           "has_carrot": true,
-          "rank": 0,
+          "ladder_level": 0,
+          "rank": 1,
           "role": "None"
         },
         "ctime": {

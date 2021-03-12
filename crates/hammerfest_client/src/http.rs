@@ -15,6 +15,7 @@ use serde::Serialize;
 
 use self::errors::ScraperError;
 use self::url::HammerfestUrls;
+use std::num::NonZeroU16;
 use std::str::FromStr;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -150,7 +151,7 @@ where
     scraper::scrape_user_inventory(&html)?.ok_or_else(|| ScraperError::InvalidSessionCookie.into())
   }
 
-  async fn get_own_god_children(&self, session: &HammerfestSession) -> Result<Vec<HammerfestGodChild>> {
+  async fn get_own_godchildren(&self, session: &HammerfestSession) -> Result<Vec<HammerfestGodchild>> {
     let server = session.user.server;
     let urls = HammerfestUrls::new(server);
     let html = self.get_html(urls.god_children(), Some(&session.key)).await?;
@@ -178,7 +179,7 @@ where
     session: Option<&HammerfestSession>,
     server: HammerfestServer,
     theme_id: HammerfestForumThemeId,
-    page1: u32,
+    page1: NonZeroU16,
   ) -> Result<HammerfestForumThemePage> {
     let urls = HammerfestUrls::new(server);
     let html = self
@@ -192,7 +193,7 @@ where
     session: Option<&HammerfestSession>,
     server: HammerfestServer,
     thread_id: HammerfestForumThreadId,
-    page1: u32,
+    page1: NonZeroU16,
   ) -> Result<HammerfestForumThreadPage> {
     let urls = HammerfestUrls::new(server);
     let html = self

@@ -6,6 +6,7 @@ use etwin_core::hammerfest::{
   HammerfestGetProfileByIdOptions, HammerfestServer, HammerfestSession, HammerfestSessionKey,
 };
 use neon::prelude::*;
+use std::num::NonZeroU16;
 use std::sync::Arc;
 
 pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject> {
@@ -96,7 +97,7 @@ pub fn get_forum_theme_page(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let session: Option<HammerfestSession> = serde_json::from_str(&session_json.value(&mut cx)).unwrap();
   let server: HammerfestServer = serde_json::from_str(&server_json.value(&mut cx)).unwrap();
   let theme_id: HammerfestForumThemeId = serde_json::from_str(&theme_id_json.value(&mut cx)).unwrap();
-  let page1: u32 = serde_json::from_str(&page1_json.value(&mut cx)).unwrap();
+  let page1: NonZeroU16 = serde_json::from_str(&page1_json.value(&mut cx)).unwrap();
 
   let res = async move {
     inner
@@ -132,7 +133,7 @@ pub fn get_forum_thread_page(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let session: Option<HammerfestSession> = serde_json::from_str(&session_json.value(&mut cx)).unwrap();
   let server: HammerfestServer = serde_json::from_str(&server_json.value(&mut cx)).unwrap();
   let thread_id: HammerfestForumThreadId = serde_json::from_str(&thread_id_json.value(&mut cx)).unwrap();
-  let page1: u32 = serde_json::from_str(&page1_json.value(&mut cx)).unwrap();
+  let page1: NonZeroU16 = serde_json::from_str(&page1_json.value(&mut cx)).unwrap();
 
   let res = async move {
     inner
@@ -150,7 +151,7 @@ pub fn get_own_god_children(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
   let session: HammerfestSession = serde_json::from_str(&session_json.value(&mut cx)).unwrap();
 
-  let res = async move { inner.get_own_god_children(&session).await };
+  let res = async move { inner.get_own_godchildren(&session).await };
   resolve_callback_serde(&mut cx, res, cb)
 }
 

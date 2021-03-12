@@ -10,9 +10,9 @@ import { WhiteListType } from "kryo/lib/white-list.js";
  * - `3`: Level 3
  * - `4`: Level 4
  */
-export type HammerfestRank = 0 | 1 | 2 | 3 | 4;
+export type HammerfestLadderLevel = 0 | 1 | 2 | 3 | 4;
 
-export const $HammerfestRank: WhiteListType<HammerfestRank> = new WhiteListType({
+export const $HammerfestLadderLevel: WhiteListType<HammerfestLadderLevel> = new WhiteListType({
   itemType: $Uint8,
   values: [0, 1, 2, 3, 4],
 });

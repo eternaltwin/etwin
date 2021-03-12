@@ -1,5 +1,6 @@
 use etwin_core::hammerfest::{HammerfestForumThemeId, HammerfestForumThreadId, HammerfestServer, HammerfestUserId};
 use reqwest::Url;
+use std::num::NonZeroU16;
 
 pub struct HammerfestUrls {
   root: &'static str,
@@ -50,13 +51,13 @@ impl HammerfestUrls {
     self.make_url(&["forum.html"])
   }
 
-  pub fn forum_theme(&self, theme: HammerfestForumThemeId, page1: u32) -> Url {
+  pub fn forum_theme(&self, theme: HammerfestForumThemeId, page1: NonZeroU16) -> Url {
     let mut url = theme.with_str(|theme| self.make_url(&["forum.html", "theme", theme]));
     url.set_query(Some(&format!("page={}", page1)));
     url
   }
 
-  pub fn forum_thread(&self, thread: HammerfestForumThreadId, page1: u32) -> Url {
+  pub fn forum_thread(&self, thread: HammerfestForumThreadId, page1: NonZeroU16) -> Url {
     let mut url = thread.with_str(|thread| self.make_url(&["forum.html", "thread", thread]));
     url.set_query(Some(&format!("page={}", page1)));
     url

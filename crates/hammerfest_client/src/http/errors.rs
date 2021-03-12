@@ -27,22 +27,30 @@ pub enum ScraperError {
   InvalidDate(String, #[source] Option<chrono::format::ParseError>),
   #[error("Failed to parse email '{}'", .0)]
   InvalidEmail(String, #[source] EmailAddressParseError),
+  #[error("Failed to parse pagination")]
+  InvalidPagination,
   #[error("Invalid item id '{}'", .0)]
   InvalidItemId(String, #[source] HammerfestItemIdParseError),
   #[error("Invalid user id '{}'", .0)]
   InvalidUserId(String, #[source] HammerfestUserIdParseError),
   #[error("Invalid forum theme id '{}'", .0)]
   InvalidForumThemeId(String, #[source] HammerfestForumThemeIdParseError),
+  #[error("Invalid forum theme title '{}'", .0)]
+  InvalidForumThemeTitle(String, #[source] HammerfestForumThemeTitleParseError),
+  #[error("Invalid forum theme description '{}'", .0)]
+  InvalidForumThemeDescription(String, #[source] HammerfestForumThemeDescriptionParseError),
   #[error("Invalid forum thread id '{}'", .0)]
   InvalidForumThreadId(String, #[source] HammerfestForumThreadIdParseError),
-  #[error("Invalid forum post id '{}'", .0)]
-  InvalidForumPostId(String, #[source] HammerfestForumPostIdParseError),
+  #[error("Invalid forum thread title '{}'", .0)]
+  InvalidForumThreadTitle(String, #[source] HammerfestForumThreadTitleParseError),
+  #[error("Invalid forum message id '{}'", .0)]
+  InvalidForumMessageId(String, #[source] HammerfestForumMessageIdParseError),
   #[error("Invalid username '{}'", .0)]
   InvalidUsername(String, #[source] HammerfestUsernameParseError),
   #[error("Unknown quest name '{}'", .0)]
   UnknownQuestName(String),
-  #[error("Unknown rank CSS class '{}'", .0)]
-  UnknownRankClass(String),
+  #[error("Unknown ladder level CSS class '{}'", .0)]
+  UnknownLadderLevelClass(String),
   #[error("Unknown user role")]
   UnknownUserRole,
   #[error("Unexpected thread kind: '{}'", .0)]

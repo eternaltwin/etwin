@@ -1,8 +1,8 @@
 use crate::auth::AuthContext;
 use crate::core::UserDot;
 use crate::hammerfest::{
-  ArchivedHammerfestUser, GetHammerfestUserOptions, HammerfestClient, HammerfestGetProfileByIdOptions,
-  HammerfestProfile, HammerfestStore, HammerfestUser, HammerfestUserIdRef,
+  GetHammerfestUserOptions, HammerfestClient, HammerfestGetProfileByIdOptions, HammerfestProfile, HammerfestStore,
+  HammerfestUser, HammerfestUserIdRef, StoredHammerfestUser,
 };
 use crate::link::{EtwinLink, GetLinkOptions, LinkStore, VersionedEtwinLink, VersionedRawLink};
 use crate::user::{GetShortUserOptions, ShortUser, UserRef, UserStore};
@@ -48,8 +48,8 @@ where
     _acx: AuthContext,
     options: &GetHammerfestUserOptions,
   ) -> Result<Option<HammerfestUser>, Box<dyn Error>> {
-    let user: Option<ArchivedHammerfestUser> = self.hammerfest_store.get_user(options).await?;
-    let user: ArchivedHammerfestUser = match user {
+    let user: Option<StoredHammerfestUser> = self.hammerfest_store.get_user(options).await?;
+    let user: StoredHammerfestUser = match user {
       Some(user) => user,
       None => {
         let profile: Option<HammerfestProfile> = {

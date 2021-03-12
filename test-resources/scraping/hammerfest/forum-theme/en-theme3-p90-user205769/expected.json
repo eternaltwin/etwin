@@ -9,155 +9,166 @@
       "server": "hfest.net",
       "id": "30732",
       "name": "Hammerfest Collectors",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "74942",
         "username": "electriczax"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 934,
-      "is_closed": false
+      "reply_count": 934
     },
     {
       "server": "hfest.net",
       "id": "39785",
       "name": "TV Hammerfest",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "126296",
         "username": "wrzosu"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 69,
-      "is_closed": false
+      "reply_count": 69
     },
     {
       "server": "hfest.net",
       "id": "22273",
       "name": "Towers of Greed",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "78227",
         "username": "dAwjbNS"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 986,
-      "is_closed": false
+      "reply_count": 986
     },
     {
       "server": "hfest.net",
       "id": "44893",
       "name": "Useful links",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "183556",
         "username": "fabianh"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 1,
-      "is_closed": false
+      "reply_count": 1
     },
     {
       "server": "hfest.net",
       "id": "30731",
       "name": "Hammerfest Scoreboard",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "74942",
         "username": "electriczax"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 281,
-      "is_closed": false
+      "reply_count": 281
     },
     {
       "server": "hfest.net",
       "id": "6586",
       "name": "*Official* Ask Questions Here!",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "56118",
         "username": "billybob1211"
       },
+      "author_role": "None",
       "kind": "sticky",
-      "reply_count": 2823,
-      "is_closed": false
+      "reply_count": 2823
     },
     {
       "server": "hfest.net",
       "id": "44748",
       "name": "Read this - How to post links!",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "183556",
         "username": "fabianh"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 0,
-      "is_closed": false
+      "reply_count": 0
     },
     {
       "server": "hfest.net",
       "id": "42256",
       "name": "Mirror mode crash - fix.",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "74942",
         "username": "electriczax"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 7,
-      "is_closed": false
+      "reply_count": 7
     },
     {
       "server": "hfest.net",
       "id": "38705",
       "name": "Forum Rules!",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "126296",
         "username": "wrzosu"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 11,
-      "is_closed": false
+      "reply_count": 11
     },
     {
       "server": "hfest.net",
       "id": "17823",
       "name": "Read this before asking!",
+      "is_closed": false,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "74942",
         "username": "electriczax"
       },
+      "author_role": "Moderator",
       "kind": "sticky",
-      "reply_count": 9,
-      "is_closed": false
+      "reply_count": 9
     },
     {
       "server": "hfest.net",
       "id": "3183",
       "name": "About Current Vers. & Updates",
+      "is_closed": true,
       "author": {
         "type": "HammerfestUser",
         "server": "hfest.net",
         "id": "2",
         "username": "ayame"
       },
+      "author_role": "Administrator",
       "kind": "sticky",
-      "reply_count": 0,
-      "is_closed": true
+      "reply_count": 0
     }
   ],
   "threads": {

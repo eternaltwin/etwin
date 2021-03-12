@@ -118,7 +118,7 @@ where
           },
           unlink: (),
           etwin: options.etwin,
-          remote: options.remote.clone(),
+          remote: options.remote,
         };
         link
       },
@@ -201,11 +201,11 @@ where
             user: options.unlinked_by,
           },
           etwin: options.etwin,
-          remote: options.remote.clone(),
+          remote: options.remote,
         };
         link
       },
-      || DeleteLinkError::NotFound(options.etwin, options.remote.clone()),
+      || DeleteLinkError::NotFound(options.etwin, options.remote),
     )
     .map(|_| Default::default())
   }
