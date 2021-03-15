@@ -3,7 +3,6 @@ use etwin_core::api::ApiRef;
 use etwin_core::core::Secret;
 use etwin_core::hammerfest::{HammerfestClient, HammerfestStore, HammerfestUser};
 use etwin_core::link::LinkStore;
-use etwin_core::services::hammerfest::HammerfestService;
 use etwin_core::user::UserStore;
 use etwin_core::uuid::Uuid4Generator;
 use etwin_core::{
@@ -20,6 +19,8 @@ use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::PgPool;
 use std::marker::PhantomData;
 use std::sync::Arc;
+
+use etwin_services::hammerfest::HammerfestService;
 
 async fn make_test_api() -> TestApi<
   Arc<VirtualClock>,

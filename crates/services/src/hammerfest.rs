@@ -1,11 +1,11 @@
-use crate::auth::AuthContext;
-use crate::core::UserDot;
-use crate::hammerfest::{
+use etwin_core::auth::AuthContext;
+use etwin_core::core::UserDot;
+use etwin_core::hammerfest::{
   GetHammerfestUserOptions, HammerfestClient, HammerfestGetProfileByIdOptions, HammerfestProfile, HammerfestStore,
   HammerfestUser, HammerfestUserIdRef, StoredHammerfestUser,
 };
-use crate::link::{EtwinLink, GetLinkOptions, LinkStore, VersionedEtwinLink, VersionedRawLink};
-use crate::user::{GetShortUserOptions, ShortUser, UserRef, UserStore};
+use etwin_core::link::{EtwinLink, GetLinkOptions, LinkStore, VersionedEtwinLink, VersionedRawLink};
+use etwin_core::user::{GetShortUserOptions, ShortUser, UserRef, UserStore};
 use std::error::Error;
 
 pub struct HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>

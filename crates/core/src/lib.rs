@@ -10,9 +10,6 @@ pub mod email;
 pub mod hammerfest;
 pub mod link;
 pub mod password;
-pub mod services {
-  pub mod hammerfest;
-}
 pub mod temporal;
 pub mod twinoid;
 pub mod user;
