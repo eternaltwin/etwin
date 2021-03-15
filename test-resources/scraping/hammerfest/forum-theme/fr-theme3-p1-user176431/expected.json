@@ -2,7 +2,8 @@
   "theme": {
     "server": "hammerfest.fr",
     "id": "3",
-    "name": "Les secrets de Tuberculoz"
+    "name": "Les secrets de Tuberculoz",
+    "is_public": true
   },
   "sticky": [
     {

@@ -138,11 +138,17 @@ impl<TyClock> MemHammerfestClient<TyClock> {
       }
     }
 
+    let is_public = hidden_by.is_none();
     match s.forum_themes.entry(id) {
       Entry::Occupied(_) => panic!("HammerfestForumThemeId conflict"),
       Entry::Vacant(e) => e.insert(MemForumTheme {
         theme: HammerfestForumTheme {
-          short: ShortHammerfestForumTheme { server, id, name },
+          short: ShortHammerfestForumTheme {
+            server,
+            id,
+            name,
+            is_public,
+          },
           description,
         },
         hidden_by,

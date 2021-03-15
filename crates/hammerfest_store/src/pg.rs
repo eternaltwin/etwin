@@ -96,18 +96,8 @@ async fn touch_hammerfest_forum_theme(
   id: HammerfestForumThemeId,
   title: &HammerfestForumThemeTitle,
   description: Option<&HammerfestForumThemeDescription>,
+  is_public: bool,
 ) -> Result<(), Box<dyn Error>> {
-  #[allow(clippy::match_like_matches_macro)]
-  let is_public = match (server, id.to_string().as_str()) {
-    (HammerfestServer::HammerfestFr, "2")
-    | (HammerfestServer::HammerfestFr, "3")
-    | (HammerfestServer::HammerfestFr, "4") => true,
-    (HammerfestServer::HammerfestEs, "2")
-    | (HammerfestServer::HammerfestEs, "3")
-    | (HammerfestServer::HammerfestEs, "4") => true,
-    (HammerfestServer::HfestNet, "3") => true,
-    _ => false,
-  };
   let res: PgQueryResult = sqlx::query(
     r"
       INSERT
@@ -1041,6 +1031,7 @@ where
       options.theme.id,
       &options.theme.name,
       None,
+      options.theme.is_public,
     )
     .await?;
     touch_hammerfest_forum_theme_page_count(&mut tx, now, options.theme.as_ref(), options.threads.pages).await?;
@@ -1119,6 +1110,7 @@ where
       options.theme.id,
       &options.theme.name,
       None,
+      options.theme.is_public,
     )
     .await?;
     touch_hammerfest_forum_thread(&mut tx, now, options.thread.as_ref()).await?;

@@ -1,13 +1,14 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
-use etwin_constants::hammerfest::QUESTS;
-use etwin_core::hammerfest::{HammerfestQuestId, HammerfestServer};
+use etwin_constants::hammerfest::{PUBLIC_FORUM_THEMES, QUESTS};
+use etwin_core::hammerfest::{HammerfestForumThemeId, HammerfestQuestId, HammerfestServer};
 use once_cell::sync::Lazy;
 
 pub struct ScraperTexts {
   pub quest_names: HashMap<&'static str, HammerfestQuestId>,
   pub month_names: HashMap<&'static str, u8>,
   pub weekday_names: HashMap<&'static str, u8>,
+  pub public_forum_themes: HashSet<HammerfestForumThemeId>,
 }
 
 impl ScraperTexts {
@@ -24,6 +25,7 @@ impl ScraperTexts {
       quest_names: HashMap::new(),
       month_names: HashMap::new(),
       weekday_names: HashMap::new(),
+      public_forum_themes: HashSet::new(),
     }
   }
 
@@ -41,6 +43,18 @@ impl ScraperTexts {
     self.weekday_names.insert(name, value);
     self
   }
+
+  fn public_forum_theme(mut self, id: HammerfestForumThemeId) -> Self {
+    self.public_forum_themes.insert(id);
+    self
+  }
+}
+
+fn add_public_forum_themes(mut texts: ScraperTexts, server: HammerfestServer) -> ScraperTexts {
+  for theme in PUBLIC_FORUM_THEMES.iter().filter(|t| t.server == server) {
+    texts = texts.public_forum_theme(theme.id);
+  }
+  texts
 }
 
 static TEXTS_FR: Lazy<ScraperTexts> = Lazy::new(|| {
@@ -76,7 +90,7 @@ static TEXTS_FR: Lazy<ScraperTexts> = Lazy::new(|| {
     texts = texts.quest(q.title_fr, q.id);
   }
 
-  texts
+  add_public_forum_themes(texts, HammerfestServer::HammerfestFr)
 });
 
 static TEXTS_ES: Lazy<ScraperTexts> = Lazy::new(|| {
@@ -117,7 +131,7 @@ static TEXTS_ES: Lazy<ScraperTexts> = Lazy::new(|| {
     texts = texts.quest(q.title_es, q.id);
   }
 
-  texts
+  add_public_forum_themes(texts, HammerfestServer::HammerfestEs)
 });
 
 static TEXTS_EN: Lazy<ScraperTexts> = Lazy::new(|| {
@@ -158,5 +172,5 @@ static TEXTS_EN: Lazy<ScraperTexts> = Lazy::new(|| {
     texts = texts.quest(q.title_en, q.id);
   }
 
-  texts
+  add_public_forum_themes(texts, HammerfestServer::HfestNet)
 });

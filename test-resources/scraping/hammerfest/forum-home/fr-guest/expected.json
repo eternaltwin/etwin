@@ -3,18 +3,21 @@
     "server": "hammerfest.fr",
     "id": "2",
     "name": "Caverne de l'apprenti",
+    "is_public": true,
     "description": "Si vous vous etes perdu(e) dans les Cavernes, c'est ici qu'il faut demander sa route"
   },
   {
     "server": "hammerfest.fr",
     "id": "3",
     "name": "Les secrets de Tuberculoz",
+    "is_public": true,
     "description": "Venez debattre des mysteres du jeu avec d'autres courageux explorateurs !"
   },
   {
     "server": "hammerfest.fr",
     "id": "4",
     "name": "L'arbre de Wanda la Pomme",
+    "is_public": true,
     "description": "Pour parler de tout ce qui n'a aucun rapport avec le jeu !"
   }
 ]

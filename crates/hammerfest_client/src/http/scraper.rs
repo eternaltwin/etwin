@@ -383,6 +383,7 @@ fn parse_forum_post_id_url(url: &str) -> Result<HammerfestForumMessageId> {
 }
 
 pub fn scrape_forum_home(server: HammerfestServer, html: &Html) -> Result<Vec<HammerfestForumTheme>> {
+  let texts = ScraperTexts::get(server);
   let selectors = Selectors::get();
 
   // Check session validity.
@@ -398,6 +399,7 @@ pub fn scrape_forum_home(server: HammerfestServer, html: &Html) -> Result<Vec<Ha
         return Ok(None);
       }
       let id = parse_forum_theme_id_url(theme_url)?;
+      let is_public = texts.public_forum_themes.contains(&id);
 
       let name = selectors
         .select_one(theme_elem, "dt.categ a")
@@ -407,7 +409,12 @@ pub fn scrape_forum_home(server: HammerfestServer, html: &Html) -> Result<Vec<Ha
       let description = utils::get_inner_text(theme_desc_elem)?.trim();
       let description = parse_theme_description(description)?;
       Ok(Some(HammerfestForumTheme {
-        short: ShortHammerfestForumTheme { id, name, server },
+        short: ShortHammerfestForumTheme {
+          id,
+          name,
+          server,
+          is_public,
+        },
         description,
       }))
     })
@@ -455,7 +462,13 @@ pub fn scrape_forum_theme(server: HammerfestServer, html: &Html) -> Result<Hamme
 
     let id_link = selectors.select_one_attr(paginate_elem, "div.paginate a:first-of-type", "href")?;
     let id = parse_forum_theme_id_url(id_link)?;
-    ShortHammerfestForumTheme { server, id, name }
+    let is_public = texts.public_forum_themes.contains(&id);
+    ShortHammerfestForumTheme {
+      server,
+      id,
+      name,
+      is_public,
+    }
   };
 
   let (page1, pages) = {
@@ -566,7 +579,13 @@ pub fn scrape_forum_thread(
     let name = utils::get_inner_text(theme_link)?;
     let name = parse_theme_title(name)?;
     let id = parse_forum_theme_id_url(theme_link.value().attr("href").unwrap_or("<missing-href>"))?;
-    ShortHammerfestForumTheme { server, id, name }
+    let is_public = texts.public_forum_themes.contains(&id);
+    ShortHammerfestForumTheme {
+      server,
+      id,
+      name,
+      is_public,
+    }
   };
 
   let thread = {

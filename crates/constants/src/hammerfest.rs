@@ -1,7 +1,24 @@
-use etwin_core::hammerfest::{HammerfestItemId, HammerfestQuestId};
+use etwin_core::hammerfest::{
+  HammerfestForumThemeId, HammerfestForumThemeIdRef, HammerfestItemId, HammerfestQuestId, HammerfestServer,
+};
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 
+pub const PUBLIC_FORUM_THEMES: [HammerfestForumThemeIdRef; 7] = unsafe {
+  const unsafe fn forum_theme_unchecked(server: HammerfestServer, id: u8) -> HammerfestForumThemeIdRef {
+    let id = HammerfestForumThemeId::new_unchecked(id);
+    HammerfestForumThemeIdRef { server, id }
+  }
+  [
+    forum_theme_unchecked(HammerfestServer::HammerfestFr, 2),
+    forum_theme_unchecked(HammerfestServer::HammerfestFr, 3),
+    forum_theme_unchecked(HammerfestServer::HammerfestFr, 4),
+    forum_theme_unchecked(HammerfestServer::HammerfestEs, 2),
+    forum_theme_unchecked(HammerfestServer::HammerfestEs, 3),
+    forum_theme_unchecked(HammerfestServer::HammerfestEs, 4),
+    forum_theme_unchecked(HammerfestServer::HfestNet, 3),
+  ]
+};
 
 pub struct HammerfestItem {
   pub id: HammerfestItemId,

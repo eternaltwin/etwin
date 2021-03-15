@@ -3,6 +3,7 @@
     "server": "hfest.net",
     "id": "3",
     "name": "Tuber's secrets",
+    "is_public": true,
     "description": "Share here all the mysterious secrets of Hammerfest"
   }
 ]

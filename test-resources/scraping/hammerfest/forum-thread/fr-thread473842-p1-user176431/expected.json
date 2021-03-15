@@ -2,7 +2,8 @@
   "theme": {
     "server": "hammerfest.fr",
     "id": "4",
-    "name": "L'arbre de Wanda la Pomme"
+    "name": "L'arbre de Wanda la Pomme",
+    "is_public": true
   },
   "thread": {
     "server": "hammerfest.fr",

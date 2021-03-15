@@ -410,6 +410,7 @@ pub struct ShortHammerfestForumTheme {
   pub server: HammerfestServer,
   pub id: HammerfestForumThemeId,
   pub name: HammerfestForumThemeTitle,
+  pub is_public: bool,
 }
 
 impl ShortHammerfestForumTheme {

@@ -2,7 +2,8 @@
   "theme": {
     "server": "hammerfest.es",
     "id": "2",
-    "name": "Caverna del Aprendiz"
+    "name": "Caverna del Aprendiz",
+    "is_public": true
   },
   "sticky": [
     {

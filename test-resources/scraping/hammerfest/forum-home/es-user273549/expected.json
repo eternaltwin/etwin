@@ -3,18 +3,21 @@
     "server": "hammerfest.es",
     "id": "2",
     "name": "Caverna del Aprendiz",
+    "is_public": true,
     "description": "Si estas perdido/a en las Cavernas, ya sabes donde preguntar."
   },
   {
     "server": "hammerfest.es",
     "id": "3",
     "name": "Los secretos de Tuberculo",
+    "is_public": true,
     "description": "Comparte aqui los misteriosos secretos de Hammerfest"
   },
   {
     "server": "hammerfest.es",
     "id": "4",
     "name": "El arbol de Wanda la Manzana",
+    "is_public": true,
     "description": "Ven a hablar de lo que sea en el arbol de Wanda, la unica fruta que escapo de los poderes de Tuberculo."
   }
 ]
