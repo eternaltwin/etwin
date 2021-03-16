@@ -2430,8 +2430,7 @@ dependencies = [
 [[package]]
 name = "sqlx"
 version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c2739d54a2ae9fdd0f545cb4e4b5574efb95e2ec71b7f921678e246fb20dcaaf"
+source = "git+https://github.com/demurgos/sqlx?rev=93b90be9f7dd316889aa01f3e6066062a133180c#93b90be9f7dd316889aa01f3e6066062a133180c"
 dependencies = [
  "sqlx-core",
  "sqlx-macros",
@@ -2440,8 +2439,7 @@ dependencies = [
 [[package]]
 name = "sqlx-core"
 version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1cad9cae4ca8947eba1a90e8ec7d3c59e7a768e2f120dc9013b669c34a90711"
+source = "git+https://github.com/demurgos/sqlx?rev=93b90be9f7dd316889aa01f3e6066062a133180c#93b90be9f7dd316889aa01f3e6066062a133180c"
 dependencies = [
  "ahash 0.6.3",
  "atoi",
@@ -2490,8 +2488,7 @@ dependencies = [
 [[package]]
 name = "sqlx-macros"
 version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "01caee2b3935b4efe152f3262afbe51546ce3b1fc27ad61014e1b3cf5f55366e"
+source = "git+https://github.com/demurgos/sqlx?rev=93b90be9f7dd316889aa01f3e6066062a133180c#93b90be9f7dd316889aa01f3e6066062a133180c"
 dependencies = [
  "dotenv",
  "either",
@@ -2513,8 +2510,7 @@ dependencies = [
 [[package]]
 name = "sqlx-rt"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ce2e16b6774c671cc183e1d202386fdf9cde1e8468c1894a7f2a63eb671c4f4"
+source = "git+https://github.com/demurgos/sqlx?rev=93b90be9f7dd316889aa01f3e6066062a133180c#93b90be9f7dd316889aa01f3e6066062a133180c"
 dependencies = [
  "once_cell",
  "tokio",

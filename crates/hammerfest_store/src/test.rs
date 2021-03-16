@@ -2,10 +2,12 @@ use chrono::{Duration, TimeZone, Utc};
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
 use etwin_core::hammerfest::{
-  GetHammerfestUserOptions, HammerfestProfile, HammerfestServer, HammerfestStore, ShortHammerfestUser,
-  StoredHammerfestUser,
+  GetHammerfestUserOptions, HammerfestDate, HammerfestForumRole, HammerfestForumThemePage, HammerfestForumThread,
+  HammerfestForumThreadKind, HammerfestForumThreadListing, HammerfestProfile, HammerfestServer, HammerfestStore,
+  ShortHammerfestForumTheme, ShortHammerfestForumThread, ShortHammerfestUser, StoredHammerfestUser,
 };
 use std::convert::TryInto;
+use std::num::NonZeroU16;
 
 #[macro_export]
 macro_rules! test_hammerfest_store {
@@ -28,6 +30,7 @@ macro_rules! test_hammerfest_store_pg {
     register_test!($(#[$meta])*, $api, test_changed_email);
     register_test!($(#[$meta])*, $api, test_change_email_back);
     register_test!($(#[$meta])*, $api, test_email_uniqueness);
+    register_test!($(#[$meta])*, $api, test_touch_forum_theme_page);
   };
 }
 
@@ -202,7 +205,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
 }
 
@@ -232,7 +235,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
   {
@@ -255,7 +258,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
 }
 pub(crate) async fn test_touch_changed_profile<TyClock, TyHammerfestStore>(api: TestApi<TyClock, TyHammerfestStore>)
@@ -284,7 +287,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
   {
@@ -307,7 +310,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
 }
 pub(crate) async fn test_change_profile_back<TyClock, TyHammerfestStore>(api: TestApi<TyClock, TyHammerfestStore>)
@@ -336,7 +339,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
   {
@@ -359,7 +362,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 2));
   {
@@ -382,7 +385,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
 }
 
@@ -412,7 +415,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
 }
 
@@ -442,7 +445,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
   {
@@ -465,7 +468,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
 }
 
@@ -518,7 +521,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 2));
   {
@@ -541,7 +544,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
 }
 
@@ -571,7 +574,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
   {
@@ -594,7 +597,7 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
   }
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 2));
   {
@@ -617,6 +620,75 @@ where
         quests: Default::default(),
       })
       .await;
-    assert!(actual.is_ok());
+    assert_ok!(actual);
+  }
+}
+
+pub(crate) async fn test_touch_forum_theme_page<TyClock, TyHammerfestStore>(api: TestApi<TyClock, TyHammerfestStore>)
+where
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
+{
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let mut threads: Vec<HammerfestForumThread> = Vec::with_capacity(15);
+    for i in 0..15 {
+      threads.push(HammerfestForumThread {
+        short: ShortHammerfestForumThread {
+          server: HammerfestServer::HammerfestFr,
+          id: format!("{}", 1000 + i).parse().unwrap(),
+          name: format!("Thread {}", i).parse().unwrap(),
+          is_closed: i % 2 == 0,
+        },
+        author: ShortHammerfestUser {
+          server: HammerfestServer::HammerfestFr,
+          id: "127".parse().unwrap(),
+          username: "elseabora".parse().unwrap(),
+        },
+        author_role: HammerfestForumRole::None,
+        kind: HammerfestForumThreadKind::Regular {
+          last_message_date: HammerfestDate {
+            month: 3,
+            day: 5,
+            weekday: 5,
+          },
+        },
+        reply_count: 4 * i,
+      });
+    }
+
+    let actual = api
+      .hammerfest_store
+      .touch_theme_page(&HammerfestForumThemePage {
+        theme: ShortHammerfestForumTheme {
+          server: HammerfestServer::HammerfestFr,
+          id: "3".parse().unwrap(),
+          name: "Les secrets de Tuberculoz".parse().unwrap(),
+          is_public: true,
+        },
+        sticky: vec![HammerfestForumThread {
+          short: ShortHammerfestForumThread {
+            server: HammerfestServer::HammerfestFr,
+            id: "474604".parse().unwrap(),
+            name: "[officiel] Corporate Soccer 2".parse().unwrap(),
+            is_closed: false,
+          },
+          author: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "195".parse().unwrap(),
+            username: "deepnight".parse().unwrap(),
+          },
+          author_role: HammerfestForumRole::Administrator,
+          kind: HammerfestForumThreadKind::Sticky,
+          reply_count: 0,
+        }],
+        threads: HammerfestForumThreadListing {
+          page1: NonZeroU16::new(1).unwrap(),
+          pages: NonZeroU16::new(16).unwrap(),
+          items: threads,
+        },
+      })
+      .await;
+    assert_ok!(actual);
   }
 }

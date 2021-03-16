@@ -103,12 +103,12 @@ async fn touch_hammerfest_forum_theme(
       INSERT
       INTO hammerfest_forum_themes(hammerfest_server, hammerfest_theme_id, archived_at, title, description, is_public)
       VALUES (
-        $1::HAMMERFEST_SERVER, $2::HAMMERFEST_THEME_ID, $3::INSTANT, $4::HAMMERFEST_THEME_TITLE, $5::HAMMERFEST_THEME_DESCRIPTION, $6::BOOLEAN
+        $1::HAMMERFEST_SERVER, $2::HAMMERFEST_FORUM_THEME_ID, $3::INSTANT, $4::HAMMERFEST_FORUM_THEME_TITLE, $5::HAMMERFEST_FORUM_THEME_DESCRIPTION, $6::BOOLEAN
       )
       ON CONFLICT (hammerfest_server, hammerfest_theme_id)
         DO UPDATE SET
-          title = $4::HAMMERFEST_THEME_TITLE,
-          description = COALESCE(EXCLUDED.description, $5::HAMMERFEST_THEME_DESCRIPTION),
+          title = $4::HAMMERFEST_FORUM_THEME_TITLE,
+          description = COALESCE(EXCLUDED.description, $5::HAMMERFEST_FORUM_THEME_DESCRIPTION),
           is_public = $6::BOOLEAN;
       ",
   )
@@ -133,7 +133,7 @@ async fn touch_hammerfest_forum_theme_page_count(
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_theme_page_counts(
       time($1 period, retrieved_at),
-      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_theme_id::HAMMERFEST_THEME_ID),
+      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_theme_id::HAMMERFEST_FORUM_THEME_ID),
       data($4 page_count::U32),
     )
   ))
@@ -161,9 +161,9 @@ async fn touch_hammerfest_forum_thread(
       INSERT
       INTO hammerfest_forum_threads(hammerfest_server, hammerfest_thread_id, archived_at)
       VALUES (
-        $1::HAMMERFEST_SERVER, $2::HAMMERFEST_THREAD_ID, $3::INSTANT
+        $1::HAMMERFEST_SERVER, $2::HAMMERFEST_FORUM_THREAD_ID, $3::INSTANT
       )
-      ON CONFLICT (hammerfest_server, hammerfest_theme_id) DO NOTHING;
+      ON CONFLICT (hammerfest_server, hammerfest_thread_id) DO NOTHING;
       ",
   )
   .bind(thread.server)
@@ -187,8 +187,8 @@ async fn touch_hammerfest_forum_thread_shared_meta(
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_thread_shared_meta(
       time($1 period, retrieved_at),
-      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_THREAD_ID),
-      data($4 title::HAMMERFEST_FORUM_THREAD_TITLE, $5 hammerfest_theme_id::HAMMERFEST_THEME_ID, $6 is_closed::BOOLEAN, $7 page_count::U32),
+      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID),
+      data($4 hammerfest_theme_id::HAMMERFEST_FORUM_THEME_ID, $5 title::HAMMERFEST_FORUM_THREAD_TITLE, $6 is_closed::BOOLEAN, $7 page_count::U32),
     )
   ))
     .bind(now)
@@ -215,16 +215,16 @@ async fn touch_hammerfest_forum_thread_list_meta(
   thread: HammerfestForumThreadIdRef,
   page: NonZeroU16,
   is_sticky: bool,
-  last_message_date: Option<HammerfestDate>,
+  latest_message_at: Option<HammerfestDate>,
   author: HammerfestUserId,
   reply_count: u16,
 ) -> Result<(), Box<dyn Error>> {
-  assert_eq!(is_sticky, last_message_date.is_none());
+  assert_eq!(is_sticky, latest_message_at.is_none());
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_forum_threads_history(
+    hammerfest_forum_thread_list_meta(
       time($1 period, retrieved_at),
-      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_THREAD_ID),
-      data($4 page::U16, $5 is_sticky::BOOLEAN, $6 last_message_date::HAMMERFEST_DATE, $7 author::HAMMERFEST_USER_ID, $8 reply_count::U16),
+      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID),
+      data($4 page::U16, $5 is_sticky::BOOLEAN, $6 latest_message_at::HAMMERFEST_DATE, $7 author::HAMMERFEST_USER_ID, $8 reply_count::U16),
     )
   ))
     .bind(now)
@@ -232,7 +232,7 @@ async fn touch_hammerfest_forum_thread_list_meta(
     .bind(thread.id)
     .bind(i64::from(page.get()))
     .bind(is_sticky)
-    .bind(last_message_date)
+    .bind(latest_message_at)
     .bind(author)
     .bind(i64::from(reply_count))
     .execute(&mut *tx)
@@ -259,7 +259,7 @@ async fn touch_hammerfest_forum_message(
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_messages_history(
       time($1 period, retrieved_at),
-      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_THREAD_ID, $4 page::U16, $5 offset_in_page::U8),
+      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID, $4 page::U16, $5 offset_in_page::U8),
       data($6 author::HAMMERFEST_USER_ID, $7 posted_at::HAMMERFEST_DATE_TIME, $8 remote_html_body::TEXT),
     )
   ))
@@ -292,7 +292,7 @@ async fn touch_hammerfest_forum_message_id(
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_messages_history(
       time($1 period, retrieved_at),
-      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_THREAD_ID, $4 page::U16, $5 offset_in_page::U8),
+      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID, $4 page::U16, $5 offset_in_page::U8),
       data($6 hammerfest_message_id::HAMMERFEST_FORUM_MESSAGE_ID),
       unique(mid(hammerfest_server, hammerfest_message_id)),
     )
@@ -680,16 +680,16 @@ async fn touch_hammerfest_best_season_rank(
   season_rank: Option<u32>,
 ) -> Result<(), Box<dyn Error>> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_user_ranks(
+    hammerfest_best_season_rank(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_user_id::HAMMERFEST_USER_ID),
-      data($4 season_rank::U32?),
+      data($4 best_season_rank::U32?),
     )
   ))
   .bind(now)
   .bind(user.server)
   .bind(user.id)
-  .bind(season_rank.map(|x| i32::try_from(x).unwrap()))
+  .bind(season_rank.map(i64::from))
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -708,7 +708,7 @@ async fn touch_hammerfest_forum_role(
   role: HammerfestForumRole,
 ) -> Result<(), Box<dyn Error>> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_user_ranks(
+    hammerfest_forum_roles(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_user_id::HAMMERFEST_USER_ID),
       data($4 role::HAMMERFEST_FORUM_ROLE),

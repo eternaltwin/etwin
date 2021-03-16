@@ -1,6 +1,9 @@
 #[macro_use]
 pub mod types;
 
+#[cfg(feature = "sqlx")]
+mod pg_num;
+
 pub mod api;
 pub mod auth;
 pub mod clock;

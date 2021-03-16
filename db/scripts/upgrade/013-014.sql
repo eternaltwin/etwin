@@ -85,7 +85,7 @@ $$;
 -- Where `T` depen
 CREATE DOMAIN sampled_instant_set AS INSTANT ARRAY CHECK (array_is_ordered_set(value));
 
-CREATE TYPE HAMMERFEST_FORUM_ROLE AS ENUM ('User', 'Moderator', 'Administrator');
+CREATE TYPE HAMMERFEST_FORUM_ROLE AS ENUM ('None', 'Moderator', 'Administrator');
 CREATE TYPE HAMMERFEST_QUEST_STATUS AS ENUM ('None', 'Pending', 'Complete');
 
 CREATE TYPE RAW_HAMMERFEST_DATE AS (
@@ -97,8 +97,7 @@ CREATE TYPE RAW_HAMMERFEST_DATE AS (
   isodow U8
 );
 
-CREATE DOMAIN hammerfest_date AS RAW_HAMMERFEST_DATE CHECK ( (value).month IS NOT NULL AND 1 <= (value).month AND (value).month <= 12 AND (value).day IS NOT NULL AND 1 <= (value).day
-  AND (value).day <= 31 AND (value).isodow IS NOT NULL AND 1 <= (value).isodow AND (value).isodow <= 7 );
+CREATE DOMAIN hammerfest_date AS RAW_HAMMERFEST_DATE;
 
 CREATE TYPE RAW_HAMMERFEST_DATETIME AS (
   -- 1-12
@@ -396,10 +395,10 @@ CREATE TABLE hammerfest_forum_thread_list_meta (
   -- Current theme page for this thread
   page U16 NOT NULL CHECK (page > 0),
   is_sticky BOOLEAN NOT NULL,
-  last_message HAMMERFEST_DATE NULL,
+  latest_message_at HAMMERFEST_DATE NULL,
   author hammerfest_user_id NOT NULL,
   reply_count U16 NOT NULL,
-  CHECK ((is_sticky AND last_message IS NULL) OR (NOT is_sticky AND last_message IS NOT NULL)),
+  CHECK ((is_sticky AND latest_message_at IS NULL) OR (NOT is_sticky AND latest_message_at IS NOT NULL)),
   PRIMARY KEY (hammerfest_server, hammerfest_thread_id, period),
   EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, period WITH &&)
 );
@@ -414,7 +413,7 @@ CREATE TABLE hammerfest_forum_messages_history (
   retrieved_at SAMPLED_INSTANT_SET NOT NULL CHECK (array_is_sampled_instant_set(retrieved_at, const_sampling_window())),
 --
   author HAMMERFEST_USER_ID NOT NULL,
-  posted_at HAMMERFEST_DATE NOT NULL,
+  posted_at HAMMERFEST_DATETIME NOT NULL,
   -- Raw HTML content as found on the remote website
   remote_html_body TEXT NOT NULL,
   -- Marktwin body

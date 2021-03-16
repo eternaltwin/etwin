@@ -268,6 +268,7 @@ pub struct HammerfestDate {
   pub month: u8,
   // TODO: limit 1 <= d <= 31
   pub day: u8,
+  /// Day of the week from 1 (Monday) to 7 (Sunday)
   // TODO: limit 1 <= w <= 7
   pub weekday: u8,
 }
@@ -279,7 +280,7 @@ impl sqlx::Type<Postgres> for HammerfestDate {
   }
 
   fn compatible(ty: &postgres::PgTypeInfo) -> bool {
-    *ty == Self::type_info() || <&[u8] as sqlx::Type<Postgres>>::compatible(ty)
+    *ty == Self::type_info()
   }
 }
 
@@ -305,9 +306,9 @@ impl<'r> sqlx::Decode<'r, Postgres> for HammerfestDate {
 impl<'q> sqlx::Encode<'q, Postgres> for HammerfestDate {
   fn encode_by_ref(&self, buf: &mut postgres::PgArgumentBuffer) -> sqlx::encode::IsNull {
     let mut encoder = postgres::types::PgRecordEncoder::new(buf);
-    encoder.encode(i32::from(self.month));
-    encoder.encode(i32::from(self.day));
-    encoder.encode(i32::from(self.weekday));
+    encoder.encode(crate::pg_num::PgU8::from(self.month));
+    encoder.encode(crate::pg_num::PgU8::from(self.day));
+    encoder.encode(crate::pg_num::PgU8::from(self.weekday));
     encoder.finish();
     sqlx::encode::IsNull::No
   }
@@ -331,7 +332,7 @@ impl sqlx::Type<Postgres> for HammerfestDateTime {
   }
 
   fn compatible(ty: &postgres::PgTypeInfo) -> bool {
-    *ty == Self::type_info() || <&[u8] as sqlx::Type<Postgres>>::compatible(ty)
+    *ty == Self::type_info()
   }
 }
 
