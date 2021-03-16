@@ -34,6 +34,20 @@ The `website` package has more advanced tasks described in its `README.md`, all 
 - `yarn up '@!(eternal-twin)/*'`: Update all dependencies.
 - `yarn workspaces foreach --no-private --verbose npm publish --tolerate-republish`: Publish all packages
 
+## Code coverage
+
+To get Rust's code coverage, run the following commands:
+
+```
+cargo install grcov
+export CARGO_INCREMENTAL=0
+export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off"
+cargo +nightly test
+grcov ./target/debug/ -s . -t html --llvm --branch --ignore-not-existing -o ./target/debug/coverage/
+```
+
+The report will be in `./target/debug/coverage/`.
+
 ## Configuration
 
 The website is configured using a local `etwin.toml` file. You can copy `etwin.toml.example` and edit its values.
