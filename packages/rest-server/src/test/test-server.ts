@@ -73,7 +73,7 @@ export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer)
     const password = ScryptPasswordService.recommendedForTests();
     const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     const dinoparcClient = new MemDinoparcClient({clock});
-    const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
+    const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase});
     const hammerfestClient = new MemHammerfestClient({clock});
     const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     const twinoidClient = new HttpTwinoidClientService();
@@ -151,7 +151,7 @@ export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer)
       });
     }
 
-    return new Promise<R>((resolve, reject): void => {
+    const result = new Promise<R>((resolve, reject): void => {
       async function onListening(): Promise<void> {
         server.removeListener("error", onError);
 
@@ -177,5 +177,11 @@ export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer)
 
       server.listen();
     });
+
+    try {
+      return await result;
+    } finally {
+      await nativeDatabase.close();
+    }
   });
 }

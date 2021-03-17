@@ -32,6 +32,10 @@ async fn populate_dinoparc_servers(tx: &mut Transaction<'_, Postgres>) -> Result
   let actual: BTreeSet<_> = rows.iter().map(|r| r.dinoparc_server).collect();
   let expected: BTreeSet<_> = DinoparcServer::iter().collect();
 
+  if actual == expected {
+    return Ok(());
+  }
+
   for extra in actual.difference(&expected) {
     let res: PgQueryResult = sqlx::query(
       r"

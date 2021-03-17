@@ -58,7 +58,11 @@ describe("NativeUserStore", function () {
         const uuidGenerator = new Uuid4Generator();
         const password = ScryptPasswordService.recommendedForTests();
         const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
-        return fn({clock, password, userStore});
+        try {
+          return await fn({clock, password, userStore});
+        } finally {
+          await nativeDatabase.close();
+        }
       });
     }
 

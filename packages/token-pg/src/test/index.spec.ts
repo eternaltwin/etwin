@@ -29,11 +29,15 @@ async function withPgTokenService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const databaseSecret: string = config.etwin.secret;
     const clock = new SystemClock();
     const uuidGenerator = new Uuid4Generator();
-    const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
+    const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase});
     const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret, uuidGenerator});
     const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
     const token = new PgTokenService(database, databaseSecret, dinoparcStore, hammerfestStore);
-    return fn({hammerfestStore, token, twinoidStore});
+    try {
+      return await fn({hammerfestStore, token, twinoidStore});
+    } finally {
+      await nativeDatabase.close();
+    }
   });
 }
 

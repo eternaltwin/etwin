@@ -1,14 +1,16 @@
-use crate::neon_helpers::NeonNamespace;
+use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
 use crate::tokio_runtime::spawn_future;
 use neon::prelude::*;
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::PgPool;
 use std::ops::Deref;
+use std::sync::Arc;
 
 pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject> {
   let ns = cx.empty_object();
   ns.set_function(cx, "new", new)?;
+  ns.set_function(cx, "close", close)?;
   Ok(ns)
 }
 
@@ -86,4 +88,16 @@ pub fn new(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   }));
 
   Ok(cx.undefined())
+}
+
+pub fn close(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsPgPool>(0)?;
+  let inner = Arc::new(PgPool::clone(&inner));
+  let cb = cx.argument::<JsFunction>(1)?.root(&mut cx);
+
+  let res = async move {
+    inner.close().await;
+    Ok(())
+  };
+  resolve_callback_serde(&mut cx, res, cb)
 }

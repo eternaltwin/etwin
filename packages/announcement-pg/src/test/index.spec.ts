@@ -49,7 +49,7 @@ async function withPgAnnouncementService<R>(fn: (api: Api) => Promise<R>): Promi
     const emailTemplate = new JsonEmailTemplateService(new Url("https://eternal-twin.net"));
     const password = ScryptPasswordService.recommendedForTests();
     const userStore = new PgUserStore({clock, database:  nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
-    const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
+    const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase});
     const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
     const linkStore = new PgLinkStore({clock, database: nativeDatabase});
@@ -91,7 +91,11 @@ async function withPgAnnouncementService<R>(fn: (api: Api) => Promise<R>): Promi
     const forumConfig: ForumConfig = {postsPerPage: 10, threadsPerPage: 20};
     const forum = new PgForumService(database, uuidGenerator, userStore, forumConfig);
     const announcement = new PgAnnouncementService({database, uuidGenerator, forum});
-    return fn({auth, forum, announcement});
+    try {
+      return await fn({auth, forum, announcement});
+    } finally {
+      await nativeDatabase.close();
+    }
   });
 }
 

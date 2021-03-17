@@ -14,6 +14,7 @@ declare const DatabaseBox: unique symbol;
 
 export class Database {
   public readonly box: typeof DatabaseBox;
+  private static CLOSE = promisify(native.database.close);
   private static NEW = promisify(native.database.new);
 
   private constructor(box: typeof DatabaseBox) {
@@ -30,5 +31,10 @@ export class Database {
     });
     const box = await Database.NEW(rawOptions);
     return new Database(box);
+  }
+
+  async close(): Promise<null> {
+    await Database.CLOSE(this.box);
+    return null;
   }
 }

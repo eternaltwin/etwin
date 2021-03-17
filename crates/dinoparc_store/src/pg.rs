@@ -6,6 +6,7 @@ use etwin_core::dinoparc::{
   ArchivedDinoparcUser, DinoparcServer, DinoparcStore, DinoparcUserId, DinoparcUsername, GetDinoparcUserOptions,
   ShortDinoparcUser,
 };
+use etwin_populate::dinoparc::populate_dinoparc;
 use sqlx::PgPool;
 use std::error::Error;
 
@@ -18,13 +19,20 @@ where
   database: TyDatabase,
 }
 
+fn box_sqlx_error(e: sqlx::Error) -> Box<dyn Error + Send> {
+  Box::new(e)
+}
+
 impl<TyClock, TyDatabase> PgDinoparcStore<TyClock, TyDatabase>
 where
   TyClock: Clock,
   TyDatabase: ApiRef<PgPool>,
 {
-  pub fn new(clock: TyClock, database: TyDatabase) -> Self {
-    Self { clock, database }
+  pub async fn new(clock: TyClock, database: TyDatabase) -> Result<Self, Box<dyn Error + Send>> {
+    let mut tx = database.as_ref().begin().await.map_err(box_sqlx_error)?;
+    populate_dinoparc(&mut tx).await?;
+    tx.commit().await.map_err(box_sqlx_error)?;
+    Ok(Self { clock, database })
   }
 }
 
@@ -131,8 +139,11 @@ mod test {
     let database = Arc::new(database);
 
     let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
-    let dinoparc_store: Arc<dyn DinoparcStore> =
-      Arc::new(PgDinoparcStore::new(Arc::clone(&clock), Arc::clone(&database)));
+    let dinoparc_store: Arc<dyn DinoparcStore> = Arc::new(
+      PgDinoparcStore::new(Arc::clone(&clock), Arc::clone(&database))
+        .await
+        .unwrap(),
+    );
 
     TestApi {
       _clock: clock,

@@ -40,7 +40,11 @@ describe("NativeHammerfestStore", function () {
         const clock = new SystemClock();
         const uuidGenerator = new Uuid4Generator();
         const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: config.etwin.secret, uuidGenerator});
-        return fn({hammerfestStore});
+        try {
+          return await fn({hammerfestStore});
+        } finally {
+          await nativeDatabase.close();
+        }
       });
     }
 

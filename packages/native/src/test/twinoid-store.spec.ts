@@ -38,7 +38,11 @@ describe("NativeTwinoidStore", function () {
         const nativeDatabase = await NativeDatabase.create(dbConfig);
         const clock = new SystemClock();
         const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
-        return fn({twinoidStore});
+        try {
+          return await fn({twinoidStore});
+        } finally {
+          await nativeDatabase.close();
+        }
       });
     }
 

@@ -84,7 +84,7 @@ pub mod mem {
 pub mod pg {
   use crate::clock::get_native_clock;
   use crate::database::JsPgPool;
-  use crate::neon_helpers::NeonNamespace;
+  use crate::neon_helpers::{resolve_callback_with, NeonNamespace};
   use etwin_core::clock::Clock;
   use etwin_dinoparc_store::pg::PgDinoparcStore;
   use neon::prelude::*;
@@ -99,12 +99,27 @@ pub mod pg {
 
   pub type JsPgDinoparcStore = JsBox<Arc<PgDinoparcStore<Arc<dyn Clock>, Arc<PgPool>>>>;
 
-  pub fn new(mut cx: FunctionContext) -> JsResult<JsPgDinoparcStore> {
+  pub fn new(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     let clock = cx.argument::<JsValue>(0)?;
     let database = cx.argument::<JsPgPool>(1)?;
+    let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
     let clock: Arc<dyn Clock> = get_native_clock(&mut cx, clock)?;
     let database = Arc::new(PgPool::clone(&database));
-    let inner: Arc<PgDinoparcStore<Arc<dyn Clock>, Arc<PgPool>>> = Arc::new(PgDinoparcStore::new(clock, database));
-    Ok(cx.boxed(inner))
+    let res = async move {
+      PgDinoparcStore::new(clock, database).await.map(|dinoparc_store| {
+        #[allow(clippy::type_complexity)]
+        let inner: Arc<PgDinoparcStore<Arc<dyn Clock>, Arc<PgPool>>> = Arc::new(dinoparc_store);
+        inner
+      })
+    };
+
+    resolve_callback_with(&mut cx, res, cb, |c: &mut TaskContext, res| {
+      match res {
+        Ok(inner) => Ok(c.boxed(inner).upcast()),
+        // TODO: Remove this `unwrap`
+        Err(e) => Err(JsError::error(c, format!("{}", e)).unwrap().upcast()),
+      }
+    })
   }
 }

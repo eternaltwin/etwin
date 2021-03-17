@@ -47,7 +47,7 @@ async function withPgForumService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const emailTemplate = new JsonEmailTemplateService(new Url("https://eternal-twin.net"));
     const password = ScryptPasswordService.recommendedForTests();
     const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
-    const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
+    const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase});
     const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
     const linkStore = new PgLinkStore({clock, database: nativeDatabase});
@@ -59,7 +59,11 @@ async function withPgForumService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
     const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});
     const forum = new PgForumService(database, uuidGenerator, userStore, {postsPerPage: 10, threadsPerPage: 20});
-    return fn({auth, forum});
+    try {
+      return await fn({auth, forum});
+    } finally {
+      await nativeDatabase.close();
+    }
   });
 }
 

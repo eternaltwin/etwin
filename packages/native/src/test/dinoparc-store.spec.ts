@@ -37,8 +37,12 @@ describe("NativeDinoparcStore", function () {
         await forceCreateLatest(db);
         const nativeDatabase = await NativeDatabase.create(dbConfig);
         const clock = new SystemClock();
-        const dinoparcStore = new PgDinoparcStore({clock, database: nativeDatabase});
-        return fn({dinoparcStore});
+        const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase});
+        try {
+          return await fn({dinoparcStore});
+        } finally {
+          await nativeDatabase.close();
+        }
       });
     }
 

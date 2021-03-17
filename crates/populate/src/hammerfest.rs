@@ -35,6 +35,10 @@ async fn populate_hammerfest_servers(tx: &mut Transaction<'_, Postgres>) -> Resu
   let actual: BTreeSet<_> = rows.iter().map(|r| r.hammerfest_server).collect();
   let expected: BTreeSet<_> = HammerfestServer::iter().collect();
 
+  if actual == expected {
+    return Ok(());
+  }
+
   for extra in actual.difference(&expected) {
     let res: PgQueryResult = sqlx::query(
       r"
@@ -143,6 +147,10 @@ async fn populate_hammerfest_quests(tx: &mut Transaction<'_, Postgres>) -> Resul
 
   let actual: BTreeSet<HammerfestQuestId> = rows.iter().map(|r| r.hammerfest_quest_id).collect();
   let expected: BTreeSet<HammerfestQuestId> = QUESTS.iter().map(|q| q.id).collect();
+
+  if actual == expected {
+    return Ok(());
+  }
 
   for extra_qid in actual.difference(&expected) {
     let res: PgQueryResult = sqlx::query(

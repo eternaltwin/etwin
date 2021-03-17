@@ -15,6 +15,7 @@ edition = "2018"
 async-trait = "^0.1.42"
 etwin_core = { path = "../core", features = ["sqlx"] }
 etwin_db_schema = { path = "../db_schema" }
+etwin_populate = { path = "../populate" }
 neon = { version = "^0.7.0", optional = true, default-features = false, features = ["napi-runtime"] }
 regex = "^1.4.3"
 sqlx = { version = "^0.5.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }

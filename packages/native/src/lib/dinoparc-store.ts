@@ -59,7 +59,14 @@ export interface PgDinoparcStoreOptions {
 }
 
 export class PgDinoparcStore extends NativeDinoparcStore {
-  constructor(options: Readonly<PgDinoparcStoreOptions>) {
-    super(native.dinoparcStore.pg.new(options.clock.box, options.database.box));
+  private static NEW = promisify(native.dinoparcStore.pg.new);
+
+  private constructor(box: typeof PgDinoparcStoreBox) {
+    super(box);
+  }
+
+  public static async create(options: Readonly<PgDinoparcStoreOptions>): Promise<PgDinoparcStore> {
+    const box = await PgDinoparcStore.NEW(options.clock.box, options.database.box);
+    return new PgDinoparcStore(box);
   }
 }
