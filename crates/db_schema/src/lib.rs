@@ -18,10 +18,10 @@ pub async fn empty(db: &PgPool) -> Result<(), Box<dyn Error>> {
   SQUIRREL.empty(db).await
 }
 
-pub async fn force_create_latest(db: &PgPool) -> Result<(), Box<dyn Error>> {
-  SQUIRREL.force_create_latest(db).await
+pub async fn force_create_latest(db: &PgPool, void: bool) -> Result<(), Box<dyn Error>> {
+  SQUIRREL.force_create_latest(db, void).await
 }
 
-pub async fn force_create(db: &PgPool, state: SchemaStateRef<'static>) -> Result<(), Box<dyn Error>> {
-  SQUIRREL.force_create(db, state).await
+pub async fn force_create(db: &PgPool, state: SchemaStateRef<'static>, void: bool) -> Result<(), Box<dyn Error>> {
+  SQUIRREL.force_create(db, state, void).await
 }

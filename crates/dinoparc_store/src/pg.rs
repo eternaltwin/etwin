@@ -134,7 +134,7 @@ mod test {
       )
       .await
       .unwrap();
-    force_create_latest(&database).await.unwrap();
+    force_create_latest(&database, true).await.unwrap();
 
     let database = Arc::new(database);
 

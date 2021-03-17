@@ -15,6 +15,7 @@ use std::fmt;
 use std::fmt::Debug;
 use std::num::NonZeroU32;
 use std::str::FromStr;
+use std::sync::RwLock;
 
 static SQL_NODE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{1,4})\.sql$").unwrap());
 static SQL_EDGE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{1,4})-([0-9]{1,4})\.sql$").unwrap());
@@ -162,6 +163,7 @@ pub struct SchemaResolver {
   states: HashMap<SchemaState, ()>,
   latest: SchemaVersion,
   drop: Option<&'static str>,
+  latest_force_created_state: RwLock<Option<SchemaState>>,
 }
 
 impl SchemaResolver {
@@ -223,6 +225,7 @@ impl SchemaResolver {
       states,
       latest,
       drop,
+      latest_force_created_state: RwLock::new(None),
     }
   }
 
@@ -367,21 +370,66 @@ impl SchemaResolver {
     Ok(())
   }
 
-  pub async fn force_create_latest(&self, db: &PgPool) -> Result<(), Box<dyn Error>> {
-    self.inner_force_create(db, self.latest.into()).await
+  async fn tx_truncate_all(&self, tx: &mut Transaction<'_, Postgres>) -> Result<(), Box<dyn Error>> {
+    let row: Vec<(String,)> = sqlx::query_as(
+      r"
+      SELECT tablename
+      FROM   pg_catalog.pg_tables
+      WHERE  schemaname = CURRENT_SCHEMA();
+    ",
+    )
+    .fetch_all(&mut *tx)
+    .await?;
+
+    let row: Vec<&str> = row.iter().map(|r| r.0.as_str()).collect();
+
+    self.tx_truncate(tx, &row).await
   }
 
-  pub async fn force_create(&self, db: &PgPool, state: SchemaStateRef<'_>) -> Result<(), Box<dyn Error>> {
-    self.inner_force_create(db, self.validate_state(state)).await
+  async fn tx_truncate(&self, tx: &mut Transaction<'_, Postgres>, tables: &[&str]) -> Result<(), Box<dyn Error>> {
+    let mut query = String::new();
+    query.push_str("TRUNCATE TABLE ");
+    for (i, table) in tables.iter().cloned().enumerate() {
+      if i != 0 {
+        query.push_str(", ");
+      }
+      query.push('"');
+      query.push_str(table);
+      query.push('"');
+    }
+    query.push_str(" CASCADE;");
+
+    sqlx::query(&query).execute(tx).await?;
+
+    Ok(())
   }
 
-  async fn inner_force_create(&self, db: &PgPool, state: SchemaState) -> Result<(), Box<dyn Error>> {
+  pub async fn force_create_latest(&self, db: &PgPool, void: bool) -> Result<(), Box<dyn Error>> {
+    self.inner_force_create(db, self.latest.into(), void).await
+  }
+
+  pub async fn force_create(&self, db: &PgPool, state: SchemaStateRef<'_>, void: bool) -> Result<(), Box<dyn Error>> {
+    self.inner_force_create(db, self.validate_state(state), void).await
+  }
+
+  async fn inner_force_create(&self, db: &PgPool, state: SchemaState, void: bool) -> Result<(), Box<dyn Error>> {
+    let mut tx = db.begin().await?;
+    let mut latest_force_created_state = self.latest_force_created_state.write().unwrap();
+    if void && *latest_force_created_state == Some(state) {
+      let cur = self.inner_get_state(&mut tx).await?;
+      if cur == state {
+        self.tx_truncate_all(&mut tx).await?;
+        tx.commit().await?;
+        return Ok(());
+      }
+    }
+
     let migration = self
       .inner_create_migration(SchemaState::Empty, state, MigrationDirection::UpgradeOnly)
       .expect("Unreachable state from empty DB");
-    let mut tx = db.begin().await?;
     self.tx_empty(&mut tx).await?;
     self.tx_apply_migration(&mut tx, &migration).await?;
+    *latest_force_created_state = Some(state);
     tx.commit().await?;
     Ok(())
   }
