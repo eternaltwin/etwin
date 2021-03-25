@@ -110,7 +110,7 @@ pub struct ShortHammerfestUser {
 }
 
 impl ShortHammerfestUser {
-  pub fn as_ref(&self) -> HammerfestUserIdRef {
+  pub const fn as_ref(&self) -> HammerfestUserIdRef {
     HammerfestUserIdRef {
       server: self.server,
       id: self.id,
@@ -175,10 +175,19 @@ pub struct StoredHammerfestItems {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestSession {
-  pub ctime: Instant,
-  pub atime: Instant,
   pub key: HammerfestSessionKey,
   pub user: ShortHammerfestUser,
+  pub ctime: Instant,
+  pub atime: Instant,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct StoredHammerfestSession {
+  pub key: HammerfestSessionKey,
+  pub user: HammerfestUserIdRef,
+  pub ctime: Instant,
+  pub atime: Instant,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]

@@ -12,6 +12,12 @@ declare_decimal_id! {
   const SQL_NAME = "twinoid_user_id";
 }
 
+impl TwinoidUserId {
+  pub fn as_ref(self) -> TwinoidUserIdRef {
+    TwinoidUserIdRef { id: self }
+  }
+}
+
 declare_new_string! {
   pub struct TwinoidUserDisplayName(String);
   pub type ParseError = TwinoidUserDisplayNameParseError;
@@ -38,9 +44,15 @@ impl From<ArchivedTwinoidUser> for ShortTwinoidUser {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "_serde", serde(tag = "type", rename = "TwinoidUser"))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TwinoidUserIdRef {
   pub id: TwinoidUserId,
+}
+
+impl From<TwinoidUserId> for TwinoidUserIdRef {
+  fn from(id: TwinoidUserId) -> Self {
+    Self { id }
+  }
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]

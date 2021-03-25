@@ -80,7 +80,7 @@ where
             },
             unlink: (),
             etwin: options.etwin,
-            remote: options.remote.clone(),
+            remote: options.remote,
           }),
           old: vec![],
         };
@@ -181,7 +181,7 @@ where
             },
             unlink: (),
             etwin: options.etwin,
-            remote: options.remote.clone(),
+            remote: options.remote,
           }),
           old: vec![],
         };
@@ -220,7 +220,7 @@ where
       .await
       .map_err(DeleteLinkError::other)?;
 
-    let row = row.ok_or_else(|| DeleteLinkError::NotFound(options.etwin, options.remote.clone()))?;
+    let row = row.ok_or(DeleteLinkError::NotFound(options.etwin, options.remote))?;
 
     let link: VersionedRawLink<DinoparcUserIdRef> = VersionedRawLink {
       current: None,
@@ -234,7 +234,7 @@ where
           user: options.unlinked_by,
         },
         etwin: options.etwin,
-        remote: options.remote.clone(),
+        remote: options.remote,
       }],
     };
     Ok(link)
@@ -319,7 +319,7 @@ where
     .await
     .map_err(DeleteLinkError::other)?;
 
-    let row = row.ok_or_else(|| DeleteLinkError::NotFound(options.etwin, options.remote.clone()))?;
+    let row = row.ok_or(DeleteLinkError::NotFound(options.etwin, options.remote))?;
 
     let link: VersionedRawLink<TwinoidUserIdRef> = VersionedRawLink {
       current: None,
@@ -333,7 +333,7 @@ where
           user: options.unlinked_by,
         },
         etwin: options.etwin,
-        remote: options.remote.clone(),
+        remote: options.remote,
       }],
     };
     Ok(link)
@@ -378,7 +378,7 @@ where
             },
             unlink: (),
             etwin: UserIdRef { id: row.user_id },
-            remote: options.remote.clone(),
+            remote: options.remote,
           }),
           old: vec![],
         };
@@ -471,7 +471,7 @@ where
             },
             unlink: (),
             etwin: UserIdRef { id: row.user_id },
-            remote: options.remote.clone(),
+            remote: options.remote,
           }),
           old: vec![],
         };

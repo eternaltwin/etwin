@@ -25,6 +25,9 @@ CREATE DOMAIN hammerfest_forum_theme_title AS VARCHAR(100);
 CREATE DOMAIN hammerfest_forum_theme_description AS VARCHAR(500);
 CREATE DOMAIN hammerfest_forum_thread_title AS VARCHAR(100);
 
+CREATE DOMAIN rfc_oauth_access_token_key AS TEXT;
+CREATE DOMAIN rfc_oauth_refresh_token_key AS TEXT;
+
 --- Checks that arr is ascendingly-sorted array of unique non-null values
 CREATE OR REPLACE FUNCTION array_is_ordered_set(
   IN arr ANYARRAY

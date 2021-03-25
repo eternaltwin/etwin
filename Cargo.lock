@@ -804,6 +804,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "etwin_token_store"
+version = "0.0.1"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "etwin_config",
+ "etwin_core",
+ "etwin_db_schema",
+ "etwin_dinoparc_store",
+ "etwin_hammerfest_store",
+ "etwin_populate",
+ "etwin_twinoid_store",
+ "neon",
+ "regex",
+ "serde_json",
+ "serial_test",
+ "sqlx",
+ "tokio",
+]
+
+[[package]]
 name = "etwin_twinoid_store"
 version = "0.0.1"
 dependencies = [

@@ -173,12 +173,30 @@ pub struct DinoparcSession {
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct StoredDinoparcSession {
+  pub key: DinoparcSessionKey,
+  pub user: DinoparcUserIdRef,
+  pub ctime: Instant,
+  pub atime: Instant,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcUser"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ShortDinoparcUser {
   pub server: DinoparcServer,
   pub id: DinoparcUserId,
   pub username: DinoparcUsername,
+}
+
+impl ShortDinoparcUser {
+  pub const fn as_ref(&self) -> DinoparcUserIdRef {
+    DinoparcUserIdRef {
+      server: self.server,
+      id: self.id,
+    }
+  }
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -193,7 +211,7 @@ pub struct ArchivedDinoparcUser {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcUser"))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcUserIdRef {
   pub server: DinoparcServer,
   pub id: DinoparcUserId,
