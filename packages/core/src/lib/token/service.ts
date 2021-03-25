@@ -1,11 +1,11 @@
 import { DinoparcServer } from "../dinoparc/dinoparc-server.js";
-import { DinoparcSession } from "../dinoparc/dinoparc-session.js";
 import { DinoparcSessionKey } from "../dinoparc/dinoparc-session-key.js";
 import { DinoparcUserId } from "../dinoparc/dinoparc-user-id.js";
+import { NullableStoredDinoparcSession, StoredDinoparcSession } from "../dinoparc/stored-dinoparc-session";
 import { HammerfestServer } from "../hammerfest/hammerfest-server.js";
-import { HammerfestSession } from "../hammerfest/hammerfest-session.js";
 import { HammerfestSessionKey } from "../hammerfest/hammerfest-session-key.js";
 import { HammerfestUserId } from "../hammerfest/hammerfest-user-id.js";
+import { NullableStoredHammerfestSession, StoredHammerfestSession } from "../hammerfest/stored-hammerfest-session";
 import { RfcOauthAccessTokenKey } from "../oauth/rfc-oauth-access-token-key";
 import { RfcOauthRefreshTokenKey } from "../oauth/rfc-oauth-refresh-token-key.js";
 import { TwinoidUserId } from "../twinoid/twinoid-user-id.js";
@@ -33,7 +33,7 @@ export interface TokenService {
   /**
    * Notifies the service of an active Dinoparc session.
    */
-  touchDinoparc(dparcServer: DinoparcServer, sessionKey: DinoparcSessionKey, dparcUserId: DinoparcUserId): Promise<DinoparcSession>;
+  touchDinoparc(dparcServer: DinoparcServer, sessionKey: DinoparcSessionKey, dparcUserId: DinoparcUserId): Promise<StoredDinoparcSession>;
 
   /**
    * Notifies the service of an inactive Dinoparc session.
@@ -46,12 +46,12 @@ export interface TokenService {
    * Note that the session's last known state is "authenticated as `dparcUserId`". If the session expired or was altered
    * externally, this may not correspond to its real state. The session may correspond to a guest or another user.
    */
-  getDinoparc(dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<DinoparcSession | null>;
+  getDinoparc(dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<NullableStoredDinoparcSession>;
 
   /**
    * Notifies the service of an active Hammerfest session.
    */
-  touchHammerfest(hfServer: HammerfestServer, sessionKey: HammerfestSessionKey, hfUserId: HammerfestUserId): Promise<HammerfestSession>;
+  touchHammerfest(hfServer: HammerfestServer, sessionKey: HammerfestSessionKey, hfUserId: HammerfestUserId): Promise<StoredHammerfestSession>;
 
   /**
    * Notifies the service of an inactive Hammerfest session.
@@ -64,5 +64,5 @@ export interface TokenService {
    * Note that the session's last known state is "authenticated as `hfUserId`". If the session expired or was altered
    * externally, this may not correspond to its real state. The session may correspond to a guest or another user.
    */
-  getHammerfest(hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<HammerfestSession | null>;
+  getHammerfest(hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<NullableStoredHammerfestSession>;
 }

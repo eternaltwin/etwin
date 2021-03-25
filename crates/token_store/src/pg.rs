@@ -222,7 +222,7 @@ where
     Ok(())
   }
 
-  async fn get_twinoid_oauth(&self, options: TwinoidUserIdRef) -> Result<Option<TwinoidOauth>, Box<dyn Error>> {
+  async fn get_twinoid_oauth(&self, options: TwinoidUserIdRef) -> Result<TwinoidOauth, Box<dyn Error>> {
     let mut tx = self.database.as_ref().begin().await?;
     let now = self.clock.now();
 
@@ -246,17 +246,12 @@ where
         .bind(options.id)
         .fetch_optional(&mut tx)
         .await?;
-        if let Some(row) = row {
-          TwinoidRefreshToken {
-            key: row.twinoid_refresh_token,
-            created_at: row.ctime,
-            accessed_at: row.atime,
-            twinoid_user_id: options.id,
-          }
-        } else {
-          tx.commit().await?;
-          return Ok(None);
-        }
+        row.map(|r| TwinoidRefreshToken {
+          key: r.twinoid_refresh_token,
+          created_at: r.ctime,
+          accessed_at: r.atime,
+          twinoid_user_id: options.id,
+        })
       };
       let access_token = {
         #[derive(Debug, sqlx::FromRow)]
@@ -289,10 +284,10 @@ where
         })
       };
 
-      Some(TwinoidOauth {
+      TwinoidOauth {
         refresh_token,
         access_token,
-      })
+      }
     };
 
     tx.commit().await?;
@@ -346,6 +341,7 @@ where
       #[derive(Debug, sqlx::FromRow)]
       struct Row {
         ctime: Instant,
+        atime: Instant,
       }
 
       let row: Row = sqlx::query_as::<_, Row>(
@@ -354,7 +350,7 @@ where
         VALUES ($3::DINOPARC_SERVER, pgp_sym_encrypt($4::DINOPARC_SESSION_KEY, $2::TEXT), digest($4::DINOPARC_SESSION_KEY, 'sha256'), $5::DINOPARC_USER_ID, $1::INSTANT, $1::INSTANT)
         ON CONFLICT (dinoparc_server, _dinoparc_session_key_hash)
           DO UPDATE SET atime = $1::INSTANT
-        RETURNING ctime;",
+        RETURNING ctime, atime;",
       )
         .bind(now)
         .bind(self.database_secret.as_str())
@@ -368,7 +364,7 @@ where
         key: key.clone(),
         user,
         ctime: row.ctime,
-        atime: now,
+        atime: row.atime,
       }
     };
 
@@ -479,6 +475,7 @@ where
       #[derive(Debug, sqlx::FromRow)]
       struct Row {
         ctime: Instant,
+        atime: Instant,
       }
 
       let row: Row = sqlx::query_as::<_, Row>(
@@ -487,7 +484,7 @@ where
         VALUES ($3::HAMMERFEST_SERVER, pgp_sym_encrypt($4::HAMMERFEST_SESSION_KEY, $2::TEXT), digest($4::HAMMERFEST_SESSION_KEY, 'sha256'), $5::HAMMERFEST_USER_ID, $1::INSTANT, $1::INSTANT)
         ON CONFLICT (hammerfest_server, _hammerfest_session_key_hash)
           DO UPDATE SET atime = $1::INSTANT
-        RETURNING ctime;",
+        RETURNING ctime, atime;",
       )
       .bind(now)
       .bind(self.database_secret.as_str())
@@ -501,7 +498,7 @@ where
         key: key.clone(),
         user,
         ctime: row.ctime,
-        atime: now,
+        atime: row.atime,
       }
     };
 

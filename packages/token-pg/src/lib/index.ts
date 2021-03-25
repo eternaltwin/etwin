@@ -1,15 +1,14 @@
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
-import { DinoparcSession } from "@eternal-twin/core/lib/dinoparc/dinoparc-session.js";
 import { DinoparcSessionKey } from "@eternal-twin/core/lib/dinoparc/dinoparc-session-key.js";
 import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
-import { $ShortDinoparcUser } from "@eternal-twin/core/lib/dinoparc/short-dinoparc-user.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
+import { StoredDinoparcSession } from "@eternal-twin/core/lib/dinoparc/stored-dinoparc-session.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
-import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
-import { $ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
+import { StoredHammerfestSession } from "@eternal-twin/core/lib/hammerfest/stored-hammerfest-session.js";
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { RfcOauthRefreshTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-refresh-token-key.js";
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
@@ -18,20 +17,21 @@ import { NullableTwinoidAccessToken } from "@eternal-twin/core/lib/token/twinoid
 import { TwinoidOauth } from "@eternal-twin/core/lib/token/twinoid-oauth.js";
 import { NullableTwinoidRefreshToken } from "@eternal-twin/core/lib/token/twinoid-refresh-token.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
-import { DinoparcSessionRow, HammerfestSessionRow, TwinoidAccessTokenRow, TwinoidRefreshTokenRow } from "@eternal-twin/etwin-pg/lib/schema.js";
+import {
+  DinoparcSessionRow,
+  HammerfestSessionRow,
+  TwinoidAccessTokenRow,
+  TwinoidRefreshTokenRow
+} from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 
 export class PgTokenService implements TokenService {
   readonly #database: Database;
   readonly #dbSecret: string;
-  readonly #dinoparcStore: DinoparcStore;
-  readonly #hammerfestStore: HammerfestStore;
 
-  constructor(database: Database, dbSecret: string, dinoparcStore: DinoparcStore, hammerfestArchive: HammerfestStore) {
+  constructor(database: Database, dbSecret: string, _dinoparcStore: DinoparcStore, _hammerfestArchive: HammerfestStore) {
     this.#database = database;
     this.#dbSecret = dbSecret;
-    this.#dinoparcStore = dinoparcStore;
-    this.#hammerfestStore = hammerfestArchive;
   }
 
   async touchTwinoidOauth(options: TouchOauthTokenOptions): Promise<void> {
@@ -220,11 +220,11 @@ export class PgTokenService implements TokenService {
     return {accessToken, refreshToken};
   }
 
-  getDinoparc(dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<DinoparcSession | null> {
+  getDinoparc(dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<StoredDinoparcSession | null> {
     return this.#database.transaction(TransactionMode.ReadOnly, q => this.getDinoparcTx(q, dparcServer, dparcUserId));
   }
 
-  private async getDinoparcTx(queryable: Queryable, dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<DinoparcSession | null> {
+  private async getDinoparcTx(queryable: Queryable, dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<StoredDinoparcSession | null> {
     type Row = Pick<DinoparcSessionRow, "dinoparc_session_key" | "ctime" | "atime">;
     const row: Row | undefined = await queryable.oneOrNone(
       `
@@ -241,12 +241,8 @@ export class PgTokenService implements TokenService {
     if (row === undefined) {
       return null;
     }
-    const user = await this.#dinoparcStore.getShortUser({server: dparcServer, id: dparcUserId});
-    if (user === null) {
-      throw new Error("AssertionError: Expected Dinoparc user to exist");
-    }
     return {
-      user: $ShortDinoparcUser.clone(user),
+      user: {type: ObjectType.DinoparcUser, server: dparcServer, id: dparcUserId},
       key: row.dinoparc_session_key,
       ctime: row.ctime,
       atime: row.atime,
@@ -257,11 +253,11 @@ export class PgTokenService implements TokenService {
     dparcServer: DinoparcServer,
     sessionKey: DinoparcSessionKey,
     dparcUserId: DinoparcUserId
-  ): Promise<DinoparcSession> {
+  ): Promise<StoredDinoparcSession> {
     return this.#database.transaction(TransactionMode.ReadWrite, q => this.touchDinoparcTx(q, dparcServer, sessionKey, dparcUserId));
   }
 
-  private async touchDinoparcTx(queryable: Queryable, dparcServer: DinoparcServer, sessionKey: DinoparcSessionKey, dparcUserId: DinoparcUserId): Promise<DinoparcSession> {
+  private async touchDinoparcTx(queryable: Queryable, dparcServer: DinoparcServer, sessionKey: DinoparcSessionKey, dparcUserId: DinoparcUserId): Promise<StoredDinoparcSession> {
     // First add a row to the revoked sessions if the session exists but the `dinoparc_user_id` changed.
     // Also add a row to the revoked sessions if the user was authenticated with a different key (one session per user).
     await queryable.query(
@@ -308,12 +304,8 @@ export class PgTokenService implements TokenService {
         dparcUserId,
       ],
     );
-    const user = await this.#dinoparcStore.getShortUser({server: dparcServer, id: row.dinoparc_user_id});
-    if (user === null) {
-      throw new Error("AssertionError: Expected Dinoparc user to exist");
-    }
     return {
-      user: $ShortDinoparcUser.clone(user),
+      user: {type: ObjectType.DinoparcUser, server: dparcServer, id: dparcUserId},
       key: sessionKey,
       ctime: row.ctime,
       atime: row.atime,
@@ -342,11 +334,11 @@ export class PgTokenService implements TokenService {
     );
   }
 
-  async getHammerfest(hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<HammerfestSession | null> {
+  async getHammerfest(hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<StoredHammerfestSession | null> {
     return this.#database.transaction(TransactionMode.ReadOnly, q => this.getHammerfestTx(q, hfServer, hfUserId));
   }
 
-  private async getHammerfestTx(queryable: Queryable, hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<HammerfestSession | null> {
+  private async getHammerfestTx(queryable: Queryable, hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<StoredHammerfestSession | null> {
     type Row = Pick<HammerfestSessionRow, "hammerfest_session_key" | "ctime" | "atime">;
     const row: Row | undefined = await queryable.oneOrNone(
       `
@@ -363,23 +355,19 @@ export class PgTokenService implements TokenService {
     if (row === undefined) {
       return null;
     }
-    const user = await this.#hammerfestStore.getShortUser({server: hfServer, id: hfUserId});
-    if (user === null) {
-      throw new Error("AssertionError: Expected Hammerfest user to exist");
-    }
     return {
-      user: $ShortHammerfestUser.clone(user),
+      user: {type: ObjectType.HammerfestUser, server: hfServer, id: hfUserId},
       key: row.hammerfest_session_key,
       ctime: row.ctime,
       atime: row.atime,
     };
   }
 
-  async touchHammerfest(hfServer: HammerfestServer, sessionKey: HammerfestSessionKey, hfUserId: HammerfestUserId): Promise<HammerfestSession> {
+  async touchHammerfest(hfServer: HammerfestServer, sessionKey: HammerfestSessionKey, hfUserId: HammerfestUserId): Promise<StoredHammerfestSession> {
     return this.#database.transaction(TransactionMode.ReadWrite, q => this.touchHammerfestTx(q, hfServer, sessionKey, hfUserId));
   }
 
-  private async touchHammerfestTx(queryable: Queryable, hfServer: HammerfestServer, sessionKey: HammerfestSessionKey, hfUserId: HammerfestUserId): Promise<HammerfestSession> {
+  private async touchHammerfestTx(queryable: Queryable, hfServer: HammerfestServer, sessionKey: HammerfestSessionKey, hfUserId: HammerfestUserId): Promise<StoredHammerfestSession> {
     // First add a row to the revoked sessions if the session exists but the `hammerfest_user_id` changed.
     // Also add a row to the revoked sessions if the user was authenticated with a different key (one session per user).
     await queryable.query(
@@ -426,12 +414,8 @@ export class PgTokenService implements TokenService {
         hfUserId,
       ],
     );
-    const user = await this.#hammerfestStore.getShortUser({server: hfServer, id: row.hammerfest_user_id});
-    if (user === null) {
-      throw new Error("AssertionError: Expected Hammerfest user to exist");
-    }
     return {
-      user: $ShortHammerfestUser.clone(user),
+      user: {type: ObjectType.HammerfestUser, server: hfServer, id: row.hammerfest_user_id},
       key: sessionKey,
       ctime: row.ctime,
       atime: row.atime,

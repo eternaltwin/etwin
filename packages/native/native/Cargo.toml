@@ -26,6 +26,7 @@ etwin_hammerfest_client = { path = "../../../crates/hammerfest_client", features
 etwin_hammerfest_store = { path = "../../../crates/hammerfest_store", features = ["neon"] }
 etwin_link_store = { path = "../../../crates/link_store", features = ["neon"] }
 etwin_password = { path = "../../../crates/password", features = ["neon"] }
+etwin_token_store = { path = "../../../crates/token_store", features = ["neon"] }
 etwin_twinoid_store = { path = "../../../crates/twinoid_store", features = ["neon"] }
 etwin_user_store = { path = "../../../crates/user_store", features = ["neon"] }
 neon = { version = "^0.7.0", default-features = false, features = ["event-queue-api", "napi-runtime"] }

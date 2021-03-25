@@ -229,9 +229,14 @@ impl StoreState {
     }
   }
 
-  fn get_twinoid_oauth(&self, now: Instant, id: TwinoidUserIdRef) -> Option<TwinoidOauth> {
-    let refresh_key = self.twinoid_user_to_refresh_token.get(&id.id)?;
-    let refresh_token = self.twinoid_refresh_tokens.get(refresh_key).unwrap().clone();
+  fn get_twinoid_oauth(&self, now: Instant, id: TwinoidUserIdRef) -> TwinoidOauth {
+    let refresh_token = {
+      let refresh_key = self.twinoid_user_to_refresh_token.get(&id.id);
+      match refresh_key {
+        Some(refresh_key) => Some(self.twinoid_refresh_tokens.get(refresh_key).unwrap().clone()),
+        None => None,
+      }
+    };
     let access_token = {
       let access_key = self.twinoid_user_to_access_token.get(&id.id);
       match access_key {
@@ -246,10 +251,10 @@ impl StoreState {
         None => None,
       }
     };
-    Some(TwinoidOauth {
+    TwinoidOauth {
       refresh_token,
       access_token,
-    })
+    }
   }
 
   fn touch_twinoid_oauth(&mut self, now: Instant, options: &TouchOauthTokenOptions) {
@@ -378,7 +383,7 @@ where
     Ok(())
   }
 
-  async fn get_twinoid_oauth(&self, options: TwinoidUserIdRef) -> Result<Option<TwinoidOauth>, Box<dyn Error>> {
+  async fn get_twinoid_oauth(&self, options: TwinoidUserIdRef) -> Result<TwinoidOauth, Box<dyn Error>> {
     let state = self.state.read().unwrap();
     let now = self.clock.now();
     Ok(state.get_twinoid_oauth(now, options))

@@ -18,11 +18,15 @@ pub struct TouchOauthTokenOptions {
   pub twinoid_user_id: TwinoidUserId,
 }
 
+/// Current Twinoid OAuth tokens
+///
+/// If the refresh token is revoked but an access token still exists, may
+/// return `TwinoidOauth {access_token: Some, refresh_token: None}`.
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TwinoidOauth {
   pub access_token: Option<TwinoidAccessToken>,
-  pub refresh_token: TwinoidRefreshToken,
+  pub refresh_token: Option<TwinoidRefreshToken>,
 }
 
 #[async_trait]
@@ -31,7 +35,7 @@ pub trait TokenStore: Send + Sync {
   async fn touch_twinoid_oauth(&self, options: &TouchOauthTokenOptions) -> Result<(), Box<dyn Error>>;
   async fn revoke_twinoid_access_token(&self, options: &RfcOauthAccessTokenKey) -> Result<(), Box<dyn Error>>;
   async fn revoke_twinoid_refresh_token(&self, options: &RfcOauthRefreshTokenKey) -> Result<(), Box<dyn Error>>;
-  async fn get_twinoid_oauth(&self, options: TwinoidUserIdRef) -> Result<Option<TwinoidOauth>, Box<dyn Error>>;
+  async fn get_twinoid_oauth(&self, options: TwinoidUserIdRef) -> Result<TwinoidOauth, Box<dyn Error>>;
   async fn touch_dinoparc(
     &self,
     user: DinoparcUserIdRef,

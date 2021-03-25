@@ -110,7 +110,7 @@ pub(crate) async fn test_touch_twinoid_oauth<
     .get_twinoid_oauth(TwinoidUserId::from_str("1").unwrap().as_ref())
     .await
     .unwrap();
-  let expected = Some(TwinoidOauth {
+  let expected = TwinoidOauth {
     access_token: Some(TwinoidAccessToken {
       key: "X6nhMR2zwwfLNOR6EoQ9cM03BI3i66Q6".parse().unwrap(),
       created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
@@ -118,13 +118,13 @@ pub(crate) async fn test_touch_twinoid_oauth<
       expires_at: Utc.ymd(2021, 1, 1).and_hms(1, 0, 0),
       twinoid_user_id: "1".parse().unwrap(),
     }),
-    refresh_token: TwinoidRefreshToken {
+    refresh_token: Some(TwinoidRefreshToken {
       key: "HfznfQUg1C2p87ESIp6WRq945ppG6swD".parse().unwrap(),
       created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
       accessed_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
       twinoid_user_id: "1".parse().unwrap(),
-    },
-  });
+    }),
+  };
   assert_eq!(actual, expected);
 }
 
@@ -180,7 +180,7 @@ pub(crate) async fn test_touch_twinoid_oauth_twice<
     .get_twinoid_oauth(TwinoidUserId::from_str("1").unwrap().as_ref())
     .await
     .unwrap();
-  let expected = Some(TwinoidOauth {
+  let expected = TwinoidOauth {
     access_token: Some(TwinoidAccessToken {
       key: "BD8AdH420AukbvExGxL5KcJNrdRMK80s".parse().unwrap(),
       created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
@@ -188,13 +188,13 @@ pub(crate) async fn test_touch_twinoid_oauth_twice<
       expires_at: Utc.ymd(2021, 1, 1).and_hms(2, 0, 0),
       twinoid_user_id: "1".parse().unwrap(),
     }),
-    refresh_token: TwinoidRefreshToken {
+    refresh_token: Some(TwinoidRefreshToken {
       key: "HfznfQUg1C2p87ESIp6WRq945ppG6swD".parse().unwrap(),
       created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
       accessed_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
       twinoid_user_id: "1".parse().unwrap(),
-    },
-  });
+    }),
+  };
   assert_eq!(actual, expected);
 }
 
@@ -245,15 +245,15 @@ pub(crate) async fn test_revoke_twinoid_access_token<
     .get_twinoid_oauth(TwinoidUserId::from_str("1").unwrap().as_ref())
     .await
     .unwrap();
-  let expected = Some(TwinoidOauth {
+  let expected = TwinoidOauth {
     access_token: None,
-    refresh_token: TwinoidRefreshToken {
+    refresh_token: Some(TwinoidRefreshToken {
       key: "HfznfQUg1C2p87ESIp6WRq945ppG6swD".parse().unwrap(),
       created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
       accessed_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
       twinoid_user_id: "1".parse().unwrap(),
-    },
-  });
+    }),
+  };
   assert_eq!(actual, expected);
 }
 
@@ -304,7 +304,16 @@ pub(crate) async fn test_revoke_twinoid_refresh_token<
     .get_twinoid_oauth(TwinoidUserId::from_str("1").unwrap().as_ref())
     .await
     .unwrap();
-  let expected = None;
+  let expected = TwinoidOauth {
+    access_token: Some(TwinoidAccessToken {
+      key: "X6nhMR2zwwfLNOR6EoQ9cM03BI3i66Q6".parse().unwrap(),
+      created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+      accessed_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+      expires_at: Utc.ymd(2021, 1, 1).and_hms(1, 0, 0),
+      twinoid_user_id: "1".parse().unwrap(),
+    }),
+    refresh_token: None,
+  };
   assert_eq!(actual, expected);
 }
 

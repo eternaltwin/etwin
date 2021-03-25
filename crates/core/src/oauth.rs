@@ -21,8 +21,11 @@ declare_new_string! {
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TwinoidAccessToken {
   pub key: RfcOauthAccessTokenKey,
+  #[cfg_attr(feature = "_serde", serde(rename = "ctime"))]
   pub created_at: Instant,
+  #[cfg_attr(feature = "_serde", serde(rename = "atime"))]
   pub accessed_at: Instant,
+  #[cfg_attr(feature = "_serde", serde(rename = "expiration_time"))]
   pub expires_at: Instant,
   pub twinoid_user_id: TwinoidUserId,
 }
@@ -31,7 +34,9 @@ pub struct TwinoidAccessToken {
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TwinoidRefreshToken {
   pub key: RfcOauthRefreshTokenKey,
+  #[cfg_attr(feature = "_serde", serde(rename = "ctime"))]
   pub created_at: Instant,
+  #[cfg_attr(feature = "_serde", serde(rename = "atime"))]
   pub accessed_at: Instant,
   pub twinoid_user_id: TwinoidUserId,
 }

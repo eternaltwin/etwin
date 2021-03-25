@@ -1,16 +1,15 @@
 import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
-import { DinoparcSession } from "@eternal-twin/core/lib/dinoparc/dinoparc-session.js";
 import { DinoparcSessionKey } from "@eternal-twin/core/lib/dinoparc/dinoparc-session-key.js";
 import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
-import { $ShortDinoparcUser } from "@eternal-twin/core/lib/dinoparc/short-dinoparc-user.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
+import { StoredDinoparcSession } from "@eternal-twin/core/lib/dinoparc/stored-dinoparc-session.js";
 import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
-import { HammerfestSession } from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
 import { HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
 import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
-import { $ShortHammerfestUser } from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
 import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
+import { StoredHammerfestSession } from "@eternal-twin/core/lib/hammerfest/stored-hammerfest-session.js";
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
 import { RfcOauthRefreshTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-refresh-token-key.js";
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
@@ -71,18 +70,14 @@ interface MemRefreshTokens {
 
 export class InMemoryTokenService implements TokenService {
   readonly #clock: ClockService;
-  readonly #dinoparcStore: DinoparcStore;
-  readonly #hammerfestStore: HammerfestStore;
 
   readonly #dinoparcSessions: Map<DinoparcServer, MemDinoparcTokens>;
   readonly #hammerfestSessions: Map<HammerfestServer, MemHammerfestTokens>;
   readonly #twinoidAccessTokens: MemAccessTokens;
   readonly #twinoidRefreshTokens: MemRefreshTokens;
 
-  constructor(clock: ClockService, dinoparcStore: DinoparcStore, hammerfestStore: HammerfestStore) {
+  constructor(clock: ClockService, _dinoparcStore: DinoparcStore, _hammerfestStore: HammerfestStore) {
     this.#clock = clock;
-    this.#dinoparcStore = dinoparcStore;
-    this.#hammerfestStore = hammerfestStore;
 
     this.#dinoparcSessions = new Map([
       ["dinoparc.com", {byKey: new Map(), byUserId: new Map()}],
@@ -185,7 +180,7 @@ export class InMemoryTokenService implements TokenService {
     return {accessToken, refreshToken};
   }
 
-  async touchDinoparc(dparcServer: DinoparcServer, sessionKey: DinoparcSessionKey, dparcUserId: DinoparcUserId): Promise<DinoparcSession> {
+  async touchDinoparc(dparcServer: DinoparcServer, sessionKey: DinoparcSessionKey, dparcUserId: DinoparcUserId): Promise<StoredDinoparcSession> {
     const tokens = this.getMemDinoparcTokens(dparcServer);
     const oldSession: MemDinoparcSession | undefined = tokens.byKey.get(sessionKey);
     const time = this.#clock.now();
@@ -207,12 +202,8 @@ export class InMemoryTokenService implements TokenService {
         session = oldSession;
       }
     }
-    const user = await this.#dinoparcStore.getShortUser({server: dparcServer, id: session.dparcUserId});
-    if (user === null) {
-      throw new Error("AssertionError: Expected Dinoparc user to exist");
-    }
     return {
-      user: $ShortDinoparcUser.clone(user),
+      user: {type: ObjectType.DinoparcUser, server: dparcServer, id: session.dparcUserId},
       key: session.key,
       ctime: new Date(session.ctime),
       atime: new Date(session.atime),
@@ -227,25 +218,21 @@ export class InMemoryTokenService implements TokenService {
     }
   }
 
-  async getDinoparc(dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<DinoparcSession | null> {
+  async getDinoparc(dparcServer: DinoparcServer, dparcUserId: DinoparcUserId): Promise<StoredDinoparcSession | null> {
     const tokens = this.getMemDinoparcTokens(dparcServer);
     const session: MemDinoparcSession | undefined = tokens.byUserId.get(dparcUserId);
     if (session === undefined) {
       return null;
     }
-    const user = await this.#dinoparcStore.getShortUser({server: dparcServer, id: session.dparcUserId});
-    if (user === null) {
-      throw new Error("AssertionError: Expected Dinoparc user to exist");
-    }
     return {
-      user: $ShortDinoparcUser.clone(user),
+      user: {type: ObjectType.DinoparcUser, server: dparcServer, id: session.dparcUserId},
       key: session.key,
       ctime: new Date(session.ctime),
       atime: new Date(session.atime),
     };
   }
 
-  async touchHammerfest(hfServer: HammerfestServer, sessionKey: HammerfestSessionKey, hfUserId: HammerfestUserId): Promise<HammerfestSession> {
+  async touchHammerfest(hfServer: HammerfestServer, sessionKey: HammerfestSessionKey, hfUserId: HammerfestUserId): Promise<StoredHammerfestSession> {
     const tokens = this.getMemHammerfestTokens(hfServer);
     const oldSession: MemHammerfestSession | undefined = tokens.byKey.get(sessionKey);
     const time = this.#clock.now();
@@ -267,12 +254,8 @@ export class InMemoryTokenService implements TokenService {
         session = oldSession;
       }
     }
-    const user = await this.#hammerfestStore.getShortUser({server: hfServer, id: session.hfUserId});
-    if (user === null) {
-      throw new Error("AssertionError: Expected Hammerfest user to exist");
-    }
     return {
-      user: $ShortHammerfestUser.clone(user),
+      user: {type: ObjectType.HammerfestUser, server: hfServer, id: session.hfUserId},
       key: session.key,
       ctime: new Date(session.ctime),
       atime: new Date(session.atime),
@@ -287,18 +270,14 @@ export class InMemoryTokenService implements TokenService {
     }
   }
 
-  async getHammerfest(hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<HammerfestSession | null> {
+  async getHammerfest(hfServer: HammerfestServer, hfUserId: HammerfestUserId): Promise<StoredHammerfestSession | null> {
     const tokens = this.getMemHammerfestTokens(hfServer);
     const session: MemHammerfestSession | undefined = tokens.byUserId.get(hfUserId);
     if (session === undefined) {
       return null;
     }
-    const user = await this.#hammerfestStore.getShortUser({server: hfServer, id: session.hfUserId});
-    if (user === null) {
-      throw new Error("AssertionError: Expected Hammerfest user to exist");
-    }
     return {
-      user: $ShortHammerfestUser.clone(user),
+      user: {type: ObjectType.HammerfestUser, server: hfServer, id: session.hfUserId},
       key: session.key,
       ctime: new Date(session.ctime),
       atime: new Date(session.atime),
