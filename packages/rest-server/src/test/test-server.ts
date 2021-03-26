@@ -21,13 +21,13 @@ import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.
 import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
 import { ScryptPasswordService } from "@eternal-twin/native/lib/password.js";
+import { PgTokenStore } from "@eternal-twin/native/lib/token-store.js";
 import { PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
 import { PgUserStore } from "@eternal-twin/native/lib/user-store.js";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { NativeClock } from "@eternal-twin/native/src/lib/clock.js";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
-import { PgTokenService } from "@eternal-twin/token-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import http from "http";
 import Koa from "koa";
@@ -115,7 +115,7 @@ export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer)
       uuidGenerator
     });
     const koaAuth = new KoaAuth(auth);
-    const token = new PgTokenService(database, secretKeyStr, dinoparcStore, hammerfestStore);
+    const token = await PgTokenStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr});
     const forumConfig: ForumConfig = {
       postsPerPage: config.forum.postsPerPage,
       threadsPerPage: config.forum.threadsPerPage

@@ -65,7 +65,6 @@
     "@eternal-twin/native": "workspace:*",
     "@eternal-twin/oauth-provider-pg": "workspace:*",
     "@eternal-twin/pg-db": "workspace:*",
-    "@eternal-twin/token-pg": "workspace:*",
     "@eternal-twin/twinoid-client-http": "workspace:*",
     "@koa/cors": "^3.1.0",
     "@types/koa-logger": "^3.1.1",

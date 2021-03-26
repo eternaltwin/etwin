@@ -41,9 +41,6 @@
       "path": "../../../pg-db/src/lib"
     },
     {
-      "path": "../../../token-test/src/lib"
-    },
-    {
       "path": "../../../twinoid-client-http/src/lib"
     }
   ]

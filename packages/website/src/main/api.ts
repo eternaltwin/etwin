@@ -37,6 +37,7 @@ import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client
 import { MemHammerfestStore, PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { MemLinkStore, PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
 import { ScryptPasswordService } from "@eternal-twin/native/lib/password.js";
+import { MemTokenStore, PgTokenStore } from "@eternal-twin/native/lib/token-store.js";
 import { MemTwinoidStore, PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
 import { MemUserStore, PgUserStore } from "@eternal-twin/native/lib/user-store.js";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
@@ -46,8 +47,6 @@ import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
 import { DevApi } from "@eternal-twin/rest-server/lib/index.js";
-import { InMemoryTokenService } from "@eternal-twin/token-in-memory";
-import { PgTokenService } from "@eternal-twin/token-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import urljoin from "url-join";
 
@@ -133,7 +132,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
       uuidGenerator
     });
     forum = new InMemoryForumService(uuidGenerator, userStore, forumConfig);
-    token = new InMemoryTokenService(clock, dinoparcStore, hammerfestStore);
+    token = new MemTokenStore({clock});
     announcement = new MemAnnouncementService({uuidGenerator, forum});
 
     teardown = async function (): Promise<void> {
@@ -187,7 +186,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
       uuidGenerator
     });
     forum = new PgForumService(database, uuidGenerator, userStore, forumConfig);
-    token = new PgTokenService(database, secretKeyStr, dinoparcStore, hammerfestStore);
+    token = await PgTokenStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr});
     announcement = new PgAnnouncementService({database, uuidGenerator, forum});
 
     teardown = async function (): Promise<void> {

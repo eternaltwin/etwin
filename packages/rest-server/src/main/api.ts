@@ -19,12 +19,12 @@ import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client
 import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
 import { ScryptPasswordService } from "@eternal-twin/native/lib/password.js";
+import { PgTokenStore } from "@eternal-twin/native/lib/token-store.js";
 import { PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
 import { PgUserStore } from "@eternal-twin/native/lib/user-store.js";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid.js";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
-import { PgTokenService } from "@eternal-twin/token-pg";
 import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 
 import { KoaAuth } from "../lib/helpers/koa-auth.js";
@@ -102,7 +102,7 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
   const forum = new PgForumService(database, uuidGenerator, userStore, forumConfig);
   const announcement = new PgAnnouncementService({database, uuidGenerator, forum});
 
-  const token = new PgTokenService(database, secretKeyStr, dinoparcStore, hammerfestStore);
+  const token = await PgTokenStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr});
   const dinoparc = new DinoparcService({dinoparcStore, link});
   const hammerfest = new HammerfestService({hammerfestStore, hammerfestClient, link});
   const twinoid = new TwinoidService({twinoidStore, link});

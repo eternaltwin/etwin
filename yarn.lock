@@ -2005,7 +2005,6 @@ __metadata:
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
-    "@eternal-twin/token-test": "workspace:*"
     "@types/chai": ^4.2.14
     "@types/mocha": ^8.0.4
     "@types/node": ^14.14.10
@@ -2143,7 +2142,6 @@ __metadata:
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
-    "@eternal-twin/token-pg": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@koa/cors": ^3.1.0
     "@koa/router": ^10.0.0
@@ -2170,59 +2168,6 @@ __metadata:
     kryo: ^0.11.2
     kryo-json: ^0.11.2
     kryo-qs: ^0.11.2
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/token-in-memory@workspace:*, @eternal-twin/token-in-memory@workspace:packages/token-in-memory":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/token-in-memory@workspace:packages/token-in-memory"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/token-test": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/token-pg@workspace:*, @eternal-twin/token-pg@workspace:packages/token-pg":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/token-pg@workspace:packages/token-pg"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/etwin-pg": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/pg-db": "workspace:*"
-    "@eternal-twin/token-test": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    mocha: ^8.2.1
-    typescript: ^4.1.2
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/token-test@workspace:*, @eternal-twin/token-test@workspace:packages/token-test":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/token-test@workspace:packages/token-test"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@types/chai": ^4.2.14
-    "@types/mocha": ^8.0.4
-    "@types/node": ^14.14.10
-    chai: ^4.2.0
-    eslint: ^7.14.0
-    kryo: ^0.11.2
     mocha: ^8.2.1
     typescript: ^4.1.2
   languageName: unknown
@@ -2280,8 +2225,6 @@ __metadata:
     "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/rest-server": "workspace:*"
-    "@eternal-twin/token-in-memory": "workspace:*"
-    "@eternal-twin/token-pg": "workspace:*"
     "@eternal-twin/twinoid-client-http": "workspace:*"
     "@koa/cors": ^3.1.0
     "@koa/router": ^10.0.0
