@@ -12,6 +12,6 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-html5ever = "^0.25.1"
-scraper = "^0.12.0"
-tendril = "^0.4.2"
+html5ever = "0.25.1"
+scraper = "0.12.0"
+tendril = "0.4.2"

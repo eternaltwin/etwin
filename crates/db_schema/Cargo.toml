@@ -14,7 +14,7 @@ edition = "2018"
 [dependencies]
 etwin_config = { path = "../config" }
 etwin_squirrel = { path = "../squirrel" }
-include_dir = "^0.6.0"
-lazy_static = "^1.4.0"
-sqlx = { version = "^0.5.1", default-features = false, features = ["offline", "postgres", "runtime-tokio-rustls"] }
-tokio = { version = "^1.1.1", features = ["macros"] }
+include_dir = "0.6.0"
+lazy_static = "1.4.0"
+sqlx = { version = "0.5.1", default-features = false, features = ["offline", "postgres", "runtime-tokio-rustls"] }
+tokio = { version = "1.4.0", features = ["macros"] }

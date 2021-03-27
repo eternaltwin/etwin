@@ -31,7 +31,9 @@ The `website` package has more advanced tasks described in its `README.md`, all 
 - `yarn test`: Compile the tests and run them
 - `yarn lint`: Check for common errors and style issues.
 - `yarn format`: Attempt to fix style issues automatically.
-- `yarn up '@!(eternal-twin)/*'`: Update all dependencies.
+- `yarn set version latest'`: Update Yarn itself.
+- `yarn up '*' '@!(eternal-twin)/*'`: Update all Typescript dependencies.
+- `cargo upgrade --workspace'`: Update all Rust dependencies (requires `cargo-edit`: `cargo install cargo-edit`).
 - `yarn workspaces foreach --no-private --verbose npm publish --tolerate-republish`: Publish all packages
 
 ## Code coverage

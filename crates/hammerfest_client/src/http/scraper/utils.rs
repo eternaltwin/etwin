@@ -141,7 +141,7 @@ fn parse_dotted_number_inner<T: FromStr>(mut s: &str, buf: &mut [u8]) -> std::re
       *first = b'-';
       (true, rest)
     } else {
-      (false, &mut buf[..])
+      (false, &mut *buf)
     };
     // TODO: Enable the lint again once rust-lang/rust-clippy#5253 is fixed
     #[allow(clippy::suspicious_map)]

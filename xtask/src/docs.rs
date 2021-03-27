@@ -34,6 +34,7 @@ pub fn docs() -> Result<(), Box<dyn Error>> {
   }
   let meta = &meta;
   let mut switches = vec![HtmlNode::new_text(String::from(""))];
+  #[allow(clippy::vec_init_then_push)]
   for (uri, (short, mut dom)) in out_fragments.into_iter() {
     escape_angular(&mut dom);
     remap_links(docs_uri, meta, &uri, &mut dom);

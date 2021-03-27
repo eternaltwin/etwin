@@ -54,7 +54,7 @@ where
   T: Deserialize<'de>,
   D: serde::Deserializer<'de>,
 {
-  Ok(Option::deserialize(deserializer)?)
+  Option::deserialize(deserializer)
 }
 
 /// Deserializes a nested optional field

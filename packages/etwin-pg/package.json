@@ -33,20 +33,20 @@
   },
   "dependencies": {
     "@eternal-twin/pg-db": "workspace:*",
-    "@types/pg": "^7.14.7",
+    "@types/pg": "^7.14.11",
     "furi": "^2.0.0",
     "pg": "^8.5.1"
   },
   "devDependencies": {
     "@eternal-twin/local-config": "workspace:*",
-    "@types/mocha": "^8.0.4",
-    "@types/node": "^14.14.10",
-    "chai": "^4.2.0",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^14.14.37",
+    "chai": "^4.3.4",
     "dotenv": "^8.2.0",
-    "eslint": "^7.14.0",
+    "eslint": "^7.23.0",
     "find-up": "^5.0.0",
-    "mocha": "^8.2.1",
-    "typescript": "^4.1.2"
+    "mocha": "^8.3.2",
+    "typescript": "^4.2.3"
   },
   "type": "module",
   "exports": {

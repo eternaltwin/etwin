@@ -13,13 +13,13 @@ edition = "2018"
 
 [dependencies]
 etwin_core = { path = "../core", features = ["sqlx"] }
-hmac = "^0.10.1"
-neon = { version = "^0.7.0", optional = true, default-features = false, features = ["napi-runtime"] }
-rand_core = {version = "^0.6.1", features = ["getrandom"]}
-scrypt = "^0.6.1"
-sha2 = "^0.9.3"
-subtle = "^2.4.0"
-sysinfo = "^0.16.1"
+hmac = "0.10.1"
+neon = { version = "0.8.0", optional = true, default-features = false, features = ["napi-runtime"] }
+rand_core = { version = "0.6.2", features = ["getrandom"] }
+scrypt = "0.6.4"
+sha2 = "0.9.3"
+subtle = "2.4.0"
+sysinfo = "0.16.5"
 
 [dev-dependencies]
-hex = "^0.4.2"
+hex = "0.4.3"

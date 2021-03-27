@@ -12,7 +12,7 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-chrono = "^0.4.19"
+chrono = "0.4.19"
 etwin_core = { path = "../core" }
 
 [dev-dependencies]
@@ -22,6 +22,6 @@ etwin_link_store = { path = "../link_store" }
 etwin_hammerfest_store = { path = "../hammerfest_store" }
 etwin_user_store = { path = "../user_store" }
 etwin_hammerfest_client = { path = "../hammerfest_client" }
-serial_test = "^0.5.1"
-sqlx = { version = "^0.5.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
-tokio = { version = "^1.1.1", features = ["macros", "rt"] }
+serial_test = "0.5.1"
+sqlx = { version = "0.5.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
+tokio = { version = "1.4.0", features = ["macros", "rt"] }
