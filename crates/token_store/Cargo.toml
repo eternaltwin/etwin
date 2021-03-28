@@ -1,6 +1,6 @@
 [package]
 name = "etwin_token_store"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Token store implementation"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -13,9 +13,9 @@ edition = "2018"
 
 [dependencies]
 async-trait = "0.1.48"
-etwin_core = { path = "../core", features = ["_serde", "sqlx"] }
-etwin_db_schema = { path = "../db_schema" }
-etwin_populate = { path = "../populate" }
+etwin_core = { version = "0.1.0", path = "../core", features = ["_serde", "sqlx"] }
+etwin_db_schema = { version = "0.1.0", path = "../db_schema" }
+etwin_populate = { version = "0.1.0", path = "../populate" }
 neon = { version = "0.8.0", optional = true, default-features = false, features = ["napi-runtime"] }
 regex = "1.4.5"
 serde_json = "1.0.64"
@@ -23,9 +23,9 @@ sqlx = { version = "0.5.1", default-features = false, features = ["macros", "chr
 
 [dev-dependencies]
 chrono = "0.4.19"
-etwin_config = { path = "../config" }
-etwin_dinoparc_store = { path = "../dinoparc_store" }
-etwin_hammerfest_store = { path = "../hammerfest_store" }
-etwin_twinoid_store = { path = "../twinoid_store" }
+etwin_config = { version = "0.1.0", path = "../config" }
+etwin_dinoparc_store = { version = "0.1.0", path = "../dinoparc_store" }
+etwin_hammerfest_store = { version = "0.1.0", path = "../hammerfest_store" }
+etwin_twinoid_store = { version = "0.1.0", path = "../twinoid_store" }
 serial_test = "0.5.1"
 tokio = { version = "1.4.0", features = ["macros", "rt"] }

@@ -2019,7 +2019,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eternal-twin/native@workspace:*, @eternal-twin/native@workspace:packages/native":
+"@eternal-twin/native@portal:./packages/native::locator=%40eternal-twin%2Fetwin-monorepo%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@eternal-twin/native@portal:./packages/native::locator=%40eternal-twin%2Fetwin-monorepo%40workspace%3A."
+  dependencies:
+    "@eternal-twin/auth-in-memory": "workspace:*"
+    "@eternal-twin/auth-pg": "workspace:*"
+    "@eternal-twin/core": "workspace:*"
+    "@eternal-twin/email-in-memory": "workspace:*"
+    "@eternal-twin/email-template-json": "workspace:*"
+    "@eternal-twin/etwin-pg": "workspace:*"
+    "@eternal-twin/local-config": "workspace:*"
+    "@eternal-twin/oauth-provider-in-memory": "workspace:*"
+    "@eternal-twin/oauth-provider-pg": "workspace:*"
+    "@eternal-twin/pg-db": "workspace:*"
+    "@mapbox/node-pre-gyp": ^1.0.1
+    "@types/chai": ^4.2.15
+    "@types/mocha": ^8.2.2
+    "@types/node": ^14.14.37
+    chai: ^4.3.4
+    eslint: ^7.23.0
+    kryo: ^0.11.2
+    kryo-json: ^0.11.2
+    mocha: ^8.3.2
+    neon-cli: ^0.8.0
+    rimraf: ^3.0.2
+    typescript: ^4.2.3
+  languageName: node
+  linkType: soft
+
+"@eternal-twin/native@workspace:packages/native":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/native@workspace:packages/native"
   dependencies:
@@ -2033,6 +2062,7 @@ __metadata:
     "@eternal-twin/oauth-provider-in-memory": "workspace:*"
     "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
+    "@mapbox/node-pre-gyp": ^1.0.1
     "@types/chai": ^4.2.15
     "@types/mocha": ^8.2.2
     "@types/node": ^14.14.37
@@ -2042,6 +2072,7 @@ __metadata:
     kryo-json: ^0.11.2
     mocha: ^8.3.2
     neon-cli: ^0.8.0
+    rimraf: ^3.0.2
     typescript: ^4.2.3
   languageName: unknown
   linkType: soft
@@ -2349,6 +2380,25 @@ __metadata:
     methods: ^1.1.2
     path-to-regexp: ^6.1.0
   checksum: bbc41166758ce41573aca9a008cf95337d3bfcb88ae2f2cc7f13328408232769670991ebcb1227371a924c05fff68a5071fc1d57ce7deb1d86dc9c9e6beced90
+  languageName: node
+  linkType: hard
+
+"@mapbox/node-pre-gyp@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@mapbox/node-pre-gyp@npm:1.0.1"
+  dependencies:
+    detect-libc: ^1.0.3
+    http-proxy-agent: ^4.0.1
+    make-dir: ^3.1.0
+    node-fetch: ^2.6.1
+    nopt: ^5.0.0
+    npmlog: ^4.1.2
+    rimraf: ^3.0.2
+    semver: ^7.3.4
+    tar: ^6.1.0
+  bin:
+    node-pre-gyp: bin/node-pre-gyp
+  checksum: 9b816d390f126574fd8767b14ff4fd602601fd1952828ce8a1446040fc2903b30536646ee71cd3a542443bf9913b2734fccad6ad7753a90c209c8161db086dd6
   languageName: node
   linkType: hard
 
@@ -3426,7 +3476,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^8.0.5":
+"acorn@npm:^8.1.0":
   version: 8.1.0
   resolution: "acorn@npm:8.1.0"
   bin:
@@ -6203,6 +6253,15 @@ __metadata:
   version: 1.0.4
   resolution: "destroy@npm:1.0.4"
   checksum: 5a516fc5a8a8089eecdac11da2339353542be7a71102dc5a1372ef6161501bf5c1ee59ff9f8a3f5f14cc8c88594d606f855f816d46a228ee5e0e5cb2b543534b
+  languageName: node
+  linkType: hard
+
+"detect-libc@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "detect-libc@npm:1.0.3"
+  bin:
+    detect-libc: ./bin/detect-libc.js
+  checksum: 6cec442139459ec2e8517076974b0eba42079885938683eca013c2e0b5db02ef048870725ce68e7ac8e4cf17e482f67d7322f45bbc5f203b7332817bc7833b39
   languageName: node
   linkType: hard
 
@@ -9474,11 +9533,11 @@ fsevents@~2.3.1:
   linkType: hard
 
 "jsdom@npm:^16.4.0":
-  version: 16.5.1
-  resolution: "jsdom@npm:16.5.1"
+  version: 16.5.2
+  resolution: "jsdom@npm:16.5.2"
   dependencies:
     abab: ^2.0.5
-    acorn: ^8.0.5
+    acorn: ^8.1.0
     acorn-globals: ^6.0.0
     cssom: ^0.4.4
     cssstyle: ^2.3.0
@@ -9500,7 +9559,7 @@ fsevents@~2.3.1:
     webidl-conversions: ^6.1.0
     whatwg-encoding: ^1.0.5
     whatwg-mimetype: ^2.3.0
-    whatwg-url: ^8.0.0
+    whatwg-url: ^8.5.0
     ws: ^7.4.4
     xml-name-validator: ^3.0.0
   peerDependencies:
@@ -9508,7 +9567,7 @@ fsevents@~2.3.1:
   peerDependenciesMeta:
     canvas:
       optional: true
-  checksum: 383d9aafff2a481b9668fcdd64ee6bb59977cce21844a588e2de07befaf897552d4141db6c2bed739dbbb714b2bcc2dd1a2fdb5196bff0676c2d43f18d1b0139
+  checksum: a0be91b456596db988e1c5c6a146fcceb4fb6d401b947498c5b4cd7ff3202ce8ca3816be77a60d112bc45916fc7959fb7aeb98e81729c36bf4fef566c91c02db
   languageName: node
   linkType: hard
 
@@ -11122,6 +11181,13 @@ fsevents@~2.3.1:
   version: 1.0.5
   resolution: "nice-try@npm:1.0.5"
   checksum: 330f190bf68146a560008b661e1ddbb2eac667c16990b6bf791516d89cceb707ec67901ad647d2b32674bfa816b916489cead5c2fb6e96864c659573ab5aa3bb
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:^2.6.1":
+  version: 2.6.1
+  resolution: "node-fetch@npm:2.6.1"
+  checksum: cbb171635e538162b977eac5dfe7a1e07a9a02e991924377a6435502291e2f823d306b95aabc455caebf4a118ccf836868462bc70ccc3095af02bb9da61fda37
   languageName: node
   linkType: hard
 
@@ -15633,9 +15699,9 @@ typescript@^4.2.3:
   linkType: hard
 
 "ua-parser-js@npm:^0.7.18, ua-parser-js@npm:^0.7.23":
-  version: 0.7.25
-  resolution: "ua-parser-js@npm:0.7.25"
-  checksum: 11fa526fd8ebd0fdf5207972e3a7d62cba14e57112e2eaac504b165c90c1aa5020bcb7af7e27f4e338a569fd3111e04492f579fff62f983d8531f1b2a66cd213
+  version: 0.7.26
+  resolution: "ua-parser-js@npm:0.7.26"
+  checksum: 29a7bda51f9f9ab84eb44b2f6afeb09d4dc0ed985fd17aea387afbcbd6e97c28b404d8c7e3350d1732fe6e1bbd976f2dd5b43cebdc0240c621960175bf027d62
   languageName: node
   linkType: hard
 
@@ -16282,7 +16348,7 @@ typescript@^4.2.3:
   languageName: node
   linkType: hard
 
-"whatwg-url@npm:^8.0.0":
+"whatwg-url@npm:^8.0.0, whatwg-url@npm:^8.5.0":
   version: 8.5.0
   resolution: "whatwg-url@npm:8.5.0"
   dependencies:

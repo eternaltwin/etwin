@@ -4,7 +4,7 @@ use lazy_static::lazy_static;
 use sqlx::PgPool;
 use std::error::Error;
 
-const DB_SCRIPTS: Dir = include_dir!("../../db/scripts");
+const DB_SCRIPTS: Dir = include_dir!("./scripts");
 
 lazy_static! {
   static ref SQUIRREL: SchemaResolver = SchemaResolver::new(&DB_SCRIPTS);

@@ -44,5 +44,8 @@
       "packages/*",
       "packages/native/foo"
     ]
+  },
+  "resolutions": {
+    "@eternal-twin/native": "portal:./packages/native"
   }
 }

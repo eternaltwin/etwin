@@ -8,3 +8,23 @@ members = [
 [patch.crates-io]
 # Use domain-type fix from https://github.com/launchbadge/sqlx/pull/1112
 sqlx = { git = "https://github.com/demurgos/sqlx", rev = "93b90be9f7dd316889aa01f3e6066062a133180c" }
+etwin_cli = { path = "./crates/cli" }
+etwin_config = { path = "./crates/config" }
+etwin_constants = { path = "./crates/constants" }
+etwin_core = { path = "./crates/core" }
+etwin_db_schema = { path = "./crates/db_schema" }
+etwin_dinoparc_client = { path = "./crates/dinoparc_client" }
+etwin_dinoparc_store = { path = "./crates/dinoparc_store" }
+etwin_hammerfest_client = { path = "./crates/hammerfest_client" }
+etwin_hammerfest_store = { path = "./crates/hammerfest_store" }
+etwin_link_store = { path = "./crates/link_store" }
+etwin_password = { path = "./crates/password" }
+etwin_populate = { path = "./crates/populate" }
+etwin_postgres_tools = { path = "./crates/postgres_tools" }
+etwin_scraper_tools = { path = "./crates/scraper_tools" }
+etwin_serde_tools = { path = "./crates/serde_tools" }
+etwin_services = { path = "./crates/services" }
+etwin_squirrel = { path = "./crates/squirrel" }
+etwin_token_store = { path = "./crates/token_store" }
+etwin_twinoid_store = { path = "./crates/twinoid_store" }
+etwin_user_store = { path = "./crates/user_store" }

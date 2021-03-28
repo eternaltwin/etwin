@@ -1,6 +1,6 @@
 [package]
 name = "etwin_core"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Core crate for Eternal-Twin"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -16,7 +16,7 @@ async-trait = "0.1.48"
 auto_impl = "0.4.1"
 chrono = "0.4.19"
 enum-iterator = "0.6.0"
-etwin_serde_tools = { path = "../serde_tools", optional = true }
+etwin_serde_tools = { version = "0.1.0", path = "../serde_tools", optional = true }
 itoa = "0.4.7"
 thiserror = "1.0.24"
 neon = { version = "0.8.0", optional = true, default-features = false, features = ["napi-runtime"] }

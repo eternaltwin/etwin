@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/native",
-  "version": "0.1.0",
+  "version": "0.5.1",
   "description": "Native module for Eternal-Twin",
   "author": "Charles Samborski <demurgos@demurgos.net>",
   "licenses": [
@@ -9,12 +9,17 @@
       "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
     }
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
     "native:build": "cd native && cargo build ${CARGO_FLAGS:-\"--lib\"}",
     "build": "yarn run native:build && tsc --build src/lib/tsconfig.json",
-    "prepack": "yarn run build",
+    "//install": "node-pre-gyp install --fallback-to-build=false || yarn run native:build",
+    "prepack": "yarn run build && rimraf \"native/@(artifacts.json|index.node)\"",
     "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha \"test/**/*.spec.js\"",
     "main:build": "yarn run build",
@@ -22,6 +27,7 @@
   },
   "dependencies": {
     "@eternal-twin/core": "workspace:*",
+    "@mapbox/node-pre-gyp": "^1.0.1",
     "kryo": "^0.11.2",
     "kryo-json": "^0.11.2",
     "neon-cli": "^0.8.0"
@@ -42,14 +48,24 @@
     "chai": "^4.3.4",
     "eslint": "^7.23.0",
     "mocha": "^8.3.2",
+    "rimraf": "^3.0.2",
     "typescript": "^4.2.3"
   },
   "type": "module",
+  "main": "./native/index.js",
   "exports": {
     "./lib/": "./lib/"
   },
   "files": [
     "./lib/",
     "./native/"
-  ]
+  ],
+  "binary": {
+    "pkg_path": ".",
+    "module_path": "./native",
+    "module_name": "index",
+    "host": "https://gitlab.com/eternal-twin/etwin/-/jobs/artifacts/",
+    "remote_path": "native-v{version}/raw",
+    "package_name": "{node_abi}-{platform}-{arch}.tar.gz"
+  }
 }

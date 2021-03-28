@@ -1,6 +1,6 @@
 [package]
 name = "etwin_services"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Top-level Eternal-Twin services"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -13,15 +13,15 @@ edition = "2018"
 
 [dependencies]
 chrono = "0.4.19"
-etwin_core = { path = "../core" }
+etwin_core = { version = "0.1.0", path = "../core" }
 
 [dev-dependencies]
-etwin_config = { path = "../config" }
-etwin_db_schema = { path = "../db_schema" }
-etwin_link_store = { path = "../link_store" }
-etwin_hammerfest_store = { path = "../hammerfest_store" }
-etwin_user_store = { path = "../user_store" }
-etwin_hammerfest_client = { path = "../hammerfest_client" }
+etwin_config = { version = "0.1.0", path = "../config" }
+etwin_db_schema = { version = "0.1.0", path = "../db_schema" }
+etwin_link_store = { version = "0.1.0", path = "../link_store" }
+etwin_hammerfest_store = { version = "0.1.0", path = "../hammerfest_store" }
+etwin_user_store = { version = "0.1.0", path = "../user_store" }
+etwin_hammerfest_client = { version = "0.1.0", path = "../hammerfest_client" }
 serial_test = "0.5.1"
 sqlx = { version = "0.5.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 tokio = { version = "1.4.0", features = ["macros", "rt"] }

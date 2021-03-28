@@ -34,6 +34,7 @@ The `website` package has more advanced tasks described in its `README.md`, all 
 - `yarn set version latest'`: Update Yarn itself.
 - `yarn up '*' '@!(eternal-twin)/*'`: Update all Typescript dependencies.
 - `cargo upgrade --workspace'`: Update all Rust dependencies (requires `cargo-edit`: `cargo install cargo-edit`).
+- `cargo release --exclude xtask --exclude etwin_native`: Publish all Rust crates
 - `yarn workspaces foreach --no-private --verbose npm publish --tolerate-republish`: Publish all packages
 
 ## Code coverage
