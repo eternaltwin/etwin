@@ -45,7 +45,7 @@ where
 
   pub async fn get_user(
     &self,
-    _acx: AuthContext,
+    _acx: &AuthContext,
     options: &GetHammerfestUserOptions,
   ) -> Result<Option<HammerfestUser>, Box<dyn Error + Send + Sync + 'static>> {
     let user: Option<StoredHammerfestUser> = self.hammerfest_store.get_user(options).await?;
@@ -121,4 +121,15 @@ where
     };
     Ok(Some(hf_user))
   }
+}
+
+#[cfg(feature = "neon")]
+impl<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore> neon::prelude::Finalize
+  for HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>
+where
+  TyHammerfestClient: HammerfestClient,
+  TyHammerfestStore: HammerfestStore,
+  TyLinkStore: LinkStore,
+  TyUserStore: UserStore,
+{
 }

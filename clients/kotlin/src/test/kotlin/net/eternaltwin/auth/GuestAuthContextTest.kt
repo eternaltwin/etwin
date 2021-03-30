@@ -12,7 +12,7 @@ class GuestAuthContextTest {
     @JvmStatic
     fun fromJsonString(): Stream<SerializationTestItem<GuestAuthContext>> =
       SerializationTestItem.streamFromTestDir(
-        "auth/guest-auth-context",
+        "core/auth/guest-auth-context",
         mapOf(
           "guest" to GuestAuthContext(
             scope = AuthScope.Default,

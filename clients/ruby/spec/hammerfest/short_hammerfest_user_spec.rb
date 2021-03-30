@@ -3,7 +3,7 @@
 
 RSpec.describe Etwin::Hammerfest::ShortHammerfestUser do
   items = SerializationTestItem.from_test_dir(
-    'hammerfest/short-hammerfest-user',
+    'core/hammerfest/short-hammerfest-user',
     {
       'demurgos' => Etwin::Hammerfest::ShortHammerfestUser.new(
         Etwin::Hammerfest::HammerfestServer::HfestNet,

@@ -3,7 +3,7 @@
 
 RSpec.describe Etwin::Auth::UserAuthContext do
   items = SerializationTestItem.from_test_dir(
-    'auth/user-auth-context',
+    'core/auth/user-auth-context',
     {
       'demurgos' => Etwin::Auth::UserAuthContext.new(
         Etwin::Auth::AuthScope::Default,

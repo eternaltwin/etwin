@@ -3,7 +3,7 @@
 
 RSpec.describe Etwin::Auth::AccessTokenAuthContext do # rubocop:disable Metrics/BlockLength
   items = SerializationTestItem.from_test_dir(
-    'auth/access-token-auth-context',
+    'core/auth/access-token-auth-context',
     {
       'eternalfest-demurgos' => Etwin::Auth::AccessTokenAuthContext.new(
         Etwin::Auth::AuthScope::Default,

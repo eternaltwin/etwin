@@ -142,6 +142,7 @@ pub struct StoredHammerfestUser {
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "HammerfestUser"))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HammerfestUser {
   pub server: HammerfestServer,
@@ -674,4 +675,153 @@ pub fn hammerfest_reply_count_to_page_count(reply_count: u16) -> NonZeroU16 {
   let (q, r) = (message_count / MESSAGES_PER_PAGE, message_count % MESSAGES_PER_PAGE);
   let pages = if r == 0 { q } else { q + 1 };
   NonZeroU16::new(pages).unwrap()
+}
+
+#[cfg(test)]
+mod test {
+  use crate::hammerfest::{HammerfestServer, HammerfestUser, ShortHammerfestUser};
+  use crate::link::VersionedEtwinLink;
+  use chrono::{TimeZone, Utc};
+  use std::fs;
+
+  #[allow(clippy::unnecessary_wraps)]
+  fn get_nullable_short_hammerfest_user_alice() -> Option<ShortHammerfestUser> {
+    Some(ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    })
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_nullable_short_hammerfest_user_alice() {
+    let s = fs::read_to_string("../../test-resources/core/hammerfest/nullable-short-hammerfest-user/alice/value.json")
+      .unwrap();
+    let actual: Option<ShortHammerfestUser> = serde_json::from_str(&s).unwrap();
+    let expected = get_nullable_short_hammerfest_user_alice();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_nullable_short_hammerfest_user_alice() {
+    let value = get_nullable_short_hammerfest_user_alice();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected =
+      fs::read_to_string("../../test-resources/core/hammerfest/nullable-short-hammerfest-user/alice/value.json")
+        .unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
+
+  fn get_nullable_short_hammerfest_user_null() -> Option<ShortHammerfestUser> {
+    None
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_nullable_short_hammerfest_user_null() {
+    let s = fs::read_to_string("../../test-resources/core/hammerfest/nullable-short-hammerfest-user/null/value.json")
+      .unwrap();
+    let actual: Option<ShortHammerfestUser> = serde_json::from_str(&s).unwrap();
+    let expected = get_nullable_short_hammerfest_user_null();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_nullable_short_hammerfest_user_null() {
+    let value = get_nullable_short_hammerfest_user_null();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected =
+      fs::read_to_string("../../test-resources/core/hammerfest/nullable-short-hammerfest-user/null/value.json")
+        .unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
+
+  fn get_short_hammerfest_user_demurgos() -> ShortHammerfestUser {
+    ShortHammerfestUser {
+      server: HammerfestServer::HfestNet,
+      id: "205769".parse().unwrap(),
+      username: "Demurgos".parse().unwrap(),
+    }
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_short_hammerfest_user_demurgos() {
+    let s =
+      fs::read_to_string("../../test-resources/core/hammerfest/short-hammerfest-user/demurgos/value.json").unwrap();
+    let actual: ShortHammerfestUser = serde_json::from_str(&s).unwrap();
+    let expected = get_short_hammerfest_user_demurgos();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_short_hammerfest_user_demurgos() {
+    let value = get_short_hammerfest_user_demurgos();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected =
+      fs::read_to_string("../../test-resources/core/hammerfest/short-hammerfest-user/demurgos/value.json").unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
+
+  fn get_short_hammerfest_user_elseabora() -> ShortHammerfestUser {
+    ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "127".parse().unwrap(),
+      username: "elseabora".parse().unwrap(),
+    }
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_short_hammerfest_user_elseabora() {
+    let s =
+      fs::read_to_string("../../test-resources/core/hammerfest/short-hammerfest-user/elseabora/value.json").unwrap();
+    let actual: ShortHammerfestUser = serde_json::from_str(&s).unwrap();
+    let expected = get_short_hammerfest_user_elseabora();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_short_hammerfest_user_elseabora() {
+    let value = get_short_hammerfest_user_elseabora();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected =
+      fs::read_to_string("../../test-resources/core/hammerfest/short-hammerfest-user/elseabora/value.json").unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
+
+  fn get_hammerfest_user_alice() -> HammerfestUser {
+    HammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms_milli(0, 0, 0, 1),
+      profile: None,
+      items: None,
+      etwin: VersionedEtwinLink::default(),
+    }
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_hammerfest_user_alice() {
+    let s = fs::read_to_string("../../test-resources/core/hammerfest/hammerfest-user/alice/value.json").unwrap();
+    let actual: HammerfestUser = serde_json::from_str(&s).unwrap();
+    let expected = get_hammerfest_user_alice();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_hammerfest_user_alice() {
+    let value = get_hammerfest_user_alice();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected = fs::read_to_string("../../test-resources/core/hammerfest/hammerfest-user/alice/value.json").unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
 }

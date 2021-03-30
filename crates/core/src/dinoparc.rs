@@ -20,6 +20,7 @@ pub struct GetDinoparcUserOptions {
   pub time: Option<Instant>,
 }
 
+// TODO: Use `new_enum` macro
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, IntoEnumIterator)]
 pub enum DinoparcServer {

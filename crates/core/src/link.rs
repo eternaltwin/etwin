@@ -141,7 +141,7 @@ pub struct OldEtwinLink {
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Default, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VersionedEtwinLink {
   pub current: Option<EtwinLink>,
   pub old: Vec<OldEtwinLink>,

@@ -1,0 +1,13 @@
+{
+  "type": "HammerfestUser",
+  "server": "hammerfest.fr",
+  "id": "123",
+  "username": "alice",
+  "archived_at": "2021-01-01T00:00:00.001Z",
+  "profile": null,
+  "items": null,
+  "etwin": {
+    "current": null,
+    "old": []
+  }
+}

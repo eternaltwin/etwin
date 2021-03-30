@@ -16,7 +16,7 @@ class AccessTokenAuthContextTest {
     @JvmStatic
     fun fromJsonString(): Stream<SerializationTestItem<AccessTokenAuthContext>> =
       SerializationTestItem.streamFromTestDir(
-        "auth/access-token-auth-context",
+        "core/auth/access-token-auth-context",
         mapOf(
           "eternalfest-demurgos" to AccessTokenAuthContext(
             scope = AuthScope.Default,

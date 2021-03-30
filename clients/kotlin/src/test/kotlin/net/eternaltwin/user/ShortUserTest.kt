@@ -11,7 +11,7 @@ class ShortUserTest {
     @JvmStatic
     fun fromJsonString(): Stream<SerializationTestItem<ShortUser>> =
       SerializationTestItem.streamFromTestDir(
-        "user/short-user",
+        "core/user/short-user",
         mapOf(
           "demurgos" to ShortUser(
             id = UserId("9f310484-963b-446b-af69-797feec6813f"),

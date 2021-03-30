@@ -26,6 +26,7 @@ etwin_hammerfest_client = { version = "0.1.0", features = ["neon"] }
 etwin_hammerfest_store = { version = "0.1.0", features = ["neon"] }
 etwin_link_store = { version = "0.1.0", features = ["neon"] }
 etwin_password = { version = "0.1.0", features = ["neon"] }
+etwin_services = { version = "0.1.0", features = ["neon"] }
 etwin_token_store = { version = "0.1.0", features = ["neon"] }
 etwin_twinoid_store = { version = "0.1.0", features = ["neon"] }
 etwin_user_store = { version = "0.1.0", features = ["neon"] }

@@ -20,6 +20,7 @@ use sqlx::PgPool;
 use std::marker::PhantomData;
 use std::sync::Arc;
 
+use etwin_core::auth::{AuthScope, GuestAuthContext};
 use etwin_services::hammerfest::HammerfestService;
 
 async fn make_test_api() -> TestApi<
@@ -126,7 +127,12 @@ async fn inner_test_empty<TyClock, TyHammerfestClient, TyHammerfestStore, TyHamm
   let actual = api
     .hammerfest
     .as_ref()
-    .get_user(AuthContext::Guest, &options)
+    .get_user(
+      &AuthContext::Guest(GuestAuthContext {
+        scope: AuthScope::Default,
+      }),
+      &options,
+    )
     .await
     .unwrap();
   let expected: Option<HammerfestUser> = None;
@@ -148,5 +154,16 @@ async fn test_reference_types() {
     id: "999999".parse().unwrap(),
     time: None,
   };
-  assert_eq!(hammerfest.get_user(AuthContext::Guest, &options).await.unwrap(), None);
+  assert_eq!(
+    hammerfest
+      .get_user(
+        &AuthContext::Guest(GuestAuthContext {
+          scope: AuthScope::Default,
+        }),
+        &options
+      )
+      .await
+      .unwrap(),
+    None
+  );
 }

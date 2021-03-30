@@ -3,7 +3,7 @@
 
 RSpec.describe Etwin::Auth::GuestAuthContext do
   items = SerializationTestItem.from_test_dir(
-    'auth/guest-auth-context',
+    'core/auth/guest-auth-context',
     {
       'guest' => Etwin::Auth::GuestAuthContext.new(
         Etwin::Auth::AuthScope::Default

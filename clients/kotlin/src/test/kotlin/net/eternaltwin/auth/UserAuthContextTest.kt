@@ -12,7 +12,7 @@ class UserAuthContextTest {
     @JvmStatic
     fun fromJsonString(): Stream<SerializationTestItem<UserAuthContext>> =
       SerializationTestItem.streamFromTestDir(
-        "auth/user-auth-context",
+        "core/auth/user-auth-context",
         mapOf(
           "demurgos" to UserAuthContext(
             scope = AuthScope.Default,

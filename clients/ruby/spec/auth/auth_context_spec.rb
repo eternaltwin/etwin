@@ -3,7 +3,7 @@
 
 RSpec.describe Etwin::Auth::AuthContext do  # rubocop:disable Metrics/BlockLength
   items = SerializationTestItem.from_test_dir(
-    'auth/auth-context',
+    'core/auth/auth-context',
     {
       'demurgos' => Etwin::Auth::UserAuthContext.new(
         Etwin::Auth::AuthScope::Default,
