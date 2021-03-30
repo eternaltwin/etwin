@@ -12,5 +12,5 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-etwin_core = { version = "0.1.0", path = "../core" }
+etwin_core = { version = "0.1.0" }
 once_cell = "1.7.2"
