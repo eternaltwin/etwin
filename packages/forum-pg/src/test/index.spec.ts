@@ -1,7 +1,7 @@
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { Url } from "@eternal-twin/core/lib/core/url.js";
-import { LinkService } from "@eternal-twin/core/lib/link/service.js";
-import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { DefaultLinkService } from "@eternal-twin/core/lib/link/service.js";
+import { DefaultOauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
@@ -51,12 +51,12 @@ async function withPgForumService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
     const linkStore = new PgLinkStore({clock, database: nativeDatabase});
-    const link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
+    const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
     const dinoparcClient = new MemDinoparcClient({clock});
     const hammerfestClient = new MemHammerfestClient({clock});
     const twinoidClient = new HttpTwinoidClientService();
     const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
-    const oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
+    const oauthProvider = new DefaultOauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
     const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});
     const forum = new PgForumService(database, uuidGenerator, userStore, {postsPerPage: 10, threadsPerPage: 20});
     try {

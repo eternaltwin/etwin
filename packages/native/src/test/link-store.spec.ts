@@ -9,9 +9,9 @@ import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js"
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
 import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
 import { Url } from "@eternal-twin/core/lib/core/url.js";
-import { LinkService } from "@eternal-twin/core/lib/link/service.js";
+import { DefaultLinkService, LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
-import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { DefaultOauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { ShortTwinoidUser } from "@eternal-twin/core/lib/twinoid/short-twinoid-user.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
 import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
@@ -55,12 +55,12 @@ describe("NativeLinkStore", function () {
       const hammerfestStore = new MemHammerfestStore({clock});
       const twinoidStore = new MemTwinoidStore({clock});
       const linkStore = new MemLinkStore({clock});
-      const link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
+      const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
       const dinoparcClient = new MemDinoparcClient({clock});
       const hammerfestClient = new MemHammerfestClient({clock});
       const twinoidClient = new HttpTwinoidClientService();
       const oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
-      const oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
+      const oauthProvider = new DefaultOauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
       const auth = new InMemoryAuthService({dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});
       return fn({auth, twinoidStore, link});
     }
@@ -95,12 +95,12 @@ describe("NativeLinkStore", function () {
         const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
         const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
         const linkStore = new PgLinkStore({clock, database: nativeDatabase});
-        const link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
+        const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
         const dinoparcClient = new MemDinoparcClient({clock});
         const hammerfestClient = new MemHammerfestClient({clock});
         const twinoidClient = new HttpTwinoidClientService();
         const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
-        const oauthProvider = new OauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
+        const oauthProvider = new DefaultOauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
         const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});
         try {
           return await fn({auth, twinoidStore, link});

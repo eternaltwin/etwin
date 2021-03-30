@@ -6,23 +6,23 @@ import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
 import { $Url, Url } from "@eternal-twin/core/lib/core/url.js";
-import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
+import { DefaultDinoparcService, DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client.js";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
+import { DefaultHammerfestService, HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
-import { LinkService } from "@eternal-twin/core/lib/link/service.js";
+import { DefaultLinkService, LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { LinkStore } from "@eternal-twin/core/lib/link/store.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
-import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { DefaultOauthProviderService, OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store.js";
 import { TokenService } from "@eternal-twin/core/lib/token/service.js";
 import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client.js";
-import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
+import { DefaultTwinoidService, TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { DefaultUserService, UserService } from "@eternal-twin/core/lib/user/service.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
@@ -106,9 +106,9 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     hammerfestStore = new MemHammerfestStore({clock});
     twinoidStore = new MemTwinoidStore({clock});
     linkStore = new MemLinkStore({clock});
-    link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
+    link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
     oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
-    oauthProvider = new OauthProviderService({
+    oauthProvider = new DefaultOauthProviderService({
       clock,
       oauthProviderStore,
       userStore,
@@ -158,9 +158,9 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
     userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     linkStore = new PgLinkStore({clock, database: nativeDatabase});
-    link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
+    link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
     oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
-    oauthProvider = new OauthProviderService({
+    oauthProvider = new DefaultOauthProviderService({
       clock,
       oauthProviderStore,
       userStore,
@@ -194,10 +194,10 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     };
   }
 
-  const dinoparc = new DinoparcService({dinoparcStore, link});
-  const hammerfest = new HammerfestService({hammerfestStore, hammerfestClient, link});
-  const twinoid = new TwinoidService({twinoidStore, link});
-  const user = new UserService({
+  const dinoparc = new DefaultDinoparcService({dinoparcStore, link});
+  const hammerfest = new DefaultHammerfestService({hammerfestStore, hammerfestClient, link});
+  const twinoid = new DefaultTwinoidService({twinoidStore, link});
+  const user = new DefaultUserService({
     dinoparcClient,
     dinoparcStore,
     hammerfestStore,

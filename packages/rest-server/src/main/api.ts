@@ -1,12 +1,12 @@
 import { PgAnnouncementService } from "@eternal-twin/announcement-pg";
 import { PgAuthService } from "@eternal-twin/auth-pg";
-import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
+import { DefaultDinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
-import { LinkService } from "@eternal-twin/core/lib/link/service.js";
-import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
-import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { DefaultHammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
+import { DefaultLinkService } from "@eternal-twin/core/lib/link/service.js";
+import { DefaultOauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { DefaultTwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
+import { DefaultUserService } from "@eternal-twin/core/lib/user/service.js";
 import { ConsoleEmailService } from "@eternal-twin/email-console";
 import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { PgForumService } from "@eternal-twin/forum-pg";
@@ -62,14 +62,14 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
   const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
   const twinoidClient = new HttpTwinoidClientService();
   const linkStore = new PgLinkStore({clock, database: nativeDatabase});
-  const link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
+  const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
   const oauthProviderStore = new PgOauthProviderStore({
     database,
     databaseSecret: secretKeyStr,
     password,
     uuidGenerator
   });
-  const oauthProvider = new OauthProviderService({
+  const oauthProvider = new DefaultOauthProviderService({
     clock,
     oauthProviderStore,
     userStore,
@@ -103,10 +103,10 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
   const announcement = new PgAnnouncementService({database, uuidGenerator, forum});
 
   const token = await PgTokenStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr});
-  const dinoparc = new DinoparcService({dinoparcStore, link});
-  const hammerfest = new HammerfestService({hammerfestStore, hammerfestClient, link});
-  const twinoid = new TwinoidService({twinoidStore, link});
-  const user = new UserService({
+  const dinoparc = new DefaultDinoparcService({dinoparcStore, link});
+  const hammerfest = new DefaultHammerfestService({hammerfestStore, hammerfestClient, link});
+  const twinoid = new DefaultTwinoidService({twinoidStore, link});
+  const user = new DefaultUserService({
     dinoparcClient,
     dinoparcStore,
     hammerfestStore,

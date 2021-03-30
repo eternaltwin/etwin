@@ -32,7 +32,29 @@ import { VersionedRawHammerfestLink } from "./versioned-raw-hammerfest-link.js";
 import { VersionedRawTwinoidLink } from "./versioned-raw-twinoid-link.js";
 import { VersionedTwinoidLink } from "./versioned-twinoid-link.js";
 
-export interface LinkServiceOptions {
+export interface LinkService {
+  getVersionedLinks(userId: UserId): Promise<VersionedLinks>;
+
+  getLinkFromDinoparc(server: DinoparcServer, dparcUserId: DinoparcUserId): Promise<VersionedEtwinLink>;
+
+  getLinkFromHammerfest(server: HammerfestServer, hfUserId: HammerfestUserId): Promise<VersionedEtwinLink>;
+
+  getLinkFromTwinoid(twinoidUserId: TwinoidUserId): Promise<VersionedEtwinLink>;
+
+  linkToDinoparc(options: Readonly<SimpleLinkToDinoparcOptions>): Promise<VersionedDinoparcLink>;
+
+  linkToHammerfest(options: Readonly<SimpleLinkToHammerfestOptions>): Promise<VersionedHammerfestLink>;
+
+  linkToTwinoid(options: Readonly<SimpleLinkToTwinoidOptions>): Promise<VersionedTwinoidLink>;
+
+  unlinkFromDinoparc(options: Readonly<SimpleUnlinkFromDinoparcOptions>): Promise<VersionedDinoparcLink>;
+
+  unlinkFromHammerfest(options: Readonly<SimpleUnlinkFromHammerfestOptions>): Promise<VersionedHammerfestLink>;
+
+  unlinkFromTwinoid(options: Readonly<SimpleUnlinkFromTwinoidOptions>): Promise<VersionedTwinoidLink>;
+}
+
+export interface DefaultLinkServiceOptions {
   linkStore: LinkStore;
   hammerfestStore: HammerfestStore;
   dinoparcStore: DinoparcStore;
@@ -40,14 +62,14 @@ export interface LinkServiceOptions {
   userStore: UserStore;
 }
 
-export class LinkService {
+export class DefaultLinkService implements LinkService {
   #linkStore: LinkStore;
   #hammerfestStore: HammerfestStore;
   #dinoparcStore: DinoparcStore;
   #twinoidStore: TwinoidStore;
   #userStore: UserStore;
 
-  constructor(options: Readonly<LinkServiceOptions>) {
+  constructor(options: Readonly<DefaultLinkServiceOptions>) {
     this.#linkStore = options.linkStore;
     this.#hammerfestStore = options.hammerfestStore;
     this.#dinoparcStore = options.dinoparcStore;

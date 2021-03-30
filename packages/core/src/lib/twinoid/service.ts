@@ -5,16 +5,20 @@ import { GetTwinoidUserOptions } from "./get-twinoid-user-options.js";
 import { TwinoidStore } from "./store.js";
 import { TwinoidUser } from "./twinoid-user.js";
 
-export interface TwinoidServiceOptions {
+export interface TwinoidService {
+  getUser(_acx: AuthContext, options: Readonly<GetTwinoidUserOptions>): Promise<TwinoidUser | null>;
+}
+
+export interface DefaultTwinoidServiceOptions {
   twinoidStore: TwinoidStore;
   link: LinkService;
 }
 
-export class TwinoidService {
+export class DefaultTwinoidService implements TwinoidService {
   readonly #twinoidStore: TwinoidStore;
   readonly #link: LinkService;
 
-  public constructor(options: Readonly<TwinoidServiceOptions>) {
+  public constructor(options: Readonly<DefaultTwinoidServiceOptions>) {
     this.#twinoidStore = options.twinoidStore;
     this.#link = options.link;
   }

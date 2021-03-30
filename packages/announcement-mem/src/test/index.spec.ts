@@ -2,8 +2,8 @@ import { Api, testAnnouncementService } from "@eternal-twin/announcement-test";
 import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
 import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
-import { LinkService } from "@eternal-twin/core/lib/link/service.js";
-import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
+import { DefaultLinkService } from "@eternal-twin/core/lib/link/service.js";
+import { DefaultOauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
@@ -41,9 +41,9 @@ async function withMemAnnouncementService<R>(fn: (api: Api) => Promise<R>): Prom
   const twinoidClient = new HttpTwinoidClientService();
   const userStore = new MemUserStore({clock, uuidGenerator});
   const linkStore = new MemLinkStore({clock});
-  const link = new LinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
+  const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
   const oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
-  const oauthProvider = new OauthProviderService({
+  const oauthProvider = new DefaultOauthProviderService({
     clock,
     oauthProviderStore,
     tokenSecret: secretKeyBytes,

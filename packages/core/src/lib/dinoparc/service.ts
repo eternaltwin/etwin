@@ -5,16 +5,20 @@ import { DinoparcUser } from "./dinoparc-user.js";
 import { GetDinoparcUserOptions } from "./get-dinoparc-user-options.js";
 import { DinoparcStore } from "./store.js";
 
-export interface DinoparcServiceOptions {
+export interface DinoparcService {
+  getUser(acx: AuthContext, options: Readonly<GetDinoparcUserOptions>): Promise<DinoparcUser | null>;
+}
+
+export interface DefaultDinoparcServiceOptions {
   dinoparcStore: DinoparcStore;
   link: LinkService;
 }
 
-export class DinoparcService {
+export class DefaultDinoparcService implements DinoparcService {
   readonly #dinoparcStore: DinoparcStore;
   readonly #link: LinkService;
 
-  public constructor(options: Readonly<DinoparcServiceOptions>) {
+  public constructor(options: Readonly<DefaultDinoparcServiceOptions>) {
     this.#dinoparcStore = options.dinoparcStore;
     this.#link = options.link;
   }

@@ -44,7 +44,39 @@ import { User } from "./user.js";
 import { UserFieldsType } from "./user-fields-type.js";
 import { UserId } from "./user-id.js";
 
-export interface UserServiceOptions {
+export interface UserService {
+  getUserById(acx: AuthContext, options: Readonly<GetUserByIdOptions>): Promise<MaybeCompleteUser | null>;
+
+  updateUser(acx: AuthContext, userId: UserId, patch: Readonly<UpdateUserPatch>): Promise<User>;
+
+  linkToDinoparc(acx: AuthContext, options: Readonly<LinkToDinoparcOptions>): Promise<VersionedDinoparcLink>;
+
+  linkToDinoparcWithCredentials(acx: AuthContext, options: Readonly<LinkToDinoparcWithCredentialsOptions>): Promise<VersionedDinoparcLink>;
+
+  linkToDinoparcWithRef(acx: AuthContext, options: Readonly<LinkToDinoparcWithRefOptions>): Promise<VersionedDinoparcLink>;
+
+  unlinkFromDinoparc(acx: AuthContext, options: Readonly<UnlinkFromDinoparcOptions>): Promise<VersionedDinoparcLink>;
+
+  unlinkFromHammerfest(acx: AuthContext, options: Readonly<UnlinkFromHammerfestOptions>): Promise<VersionedHammerfestLink>;
+
+  unlinkFromTwinoid(acx: AuthContext, options: Readonly<UnlinkFromTwinoidOptions>): Promise<VersionedTwinoidLink>;
+
+  linkToHammerfest(acx: AuthContext, options: Readonly<LinkToHammerfestOptions>): Promise<VersionedHammerfestLink>;
+
+  linkToHammerfestWithCredentials(acx: AuthContext, options: Readonly<LinkToHammerfestWithCredentialsOptions>): Promise<VersionedHammerfestLink>;
+
+  linkToHammerfestWithSessionKey(acx: AuthContext, options: Readonly<LinkToHammerfestWithSessionKeyOptions>): Promise<VersionedHammerfestLink>;
+
+  linkToHammerfestWithRef(acx: AuthContext, options: Readonly<LinkToHammerfestWithRefOptions>): Promise<VersionedHammerfestLink>;
+
+  linkToTwinoid(acx: AuthContext, options: Readonly<LinkToTwinoidOptions>): Promise<VersionedTwinoidLink>;
+
+  linkToTwinoidWithOauth(acx: AuthContext, options: Readonly<LinkToTwinoidWithOauthOptions>): Promise<VersionedTwinoidLink>;
+
+  linkToTwinoidWithRef(acx: AuthContext, options: Readonly<LinkToTwinoidWithRefOptions>): Promise<VersionedTwinoidLink>;
+}
+
+export interface DefaultUserServiceOptions {
   dinoparcClient: DinoparcClient;
   dinoparcStore: DinoparcStore;
   hammerfestClient: HammerfestClient;
@@ -57,7 +89,7 @@ export interface UserServiceOptions {
   userStore: UserStore;
 }
 
-export class UserService {
+export class DefaultUserService implements UserService {
   readonly #dinoparcClient: DinoparcClient;
   readonly #dinoparcStore: DinoparcStore;
   readonly #hammerfestClient: HammerfestClient;
@@ -69,7 +101,7 @@ export class UserService {
   readonly #twinoidStore: TwinoidStore;
   readonly #userStore: UserStore;
 
-  public constructor(options: Readonly<UserServiceOptions>) {
+  public constructor(options: Readonly<DefaultUserServiceOptions>) {
     this.#dinoparcClient = options.dinoparcClient;
     this.#dinoparcStore = options.dinoparcStore;
     this.#hammerfestClient = options.hammerfestClient;

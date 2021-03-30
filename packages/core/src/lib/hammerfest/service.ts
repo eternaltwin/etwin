@@ -7,18 +7,22 @@ import { HammerfestProfile } from "./hammerfest-profile.js";
 import { HammerfestUser } from "./hammerfest-user.js";
 import { HammerfestStore } from "./store.js";
 
-export interface HammerfestServiceOptions {
+export interface HammerfestService {
+  getUserById(acx: AuthContext, options: Readonly<GetHammerfestUserOptions>): Promise<HammerfestUser | null>;
+}
+
+export interface DefaultHammerfestServiceOptions {
   hammerfestStore: HammerfestStore;
   hammerfestClient: HammerfestClient;
   link: LinkService;
 }
 
-export class HammerfestService {
+export class DefaultHammerfestService implements  HammerfestService {
   readonly #hammerfestStore: HammerfestStore;
   readonly #hammerfestClient: HammerfestClient;
   readonly #link: LinkService;
 
-  public constructor(options: Readonly<HammerfestServiceOptions>) {
+  public constructor(options: Readonly<DefaultHammerfestServiceOptions>) {
     this.#hammerfestStore = options.hammerfestStore;
     this.#hammerfestClient = options.hammerfestClient;
     this.#link = options.link;

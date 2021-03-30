@@ -35,7 +35,27 @@ import { RfcOauthScope } from "./rfc-oauth-scope.js";
 import { ShortOauthClient } from "./short-oauth-client.js";
 import { StoredOauthAccessToken } from "./stored-oauth-access-token.js";
 
-export interface OauthProviderServiceOptions {
+export interface OauthProviderService {
+  getClientByIdOrKey(_acx: AuthContext, inputRef: OauthClientInputRef): Promise<OauthClient | null>;
+
+  createOrUpdateSystemClient(key: OauthClientKey, options: CreateOrUpdateSystemClientOptions): Promise<OauthClient>;
+
+  createAuthorizationCode(
+    auth: AuthContext,
+    clientId: OauthClientId,
+    scopeString: OauthScopeString | null,
+  ): Promise<OauthCode>;
+
+  createAccessToken(acx: AuthContext, req: EtwinOauthAccessTokenRequest): Promise<OauthAccessToken>;
+
+  getAndTouchAccessToken(_acx: AuthContext, tokenKey: RfcOauthAccessTokenKey): Promise<{token: OauthAccessToken, client: OauthClientIdRef, user: UserIdRef} | null>;
+
+  getAccessTokenByKey(_acx: AuthContext, atKey: RfcOauthAccessTokenKey): Promise<CompleteOauthAccessToken | null>;
+
+  verifyClientSecret(_acx: AuthContext, clientId: OauthClientId, secret: Uint8Array): Promise<boolean>;
+}
+
+export interface DefaultOauthProviderServiceOptions {
   clock: ClockService;
   oauthProviderStore: OauthProviderStore;
   userStore: UserStore;
@@ -43,14 +63,14 @@ export interface OauthProviderServiceOptions {
   uuidGenerator: UuidGenerator;
 }
 
-export class OauthProviderService {
+export class DefaultOauthProviderService implements OauthProviderService {
   readonly #clock: ClockService;
   readonly #oauthProviderStore: OauthProviderStore;
   readonly #userStore: UserStore;
   readonly #tokenSecret: Buffer;
   readonly #uuidGenerator: UuidGenerator;
 
-  constructor(options: Readonly<OauthProviderServiceOptions>) {
+  constructor(options: Readonly<DefaultOauthProviderServiceOptions>) {
     this.#clock = options.clock;
     this.#oauthProviderStore = options.oauthProviderStore;
     this.#userStore = options.userStore;
