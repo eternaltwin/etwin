@@ -47,7 +47,7 @@ where
     &self,
     _acx: AuthContext,
     options: &GetHammerfestUserOptions,
-  ) -> Result<Option<HammerfestUser>, Box<dyn Error>> {
+  ) -> Result<Option<HammerfestUser>, Box<dyn Error + Send + Sync + 'static>> {
     let user: Option<StoredHammerfestUser> = self.hammerfest_store.get_user(options).await?;
     let user: StoredHammerfestUser = match user {
       Some(user) => user,

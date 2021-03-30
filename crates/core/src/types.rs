@@ -1,3 +1,5 @@
+pub type EtwinError = Box<dyn ::std::error::Error + Send + Sync + 'static>;
+
 #[macro_export]
 macro_rules! declare_decimal_id {
   (

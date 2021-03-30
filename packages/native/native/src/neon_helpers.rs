@@ -1,7 +1,7 @@
 use crate::tokio_runtime::spawn_future;
+use etwin_core::types::EtwinError;
 use neon::prelude::*;
 use serde::Serialize;
-use std::error::Error;
 use std::future::Future;
 
 pub trait NeonNamespace {
@@ -75,7 +75,7 @@ where
 #[allow(clippy::unnecessary_wraps)]
 pub(crate) fn resolve_callback_serde<'a, C: Context<'a>, T: Serialize>(
   cx: &mut C,
-  fut: impl Future<Output = Result<T, Box<dyn Error>>> + Send + 'static,
+  fut: impl Future<Output = Result<T, EtwinError>> + Send + 'static,
   cb: Root<JsFunction>,
 ) -> JsResult<'a, JsUndefined> {
   let queue = cx.queue();
@@ -84,7 +84,7 @@ pub(crate) fn resolve_callback_serde<'a, C: Context<'a>, T: Serialize>(
     let res = match res {
       Ok(v) => match serde_json::to_string(&v) {
         Ok(v) => Ok(v),
-        Err(e) => Err(Box::new(e) as Box<dyn Error>),
+        Err(e) => Err(Box::new(e) as EtwinError),
       },
       Err(e) => Err(e),
     };

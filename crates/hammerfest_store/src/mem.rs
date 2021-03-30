@@ -4,8 +4,8 @@ use etwin_core::hammerfest::{
   GetHammerfestUserOptions, HammerfestForumThemePage, HammerfestForumThreadPage, HammerfestGodchild, HammerfestItemId,
   HammerfestProfile, HammerfestShop, HammerfestStore, HammerfestUserId, ShortHammerfestUser, StoredHammerfestUser,
 };
+use etwin_core::types::EtwinError;
 use std::collections::HashMap;
-use std::error::Error;
 use std::sync::RwLock;
 
 struct StoreState {
@@ -51,17 +51,17 @@ where
   async fn get_short_user(
     &self,
     options: &GetHammerfestUserOptions,
-  ) -> Result<Option<ShortHammerfestUser>, Box<dyn Error>> {
+  ) -> Result<Option<ShortHammerfestUser>, EtwinError> {
     let state = self.state.read().unwrap();
     Ok(state.get_user(&options.id).cloned().map(From::from))
   }
 
-  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<StoredHammerfestUser>, Box<dyn Error>> {
+  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<StoredHammerfestUser>, EtwinError> {
     let state = self.state.read().unwrap();
     Ok(state.get_user(&options.id).cloned())
   }
 
-  async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<StoredHammerfestUser, Box<dyn Error>> {
+  async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<StoredHammerfestUser, EtwinError> {
     let mut state = self.state.write().unwrap();
     let now = self.clock.now();
     let user = StoredHammerfestUser {
@@ -76,11 +76,11 @@ where
     Ok(user)
   }
 
-  async fn touch_shop(&self, _user: &ShortHammerfestUser, _options: &HammerfestShop) -> Result<(), Box<dyn Error>> {
+  async fn touch_shop(&self, _user: &ShortHammerfestUser, _options: &HammerfestShop) -> Result<(), EtwinError> {
     unimplemented!()
   }
 
-  async fn touch_profile(&self, _options: &HammerfestProfile) -> Result<(), Box<dyn Error>> {
+  async fn touch_profile(&self, _options: &HammerfestProfile) -> Result<(), EtwinError> {
     unimplemented!()
   }
 
@@ -88,7 +88,7 @@ where
     &self,
     _user: &ShortHammerfestUser,
     _inventory: &HashMap<HammerfestItemId, u32>,
-  ) -> Result<(), Box<dyn Error>> {
+  ) -> Result<(), EtwinError> {
     unimplemented!()
   }
 
@@ -96,15 +96,15 @@ where
     &self,
     _user: &ShortHammerfestUser,
     _godchildren: &[HammerfestGodchild],
-  ) -> Result<(), Box<dyn Error>> {
+  ) -> Result<(), EtwinError> {
     unimplemented!()
   }
 
-  async fn touch_theme_page(&self, _options: &HammerfestForumThemePage) -> Result<(), Box<dyn Error>> {
+  async fn touch_theme_page(&self, _options: &HammerfestForumThemePage) -> Result<(), EtwinError> {
     unimplemented!()
   }
 
-  async fn touch_thread_page(&self, _options: &HammerfestForumThreadPage) -> Result<(), Box<dyn Error>> {
+  async fn touch_thread_page(&self, _options: &HammerfestForumThreadPage) -> Result<(), EtwinError> {
     unimplemented!()
   }
 }

@@ -6,8 +6,8 @@ use etwin_core::hammerfest::{HammerfestServer, HammerfestSessionKey, HammerfestU
 use etwin_core::oauth::{RfcOauthAccessTokenKey, RfcOauthRefreshTokenKey, TwinoidAccessToken, TwinoidRefreshToken};
 use etwin_core::token::{TokenStore, TouchOauthTokenOptions, TwinoidOauth};
 use etwin_core::twinoid::{TwinoidUserId, TwinoidUserIdRef};
+use etwin_core::types::EtwinError;
 use std::collections::HashMap;
-use std::error::Error;
 use std::fmt::Debug;
 use std::sync::RwLock;
 
@@ -364,26 +364,26 @@ impl<TyClock> TokenStore for MemTokenStore<TyClock>
 where
   TyClock: Clock,
 {
-  async fn touch_twinoid_oauth(&self, options: &TouchOauthTokenOptions) -> Result<(), Box<dyn Error>> {
+  async fn touch_twinoid_oauth(&self, options: &TouchOauthTokenOptions) -> Result<(), EtwinError> {
     let mut state = self.state.write().unwrap();
     let now = self.clock.now();
     state.touch_twinoid_oauth(now, options);
     Ok(())
   }
 
-  async fn revoke_twinoid_access_token(&self, options: &RfcOauthAccessTokenKey) -> Result<(), Box<dyn Error>> {
+  async fn revoke_twinoid_access_token(&self, options: &RfcOauthAccessTokenKey) -> Result<(), EtwinError> {
     let mut state = self.state.write().unwrap();
     state.revoke_twinoid_access_token(options);
     Ok(())
   }
 
-  async fn revoke_twinoid_refresh_token(&self, options: &RfcOauthRefreshTokenKey) -> Result<(), Box<dyn Error>> {
+  async fn revoke_twinoid_refresh_token(&self, options: &RfcOauthRefreshTokenKey) -> Result<(), EtwinError> {
     let mut state = self.state.write().unwrap();
     state.revoke_twinoid_refresh_token(options);
     Ok(())
   }
 
-  async fn get_twinoid_oauth(&self, options: TwinoidUserIdRef) -> Result<TwinoidOauth, Box<dyn Error>> {
+  async fn get_twinoid_oauth(&self, options: TwinoidUserIdRef) -> Result<TwinoidOauth, EtwinError> {
     let state = self.state.read().unwrap();
     let now = self.clock.now();
     Ok(state.get_twinoid_oauth(now, options))
@@ -393,21 +393,21 @@ where
     &self,
     user: DinoparcUserIdRef,
     key: &DinoparcSessionKey,
-  ) -> Result<StoredDinoparcSession, Box<dyn Error>> {
+  ) -> Result<StoredDinoparcSession, EtwinError> {
     let mut state = self.state.write().unwrap();
     let server = state.dinoparc.get_mut(user.server);
     let now = self.clock.now();
     Ok(server.touch(now, key, user))
   }
 
-  async fn revoke_dinoparc(&self, server: DinoparcServer, key: &DinoparcSessionKey) -> Result<(), Box<dyn Error>> {
+  async fn revoke_dinoparc(&self, server: DinoparcServer, key: &DinoparcSessionKey) -> Result<(), EtwinError> {
     let mut state = self.state.write().unwrap();
     let server = state.dinoparc.get_mut(server);
     server.revoke(key);
     Ok(())
   }
 
-  async fn get_dinoparc(&self, user: DinoparcUserIdRef) -> Result<Option<StoredDinoparcSession>, Box<dyn Error>> {
+  async fn get_dinoparc(&self, user: DinoparcUserIdRef) -> Result<Option<StoredDinoparcSession>, EtwinError> {
     let state = self.state.read().unwrap();
     let server = state.dinoparc.get(user.server);
     Ok(server.get(user))
@@ -417,25 +417,21 @@ where
     &self,
     user: HammerfestUserIdRef,
     key: &HammerfestSessionKey,
-  ) -> Result<StoredHammerfestSession, Box<dyn Error>> {
+  ) -> Result<StoredHammerfestSession, EtwinError> {
     let mut state = self.state.write().unwrap();
     let server = state.hammerfest.get_mut(user.server);
     let now = self.clock.now();
     Ok(server.touch(now, key, user))
   }
 
-  async fn revoke_hammerfest(
-    &self,
-    server: HammerfestServer,
-    key: &HammerfestSessionKey,
-  ) -> Result<(), Box<dyn Error>> {
+  async fn revoke_hammerfest(&self, server: HammerfestServer, key: &HammerfestSessionKey) -> Result<(), EtwinError> {
     let mut state = self.state.write().unwrap();
     let server = state.hammerfest.get_mut(server);
     server.revoke(key);
     Ok(())
   }
 
-  async fn get_hammerfest(&self, user: HammerfestUserIdRef) -> Result<Option<StoredHammerfestSession>, Box<dyn Error>> {
+  async fn get_hammerfest(&self, user: HammerfestUserIdRef) -> Result<Option<StoredHammerfestSession>, EtwinError> {
     let state = self.state.read().unwrap();
     let server = state.hammerfest.get(user.server);
     Ok(server.get(user))

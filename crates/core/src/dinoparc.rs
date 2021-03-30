@@ -1,4 +1,5 @@
 use crate::core::Instant;
+use crate::types::EtwinError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
@@ -242,28 +243,25 @@ pub struct DinoparcDinoz {
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait DinoparcClient: Send + Sync {
-  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, Box<dyn Error>>;
+  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, EtwinError>;
 
   async fn test_session(
     &self,
     server: DinoparcServer,
     key: &DinoparcSessionKey,
-  ) -> Result<Option<DinoparcSession>, Box<dyn Error>>;
+  ) -> Result<Option<DinoparcSession>, EtwinError>;
 
   async fn get_dinoz(
     &self,
     session: &DinoparcSession,
     id: DinoparcDinozId,
-  ) -> Result<Option<DinoparcDinoz>, Box<dyn Error>>;
+  ) -> Result<Option<DinoparcDinoz>, EtwinError>;
 }
 
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait DinoparcStore: Send + Sync {
-  async fn get_short_user(
-    &self,
-    options: &GetDinoparcUserOptions,
-  ) -> Result<Option<ArchivedDinoparcUser>, Box<dyn Error>>;
+  async fn get_short_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError>;
 
-  async fn touch_short_user(&self, options: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, Box<dyn Error>>;
+  async fn touch_short_user(&self, options: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, EtwinError>;
 }

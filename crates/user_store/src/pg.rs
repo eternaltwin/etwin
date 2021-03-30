@@ -4,6 +4,7 @@ use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, Secret};
 use etwin_core::email::{touch_email_address, EmailAddress};
 use etwin_core::password::PasswordHash;
+use etwin_core::types::EtwinError;
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, DeleteUserError, GetShortUserOptions, GetUserOptions, GetUserResult,
   ShortUser, ShortUserWithPassword, UpdateUserError, UpdateUserOptions, UserDisplayName, UserDisplayNameVersion,
@@ -12,7 +13,6 @@ use etwin_core::user::{
 };
 use etwin_core::uuid::UuidGenerator;
 use sqlx::postgres::PgPool;
-use std::error::Error;
 
 pub struct PgUserStore<TyClock, TyDatabase, TyUuidGenerator>
 where
@@ -49,7 +49,7 @@ where
   TyDatabase: ApiRef<PgPool>,
   TyUuidGenerator: UuidGenerator,
 {
-  async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, Box<dyn Error>> {
+  async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, EtwinError> {
     let user_id = UserId::from_uuid(self.uuid_generator.next());
     let now = self.clock.now();
 
@@ -129,7 +129,7 @@ where
     Ok(user)
   }
 
-  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, Box<dyn Error>> {
+  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, EtwinError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       user_id: UserId,
@@ -201,7 +201,7 @@ where
   async fn get_user_with_password(
     &self,
     options: &GetUserOptions,
-  ) -> Result<Option<ShortUserWithPassword>, Box<dyn Error>> {
+  ) -> Result<Option<ShortUserWithPassword>, EtwinError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       user_id: UserId,
@@ -253,7 +253,7 @@ where
     Ok(Some(user))
   }
 
-  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, Box<dyn Error>> {
+  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, EtwinError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       user_id: UserId,

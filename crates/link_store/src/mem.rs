@@ -8,9 +8,9 @@ use etwin_core::link::{
   RemoteUserIdRef, TouchLinkError, TouchLinkOptions, VersionedRawLink, VersionedRawLinks,
 };
 use etwin_core::twinoid::{TwinoidUserId, TwinoidUserIdRef};
+use etwin_core::types::EtwinError;
 use etwin_core::user::UserId;
 use std::collections::HashMap;
-use std::error::Error;
 use std::sync::RwLock;
 
 struct RawLinkHistory<T: RemoteUserIdRef> {
@@ -242,7 +242,7 @@ where
   async fn get_link_from_dinoparc(
     &self,
     options: &GetLinkOptions<DinoparcUserIdRef>,
-  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, Box<dyn Error>> {
+  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, EtwinError> {
     // assert!(options.time.is_none());
     let state = self.state.read().unwrap();
     let link = state.from_dinoparc.get(&(options.remote.server, options.remote.id));
@@ -265,7 +265,7 @@ where
   async fn get_link_from_hammerfest(
     &self,
     options: &GetLinkOptions<HammerfestUserIdRef>,
-  ) -> Result<VersionedRawLink<HammerfestUserIdRef>, Box<dyn Error>> {
+  ) -> Result<VersionedRawLink<HammerfestUserIdRef>, EtwinError> {
     // assert!(options.time.is_none());
     let state = self.state.read().unwrap();
     let link = state.from_hammerfest.get(&(options.remote.server, options.remote.id));
@@ -288,7 +288,7 @@ where
   async fn get_link_from_twinoid(
     &self,
     options: &GetLinkOptions<TwinoidUserIdRef>,
-  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, Box<dyn Error>> {
+  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, EtwinError> {
     // assert!(options.time.is_none());
     let state = self.state.read().unwrap();
     let link = state.from_twinoid.get(&options.remote.id);
@@ -308,10 +308,7 @@ where
     }
   }
 
-  async fn get_links_from_etwin(
-    &self,
-    options: &GetLinksFromEtwinOptions,
-  ) -> Result<VersionedRawLinks, Box<dyn Error>> {
+  async fn get_links_from_etwin(&self, options: &GetLinksFromEtwinOptions) -> Result<VersionedRawLinks, EtwinError> {
     let state = self.state.read().unwrap();
     let mut links = VersionedRawLinks::default();
 

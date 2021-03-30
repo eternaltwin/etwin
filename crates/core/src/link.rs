@@ -2,6 +2,7 @@ use crate::core::{Instant, RawUserDot, UserDot};
 use crate::dinoparc::DinoparcUserIdRef;
 use crate::hammerfest::HammerfestUserIdRef;
 use crate::twinoid::TwinoidUserIdRef;
+use crate::types::EtwinError;
 use crate::user::{ShortUser, UserIdRef};
 use async_trait::async_trait;
 use auto_impl::auto_impl;
@@ -170,11 +171,11 @@ pub enum TouchLinkError<T: RemoteUserIdRef> {
   #[error("cannot link as the remote user is already linked to the etwin user {0:?} and the etwin user is already linked to the remote user {1:?}")]
   ConflictBoth(UserIdRef, T),
   #[error(transparent)]
-  Other(Box<dyn Error>),
+  Other(EtwinError),
 }
 
 impl<T: RemoteUserIdRef> TouchLinkError<T> {
-  pub fn other<E: 'static + Error>(e: E) -> Self {
+  pub fn other<E: Error + Send + Sync + 'static>(e: E) -> Self {
     Self::Other(Box::new(e))
   }
 }
@@ -184,11 +185,11 @@ pub enum DeleteLinkError<T: RemoteUserIdRef> {
   #[error("link not found for the etwin user {0:?} and remote {1:?}")]
   NotFound(UserIdRef, T),
   #[error(transparent)]
-  Other(Box<dyn Error>),
+  Other(EtwinError),
 }
 
 impl<T: RemoteUserIdRef> DeleteLinkError<T> {
-  pub fn other<E: 'static + Error>(e: E) -> Self {
+  pub fn other<E: Error + Send + Sync + 'static>(e: E) -> Self {
     Self::Other(Box::new(e))
   }
 }
@@ -229,18 +230,17 @@ pub trait LinkStore: Send + Sync {
   async fn get_link_from_dinoparc(
     &self,
     options: &GetLinkOptions<DinoparcUserIdRef>,
-  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, Box<dyn Error>>;
+  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, EtwinError>;
 
   async fn get_link_from_hammerfest(
     &self,
     options: &GetLinkOptions<HammerfestUserIdRef>,
-  ) -> Result<VersionedRawLink<HammerfestUserIdRef>, Box<dyn Error>>;
+  ) -> Result<VersionedRawLink<HammerfestUserIdRef>, EtwinError>;
 
   async fn get_link_from_twinoid(
     &self,
     options: &GetLinkOptions<TwinoidUserIdRef>,
-  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, Box<dyn Error>>;
+  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, EtwinError>;
 
-  async fn get_links_from_etwin(&self, options: &GetLinksFromEtwinOptions)
-    -> Result<VersionedRawLinks, Box<dyn Error>>;
+  async fn get_links_from_etwin(&self, options: &GetLinksFromEtwinOptions) -> Result<VersionedRawLinks, EtwinError>;
 }

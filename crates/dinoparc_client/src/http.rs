@@ -11,6 +11,7 @@ use etwin_core::dinoparc::{
   DinoparcClient, DinoparcCredentials, DinoparcDinoz, DinoparcDinozId, DinoparcMachineId, DinoparcServer,
   DinoparcSession, DinoparcSessionKey, DinoparcUsername, ShortDinoparcUser,
 };
+use etwin_core::types::EtwinError;
 use md5::{Digest, Md5};
 use reqwest::{Client, RequestBuilder, StatusCode};
 use serde::Serialize;
@@ -95,7 +96,7 @@ impl<TyClock> DinoparcClient for HttpDinoparcClient<TyClock>
 where
   TyClock: Clock,
 {
-  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, Box<dyn StdError>> {
+  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, EtwinError> {
     #[derive(Serialize)]
     struct LoginForm<'a> {
       login: &'a str,
@@ -148,7 +149,7 @@ where
     &self,
     server: DinoparcServer,
     session_key: &DinoparcSessionKey,
-  ) -> Result<Option<DinoparcSession>, Box<dyn StdError>> {
+  ) -> Result<Option<DinoparcSession>, EtwinError> {
     let now = self.clock.now();
     let html = self
       .get_html(DinoparcUrls::new(server).bank(), Some(&session_key))
@@ -170,7 +171,7 @@ where
     &self,
     _session: &DinoparcSession,
     _id: DinoparcDinozId,
-  ) -> Result<Option<DinoparcDinoz>, Box<dyn StdError>> {
+  ) -> Result<Option<DinoparcDinoz>, EtwinError> {
     unimplemented!()
   }
 }

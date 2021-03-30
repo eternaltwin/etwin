@@ -1,3 +1,9 @@
+#[cfg(feature = "sqlx")]
+use crate::core::{Instant, Secret};
+use crate::types::EtwinError;
+#[cfg(feature = "sqlx")]
+use sqlx::{Postgres, Transaction};
+
 declare_new_string! {
   pub struct EmailAddress(String);
   pub type ParseError = EmailAddressParseError;
@@ -6,21 +12,13 @@ declare_new_string! {
 }
 
 // TODO: Move this function to a crate with Postgres helpers
-
-#[cfg(feature = "sqlx")]
-use crate::core::{Instant, Secret};
-#[cfg(feature = "sqlx")]
-use sqlx::{Postgres, Transaction};
-#[cfg(feature = "sqlx")]
-use std::error::Error;
-
 #[cfg(feature = "sqlx")]
 pub async fn touch_email_address(
   tx: &mut Transaction<'_, Postgres>,
   secret: &Secret,
   email: &EmailAddress,
   now: Instant,
-) -> Result<Vec<u8>, Box<dyn Error>> {
+) -> Result<Vec<u8>, EtwinError> {
   #[derive(Debug, sqlx::FromRow)]
   struct Row {
     email: EmailAddress,

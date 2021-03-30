@@ -1,8 +1,8 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::twinoid::{ArchivedTwinoidUser, GetTwinoidUserOptions, ShortTwinoidUser, TwinoidStore, TwinoidUserId};
+use etwin_core::types::EtwinError;
 use std::collections::HashMap;
-use std::error::Error;
 use std::sync::RwLock;
 
 struct StoreState {
@@ -45,17 +45,17 @@ impl<TyClock> TwinoidStore for MemTwinoidStore<TyClock>
 where
   TyClock: Clock,
 {
-  async fn get_short_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ShortTwinoidUser>, Box<dyn Error>> {
+  async fn get_short_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ShortTwinoidUser>, EtwinError> {
     let state = self.state.read().unwrap();
     Ok(state.get_user(&options.id).cloned().map(From::from))
   }
 
-  async fn get_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ArchivedTwinoidUser>, Box<dyn Error>> {
+  async fn get_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ArchivedTwinoidUser>, EtwinError> {
     let state = self.state.read().unwrap();
     Ok(state.get_user(&options.id).cloned())
   }
 
-  async fn touch_short_user(&self, short: &ShortTwinoidUser) -> Result<ArchivedTwinoidUser, Box<dyn Error>> {
+  async fn touch_short_user(&self, short: &ShortTwinoidUser) -> Result<ArchivedTwinoidUser, EtwinError> {
     let mut state = self.state.write().unwrap();
     let now = self.clock.now();
     let user = ArchivedTwinoidUser {

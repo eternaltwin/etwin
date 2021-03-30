@@ -5,8 +5,8 @@ use etwin_core::dinoparc::DinoparcUserIdRef;
 use etwin_core::hammerfest::HammerfestUserIdRef;
 use etwin_core::link::{DeleteLinkOptions, GetLinkOptions, GetLinksFromEtwinOptions, LinkStore, TouchLinkOptions};
 use etwin_core::twinoid::TwinoidUserIdRef;
+use etwin_core::types::EtwinError;
 use neon::prelude::*;
-use std::error::Error;
 use std::sync::Arc;
 
 pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject> {
@@ -102,7 +102,7 @@ pub fn touch_dinoparc_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     inner
       .touch_dinoparc_link(&options)
       .await
-      .map_err(|x| Box::new(x) as Box<dyn Error>)
+      .map_err(|x| Box::new(x) as EtwinError)
   };
   resolve_callback_serde(&mut cx, res, cb)
 }
@@ -119,7 +119,7 @@ pub fn touch_hammerfest_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     inner
       .touch_hammerfest_link(&options)
       .await
-      .map_err(|x| Box::new(x) as Box<dyn Error>)
+      .map_err(|x| Box::new(x) as EtwinError)
   };
   resolve_callback_serde(&mut cx, res, cb)
 }
@@ -136,7 +136,7 @@ pub fn touch_twinoid_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     inner
       .touch_twinoid_link(&options)
       .await
-      .map_err(|x| Box::new(x) as Box<dyn Error>)
+      .map_err(|x| Box::new(x) as EtwinError)
   };
   resolve_callback_serde(&mut cx, res, cb)
 }
@@ -153,7 +153,7 @@ pub fn delete_dinoparc_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     inner
       .delete_dinoparc_link(&options)
       .await
-      .map_err(|x| Box::new(x) as Box<dyn Error>)
+      .map_err(|x| Box::new(x) as EtwinError)
   };
   resolve_callback_serde(&mut cx, res, cb)
 }
@@ -170,7 +170,7 @@ pub fn delete_hammerfest_link(mut cx: FunctionContext) -> JsResult<JsUndefined> 
     inner
       .delete_hammerfest_link(&options)
       .await
-      .map_err(|x| Box::new(x) as Box<dyn Error>)
+      .map_err(|x| Box::new(x) as EtwinError)
   };
   resolve_callback_serde(&mut cx, res, cb)
 }
@@ -187,7 +187,7 @@ pub fn delete_twinoid_link(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     inner
       .delete_twinoid_link(&options)
       .await
-      .map_err(|x| Box::new(x) as Box<dyn Error>)
+      .map_err(|x| Box::new(x) as EtwinError)
   };
   resolve_callback_serde(&mut cx, res, cb)
 }

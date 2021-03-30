@@ -5,8 +5,8 @@ use etwin_core::core::Instant;
 use etwin_core::twinoid::{
   ArchivedTwinoidUser, GetTwinoidUserOptions, ShortTwinoidUser, TwinoidStore, TwinoidUserDisplayName, TwinoidUserId,
 };
+use etwin_core::types::EtwinError;
 use sqlx::PgPool;
-use std::error::Error;
 
 pub struct PgTwinoidStore<TyClock, TyDatabase>
 where
@@ -33,7 +33,7 @@ where
   TyClock: Clock,
   TyDatabase: ApiRef<PgPool>,
 {
-  async fn get_short_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ShortTwinoidUser>, Box<dyn Error>> {
+  async fn get_short_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ShortTwinoidUser>, EtwinError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       twinoid_user_id: TwinoidUserId,
@@ -57,7 +57,7 @@ where
     }))
   }
 
-  async fn get_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ArchivedTwinoidUser>, Box<dyn Error>> {
+  async fn get_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ArchivedTwinoidUser>, EtwinError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       twinoid_user_id: TwinoidUserId,
@@ -83,7 +83,7 @@ where
     }))
   }
 
-  async fn touch_short_user(&self, short: &ShortTwinoidUser) -> Result<ArchivedTwinoidUser, Box<dyn Error>> {
+  async fn touch_short_user(&self, short: &ShortTwinoidUser) -> Result<ArchivedTwinoidUser, EtwinError> {
     let now = self.clock.now();
     sqlx::query(
       r"

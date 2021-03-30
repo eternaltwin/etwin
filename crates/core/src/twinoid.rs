@@ -1,9 +1,9 @@
 use crate::core::Instant;
+use crate::types::EtwinError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 #[cfg(feature = "_serde")]
 use etwin_serde_tools::{Deserialize, Serialize};
-use std::error::Error;
 
 declare_decimal_id! {
   pub struct TwinoidUserId(u32);
@@ -74,9 +74,9 @@ pub struct GetTwinoidUserOptions {
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait TwinoidStore: Send + Sync {
-  async fn get_short_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ShortTwinoidUser>, Box<dyn Error>>;
+  async fn get_short_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ShortTwinoidUser>, EtwinError>;
 
-  async fn get_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ArchivedTwinoidUser>, Box<dyn Error>>;
+  async fn get_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ArchivedTwinoidUser>, EtwinError>;
 
-  async fn touch_short_user(&self, options: &ShortTwinoidUser) -> Result<ArchivedTwinoidUser, Box<dyn Error>>;
+  async fn touch_short_user(&self, options: &ShortTwinoidUser) -> Result<ArchivedTwinoidUser, EtwinError>;
 }

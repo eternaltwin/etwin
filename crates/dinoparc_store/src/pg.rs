@@ -6,6 +6,7 @@ use etwin_core::dinoparc::{
   ArchivedDinoparcUser, DinoparcServer, DinoparcStore, DinoparcUserId, DinoparcUsername, GetDinoparcUserOptions,
   ShortDinoparcUser,
 };
+use etwin_core::types::EtwinError;
 use etwin_populate::dinoparc::populate_dinoparc;
 use sqlx::PgPool;
 use std::error::Error;
@@ -42,10 +43,7 @@ where
   TyClock: Clock,
   TyDatabase: ApiRef<PgPool>,
 {
-  async fn get_short_user(
-    &self,
-    options: &GetDinoparcUserOptions,
-  ) -> Result<Option<ArchivedDinoparcUser>, Box<dyn Error>> {
+  async fn get_short_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       dinoparc_server: DinoparcServer,
@@ -74,7 +72,7 @@ where
     }))
   }
 
-  async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, Box<dyn Error>> {
+  async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, EtwinError> {
     let now = self.clock.now();
     sqlx::query(
       r"

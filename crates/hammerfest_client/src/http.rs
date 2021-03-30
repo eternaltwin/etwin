@@ -15,10 +15,11 @@ use serde::Serialize;
 
 use self::errors::ScraperError;
 use self::url::HammerfestUrls;
+use etwin_core::types::EtwinError;
 use std::num::NonZeroU16;
 use std::str::FromStr;
 
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+type Result<T> = std::result::Result<T, EtwinError>;
 
 const USER_AGENT: &str = "EtwinHammerfestScraper";
 const TIMEOUT: Duration = Duration::from_millis(5000);

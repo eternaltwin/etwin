@@ -5,9 +5,9 @@ use etwin_core::dinoparc::{
   DinoparcClient, DinoparcCredentials, DinoparcDinoz, DinoparcDinozId, DinoparcPassword, DinoparcServer,
   DinoparcSession, DinoparcSessionKey, DinoparcUserId, DinoparcUsername, ShortDinoparcUser,
 };
+use etwin_core::types::EtwinError;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
-use std::error::Error as StdError;
 use std::str::FromStr;
 use std::sync::RwLock;
 use thiserror::Error;
@@ -165,7 +165,7 @@ impl<TyClock> DinoparcClient for MemDinoparcClient<TyClock>
 where
   TyClock: Clock,
 {
-  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, Box<dyn StdError>> {
+  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, EtwinError> {
     let mut state = self
       .state
       .write()
@@ -194,7 +194,7 @@ where
     &self,
     server: DinoparcServer,
     key: &DinoparcSessionKey,
-  ) -> Result<Option<DinoparcSession>, Box<dyn StdError>> {
+  ) -> Result<Option<DinoparcSession>, EtwinError> {
     let state = self
       .state
       .read()
@@ -225,7 +225,7 @@ where
     &self,
     _session: &DinoparcSession,
     _id: DinoparcDinozId,
-  ) -> Result<Option<DinoparcDinoz>, Box<dyn StdError>> {
+  ) -> Result<Option<DinoparcDinoz>, EtwinError> {
     unimplemented!()
   }
 }

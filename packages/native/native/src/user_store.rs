@@ -1,11 +1,11 @@
 use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
 use crate::user_store::mem::JsMemUserStore;
 use crate::user_store::pg::JsPgUserStore;
+use etwin_core::types::EtwinError;
 use etwin_core::user::{
   CreateUserOptions, GetShortUserOptions, GetUserOptions, UpdateUserOptions, UserIdRef, UserStore,
 };
 use neon::prelude::*;
-use std::error::Error;
 use std::sync::Arc;
 
 pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject> {
@@ -93,12 +93,7 @@ pub fn update_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
   let options: UpdateUserOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
-  let res = async move {
-    inner
-      .update_user(&options)
-      .await
-      .map_err(|x| Box::new(x) as Box<dyn Error>)
-  };
+  let res = async move { inner.update_user(&options).await.map_err(|x| Box::new(x) as EtwinError) };
   resolve_callback_serde(&mut cx, res, cb)
 }
 
@@ -114,7 +109,7 @@ pub fn hard_delete_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     inner
       .hard_delete_user(options)
       .await
-      .map_err(|x| Box::new(x) as Box<dyn Error>)
+      .map_err(|x| Box::new(x) as EtwinError)
   };
   resolve_callback_serde(&mut cx, res, cb)
 }
