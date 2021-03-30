@@ -1,0 +1,36 @@
+{
+  "type": "HammerfestUser",
+  "server": "hammerfest.fr",
+  "id": "127",
+  "username": "Elseabora",
+  "archived_at": "2021-04-06T00:10:51.309Z",
+  "profile": null,
+  "items": null,
+  "etwin": {
+    "current": {
+      "link": {
+        "time": "2021-04-06T23:49:10.803Z",
+        "user": {
+          "type": "User",
+          "id": "432b288b-0efa-459b-910d-c5ea3e44a382",
+          "display_name": {
+            "current": {
+              "value": "Elseabora"
+            }
+          }
+        }
+      },
+      "unlink": null,
+      "user": {
+        "type": "User",
+        "id": "432b288b-0efa-459b-910d-c5ea3e44a382",
+        "display_name": {
+          "current": {
+            "value": "Elseabora"
+          }
+        }
+      }
+    },
+    "old": []
+  }
+}

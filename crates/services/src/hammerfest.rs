@@ -7,6 +7,7 @@ use etwin_core::hammerfest::{
 use etwin_core::link::{EtwinLink, GetLinkOptions, LinkStore, VersionedEtwinLink, VersionedRawLink};
 use etwin_core::user::{GetShortUserOptions, ShortUser, UserRef, UserStore};
 use std::error::Error;
+use std::sync::Arc;
 
 pub struct HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>
 where
@@ -20,6 +21,9 @@ where
   link_store: TyLinkStore,
   user_store: TyUserStore,
 }
+
+pub type DynHammerfestService =
+  HammerfestService<Arc<dyn HammerfestClient>, Arc<dyn HammerfestStore>, Arc<dyn LinkStore>, Arc<dyn UserStore>>;
 
 impl<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>
   HammerfestService<TyHammerfestClient, TyHammerfestStore, TyLinkStore, TyUserStore>

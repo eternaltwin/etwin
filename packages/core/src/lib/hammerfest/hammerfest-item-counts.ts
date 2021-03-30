@@ -4,7 +4,7 @@ import { MapType } from "kryo/lib/map.js";
 import { $HammerfestItemId, HammerfestItemId } from "./hammerfest-item-id.js";
 
 /**
- * A Hammerfest item id.
+ * A map of Hammerfest item counts.
  */
 export type HammerfestItemCounts = Map<HammerfestItemId, number>;
 

@@ -21,6 +21,7 @@ etwin_link_store = { path = "./crates/link_store" }
 etwin_password = { path = "./crates/password" }
 etwin_populate = { path = "./crates/populate" }
 etwin_postgres_tools = { path = "./crates/postgres_tools" }
+etwin_rest = { path = "./crates/rest" }
 etwin_scraper_tools = { path = "./crates/scraper_tools" }
 etwin_serde_tools = { path = "./crates/serde_tools" }
 etwin_services = { path = "./crates/services" }

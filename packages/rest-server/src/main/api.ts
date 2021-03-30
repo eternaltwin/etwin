@@ -2,6 +2,7 @@ import { PgAnnouncementService } from "@eternal-twin/announcement-pg";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { DefaultDinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
+import { HttpRouter } from "@eternal-twin/core/lib/http/index.js";
 import { DefaultLinkService } from "@eternal-twin/core/lib/link/service.js";
 import { DefaultOauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
 import { DefaultTwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
@@ -18,6 +19,7 @@ import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client
 import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
 import { ScryptPasswordService } from "@eternal-twin/native/lib/password.js";
+import { NativeRestRouter } from "@eternal-twin/native/lib/rest.js";
 import { NativeHammerfestService } from "@eternal-twin/native/lib/services/hammerfest.js";
 import { PgTokenStore } from "@eternal-twin/native/lib/token-store.js";
 import { PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
@@ -30,7 +32,7 @@ import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import { KoaAuth } from "../lib/helpers/koa-auth.js";
 import { Api } from "../lib/index.js";
 
-export async function createApi(config: Config): Promise<{ api: Api; teardown(): Promise<void> }> {
+export async function createApi(config: Config): Promise<{ api: Api; teardown(): Promise<void>; nativeRouter: HttpRouter }> {
   const {pool, teardown: teardownPool} = createPgPool({
     host: config.db.host,
     port: config.db.port,
@@ -130,13 +132,14 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
   }
 
   const api: Api = {announcement, auth, dinoparc, clock, dev: null, forum, hammerfest, koaAuth, twinoid, user};
+  const nativeRouter = await NativeRestRouter.create({hammerfest});
 
   async function teardown(): Promise<void> {
     await teardownPool();
     await nativeDatabase.close();
   }
 
-  return {api, teardown};
+  return {api, teardown, nativeRouter};
 }
 
 /**

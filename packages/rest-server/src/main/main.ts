@@ -9,9 +9,9 @@ import { createApi } from "./api.js";
 
 async function main(): Promise<void> {
   const config: Config = await getLocalConfig();
-  const {api} = await createApi(config);
+  const {api, nativeRouter} = await createApi(config);
 
-  const apiRouter: Router = createApiRouter(api).prefix("/api/v1");
+  const apiRouter: Router = createApiRouter(api, nativeRouter).prefix("/api/v1");
 
   const app: Koa = new Koa();
   const port: number = config.etwin.httpPort;

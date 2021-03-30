@@ -44,10 +44,10 @@ pub fn get_native_link_store<'a, C: Context<'a>>(cx: &mut C, value: Handle<JsVal
 
 pub fn get_link_from_dinoparc(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let inner = cx.argument::<JsValue>(0)?;
-  let inner = get_native_link_store(&mut cx, inner)?;
   let options_json = cx.argument::<JsString>(1)?;
   let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
 
+  let inner = get_native_link_store(&mut cx, inner)?;
   let options: GetLinkOptions<DinoparcUserIdRef> = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_link_from_dinoparc(&options).await };

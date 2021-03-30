@@ -1,5 +1,6 @@
 #[cfg(feature = "sqlx")]
 use crate::core::{Instant, Secret};
+#[cfg(feature = "sqlx")]
 use crate::types::EtwinError;
 #[cfg(feature = "sqlx")]
 use sqlx::{Postgres, Transaction};

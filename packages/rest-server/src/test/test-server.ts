@@ -20,6 +20,7 @@ import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.
 import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
 import { ScryptPasswordService } from "@eternal-twin/native/lib/password.js";
+import { NativeRestRouter } from "@eternal-twin/native/lib/rest.js";
 import { NativeHammerfestService } from "@eternal-twin/native/lib/services/hammerfest.js";
 import { PgTokenStore } from "@eternal-twin/native/lib/token-store.js";
 import { PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
@@ -135,9 +136,10 @@ export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer)
       twinoidClient
     });
     const api: Api = {announcement, auth, dinoparc, clock, dev, forum, hammerfest, koaAuth, twinoid, user};
+    const nativeRouter = await NativeRestRouter.create({hammerfest});
 
     const app: Koa = new Koa();
-    const router = createApiRouter(api);
+    const router = createApiRouter(api, nativeRouter);
     app.use(router.routes());
     app.use(router.allowedMethods());
 

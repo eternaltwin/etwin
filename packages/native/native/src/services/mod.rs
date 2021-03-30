@@ -1,7 +1,7 @@
 use crate::neon_helpers::NeonNamespace;
 use neon::prelude::*;
 
-mod hammerfest;
+pub mod hammerfest;
 
 pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject> {
   let ns = cx.empty_object();

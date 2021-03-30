@@ -4,6 +4,7 @@ import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-conte
 import { Url } from "@eternal-twin/core/lib/core/url.js";
 import { ApiType, Config, getLocalConfig } from "@eternal-twin/local-config";
 import * as marktwin from "@eternal-twin/marktwin";
+import { NativeRestRouter } from "@eternal-twin/native/lib/rest.js";
 import { createApiRouter } from "@eternal-twin/rest-server/lib/index.js";
 import koaCors from "@koa/cors";
 import Router  from "@koa/router";
@@ -119,7 +120,8 @@ async function main(api: Api): Promise<void> {
   const ONE_DAY: number = 24 * 3600;
   router.use(koaStaticCache(furi.toSysPath(BROWSER_APP_DIR as any), {maxAge: ONE_DAY}));
 
-  const apiRouter: Router = await createApiRouter(api);
+  const nativeRouter = await NativeRestRouter.create({hammerfest: api.hammerfest});
+  const apiRouter: Router = await createApiRouter(api, nativeRouter);
   router.use(koaMount("/api/v1", apiRouter.routes()));
   router.use(koaMount("/api/v1", apiRouter.allowedMethods()));
 

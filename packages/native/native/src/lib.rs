@@ -9,6 +9,7 @@ mod hammerfest_store;
 mod link_store;
 mod neon_helpers;
 mod password;
+mod rest;
 mod services;
 mod token_store;
 mod tokio_runtime;
@@ -34,6 +35,8 @@ fn export(mut cx: ModuleContext) -> NeonResult<()> {
   cx.export_value("linkStore", link_store)?;
   let password = crate::password::create_namespace(cx)?;
   cx.export_value("password", password)?;
+  let rest = crate::rest::create_namespace(cx)?;
+  cx.export_value("rest", rest)?;
   let services = crate::services::create_namespace(cx)?;
   cx.export_value("services", services)?;
   let token_store = crate::token_store::create_namespace(cx)?;

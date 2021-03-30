@@ -49,7 +49,8 @@
     "koa-mount": "^4.0.0",
     "kryo": "^0.11.2",
     "kryo-json": "^0.11.2",
-    "kryo-qs": "^0.11.2"
+    "kryo-qs": "^0.11.2",
+    "raw-body": "^2.4.1"
   },
   "devDependencies": {
     "@eternal-twin/announcement-pg": "workspace:*",

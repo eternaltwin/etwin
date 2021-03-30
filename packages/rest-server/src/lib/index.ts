@@ -4,9 +4,11 @@ import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
+import { HttpHeader, HttpRequest, HttpRouter } from "@eternal-twin/core/lib/http/index.js";
 import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
-import Router, { RouterContext } from "@koa/router";
+import Router, { Middleware, RouterContext } from "@koa/router";
+import rawBody from "raw-body";
 
 import { Api as AnnouncementApi, createAnnouncementsRouter } from "./announcements.js";
 import { Api as AppApi, createAppRouter } from "./app.js";
@@ -16,7 +18,7 @@ import { Api as ClockApi, createClockRouter, DevApi as ClockDevApi, VirtualClock
 import { Api as ConfigApi, createConfigRouter } from "./config.js";
 import { Api as ForumApi, createForumRouter } from "./forum.js";
 import { KoaAuth } from "./helpers/koa-auth.js";
-import { KoaState } from "./koa-state";
+import { KoaRestState } from "./koa-state";
 import { Api as UsersApi, createUsersRouter } from "./users.js";
 
 
@@ -37,14 +39,48 @@ export interface DevApi extends ClockDevApi {
   clock?: VirtualClock;
 }
 
-export function createApiRouter(api: Api): Router {
+export function createApiRouter(api: Api, nativeRouter: HttpRouter): Router {
   const router: Router = new Router();
+
+  const nativeMiddleware: Middleware<KoaRestState> = async (cx: RouterContext<KoaRestState>) => {
+    const headers: HttpHeader[] = [];
+    for (const [key, value] of Object.entries(cx.request.headers)) {
+      if (typeof value === "string") {
+        headers.push({key, value});
+      } else if (Array.isArray(value)) {
+        for (const item of (value as unknown[])) {
+          if (typeof item === "string") {
+            headers.push({key, value: item});
+          } else {
+            throw new Error("UnexpectedHeaderValue");
+          }
+        }
+      } else {
+        throw new Error("UnexpectedHeaderValue");
+      }
+    }
+    const body: Buffer = await rawBody(cx.req, {limit: 1024 * 1024});
+    const req: HttpRequest = {
+      method: cx.request.method,
+      path: cx.state.restPath,
+      headers,
+      body,
+    };
+    // console.error(req);
+    const res = await nativeRouter.handle(req);
+    // console.error(res);
+    cx.response.status = res.status;
+    for (const {key, value} of res.headers) {
+      cx.response.set(key, value);
+    }
+    cx.response.body = res.body;
+  };
 
   const announcements = createAnnouncementsRouter(api);
   router.use("/announcements", announcements.routes(), announcements.allowedMethods());
   const app = createAppRouter(api);
   router.use("/app", app.routes(), app.allowedMethods());
-  const archive = createArchiveRouter(api);
+  const archive = createArchiveRouter(api, nativeMiddleware);
   router.use("/archive", archive.routes(), archive.allowedMethods());
   const auth = createAuthRouter(api);
   router.use("/auth", auth.routes(), auth.allowedMethods());
@@ -57,10 +93,7 @@ export function createApiRouter(api: Api): Router {
   const forum = createForumRouter(api);
   router.use("/forum", forum.routes(), forum.allowedMethods());
 
-  router.use((cx: RouterContext<KoaState>) => {
-    cx.response.status = 404;
-    cx.body = {error: "ResourceNotFound"};
-  });
+  // router.all(["/:a", "/:a/:b", "/:a/:b/:c", "/:a/:b/:c/:d"], nativeMiddleware);
 
   return router;
 }

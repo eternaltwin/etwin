@@ -23,6 +23,8 @@ describe("/hammerfest", () => {
             id: "123",
             username: "alice",
             archivedAt: actual.archivedAt,
+            profile: null,
+            items: null,
             etwin: {
               current: null,
               old: [],
@@ -46,6 +48,8 @@ describe("/hammerfest", () => {
             id: "123",
             username: "alice",
             archivedAt: actual.archivedAt,
+            profile: null,
+            items: null,
             etwin: {
               current: null,
               old: [],

@@ -129,6 +129,7 @@ pub struct DeleteLinkOptions<T: RemoteUserIdRef> {
 pub struct EtwinLink {
   pub link: UserDot,
   pub unlink: (),
+  #[cfg_attr(feature = "_serde", serde(rename = "user"))]
   pub etwin: ShortUser,
 }
 
@@ -137,6 +138,7 @@ pub struct EtwinLink {
 pub struct OldEtwinLink {
   pub link: UserDot,
   pub unlink: UserDot,
+  #[cfg_attr(feature = "_serde", serde(rename = "user"))]
   pub etwin: ShortUser,
 }
 

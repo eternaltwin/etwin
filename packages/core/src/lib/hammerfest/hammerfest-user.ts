@@ -10,6 +10,8 @@ import { $VersionedEtwinLink, VersionedEtwinLink } from "../link/versioned-etwin
 import { $HammerfestServer, HammerfestServer } from "./hammerfest-server.js";
 import { $HammerfestUserId, HammerfestUserId } from "./hammerfest-user-id.js";
 import { $HammerfestUsername, HammerfestUsername } from "./hammerfest-username.js";
+import { $NullableStoredHammerfestItems, NullableStoredHammerfestItems } from "./stored-hammerfest-items.js";
+import { $NullableStoredHammerfestProfile, NullableStoredHammerfestProfile } from "./stored-hammerfest-profile.js";
 
 /**
  * A full Hammerfest user
@@ -20,6 +22,8 @@ export interface HammerfestUser {
   id: HammerfestUserId;
   username: HammerfestUsername;
   archivedAt: Date;
+  profile: NullableStoredHammerfestProfile;
+  items: NullableStoredHammerfestItems;
   etwin: VersionedEtwinLink;
 }
 
@@ -30,6 +34,8 @@ export const $HammerfestUser: RecordIoType<HammerfestUser> = new RecordType<Hamm
     id: {type: $HammerfestUserId},
     username: {type: $HammerfestUsername},
     archivedAt: {type: $Date},
+    profile: {type: $NullableStoredHammerfestProfile},
+    items: {type: $NullableStoredHammerfestItems},
     etwin: {type: $VersionedEtwinLink},
   },
   changeCase: CaseStyle.SnakeCase,

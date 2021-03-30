@@ -11,7 +11,6 @@ import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client.js";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
 import { DefaultLinkService, LinkService } from "@eternal-twin/core/lib/link/service.js";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
@@ -57,7 +56,7 @@ export interface Api {
   clock: ClockService;
   dev: DevApi | null;
   forum: ForumService;
-  hammerfest: HammerfestService;
+  hammerfest: NativeHammerfestService;
   hammerfestStore: HammerfestStore;
   hammerfestClient: HammerfestClient;
   koaAuth: KoaAuth;
