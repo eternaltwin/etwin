@@ -163,6 +163,7 @@ pub struct SchemaResolver {
   states: HashMap<SchemaState, ()>,
   latest: SchemaVersion,
   drop: Option<&'static str>,
+  grant: Option<&'static str>,
   latest_force_created_state: RwLock<Option<SchemaState>>,
 }
 
@@ -216,6 +217,9 @@ impl SchemaResolver {
     let drop = d
       .get_file("drop.sql")
       .map(|f| f.contents_utf8().expect("Invalid drop script encoding"));
+    let grant = d
+      .get_file("grant.sql")
+      .map(|f| f.contents_utf8().expect("Invalid drop script encoding"));
     let latest = match latest {
       SchemaState::Empty => panic!("No schema version found"),
       SchemaState::Version(v) => v,
@@ -225,6 +229,7 @@ impl SchemaResolver {
       states,
       latest,
       drop,
+      grant,
       latest_force_created_state: RwLock::new(None),
     }
   }
@@ -366,6 +371,13 @@ impl SchemaResolver {
     let mut stream = tx.execute_many(drop_sql);
     while let Some(r) = stream.next().await {
       r.unwrap();
+    }
+    drop(stream);
+    if let Some(grant_sql) = self.grant {
+      let mut stream = tx.execute_many(grant_sql);
+      while let Some(r) = stream.next().await {
+        r.unwrap();
+      }
     }
     Ok(())
   }

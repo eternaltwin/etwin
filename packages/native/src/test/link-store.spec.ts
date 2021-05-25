@@ -71,18 +71,30 @@ describe("NativeLinkStore", function () {
   describe("PgLinkStore", function () {
     async function withPgLinkStore<R>(fn: (api: TestApi) => Promise<R>): Promise<R> {
       const config = await getLocalConfig();
+      const adminDbConfig: DbConfig = {
+        host: config.db.host,
+        port: config.db.port,
+        name: config.db.name,
+        user: config.db.adminUser,
+        password: config.db.adminPassword,
+      };
+      await withPgPool(adminDbConfig, async (pool) => {
+        const database = new Database(pool);
+        await forceCreateLatest(database);
+      });
+
       const dbConfig: DbConfig = {
         host: config.db.host,
         port: config.db.port,
         name: config.db.name,
         user: config.db.user,
-        password: config.db.password
+        password: config.db.password,
       };
 
       return withPgPool(dbConfig, async (pool) => {
         const database = new Database(pool);
-        await forceCreateLatest(database);
         const nativeDatabase = await NativeDatabase.create(dbConfig);
+
         const clock = new VirtualClock();
         const uuidGenerator = new Uuid4Generator();
         const secretKeyStr: string = config.etwin.secret;

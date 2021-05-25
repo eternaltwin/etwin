@@ -24,26 +24,35 @@ describe("NativeDinoparcStore", function () {
   describe("PgDinoparcStore", function () {
     async function withPgDinoparcStore<R>(fn: (api: TestApi) => Promise<R>): Promise<R> {
       const config = await getLocalConfig();
+      const adminDbConfig: DbConfig = {
+        host: config.db.host,
+        port: config.db.port,
+        name: config.db.name,
+        user: config.db.adminUser,
+        password: config.db.adminPassword,
+      };
+      await withPgPool(adminDbConfig, async (pool) => {
+        const database = new Database(pool);
+        await forceCreateLatest(database);
+      });
+
       const dbConfig: DbConfig = {
         host: config.db.host,
         port: config.db.port,
         name: config.db.name,
         user: config.db.user,
-        password: config.db.password
+        password: config.db.password,
       };
 
-      return withPgPool(dbConfig, async (pool) => {
-        const db = new Database(pool);
-        await forceCreateLatest(db);
-        const nativeDatabase = await NativeDatabase.create(dbConfig);
-        const clock = new SystemClock();
-        const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase});
-        try {
-          return await fn({dinoparcStore});
-        } finally {
-          await nativeDatabase.close();
-        }
-      });
+      const nativeDatabase = await NativeDatabase.create(dbConfig);
+
+      const clock = new SystemClock();
+      const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase});
+      try {
+        return await fn({dinoparcStore});
+      } finally {
+        await nativeDatabase.close();
+      }
     }
 
     testDinoparcStore(withPgDinoparcStore);

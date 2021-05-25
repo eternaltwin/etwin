@@ -13,8 +13,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .host(&config.db.host)
         .port(config.db.port)
         .database(&config.db.name)
-        .username(&config.db.user)
-        .password(&config.db.password),
+        .username(&config.db.admin_user)
+        .password(&config.db.admin_password),
     )
     .await
     .unwrap();

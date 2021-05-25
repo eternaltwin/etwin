@@ -22,6 +22,8 @@ pub struct DbConfig {
   pub host: String,
   pub port: u16,
   pub name: String,
+  pub admin_user: String,
+  pub admin_password: String,
   pub user: String,
   pub password: String,
 }
@@ -75,8 +77,10 @@ pub static DEFAULT: Lazy<Config> = Lazy::new(|| Config {
   db: DbConfig {
     host: "localhost".to_string(),
     port: 5432,
-    name: "etwindb".to_string(),
-    user: "etwin".to_string(),
+    name: "etwin.dev".to_string(),
+    admin_user: "etwin.dev.admin".to_string(),
+    admin_password: "dev".to_string(),
+    user: "etwin.dev.admin".to_string(),
     password: "dev".to_string(),
   },
 });
@@ -95,8 +99,10 @@ external_uri = "http://localhost:50320"
 [db]
 host = "localhost"
 port = 5432
-name = "etwindb"
-user = "etwin"
+name = "etwin.dev"
+admin_user = "etwin.dev.admin"
+admin_password = "dev"
+user = "etwin.dev.admin"
 password = "dev"
     "#;
     let path = std::env::current_dir().unwrap().join("etwin.toml");

@@ -25,9 +25,13 @@ host = "localhost"
 # Database service port
 port = 5432
 # Database name
-name = "etwindb"
-# Database user (role). In development, it is recommended to be a superuser to manage extensions.
-user = "etwin"
+name = "etwin.dev"
+# Database user (role) for schema management.
+admin_user = "etwin.dev.admin"
+# Password for the database admin user.
+admin_password = "dev"
+# Database user (role) for regular runtime.
+user = "etwin.dev.write"
 # Password for the database user.
 password = "dev"
 

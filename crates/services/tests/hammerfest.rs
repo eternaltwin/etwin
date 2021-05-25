@@ -32,6 +32,21 @@ async fn make_test_api() -> TestApi<
   Arc<dyn UserStore>,
 > {
   let config = etwin_config::find_config(std::env::current_dir().unwrap()).unwrap();
+  let admin_database: PgPool = PgPoolOptions::new()
+    .max_connections(5)
+    .connect_with(
+      PgConnectOptions::new()
+        .host(&config.db.host)
+        .port(config.db.port)
+        .database(&config.db.name)
+        .username(&config.db.admin_user)
+        .password(&config.db.admin_password),
+    )
+    .await
+    .unwrap();
+  force_create_latest(&admin_database, true).await.unwrap();
+  admin_database.close().await;
+
   let database: PgPool = PgPoolOptions::new()
     .max_connections(5)
     .connect_with(
@@ -44,8 +59,6 @@ async fn make_test_api() -> TestApi<
     )
     .await
     .unwrap();
-  force_create_latest(&database, true).await.unwrap();
-
   let database = Arc::new(database);
 
   let uuid = Arc::new(Uuid4Generator);

@@ -10,6 +10,18 @@ import { PgOauthProviderStore } from "../lib/index.js";
 
 async function withPgOauthProviderStore<R>(fn: (api: Api) => Promise<R>): Promise<R> {
   const config = await getLocalConfig();
+  const adminDbConfig: DbConfig = {
+    host: config.db.host,
+    port: config.db.port,
+    name: config.db.name,
+    user: config.db.adminUser,
+    password: config.db.adminPassword,
+  };
+  await withPgPool(adminDbConfig, async (pool) => {
+    const database = new Database(pool);
+    await forceCreateLatest(database);
+  });
+
   const dbConfig: DbConfig = {
     host: config.db.host,
     port: config.db.port,
@@ -20,7 +32,7 @@ async function withPgOauthProviderStore<R>(fn: (api: Api) => Promise<R>): Promis
 
   return withPgPool(dbConfig, async (pool) => {
     const database = new Database(pool);
-    await forceCreateLatest(database);
+
     const secretKeyStr: string = config.etwin.secret;
     const password = ScryptPasswordService.recommendedForTests();
     const uuidGenerator = new Uuid4Generator();

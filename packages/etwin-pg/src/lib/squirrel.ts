@@ -36,17 +36,20 @@ export class Squirrel {
   readonly #states: ReadonlyMap<SchemaState, null>;
   readonly #transitions: ReadonlyMap<SchemaState, ReadonlyMap<SchemaState, Readonly<Transition>>>;
   readonly #drop: string | null;
+  readonly #grant: string | null;
   readonly #latest: SchemaVersion;
 
   private constructor(
     states: Map<SchemaState, null>,
     transitions: Map<SchemaState, Map<SchemaState, Transition>>,
     drop: string | null,
+    grant: string | null,
     latest: SchemaVersion,
   ) {
     this.#states = states;
     this.#transitions = transitions;
     this.#drop = drop;
+    this.#grant = grant;
     this.#latest = latest;
   }
 
@@ -107,8 +110,9 @@ export class Squirrel {
       }
     }
     const drop = await tryReadText(furi.join(dir, "drop.sql"));
+    const grant = await tryReadText(furi.join(dir, "grant.sql"));
 
-    return new Squirrel(states, transitions, drop, latest);
+    return new Squirrel(states, transitions, drop, grant, latest);
   }
 
   public getEmpty(): SchemaState {
@@ -205,6 +209,10 @@ export class Squirrel {
     }
     // TODO: Transaction?
     await db.query(this.#drop, []);
+    if (this.#grant !== null) {
+      // TODO: Transaction?
+      await db.query(this.#grant, []);
+    }
   }
 
   public async upgrade(queryable: Database, version: SchemaVersion): Promise<void> {

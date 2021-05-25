@@ -41,29 +41,38 @@ describe("NativeUserStore", function () {
   describe("PgUserStore", function () {
     async function withPgUserStore<R>(fn: (api: TestApi) => Promise<R>): Promise<R> {
       const config = await getLocalConfig();
+      const adminDbConfig: DbConfig = {
+        host: config.db.host,
+        port: config.db.port,
+        name: config.db.name,
+        user: config.db.adminUser,
+        password: config.db.adminPassword,
+      };
+      await withPgPool(adminDbConfig, async (pool) => {
+        const database = new Database(pool);
+        await forceCreateLatest(database);
+      });
+
       const dbConfig: DbConfig = {
         host: config.db.host,
         port: config.db.port,
         name: config.db.name,
         user: config.db.user,
-        password: config.db.password
+        password: config.db.password,
       };
-      const secretKeyStr: string = config.etwin.secret;
 
-      return withPgPool(dbConfig, async (pool) => {
-        const db = new Database(pool);
-        await forceCreateLatest(db);
-        const nativeDatabase = await NativeDatabase.create(dbConfig);
-        const clock = new SystemClock();
-        const uuidGenerator = new Uuid4Generator();
-        const password = ScryptPasswordService.recommendedForTests();
-        const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
-        try {
-          return await fn({clock, password, userStore});
-        } finally {
-          await nativeDatabase.close();
-        }
-      });
+      const nativeDatabase = await NativeDatabase.create(dbConfig);
+
+      const secretKeyStr = config.etwin.secret;
+      const clock = new SystemClock();
+      const uuidGenerator = new Uuid4Generator();
+      const password = ScryptPasswordService.recommendedForTests();
+      const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
+      try {
+        return await fn({clock, password, userStore});
+      } finally {
+        await nativeDatabase.close();
+      }
     }
 
     testUserService(withPgUserStore);

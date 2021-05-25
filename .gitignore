@@ -41,6 +41,7 @@ test-config.js
 tslint.json
 .env
 etwin.toml
+db/scripts/grant.sql
 
 ###############################################################################
 # Temporary files                                                             #

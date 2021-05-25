@@ -1,0 +1,8 @@
+ALTER DEFAULT PRIVILEGES FOR ROLE "etwin.dev.admin" IN SCHEMA "public" GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ON TABLES TO "etwin.dev.write";
+GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ON ALL TABLES IN SCHEMA "public" TO "etwin.dev.write";
+GRANT USAGE ON SCHEMA "public" TO "etwin.dev.write";
+GRANT CONNECT ON DATABASE "etwin.dev" TO "etwin.dev.write";
+ALTER DEFAULT PRIVILEGES FOR ROLE "etwin.dev.admin" IN SCHEMA "public" GRANT SELECT ON TABLES TO "etwin.dev.read";
+GRANT SELECT ON ALL TABLES IN SCHEMA "public" TO "etwin.dev.read";
+GRANT USAGE ON SCHEMA "public" TO "etwin.dev.read";
+GRANT CONNECT ON DATABASE "etwin.dev" TO "etwin.dev.read";

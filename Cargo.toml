@@ -6,8 +6,6 @@ members = [
 ]
 
 [patch.crates-io]
-# Use domain-type fix from https://github.com/launchbadge/sqlx/pull/1112
-sqlx = { git = "https://github.com/demurgos/sqlx", rev = "93b90be9f7dd316889aa01f3e6066062a133180c" }
 etwin_cli = { path = "./crates/cli" }
 etwin_config = { path = "./crates/config" }
 etwin_constants = { path = "./crates/constants" }

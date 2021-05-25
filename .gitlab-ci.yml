@@ -42,6 +42,8 @@ before_script:
     host = "postgres"
     port = 5432
     name = "${POSTGRES_DB}"
+    admin_user = "${POSTGRES_USER}"
+    admin_password = "${POSTGRES_PASSWORD}"
     user = "${POSTGRES_USER}"
     password = "${POSTGRES_PASSWORD}"
 

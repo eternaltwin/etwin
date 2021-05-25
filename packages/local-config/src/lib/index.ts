@@ -39,6 +39,8 @@ export interface DbConfig {
   host: string;
   port: number;
   name: string;
+  adminUser: string;
+  adminPassword: string;
   user: string;
   password: string;
 }
@@ -122,9 +124,11 @@ function readDbConfig(raw: object): DbConfig {
   const host: string = readString(raw, "host", "db.host");
   const port: number = readUint(raw, "port", "db.port");
   const name: string = readString(raw, "name", "db.name");
+  const adminUser: string = readString(raw, "admin_user", "db.admin_user");
+  const adminPassword: string = readString(raw, "admin_password", "db.admin_password");
   const user: string = readString(raw, "user", "db.user");
   const password: string = readString(raw, "password", "db.password");
-  return {host, port, name, user, password};
+  return {host, port, name, adminUser, adminPassword, user, password};
 }
 
 function readClientConfig(raw: unknown, prefix: string): ClientConfig {
