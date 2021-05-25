@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in hello_rb.gemspec
+# Load gem's dependencies from etwin.gemspec
 gemspec
 
 gem 'irb', '~> 1.3.3', group: :development

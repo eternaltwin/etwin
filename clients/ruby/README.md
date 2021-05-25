@@ -35,6 +35,7 @@ bundle exec rubocop
 bundle exec rspec
 # bundle exec rake release
 # bundle exec rake install
+# bundle exec srb init
 bundle exec srb rbi update
 bundle exec srb tc
 # gem build

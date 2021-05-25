@@ -85,10 +85,25 @@ test-node:
       && yarn run test \
       && sccache --stop-server
 
-test-ruby:
+test-ruby2:
   stage: "check"
   # ruby:2.7.2-buster
   image: "ruby@sha256:19cfb36f6e63fa964c984bd7837d7e2ba18263e34a5da1725324b80271dd475a"
+  before_script:
+    - ruby --version
+    - bundler --version
+    - cd clients/ruby
+    - bundle install
+  script:
+    - bundle exec rubocop
+    - bundle exec rspec
+    - bundle exec srb tc
+  after_script: []
+
+test-ruby3:
+  stage: "check"
+  # ruby:3.0.1-buster
+  image: "ruby@sha256:d5c828809239010c8549eeaf1f6da84f67bee7f61353e6a4a52159bf3f397aa6"
   before_script:
     - ruby --version
     - bundler --version

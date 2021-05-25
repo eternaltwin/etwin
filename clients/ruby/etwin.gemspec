@@ -26,9 +26,9 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency('rake', '~> 13.0.3')
   spec.add_development_dependency('rspec', '~> 3.10.0')
-  spec.add_development_dependency('rubocop', '~> 1.10.0')
-  spec.add_development_dependency('rubocop-sorbet', '~> 0.5.1')
-  spec.add_development_dependency('sorbet', '~> 0.5.6289')
-  spec.add_runtime_dependency('faraday', '~> 1.3.0')
-  spec.add_runtime_dependency('sorbet-runtime', '~> 0.5.6289')
+  spec.add_development_dependency('rubocop', '~> 1.15.0')
+  spec.add_development_dependency('rubocop-sorbet', '~> 0.6.1')
+  spec.add_development_dependency('sorbet', '~> 0.5.6424')
+  spec.add_runtime_dependency('faraday', '~> 1.4.2')
+  spec.add_runtime_dependency('sorbet-runtime', '~> 0.5.6424')
 end
