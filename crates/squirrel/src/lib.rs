@@ -19,6 +19,7 @@ use std::sync::RwLock;
 
 static SQL_NODE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{1,4})\.sql$").unwrap());
 static SQL_EDGE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{1,4})-([0-9]{1,4})\.sql$").unwrap());
+const DEFAULT_SCHEMA_COMMENT: &str = "standard public schema";
 
 /// Opaque handle representing a database state recognized by the issuing resolver.
 #[derive(Clone, Copy)]
@@ -343,16 +344,19 @@ impl SchemaResolver {
     .fetch_optional(db)
     .await?;
 
-    let state: SchemaState = match row {
-      Some(row) => {
-        let meta: &str = &row.0;
-        let meta: SchemaMeta = serde_json::from_str(meta)?;
-        let state: SchemaState = SchemaVersion(meta.version).into();
-        state
+    let state: SchemaState = match &row {
+      Some((ref meta,)) if meta == DEFAULT_SCHEMA_COMMENT => {
+        // TODO: Check if the DB is really empty
+        SchemaState::Empty
       }
       None => {
         // TODO: Check if the DB is really empty
         SchemaState::Empty
+      }
+      Some((ref meta,)) => {
+        let meta: SchemaMeta = serde_json::from_str(meta)?;
+        let state: SchemaState = SchemaVersion(meta.version).into();
+        state
       }
     };
     assert!(self.states.contains_key(&state));

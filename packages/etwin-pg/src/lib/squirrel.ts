@@ -10,6 +10,7 @@ export type SchemaState = number;
 
 const SQL_NODE_PATTERN: RegExp = /^([0-9]{1,4})\.sql$/;
 const SQL_EDGE_PATTERN: RegExp = /^([0-9]{1,4})-([0-9]{1,4})\.sql$/;
+const DEFAULT_SCHEMA_COMMENT = "standard public schema";
 
 export enum MigrationDirection {
   UpgradeOnly,
@@ -295,6 +296,9 @@ export class Squirrel {
       }
       case 1: {
         const metaJson = res.rows[0].meta;
+        if (metaJson === DEFAULT_SCHEMA_COMMENT) {
+          return 0;
+        }
         const meta = JSON.parse(metaJson);
         const version = meta.version;
         if (!this.#states.has(version)) {
