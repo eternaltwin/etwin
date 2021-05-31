@@ -1,5 +1,5 @@
 import { getLocalConfig } from "@eternal-twin/local-config";
-import { Database, withPgPool } from "@eternal-twin/pg-db";
+import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
 import pg from "pg";
 
 import { forceCreateLatest, getState, upgradeLatest } from "../lib/index.js";
@@ -34,7 +34,14 @@ async function runCheck() {
 
 async function runCreate() {
   const config = await getLocalConfig();
-  return withPgPool(config.db, async (pool: pg.Pool) => {
+  const dbConf: DbConfig = {
+    host: config.db.host,
+    port: config.db.port,
+    name: config.db.name,
+    user: config.db.adminUser,
+    password: config.db.adminPassword,
+  };
+  return withPgPool(dbConf, async (pool: pg.Pool) => {
     const db = new Database(pool);
     await forceCreateLatest(db);
   });
@@ -42,7 +49,14 @@ async function runCreate() {
 
 async function runUpgrade() {
   const config = await getLocalConfig();
-  return withPgPool(config.db, async (pool: pg.Pool) => {
+  const dbConf: DbConfig = {
+    host: config.db.host,
+    port: config.db.port,
+    name: config.db.name,
+    user: config.db.adminUser,
+    password: config.db.adminPassword,
+  };
+  return withPgPool(dbConf, async (pool: pg.Pool) => {
     const db = new Database(pool);
     await upgradeLatest(db);
   });
