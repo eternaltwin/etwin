@@ -1,5 +1,7 @@
 COMMENT ON SCHEMA public IS '{"version": 1}';
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- A user
 CREATE TABLE public.users (
   -- User id
