@@ -1,5 +1,3 @@
-COMMENT ON SCHEMA public IS '{"version": 5}';
-
 CREATE DOMAIN dinoparc_server AS VARCHAR(15) CHECK (value IN ('dinoparc.com', 'en.dinoparc.com', 'sp.dinoparc.com'));
 CREATE DOMAIN dinoparc_session_key AS VARCHAR(32) CHECK (value ~ '^[0-9a-zA-Z]{32}$');
 CREATE DOMAIN dinoparc_user_id AS VARCHAR(10) CHECK (value ~ '^[1-9]\d{0,9}$');

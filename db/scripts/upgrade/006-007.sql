@@ -1,5 +1,3 @@
-COMMENT ON SCHEMA public IS '{"version": 7}';
-
 ALTER TABLE hammerfest_user_links
   ALTER COLUMN user_id TYPE USER_ID;
 ALTER TABLE hammerfest_user_links

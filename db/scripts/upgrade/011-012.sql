@@ -1,5 +1,3 @@
-COMMENT ON SCHEMA public IS '{"version": 12}';
-
 CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 CREATE DOMAIN password_hash AS bytea;

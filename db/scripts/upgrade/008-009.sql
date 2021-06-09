@@ -1,5 +1,3 @@
-COMMENT ON SCHEMA public IS '{"version": 9}';
-
 -- Hammerfest
 
 CREATE DOMAIN hammerfest_username AS VARCHAR(20) CHECK (value ~ '^[0-9A-Za-z]{1,12}$');

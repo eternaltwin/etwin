@@ -1,12 +1,14 @@
-import { Database, TransactionMode } from "@eternal-twin/pg-db";
+import { Database, TransactionContext, TransactionMode } from "@eternal-twin/pg-db";
 import * as fs from "fs";
 import * as furi from "furi";
 import { URL } from "url";
 
-import { Queryable } from "./index";
-
 export type SchemaVersion = number;
 export type SchemaState = number;
+
+interface SchemaMeta {
+  version: number;
+}
 
 const SQL_NODE_PATTERN: RegExp = /^([0-9]{1,4})\.sql$/;
 const SQL_EDGE_PATTERN: RegExp = /^([0-9]{1,4})-([0-9]{1,4})\.sql$/;
@@ -266,12 +268,13 @@ export class Squirrel {
 
     return db.transaction(
       TransactionMode.ReadWrite,
-      async (tx: Queryable): Promise<void> => {
+      async (tx: TransactionContext): Promise<void> => {
         const oldState = await this.innerGetState(tx);
         if (oldState !== start) {
           throw new Error("AssertionError: Incompatible start state");
         }
         await tx.query(edge.schema, []);
+        await this.setSchemaMeta(tx, {version: end});
         const newState = await this.innerGetState(tx);
         if (newState !== end) {
           throw new Error("AssertionError: Failed transition");
@@ -280,35 +283,76 @@ export class Squirrel {
     );
   }
 
-  public async getState(queryable: Queryable): Promise<SchemaState> {
-    return this.innerGetState(queryable);
+  public async getState(queryable: Database): Promise<SchemaState> {
+    return queryable.transaction(TransactionMode.ReadOnly, (tx) => this.innerGetState(tx));
   }
 
-  private async innerGetState(queryable: Queryable): Promise<SchemaState> {
-    const res = await queryable.query(`
+  private async innerGetState(tx: TransactionContext): Promise<SchemaState> {
+    let meta: SchemaMeta | null = await this.innerGetSchemaMetaFromFn(tx);
+    if (meta === null) {
+      meta = await this.innerGetSchemaMetaFromComment(tx);
+    }
+    const state: SchemaState = meta === null ? 0 : meta.version;
+    if (!this.#states.has(state)) {
+      throw new Error(`AssertionError: UnknownDbVersion: ${JSON.stringify(state)}`);
+    }
+    return state;
+  }
+
+  private async innerGetSchemaMetaFromComment(tx: TransactionContext): Promise<SchemaMeta | null> {
+    const res = await tx.query(`
     SELECT description AS meta
     FROM   pg_catalog.pg_namespace INNER JOIN pg_catalog.pg_description ON (oid = objoid)
     WHERE  nspname = CURRENT_SCHEMA();
     `, []);
     switch (res.rows.length) {
       case 0: {
-        return 0;
+        return null;
       }
       case 1: {
         const metaJson = res.rows[0].meta;
         if (metaJson === DEFAULT_SCHEMA_COMMENT) {
-          return 0;
+          return null;
         }
         const meta = JSON.parse(metaJson);
         const version = meta.version;
-        if (!this.#states.has(version)) {
-          throw new Error(`AssertionError: UnknownDbVersion: ${JSON.stringify(version)}`);
-        }
-        return version;
+        return {version};
       }
       default: {
         throw new Error("AssertionError: Expected 0 or 1 row for DB state query");
       }
+    }
+  }
+
+  private async innerGetSchemaMetaFromFn(tx: TransactionContext): Promise<SchemaMeta | null> {
+    await tx.query("SAVEPOINT try_get_meta;", []);
+    try {
+      type Row = {version: number};
+      const row: Row = await tx.one("SELECT version FROM get_schema_meta();", []);
+      await tx.query("RELEASE SAVEPOINT try_get_meta;", []);
+      return {version: row.version};
+    } catch (e) {
+      if (e.code === "42883") {
+        await tx.query("ROLLBACK TO SAVEPOINT try_get_meta;", []);
+        return null;
+      } else {
+        await tx.query("RELEASE SAVEPOINT try_get_meta;", []);
+        throw e;
+      }
+    }
+  }
+
+  private async setSchemaMeta(tx: TransactionContext, meta: Readonly<SchemaMeta>): Promise<void> {
+    const queries: readonly string[] = [
+      "DROP FUNCTION IF EXISTS get_schema_meta;",
+      "DROP TYPE IF EXISTS schema_meta;",
+      "DROP TYPE IF EXISTS raw_schema_meta;",
+      "CREATE TYPE raw_schema_meta AS (version int4);",
+      "CREATE DOMAIN schema_meta AS raw_schema_meta CHECK ((value).version IS NOT NULL AND (value).version >= 1);",
+      `CREATE FUNCTION get_schema_meta() RETURNS schema_meta LANGUAGE sql IMMUTABLE STRICT PARALLEL SAFE AS $$ SELECT ROW(${meta.version}); $$;`,
+    ];
+    for (const query of queries) {
+      await tx.query(query, []);
     }
   }
 }

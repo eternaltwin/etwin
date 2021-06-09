@@ -5,16 +5,18 @@ use petgraph::algo::astar;
 use petgraph::graphmap::DiGraphMap;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use sqlx::Executor;
+use sqlx::postgres::PgDatabaseError;
+use sqlx::{Connection, Executor};
 use sqlx::{PgPool, Postgres, Transaction};
 use std::cmp::{max, Ordering};
 use std::collections::HashMap;
-use std::convert::TryInto;
+use std::convert::{TryFrom, TryInto};
 use std::error::Error;
 use std::fmt;
 use std::fmt::Debug;
 use std::num::NonZeroU32;
 use std::str::FromStr;
+use std::sync::atomic::AtomicU16;
 use std::sync::RwLock;
 
 static SQL_NODE_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"^([0-9]{1,4})\.sql$").unwrap());
@@ -166,6 +168,7 @@ pub struct SchemaResolver {
   drop: Option<&'static str>,
   grant: Option<&'static str>,
   latest_force_created_state: RwLock<Option<SchemaState>>,
+  cache_buster_len: AtomicU16,
 }
 
 impl SchemaResolver {
@@ -232,6 +235,7 @@ impl SchemaResolver {
       drop,
       grant,
       latest_force_created_state: RwLock::new(None),
+      cache_buster_len: AtomicU16::new(0),
     }
   }
 
@@ -326,14 +330,29 @@ impl SchemaResolver {
   }
 
   pub async fn get_state(&self, db: &PgPool) -> Result<SchemaStateRef<'_>, Box<dyn Error>> {
-    let state = self.inner_get_state(db).await?;
+    let mut tx = db.begin().await?;
+    let state = self.inner_get_state(&mut tx).await?;
+    tx.commit().await?;
     Ok(self.issue_state(state))
   }
 
-  async fn inner_get_state<'e, E: Executor<'e, Database = Postgres>>(
+  async fn inner_get_state(&self, tx: &mut Transaction<'_, Postgres>) -> Result<SchemaState, Box<dyn Error>> {
+    let mut meta: Option<SchemaMeta> = self.inner_get_schema_meta_from_fn(&mut *tx).await?;
+    if meta.is_none() {
+      meta = self.inner_get_schema_meta_from_comment(&mut *tx).await?;
+    }
+    let state: SchemaState = match meta {
+      None => SchemaState::Empty,
+      Some(meta) => SchemaVersion(meta.version).into(),
+    };
+    assert!(self.states.contains_key(&state));
+    Ok(state)
+  }
+
+  async fn inner_get_schema_meta_from_comment<'e, E: Executor<'e, Database = Postgres>>(
     &self,
     db: E,
-  ) -> Result<SchemaState, Box<dyn Error>> {
+  ) -> Result<Option<SchemaMeta>, Box<dyn Error>> {
     let row: Option<(String,)> = sqlx::query_as(
       r"
       SELECT description AS meta
@@ -344,23 +363,97 @@ impl SchemaResolver {
     .fetch_optional(db)
     .await?;
 
-    let state: SchemaState = match &row {
-      Some((ref meta,)) if meta == DEFAULT_SCHEMA_COMMENT => {
-        // TODO: Check if the DB is really empty
-        SchemaState::Empty
-      }
-      None => {
-        // TODO: Check if the DB is really empty
-        SchemaState::Empty
-      }
+    match &row {
+      None => Ok(None),
+      Some((ref meta,)) if meta == DEFAULT_SCHEMA_COMMENT => Ok(None),
       Some((ref meta,)) => {
         let meta: SchemaMeta = serde_json::from_str(meta)?;
-        let state: SchemaState = SchemaVersion(meta.version).into();
-        state
+        Ok(Some(meta))
       }
+    }
+  }
+
+  async fn inner_get_schema_meta_from_fn(
+    &self,
+    db: &mut Transaction<'_, Postgres>,
+  ) -> Result<Option<SchemaMeta>, Box<dyn Error>> {
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      version: i32,
+    }
+
+    impl TryFrom<Row> for SchemaMeta {
+      type Error = Box<dyn Error>;
+
+      fn try_from(row: Row) -> Result<Self, Self::Error> {
+        Ok(Self {
+          version: NonZeroU32::try_from(u32::try_from(row.version)?)?,
+        })
+      }
+    }
+
+    let mut tx = db.begin().await?;
+
+    let res: Result<Row, _> = sqlx::query_as("SELECT version FROM get_schema_meta();")
+      .fetch_one(&mut tx)
+      .await;
+
+    let mut commit_tx: bool = true;
+    let res: Result<Option<SchemaMeta>, Box<dyn Error>> = match res {
+      Ok(row) => SchemaMeta::try_from(row).map(Some),
+      Err(sqlx::Error::Database(e)) => match e.try_downcast::<PgDatabaseError>() {
+        Ok(e) => match e.code() {
+          "42883" => {
+            commit_tx = false;
+            Ok(None)
+          }
+          _ => Err(Box::new(e)),
+        },
+        Err(e) => Err(Box::new(sqlx::Error::Database(e))),
+      },
+      Err(e) => Err(Box::new(e)),
     };
-    assert!(self.states.contains_key(&state));
-    Ok(state)
+
+    if commit_tx {
+      tx.commit().await?;
+    } else {
+      tx.rollback().await?;
+    }
+    res
+  }
+
+  async fn tx_set_schema_meta(
+    &self,
+    tx: &mut Transaction<'_, Postgres>,
+    meta: &SchemaMeta,
+  ) -> Result<(), Box<dyn Error>> {
+    // Workaround for PG issue #17053 causing a memory corruption issue when the
+    // request below is used as a prepared statement. The workaround is to
+    // slightly change the request each time by adding whitespace.
+    // <https://www.postgresql.org/message-id/17053-3ca3f501bbc212b4%40postgresql.org>
+    let cache_buster_len = self.cache_buster_len.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+    let cache_buster = std::iter::repeat(' ').take(cache_buster_len.into()).collect::<String>();
+    let create_type = format!(
+      "CREATE DOMAIN schema_meta AS raw_schema_meta CHECK ((value).version IS NOT NULL AND (value).version >= 1){};",
+      cache_buster
+    );
+
+    let create_meta_fn = format!("CREATE FUNCTION get_schema_meta() RETURNS schema_meta LANGUAGE sql IMMUTABLE STRICT PARALLEL SAFE AS $$ SELECT ROW({version}); $$;", version = meta.version);
+
+    let queries = [
+      "DROP FUNCTION IF EXISTS get_schema_meta;",
+      "DROP TYPE IF EXISTS schema_meta;",
+      "DROP TYPE IF EXISTS raw_schema_meta;",
+      "CREATE TYPE raw_schema_meta AS (version int4);",
+      create_type.as_str(),
+      create_meta_fn.as_str(),
+    ];
+
+    for query in std::array::IntoIter::new(queries) {
+      sqlx::query(&query).execute(&mut *tx).await?;
+    }
+
+    Ok(())
   }
 
   pub async fn empty(&self, db: &PgPool) -> Result<(), Box<dyn Error>> {
@@ -475,6 +568,12 @@ impl SchemaResolver {
       let mut stream = tx.execute_many(edge.schema);
       while let Some(r) = stream.next().await {
         r.unwrap();
+      }
+    }
+    match end {
+      SchemaState::Empty => panic!("UnexpectedEmptyEndState"),
+      SchemaState::Version(v) => {
+        self.tx_set_schema_meta(&mut *tx, &SchemaMeta { version: v.0 }).await?;
       }
     }
     let new_state = self.inner_get_state(&mut *tx).await?;

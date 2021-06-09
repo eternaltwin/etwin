@@ -1,5 +1,3 @@
-COMMENT ON SCHEMA public IS '{"version": 3}';
-
 CREATE TABLE public.forum_sections (
   forum_section_id UUID PRIMARY KEY NOT NULL,
   key VARCHAR(32) NULL,

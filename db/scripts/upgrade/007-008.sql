@@ -1,5 +1,3 @@
-COMMENT ON SCHEMA public IS '{"version": 8}';
-
 CREATE DOMAIN announcement_id AS UUID;
 CREATE DOMAIN forum_thread_id AS UUID;
 CREATE DOMAIN locale_id AS VARCHAR(10);

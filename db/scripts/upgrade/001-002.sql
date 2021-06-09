@@ -1,5 +1,3 @@
-COMMENT ON SCHEMA public IS '{"version": 2}';
-
 ALTER TABLE users
   ADD CONSTRAINT username__uniq UNIQUE (username);
 

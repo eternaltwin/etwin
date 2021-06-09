@@ -19,7 +19,7 @@ async function getSquirrel(): Promise<Squirrel> {
  */
 export { Queryable };
 
-export async function getState(queryable: Queryable): Promise<SchemaState> {
+export async function getState(queryable: Database): Promise<SchemaState> {
   const squirrel = await getSquirrel();
   return squirrel.getState(queryable);
 }

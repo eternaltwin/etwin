@@ -1,5 +1,3 @@
-COMMENT ON SCHEMA public IS '{"version": 13}';
-
 ALTER TABLE hammerfest_user_links
   ADD COLUMN period PERIOD_FROM NULL,
   ADD COLUMN unlinked_by USER_ID NULL;

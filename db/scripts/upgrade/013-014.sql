@@ -1,5 +1,3 @@
-COMMENT ON SCHEMA public IS '{"version": 14}';
-
 CREATE DOMAIN valid_period AS PERIOD CHECK (NOT LOWER_INF(value) AND NOT UPPER_INF(value));
 
 CREATE DOMAIN i8 AS INT2 CHECK (-128 <= value AND value < 128);

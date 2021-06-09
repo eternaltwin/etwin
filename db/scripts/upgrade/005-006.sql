@@ -1,5 +1,3 @@
-COMMENT ON SCHEMA public IS '{"version": 6}';
-
 ALTER TABLE hammerfest_user_links
   ADD PRIMARY KEY (user_id, hammerfest_server, hammerfest_user_id);
 ALTER TABLE hammerfest_user_links
