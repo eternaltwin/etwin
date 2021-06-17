@@ -11,7 +11,7 @@ group = "net.eternaltwin"
 version = "0.3.6"
 
 repositories {
-  jcenter()
+  mavenCentral()
 }
 
 dependencies {
@@ -56,7 +56,7 @@ publishing {
       pom {
         artifactId = "etwin"
         name.set("Etwin")
-        description.set("A demonstration of Maven POM customization")
+        description.set("Official Eternaltwin client for the JVM")
         url.set("https://gitlab.com/eternal-twin/etwin")
         licenses {
           license {
@@ -69,24 +69,15 @@ publishing {
   }
 
   repositories {
-//        maven {
-//            name = "gitlab"
-//            url = uri("https://gitlab.com/api/v4/projects/${System.getenv("CI_PROJECT_ID")}/packages/maven")
-//            credentials(HttpHeaderCredentials::class) {
-//                name = "Job-Token"
-//                value = System.getenv("CI_JOB_TOKEN")
-//            }
-//            authentication {
-//                create<HttpHeaderAuthentication>("header")
-//            }
-//        }
-
     maven {
-      name = "bintray"
-      url = uri("https://api.bintray.com/maven/eternal-twin/maven/etwin/;publish=1;override=1")
-      credentials {
-        username = "demurgos"
-        password = "<apiKey>"
+      name = "gitlab"
+      url = uri("https://gitlab.com/api/v4/projects/17810311/packages/maven")
+      credentials(HttpHeaderCredentials::class) {
+        name = "Private-Token"
+        value = System.getenv("MAVEN_TOKEN")
+      }
+      authentication {
+        create<HttpHeaderAuthentication>("header")
       }
     }
 
