@@ -6,10 +6,11 @@ use etwin_core::email::touch_email_address;
 use etwin_core::hammerfest::{
   hammerfest_reply_count_to_page_count, GetHammerfestUserOptions, HammerfestDate, HammerfestDateTime,
   HammerfestForumMessageId, HammerfestForumRole, HammerfestForumThemeDescription, HammerfestForumThemeId,
-  HammerfestForumThemeIdRef, HammerfestForumThemePage, HammerfestForumThemeTitle, HammerfestForumThreadIdRef,
-  HammerfestForumThreadKind, HammerfestForumThreadPage, HammerfestForumThreadTitle, HammerfestGodchild,
-  HammerfestItemId, HammerfestLadderLevel, HammerfestProfile, HammerfestQuestId, HammerfestQuestStatus,
-  HammerfestServer, HammerfestShop, HammerfestStore, HammerfestUserId, HammerfestUserIdRef, HammerfestUsername,
+  HammerfestForumThemeIdRef, HammerfestForumThemePageResponse, HammerfestForumThemeTitle, HammerfestForumThreadIdRef,
+  HammerfestForumThreadKind, HammerfestForumThreadPageResponse, HammerfestForumThreadTitle,
+  HammerfestGodchildrenResponse, HammerfestInventoryResponse, HammerfestItemId, HammerfestLadderLevel,
+  HammerfestProfileResponse, HammerfestQuestId, HammerfestQuestStatus, HammerfestServer, HammerfestSessionUser,
+  HammerfestShop, HammerfestShopResponse, HammerfestStore, HammerfestUserId, HammerfestUserIdRef, HammerfestUsername,
   ShortHammerfestUser, StoredHammerfestUser,
 };
 use etwin_core::types::EtwinError;
@@ -125,23 +126,125 @@ async fn touch_hammerfest_forum_theme(
   Ok(())
 }
 
-async fn touch_hammerfest_forum_theme_page_count(
+async fn touch_hammerfest_forum_theme_count(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   theme: HammerfestForumThemeIdRef,
   page_count: NonZeroU16,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_forum_theme_page_counts(
+    hammerfest_forum_theme_counts(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_theme_id::HAMMERFEST_FORUM_THEME_ID),
-      data($4 page_count::U32),
+      data($4 page_count::U16),
     )
   ))
   .bind(now)
   .bind(theme.server)
   .bind(theme.id)
-  .bind(i64::from(page_count.get()))
+  .bind(i32::from(page_count.get()))
+  .execute(&mut *tx)
+  .await?;
+  // Affected row counts:
+  // 1 : 1 updated (matching data)
+  // 1 : 1 inserted (first insert)
+  // 2 : 1 inserted (data change), 1 invalidated (primary)
+  assert!((1..=2u64).contains(&res.rows_affected()));
+  Ok(())
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+enum ThemePage {
+  Sticky,
+  Regular(NonZeroU16),
+}
+
+async fn touch_hammerfest_forum_theme_page_count(
+  tx: &mut Transaction<'_, Postgres>,
+  now: Instant,
+  theme: HammerfestForumThemeIdRef,
+  page: ThemePage,
+  thread_count: u8,
+) -> Result<(), EtwinError> {
+  let res: PgQueryResult = sqlx::query(upsert_archive_query!(
+    hammerfest_forum_theme_page_counts(
+      time($1 period, retrieved_at),
+      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_theme_id::HAMMERFEST_FORUM_THEME_ID, $4 page::U16),
+      data($5 thread_count::U8),
+    )
+  ))
+  .bind(now)
+  .bind(theme.server)
+  .bind(theme.id)
+  .bind(match page {
+    ThemePage::Sticky => 0,
+    ThemePage::Regular(page) => i32::from(page.get()),
+  })
+  .bind(i16::from(thread_count))
+  .execute(&mut *tx)
+  .await?;
+  // Affected row counts:
+  // 1 : 1 updated (matching data)
+  // 1 : 1 inserted (first insert)
+  // 2 : 1 inserted (data change), 1 invalidated (primary)
+  assert!((1..=2u64).contains(&res.rows_affected()));
+  Ok(())
+}
+
+async fn touch_hammerfest_forum_thread_page_count(
+  tx: &mut Transaction<'_, Postgres>,
+  now: Instant,
+  thread: HammerfestForumThreadIdRef,
+  page: NonZeroU16,
+  message_count: u8,
+) -> Result<(), EtwinError> {
+  let res: PgQueryResult = sqlx::query(upsert_archive_query!(
+    hammerfest_forum_thread_page_counts(
+      time($1 period, retrieved_at),
+      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID, $4 page::U16),
+      data($5 message_count::U8),
+    )
+  ))
+  .bind(now)
+  .bind(thread.server)
+  .bind(thread.id)
+  .bind(i32::from(page.get()))
+  .bind(i16::from(message_count))
+  .execute(&mut *tx)
+  .await?;
+  // Affected row counts:
+  // 1 : 1 updated (matching data)
+  // 1 : 1 inserted (first insert)
+  // 2 : 1 inserted (data change), 1 invalidated (primary)
+  assert!((1..=2u64).contains(&res.rows_affected()));
+  Ok(())
+}
+
+async fn touch_hammerfest_forum_theme_page_item(
+  tx: &mut Transaction<'_, Postgres>,
+  now: Instant,
+  theme: HammerfestForumThemeIdRef,
+  page: ThemePage,
+  offset: u8,
+  thread: HammerfestForumThreadIdRef,
+) -> Result<(), EtwinError> {
+  assert_eq!(thread.server, theme.server);
+  let res: PgQueryResult = sqlx::query(upsert_archive_query!(
+    hammerfest_forum_theme_threads(
+      time($1 period, retrieved_at),
+      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_theme_id::HAMMERFEST_FORUM_THEME_ID, $4 page::U16, $5 offset_in_list::U8),
+      data($6 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID),
+    )
+  ))
+  .bind(now)
+  .bind(theme.server)
+  .bind(theme.id)
+  .bind(match page {
+    ThemePage::Sticky => 0,
+    ThemePage::Regular(page) => i32::from(page.get()),
+  })
+    .bind(i16::from(offset))
+  .bind(thread.id)
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -210,11 +313,10 @@ async fn touch_hammerfest_forum_thread_shared_meta(
 }
 
 #[allow(clippy::too_many_arguments)]
-async fn touch_hammerfest_forum_thread_list_meta(
+async fn touch_hammerfest_forum_thread_theme_meta(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   thread: HammerfestForumThreadIdRef,
-  page: NonZeroU16,
   is_sticky: bool,
   latest_message_at: Option<HammerfestDate>,
   author: HammerfestUserId,
@@ -222,16 +324,15 @@ async fn touch_hammerfest_forum_thread_list_meta(
 ) -> Result<(), EtwinError> {
   assert_eq!(is_sticky, latest_message_at.is_none());
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_forum_thread_list_meta(
+    hammerfest_forum_thread_theme_meta(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID),
-      data($4 page::U16, $5 is_sticky::BOOLEAN, $6 latest_message_at::HAMMERFEST_DATE, $7 author::HAMMERFEST_USER_ID, $8 reply_count::U16),
+      data($4 is_sticky::BOOLEAN, $5 latest_message_at::HAMMERFEST_DATE, $6 author::HAMMERFEST_USER_ID, $7 reply_count::U16),
     )
   ))
     .bind(now)
     .bind(thread.server)
     .bind(thread.id)
-    .bind(i64::from(page.get()))
     .bind(is_sticky)
     .bind(latest_message_at)
     .bind(author)
@@ -258,17 +359,17 @@ async fn touch_hammerfest_forum_message(
   remote_html_body: &str,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_forum_messages_history(
+    hammerfest_forum_messages(
       time($1 period, retrieved_at),
-      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID, $4 page::U16, $5 offset_in_page::U8),
-      data($6 author::HAMMERFEST_USER_ID, $7 posted_at::HAMMERFEST_DATE_TIME, $8 remote_html_body::TEXT),
+      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID, $4 page::U16, $5 offset_in_list::U8),
+      data($6 author::HAMMERFEST_USER_ID, $7 posted_at::HAMMERFEST_DATETIME, $8 remote_html_body::TEXT),
     )
   ))
     .bind(now)
     .bind(thread.server)
     .bind(thread.id)
     .bind(i32::from(page.get()))
-    .bind(i32::from(offset))
+    .bind(i16::from(offset))
     .bind(author)
     .bind(posted_at)
     .bind(remote_html_body)
@@ -291,9 +392,9 @@ async fn touch_hammerfest_forum_message_id(
   message_id: HammerfestForumMessageId,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_forum_messages_history(
+    hammerfest_forum_message_ids(
       time($1 period, retrieved_at),
-      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID, $4 page::U16, $5 offset_in_page::U8),
+      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID, $4 page::U16, $5 offset_in_list::U8),
       data($6 hammerfest_message_id::HAMMERFEST_FORUM_MESSAGE_ID),
       unique(mid(hammerfest_server, hammerfest_message_id)),
     )
@@ -302,7 +403,7 @@ async fn touch_hammerfest_forum_message_id(
     .bind(thread.server)
     .bind(thread.id)
     .bind(i32::from(page.get()))
-    .bind(i32::from(offset))
+    .bind(i16::from(offset))
     .bind(message_id)
     .execute(&mut *tx)
     .await?;
@@ -578,6 +679,17 @@ async fn touch_hammerfest_items_counts(
 }
 
 #[allow(clippy::too_many_arguments)]
+async fn touch_hammerfest_session_user(
+  tx: &mut Transaction<'_, Postgres>,
+  now: Instant,
+  session_user: &HammerfestSessionUser,
+) -> Result<(), EtwinError> {
+  touch_hammerfest_user(tx, now, &session_user.user).await?;
+  touch_hammerfest_tokens(tx, now, session_user.user.as_ref(), session_user.tokens).await?;
+  Ok(())
+}
+
+#[allow(clippy::too_many_arguments)]
 async fn touch_hammerfest_profile(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
@@ -681,7 +793,7 @@ async fn touch_hammerfest_best_season_rank(
   season_rank: Option<u32>,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_best_season_rank(
+    hammerfest_best_season_ranks(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_user_id::HAMMERFEST_USER_ID),
       data($4 best_season_rank::U32?),
@@ -733,20 +845,19 @@ async fn touch_hammerfest_forum_role(
 async fn touch_hammerfest_inventory(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
-  server: HammerfestServer,
-  id: HammerfestUserId,
+  user: HammerfestUserIdRef,
   items: Uuid,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_profiles(
+    hammerfest_inventories(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_user_id::HAMMERFEST_USER_ID),
-      data($4 quest_statuses::HAMMERFEST_ITEM_COUNT_MAP_ID),
+      data($4 item_counts::HAMMERFEST_ITEM_COUNT_MAP_ID),
     )
   ))
   .bind(now)
-  .bind(server)
-  .bind(id)
+  .bind(user.server)
+  .bind(user.id)
   .bind(items)
   .execute(&mut *tx)
   .await?;
@@ -759,16 +870,14 @@ async fn touch_hammerfest_inventory(
 }
 
 #[allow(clippy::too_many_arguments)]
-async fn touch_hammerfest_shop_history(
+async fn touch_hammerfest_shop(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   user: HammerfestUserIdRef,
-  weekly_tokens: u8,
-  purchased_tokens: Option<u8>,
-  has_quest_bonus: bool,
+  shop: &HammerfestShop,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_shop_history(
+    hammerfest_shops(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_user_id::HAMMERFEST_USER_ID),
       data($4 weekly_tokens::U8, $5 purchased_tokens::U8?, $6 has_quest_bonus::BOOLEAN),
@@ -777,9 +886,9 @@ async fn touch_hammerfest_shop_history(
   .bind(now)
   .bind(user.server)
   .bind(user.id)
-  .bind(i32::from(weekly_tokens))
-  .bind(purchased_tokens.map(i32::from))
-  .bind(has_quest_bonus)
+  .bind(i32::from(shop.weekly_tokens))
+  .bind(shop.purchased_tokens.map(i16::from))
+  .bind(shop.has_quest_bonus)
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -819,26 +928,23 @@ async fn touch_hammerfest_tokens(
 }
 
 #[allow(clippy::too_many_arguments)]
-async fn touch_hammerfest_godfather(
+async fn touch_hammerfest_godchild_list(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
-  godchild: HammerfestUserIdRef,
   godfather: HammerfestUserIdRef,
-  tokens: u32,
+  godchild_count: u32,
 ) -> Result<(), EtwinError> {
-  assert_eq!(godchild.server, godfather.server);
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_godfathers(
+    hammerfest_godchild_lists(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_user_id::HAMMERFEST_USER_ID),
-      data($4 tokens::U32),
+      data($4 godchild_count::U32),
     )
   ))
   .bind(now)
-  .bind(godchild.server)
-  .bind(godchild.id)
+  .bind(godfather.server)
   .bind(godfather.id)
-  .bind(i64::from(tokens))
+  .bind(i64::from(godchild_count))
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -846,6 +952,41 @@ async fn touch_hammerfest_godfather(
   // 1 : 1 inserted (first insert)
   // 2 : 1 inserted (data change), 1 invalidated (primary)
   assert!((1..=2u64).contains(&res.rows_affected()));
+  Ok(())
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn touch_hammerfest_godchild(
+  tx: &mut Transaction<'_, Postgres>,
+  now: Instant,
+  godfather: HammerfestUserIdRef,
+  offset_in_list: u32,
+  godchild: HammerfestUserIdRef,
+  tokens: u32,
+) -> Result<(), EtwinError> {
+  assert_eq!(godchild.server, godfather.server);
+  let res: PgQueryResult = sqlx::query(upsert_archive_query!(
+    hammerfest_godchildren(
+      time($1 period, retrieved_at),
+      primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_user_id::HAMMERFEST_USER_ID, $4 offset_in_list::U32),
+      data($5 godchild_id::HAMMERFEST_USER_ID, $6 tokens::U32),
+      unique(godchild(hammerfest_server, godchild_id)),
+    )
+  ))
+  .bind(now)
+  .bind(godfather.server)
+  .bind(godfather.id)
+  .bind(i64::from(offset_in_list))
+  .bind(godchild.id)
+  .bind(i64::from(tokens))
+  .execute(&mut *tx)
+  .await?;
+  // Affected row counts:
+  // 1 : 1 updated (matching data)
+  // 1 : 1 inserted (first insert)
+  // 3 : 1 inserted (data change), 2 invalidated (primary, unique godchild)
+  assert!((1..=3u64).contains(&res.rows_affected()));
+  // TODO: Invalidate parent list a godchild is invalidated
   Ok(())
 }
 
@@ -932,27 +1073,27 @@ where
     })
   }
 
-  async fn touch_shop(&self, user: &ShortHammerfestUser, options: &HammerfestShop) -> Result<(), EtwinError> {
+  async fn touch_shop(&self, response: &HammerfestShopResponse) -> Result<(), EtwinError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
-    touch_hammerfest_user(&mut tx, now, user).await?;
-    touch_hammerfest_shop_history(
-      &mut tx,
-      now,
-      user.as_ref(),
-      options.weekly_tokens,
-      options.purchased_tokens,
-      options.has_quest_bonus,
-    )
-    .await?;
-    touch_hammerfest_tokens(&mut tx, now, user.as_ref(), options.tokens).await?;
+    touch_hammerfest_session_user(&mut tx, now, &response.session_user).await?;
+    touch_hammerfest_shop(&mut tx, now, response.session_user.user.as_ref(), &response.shop).await?;
     tx.commit().await?;
     Ok(())
   }
 
-  async fn touch_profile(&self, options: &HammerfestProfile) -> Result<(), EtwinError> {
+  async fn touch_profile(&self, response: &HammerfestProfileResponse) -> Result<(), EtwinError> {
+    assert_eq!(
+      response.session_user.is_some(),
+      response.profile.email.is_some(),
+      "session user presence must match email knowledge presence"
+    );
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
+    if let Some(session_user) = response.session_user.as_ref() {
+      touch_hammerfest_session_user(&mut tx, now, &session_user).await?;
+    }
+    let options = &response.profile;
     touch_hammerfest_user(&mut tx, now, &options.user).await?;
     let quests = touch_hammerfest_quest_statuses(&mut tx, &options.quests, self.uuid_generator.next()).await?;
     let unlocked_items = touch_hammerfest_unlocked_items(&mut tx, &options.items, self.uuid_generator.next()).await?;
@@ -990,41 +1131,53 @@ where
     Ok(())
   }
 
-  async fn touch_inventory(
-    &self,
-    user: &ShortHammerfestUser,
-    inventory: &HashMap<HammerfestItemId, u32>,
-  ) -> Result<(), EtwinError> {
+  async fn touch_inventory(&self, response: &HammerfestInventoryResponse) -> Result<(), EtwinError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
-    touch_hammerfest_user(&mut tx, now, user).await?;
-    let items = touch_hammerfest_items_counts(&mut tx, &inventory, self.uuid_generator.next()).await?;
-    touch_hammerfest_inventory(&mut tx, now, user.server, user.id, items).await?;
+    touch_hammerfest_session_user(&mut tx, now, &response.session_user).await?;
+    let inventory = &response.inventory;
+    let items = touch_hammerfest_items_counts(&mut tx, inventory, self.uuid_generator.next()).await?;
+    touch_hammerfest_inventory(&mut tx, now, response.session_user.user.as_ref(), items).await?;
     tx.commit().await?;
 
     Ok(())
   }
 
-  async fn touch_godchildren(
-    &self,
-    user: &ShortHammerfestUser,
-    godchildren: &[HammerfestGodchild],
-  ) -> Result<(), EtwinError> {
+  async fn touch_godchildren(&self, response: &HammerfestGodchildrenResponse) -> Result<(), EtwinError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
-    touch_hammerfest_user(&mut tx, now, user).await?;
-    for godchild in godchildren.iter() {
+    touch_hammerfest_session_user(&mut tx, now, &response.session_user).await?;
+    touch_hammerfest_godchild_list(
+      &mut tx,
+      now,
+      response.session_user.user.as_ref(),
+      response.godchildren.len().try_into().expect("OverflowOnGodchildCount"),
+    )
+    .await?;
+    for (offset_in_list, godchild) in response.godchildren.iter().enumerate() {
       touch_hammerfest_user(&mut tx, now, &godchild.user).await?;
-      touch_hammerfest_godfather(&mut tx, now, godchild.user.as_ref(), user.as_ref(), godchild.tokens).await?;
+      touch_hammerfest_godchild(
+        &mut tx,
+        now,
+        response.session_user.user.as_ref(),
+        offset_in_list.try_into().expect("OverflowOnGodchildOffest"),
+        godchild.user.as_ref(),
+        godchild.tokens,
+      )
+      .await?;
     }
     tx.commit().await?;
 
     Ok(())
   }
 
-  async fn touch_theme_page(&self, options: &HammerfestForumThemePage) -> Result<(), EtwinError> {
+  async fn touch_theme_page(&self, response: &HammerfestForumThemePageResponse) -> Result<(), EtwinError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
+    if let Some(session_user) = response.session_user.as_ref() {
+      touch_hammerfest_session_user(&mut tx, now, &session_user).await?;
+    }
+    let options = &response.page;
     touch_hammerfest_forum_theme(
       &mut tx,
       now,
@@ -1035,12 +1188,28 @@ where
       options.theme.is_public,
     )
     .await?;
-    touch_hammerfest_forum_theme_page_count(&mut tx, now, options.theme.as_ref(), options.threads.pages).await?;
+    touch_hammerfest_forum_theme_count(&mut tx, now, options.theme.as_ref(), options.threads.pages).await?;
+    touch_hammerfest_forum_theme_page_count(
+      &mut tx,
+      now,
+      options.theme.as_ref(),
+      ThemePage::Sticky,
+      options.sticky.len().try_into().expect("OverflowOnStickyThreadCount"),
+    )
+    .await?;
 
-    let page = options.threads.page1;
-    for sticky in options.sticky.iter() {
+    for (offset, sticky) in options.sticky.iter().enumerate() {
       assert!(matches!(sticky.kind, HammerfestForumThreadKind::Sticky));
       touch_hammerfest_forum_thread(&mut tx, now, sticky.as_ref()).await?;
+      touch_hammerfest_forum_theme_page_item(
+        &mut tx,
+        now,
+        options.theme.as_ref(),
+        ThemePage::Sticky,
+        offset.try_into().expect("OverflowOnStickyThreadOffset"),
+        sticky.as_ref(),
+      )
+      .await?;
       touch_hammerfest_forum_thread_shared_meta(
         &mut tx,
         now,
@@ -1053,11 +1222,10 @@ where
       .await?;
       touch_hammerfest_user(&mut tx, now, &sticky.author).await?;
       touch_hammerfest_forum_role(&mut tx, now, sticky.author.as_ref(), sticky.author_role).await?;
-      touch_hammerfest_forum_thread_list_meta(
+      touch_hammerfest_forum_thread_theme_meta(
         &mut tx,
         now,
         sticky.as_ref(),
-        page,
         true,
         None,
         sticky.author.id,
@@ -1065,12 +1233,35 @@ where
       )
       .await?;
     }
-    for thread in options.threads.items.iter() {
+    let page = ThemePage::Regular(options.threads.page1);
+    touch_hammerfest_forum_theme_page_count(
+      &mut tx,
+      now,
+      options.theme.as_ref(),
+      page,
+      options
+        .threads
+        .items
+        .len()
+        .try_into()
+        .expect("OverflowOnRegularThreadCount"),
+    )
+    .await?;
+    for (offset, thread) in options.threads.items.iter().enumerate() {
       let last_message_date = match thread.kind {
         HammerfestForumThreadKind::Regular { last_message_date } => last_message_date,
         _ => unreachable!(),
       };
       touch_hammerfest_forum_thread(&mut tx, now, thread.as_ref()).await?;
+      touch_hammerfest_forum_theme_page_item(
+        &mut tx,
+        now,
+        options.theme.as_ref(),
+        page,
+        offset.try_into().expect("OverflowOnRegularThreadOffset"),
+        thread.as_ref(),
+      )
+      .await?;
       touch_hammerfest_forum_thread_shared_meta(
         &mut tx,
         now,
@@ -1083,11 +1274,10 @@ where
       .await?;
       touch_hammerfest_user(&mut tx, now, &thread.author).await?;
       touch_hammerfest_forum_role(&mut tx, now, thread.author.as_ref(), thread.author_role).await?;
-      touch_hammerfest_forum_thread_list_meta(
+      touch_hammerfest_forum_thread_theme_meta(
         &mut tx,
         now,
         thread.as_ref(),
-        page,
         false,
         Some(last_message_date),
         thread.author.id,
@@ -1101,9 +1291,14 @@ where
     Ok(())
   }
 
-  async fn touch_thread_page(&self, options: &HammerfestForumThreadPage) -> Result<(), EtwinError> {
+  async fn touch_thread_page(&self, response: &HammerfestForumThreadPageResponse) -> Result<(), EtwinError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
+    let mut session_user_is_moderator = false;
+    if let Some(session_user) = response.session_user.as_ref() {
+      touch_hammerfest_session_user(&mut tx, now, &session_user).await?;
+    }
+    let options = &response.page;
     touch_hammerfest_forum_theme(
       &mut tx,
       now,
@@ -1126,8 +1321,21 @@ where
     )
     .await?;
 
+    touch_hammerfest_forum_thread_page_count(
+      &mut tx,
+      now,
+      options.thread.as_ref(),
+      options.messages.page1,
+      options
+        .messages
+        .items
+        .len()
+        .try_into()
+        .expect("OverflowOnThreadMessageCount"),
+    )
+    .await?;
     for (offset, message) in options.messages.items.iter().enumerate() {
-      let offset: u8 = offset.try_into().unwrap();
+      let offset: u8 = offset.try_into().expect("OverflowOnThreadMessageOffset");
       touch_hammerfest_user(&mut tx, now, &message.author.user).await?;
       touch_hammerfest_achievements(
         &mut tx,
@@ -1151,6 +1359,7 @@ where
       )
       .await?;
       if let Some(mid) = message.id {
+        session_user_is_moderator = true;
         touch_hammerfest_forum_message_id(
           &mut tx,
           now,
@@ -1161,6 +1370,19 @@ where
         )
         .await?;
       }
+    }
+    if let Some(session_user) = response.session_user.as_ref() {
+      touch_hammerfest_forum_role(
+        &mut tx,
+        now,
+        session_user.user.as_ref(),
+        if session_user_is_moderator {
+          HammerfestForumRole::Moderator
+        } else {
+          HammerfestForumRole::None
+        },
+      )
+      .await?;
     }
 
     tx.commit().await?;

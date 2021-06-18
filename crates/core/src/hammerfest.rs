@@ -12,7 +12,6 @@ use etwin_serde_tools::{
 #[cfg(feature = "sqlx")]
 use sqlx::{postgres, Postgres};
 use std::collections::{HashMap, HashSet};
-use std::convert::TryFrom;
 use std::error::Error;
 use std::iter::FusedIterator;
 use std::num::NonZeroU16;
@@ -209,6 +208,13 @@ declare_new_int! {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub struct HammerfestProfileResponse {
+  pub session_user: Option<HammerfestSessionUser>,
+  pub profile: HammerfestProfile,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HammerfestProfile {
   pub user: ShortHammerfestUser,
   /// Email address as displayed on the profile
@@ -231,6 +237,13 @@ pub struct HammerfestProfile {
   // TODO: limit size <= 100
   #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_map"))]
   pub quests: HashMap<HammerfestQuestId, HammerfestQuestStatus>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct HammerfestInventoryResponse {
+  pub session_user: HammerfestSessionUser,
+  pub inventory: HashMap<HammerfestItemId, u32>,
 }
 
 declare_decimal_id! {
@@ -256,6 +269,21 @@ declare_decimal_id! {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HammerfestShopResponse {
+  pub session_user: HammerfestSessionUser,
+  pub shop: HammerfestShop,
+}
+
+/// Data in the top-bar for logged-in users
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HammerfestSessionUser {
+  pub user: ShortHammerfestUser,
+  pub tokens: u32,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestGodchild {
   pub user: ShortHammerfestUser,
   pub tokens: u32,
@@ -263,8 +291,14 @@ pub struct HammerfestGodchild {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HammerfestGodchildrenResponse {
+  pub session_user: HammerfestSessionUser,
+  pub godchildren: Vec<HammerfestGodchild>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestShop {
-  pub tokens: u32,
   pub weekly_tokens: u8,
   // If `None`, the user completed all reward steps, meaning
   // they have bought at least 250 tokens.
@@ -300,14 +334,13 @@ impl<'r> sqlx::Decode<'r, Postgres> for HammerfestDate {
   fn decode(value: postgres::PgValueRef<'r>) -> Result<Self, Box<dyn Error + 'static + Send + Sync>> {
     let mut decoder = postgres::types::PgRecordDecoder::new(value)?;
 
-    let month = decoder.try_decode::<i32>()?;
-    let day = decoder.try_decode::<i32>()?;
-    let weekday = decoder.try_decode::<i32>()?;
+    let month = decoder.try_decode::<crate::pg_num::PgU8>()?;
+    let day = decoder.try_decode::<crate::pg_num::PgU8>()?;
+    let weekday = decoder.try_decode::<crate::pg_num::PgU8>()?;
 
-    // TODO: Proper error handling
-    let month: u8 = u8::try_from(month).unwrap();
-    let day: u8 = u8::try_from(day).unwrap();
-    let weekday: u8 = u8::try_from(weekday).unwrap();
+    let month: u8 = u8::from(month);
+    let day: u8 = u8::from(day);
+    let weekday: u8 = u8::from(weekday);
 
     Ok(Self { month, day, weekday })
   }
@@ -339,7 +372,7 @@ pub struct HammerfestDateTime {
 #[cfg(feature = "sqlx")]
 impl sqlx::Type<Postgres> for HammerfestDateTime {
   fn type_info() -> postgres::PgTypeInfo {
-    postgres::PgTypeInfo::with_name("hammerfest_date_time")
+    postgres::PgTypeInfo::with_name("hammerfest_datetime")
   }
 
   fn compatible(ty: &postgres::PgTypeInfo) -> bool {
@@ -352,18 +385,17 @@ impl<'r> sqlx::Decode<'r, Postgres> for HammerfestDateTime {
   fn decode(value: postgres::PgValueRef<'r>) -> Result<Self, Box<dyn Error + 'static + Send + Sync>> {
     let mut decoder = postgres::types::PgRecordDecoder::new(value)?;
 
-    let month = decoder.try_decode::<i32>()?;
-    let day = decoder.try_decode::<i32>()?;
-    let weekday = decoder.try_decode::<i32>()?;
-    let hour = decoder.try_decode::<i32>()?;
-    let minute = decoder.try_decode::<i32>()?;
+    let month = decoder.try_decode::<crate::pg_num::PgU8>()?;
+    let day = decoder.try_decode::<crate::pg_num::PgU8>()?;
+    let weekday = decoder.try_decode::<crate::pg_num::PgU8>()?;
+    let hour = decoder.try_decode::<crate::pg_num::PgU8>()?;
+    let minute = decoder.try_decode::<crate::pg_num::PgU8>()?;
 
-    // TODO: Proper error handling
-    let month: u8 = u8::try_from(month).unwrap();
-    let day: u8 = u8::try_from(day).unwrap();
-    let weekday: u8 = u8::try_from(weekday).unwrap();
-    let hour: u8 = u8::try_from(hour).unwrap();
-    let minute: u8 = u8::try_from(minute).unwrap();
+    let month: u8 = u8::from(month);
+    let day: u8 = u8::from(day);
+    let weekday: u8 = u8::from(weekday);
+    let hour: u8 = u8::from(hour);
+    let minute: u8 = u8::from(minute);
 
     Ok(Self {
       date: HammerfestDate { month, day, weekday },
@@ -377,11 +409,11 @@ impl<'r> sqlx::Decode<'r, Postgres> for HammerfestDateTime {
 impl<'q> sqlx::Encode<'q, Postgres> for HammerfestDateTime {
   fn encode_by_ref(&self, buf: &mut postgres::PgArgumentBuffer) -> sqlx::encode::IsNull {
     let mut encoder = postgres::types::PgRecordEncoder::new(buf);
-    encoder.encode(i32::from(self.date.month));
-    encoder.encode(i32::from(self.date.day));
-    encoder.encode(i32::from(self.date.weekday));
-    encoder.encode(i32::from(self.hour));
-    encoder.encode(i32::from(self.minute));
+    encoder.encode(crate::pg_num::PgU8::from(self.date.month));
+    encoder.encode(crate::pg_num::PgU8::from(self.date.day));
+    encoder.encode(crate::pg_num::PgU8::from(self.date.weekday));
+    encoder.encode(crate::pg_num::PgU8::from(self.hour));
+    encoder.encode(crate::pg_num::PgU8::from(self.minute));
     encoder.finish();
     sqlx::encode::IsNull::No
   }
@@ -440,6 +472,13 @@ pub struct HammerfestForumTheme {
   #[cfg_attr(feature = "_serde", serde(flatten))]
   pub short: ShortHammerfestForumTheme,
   pub description: HammerfestForumThemeDescription,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HammerfestForumThemePageResponse {
+  pub session_user: Option<HammerfestSessionUser>,
+  pub page: HammerfestForumThemePage,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -525,6 +564,13 @@ impl HammerfestForumThread {
   pub const fn as_ref(&self) -> HammerfestForumThreadIdRef {
     self.short.as_ref()
   }
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HammerfestForumThreadPageResponse {
+  pub session_user: Option<HammerfestSessionUser>,
+  pub page: HammerfestForumThreadPage,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -648,25 +694,17 @@ pub trait HammerfestStore: Send + Sync {
 
   async fn touch_short_user(&self, options: &ShortHammerfestUser) -> Result<StoredHammerfestUser, EtwinError>;
 
-  async fn touch_shop(&self, user: &ShortHammerfestUser, options: &HammerfestShop) -> Result<(), EtwinError>;
+  async fn touch_shop(&self, response: &HammerfestShopResponse) -> Result<(), EtwinError>;
 
-  async fn touch_profile(&self, options: &HammerfestProfile) -> Result<(), EtwinError>;
+  async fn touch_profile(&self, response: &HammerfestProfileResponse) -> Result<(), EtwinError>;
 
-  async fn touch_inventory(
-    &self,
-    user: &ShortHammerfestUser,
-    inventory: &HashMap<HammerfestItemId, u32>,
-  ) -> Result<(), EtwinError>;
+  async fn touch_inventory(&self, response: &HammerfestInventoryResponse) -> Result<(), EtwinError>;
 
-  async fn touch_godchildren(
-    &self,
-    user: &ShortHammerfestUser,
-    godchildren: &[HammerfestGodchild],
-  ) -> Result<(), EtwinError>;
+  async fn touch_godchildren(&self, response: &HammerfestGodchildrenResponse) -> Result<(), EtwinError>;
 
-  async fn touch_theme_page(&self, options: &HammerfestForumThemePage) -> Result<(), EtwinError>;
+  async fn touch_theme_page(&self, response: &HammerfestForumThemePageResponse) -> Result<(), EtwinError>;
 
-  async fn touch_thread_page(&self, options: &HammerfestForumThreadPage) -> Result<(), EtwinError>;
+  async fn touch_thread_page(&self, response: &HammerfestForumThreadPageResponse) -> Result<(), EtwinError>;
 }
 
 pub fn hammerfest_reply_count_to_page_count(reply_count: u16) -> NonZeroU16 {

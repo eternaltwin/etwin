@@ -2,10 +2,15 @@ use chrono::{Duration, TimeZone, Utc};
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
 use etwin_core::hammerfest::{
-  GetHammerfestUserOptions, HammerfestDate, HammerfestForumRole, HammerfestForumThemePage, HammerfestForumThread,
-  HammerfestForumThreadKind, HammerfestForumThreadListing, HammerfestProfile, HammerfestServer, HammerfestStore,
-  ShortHammerfestForumTheme, ShortHammerfestForumThread, ShortHammerfestUser, StoredHammerfestUser,
+  GetHammerfestUserOptions, HammerfestDate, HammerfestDateTime, HammerfestForumMessage, HammerfestForumMessageAuthor,
+  HammerfestForumPostListing, HammerfestForumRole, HammerfestForumThemePage, HammerfestForumThemePageResponse,
+  HammerfestForumThread, HammerfestForumThreadKind, HammerfestForumThreadListing, HammerfestForumThreadPage,
+  HammerfestForumThreadPageResponse, HammerfestGodchild, HammerfestGodchildrenResponse, HammerfestInventoryResponse,
+  HammerfestLadderLevel, HammerfestProfile, HammerfestProfileResponse, HammerfestServer, HammerfestSessionUser,
+  HammerfestShop, HammerfestShopResponse, HammerfestStore, ShortHammerfestForumTheme, ShortHammerfestForumThread,
+  ShortHammerfestUser, StoredHammerfestUser,
 };
+use std::collections::HashMap;
 use std::convert::TryInto;
 use std::num::NonZeroU16;
 
@@ -31,6 +36,11 @@ macro_rules! test_hammerfest_store_pg {
     register_test!($(#[$meta])*, $api, test_change_email_back);
     register_test!($(#[$meta])*, $api, test_email_uniqueness);
     register_test!($(#[$meta])*, $api, test_touch_forum_theme_page);
+    register_test!($(#[$meta])*, $api, test_touch_forum_thread_page);
+    register_test!($(#[$meta])*, $api, test_touch_forum_thread_page_as_moderator);
+    register_test!($(#[$meta])*, $api, test_touch_godchildren);
+    register_test!($(#[$meta])*, $api, test_touch_hammerfest_shop);
+    register_test!($(#[$meta])*, $api, test_touch_hammerfest_inventory);
   };
 }
 
@@ -188,21 +198,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: None,
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: None,
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: None,
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -218,21 +231,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: None,
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: None,
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: None,
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -241,21 +257,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: None,
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: None,
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: None,
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -270,21 +289,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: None,
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: None,
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: None,
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -293,21 +315,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: None,
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: None,
+          best_score: 100,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: None,
-        best_score: 100,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -322,21 +347,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: None,
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: None,
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: None,
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -345,21 +373,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: None,
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: None,
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 100,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: None,
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 100,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -368,21 +399,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: None,
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: None,
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: None,
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -394,25 +428,36 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
+  let alice = HammerfestSessionUser {
+    user: ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    tokens: 50,
+  };
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: Some(alice.clone()),
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: Some(Some("alice@example.com".parse().unwrap())),
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: Some(Some("alice@example.com".parse().unwrap())),
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -424,25 +469,36 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
+  let alice = HammerfestSessionUser {
+    user: ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    tokens: 50,
+  };
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: Some(alice.clone()),
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: Some(Some("alice@example.com".parse().unwrap())),
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: Some(Some("alice@example.com".parse().unwrap())),
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -451,21 +507,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: Some(alice.clone()),
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: Some(Some("bob@example.com".parse().unwrap())),
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: Some(Some("bob@example.com".parse().unwrap())),
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -477,25 +536,36 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
+  let alice = HammerfestSessionUser {
+    user: ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    tokens: 50,
+  };
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: Some(alice.clone()),
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: Some(Some("alice@example.com".parse().unwrap())),
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: Some(Some("alice@example.com".parse().unwrap())),
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -504,21 +574,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: Some(alice.clone()),
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: Some(Some("bob@example.com".parse().unwrap())),
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: Some(Some("bob@example.com".parse().unwrap())),
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -527,21 +600,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: Some(alice.clone()),
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: Some(Some("alice@example.com".parse().unwrap())),
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: Some(Some("alice@example.com".parse().unwrap())),
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -553,25 +629,36 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
+  let alice = HammerfestSessionUser {
+    user: ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    tokens: 50,
+  };
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: Some(alice.clone()),
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: Some(Some("alice@example.com".parse().unwrap())),
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: Some(Some("alice@example.com".parse().unwrap())),
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -580,21 +667,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "234".parse().unwrap(),
-          username: "bob".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: Some(alice.clone()),
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "234".parse().unwrap(),
+            username: "bob".parse().unwrap(),
+          },
+          email: Some(Some("alice@example.com".parse().unwrap())),
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: Some(Some("alice@example.com".parse().unwrap())),
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -603,21 +693,24 @@ where
   {
     let actual = api
       .hammerfest_store
-      .touch_profile(&HammerfestProfile {
-        user: ShortHammerfestUser {
-          server: HammerfestServer::HammerfestFr,
-          id: "123".parse().unwrap(),
-          username: "alice".parse().unwrap(),
+      .touch_profile(&HammerfestProfileResponse {
+        session_user: Some(alice.clone()),
+        profile: HammerfestProfile {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "123".parse().unwrap(),
+            username: "alice".parse().unwrap(),
+          },
+          email: Some(Some("alice@example.com".parse().unwrap())),
+          best_score: 0,
+          best_level: 0,
+          has_carrot: false,
+          season_score: 0,
+          ladder_level: 0.try_into().unwrap(),
+          hall_of_fame: None,
+          items: Default::default(),
+          quests: Default::default(),
         },
-        email: Some(Some("alice@example.com".parse().unwrap())),
-        best_score: 0,
-        best_level: 0,
-        has_carrot: false,
-        season_score: 0,
-        ladder_level: 0.try_into().unwrap(),
-        hall_of_fame: None,
-        items: Default::default(),
-        quests: Default::default(),
       })
       .await;
     assert_ok!(actual);
@@ -629,6 +722,14 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
+  let alice = HammerfestSessionUser {
+    user: ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    tokens: 50,
+  };
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
   {
     let mut threads: Vec<HammerfestForumThread> = Vec::with_capacity(15);
@@ -659,33 +760,463 @@ where
 
     let actual = api
       .hammerfest_store
-      .touch_theme_page(&HammerfestForumThemePage {
-        theme: ShortHammerfestForumTheme {
-          server: HammerfestServer::HammerfestFr,
-          id: "3".parse().unwrap(),
-          name: "Les secrets de Tuberculoz".parse().unwrap(),
-          is_public: true,
+      .touch_theme_page(&HammerfestForumThemePageResponse {
+        session_user: Some(alice.clone()),
+        page: HammerfestForumThemePage {
+          theme: ShortHammerfestForumTheme {
+            server: HammerfestServer::HammerfestFr,
+            id: "3".parse().unwrap(),
+            name: "Les secrets de Tuberculoz".parse().unwrap(),
+            is_public: true,
+          },
+          sticky: vec![HammerfestForumThread {
+            short: ShortHammerfestForumThread {
+              server: HammerfestServer::HammerfestFr,
+              id: "474604".parse().unwrap(),
+              name: "[officiel] Corporate Soccer 2".parse().unwrap(),
+              is_closed: false,
+            },
+            author: ShortHammerfestUser {
+              server: HammerfestServer::HammerfestFr,
+              id: "195".parse().unwrap(),
+              username: "deepnight".parse().unwrap(),
+            },
+            author_role: HammerfestForumRole::Administrator,
+            kind: HammerfestForumThreadKind::Sticky,
+            reply_count: 0,
+          }],
+          threads: HammerfestForumThreadListing {
+            page1: NonZeroU16::new(1).unwrap(),
+            pages: NonZeroU16::new(16).unwrap(),
+            items: threads,
+          },
         },
-        sticky: vec![HammerfestForumThread {
-          short: ShortHammerfestForumThread {
+      })
+      .await;
+    assert_ok!(actual);
+  }
+}
+
+pub(crate) async fn test_touch_forum_thread_page<TyClock, TyHammerfestStore>(api: TestApi<TyClock, TyHammerfestStore>)
+where
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
+{
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_thread_page(&HammerfestForumThreadPageResponse {
+        session_user: None,
+        page: HammerfestForumThreadPage {
+          theme: ShortHammerfestForumTheme {
+            server: HammerfestServer::HammerfestFr,
+            id: "3".parse().unwrap(),
+            name: "Les secrets de Tuberculoz".parse().unwrap(),
+            is_public: true,
+          },
+          thread: ShortHammerfestForumThread {
             server: HammerfestServer::HammerfestFr,
             id: "474604".parse().unwrap(),
             name: "[officiel] Corporate Soccer 2".parse().unwrap(),
             is_closed: false,
           },
-          author: ShortHammerfestUser {
-            server: HammerfestServer::HammerfestFr,
-            id: "195".parse().unwrap(),
-            username: "deepnight".parse().unwrap(),
+          messages: HammerfestForumPostListing {
+            page1: NonZeroU16::new(1).unwrap(),
+            pages: NonZeroU16::new(1).unwrap(),
+            items: {
+              let mut messages: Vec<HammerfestForumMessage> = Vec::with_capacity(15);
+              for i in 0u8..15 {
+                messages.push(HammerfestForumMessage {
+                  id: None,
+                  author: if i % 2 == 0 {
+                    HammerfestForumMessageAuthor {
+                      user: ShortHammerfestUser {
+                        server: HammerfestServer::HammerfestFr,
+                        id: "195".parse().unwrap(),
+                        username: "deepnight".parse().unwrap(),
+                      },
+                      has_carrot: false,
+                      ladder_level: HammerfestLadderLevel::new(2).unwrap(),
+                      rank: None,
+                      role: HammerfestForumRole::Administrator,
+                    }
+                  } else {
+                    HammerfestForumMessageAuthor {
+                      user: ShortHammerfestUser {
+                        server: HammerfestServer::HammerfestFr,
+                        id: format!("{}", 1 + i).parse().unwrap(),
+                        username: format!("usr{}", 1 + i).parse().unwrap(),
+                      },
+                      has_carrot: true,
+                      ladder_level: HammerfestLadderLevel::new(1).unwrap(),
+                      rank: Some((1 + i).into()),
+                      role: HammerfestForumRole::None,
+                    }
+                  },
+                  ctime: HammerfestDateTime {
+                    date: HammerfestDate {
+                      month: 3,
+                      day: 5,
+                      weekday: 5,
+                    },
+                    hour: 0,
+                    minute: i,
+                  },
+                  content: format!("Hello! {}", i),
+                });
+              }
+              messages
+            },
           },
-          author_role: HammerfestForumRole::Administrator,
-          kind: HammerfestForumThreadKind::Sticky,
-          reply_count: 0,
+        },
+      })
+      .await;
+    assert_ok!(actual);
+  }
+}
+
+pub(crate) async fn test_touch_forum_thread_page_as_moderator<TyClock, TyHammerfestStore>(
+  api: TestApi<TyClock, TyHammerfestStore>,
+) where
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
+{
+  let alice = HammerfestSessionUser {
+    user: ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    tokens: 50,
+  };
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_thread_page(&HammerfestForumThreadPageResponse {
+        session_user: Some(alice),
+        page: HammerfestForumThreadPage {
+          theme: ShortHammerfestForumTheme {
+            server: HammerfestServer::HammerfestFr,
+            id: "3".parse().unwrap(),
+            name: "Les secrets de Tuberculoz".parse().unwrap(),
+            is_public: true,
+          },
+          thread: ShortHammerfestForumThread {
+            server: HammerfestServer::HammerfestFr,
+            id: "474604".parse().unwrap(),
+            name: "[officiel] Corporate Soccer 2".parse().unwrap(),
+            is_closed: false,
+          },
+          messages: HammerfestForumPostListing {
+            page1: NonZeroU16::new(1).unwrap(),
+            pages: NonZeroU16::new(1).unwrap(),
+            items: {
+              let mut messages: Vec<HammerfestForumMessage> = Vec::with_capacity(15);
+              for i in 0u8..15 {
+                messages.push(HammerfestForumMessage {
+                  id: Some((1 + i).to_string().parse().unwrap()),
+                  author: if i % 2 == 0 {
+                    HammerfestForumMessageAuthor {
+                      user: ShortHammerfestUser {
+                        server: HammerfestServer::HammerfestFr,
+                        id: "195".parse().unwrap(),
+                        username: "deepnight".parse().unwrap(),
+                      },
+                      has_carrot: false,
+                      ladder_level: HammerfestLadderLevel::new(2).unwrap(),
+                      rank: None,
+                      role: HammerfestForumRole::Administrator,
+                    }
+                  } else {
+                    HammerfestForumMessageAuthor {
+                      user: ShortHammerfestUser {
+                        server: HammerfestServer::HammerfestFr,
+                        id: format!("{}", 1 + i).parse().unwrap(),
+                        username: format!("usr{}", 1 + i).parse().unwrap(),
+                      },
+                      has_carrot: true,
+                      ladder_level: HammerfestLadderLevel::new(1).unwrap(),
+                      rank: Some((1 + i).into()),
+                      role: HammerfestForumRole::None,
+                    }
+                  },
+                  ctime: HammerfestDateTime {
+                    date: HammerfestDate {
+                      month: 3,
+                      day: 5,
+                      weekday: 5,
+                    },
+                    hour: 0,
+                    minute: i,
+                  },
+                  content: format!("Hello! {}", i),
+                });
+              }
+              messages
+            },
+          },
+        },
+      })
+      .await;
+    assert_ok!(actual);
+  }
+}
+
+pub(crate) async fn test_touch_godchildren<TyClock, TyHammerfestStore>(api: TestApi<TyClock, TyHammerfestStore>)
+where
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
+{
+  let alice = HammerfestSessionUser {
+    user: ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    tokens: 50,
+  };
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_godchildren(&HammerfestGodchildrenResponse {
+        session_user: alice.clone(),
+        godchildren: vec![],
+      })
+      .await;
+    assert_ok!(actual);
+  }
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_godchildren(&HammerfestGodchildrenResponse {
+        session_user: alice.clone(),
+        godchildren: vec![HammerfestGodchild {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "456".parse().unwrap(),
+            username: "bob".parse().unwrap(),
+          },
+          tokens: 0,
         }],
-        threads: HammerfestForumThreadListing {
-          page1: NonZeroU16::new(1).unwrap(),
-          pages: NonZeroU16::new(16).unwrap(),
-          items: threads,
+      })
+      .await;
+    assert_ok!(actual);
+  }
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_godchildren(&HammerfestGodchildrenResponse {
+        session_user: alice.clone(),
+        godchildren: vec![
+          HammerfestGodchild {
+            user: ShortHammerfestUser {
+              server: HammerfestServer::HammerfestFr,
+              id: "456".parse().unwrap(),
+              username: "bob".parse().unwrap(),
+            },
+            tokens: 1,
+          },
+          HammerfestGodchild {
+            user: ShortHammerfestUser {
+              server: HammerfestServer::HammerfestFr,
+              id: "789".parse().unwrap(),
+              username: "charlie".parse().unwrap(),
+            },
+            tokens: 0,
+          },
+        ],
+      })
+      .await;
+    assert_ok!(actual);
+  }
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_godchildren(&HammerfestGodchildrenResponse {
+        session_user: alice.clone(),
+        godchildren: vec![HammerfestGodchild {
+          user: ShortHammerfestUser {
+            server: HammerfestServer::HammerfestFr,
+            id: "456".parse().unwrap(),
+            username: "bob".parse().unwrap(),
+          },
+          tokens: 1,
+        }],
+      })
+      .await;
+    assert_ok!(actual);
+  }
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_godchildren(&HammerfestGodchildrenResponse {
+        session_user: alice.clone(),
+        godchildren: vec![
+          HammerfestGodchild {
+            user: ShortHammerfestUser {
+              server: HammerfestServer::HammerfestFr,
+              id: "456".parse().unwrap(),
+              username: "bob".parse().unwrap(),
+            },
+            tokens: 1,
+          },
+          HammerfestGodchild {
+            user: ShortHammerfestUser {
+              server: HammerfestServer::HammerfestFr,
+              id: "789".parse().unwrap(),
+              username: "charlie".parse().unwrap(),
+            },
+            tokens: 0,
+          },
+        ],
+      })
+      .await;
+    assert_ok!(actual);
+  }
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_godchildren(&HammerfestGodchildrenResponse {
+        session_user: alice.clone(),
+        godchildren: vec![
+          HammerfestGodchild {
+            user: ShortHammerfestUser {
+              server: HammerfestServer::HammerfestFr,
+              id: "456".parse().unwrap(),
+              username: "bob".parse().unwrap(),
+            },
+            tokens: 2,
+          },
+          HammerfestGodchild {
+            user: ShortHammerfestUser {
+              server: HammerfestServer::HammerfestFr,
+              id: "789".parse().unwrap(),
+              username: "charlie".parse().unwrap(),
+            },
+            tokens: 2,
+          },
+        ],
+      })
+      .await;
+    assert_ok!(actual);
+  }
+}
+
+pub(crate) async fn test_touch_hammerfest_shop<TyClock, TyHammerfestStore>(api: TestApi<TyClock, TyHammerfestStore>)
+where
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
+{
+  let alice = HammerfestSessionUser {
+    user: ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    tokens: 50,
+  };
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_shop(&HammerfestShopResponse {
+        session_user: alice.clone(),
+        shop: HammerfestShop {
+          weekly_tokens: 0,
+          purchased_tokens: None,
+          has_quest_bonus: false,
+        },
+      })
+      .await;
+    assert_ok!(actual);
+  }
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_shop(&HammerfestShopResponse {
+        session_user: alice.clone(),
+        shop: HammerfestShop {
+          weekly_tokens: 0,
+          purchased_tokens: Some(5),
+          has_quest_bonus: false,
+        },
+      })
+      .await;
+    assert_ok!(actual);
+  }
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_shop(&HammerfestShopResponse {
+        session_user: alice.clone(),
+        shop: HammerfestShop {
+          weekly_tokens: 0,
+          purchased_tokens: Some(5),
+          has_quest_bonus: false,
+        },
+      })
+      .await;
+    assert_ok!(actual);
+  }
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_shop(&HammerfestShopResponse {
+        session_user: alice.clone(),
+        shop: HammerfestShop {
+          weekly_tokens: 0,
+          purchased_tokens: Some(5),
+          has_quest_bonus: false,
+        },
+      })
+      .await;
+    assert_ok!(actual);
+  }
+}
+
+pub(crate) async fn test_touch_hammerfest_inventory<TyClock, TyHammerfestStore>(
+  api: TestApi<TyClock, TyHammerfestStore>,
+) where
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
+{
+  let alice = HammerfestSessionUser {
+    user: ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    tokens: 50,
+  };
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_inventory(&HammerfestInventoryResponse {
+        session_user: alice.clone(),
+        inventory: {
+          let mut inventory = HashMap::new();
+          inventory.insert("1000".parse().unwrap(), 10);
+          inventory
         },
       })
       .await;

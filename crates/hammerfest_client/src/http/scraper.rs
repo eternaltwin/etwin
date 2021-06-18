@@ -304,7 +304,7 @@ pub fn scrape_user_shop(html: &Html) -> Result<Option<HammerfestShop>> {
 
   let tokens_elem = selectors.select_one(top_bar_elem, "div.playerInfo > a:nth-child(3)")?;
   let tokens = utils::get_inner_text(tokens_elem)?;
-  let tokens = utils::parse_u32(tokens)?;
+  let _tokens = utils::parse_u32(tokens)?;
 
   let shop_status_elem = selectors.select_one(root, "div.freeDays")?;
 
@@ -327,7 +327,6 @@ pub fn scrape_user_shop(html: &Html) -> Result<Option<HammerfestShop>> {
   let has_quest_bonus = selectors.select_one_opt(root, "div.bankBonus > div.pic")?.is_some();
 
   Ok(Some(HammerfestShop {
-    tokens,
     weekly_tokens,
     purchased_tokens,
     has_quest_bonus,
@@ -410,9 +409,9 @@ pub fn scrape_forum_home(server: HammerfestServer, html: &Html) -> Result<Vec<Ha
       let description = parse_theme_description(description)?;
       Ok(Some(HammerfestForumTheme {
         short: ShortHammerfestForumTheme {
+          server,
           id,
           name,
-          server,
           is_public,
         },
         description,
@@ -430,7 +429,7 @@ fn parse_forum_date(texts: &ScraperTexts, date: &str) -> Result<HammerfestDate> 
       d.parse(),
       texts.month_names.get(m).copied(),
     ) {
-      return Ok(HammerfestDate { weekday, day, month });
+      return Ok(HammerfestDate { month, day, weekday });
     }
   }
 

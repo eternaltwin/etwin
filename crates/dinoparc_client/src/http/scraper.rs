@@ -148,10 +148,7 @@ fn scrape_sidebar(doc: ElementRef) -> Result<SelfScraping, ScraperError> {
 /// Reimplementation of `str.split_once`
 /// TODO: Remove it once rust-lang/rust#74773 is stable
 fn str_split_once<'a>(s: &'a str, delimiter: &'a str) -> Option<(&'a str, &'a str)> {
-  match s.find(delimiter) {
-    Some(idx) => Some((&s[..idx], &s[(idx + delimiter.len())..])),
-    None => None,
-  }
+  s.find(delimiter).map(|idx| (&s[..idx], &s[(idx + delimiter.len())..]))
 }
 
 #[cfg(test)]

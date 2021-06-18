@@ -87,7 +87,7 @@ macro_rules! upsert_archive_query {
       "), ",
       "updated_row AS (",
         "UPDATE ", stringify!($table), " ",
-        "SET ", stringify!($retrieved_at), " = sampled_instant_set_insert_back(", stringify!($retrieved_at), ", const_sampling_window(), $", stringify!($tid), "::INSTANT) ",
+        "SET ", stringify!($retrieved_at), " = ordered_set_insert(", stringify!($retrieved_at), "::ANYARRAY, $", stringify!($tid), "::INSTANT::ANYELEMENT) ",
         "WHERE ROW(", $primary_keys, ") = (SELECT ", $primary_keys, " FROM matching_current_row) ",
         "RETURNING ", $primary_keys,
       "), ",

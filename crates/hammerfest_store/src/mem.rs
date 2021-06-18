@@ -1,8 +1,9 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::hammerfest::{
-  GetHammerfestUserOptions, HammerfestForumThemePage, HammerfestForumThreadPage, HammerfestGodchild, HammerfestItemId,
-  HammerfestProfile, HammerfestShop, HammerfestStore, HammerfestUserId, ShortHammerfestUser, StoredHammerfestUser,
+  GetHammerfestUserOptions, HammerfestForumThemePageResponse, HammerfestForumThreadPageResponse,
+  HammerfestGodchildrenResponse, HammerfestInventoryResponse, HammerfestProfileResponse, HammerfestShopResponse,
+  HammerfestStore, HammerfestUserId, ShortHammerfestUser, StoredHammerfestUser,
 };
 use etwin_core::types::EtwinError;
 use std::collections::HashMap;
@@ -76,35 +77,27 @@ where
     Ok(user)
   }
 
-  async fn touch_shop(&self, _user: &ShortHammerfestUser, _options: &HammerfestShop) -> Result<(), EtwinError> {
+  async fn touch_shop(&self, _response: &HammerfestShopResponse) -> Result<(), EtwinError> {
     unimplemented!()
   }
 
-  async fn touch_profile(&self, _options: &HammerfestProfile) -> Result<(), EtwinError> {
+  async fn touch_profile(&self, _response: &HammerfestProfileResponse) -> Result<(), EtwinError> {
     unimplemented!()
   }
 
-  async fn touch_inventory(
-    &self,
-    _user: &ShortHammerfestUser,
-    _inventory: &HashMap<HammerfestItemId, u32>,
-  ) -> Result<(), EtwinError> {
+  async fn touch_inventory(&self, _respone: &HammerfestInventoryResponse) -> Result<(), EtwinError> {
     unimplemented!()
   }
 
-  async fn touch_godchildren(
-    &self,
-    _user: &ShortHammerfestUser,
-    _godchildren: &[HammerfestGodchild],
-  ) -> Result<(), EtwinError> {
+  async fn touch_godchildren(&self, _response: &HammerfestGodchildrenResponse) -> Result<(), EtwinError> {
     unimplemented!()
   }
 
-  async fn touch_theme_page(&self, _options: &HammerfestForumThemePage) -> Result<(), EtwinError> {
+  async fn touch_theme_page(&self, _response: &HammerfestForumThemePageResponse) -> Result<(), EtwinError> {
     unimplemented!()
   }
 
-  async fn touch_thread_page(&self, _options: &HammerfestForumThreadPage) -> Result<(), EtwinError> {
+  async fn touch_thread_page(&self, _response: &HammerfestForumThreadPageResponse) -> Result<(), EtwinError> {
     unimplemented!()
   }
 }

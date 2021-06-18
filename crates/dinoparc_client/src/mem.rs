@@ -56,10 +56,7 @@ impl MemServer {
 
   fn get_user_by_username(&self, username: &DinoparcUsername) -> Option<&MemUser> {
     let id = self.users_by_username.get(username);
-    match id {
-      Some(id) => Some(self.users.get(id).unwrap()),
-      None => None,
-    }
+    id.map(|id| self.users.get(id).unwrap())
   }
 
   fn create_user(&mut self, id: DinoparcUserId, username: DinoparcUsername, password: DinoparcPassword) {

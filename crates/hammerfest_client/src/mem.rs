@@ -434,7 +434,6 @@ where
   async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShop> {
     self.check_session(session)?;
     Ok(HammerfestShop {
-      tokens: 0,
       purchased_tokens: Some(0),
       weekly_tokens: 0,
       has_quest_bonus: false,

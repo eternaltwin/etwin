@@ -232,10 +232,7 @@ impl StoreState {
   fn get_twinoid_oauth(&self, now: Instant, id: TwinoidUserIdRef) -> TwinoidOauth {
     let refresh_token = {
       let refresh_key = self.twinoid_user_to_refresh_token.get(&id.id);
-      match refresh_key {
-        Some(refresh_key) => Some(self.twinoid_refresh_tokens.get(refresh_key).unwrap().clone()),
-        None => None,
-      }
+      refresh_key.map(|refresh_key| self.twinoid_refresh_tokens.get(refresh_key).unwrap().clone())
     };
     let access_token = {
       let access_key = self.twinoid_user_to_access_token.get(&id.id);
@@ -252,8 +249,8 @@ impl StoreState {
       }
     };
     TwinoidOauth {
-      refresh_token,
       access_token,
+      refresh_token,
     }
   }
 

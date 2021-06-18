@@ -68,7 +68,7 @@ period    | retrieved_at     | player_id | rank | score
 
 The row 4 and 5 are now in conflict: we must invalidate the 4th row.
 
-Invalidating a row means setting the upper bound of its time period to a period
+Invalidating a row means setting the upper bound of its time period to a finite
 value. In our case it produces:
 
 ```
@@ -85,7 +85,7 @@ Invalidation occurs with any uniqueness constraint, not only with primary keys.
 In our scenario, we should also enforce a "Point in Time" uniqueness on the
 rank: no two players can be at the same rank at the same time.
 
-To see the effect of support multiple invalidation, lets now start tracking the
+To see the effect of multiple invalidations, lets start tracking the
 player with id `2` now.
 
 At time 45, we retrieve that he is in the second place with a score of 1500.
@@ -174,13 +174,13 @@ missed it by not querying the server at the right time).
 Even in a single row we have this problem. Every week, Hammerfest scores are
 reset. It's possible that this reset occured on minute 21 and the player
 immediately played a run where he got a score of 2000. There was a reset, the
-score changed to zero, but the server missed it and did not even notice any
+score changed to zero, but the archive missed it and did not even notice any
 change!
 
 The only instant when we actually know the state of player is the instant when
 we retrieve it. Any state between two retrievals is only a guess.
 
-What this means that this whole representation with time periods is only an
+This means that this whole representation with time periods is only an
 optimization to avoid adding rows when the data does not change: the most
 common case is for data to stay the same between two retrievals.
 
@@ -198,7 +198,6 @@ retrieved_at | player_id | rank | score
 25           | 1         | 1    | 2000
 30           | 1         | 1    | 2000
 35           | 1         | 1    | 3000
-40           | 1         | 1    | 4000
 40           | 1         | 1    | 4000
 50           | 1         | 3    | 4500
 ```
@@ -255,7 +254,7 @@ the response of these two kinds of pages.
 Archiving a "highscore page response" now requires us to update the 2 shards
 `(player_id, rank)` and `(player_id, score)`.
 
-Archiving a "forum page response" noew requires to update the 2 shards
+Archiving a "forum page response" now requires to update the 2 shards
 `(player_id, rank)` and `(player_id, has_carrot)`.
 
 Shards for the same response are updated in the same transaction.
@@ -273,7 +272,50 @@ especially important when elements can move or be deleted (e.g. the main
 page of a forum section has a list of threads, this is a highly dynamic
 paginated list).
 
-TODO
+The main issue is to represent empty list and detect item removals.
+This is achieved by explicitly storing the list size along the items.
+
+TODO: Expand on this section (example of the Twinoid comments).
+
+### List
+
+The solution is to instead represent the highscore list directly even if it
+involves creating more tables to support referential integrity.
+
+We split it into shards as `(player, ladder_rank, score)` and
+`(ladder_rank, highscore_list)` and then represent the `thread_list` as an
+immutable collection.
+
+```
+(player, ladder_rank, score)
+period    | retrieved_at | player | ladder_rank | score
+----------|--------------|--------|-------------|-------
+[ 0, inf[ | {0,5}        | 1      | 1           | 5000
+[ 0, inf[ | {0,5}        | 2      | 1           | 4500
+[ 0, inf[ | {0}          | 3      | 1           | 1000
+
+
+(ladder_rank, highscore_list)
+period    | retrieved_at | ladder_rank  | highscore_list
+----------|--------------|--------------|--------------------------------------
+[ 0, 5  [ | {0}          | 1            | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+[ 5, inf[ | {5}          | 1            | bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+
+highscore_lists:
+highscore_list
+-------------------------------------
+aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+
+highscore_list_items:
+highscore_list                       | player | offset
+-------------------------------------|--------|--------
+aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | 1      | 0
+aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | 2      | 1
+aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | 3      | 2
+bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb | 1      | 0
+bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb | 2      | 1
+```
 
 ## Upsertion query
 
@@ -304,8 +346,8 @@ to build the query from smaller parts.
     uniqueness constraint (primary key and extra unique keys), check if we have
     an already valid snaphot (with an infinite upper bound on the time period)
     matching the key in `input_row`.
-    We only need to know if such rows exist, so we only kee the primary key
-    and period.
+    We only need to track the identity of such rows, hence why we only keep
+    the primary key and period.
 
 3. `matching_current_row`: At this step we take the intersection of all the rows
    from step 2. If they are all the same row we also check if its data fields
@@ -393,7 +435,7 @@ to `{15, 25, 30}`.
 It is shorter, but we lose the information that we queried the server at
 minute 20.
 
-It is currently still debated if a sampling window should applied and how to
+It is currently still debated if a sampling window should be applied and how to
 determine its size.
 
 [wayback_machine]: https://archive.org/web/
