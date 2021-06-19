@@ -207,10 +207,11 @@ async fn confirm_login(
     .send()
     .await?;
 
-  if res.status() == StatusCode::OK {
+  let status = res.status();
+  if status == StatusCode::OK || status == StatusCode::FOUND {
     Ok(())
   } else {
-    Err(ScraperError::UnexpectedLoginConfirmationResponse)
+    Err(ScraperError::UnexpectedLoginConfirmationResponse(status))
   }
 }
 

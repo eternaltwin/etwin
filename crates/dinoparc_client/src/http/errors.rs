@@ -1,4 +1,5 @@
 use etwin_core::dinoparc::{DinoparcUserIdParseError, DinoparcUsernameParseError};
+use reqwest::StatusCode;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -13,8 +14,8 @@ pub enum ScraperError {
   InvalidSessionCookie,
   #[error("Failed to login due to unexpected ad tracking response")]
   UnexpectedAdTrackingResponse,
-  #[error("Failed to login due to unexpected login confirmation response")]
-  UnexpectedLoginConfirmationResponse,
+  #[error("Failed to login due to unexpected login confirmation response: {:?}", .0)]
+  UnexpectedLoginConfirmationResponse(StatusCode),
   #[error("Zero or many <html> nodes, exactly one was expected")]
   NonUniqueHtml,
   #[error("Failed to detect server: missing or unknown html[lang]")]
