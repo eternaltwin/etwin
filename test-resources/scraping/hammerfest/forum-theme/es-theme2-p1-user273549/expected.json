@@ -99,7 +99,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 9,
           "day": 2,
           "weekday": 3
@@ -119,7 +119,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 5,
           "day": 23,
           "weekday": 6
@@ -139,7 +139,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 5,
           "day": 19,
           "weekday": 2
@@ -159,7 +159,7 @@
         },
         "author_role": "Moderator",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 5,
           "day": 4,
           "weekday": 1
@@ -179,7 +179,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 9,
           "day": 1,
           "weekday": 7
@@ -199,7 +199,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 7,
           "day": 3,
           "weekday": 3
@@ -219,7 +219,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 4,
           "day": 19,
           "weekday": 5
@@ -239,7 +239,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 4,
           "day": 19,
           "weekday": 5
@@ -259,7 +259,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 4,
           "day": 4,
           "weekday": 4
@@ -279,7 +279,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 9,
           "day": 16,
           "weekday": 7
@@ -299,7 +299,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 8,
           "day": 22,
           "weekday": 3
@@ -319,7 +319,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 8,
           "day": 22,
           "weekday": 3
@@ -339,7 +339,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 8,
           "day": 10,
           "weekday": 5
@@ -359,7 +359,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 6,
           "day": 26,
           "weekday": 2
@@ -379,7 +379,7 @@
         },
         "author_role": "None",
         "kind": "regular",
-        "last_message_date": {
+        "latest_post_date": {
           "month": 12,
           "day": 1,
           "weekday": 5

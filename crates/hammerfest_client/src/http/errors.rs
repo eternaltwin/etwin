@@ -43,8 +43,8 @@ pub enum ScraperError {
   InvalidForumThreadId(String, #[source] HammerfestForumThreadIdParseError),
   #[error("Invalid forum thread title '{}'", .0)]
   InvalidForumThreadTitle(String, #[source] HammerfestForumThreadTitleParseError),
-  #[error("Invalid forum message id '{}'", .0)]
-  InvalidForumMessageId(String, #[source] HammerfestForumMessageIdParseError),
+  #[error("Invalid forum post id '{}'", .0)]
+  InvalidForumPostId(String, #[source] HammerfestForumPostIdParseError),
   #[error("Invalid username '{}'", .0)]
   InvalidUsername(String, #[source] HammerfestUsernameParseError),
   #[error("Unknown quest name '{}'", .0)]

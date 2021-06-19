@@ -13,6 +13,8 @@ DROP TABLE hammerfest_forum_messages_history;
 DROP TABLE hammerfest_forum_message_ids;
 DROP TABLE hammerfest_inventories;
 
+ALTER DOMAIN hammerfest_forum_message_id RENAME TO hammerfest_forum_post_id;
+
 DROP DOMAIN hammerfest_datetime;
 
 CREATE DOMAIN hammerfest_datetime AS RAW_HAMMERFEST_DATETIME CHECK ( (value).month IS NOT NULL AND 1 <= (value).month
@@ -217,10 +219,10 @@ CREATE TABLE hammerfest_forum_thread_theme_meta (
   hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
 --
   is_sticky BOOLEAN NOT NULL,
-  latest_message_at HAMMERFEST_DATE NULL,
+  latest_post_at HAMMERFEST_DATE NULL,
   author HAMMERFEST_USER_ID NOT NULL,
   reply_count U16 NOT NULL,
-  CHECK ((is_sticky AND latest_message_at IS NULL) OR (NOT is_sticky AND latest_message_at IS NOT NULL)),
+  CHECK ((is_sticky AND latest_post_at IS NULL) OR (NOT is_sticky AND latest_post_at IS NOT NULL)),
   PRIMARY KEY (period, hammerfest_server, hammerfest_thread_id),
   EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, period WITH &&),
   CONSTRAINT hammerfest_forum_thread_theme_meta__thread__fk FOREIGN KEY (hammerfest_server, hammerfest_thread_id) REFERENCES hammerfest_forum_threads(hammerfest_server, hammerfest_thread_id) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -256,7 +258,7 @@ CREATE TABLE hammerfest_forum_roles (
   CONSTRAINT hammerfest_forum_roles__user__fk FOREIGN KEY (hammerfest_server, hammerfest_user_id) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
--- Time-variant message counts for a thread page <threadPage>
+-- Time-variant post counts for a thread page <threadPage>
 CREATE TABLE hammerfest_forum_thread_page_counts (
   period PERIOD_FROM NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
@@ -264,14 +266,14 @@ CREATE TABLE hammerfest_forum_thread_page_counts (
   hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
   page U16 NOT NULL CHECK (page > 0),
 --
-  message_count U8 NOT NULL,
+  post_count U8 NOT NULL,
   PRIMARY KEY (period, hammerfest_server, hammerfest_thread_id, page),
   EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, page WITH =, period WITH &&),
   CONSTRAINT hammerfest_forum_thread_page_counts__thread__fk FOREIGN KEY (hammerfest_server, hammerfest_thread_id) REFERENCES hammerfest_forum_threads(hammerfest_server, hammerfest_thread_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
--- Time-variant data for forum messages <threadPage>
-CREATE TABLE hammerfest_forum_messages (
+-- Time-variant data for forum posts <threadPage>
+CREATE TABLE hammerfest_forum_posts (
   period PERIOD_FROM NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
@@ -289,12 +291,12 @@ CREATE TABLE hammerfest_forum_messages (
   _html_body TEXT NULL,
   PRIMARY KEY (period, hammerfest_server, hammerfest_thread_id, page, offset_in_list),
   EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, page WITH =, offset_in_list WITH =, period WITH &&),
-  CONSTRAINT hammerfest_forum_messages__thread__fk FOREIGN KEY (hammerfest_server, hammerfest_thread_id) REFERENCES hammerfest_forum_threads(hammerfest_server, hammerfest_thread_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT hammerfest_forum_messages__author__fk FOREIGN KEY (hammerfest_server, author) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT hammerfest_forum_posts__thread__fk FOREIGN KEY (hammerfest_server, hammerfest_thread_id) REFERENCES hammerfest_forum_threads(hammerfest_server, hammerfest_thread_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT hammerfest_forum_posts__author__fk FOREIGN KEY (hammerfest_server, author) REFERENCES hammerfest_users(hammerfest_server, hammerfest_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
--- Time-variant data for message-position/message id relationship <threadPage>
-CREATE TABLE hammerfest_forum_message_ids (
+-- Time-variant data for post-position/post id relationship <threadPage>
+CREATE TABLE hammerfest_forum_post_ids (
   period PERIOD_FROM NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
@@ -302,11 +304,11 @@ CREATE TABLE hammerfest_forum_message_ids (
   page U16 NOT NULL CHECK (page > 0),
   offset_in_list U8 NOT NULL,
 --
-  hammerfest_message_id HAMMERFEST_FORUM_MESSAGE_ID NOT NULL,
+  hammerfest_post_id HAMMERFEST_FORUM_POST_ID NOT NULL,
   PRIMARY KEY (period, hammerfest_server, hammerfest_thread_id, page, offset_in_list),
   EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_thread_id WITH =, page WITH =, offset_in_list WITH =, period WITH &&),
-  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_message_id WITH =, period WITH &&),
-  CONSTRAINT hammerfest_forum_message_ids__thread__fk FOREIGN KEY (hammerfest_server, hammerfest_thread_id) REFERENCES hammerfest_forum_threads(hammerfest_server, hammerfest_thread_id) ON DELETE RESTRICT ON UPDATE CASCADE
+  EXCLUDE USING gist (hammerfest_server WITH =, hammerfest_post_id WITH =, period WITH &&),
+  CONSTRAINT hammerfest_forum_post_ids__thread__fk FOREIGN KEY (hammerfest_server, hammerfest_thread_id) REFERENCES hammerfest_forum_threads(hammerfest_server, hammerfest_thread_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- Time-variant best season rank, as displayed on the forum <threadPage>

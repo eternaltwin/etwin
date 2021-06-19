@@ -12,7 +12,6 @@ use etwin_serde_tools::{
 #[cfg(feature = "sqlx")]
 use sqlx::{postgres, Postgres};
 use std::collections::{HashMap, HashSet};
-use std::error::Error;
 use std::iter::FusedIterator;
 use std::num::NonZeroU16;
 
@@ -331,7 +330,7 @@ impl sqlx::Type<Postgres> for HammerfestDate {
 
 #[cfg(feature = "sqlx")]
 impl<'r> sqlx::Decode<'r, Postgres> for HammerfestDate {
-  fn decode(value: postgres::PgValueRef<'r>) -> Result<Self, Box<dyn Error + 'static + Send + Sync>> {
+  fn decode(value: postgres::PgValueRef<'r>) -> Result<Self, Box<dyn std::error::Error + 'static + Send + Sync>> {
     let mut decoder = postgres::types::PgRecordDecoder::new(value)?;
 
     let month = decoder.try_decode::<crate::pg_num::PgU8>()?;
@@ -382,7 +381,7 @@ impl sqlx::Type<Postgres> for HammerfestDateTime {
 
 #[cfg(feature = "sqlx")]
 impl<'r> sqlx::Decode<'r, Postgres> for HammerfestDateTime {
-  fn decode(value: postgres::PgValueRef<'r>) -> Result<Self, Box<dyn Error + 'static + Send + Sync>> {
+  fn decode(value: postgres::PgValueRef<'r>) -> Result<Self, Box<dyn std::error::Error + 'static + Send + Sync>> {
     let mut decoder = postgres::types::PgRecordDecoder::new(value)?;
 
     let month = decoder.try_decode::<crate::pg_num::PgU8>()?;
@@ -545,7 +544,7 @@ pub enum HammerfestForumThreadKind {
   #[cfg_attr(feature = "_serde", serde(rename = "sticky"))]
   Sticky,
   #[cfg_attr(feature = "_serde", serde(rename = "regular"))]
-  Regular { last_message_date: HammerfestDate },
+  Regular { latest_post_date: HammerfestDate },
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -578,7 +577,7 @@ pub struct HammerfestForumThreadPageResponse {
 pub struct HammerfestForumThreadPage {
   pub theme: ShortHammerfestForumTheme,
   pub thread: ShortHammerfestForumThread,
-  pub messages: HammerfestForumPostListing,
+  pub posts: HammerfestForumPostListing,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -586,28 +585,28 @@ pub struct HammerfestForumThreadPage {
 pub struct HammerfestForumPostListing {
   pub page1: NonZeroU16,
   pub pages: NonZeroU16,
-  pub items: Vec<HammerfestForumMessage>, // TODO: limit size <= 15
+  pub items: Vec<HammerfestForumPost>, // TODO: limit size <= 15
 }
 
 declare_decimal_id! {
-  pub struct HammerfestForumMessageId(u32);
-  pub type ParseError = HammerfestForumMessageIdParseError;
+  pub struct HammerfestForumPostId(u32);
+  pub type ParseError = HammerfestForumPostIdParseError;
   const BOUNDS = 0..1_000_000_000;
-  const SQL_NAME = "hammerfest_forum_message_id";
+  const SQL_NAME = "hammerfest_forum_post_id";
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct HammerfestForumMessage {
-  pub id: Option<HammerfestForumMessageId>,
-  pub author: HammerfestForumMessageAuthor,
+pub struct HammerfestForumPost {
+  pub id: Option<HammerfestForumPostId>,
+  pub author: HammerfestForumPostAuthor,
   pub ctime: HammerfestDateTime,
   pub content: String, // TODO: HtmlText?
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct HammerfestForumMessageAuthor {
+pub struct HammerfestForumPostAuthor {
   #[cfg_attr(feature = "_serde", serde(flatten))]
   pub user: ShortHammerfestUser,
   pub has_carrot: bool,
@@ -708,9 +707,9 @@ pub trait HammerfestStore: Send + Sync {
 }
 
 pub fn hammerfest_reply_count_to_page_count(reply_count: u16) -> NonZeroU16 {
-  let message_count = reply_count + 1;
-  const MESSAGES_PER_PAGE: u16 = 15;
-  let (q, r) = (message_count / MESSAGES_PER_PAGE, message_count % MESSAGES_PER_PAGE);
+  let post_count = reply_count + 1;
+  const POSTS_PER_PAGE: u16 = 15;
+  let (q, r) = (post_count / POSTS_PER_PAGE, post_count % POSTS_PER_PAGE);
   let pages = if r == 0 { q } else { q + 1 };
   NonZeroU16::new(pages).unwrap()
 }

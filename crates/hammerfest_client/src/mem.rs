@@ -57,7 +57,7 @@ struct MemForumThread {
   theme_id: HammerfestForumThemeId,
   thread: HammerfestForumThread,
   true_last_message_date: Instant,
-  messages: Vec<HammerfestForumMessage>,
+  messages: Vec<HammerfestForumPost>,
 }
 
 struct MemServer {
@@ -200,13 +200,13 @@ impl<TyClock> MemHammerfestClient<TyClock> {
             HammerfestForumThreadKind::Sticky
           } else {
             HammerfestForumThreadKind::Regular {
-              last_message_date: forum_date.date,
+              latest_post_date: forum_date.date,
             }
           },
           reply_count: 0,
         },
         true_last_message_date: date,
-        messages: vec![HammerfestForumMessage {
+        messages: vec![HammerfestForumPost {
           id: None,
           ctime: forum_date,
           author: make_forum_author(author_user.user.clone()),
@@ -243,11 +243,14 @@ impl<TyClock> MemHammerfestClient<TyClock> {
     let forum_date = make_forum_date(date);
 
     thread.true_last_message_date = date;
-    if let HammerfestForumThreadKind::Regular { last_message_date } = &mut thread.thread.kind {
+    if let HammerfestForumThreadKind::Regular {
+      latest_post_date: last_message_date,
+    } = &mut thread.thread.kind
+    {
       *last_message_date = forum_date.date;
     }
     thread.thread.reply_count += 1;
-    thread.messages.push(HammerfestForumMessage {
+    thread.messages.push(HammerfestForumPost {
       id: None,
       author: make_forum_author(author_user.user.clone()),
       ctime: forum_date,
@@ -306,8 +309,8 @@ fn make_forum_date(date: Instant) -> HammerfestDateTime {
   }
 }
 
-fn make_forum_author(user: ShortHammerfestUser) -> HammerfestForumMessageAuthor {
-  HammerfestForumMessageAuthor {
+fn make_forum_author(user: ShortHammerfestUser) -> HammerfestForumPostAuthor {
+  HammerfestForumPostAuthor {
     user,
     role: HammerfestForumRole::None,
     ladder_level: 4.try_into().unwrap(),
@@ -537,7 +540,7 @@ where
     Ok(HammerfestForumThreadPage {
       theme: theme.theme.short.clone(),
       thread: thread.thread.short.clone(),
-      messages: HammerfestForumPostListing {
+      posts: HammerfestForumPostListing {
         page1,
         pages: NonZeroU16::new(1).unwrap(),
         items: messages,

@@ -5,7 +5,7 @@ use etwin_core::core::{Instant, Secret};
 use etwin_core::email::touch_email_address;
 use etwin_core::hammerfest::{
   hammerfest_reply_count_to_page_count, GetHammerfestUserOptions, HammerfestDate, HammerfestDateTime,
-  HammerfestForumMessageId, HammerfestForumRole, HammerfestForumThemeDescription, HammerfestForumThemeId,
+  HammerfestForumPostId, HammerfestForumRole, HammerfestForumThemeDescription, HammerfestForumThemeId,
   HammerfestForumThemeIdRef, HammerfestForumThemePageResponse, HammerfestForumThemeTitle, HammerfestForumThreadIdRef,
   HammerfestForumThreadKind, HammerfestForumThreadPageResponse, HammerfestForumThreadTitle,
   HammerfestGodchildrenResponse, HammerfestInventoryResponse, HammerfestItemId, HammerfestLadderLevel,
@@ -196,20 +196,20 @@ async fn touch_hammerfest_forum_thread_page_count(
   now: Instant,
   thread: HammerfestForumThreadIdRef,
   page: NonZeroU16,
-  message_count: u8,
+  post_count: u8,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_thread_page_counts(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID, $4 page::U16),
-      data($5 message_count::U8),
+      data($5 post_count::U8),
     )
   ))
   .bind(now)
   .bind(thread.server)
   .bind(thread.id)
   .bind(i32::from(page.get()))
-  .bind(i16::from(message_count))
+  .bind(i16::from(post_count))
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -318,23 +318,23 @@ async fn touch_hammerfest_forum_thread_theme_meta(
   now: Instant,
   thread: HammerfestForumThreadIdRef,
   is_sticky: bool,
-  latest_message_at: Option<HammerfestDate>,
+  latest_post_at: Option<HammerfestDate>,
   author: HammerfestUserId,
   reply_count: u16,
 ) -> Result<(), EtwinError> {
-  assert_eq!(is_sticky, latest_message_at.is_none());
+  assert_eq!(is_sticky, latest_post_at.is_none());
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_thread_theme_meta(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID),
-      data($4 is_sticky::BOOLEAN, $5 latest_message_at::HAMMERFEST_DATE, $6 author::HAMMERFEST_USER_ID, $7 reply_count::U16),
+      data($4 is_sticky::BOOLEAN, $5 latest_post_at::HAMMERFEST_DATE, $6 author::HAMMERFEST_USER_ID, $7 reply_count::U16),
     )
   ))
     .bind(now)
     .bind(thread.server)
     .bind(thread.id)
     .bind(is_sticky)
-    .bind(latest_message_at)
+    .bind(latest_post_at)
     .bind(author)
     .bind(i64::from(reply_count))
     .execute(&mut *tx)
@@ -348,7 +348,7 @@ async fn touch_hammerfest_forum_thread_theme_meta(
 }
 
 #[allow(clippy::too_many_arguments)]
-async fn touch_hammerfest_forum_message(
+async fn touch_hammerfest_forum_post(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   thread: HammerfestForumThreadIdRef,
@@ -359,7 +359,7 @@ async fn touch_hammerfest_forum_message(
   remote_html_body: &str,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_forum_messages(
+    hammerfest_forum_posts(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID, $4 page::U16, $5 offset_in_list::U8),
       data($6 author::HAMMERFEST_USER_ID, $7 posted_at::HAMMERFEST_DATETIME, $8 remote_html_body::TEXT),
@@ -383,20 +383,20 @@ async fn touch_hammerfest_forum_message(
   Ok(())
 }
 
-async fn touch_hammerfest_forum_message_id(
+async fn touch_hammerfest_forum_post_id(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   thread: HammerfestForumThreadIdRef,
   page: NonZeroU16,
   offset: u8,
-  message_id: HammerfestForumMessageId,
+  post_id: HammerfestForumPostId,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    hammerfest_forum_message_ids(
+    hammerfest_forum_post_ids(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID, $4 page::U16, $5 offset_in_list::U8),
-      data($6 hammerfest_message_id::HAMMERFEST_FORUM_MESSAGE_ID),
-      unique(mid(hammerfest_server, hammerfest_message_id)),
+      data($6 hammerfest_post_id::HAMMERFEST_FORUM_POST_ID),
+      unique(mid(hammerfest_server, hammerfest_post_id)),
     )
   ))
     .bind(now)
@@ -404,7 +404,7 @@ async fn touch_hammerfest_forum_message_id(
     .bind(thread.id)
     .bind(i32::from(page.get()))
     .bind(i16::from(offset))
-    .bind(message_id)
+    .bind(post_id)
     .execute(&mut *tx)
     .await?;
   // Affected row counts:
@@ -1248,8 +1248,10 @@ where
     )
     .await?;
     for (offset, thread) in options.threads.items.iter().enumerate() {
-      let last_message_date = match thread.kind {
-        HammerfestForumThreadKind::Regular { last_message_date } => last_message_date,
+      let last_post_date = match thread.kind {
+        HammerfestForumThreadKind::Regular {
+          latest_post_date: last_post_date,
+        } => last_post_date,
         _ => unreachable!(),
       };
       touch_hammerfest_forum_thread(&mut tx, now, thread.as_ref()).await?;
@@ -1279,7 +1281,7 @@ where
         now,
         thread.as_ref(),
         false,
-        Some(last_message_date),
+        Some(last_post_date),
         thread.author.id,
         thread.reply_count,
       )
@@ -1317,7 +1319,7 @@ where
       options.theme.id,
       &options.thread.name,
       options.thread.is_closed,
-      options.messages.pages,
+      options.posts.pages,
     )
     .await?;
 
@@ -1325,50 +1327,37 @@ where
       &mut tx,
       now,
       options.thread.as_ref(),
-      options.messages.page1,
-      options
-        .messages
-        .items
-        .len()
-        .try_into()
-        .expect("OverflowOnThreadMessageCount"),
+      options.posts.page1,
+      options.posts.items.len().try_into().expect("OverflowOnThreadPostCount"),
     )
     .await?;
-    for (offset, message) in options.messages.items.iter().enumerate() {
-      let offset: u8 = offset.try_into().expect("OverflowOnThreadMessageOffset");
-      touch_hammerfest_user(&mut tx, now, &message.author.user).await?;
+    for (offset, post) in options.posts.items.iter().enumerate() {
+      let offset: u8 = offset.try_into().expect("OverflowOnThreadPostOffset");
+      touch_hammerfest_user(&mut tx, now, &post.author.user).await?;
       touch_hammerfest_achievements(
         &mut tx,
         now,
-        message.author.user.as_ref(),
-        message.author.has_carrot,
-        message.author.ladder_level,
+        post.author.user.as_ref(),
+        post.author.has_carrot,
+        post.author.ladder_level,
       )
       .await?;
-      touch_hammerfest_best_season_rank(&mut tx, now, message.author.user.as_ref(), message.author.rank).await?;
-      touch_hammerfest_forum_role(&mut tx, now, message.author.user.as_ref(), message.author.role).await?;
-      touch_hammerfest_forum_message(
+      touch_hammerfest_best_season_rank(&mut tx, now, post.author.user.as_ref(), post.author.rank).await?;
+      touch_hammerfest_forum_role(&mut tx, now, post.author.user.as_ref(), post.author.role).await?;
+      touch_hammerfest_forum_post(
         &mut tx,
         now,
         options.thread.as_ref(),
-        options.messages.page1,
+        options.posts.page1,
         offset,
-        message.author.user.id,
-        message.ctime,
-        &message.content,
+        post.author.user.id,
+        post.ctime,
+        &post.content,
       )
       .await?;
-      if let Some(mid) = message.id {
+      if let Some(mid) = post.id {
         session_user_is_moderator = true;
-        touch_hammerfest_forum_message_id(
-          &mut tx,
-          now,
-          options.thread.as_ref(),
-          options.messages.page1,
-          offset,
-          mid,
-        )
-        .await?;
+        touch_hammerfest_forum_post_id(&mut tx, now, options.thread.as_ref(), options.posts.page1, offset, mid).await?;
       }
     }
     if let Some(session_user) = response.session_user.as_ref() {

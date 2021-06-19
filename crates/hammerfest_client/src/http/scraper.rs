@@ -377,8 +377,8 @@ fn parse_forum_thread_id_url(url: &str) -> Result<HammerfestForumThreadId> {
   parse_generic_id_url(url, "/forum.html/thread/", ScraperError::InvalidForumThreadId)
 }
 
-fn parse_forum_post_id_url(url: &str) -> Result<HammerfestForumMessageId> {
-  parse_generic_id_url(url, "/forum.html/message/", ScraperError::InvalidForumMessageId)
+fn parse_forum_post_id_url(url: &str) -> Result<HammerfestForumPostId> {
+  parse_generic_id_url(url, "/forum.html/message/", ScraperError::InvalidForumPostId)
 }
 
 pub fn scrape_forum_home(server: HammerfestServer, html: &Html) -> Result<Vec<HammerfestForumTheme>> {
@@ -522,7 +522,7 @@ pub fn scrape_forum_theme(server: HammerfestServer, html: &Html) -> Result<Hamme
       },
       kind: match &current_date {
         Some(date) => HammerfestForumThreadKind::Regular {
-          last_message_date: *date,
+          latest_post_date: *date,
         },
         None => HammerfestForumThreadKind::Sticky,
       },
@@ -630,11 +630,11 @@ pub fn scrape_forum_thread(
         .map_err(|_e| ScraperError::HtmlFragmentNotFound(":scope > .statut > span::text".to_owned()))?;
       let rank = parse_u32(rank).ok();
 
-      Ok(HammerfestForumMessage {
+      Ok(HammerfestForumPost {
         id,
         content,
         ctime,
-        author: HammerfestForumMessageAuthor {
+        author: HammerfestForumPostAuthor {
           user: RawUserLink::scrape(user_link)?.to_user(server)?,
           has_carrot: selectors.select_one_opt(author_elem, "span:not(.rank) img")?.is_some(),
           ladder_level: parse_user_ladder_level(selectors.select_one_attr(header_elem, "div.statut img", "class")?)?,
@@ -653,6 +653,6 @@ pub fn scrape_forum_thread(
   Ok(HammerfestForumThreadPage {
     theme,
     thread,
-    messages: HammerfestForumPostListing { page1, pages, items },
+    posts: HammerfestForumPostListing { page1, pages, items },
   })
 }

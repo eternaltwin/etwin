@@ -214,7 +214,7 @@ mod tests_impl {
       // This means that the serialized HTML isn't deterministic, so we can't compare it
       // for equality and we have to ignore it.
       // See: https://github.com/causal-agent/scraper/issues/54
-      for msg in &mut thread.messages.items {
+      for msg in &mut thread.posts.items {
         msg.content.clear();
       }
 

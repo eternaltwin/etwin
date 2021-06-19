@@ -3,7 +3,6 @@ use auto_impl::auto_impl;
 use etwin_serde_tools::{buffer_to_hex, hex_to_buffer, Deserialize, Serialize};
 #[cfg(feature = "sqlx")]
 use sqlx::{database, postgres, Database, Postgres};
-use std::error::Error;
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Password(pub Vec<u8>);
@@ -54,7 +53,7 @@ where
 {
   fn decode(
     value: <Db as database::HasValueRef<'r>>::ValueRef,
-  ) -> Result<PasswordHash, Box<dyn Error + 'static + Send + Sync>> {
+  ) -> Result<PasswordHash, Box<dyn std::error::Error + 'static + Send + Sync>> {
     let value: &[u8] = <&[u8] as sqlx::Decode<Db>>::decode(value)?;
     Ok(value.into())
   }

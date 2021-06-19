@@ -2,7 +2,7 @@ use chrono::{Duration, TimeZone, Utc};
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
 use etwin_core::hammerfest::{
-  GetHammerfestUserOptions, HammerfestDate, HammerfestDateTime, HammerfestForumMessage, HammerfestForumMessageAuthor,
+  GetHammerfestUserOptions, HammerfestDate, HammerfestDateTime, HammerfestForumPost, HammerfestForumPostAuthor,
   HammerfestForumPostListing, HammerfestForumRole, HammerfestForumThemePage, HammerfestForumThemePageResponse,
   HammerfestForumThread, HammerfestForumThreadKind, HammerfestForumThreadListing, HammerfestForumThreadPage,
   HammerfestForumThreadPageResponse, HammerfestGodchild, HammerfestGodchildrenResponse, HammerfestInventoryResponse,
@@ -748,7 +748,7 @@ where
         },
         author_role: HammerfestForumRole::None,
         kind: HammerfestForumThreadKind::Regular {
-          last_message_date: HammerfestDate {
+          latest_post_date: HammerfestDate {
             month: 3,
             day: 5,
             weekday: 5,
@@ -821,16 +821,16 @@ where
             name: "[officiel] Corporate Soccer 2".parse().unwrap(),
             is_closed: false,
           },
-          messages: HammerfestForumPostListing {
+          posts: HammerfestForumPostListing {
             page1: NonZeroU16::new(1).unwrap(),
             pages: NonZeroU16::new(1).unwrap(),
             items: {
-              let mut messages: Vec<HammerfestForumMessage> = Vec::with_capacity(15);
+              let mut posts: Vec<HammerfestForumPost> = Vec::with_capacity(15);
               for i in 0u8..15 {
-                messages.push(HammerfestForumMessage {
+                posts.push(HammerfestForumPost {
                   id: None,
                   author: if i % 2 == 0 {
-                    HammerfestForumMessageAuthor {
+                    HammerfestForumPostAuthor {
                       user: ShortHammerfestUser {
                         server: HammerfestServer::HammerfestFr,
                         id: "195".parse().unwrap(),
@@ -842,7 +842,7 @@ where
                       role: HammerfestForumRole::Administrator,
                     }
                   } else {
-                    HammerfestForumMessageAuthor {
+                    HammerfestForumPostAuthor {
                       user: ShortHammerfestUser {
                         server: HammerfestServer::HammerfestFr,
                         id: format!("{}", 1 + i).parse().unwrap(),
@@ -866,7 +866,7 @@ where
                   content: format!("Hello! {}", i),
                 });
               }
-              messages
+              posts
             },
           },
         },
@@ -909,16 +909,16 @@ pub(crate) async fn test_touch_forum_thread_page_as_moderator<TyClock, TyHammerf
             name: "[officiel] Corporate Soccer 2".parse().unwrap(),
             is_closed: false,
           },
-          messages: HammerfestForumPostListing {
+          posts: HammerfestForumPostListing {
             page1: NonZeroU16::new(1).unwrap(),
             pages: NonZeroU16::new(1).unwrap(),
             items: {
-              let mut messages: Vec<HammerfestForumMessage> = Vec::with_capacity(15);
+              let mut posts: Vec<HammerfestForumPost> = Vec::with_capacity(15);
               for i in 0u8..15 {
-                messages.push(HammerfestForumMessage {
+                posts.push(HammerfestForumPost {
                   id: Some((1 + i).to_string().parse().unwrap()),
                   author: if i % 2 == 0 {
-                    HammerfestForumMessageAuthor {
+                    HammerfestForumPostAuthor {
                       user: ShortHammerfestUser {
                         server: HammerfestServer::HammerfestFr,
                         id: "195".parse().unwrap(),
@@ -930,7 +930,7 @@ pub(crate) async fn test_touch_forum_thread_page_as_moderator<TyClock, TyHammerf
                       role: HammerfestForumRole::Administrator,
                     }
                   } else {
-                    HammerfestForumMessageAuthor {
+                    HammerfestForumPostAuthor {
                       user: ShortHammerfestUser {
                         server: HammerfestServer::HammerfestFr,
                         id: format!("{}", 1 + i).parse().unwrap(),
@@ -954,7 +954,7 @@ pub(crate) async fn test_touch_forum_thread_page_as_moderator<TyClock, TyHammerf
                   content: format!("Hello! {}", i),
                 });
               }
-              messages
+              posts
             },
           },
         },
