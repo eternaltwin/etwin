@@ -1,0 +1,42 @@
+{
+  "session_user": {
+    "username": "DummyDum",
+    "coins": 885,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "765666",
+        "name": "Tentacles",
+        "location": "4"
+      }
+    ]
+  },
+  "dinoz": {
+    "type": "DinoparcDinoz",
+    "server": "en.dinoparc.com",
+    "id": "765666",
+    "name": "Tentacles",
+    "location": "4",
+    "race": "Rokky",
+    "skin": "8VzjDFtVIohGgQDQ",
+    "life": 64,
+    "level": 1,
+    "experience": 66,
+    "danger": 56,
+    "in_tournament": false,
+    "elements": {
+      "fire": 0,
+      "earth": 0,
+      "water": 2,
+      "thunder": 4,
+      "air": 1
+    },
+    "skills": {
+      "Dexterity": 1,
+      "Intelligence": 3,
+      "Perception": 2,
+      "Juggle": 1
+    }
+  }
+}

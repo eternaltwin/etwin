@@ -1,0 +1,117 @@
+{
+  "session_user": {
+    "username": "djtoph",
+    "coins": 4051,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1095080",
+        "name": "boutchou",
+        "location": "7"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1162336",
+        "name": "jo le dino",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2094149",
+        "name": "Blue Devil",
+        "location": "10"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2589135",
+        "name": "Green Devil",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3081875",
+        "name": "Stewie",
+        "location": "22"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3248685",
+        "name": "Aequity",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3453835",
+        "name": "Black Devil",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3684322",
+        "name": "Dreamer",
+        "location": "8"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3685541",
+        "name": "Spyrit",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3741964",
+        "name": "Salazar",
+        "location": "15"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3749415",
+        "name": "Nabaku",
+        "location": "4"
+      }
+    ]
+  },
+  "dinoz": {
+    "type": "DinoparcDinoz",
+    "server": "dinoparc.com",
+    "id": "1095080",
+    "name": "boutchou",
+    "location": "7",
+    "race": "Wanwan",
+    "skin": "AiagBuUXDUr4blgA",
+    "life": 30,
+    "level": 40,
+    "experience": 0,
+    "danger": -46,
+    "in_tournament": false,
+    "elements": {
+      "fire": 5,
+      "earth": 15,
+      "water": 10,
+      "thunder": 12,
+      "air": 5
+    },
+    "skills": {
+      "Dexterity": 5,
+      "Intelligence": 5,
+      "Perception": 5,
+      "Stamina": 5,
+      "Strength": 5,
+      "Dig": 5,
+      "Medicine": 5,
+      "Climb": 5,
+      "Navigation": 5
+    }
+  }
+}

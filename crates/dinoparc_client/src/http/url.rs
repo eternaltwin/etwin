@@ -1,4 +1,4 @@
-use etwin_core::dinoparc::{DinoparcMachineId, DinoparcServer};
+use etwin_core::dinoparc::{DinoparcDinozId, DinoparcMachineId, DinoparcServer};
 use reqwest::Url;
 
 pub struct DinoparcUrls {
@@ -18,6 +18,7 @@ impl DinoparcUrls {
   }
 
   fn make_url(&self, action: &'static str, params: &[(&str, &str)]) -> Url {
+    // TODO: Use `?r=...`
     let mut url = self.root.clone();
     {
       let mut query = url.query_pairs_mut();
@@ -41,7 +42,41 @@ impl DinoparcUrls {
     self.make_url("login", &[])
   }
 
+  pub fn inventory(&self) -> Url {
+    self.make_url("inventory", &[])
+  }
+
+  // pub fn exchange(&self) -> Url {
+  //   self.make_url("bill", &[])
+  // }
+  //
+  // pub fn exchange_with(&self, user_id: DinoparcUserId) -> Url {
+  //   user_id.with_str(|user| self.make_url("bill", &[("uid", user)]))
+  // }
+
+  pub fn dinoz(&self, dinoz_id: DinoparcDinozId) -> Url {
+    dinoz_id.with_str(|dinoz| self.make_url("dino", &[("id", dinoz)]))
+  }
+
   pub fn ad_tracking(&self, machine_id: DinoparcMachineId) -> Url {
     self.make_url("adtk", &[("m", machine_id.as_str())])
+  }
+
+  pub fn parse_from_root(&self, href: &str) -> Result<Url, url::ParseError> {
+    Url::options().base_url(Some(&self.root)).parse(href)
+  }
+}
+
+/// Value of the `r` query parameter
+pub struct DinoparcRequest<'a>(&'a str);
+
+impl<'a> DinoparcRequest<'a> {
+  pub fn new(r: &'a str) -> Self {
+    Self(r)
+  }
+
+  pub fn pairs(&self) -> impl Iterator<Item = (&str, &str)> {
+    let r = self.0;
+    r.split(';').map(|item| item.split_once('=').unwrap_or((item, "")))
   }
 }

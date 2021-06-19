@@ -1,0 +1,271 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="es">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-15" />
+  <meta name="author" content="Motion-Twin" />
+  <meta name="copyright" content="&copy; 2006 Motion-Twin" />
+  <meta name="language" content="es">
+  <meta name="keywords" lang="es" content="dinoparc, dino, dinos, dinosaurio, juego" />
+  <meta name="description" lang="es" content="¡Adopta un Dino y llévalo al combate!" />
+
+  <title>Dinoparc - Pelea con tu mascota virtual</title>
+
+  <link href="http://data.dinoparc.com/css/main.css?version=6" rel="stylesheet" type="text/css">
+  <link href="http://data.dinoparc.com/css/struct.css?version=6" rel="stylesheet" type="text/css">
+  <link href="http://data.dinoparc.com/css/form.css?version=6" rel="stylesheet" type="text/css">
+  <link href="http://data.dinoparc.com/css/lang/sp.css?version=6" rel="stylesheet" type="text/css">
+
+
+
+  <!--[if IE 6]>
+  <link rel="stylesheet" type="text/css" href="css/ie.css?version=6"/>
+  <![endif]-->
+  <!--[if IE 5]>
+  <link rel="stylesheet" type="text/css" href="css/ie5.css?version=6"/>
+  <![endif]-->
+
+  <script src="js/tooltip.js?version=4" language="javascript" type="text/javascript"></script>
+  <script src="js/misc.js?version=4" language="javascript" type="text/javascript"></script>
+</head>
+
+<body>
+
+<div class="gradientBg">
+
+  <table class="site">
+    <tr>
+
+      <td class="siteHeader banner"><a href="/?r=rlkUaZ;a=index"><img src="img/design/spacer.gif"></a></td>
+
+    </tr>
+    <tr>
+      <td class="siteContent">
+        <table>
+          <tr>
+            <td class="leftPane">
+
+              <div class="menu">
+                <h1>Menú</h1>
+
+
+                <!-- LOGGED -->
+
+
+
+                <div class="title">demurgos</div>
+                <ul class="options">
+                  <li><a href="/?r=rlkUaZ;a=bank"><span class="money" title="10400 monedas">10400 <img src="img/icons/tiny_coin.gif"></span></a></li>
+                  <li><a href="/?r=rlkUaZ;a=bank">Obtener Monedas</a></li>
+                  <li><a href="/?r=rlkUaZ;a=user">Mi cuenta</a></li>
+
+                </ul>
+
+                <div class="title"> Tus Dinos </div>
+
+                <div id="dinozListBlock">
+
+                  <ul class="dinoList">
+
+                  </ul>
+                </div>
+
+                <div class="buyLink"><a href="/?r=rlkUaZ;a=buy-dino"><img src="img/icons/buy.gif" class="middle"> Comprar un Dino</a></div>
+
+
+
+                <div class="title">Menú</div>
+                <ul class="options">
+                  <li><a href="/?r=rlkUaZ;a=news">Novedades</a></li>
+                  <li><a href="/?r=rlkUaZ;a=inventory">Inventario</a></li>
+                  <li><a href="/?r=rlkUaZ;a=collection">Colección</a></li>
+                  <li><a href="/?r=rlkUaZ;a=shop">Tienda</a></li>
+                  <li><a href="/?r=rlkUaZ;a=message">Mensajería</a></li>
+                  <li><a href="/?r=rlkUaZ;a=history"><span class="notify" title="¡Tienes acontecimientos sin leer!">Historial <img src="img/icons/anim_notify.gif"></span></a></li>
+                  <li><a href="/?r=rlkUaZ;a=ranks">Clasificación</a></li>
+                  <li><a href="/?r=rlkUaZ;a=parrain">Recomienda</a></li>
+                  <li><a href="/?r=rlkUaZ;a=clan">Clanes</a></li>
+                  <li><a href="http://twinoid.com/es/tid/forum#!view/51124" target="_blank">Foro</a></li>
+                  <li>&nbsp;</li>
+
+                  <li class="separator"></li>
+
+                  <li><a href="/?r=rlkUaZ;a=guide"><img src="img/icons/help.gif" class="middle"/> Ayuda</a></li>
+                  <li><a href="/?r=rlkUaZ;a=disconnect"  onClick="return confirm('¿Confirmas esta acción?')" ><img src="img/icons/logout.gif" class="middle"/> Desconexión</a></li>
+                </ul>
+
+
+
+                <br/>
+
+                <div class="menuInfos">Son las 18h06 en Dinoland</div>
+                <div class="menuInfos">2605 conectados</div>
+
+                <br/>
+
+                <div class="title">Más juegos gratis</div>
+
+                <div class="friends">
+                  <script src="http://trax.motion-twin.com/words/dparc_es/2?rnd=1" type="text/javascript"></script>
+                </div>
+
+              </div>
+
+            </td>
+            <td class="contentPane">
+              <div id="tooltip">
+                <div class="content">
+                  <div class="header">
+                    <div id="tooltipContent"></div>
+                  </div>
+                </div>
+                <div class="footer"></div>
+              </div>
+              <div class="guild">
+                <h1>Clanes</h1>
+
+
+
+                <p>
+                  <strong>Todavía no tienes clan</strong>: puedes solicitar tu entrada en un clan ya existente accediendo a su página. Tienes una lista de los clanes aquí abajo.¡Otra posibilidad es
+                  <a href="/?r=rlkUaZ;a=clan_create">crear tu propio clan</a>!
+                </p>
+
+
+                <p>
+                  ¿Necesitas ayuda? Consulta
+                  <a href="/?r=rlkUaZ;a=guide#clans">la guía de los clanes</a>.
+                </p>
+
+                <h2>Clanes recientemente creados</h2>
+
+                <table class="table">
+                  <tr><th>Nombre</th><th>Creador</th><th>Jugadores</th><th>Fecha de creación</th></tr>
+
+                  <tr>
+                    <td><a href="/?r=rlkUaZ;a=clan_show;id=3297">evancorz</a></td>
+                    <td><a href="/?r=rlkUaZ;a=user;id=1124278">evancorz</a></td>
+                    <td>4</td>
+                    <td>Thursday 20 November a las 04:36</td>
+                  </tr>
+
+                  <tr>
+                    <td><a href="/?r=rlkUaZ;a=clan_show;id=3296">AJUTRON</a></td>
+                    <td><a href="/?r=rlkUaZ;a=user;id=1130761">JUTRON</a></td>
+                    <td>2</td>
+                    <td>Thursday 20 November a las 01:51</td>
+                  </tr>
+
+                  <tr>
+                    <td><a href="/?r=rlkUaZ;a=clan_show;id=3295">Black Dragon</a></td>
+                    <td><a href="/?r=rlkUaZ;a=user;id=957993">AtilaElHunoB</a></td>
+                    <td>11</td>
+                    <td>Sunday 09 November a las 22:56</td>
+                  </tr>
+
+                  <tr>
+                    <td><a href="/?r=rlkUaZ;a=clan_show;id=3294">Barrio Loco</a></td>
+                    <td><a href="/?r=rlkUaZ;a=user;id=1117115">MICTLAN_DM</a></td>
+                    <td>2</td>
+                    <td>Wednesday 29 October a las 21:26</td>
+                  </tr>
+
+                  <tr>
+                    <td><a href="/?r=rlkUaZ;a=clan_show;id=3293">Reset bot </a></td>
+                    <td><a href="/?r=rlkUaZ;a=user;id=313964">fccosevilla</a></td>
+                    <td>4</td>
+                    <td>Friday 24 October a las 02:44</td>
+                  </tr>
+
+                  <tr>
+                    <td><a href="/?r=rlkUaZ;a=clan_show;id=3292">Ultima Chance</a></td>
+                    <td><a href="/?r=rlkUaZ;a=user;id=1130135">OlvideMiId</a></td>
+                    <td>2</td>
+                    <td>Tuesday 06 May a las 04:50</td>
+                  </tr>
+
+                  <tr>
+                    <td><a href="/?r=rlkUaZ;a=clan_show;id=3291">VIVA PERU-ANO</a></td>
+                    <td><a href="/?r=rlkUaZ;a=user;id=1130124">Pillin_yey.</a></td>
+                    <td>3</td>
+                    <td>Sunday 04 May a las 23:23</td>
+                  </tr>
+
+                  <tr>
+                    <td><a href="/?r=rlkUaZ;a=clan_show;id=3290">Targaryen</a></td>
+                    <td><a href="/?r=rlkUaZ;a=user;id=5534">yucali</a></td>
+                    <td>12</td>
+                    <td>Sunday 27 April a las 14:23</td>
+                  </tr>
+
+                  <tr>
+                    <td><a href="/?r=rlkUaZ;a=clan_show;id=3289">Hells AngelS</a></td>
+                    <td><a href="/?r=rlkUaZ;a=user;id=1130008">XxTreicyXx</a></td>
+                    <td>5</td>
+                    <td>Wednesday 23 April a las 04:47</td>
+                  </tr>
+
+                  <tr>
+                    <td><a href="/?r=rlkUaZ;a=clan_show;id=3288">Mi bb en el cielo</a></td>
+                    <td><a href="/?r=rlkUaZ;a=user;id=1130038">Pololin</a></td>
+                    <td>4</td>
+                    <td>Friday 18 April a las 00:33</td>
+                  </tr>
+
+                </table>
+
+                <div class="paginate">
+                  <span class="previous"> <span class="off">Anterior</span> </span>
+                  <span class="current">| página 1 de 50 |</span>
+                  <span class="next"><a href="/?r=rlkUaZ;a=clan;p=1">Siguiente</a></span>
+                </div>
+
+                <form action="/?r=rlkUaZ;a=clan_ranks" method="POST">
+                  <table>
+                    <tr>
+                      <td>Buscar un clan:&nbsp;</td>
+                      <td><input type="text" name="name" />&nbsp;</td>
+                      <td><input type="submit" class="button" value="Buscar"/></td>
+                    </tr>
+                  </table>
+                </form>
+
+                <h2>Clasificación</h2>
+
+                <p>
+                  <a href="/?r=rlkUaZ;a=clan_ranks">Clasificación de los Clanes</a>
+                </p>
+
+              </div>
+
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="siteFooter">
+        <div>
+          <a href="/?r=rlkUaZ;a=news">Novedades</a> &middot;
+          <a href="/?r=rlkUaZ;a=guide">Guía del juego</a> &middot;
+          <a href="http://support.motion-twin.com/go?site=dparc;lang=es;sid=2FSkdsmEs5Vn9CWm0xqfPtmtCXCuSA7Y" target="_blank">FAQ y contacto</a> &middot;
+          <a href="/?r=rlkUaZ;a=password;mail=1">¿Olvidaste tu contraseña?</a> &middot;
+          <a href="http://www.motion-twin.com/cgu_es.php?s=dp" target="_blank">Reglamento</a> &middot;
+          <a href="http://www.motion-twin.com/seguridad" target="_blank">Seguridad</a>
+        </div>
+        <div>&copy; 2009, <a href="http://www.motion-twin.es"  onmouseover='showTip(this,"Un juego creado por Motion Twin - Haga clic aquí para más información.","Motion Twin")' onmouseout="hideTip()" ><img src="/img/motiontwin.gif" alt="Motion Twin"> </a> &middot; Todos los derechos reservados, Dinoparc es una marca registrada.</div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+  _uacct = "UA-114594-8";
+  urchinTracker();
+</script>
+
+</body>
+</html>

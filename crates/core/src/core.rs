@@ -79,3 +79,13 @@ impl Secret {
     &self.0
   }
 }
+
+declare_new_int! {
+  /// A percentage value between 0 and 100 (inclusive) supporting only integer
+  /// values.
+  pub struct IntPercentage(u8);
+  pub type RangeError = IntPercentageRangeError;
+  const BOUNDS = 0..=100;
+  type SqlType = i16;
+  const SQL_NAME = "int_percent";
+}

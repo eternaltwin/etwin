@@ -31,3 +31,32 @@ pub fn get_one_text(node: ElementRef) -> Result<&str, &'static str> {
     (_, Some(_)) => Err("TooManyTextNodes: expected 1, got 2 or more"),
   }
 }
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+pub struct FlashVars<'a>(&'a str);
+
+#[derive(Debug, Clone)]
+pub struct FlashVarsIter<'a>(std::iter::Map<std::str::Split<'a, char>, for<'r> fn(&'r str) -> (&'r str, &'r str)>);
+
+impl<'a> FlashVars<'a> {
+  pub fn new(r: &'a str) -> Self {
+    Self(r)
+  }
+}
+
+impl<'a> IntoIterator for FlashVars<'a> {
+  type Item = (&'a str, &'a str);
+  type IntoIter = FlashVarsIter<'a>;
+
+  fn into_iter(self) -> Self::IntoIter {
+    FlashVarsIter(self.0.split('&').map(|item| item.split_once('=').unwrap_or((item, ""))))
+  }
+}
+
+impl<'a> Iterator for FlashVarsIter<'a> {
+  type Item = (&'a str, &'a str);
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.0.next()
+  }
+}

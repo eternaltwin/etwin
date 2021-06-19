@@ -2,8 +2,9 @@ use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::core::Instant;
 use etwin_core::dinoparc::{
-  DinoparcClient, DinoparcCredentials, DinoparcDinoz, DinoparcDinozId, DinoparcPassword, DinoparcServer,
-  DinoparcSession, DinoparcSessionKey, DinoparcUserId, DinoparcUsername, ShortDinoparcUser,
+  DinoparcClient, DinoparcCredentials, DinoparcDinozId, DinoparcDinozResponse, DinoparcInventoryResponse,
+  DinoparcPassword, DinoparcServer, DinoparcSession, DinoparcSessionKey, DinoparcUserId, DinoparcUsername,
+  ShortDinoparcUser,
 };
 use etwin_core::types::EtwinError;
 use std::collections::hash_map::Entry;
@@ -222,8 +223,12 @@ where
     &self,
     _session: &DinoparcSession,
     _id: DinoparcDinozId,
-  ) -> Result<Option<DinoparcDinoz>, EtwinError> {
+  ) -> Result<DinoparcDinozResponse, EtwinError> {
     unimplemented!()
+  }
+
+  async fn get_inventory(&self, _session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError> {
+    todo!()
   }
 }
 

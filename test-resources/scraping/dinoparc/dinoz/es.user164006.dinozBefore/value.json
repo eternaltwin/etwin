@@ -1,0 +1,108 @@
+{
+  "session_user": {
+    "username": "Kapox",
+    "coins": 11687,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "sp.dinoparc.com",
+        "id": "214165",
+        "name": "MagnaAngemon",
+        "location": "3"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "sp.dinoparc.com",
+        "id": "603748",
+        "name": "Paildramon",
+        "location": "9"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "sp.dinoparc.com",
+        "id": "610795",
+        "name": "Gargomon",
+        "location": "4"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "sp.dinoparc.com",
+        "id": "616057",
+        "name": "Greymon",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "sp.dinoparc.com",
+        "id": "619205",
+        "name": "Veemon",
+        "location": "3"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "sp.dinoparc.com",
+        "id": "622299",
+        "name": "Guilmon",
+        "location": "4"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "sp.dinoparc.com",
+        "id": "626594",
+        "name": "Digitamon",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "sp.dinoparc.com",
+        "id": "627891",
+        "name": "Angemon",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "sp.dinoparc.com",
+        "id": "629238",
+        "name": "Patamon",
+        "location": "4"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "sp.dinoparc.com",
+        "id": "631109",
+        "name": "Seadramon",
+        "location": "4"
+      }
+    ]
+  },
+  "dinoz": {
+    "type": "DinoparcDinoz",
+    "server": "sp.dinoparc.com",
+    "id": "214165",
+    "name": "MagnaAngemon",
+    "location": "3",
+    "race": "Wanwan",
+    "skin": "Ahm2SNWSl295DK1W",
+    "life": 30,
+    "level": 12,
+    "experience": 10,
+    "danger": 241,
+    "in_tournament": false,
+    "elements": {
+      "fire": 1,
+      "earth": 3,
+      "water": 3,
+      "thunder": 12,
+      "air": 0
+    },
+    "skills": {
+      "Intelligence": 5,
+      "Perception": 3,
+      "Stamina": 2,
+      "Strength": 1,
+      "Dig": 1,
+      "Medicine": 4,
+      "Bargain": 1
+    }
+  }
+}

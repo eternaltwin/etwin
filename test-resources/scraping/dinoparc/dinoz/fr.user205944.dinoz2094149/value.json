@@ -1,0 +1,122 @@
+{
+  "session_user": {
+    "username": "djtoph",
+    "coins": 4051,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1095080",
+        "name": "boutchou",
+        "location": "7"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1162336",
+        "name": "jo le dino",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2094149",
+        "name": "Blue Devil",
+        "location": "10"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2589135",
+        "name": "Green Devil",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3081875",
+        "name": "Stewie",
+        "location": "22"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3248685",
+        "name": "Aequity",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3453835",
+        "name": "Black Devil",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3684322",
+        "name": "Dreamer",
+        "location": "8"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3685541",
+        "name": "Spyrit",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3741964",
+        "name": "Salazar",
+        "location": "15"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3749415",
+        "name": "Nabaku",
+        "location": "4"
+      }
+    ]
+  },
+  "dinoz": {
+    "type": "DinoparcDinoz",
+    "server": "dinoparc.com",
+    "id": "2094149",
+    "name": "Blue Devil",
+    "location": "10",
+    "race": "Gorriloz",
+    "skin": "5oARX677BMwcJwF#",
+    "life": 32,
+    "level": 92,
+    "experience": 0,
+    "danger": -96,
+    "in_tournament": false,
+    "elements": {
+      "fire": 18,
+      "earth": 43,
+      "water": 13,
+      "thunder": 16,
+      "air": 10
+    },
+    "skills": {
+      "Intelligence": 5,
+      "Perception": 1,
+      "Stamina": 4,
+      "Strength": 3,
+      "Dig": 5,
+      "Medicine": 4,
+      "Swim": 1,
+      "Climb": 1,
+      "FireApprentice": 4,
+      "EarthApprentice": 4,
+      "WaterApprentice": 4,
+      "ThunderApprentice": 4,
+      "ShadowPower": 5,
+      "TotemThief": 1
+    }
+  }
+}

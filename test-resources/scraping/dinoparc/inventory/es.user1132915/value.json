@@ -1,0 +1,17 @@
+{
+  "session_user": {
+    "username": "demurgos",
+    "coins": 10400,
+    "dinoz": []
+  },
+  "inventory": [
+    {
+      "id": "1",
+      "count": 3
+    },
+    {
+      "id": "3",
+      "count": 2
+    }
+  ]
+}

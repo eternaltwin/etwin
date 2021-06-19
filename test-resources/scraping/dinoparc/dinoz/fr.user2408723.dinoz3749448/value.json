@@ -1,0 +1,42 @@
+{
+  "session_user": {
+    "username": "demurgos",
+    "coins": 2000,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3749448",
+        "name": "Boréo",
+        "location": "0"
+      }
+    ]
+  },
+  "dinoz": {
+    "type": "DinoparcDinoz",
+    "server": "dinoparc.com",
+    "id": "3749448",
+    "name": "Boréo",
+    "location": "0",
+    "race": "Pteroz",
+    "skin": "DrQT9bHipH7wBkBt",
+    "life": 100,
+    "level": 1,
+    "experience": 0,
+    "danger": 0,
+    "in_tournament": false,
+    "elements": {
+      "fire": 1,
+      "earth": 1,
+      "water": 0,
+      "thunder": 3,
+      "air": 6
+    },
+    "skills": {
+      "Dexterity": 2,
+      "Intelligence": 3,
+      "Strength": 1,
+      "Dig": 1
+    }
+  }
+}

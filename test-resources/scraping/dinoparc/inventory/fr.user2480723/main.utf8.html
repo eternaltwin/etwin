@@ -1,0 +1,248 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="fr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-15" />
+  <meta name="author" content="Motion-Twin" />
+  <meta name="copyright" content="&copy; 2006 Motion-Twin" />
+  <meta name="keywords" lang="fr" content="dinoparc, dinoz, élevage" />
+  <meta name="description" lang="fr" content="Elevez votre Dinoz et faites le combattre !" />
+
+  <title>Dinoparc.com</title>
+
+  <link href="http://data.dinoparc.com/css/main.css?version=15" rel="stylesheet" type="text/css">
+  <link href="http://data.dinoparc.com/css/struct.css?version=15" rel="stylesheet" type="text/css">
+  <link href="http://data.dinoparc.com/css/form.css?version=15" rel="stylesheet" type="text/css">
+
+
+
+  <!--[if IE 6]>
+  <link rel="stylesheet" type="text/css" href="css/ie.css?version=15"/>
+  <![endif]-->
+  <!--[if IE 5]>
+  <link rel="stylesheet" type="text/css" href="css/ie5.css?version=15"/>
+  <![endif]-->
+
+  <script src="js/tooltip.js?version=4" language="javascript" type="text/javascript"></script>
+  <script src="js/misc.js?version=4" language="javascript" type="text/javascript"></script>
+</head>
+
+<body>
+
+<div class="gradientBg">
+
+  <table class="site">
+    <tr>
+
+      <td class="siteHeader banner"><a href="/?r=OsR69l;a=index"><img src="img/design/spacer.gif"></a></td>
+
+    </tr>
+    <tr>
+      <td class="siteContent">
+        <table>
+          <tr>
+            <td class="leftPane">
+
+              <div class="menu">
+                <h1>Menu</h1>
+
+
+                <!-- LOGGED -->
+
+
+
+                <div class="title">demurgos</div>
+                <ul class="options">
+                  <li><a href="/?r=OsR69l;a=bank"><span class="money" title="2000 pièces">2000 <img src="img/icons/tiny_coin.gif"></span></a></li>
+                  <li><a href="/?r=OsR69l;a=bank">Obtenir des Pièces</a></li>
+                  <li><a href="/?r=OsR69l;a=user">Mon compte</a></li>
+
+                </ul>
+
+                <div class="title"> Vos Dinoz </div>
+
+                <div id="dinozListBlock">
+
+                  <ul class="dinoList">
+
+                    <li class=""><a href="/?r=OsR69l;a=dino;id=3749448">
+
+                      <div><p class="name">Boréo</p><p class="placeName">Dinoville</p></div>
+
+                    </a></li>
+
+                  </ul>
+                </div>
+
+                <div class="buyLink"><a href="/?r=OsR69l;a=buy-dino"><img src="img/icons/buy.gif" class="middle"> Acheter un Dinoz</a></div>
+
+
+
+                <div class="title">Menu</div>
+                <ul class="options">
+                  <li><a href="/?r=OsR69l;a=news">Nouveautés</a></li>
+                  <li><a href="/?r=OsR69l;a=inventory">Inventaire</a></li>
+                  <li><a href="/?r=OsR69l;a=collection">Collection</a></li>
+                  <li><a href="/?r=OsR69l;a=shop">Boutique</a></li>
+                  <li><a href="/?r=OsR69l;a=message">Messagerie</a></li>
+                  <li><a href="/?r=OsR69l;a=history"><span class="notify" title="Vous avez des événements non lus !">Historique <img src="img/icons/anim_notify.gif"></span></a></li>
+                  <li><a href="/?r=OsR69l;a=ranks">Classement</a></li>
+                  <li><a href="/?r=OsR69l;a=parrain">Parrainage</a></li>
+                  <li><a href="/?r=OsR69l;a=clan">Clans</a></li>
+                  <li>&nbsp;</li>
+
+                  <li class="separator"></li>
+
+
+                  <li><a href="/?r=OsR69l;a=guide"><img src="img/icons/help.gif" class="middle"/> Aide</a></li>
+                  <li><a href="/?r=OsR69l;a=disconnect"  onClick="return confirm('Confirmer cette action ?')" ><img src="img/icons/logout.gif" class="middle"/> Déconnexion</a></li>
+                </ul>
+
+
+
+                <br/>
+
+                <div class="menuInfos">Il est 16h56 à Dinoland</div>
+                <div class="menuInfos">824 connectés</div>
+
+                <br/>
+
+
+
+                <script type="text/javascript">
+                  var links = [{ tid : 'alpha', img : 'alpha' },{ tid : 'croque', img : 'croque' },{ tid : 'drpg', img : 'dinorpg' }];
+                  var l = links[(new Date()).getDay()%links.length];
+                  document.write('<a href="http://trax.motion-twin.com/goto/dparc_mt/'+l.tid+'?days=10"><img src="/img/mt/'+l.img+'.gif"/>');
+                </script>
+
+
+
+
+              </div>
+
+            </td>
+            <td class="contentPane">
+              <div id="tooltip">
+                <div class="content">
+                  <div class="header">
+                    <div id="tooltipContent"></div>
+                  </div>
+                </div>
+                <div class="footer"></div>
+              </div>
+              <h1>Votre Inventaire</h1>
+
+
+
+
+              <div class="inventory">
+                <div class="invIcon"><img src="/img/design/inventoryIcon.gif"/></div>
+
+                <p>
+                  Votre inventaire rassemble l'ensemble des objets en votre possession. Vous pouvez ici voir leur
+                  effet ainsi que les utiliser sur l'un de vos Dinoz.
+                </p>
+                <p>
+                  Visitez la <a href="/?r=OsR69l;a=shop">boutique</a> pour acheter des objets supplémentaires.
+                </p>
+                <div class="clear"></div>
+
+
+
+
+                <table>
+                  <tr> <th></th> <th>Nom de l'objet</th> <th>Stock</th> <th>Utiliser sur</th> </tr>
+
+
+                  <tr>
+
+                    <td class="pic"><img src="img/items/potion.gif" class="icon"></td>
+                    <td>
+                      <div><strong>Potion de Madame Irma</strong></div>
+                      <div><a class="helpLink" href="/?r=OsR69l;a=help;it=1" onmouseover='showTip(this,"La potion de Madame Irma permet au Dinoz qui la boit de <strong>jouer une nouvelle action immédiatement</strong> sans devoir attendre le lendemain.","Potion de Madame Irma")' onmouseout="hideTip()"><img src="/img/design/icon_help.gif"></a></div>
+                    </td>
+                    <td>
+
+                      <strong>3</strong>
+
+                    </td>
+                    <td class="action">
+
+
+
+
+                      <span class="name"><a href="/?r=OsR69l;a=use;id=3749448;it=1"  onClick="return confirm('Confirmer cette action ?')"   onmouseover='showTip(this,"<p>Vie: <strong>100 %</strong></p><p>Expérience: <strong>0 %</strong></p>","Boréo")' onmouseout="hideTip()" >Boréo</a></span><span class="separator">&nbsp;|</span>
+
+
+
+
+                    </td>
+                  </tr>
+
+
+
+                  <tr>
+
+                    <td class="pic"><img src="img/items/heal1.gif" class="icon"></td>
+                    <td>
+                      <div><strong>Nuage-Burger</strong></div>
+                      <div><a class="helpLink" href="/?r=OsR69l;a=help;it=3" onmouseover='showTip(this,"Le nuage-burger permet de <strong>soigner légèrement un Dinoz (+10% de vie)</strong>. Il est utile après un combat difficile, et apprécié par les Dinoz gastronomes.","Nuage-Burger")' onmouseout="hideTip()"><img src="/img/design/icon_help.gif"></a></div>
+                    </td>
+                    <td>
+
+                      <strong>2</strong>
+
+                    </td>
+                    <td class="action">
+
+
+
+
+                      <span class="name"><a href="/?r=OsR69l;a=use;id=3749448;it=3"  onClick="return confirm('Confirmer cette action ?')"   onmouseover='showTip(this,"<p>Vie: <strong>100 %</strong></p><p>Expérience: <strong>0 %</strong></p>","Boréo")' onmouseout="hideTip()" >Boréo</a></span><span class="separator">&nbsp;|</span>
+
+
+
+
+                    </td>
+                  </tr>
+
+
+                </table>
+
+
+
+
+              </div>
+
+
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="siteFooter">
+        <div>
+          <a href="/?r=OsR69l;a=news">Nouveautés</a> &middot;
+          <a href="/?r=OsR69l;a=guide">Guide du jeu</a> &middot;
+          <a href="http://support.motion-twin.com/go?site=dparc;lang=fr;sid=u5sNOW2lK9ODvzz0UtXL20lhzyD0hlbs" target="_blank">Support technique</a> &middot;
+          <a href="/?r=OsR69l;a=password;mail=1">Oubli de mot de passe</a> &middot;
+          <a href="http://www.motion-twin.com/cgu.php?s=dp" target="_blank">Règlement</a> &middot;
+          <a href="http://www.motion-twin.com/securite" target="_bank">Sécurité</a>
+        </div>
+        <div>&copy; 2009, <a href="http://www.motion-twin.com"><img src="/img/motiontwin.gif" alt="Motion Twin"> </a> &middot; Tous droits réservés, Dinoparc est une marque déposée.</div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+  _uacct = "UA-114594-7";
+  urchinTracker();
+</script>
+
+</body>
+</html>

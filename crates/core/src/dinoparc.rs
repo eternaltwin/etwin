@@ -1,4 +1,4 @@
-use crate::core::Instant;
+use crate::core::{Instant, IntPercentage};
 use crate::types::EtwinError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
@@ -7,6 +7,7 @@ use enum_iterator::IntoEnumIterator;
 use etwin_serde_tools::{Deserialize, Serialize};
 #[cfg(feature = "sqlx")]
 use sqlx::{database, postgres, Database, Postgres};
+use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt;
 use std::iter::FusedIterator;
@@ -226,11 +227,43 @@ declare_decimal_id! {
   const SQL_NAME = "dinoparc_dinoz_id";
 }
 
+declare_decimal_id! {
+  pub struct DinoparcItemId(u32);
+  pub type ParseError = DinoparcItemIdParseError;
+  const BOUNDS = 1..1_000_000_000;
+  const SQL_NAME = "dinoparc_item_id";
+}
+
 declare_new_string! {
   pub struct DinoparcDinozName(String);
   pub type ParseError = DinoparcDinozNameParseError;
-  const PATTERN = r"^[0-9A-Za-z-_é]{1,15}$";
+  const PATTERN = r"^.{1,15}$";
   const SQL_NAME = "dinoparc_dinoz_name";
+}
+
+declare_decimal_id! {
+  pub struct DinoparcLocationId(u8);
+  pub type ParseError = DinoparcLocationIdParseError;
+  const BOUNDS = 0..23;
+  const SQL_NAME = "dinoparc_location_id";
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcDinoz"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcDinozIdRef {
+  pub server: DinoparcServer,
+  pub id: DinoparcDinozId,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcDinoz"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ShortDinoparcDinoz {
+  pub server: DinoparcServer,
+  pub id: DinoparcDinozId,
+  pub name: DinoparcDinozName,
+  pub location: DinoparcLocationId,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -238,7 +271,215 @@ declare_new_string! {
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcDinoz {
   pub server: DinoparcServer,
-  pub id: DinoparcUserId,
+  pub id: DinoparcDinozId,
+  pub name: DinoparcDinozName,
+  pub location: DinoparcLocationId,
+  pub race: DinoparcDinozRace,
+  /// Raw skin code
+  pub skin: String,
+  pub life: IntPercentage,
+  pub level: u16,
+  pub experience: IntPercentage,
+  pub danger: i16,
+  pub in_tournament: bool,
+  pub elements: DinoparcDinozElements,
+  pub skills: BTreeMap<DinoparcSkill, DinoparcSkillLevel>,
+}
+
+declare_new_int! {
+  pub struct DinoparcSkillLevel(u8);
+  pub type RangeError = DinoparcSkillLevelRangeError;
+  const BOUNDS = 0..=5;
+  type SqlType = i16;
+  const SQL_NAME = "dinoparc_skill_level";
+}
+
+declare_new_enum!(
+  #[derive(IntoEnumIterator)]
+  pub enum DinoparcDinozRace {
+    #[str("Moueffe")]
+    Moueffe,
+    #[str("Picori")]
+    Picori,
+    #[str("Castivore")]
+    Castivore,
+    #[str("Sirain")]
+    Sirain,
+    #[str("Winks")]
+    Winks,
+    #[str("Gorriloz")]
+    Gorriloz,
+    #[str("Cargou")]
+    Cargou,
+    #[str("Hippoclamp")]
+    Hippoclamp,
+    #[str("Rokky")]
+    Rokky,
+    #[str("Pigmou")]
+    Pigmou,
+    #[str("Wanwan")]
+    Wanwan,
+    #[str("Gluon")]
+    Gluon,
+    #[str("Kump")]
+    Kump,
+    #[str("Pteroz")]
+    Pteroz,
+    #[str("Santaz")]
+    Santaz,
+    #[str("Ouistiti")]
+    Ouistiti,
+    #[str("Korgon")]
+    Korgon,
+    #[str("Kabuki")]
+    Kabuki,
+    #[str("Serpantin")]
+    Serpantin,
+  }
+  pub type ParseError = DinoparcDinozRaceParseError;
+  const SQL_NAME = "dinoparc_dinoz_race";
+);
+
+impl DinoparcDinozRace {
+  pub fn from_skin_code(skin: &str) -> Self {
+    if let Some(c) = skin.chars().next() {
+      match c {
+        '0' => Self::Moueffe,
+        '1' => Self::Picori,
+        '2' => Self::Castivore,
+        '3' => Self::Sirain,
+        '4' => Self::Winks,
+        '5' => Self::Gorriloz,
+        '6' => Self::Cargou,
+        '7' => Self::Hippoclamp,
+        '8' => Self::Rokky,
+        '9' => Self::Pigmou,
+        'A' => Self::Wanwan,
+        'B' => Self::Gluon,
+        'C' => Self::Kump,
+        'D' => Self::Pteroz,
+        'E' => Self::Santaz,
+        'F' => Self::Ouistiti,
+        'G' => Self::Korgon,
+        'H' => Self::Kabuki,
+        'I' => Self::Serpantin,
+        _ => Self::Moueffe,
+      }
+    } else {
+      Self::Moueffe
+    }
+  }
+}
+
+/// Data in the left bar for logged-in users
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcDinozElements {
+  pub fire: i16,
+  pub earth: i16,
+  pub water: i16,
+  pub thunder: i16,
+  pub air: i16,
+}
+
+declare_new_enum!(
+  #[derive(IntoEnumIterator)]
+  pub enum DinoparcSkill {
+    #[str("Dexterity")]
+    Dexterity,
+    #[str("Intelligence")]
+    Intelligence,
+    #[str("Perception")]
+    Perception,
+    #[str("Stamina")]
+    Stamina,
+    #[str("Strength")]
+    Strength,
+    #[str("Dig")]
+    Dig,
+    #[str("Medicine")]
+    Medicine,
+    #[str("Swim")]
+    Swim,
+    #[str("Camouflage")]
+    Camouflage,
+    #[str("Climb")]
+    Climb,
+    #[str("MartialArts")]
+    MartialArts,
+    #[str("Steal")]
+    Steal,
+    #[str("Provoke")]
+    Provoke,
+    #[str("Bargain")]
+    Bargain,
+    #[str("Navigation")]
+    Navigation,
+    #[str("Run")]
+    Run,
+    #[str("Survival")]
+    Survival,
+    #[str("Strategy")]
+    Strategy,
+    #[str("Music")]
+    Music,
+    #[str("Jump")]
+    Jump,
+    #[str("Cook")]
+    Cook,
+    #[str("Luck")]
+    Luck,
+    #[str("Counterattack")]
+    Counterattack,
+    #[str("Juggle")]
+    Juggle,
+    #[str("FireProtection")]
+    FireProtection,
+    #[str("FireApprentice")]
+    FireApprentice,
+    #[str("EarthApprentice")]
+    EarthApprentice,
+    #[str("WaterApprentice")]
+    WaterApprentice,
+    #[str("ThunderApprentice")]
+    ThunderApprentice,
+    #[str("ShadowPower")]
+    ShadowPower,
+    #[str("TotemThief")]
+    TotemThief,
+  }
+  pub type ParseError = DinoparcSkillParseError;
+  const SQL_NAME = "dinoparc_skill";
+);
+
+/// Data in the left bar for logged-in users
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcSessionUser {
+  pub username: DinoparcUsername,
+  pub coins: u32,
+  pub dinoz: Vec<ShortDinoparcDinoz>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcInventoryResponse {
+  pub session_user: DinoparcSessionUser,
+  pub inventory: Vec<DinoparcInventoryItem>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcInventoryItem {
+  pub id: DinoparcItemId,
+  pub count: u32,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct DinoparcDinozResponse {
+  pub session_user: DinoparcSessionUser,
+  pub dinoz: DinoparcDinoz,
 }
 
 #[async_trait]
@@ -256,7 +497,9 @@ pub trait DinoparcClient: Send + Sync {
     &self,
     session: &DinoparcSession,
     id: DinoparcDinozId,
-  ) -> Result<Option<DinoparcDinoz>, EtwinError>;
+  ) -> Result<DinoparcDinozResponse, EtwinError>;
+
+  async fn get_inventory(&self, session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError>;
 }
 
 #[async_trait]

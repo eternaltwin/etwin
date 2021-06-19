@@ -1,4 +1,5 @@
 mod errors;
+mod locale;
 mod scraper;
 mod url;
 
@@ -8,8 +9,8 @@ use ::scraper::Html;
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::dinoparc::{
-  DinoparcClient, DinoparcCredentials, DinoparcDinoz, DinoparcDinozId, DinoparcMachineId, DinoparcServer,
-  DinoparcSession, DinoparcSessionKey, DinoparcUsername, ShortDinoparcUser,
+  DinoparcClient, DinoparcCredentials, DinoparcDinozId, DinoparcDinozResponse, DinoparcInventoryResponse,
+  DinoparcMachineId, DinoparcServer, DinoparcSession, DinoparcSessionKey, DinoparcUsername, ShortDinoparcUser,
 };
 use etwin_core::types::EtwinError;
 use md5::{Digest, Md5};
@@ -169,10 +170,22 @@ where
 
   async fn get_dinoz(
     &self,
-    _session: &DinoparcSession,
-    _id: DinoparcDinozId,
-  ) -> Result<Option<DinoparcDinoz>, EtwinError> {
-    unimplemented!()
+    session: &DinoparcSession,
+    id: DinoparcDinozId,
+  ) -> Result<DinoparcDinozResponse, EtwinError> {
+    let html = self
+      .get_html(DinoparcUrls::new(session.user.server).dinoz(id), Some(&session.key))
+      .await?;
+    let response = scraper::scrape_dinoz(&html)?;
+    Ok(response)
+  }
+
+  async fn get_inventory(&self, session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError> {
+    let html = self
+      .get_html(DinoparcUrls::new(session.user.server).inventory(), Some(&session.key))
+      .await?;
+    let response = scraper::scrape_inventory(&html)?;
+    Ok(response)
   }
 }
 

@@ -32,8 +32,6 @@ pub enum ScraperError {
   // InvalidInteger(String, #[source] std::num::ParseIntError),
   // #[error("Failed to parse date '{}'", .0)]
   // InvalidDate(String, #[source] Option<chrono::format::ParseError>),
-  // #[error("Invalid item id '{}'", .0)]
-  // InvalidItemId(String, HammerfestItemIdParseError),
   #[error("Invalid dinoparc user id '{:?}'", .0)]
   InvalidUserId(String, DinoparcUserIdParseError),
   #[error("Invalid dinoparc username '{:?}'", .0)]
@@ -48,22 +46,122 @@ pub enum ScraperError {
   NonUniqueUsername,
   #[error("Zero or many username text nodes in menu, exactly one was expected")]
   NonUniqueUsernameText,
-  // #[error("Invalid forum theme id '{}'", .0)]
-  // InvalidForumThemeId(String, HammerfestForumThemeIdParseError),
-  // #[error("Invalid forum thread id '{}'", .0)]
-  // InvalidForumThreadId(String, HammerfestForumThreadIdParseError),
-  // #[error("Invalid forum post id '{}'", .0)]
-  // InvalidForumPostId(String, HammerfestForumPostIdParseError),
-  // #[error("Invalid username '{}'", .0)]
-  // InvalidUsername(String, HammerfestUsernameParseError),
-  // #[error("Unknown quest name '{}'", .0)]
-  // UnknownQuestName(String),
-  // #[error("Unknown rank CSS class '{}'", .0)]
-  // UnknownRankClass(String),
-  // #[error("Unknown user role")]
-  // UnknownUserRole,
-  // #[error("Unexpected thread kind: '{}'", .0)]
-  // UnexpectedThreadKind(String),
+  #[error("Zero or many coin counts, exactly one was expected")]
+  NonUniqueCoinSpan,
+  #[error("Zero or many coin counts, exactly one was expected")]
+  NonUniqueCoinText,
+  #[error("Invalid coin count {:?}", .0)]
+  InvalidCoinCount(String),
+  #[error("Zero or many dinoz list blocks, exactly one was expected")]
+  NonUniqueDinozListBlock,
+  #[error("Zero or many dinoz list, exactly one was expected")]
+  NonUniqueDinozList,
+  #[error("Zero or many dinoz link, exactly one was expected")]
+  NonUniqueDinozLink,
+  #[error("Missing href attribute on link")]
+  MissingLinkHref,
+  #[error("Invalid dinoz link {:?}", .0)]
+  InvalidLinkHref(String),
+  #[error("Zero or many `r` param in link, exactly one was expected")]
+  NonUniqueDinoparcRequest,
+  #[error("Zero or many dinoz id in link, exactly one was expected")]
+  NonUniqueDinozIdInLink,
+  #[error("Invalid dinoz id {:?}", .0)]
+  InvalidDinozId(String),
+  #[error("Zero or many dinoz name, exactly one was expected")]
+  NonUniqueDinozName,
+  #[error("Zero or many dinoz name text, exactly one was expected")]
+  NonUniqueDinozNameText,
+  #[error("Invalid dinoz name {:?}", .0)]
+  InvalidDinozName(String),
+  #[error("Zero or many location name, exactly one was expected")]
+  NonUniqueLocationName,
+  #[error("Zero or many location name text, exactly one was expected")]
+  NonUniqueLocationNameText,
+  #[error("Invalid location name {:?}", .0)]
+  InvalidLocationName(String),
+  #[error("Zero or many inventory table, exactly one was expected")]
+  NonUniqueInventory,
+  #[error("Zero or many help links in inventory row, exactly one was expected")]
+  NonUniqueItemHelpLink,
+  #[error("Zero or many item id in link, exactly one was expected")]
+  NonUniqueItemIdInLink,
+  #[error("Invalid item id {:?}", .0)]
+  InvalidItemId(String),
+  #[error("Zero or many item count in row, exactly one was expected")]
+  NonUniqueItemCount,
+  #[error("Zero or many item count texts, exactly one was expected")]
+  NonUniqueItemCountText,
+  #[error("Invalid item count {:?}", .0)]
+  InvalidItemCount(String),
+  #[error("Zero or many content pane, exactly one was expected")]
+  NonUniqueContentPane,
+  #[error("Zero or many dinozView table, exactly one was expected")]
+  NonUniqueDinozView,
+  #[error("Zero or many dinoz pane, exactly one was expected")]
+  NonUniqueDinozPane,
+  #[error("Zero or many dinoz skin FlashVars node, exactly one was expected")]
+  NonUniqueDinozSkinFlashVars,
+  #[error("Missing `value` attr on FlashVars node")]
+  MissingFlashVarsValue,
+  #[error("Zero or many dinoz skin `data` vars, exactly one was expected")]
+  NonUniqueDinozSkinData,
+  #[error("Zero or many dinoz `def` table, exactly one was expected")]
+  NonUniqueDinozDefTable,
+  #[error("Zero or many dinoz life value, exactly one was expected")]
+  NonUniqueDinozLifeValue,
+  #[error("Zero or many dinoz life value text, exactly one was expected")]
+  NonUniqueDinozLifeValueText,
+  #[error("Invalid life value {:?}", .0)]
+  InvalidDinozLifeValue(String),
+  #[error("Zero or many dinoz level, exactly one was expected")]
+  NonUniqueDinozLevel,
+  #[error("Zero or many dinoz level text, exactly one was expected")]
+  NonUniqueDinozLevelText,
+  #[error("Invalid dinoz level {:?}", .0)]
+  InvalidDinozLevel(String),
+  #[error("Zero or many dinoz experience value, exactly one was expected")]
+  NonUniqueDinozExperienceValue,
+  #[error("Zero or many dinoz experience value text, exactly one was expected")]
+  NonUniqueDinozExperienceValueText,
+  #[error("Invalid experience value {:?}", .0)]
+  InvalidDinozExperienceValue(String),
+  #[error("Zero or many dinoz danger, exactly one was expected")]
+  NonUniqueDinozDanger,
+  #[error("Missing dinoz danger text, exactly one was expected")]
+  MissingDinozDangerText,
+  #[error("Invalid dinoz danger {:?}", .0)]
+  InvalidDinozDanger(String),
+  #[error("Zero or many dinoz element list, exactly one was expected")]
+  NonUniqueDinozElementList,
+  #[error("Zero or many dinoz element text, exactly one was expected")]
+  NonUniqueDinozElementText,
+  #[error("Invalid dinoz element value {:?}", .0)]
+  InvalidDinozElement(String),
+  #[error("Invalid dinoz element count, expected 5 got {:?}", .0)]
+  InvalidDinozElementCount(u64),
+  #[error("Zero or many dinoz skill list, exactly one was expected")]
+  NonUniqueDinozSkillList,
+  #[error("Zero or many dinoz skill name, exactly one was expected")]
+  NonUniqueDinozSkillName,
+  #[error("Zero or many dinoz skill name text, exactly one was expected")]
+  NonUniqueDinozSkillNameText,
+  #[error("Invalid dinoz skill name {:?}", .0)]
+  InvalidSkillName(String),
+  #[error("Zero or many dinoz skill level, exactly one was expected")]
+  NonUniqueDinozSkillLevel,
+  #[error("Missing `src` attribute on image")]
+  MissingImgSrc,
+  #[error("Invalid dinoz skill level {:?}", .0)]
+  InvalidDinozSkillLevel(String),
+  #[error("Invalid percentage {:?}", .0)]
+  InvalidPercentage(String),
+  #[error("Zero or many actions pane, exactly one was expected")]
+  NonUniqueActionsPane,
+  #[error("Zero or many place pane, exactly one was expected")]
+  NonUniquePlacePane,
+  #[error("Zero or many place link, exactly one was expected")]
+  NonUniquePlaceLink,
   #[error("HTTP Error")]
   HttpError(#[from] reqwest::Error),
 }

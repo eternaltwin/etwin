@@ -1,0 +1,439 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="fr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-15" />
+  <meta name="author" content="Motion-Twin" />
+  <meta name="copyright" content="&copy; 2006 Motion-Twin" />
+  <meta name="keywords" lang="fr" content="dinoparc, dinoz, élevage" />
+  <meta name="description" lang="fr" content="Elevez votre Dinoz et faites le combattre !" />
+
+  <title>Dinoparc.com</title>
+
+  <link href="http://data.dinoparc.com/css/main.css?version=15" rel="stylesheet" type="text/css">
+  <link href="http://data.dinoparc.com/css/struct.css?version=15" rel="stylesheet" type="text/css">
+  <link href="http://data.dinoparc.com/css/form.css?version=15" rel="stylesheet" type="text/css">
+
+
+
+  <!--[if IE 6]>
+  <link rel="stylesheet" type="text/css" href="css/ie.css?version=15"/>
+  <![endif]-->
+  <!--[if IE 5]>
+  <link rel="stylesheet" type="text/css" href="css/ie5.css?version=15"/>
+  <![endif]-->
+
+  <script src="js/tooltip.js?version=4" language="javascript" type="text/javascript"></script>
+  <script src="js/misc.js?version=4" language="javascript" type="text/javascript"></script>
+</head>
+
+<body>
+
+<div class="gradientBg">
+
+  <table class="site">
+    <tr>
+
+      <td class="siteHeader banner"><a href="/?r=u5wRCu;a=index"><img src="img/design/spacer.gif"></a></td>
+
+    </tr>
+    <tr>
+      <td class="siteContent">
+        <table>
+          <tr>
+            <td class="leftPane">
+
+              <div class="menu">
+                <h1>Menu</h1>
+
+
+                <!-- LOGGED -->
+
+
+
+                <div class="title">demurgos</div>
+                <ul class="options">
+                  <li><a href="/?r=u5wRCu;a=bank"><span class="money" title="2000 pièces">2000 <img src="img/icons/tiny_coin.gif"></span></a></li>
+                  <li><a href="/?r=u5wRCu;a=bank">Obtenir des Pièces</a></li>
+                  <li><a href="/?r=u5wRCu;a=user">Mon compte</a></li>
+
+                </ul>
+
+                <div class="title"> Vos Dinoz </div>
+
+                <div id="dinozListBlock">
+
+                  <ul class="dinoList">
+
+                    <li class=""><a href="/?r=u5wRCu;a=dino;id=3749448">
+
+                      <div><p class="name">Boréo</p><p class="placeName">Dinoville</p></div>
+
+                    </a></li>
+
+                  </ul>
+                </div>
+
+                <div class="buyLink"><a href="/?r=u5wRCu;a=buy-dino"><img src="img/icons/buy.gif" class="middle"> Acheter un Dinoz</a></div>
+
+
+
+                <div class="title">Menu</div>
+                <ul class="options">
+                  <li><a href="/?r=u5wRCu;a=news">Nouveautés</a></li>
+                  <li><a href="/?r=u5wRCu;a=inventory">Inventaire</a></li>
+                  <li><a href="/?r=u5wRCu;a=collection">Collection</a></li>
+                  <li><a href="/?r=u5wRCu;a=shop">Boutique</a></li>
+                  <li><a href="/?r=u5wRCu;a=message">Messagerie</a></li>
+                  <li><a href="/?r=u5wRCu;a=history"><span class="notify" title="Vous avez des événements non lus !">Historique <img src="img/icons/anim_notify.gif"></span></a></li>
+                  <li><a href="/?r=u5wRCu;a=ranks">Classement</a></li>
+                  <li><a href="/?r=u5wRCu;a=parrain">Parrainage</a></li>
+                  <li><a href="/?r=u5wRCu;a=clan">Clans</a></li>
+                  <li>&nbsp;</li>
+
+                  <li class="separator"></li>
+
+
+                  <li><a href="/?r=u5wRCu;a=guide"><img src="img/icons/help.gif" class="middle"/> Aide</a></li>
+                  <li><a href="/?r=u5wRCu;a=disconnect"  onClick="return confirm('Confirmer cette action ?')" ><img src="img/icons/logout.gif" class="middle"/> Déconnexion</a></li>
+                </ul>
+
+
+
+                <br/>
+
+                <div class="menuInfos">Il est 18h12 à Dinoland</div>
+                <div class="menuInfos">964 connectés</div>
+
+                <br/>
+
+
+
+                <script type="text/javascript">
+                  var links = [{ tid : 'alpha', img : 'alpha' },{ tid : 'croque', img : 'croque' },{ tid : 'drpg', img : 'dinorpg' }];
+                  var l = links[(new Date()).getDay()%links.length];
+                  document.write('<a href="http://trax.motion-twin.com/goto/dparc_mt/'+l.tid+'?days=11"><img src="/img/mt/'+l.img+'.gif"/>');
+                </script>
+
+
+
+
+              </div>
+
+            </td>
+            <td class="contentPane">
+              <div id="tooltip">
+                <div class="content">
+                  <div class="header">
+                    <div id="tooltipContent"></div>
+                  </div>
+                </div>
+                <div class="footer"></div>
+              </div>
+
+
+              <script type="text/javascript">
+                document.onclick = function() {
+                  return false;
+                }
+                function setCookieLate( name, value ) {
+                  document.onclick = function() {
+                    setCookie(name,value);
+                    return true;
+                  }
+                }
+              </script>
+
+              <h1>Boréo
+                <object
+                  classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+                  codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0"
+                  width="1"
+                  height="1"
+                  align="middle"
+                >
+                  <param name="movie" value="/swf/dinoid.swf?v=2"/>
+                  <param name="flashvars" value="seed=null&did=3749448"/>
+                  <param name="allowScriptAccess" value="always" />
+                  <param name="quality" value="high" />
+                  <param name="salign" value="lt" />
+                  <param name="scale" value="noscale" />
+                  <param name="menu" value="false" />
+                  <param name="wmode" value="transparent">
+                  <embed
+                    src="/swf/dinoid.swf?v=2"
+                    flashvars="seed=null&did=3749448"
+                    quality="high"
+                    salign="lt"
+                    width="1"
+                    height="1"
+                    name="swf"
+                    align="middle"
+                    scale="noscale"
+                    menu="false"
+                    wmode="transparent"
+                    allowScriptAccess="always"
+                    type="application/x-shockwave-flash"
+                    pluginspage="http://www.macromedia.com/go/getflashplayer"
+                  />
+                </object>
+              </h1>
+
+
+
+              <table class="dinoView">
+                <tr>
+                  <td class="left">
+
+                    <div class="dino">
+                      <div class="pic center">
+                        <table>
+                          <tr>
+                            <td class="charms good">
+                              <p  onmouseover='showTip(this,"Les bonus actifs sur votre dinoz sont listés ici. Par exemple&#44; vous pouvez utiliser les Charmes en <strong>boutique</strong> pour bénéficier de bonus supplémentaires.","Bonus")' onmouseout="hideTip()" >
+                                Bonus
+                              </p>
+
+                            </td>
+                            <td><div class="swf">
+                              <object
+                                classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+                                codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0"
+                                width="100"
+                                height="100"
+                                align="middle"
+                              >
+
+                                <param name="movie" value="http://data.dinoparc.com/swf/loader.swf"/>
+                                <param name="FlashVars" value="swf_url=http://data.dinoparc.com/swf/dino.swf?$version=14&lang=fr&data=DrQT9bHipH7wBkBt"/>
+
+                                <param name="allowScriptAccess" value="always" />
+                                <param name="quality" value="high" />
+                                <param name="salign" value="lt" />
+                                <param name="scale" value="noscale" />
+                                <param name="menu" value="false" />
+                                <param name="wmode" value="transparent">
+                                <embed
+
+                                  src="http://data.dinoparc.com/swf/loader.swf"
+                                  FlashVars="swf_url=http://data.dinoparc.com/swf/dino.swf?$version=14&lang=fr&data=DrQT9bHipH7wBkBt"
+                                  quality="high"
+                                  salign="lt"
+                                  width="100"
+                                  height="100"
+                                  name="swf"
+                                  align="middle"
+                                  scale="noscale"
+                                  menu="false"
+                                  wmode="transparent"
+                                  allowScriptAccess="always"
+                                  type="application/x-shockwave-flash"
+                                  pluginspage="http://www.macromedia.com/go/getflashplayer"
+                                />
+                              </object>
+                            </div>
+                            </td>
+                            <td class="charms bad">
+                              <p  onmouseover='showTip(this,"Certains malus&#44; comme des empoisonnements&#44; des maladies ou des états de Quêtes sont listés ici.","Autre")' onmouseout="hideTip()" >
+                                Autre
+                              </p>
+
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                      <table class="def">
+                        <tr><th>Race</th> <td>Pteroz <span class="helpLink" onmouseover='showTip(this,"Le Pteroz est un Dinoz natif du Mont Dino. C&#39;est un spécialiste quand il s&#39;agit de trouver les éléments du Totem des Clans. De plus, c&#39;est un adversaire terrible, mais attention à la Foudre !","Pteroz")' onmouseout="hideTip()"><img src="/img/design/icon_help.gif"></span></td></tr>
+                        <tr><th>Vie</th> <td><div class='bar'><div class='skin'><div class='start'></div><div class='fill' style='width:54px'></div><div class='end'></div></div><div class='value'>100%</div></div></td></tr>
+                        <tr><th>Niveau</th><td>1 </td></tr>
+
+                        <tr><th>Suivant</th><td><div class='bar'><div class='skin'></div><div class='value'>0%</div></div></td></tr>
+
+                        <tr><th>Danger</th><td>
+                          &nbsp;0
+                          <span class="helpLink" onmouseover='showTip(this,"Cette information vous indique le niveau de danger actuel de votre Dinoz. <strong>Plus votre niveau de danger est fort et plus Boréo risque de se faire attaquer par d&#39;autres Dinoz</strong> dans ce lieu.<p>La compétence <strong>camouflage</strong> réduit le nombre de points de danger que votre dinoz accumule.</p>","Danger")' onmouseout="hideTip()"><img src="/img/design/icon_help.gif"></span>
+                        </td></tr>
+
+                      </table>
+                      <ul class="elements">
+
+                        <li class=""><img src="img/icons/element0.gif"/> <div>1</div></li>
+
+                        <li class=""><img src="img/icons/element1.gif"/> <div>1</div></li>
+
+                        <li class=""><img src="img/icons/element2.gif"/> <div>0</div></li>
+
+                        <li class=""><img src="img/icons/element3.gif"/> <div>3</div></li>
+
+                        <li class=""><img src="img/icons/element4.gif"/> <div>6</div></li>
+
+                      </ul>
+
+                      <ul class="skills">
+
+                        <li>
+                          <div class="name">Intelligence</div><div class="level"><span class="helpLink" onmouseover='showTip(this,"L&#39;intelligence permet à votre Dinoz de développer ses capacités de reflexion et de concentration. Ainsi, un Dinoz intelligent apprends plus vite qu&#39;un autre et gagne donc <strong>plus d&#39;expérience</strong> à la suite d&#39;un combat.","Intelligence")' onmouseout="hideTip()"><img src="/img/design/icon_help.gif"></span> <img src="img/lvl3.gif"/></div>
+                        </li>
+
+                        <li>
+                          <div class="name">Force</div><div class="level"><span class="helpLink" onmouseover='showTip(this,"La force brute n&#39;est pas la meilleure solution pour résoudre les problèmes. Cependant certains Dinoz ne peuvent se contrôler lors d&#39;une attaque. Augmenter la compétence Force permet à votre Dinoz <strong>d&#39;infliger plus de dégats</strong> à son adversaire en combat.","Force")' onmouseout="hideTip()"><img src="/img/design/icon_help.gif"></span> <img src="img/lvl1.gif"/></div>
+                        </li>
+
+                        <li>
+                          <div class="name">Agilité</div><div class="level"><span class="helpLink" onmouseover='showTip(this,"L&#39;agilité permet d&#39;être souple. Mais ce n&#39;est pas tout. En effet l&#39;agilité permet aussi d&#39;éviter les combats en réussisant à esquiver les embuscades de ses adversaires. En augmentant en Agilité, votre Dinoz <strong>pourra éviter certains combats</strong>.","Agilité")' onmouseout="hideTip()"><img src="/img/design/icon_help.gif"></span> <img src="img/lvl2.gif"/></div>
+                        </li>
+
+                        <li>
+                          <div class="name">Fouiller</div><div class="level"><span class="helpLink" onmouseover='showTip(this,"Apprendre cette compétence permet à votre Dinoz d&#39;ajouter une nouvelle action quotidienne à sa liste : <strong>Fouiller</strong> permet de chercher - et parfois de trouver - un Objet de Collection dans les sols de Dinoland. De plus <strong>Fouiller</strong> permet de completer le <strong>Totem</strong> du Clan.","Fouiller")' onmouseout="hideTip()"><img src="/img/design/icon_help.gif"></span> <img src="img/lvl1.gif"/></div>
+                        </li>
+
+                      </ul>
+                    </div>
+                  </td>
+
+
+                  <td class="right">
+
+                    <div class="place">
+                      <div class="title">Dinoville</div>
+                      <table class="layout">
+                        <tr>
+                          <td class="placePic"><div class="zonePic zonePicSmall" title="Dinoville"><a href="/?r=u5wRCu;a=viewplace;id=3749448"><img src="img/zones/zone0.gif"></a></div></td>
+                          <td>Dinoville est la capitale de DinoLand, c'est là que beaucoup de choses se passent, mais c'est aussi une ville très cosmopolite où de nombreux Dinoz différents se croisent. C'est un endroit très réputé pour son Grand Bazar, dans lequel des milliers d'objets sont chaque jour achetés et vendus. Son Tournoi est aussi considéré comme l'ultime consécration pour les Dinoz les plus forts.</td>
+                        </tr>
+                      </table>
+                      <div class="link"><a href="/?r=u5wRCu;a=viewplace;id=3749448">Voir la fiche de ce lieu</a></div>
+                    </div>
+                    <div class="clear"></div>
+
+                    <div class="actionsTitle">Actions disponibles</div>
+                    <div class="actions">
+
+
+                      <div class="actionList">
+
+                        <div class="action">
+                          <a href="/?r=u5wRCu;a=fight;id=3749448"  onmouseover='showTip(this,"Combattre d&#39;autres Dinoz est la meilleure façon de gagner de <strong>l&#39;Expérience</strong>. Vous pouvez affronter les Dinoz se trouvant dans le même lieu que le vôtre.","Combat")' onmouseout="hideTip()"
+                          >
+                            <img src="img/icons/act_fight.gif"> Combat
+                          </a>
+                        </div>
+
+                        <div class="action">
+                          <a href="/?r=u5wRCu;a=move;id=3749448"  onmouseover='showTip(this,"Utilisez cette action pour parcourir le monde de Dinoland et de découvrir de nouveaux lieux. Vous pouvez effectuer <strong>un déplacement par jour et par Dinoz</strong>.","Se déplacer")' onmouseout="hideTip()"
+                          >
+                            <img src="img/icons/act_move.gif"> Se déplacer
+                          </a>
+                        </div>
+
+                        <div class="action">
+                          <a href="/?r=u5wRCu;a=fouiller;id=3749448"  onmouseover='showTip(this,"Fouiller vous permet de trouver des <strong>Objets de Collection</strong> enfouis dans le sol. Plus votre compétence est élevée, plus vos chances de dénicher quelque chose sont importantes.","Fouiller")' onmouseout="hideTip()"
+                          >
+                            <img src="img/icons/act_fouiller.gif"> Fouiller
+                          </a>
+                        </div>
+
+                        <div class="action">
+                          <a href="/?r=u5wRCu;a=tournoi;t=0;id=3749448"  onmouseover='showTip(this,"Le plus grand Tournoi de Dinoland !","Tournoi de Dinoville")' onmouseout="hideTip()"
+                          >
+                            <img src="img/icons/act_tournament.gif"> Tournoi de Dinoville
+                          </a>
+                        </div>
+
+                        <div class="action">
+                          <a href="/?r=u5wRCu;a=missions;id=3749448"  onmouseover='showTip(this,"Votre Dinoz peut choisir des missions ici !","Poste de Missions")' onmouseout="hideTip()"
+                          >
+                            <img src="img/icons/act_speak.gif"> Poste de Missions
+                          </a>
+                        </div>
+
+                        <div class="action">
+                          <a href="/?r=u5wRCu;a=merchant;id=3749448"  onmouseover='showTip(this,"Le Marchand ambulant se promène chaque jour aux quatre coins de Dinoland pour vendre ses objets rares !","Marchand Ambulant")' onmouseout="hideTip()"
+                          >
+                            <img src="img/icons/act_buy.gif"> Marchand Ambulant
+                          </a>
+                        </div>
+
+                        <div class="clear"></div>
+                      </div>
+
+                    </div>
+
+                    <div class="map">
+                      <div class="swf">
+                        <object
+                          classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+                          codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0"
+                          width="400"
+                          height="250"
+                          align="middle"
+                        >
+
+                          <param name="movie" value="http://data.dinoparc.com/swf/loader.swf"/>
+                          <param name="FlashVars" value="swf_url=http://data.dinoparc.com/swf/map.swf?$version=7&lang=fr&p=0&n=null&v=1&goto=/?r=u5wRCu;a=move;id=3749448;p=&moved=false"/>
+
+                          <param name="allowScriptAccess" value="always" />
+                          <param name="quality" value="high" />
+                          <param name="salign" value="lt" />
+                          <param name="scale" value="noscale" />
+                          <param name="menu" value="false" />
+                          <param name="wmode" value="transparent">
+                          <embed
+
+                            src="http://data.dinoparc.com/swf/loader.swf"
+                            FlashVars="swf_url=http://data.dinoparc.com/swf/map.swf?$version=7&lang=fr&p=0&n=null&v=1&goto=/?r=u5wRCu;a=move;id=3749448;p=&moved=false"
+                            quality="high"
+                            salign="lt"
+                            width="400"
+                            height="250"
+                            name="swf"
+                            align="middle"
+                            scale="noscale"
+                            menu="false"
+                            wmode="transparent"
+                            allowScriptAccess="always"
+                            type="application/x-shockwave-flash"
+                            pluginspage="http://www.macromedia.com/go/getflashplayer"
+                          />
+                        </object>
+                      </div>
+
+                    </div>
+
+                  </td>
+                </tr>
+              </table>
+
+
+
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td class="siteFooter">
+        <div>
+          <a href="/?r=u5wRCu;a=news">Nouveautés</a> &middot;
+          <a href="/?r=u5wRCu;a=guide">Guide du jeu</a> &middot;
+          <a href="http://support.motion-twin.com/go?site=dparc;lang=fr;sid=iv1JHCV6saxRu9Ed2FcASYmXr5o1X5cS" target="_blank">Support technique</a> &middot;
+          <a href="/?r=u5wRCu;a=password;mail=1">Oubli de mot de passe</a> &middot;
+          <a href="http://www.motion-twin.com/cgu.php?s=dp" target="_blank">Règlement</a> &middot;
+          <a href="http://www.motion-twin.com/securite" target="_bank">Sécurité</a>
+        </div>
+        <div>&copy; 2009, <a href="http://www.motion-twin.com"><img src="/img/motiontwin.gif" alt="Motion Twin"> </a> &middot; Tous droits réservés, Dinoparc est une marque déposée.</div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+  _uacct = "UA-114594-7";
+  urchinTracker();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "session_user": {
+    "username": "demurgos",
+    "coins": 2000,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3749448",
+        "name": "Boréo",
+        "location": "0"
+      }
+    ]
+  },
+  "inventory": [
+    {
+      "id": "1",
+      "count": 3
+    },
+    {
+      "id": "3",
+      "count": 2
+    }
+  ]
+}
