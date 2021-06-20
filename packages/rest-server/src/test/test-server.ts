@@ -85,7 +85,7 @@ export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer)
     const password = ScryptPasswordService.recommendedForTests();
     const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     const dinoparcClient = new MemDinoparcClient({clock});
-    const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase});
+    const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase, uuidGenerator});
     const hammerfestClient = new MemHammerfestClient({clock});
     const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     const twinoidClient = new HttpTwinoidClientService();

@@ -10,7 +10,8 @@ use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::dinoparc::{
   DinoparcClient, DinoparcCredentials, DinoparcDinozId, DinoparcDinozResponse, DinoparcInventoryResponse,
-  DinoparcMachineId, DinoparcServer, DinoparcSession, DinoparcSessionKey, DinoparcUsername, ShortDinoparcUser,
+  DinoparcMachineId, DinoparcServer, DinoparcSession, DinoparcSessionKey, DinoparcSessionUser, DinoparcUsername,
+  ShortDinoparcUser,
 };
 use etwin_core::types::EtwinError;
 use md5::{Digest, Md5};
@@ -177,7 +178,19 @@ where
       .get_html(DinoparcUrls::new(session.user.server).dinoz(id), Some(&session.key))
       .await?;
     let response = scraper::scrape_dinoz(&html)?;
-    Ok(response)
+    // TODO: Assert username matches
+    Ok(DinoparcDinozResponse {
+      session_user: DinoparcSessionUser {
+        user: ShortDinoparcUser {
+          server: session.user.server,
+          id: session.user.id,
+          username: response.session_user.user,
+        },
+        coins: response.session_user.coins,
+        dinoz: response.session_user.dinoz,
+      },
+      dinoz: response.dinoz,
+    })
   }
 
   async fn get_inventory(&self, session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError> {
@@ -185,7 +198,19 @@ where
       .get_html(DinoparcUrls::new(session.user.server).inventory(), Some(&session.key))
       .await?;
     let response = scraper::scrape_inventory(&html)?;
-    Ok(response)
+    // TODO: Assert username matches
+    Ok(DinoparcInventoryResponse {
+      session_user: DinoparcSessionUser {
+        user: ShortDinoparcUser {
+          server: session.user.server,
+          id: session.user.id,
+          username: response.session_user.user,
+        },
+        coins: response.session_user.coins,
+        dinoz: response.session_user.dinoz,
+      },
+      inventory: response.inventory,
+    })
   }
 }
 

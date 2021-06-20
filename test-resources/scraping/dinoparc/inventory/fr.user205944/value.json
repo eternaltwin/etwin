@@ -1,6 +1,6 @@
 {
   "session_user": {
-    "username": "djtoph",
+    "user": "djtoph",
     "coins": 4051,
     "dinoz": [
       {
@@ -82,22 +82,10 @@
       }
     ]
   },
-  "inventory": [
-    {
-      "id": "5",
-      "count": 1
-    },
-    {
-      "id": "13",
-      "count": 1
-    },
-    {
-      "id": "14",
-      "count": 1
-    },
-    {
-      "id": "20",
-      "count": 1
-    }
-  ]
+  "inventory": {
+    "5": 1,
+    "13": 1,
+    "14": 1,
+    "20": 1
+  }
 }

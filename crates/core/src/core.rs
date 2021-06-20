@@ -87,5 +87,5 @@ declare_new_int! {
   pub type RangeError = IntPercentageRangeError;
   const BOUNDS = 0..=100;
   type SqlType = i16;
-  const SQL_NAME = "int_percent";
+  const SQL_NAME = "int_percentage";
 }

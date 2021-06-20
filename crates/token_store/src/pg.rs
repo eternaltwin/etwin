@@ -635,7 +635,7 @@ mod test {
     let uuid_generator = Arc::new(Uuid4Generator);
     let database_secret = Secret::new("dev_secret".to_string());
     let dinoparc_store: Arc<dyn DinoparcStore> = Arc::new(
-      PgDinoparcStore::new(Arc::clone(&clock), Arc::clone(&database))
+      PgDinoparcStore::new(Arc::clone(&clock), Arc::clone(&database), Arc::clone(&uuid_generator))
         .await
         .unwrap(),
     );

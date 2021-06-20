@@ -9,6 +9,7 @@ import chai from "chai";
 import { SystemClock } from "../lib/clock.js";
 import { Database as NativeDatabase } from "../lib/database.js";
 import { MemDinoparcStore, PgDinoparcStore } from "../lib/dinoparc-store.js";
+import { Uuid4Generator } from "../lib/uuid.js";
 
 describe("NativeDinoparcStore", function () {
   describe("MemDinoparcStore", function () {
@@ -47,7 +48,8 @@ describe("NativeDinoparcStore", function () {
       const nativeDatabase = await NativeDatabase.create(dbConfig);
 
       const clock = new SystemClock();
-      const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase});
+      const uuidGenerator = new Uuid4Generator();
+      const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase, uuidGenerator});
       try {
         return await fn({dinoparcStore});
       } finally {

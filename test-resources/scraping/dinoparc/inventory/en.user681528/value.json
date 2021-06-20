@@ -1,6 +1,6 @@
 {
   "session_user": {
-    "username": "demurgos",
+    "user": "demurgos",
     "coins": 3250,
     "dinoz": [
       {
@@ -12,14 +12,8 @@
       }
     ]
   },
-  "inventory": [
-    {
-      "id": "1",
-      "count": 3
-    },
-    {
-      "id": "3",
-      "count": 2
-    }
-  ]
+  "inventory": {
+    "1": 3,
+    "3": 2
+  }
 }

@@ -4,8 +4,8 @@ use crate::http::url::{DinoparcRequest, DinoparcUrls};
 use etwin_core::core::IntPercentage;
 use etwin_core::dinoparc::{
   DinoparcDinoz, DinoparcDinozElements, DinoparcDinozId, DinoparcDinozName, DinoparcDinozRace, DinoparcDinozResponse,
-  DinoparcInventoryItem, DinoparcInventoryResponse, DinoparcItemId, DinoparcServer, DinoparcSessionUser, DinoparcSkill,
-  DinoparcSkillLevel, DinoparcUserId, DinoparcUsername, ShortDinoparcDinoz,
+  DinoparcInventoryResponse, DinoparcItemId, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel,
+  DinoparcUserId, DinoparcUsername, ShortDinoparcDinoz,
 };
 use etwin_scraper_tools::{ElementRefExt, FlashVars};
 use itertools::Itertools;
@@ -15,7 +15,7 @@ use regex::Regex;
 use scraper::{ElementRef, Html, Selector};
 #[cfg(test)]
 use serde::{Deserialize, Serialize};
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
 use std::convert::TryInto;
 use std::str::FromStr;
 
@@ -161,7 +161,7 @@ fn scrape_sidebar(doc: ElementRef) -> Result<SelfScraping, ScraperError> {
   Ok(SelfScraping { username })
 }
 
-pub(crate) fn scrape_inventory(doc: &Html) -> Result<DinoparcInventoryResponse, ScraperError> {
+pub(crate) fn scrape_inventory(doc: &Html) -> Result<DinoparcInventoryResponse<DinoparcUsername>, ScraperError> {
   let root = doc.root_element();
 
   let context = scrape_context(root)?;
@@ -172,10 +172,10 @@ pub(crate) fn scrape_inventory(doc: &Html) -> Result<DinoparcInventoryResponse, 
     .exactly_one()
     .map_err(|_| ScraperError::NonUniqueInventory)?;
 
-  let inventory: Result<Vec<DinoparcInventoryItem>, ScraperError> = inventory_table
+  let inventory: Result<HashMap<DinoparcItemId, u32>, ScraperError> = inventory_table
     .select(&Selector::parse(":scope tr").unwrap())
     .skip(1) // Table header
-    .map(|row| -> Result<DinoparcInventoryItem, ScraperError> {
+    .map(|row| -> Result<(DinoparcItemId, u32), ScraperError> {
       let help_link = row
         .select(&Selector::parse(":scope > td:nth-child(2) a.helpLink").unwrap())
         .exactly_one()
@@ -208,7 +208,7 @@ pub(crate) fn scrape_inventory(doc: &Html) -> Result<DinoparcInventoryResponse, 
         .parse()
         .map_err(|_| ScraperError::InvalidItemCount(count.to_string()))?;
 
-      Ok(DinoparcInventoryItem { id, count })
+      Ok((id, count))
     })
     .collect();
   let inventory = inventory?;
@@ -219,7 +219,7 @@ pub(crate) fn scrape_inventory(doc: &Html) -> Result<DinoparcInventoryResponse, 
   })
 }
 
-pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse, ScraperError> {
+pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse<DinoparcUsername>, ScraperError> {
   let root = doc.root_element();
 
   let context = scrape_context(root)?;
@@ -325,13 +325,13 @@ pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse, ScraperE
       .exactly_one()
       .map_err(|_| ScraperError::NonUniqueDinozElementList)?;
 
-    let elements: Result<Vec<i16>, ScraperError> = elements
+    let elements: Result<Vec<u16>, ScraperError> = elements
       .select(&Selector::parse(":scope > li > div").unwrap())
-      .map(|element| -> Result<i16, ScraperError> {
+      .map(|element| -> Result<u16, ScraperError> {
         let element = element
           .get_one_text()
           .map_err(|_| ScraperError::NonUniqueDinozElementText)?;
-        let element: i16 = element
+        let element: u16 = element
           .parse()
           .map_err(|_| ScraperError::InvalidDinozElement(element.to_string()))?;
         Ok(element)
@@ -340,7 +340,7 @@ pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse, ScraperE
 
     let elements = elements?;
     let elements_count = elements.len();
-    let elements: [i16; 5] = elements.try_into().map_err(|_| {
+    let elements: [u16; 5] = elements.try_into().map_err(|_| {
       ScraperError::InvalidDinozElementCount(
         elements_count
           .try_into()
@@ -357,13 +357,13 @@ pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse, ScraperE
     }
   };
 
-  let skills: BTreeMap<DinoparcSkill, DinoparcSkillLevel> = {
+  let skills: HashMap<DinoparcSkill, DinoparcSkillLevel> = {
     let skills = dinoz_pane
       .select(&Selector::parse(":scope > ul.skills").unwrap())
       .exactly_one()
       .map_err(|_| ScraperError::NonUniqueDinozSkillList)?;
 
-    let skills: Result<BTreeMap<DinoparcSkill, DinoparcSkillLevel>, ScraperError> = skills
+    let skills: Result<HashMap<DinoparcSkill, DinoparcSkillLevel>, ScraperError> = skills
       .select(&Selector::parse(":scope > li").unwrap())
       .map(|skill| -> Result<(DinoparcSkill, DinoparcSkillLevel), ScraperError> {
         let name = skill
@@ -467,7 +467,9 @@ pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse, ScraperE
       name,
       location,
       race: DinoparcDinozRace::from_skin_code(skin.as_str()),
-      skin,
+      skin: skin
+        .parse()
+        .map_err(|_| ScraperError::InvalidDinozSkin(skin.to_string()))?,
       life,
       level,
       experience,
@@ -494,7 +496,10 @@ fn parse_percentage(raw: &str) -> Result<IntPercentage, ScraperError> {
   }
 }
 
-fn scrape_session_user(server: DinoparcServer, doc: ElementRef) -> Result<DinoparcSessionUser, ScraperError> {
+fn scrape_session_user(
+  server: DinoparcServer,
+  doc: ElementRef,
+) -> Result<DinoparcSessionUser<DinoparcUsername>, ScraperError> {
   let menu = match doc
     .select(&Selector::parse("td.leftPane>div.menu").unwrap())
     .exactly_one()
@@ -549,7 +554,11 @@ fn scrape_session_user(server: DinoparcServer, doc: ElementRef) -> Result<Dinopa
     dinoz?
   };
 
-  Ok(DinoparcSessionUser { username, coins, dinoz })
+  Ok(DinoparcSessionUser {
+    user: username,
+    coins,
+    dinoz,
+  })
 }
 
 fn scrape_sidebar_dinoz(server: DinoparcServer, dinoz: ElementRef) -> Result<ShortDinoparcDinoz, ScraperError> {
@@ -612,7 +621,7 @@ fn scrape_sidebar_dinoz(server: DinoparcServer, dinoz: ElementRef) -> Result<Sho
 #[cfg(test)]
 mod test {
   use crate::http::scraper::{scrape_bank, scrape_dinoz, scrape_inventory, BankScraping};
-  use etwin_core::dinoparc::{DinoparcDinozResponse, DinoparcInventoryResponse};
+  use etwin_core::dinoparc::{DinoparcDinozResponse, DinoparcInventoryResponse, DinoparcUsername};
   use scraper::Html;
   use std::path::{Path, PathBuf};
   use test_generator::test_resources;
@@ -654,7 +663,8 @@ mod test {
     ::std::fs::write(actual_path, format!("{}\n", actual_json)).expect("Failed to write actual file");
 
     let value_json = ::std::fs::read_to_string(value_path).expect("Failed to read value file");
-    let expected = serde_json::from_str::<DinoparcDinozResponse>(&value_json).expect("Failed to parse value file");
+    let expected =
+      serde_json::from_str::<DinoparcDinozResponse<DinoparcUsername>>(&value_json).expect("Failed to parse value file");
 
     assert_eq!(actual, expected);
   }
@@ -675,7 +685,8 @@ mod test {
     ::std::fs::write(actual_path, format!("{}\n", actual_json)).expect("Failed to write actual file");
 
     let value_json = ::std::fs::read_to_string(value_path).expect("Failed to read value file");
-    let expected = serde_json::from_str::<DinoparcInventoryResponse>(&value_json).expect("Failed to parse value file");
+    let expected = serde_json::from_str::<DinoparcInventoryResponse<DinoparcUsername>>(&value_json)
+      .expect("Failed to parse value file");
 
     assert_eq!(actual, expected);
   }

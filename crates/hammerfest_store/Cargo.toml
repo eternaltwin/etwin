@@ -17,10 +17,10 @@ etwin_core = { version = "0.1.0", features = ["_serde", "sqlx"] }
 etwin_db_schema = { version = "0.1.0" }
 etwin_populate = { version = "0.1.0" }
 etwin_postgres_tools = { version = "0.1.0" }
-sha3 = "0.9.1"
 neon = { version = "0.8.0", optional = true, default-features = false, features = ["napi-runtime"] }
 regex = "1.4.5"
 serde_json = "1.0.64"
+sha3 = "0.9.1"
 sqlx = { version = "0.5.1", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 
 [dev-dependencies]

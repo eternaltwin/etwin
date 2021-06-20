@@ -58,7 +58,7 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
   const password = ScryptPasswordService.withOsRng();
   const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
   const dinoparcClient = new HttpDinoparcClient({clock});
-  const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase});
+  const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase, uuidGenerator});
   const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
   const hammerfestClient = new HttpHammerfestClient({clock});
   const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});

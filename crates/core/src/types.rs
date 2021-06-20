@@ -427,13 +427,13 @@ macro_rules! declare_new_int {
     #[cfg(feature = "sqlx")]
     impl<'r, Db: ::sqlx::Database> ::sqlx::Decode<'r, Db> for $struct_name
     where
-      &'r i64: ::sqlx::Decode<'r, Db>,
+      i64: ::sqlx::Decode<'r, Db>,
     {
       fn decode(
         value: <Db as ::sqlx::database::HasValueRef<'r>>::ValueRef,
       ) ->  ::std::result::Result<Self, Box<dyn ::std::error::Error + 'static + Send + Sync>> {
-        let value: &i64 = <&i64 as ::sqlx::Decode<Db>>::decode(value)?;
-        let value = $struct_name::from_i64(*value)?;
+        let value: i64 = <i64 as ::sqlx::Decode<Db>>::decode(value)?;
+        let value = $struct_name::from_i64(value)?;
         Ok(value)
       }
     }

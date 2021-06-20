@@ -106,6 +106,8 @@ pub enum ScraperError {
   MissingFlashVarsValue,
   #[error("Zero or many dinoz skin `data` vars, exactly one was expected")]
   NonUniqueDinozSkinData,
+  #[error("Invalid dinoz skin code {:?}", .0)]
+  InvalidDinozSkin(String),
   #[error("Zero or many dinoz `def` table, exactly one was expected")]
   NonUniqueDinozDefTable,
   #[error("Zero or many dinoz life value, exactly one was expected")]

@@ -242,6 +242,7 @@ pub struct HammerfestProfile {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HammerfestInventoryResponse {
   pub session_user: HammerfestSessionUser,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_map"))]
   pub inventory: HashMap<HammerfestItemId, u32>,
 }
 
@@ -371,7 +372,7 @@ pub struct HammerfestDateTime {
 #[cfg(feature = "sqlx")]
 impl sqlx::Type<Postgres> for HammerfestDateTime {
   fn type_info() -> postgres::PgTypeInfo {
-    postgres::PgTypeInfo::with_name("hammerfest_datetime")
+    postgres::PgTypeInfo::with_name("hammerfest_date_time")
   }
 
   fn compatible(ty: &postgres::PgTypeInfo) -> bool {

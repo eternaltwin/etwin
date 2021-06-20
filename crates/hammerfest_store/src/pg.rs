@@ -250,8 +250,8 @@ async fn touch_hammerfest_forum_theme_page_item(
   // Affected row counts:
   // 1 : 1 updated (matching data)
   // 1 : 1 inserted (first insert)
-  // 2 : 1 inserted (data change), 1 invalidated (primary)
-  assert!((1..=2u64).contains(&res.rows_affected()));
+  // 2 : 1 inserted (data change), 2 invalidated (primary + thread_id)
+  assert!((1..=3u64).contains(&res.rows_affected()));
   Ok(())
 }
 
@@ -362,7 +362,7 @@ async fn touch_hammerfest_forum_post(
     hammerfest_forum_posts(
       time($1 period, retrieved_at),
       primary($2 hammerfest_server::HAMMERFEST_SERVER, $3 hammerfest_thread_id::HAMMERFEST_FORUM_THREAD_ID, $4 page::U16, $5 offset_in_list::U8),
-      data($6 author::HAMMERFEST_USER_ID, $7 posted_at::HAMMERFEST_DATETIME, $8 remote_html_body::TEXT),
+      data($6 author::HAMMERFEST_USER_ID, $7 posted_at::HAMMERFEST_DATE_TIME, $8 remote_html_body::TEXT),
     )
   ))
     .bind(now)
@@ -591,7 +591,7 @@ async fn touch_hammerfest_unlocked_items(
   Ok(set_id)
 }
 
-async fn touch_hammerfest_items_counts(
+async fn touch_hammerfest_item_counts(
   tx: &mut Transaction<'_, Postgres>,
   items: &HashMap<HammerfestItemId, u32>,
   new_id: Uuid,
@@ -1136,7 +1136,7 @@ where
     let mut tx = self.database.as_ref().begin().await?;
     touch_hammerfest_session_user(&mut tx, now, &response.session_user).await?;
     let inventory = &response.inventory;
-    let items = touch_hammerfest_items_counts(&mut tx, inventory, self.uuid_generator.next()).await?;
+    let items = touch_hammerfest_item_counts(&mut tx, inventory, self.uuid_generator.next()).await?;
     touch_hammerfest_inventory(&mut tx, now, response.session_user.user.as_ref(), items).await?;
     tx.commit().await?;
 

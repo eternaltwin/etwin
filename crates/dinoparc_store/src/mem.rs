@@ -1,7 +1,8 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::dinoparc::{
-  ArchivedDinoparcUser, DinoparcStore, DinoparcUserId, GetDinoparcUserOptions, ShortDinoparcUser,
+  ArchivedDinoparcUser, DinoparcDinozResponse, DinoparcInventoryResponse, DinoparcStore, DinoparcUserId,
+  GetDinoparcUserOptions, ShortDinoparcUser,
 };
 use etwin_core::types::EtwinError;
 use std::collections::HashMap;
@@ -64,6 +65,14 @@ where
     state.touch_user(user.clone());
     Ok(user)
   }
+
+  async fn touch_inventory(&self, _response: &DinoparcInventoryResponse) -> Result<(), EtwinError> {
+    todo!()
+  }
+
+  async fn touch_dinoz(&self, _response: &DinoparcDinozResponse) -> Result<(), EtwinError> {
+    todo!()
+  }
 }
 
 #[cfg(feature = "neon")]
@@ -72,7 +81,7 @@ impl<TyClock> neon::prelude::Finalize for MemDinoparcStore<TyClock> where TyCloc
 #[cfg(test)]
 mod test {
   use crate::mem::MemDinoparcStore;
-  use crate::test::{test_empty, TestApi};
+  use crate::test::TestApi;
   use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
   use etwin_core::dinoparc::DinoparcStore;
@@ -82,14 +91,8 @@ mod test {
     let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
     let dinoparc_store: Arc<dyn DinoparcStore> = Arc::new(MemDinoparcStore::new(Arc::clone(&clock)));
 
-    TestApi {
-      _clock: clock,
-      dinoparc_store,
-    }
+    TestApi { clock, dinoparc_store }
   }
 
-  #[tokio::test]
-  async fn test_user_store() {
-    test_empty(make_test_api()).await;
-  }
+  test_dinoparc_store!(|| make_test_api());
 }

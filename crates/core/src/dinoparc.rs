@@ -4,10 +4,10 @@ use async_trait::async_trait;
 use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
 #[cfg(feature = "_serde")]
-use etwin_serde_tools::{Deserialize, Serialize};
+use etwin_serde_tools::{serialize_ordered_map, Deserialize, Serialize};
 #[cfg(feature = "sqlx")]
 use sqlx::{database, postgres, Database, Postgres};
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 use std::error::Error;
 use std::fmt;
 use std::iter::FusedIterator;
@@ -241,6 +241,13 @@ declare_new_string! {
   const SQL_NAME = "dinoparc_dinoz_name";
 }
 
+declare_new_string! {
+  pub struct DinoparcDinozSkin(String);
+  pub type ParseError = DinoparcDinozSkinParseError;
+  const PATTERN = r"^.{1,30}$";
+  const SQL_NAME = "dinoparc_dinoz_skin";
+}
+
 declare_decimal_id! {
   pub struct DinoparcLocationId(u8);
   pub type ParseError = DinoparcLocationIdParseError;
@@ -266,9 +273,18 @@ pub struct ShortDinoparcDinoz {
   pub location: DinoparcLocationId,
 }
 
+impl ShortDinoparcDinoz {
+  pub const fn as_ref(&self) -> DinoparcDinozIdRef {
+    DinoparcDinozIdRef {
+      server: self.server,
+      id: self.id,
+    }
+  }
+}
+
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcDinoz"))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct DinoparcDinoz {
   pub server: DinoparcServer,
   pub id: DinoparcDinozId,
@@ -276,14 +292,24 @@ pub struct DinoparcDinoz {
   pub location: DinoparcLocationId,
   pub race: DinoparcDinozRace,
   /// Raw skin code
-  pub skin: String,
+  pub skin: DinoparcDinozSkin,
   pub life: IntPercentage,
   pub level: u16,
   pub experience: IntPercentage,
   pub danger: i16,
   pub in_tournament: bool,
   pub elements: DinoparcDinozElements,
-  pub skills: BTreeMap<DinoparcSkill, DinoparcSkillLevel>,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_map"))]
+  pub skills: HashMap<DinoparcSkill, DinoparcSkillLevel>,
+}
+
+impl DinoparcDinoz {
+  pub const fn as_ref(&self) -> DinoparcDinozIdRef {
+    DinoparcDinozIdRef {
+      server: self.server,
+      id: self.id,
+    }
+  }
 }
 
 declare_new_int! {
@@ -373,13 +399,59 @@ impl DinoparcDinozRace {
 
 /// Data in the left bar for logged-in users
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcDinozElements {
-  pub fire: i16,
-  pub earth: i16,
-  pub water: i16,
-  pub thunder: i16,
-  pub air: i16,
+  pub fire: u16,
+  pub earth: u16,
+  pub water: u16,
+  pub thunder: u16,
+  pub air: u16,
+}
+
+#[cfg(feature = "sqlx")]
+impl sqlx::Type<Postgres> for DinoparcDinozElements {
+  fn type_info() -> postgres::PgTypeInfo {
+    postgres::PgTypeInfo::with_name("dinoparc_dinoz_elements")
+  }
+
+  fn compatible(ty: &postgres::PgTypeInfo) -> bool {
+    *ty == Self::type_info()
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'r> sqlx::Decode<'r, Postgres> for DinoparcDinozElements {
+  fn decode(value: postgres::PgValueRef<'r>) -> Result<Self, Box<dyn std::error::Error + 'static + Send + Sync>> {
+    let mut decoder = postgres::types::PgRecordDecoder::new(value)?;
+
+    let fire = decoder.try_decode::<crate::pg_num::PgU16>()?;
+    let earth = decoder.try_decode::<crate::pg_num::PgU16>()?;
+    let water = decoder.try_decode::<crate::pg_num::PgU16>()?;
+    let thunder = decoder.try_decode::<crate::pg_num::PgU16>()?;
+    let air = decoder.try_decode::<crate::pg_num::PgU16>()?;
+
+    Ok(Self {
+      fire: fire.into(),
+      earth: earth.into(),
+      water: water.into(),
+      thunder: thunder.into(),
+      air: air.into(),
+    })
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'q> sqlx::Encode<'q, Postgres> for DinoparcDinozElements {
+  fn encode_by_ref(&self, buf: &mut postgres::PgArgumentBuffer) -> sqlx::encode::IsNull {
+    let mut encoder = postgres::types::PgRecordEncoder::new(buf);
+    encoder.encode(crate::pg_num::PgU16::from(self.fire));
+    encoder.encode(crate::pg_num::PgU16::from(self.earth));
+    encoder.encode(crate::pg_num::PgU16::from(self.water));
+    encoder.encode(crate::pg_num::PgU16::from(self.thunder));
+    encoder.encode(crate::pg_num::PgU16::from(self.air));
+    encoder.finish();
+    sqlx::encode::IsNull::No
+  }
 }
 
 declare_new_enum!(
@@ -455,30 +527,24 @@ declare_new_enum!(
 /// Data in the left bar for logged-in users
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct DinoparcSessionUser {
-  pub username: DinoparcUsername,
+pub struct DinoparcSessionUser<U = ShortDinoparcUser> {
+  pub user: U,
   pub coins: u32,
   pub dinoz: Vec<ShortDinoparcDinoz>,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct DinoparcInventoryResponse {
-  pub session_user: DinoparcSessionUser,
-  pub inventory: Vec<DinoparcInventoryItem>,
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct DinoparcInventoryResponse<U = ShortDinoparcUser> {
+  pub session_user: DinoparcSessionUser<U>,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_map"))]
+  pub inventory: HashMap<DinoparcItemId, u32>,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct DinoparcInventoryItem {
-  pub id: DinoparcItemId,
-  pub count: u32,
-}
-
-#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct DinoparcDinozResponse {
-  pub session_user: DinoparcSessionUser,
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct DinoparcDinozResponse<U = ShortDinoparcUser> {
+  pub session_user: DinoparcSessionUser<U>,
   pub dinoz: DinoparcDinoz,
 }
 
@@ -508,4 +574,8 @@ pub trait DinoparcStore: Send + Sync {
   async fn get_short_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError>;
 
   async fn touch_short_user(&self, options: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, EtwinError>;
+
+  async fn touch_inventory(&self, response: &DinoparcInventoryResponse) -> Result<(), EtwinError>;
+
+  async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), EtwinError>;
 }

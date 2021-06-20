@@ -85,7 +85,9 @@ pub mod pg {
   use crate::clock::get_native_clock;
   use crate::database::JsPgPool;
   use crate::neon_helpers::{resolve_callback_with, NeonNamespace};
+  use crate::uuid::get_native_uuid_generator;
   use etwin_core::clock::Clock;
+  use etwin_core::uuid::UuidGenerator;
   use etwin_dinoparc_store::pg::PgDinoparcStore;
   use neon::prelude::*;
   use sqlx::PgPool;
@@ -97,21 +99,26 @@ pub mod pg {
     Ok(ns)
   }
 
-  pub type JsPgDinoparcStore = JsBox<Arc<PgDinoparcStore<Arc<dyn Clock>, Arc<PgPool>>>>;
+  pub type JsPgDinoparcStore = JsBox<Arc<PgDinoparcStore<Arc<dyn Clock>, Arc<PgPool>, Arc<dyn UuidGenerator>>>>;
 
   pub fn new(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     let clock = cx.argument::<JsValue>(0)?;
     let database = cx.argument::<JsPgPool>(1)?;
-    let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+    let uuid_generator = cx.argument::<JsValue>(2)?;
+    let cb = cx.argument::<JsFunction>(3)?.root(&mut cx);
 
     let clock: Arc<dyn Clock> = get_native_clock(&mut cx, clock)?;
     let database = Arc::new(PgPool::clone(&database));
+    let uuid_generator: Arc<dyn UuidGenerator> = get_native_uuid_generator(&mut cx, uuid_generator)?;
     let res = async move {
-      PgDinoparcStore::new(clock, database).await.map(|dinoparc_store| {
-        #[allow(clippy::type_complexity)]
-        let inner: Arc<PgDinoparcStore<Arc<dyn Clock>, Arc<PgPool>>> = Arc::new(dinoparc_store);
-        inner
-      })
+      PgDinoparcStore::new(clock, database, uuid_generator)
+        .await
+        .map(|dinoparc_store| {
+          #[allow(clippy::type_complexity)]
+          let inner: Arc<PgDinoparcStore<Arc<dyn Clock>, Arc<PgPool>, Arc<dyn UuidGenerator>>> =
+            Arc::new(dinoparc_store);
+          inner
+        })
     };
 
     resolve_callback_with(&mut cx, res, cb, |c: &mut TaskContext, res| {

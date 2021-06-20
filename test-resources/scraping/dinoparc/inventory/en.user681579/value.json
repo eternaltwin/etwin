@@ -1,6 +1,6 @@
 {
   "session_user": {
-    "username": "Kapox",
+    "user": "Kapox",
     "coins": 527051,
     "dinoz": [
       {
@@ -1055,18 +1055,9 @@
       }
     ]
   },
-  "inventory": [
-    {
-      "id": "2",
-      "count": 1
-    },
-    {
-      "id": "5",
-      "count": 1
-    },
-    {
-      "id": "7",
-      "count": 1
-    }
-  ]
+  "inventory": {
+    "2": 1,
+    "5": 1,
+    "7": 1
+  }
 }

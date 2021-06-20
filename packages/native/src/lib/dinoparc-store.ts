@@ -16,6 +16,7 @@ import { promisify } from "util";
 import native from "../native/index.js";
 import { NativeClock } from "./clock.js";
 import { Database } from "./database.js";
+import { NativeUuidGenerator } from "./uuid";
 
 declare const MemDinoparcStoreBox: unique symbol;
 declare const PgDinoparcStoreBox: unique symbol;
@@ -56,6 +57,7 @@ export class MemDinoparcStore extends NativeDinoparcStore {
 export interface PgDinoparcStoreOptions {
   clock: NativeClock;
   database: Database;
+  uuidGenerator: NativeUuidGenerator;
 }
 
 export class PgDinoparcStore extends NativeDinoparcStore {
@@ -66,7 +68,7 @@ export class PgDinoparcStore extends NativeDinoparcStore {
   }
 
   public static async create(options: Readonly<PgDinoparcStoreOptions>): Promise<PgDinoparcStore> {
-    const box = await PgDinoparcStore.NEW(options.clock.box, options.database.box);
+    const box = await PgDinoparcStore.NEW(options.clock.box, options.database.box, options.uuidGenerator.box);
     return new PgDinoparcStore(box);
   }
 }

@@ -648,9 +648,12 @@ dependencies = [
  "etwin_core",
  "etwin_db_schema",
  "etwin_populate",
+ "etwin_postgres_tools",
  "neon",
  "regex",
+ "serde_json",
  "serial_test",
+ "sha3",
  "sqlx",
  "tokio",
 ]

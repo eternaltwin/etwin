@@ -15,13 +15,24 @@ DROP TABLE hammerfest_inventories;
 
 ALTER DOMAIN hammerfest_forum_message_id RENAME TO hammerfest_forum_post_id;
 
+DROP DOMAIN hammerfest_date;
+
+CREATE DOMAIN hammerfest_date AS raw_hammerfest_date CHECK (
+  value IS NULL OR ((value).month IS NOT NULL AND (value).day IS NOT NULL AND (value).isodow IS NOT NULL)
+);
+
 DROP DOMAIN hammerfest_datetime;
 
-CREATE DOMAIN hammerfest_datetime AS RAW_HAMMERFEST_DATETIME CHECK ( (value).month IS NOT NULL AND 1 <= (value).month
+ALTER TYPE raw_hammerfest_datetime RENAME TO raw_hammerfest_date_time;
+
+CREATE DOMAIN hammerfest_date_time AS RAW_HAMMERFEST_DATE_TIME CHECK (
+  value IS NULL OR (
+  (value).month IS NOT NULL AND 1 <= (value).month
   AND (value).month <= 12 AND (value).day IS NOT NULL AND 1 <= (value).day AND (value).day <= 31
   AND (value).isodow IS NOT NULL AND 1 <= (value).isodow AND (value).isodow <= 7 AND (value).hour IS NOT NULL
   AND 0 <= (value).hour AND (value).hour <= 23 AND (value).minute IS NOT NULL AND 0 <= (value).minute
-  AND (value).minute <= 59 );
+  AND (value).minute <= 59
+));
 
 DROP DOMAIN sampled_instant_set;
 CREATE DOMAIN instant_set AS INSTANT ARRAY CHECK (array_is_ordered_set(value));
@@ -282,7 +293,7 @@ CREATE TABLE hammerfest_forum_posts (
   offset_in_list U8 NOT NULL,
 --
   author HAMMERFEST_USER_ID NOT NULL,
-  posted_at HAMMERFEST_DATETIME NOT NULL,
+  posted_at HAMMERFEST_DATE_TIME NOT NULL,
   -- Raw HTML content as found on the remote website
   remote_html_body TEXT NOT NULL,
   -- Marktwin body

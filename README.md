@@ -1,4 +1,4 @@
-# Eternal-Twin main repository
+# Eternaltwin website
 
 ## Requirements
 
