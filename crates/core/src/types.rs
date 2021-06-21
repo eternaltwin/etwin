@@ -512,7 +512,7 @@ macro_rules! declare_new_uuid {
     #[cfg(feature="_serde")]
     impl ::serde::Serialize for $struct_name {
       fn serialize<S: ::serde::Serializer>(&self, serializer: S) ->  ::std::result::Result<S::Ok, S::Error> {
-        self.0.serialize(serializer)
+        ::serde::Serialize::serialize(&self.0, serializer)
       }
     }
 

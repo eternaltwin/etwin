@@ -3,7 +3,7 @@ use crate::pg_num::PgU8;
 use crate::user::{ShortUser, UserIdRef};
 use chrono::{DateTime, Utc};
 #[cfg(feature = "_serde")]
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Serializer};
 #[cfg(feature = "sqlx")]
 use sqlx::postgres::types::PgRange;
 #[cfg(feature = "sqlx")]
@@ -16,10 +16,58 @@ use thiserror::Error;
 
 pub type Instant = DateTime<Utc>;
 
-#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+/// Private type used to serialize PeriodLower and its variants.
+#[cfg(feature = "_serde")]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
+struct SerializablePeriodLower {
+  pub start: Instant,
+  pub end: Option<Instant>,
+}
+
+#[cfg(feature = "_serde")]
+impl From<PeriodFrom> for SerializablePeriodLower {
+  fn from(period: PeriodFrom) -> Self {
+    Self {
+      start: period.start,
+      end: None,
+    }
+  }
+}
+
+#[cfg(feature = "_serde")]
+impl From<FinitePeriod> for SerializablePeriodLower {
+  fn from(period: FinitePeriod) -> Self {
+    Self {
+      start: period.start,
+      end: Some(period.end),
+    }
+  }
+}
+
+#[cfg(feature = "_serde")]
+impl From<PeriodLower> for SerializablePeriodLower {
+  fn from(period: PeriodLower) -> Self {
+    match period {
+      PeriodLower::From(p) => p.into(),
+      PeriodLower::Finite(p) => p.into(),
+    }
+  }
+}
+
+#[cfg_attr(feature = "_serde", derive(Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PeriodFrom {
   pub start: Instant,
+}
+
+#[cfg(feature = "_serde")]
+impl Serialize for PeriodFrom {
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+  where
+    S: Serializer,
+  {
+    SerializablePeriodLower::from(*self).serialize(serializer)
+  }
 }
 
 impl From<RangeFrom<Instant>> for PeriodFrom {
@@ -34,11 +82,21 @@ impl From<PeriodFrom> for RangeFrom<Instant> {
   }
 }
 
-#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FinitePeriod {
   pub start: Instant,
   pub end: Instant,
+}
+
+#[cfg(feature = "_serde")]
+impl Serialize for FinitePeriod {
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+  where
+    S: Serializer,
+  {
+    SerializablePeriodLower::from(*self).serialize(serializer)
+  }
 }
 
 impl From<Range<Instant>> for FinitePeriod {
@@ -72,16 +130,26 @@ impl sqlx::Type<Postgres> for PgPeriod {
 }
 
 /// Represents any period with a lower bound
-#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", derive(Deserialize), serde(untagged))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum PeriodLower {
-  From(PeriodFrom),
   Finite(FinitePeriod),
+  From(PeriodFrom),
 }
 
 impl PeriodLower {
   pub const fn unbounded(start: Instant) -> Self {
     Self::From(PeriodFrom { start })
+  }
+}
+
+#[cfg(feature = "_serde")]
+impl Serialize for PeriodLower {
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+  where
+    S: Serializer,
+  {
+    SerializablePeriodLower::from(*self).serialize(serializer)
   }
 }
 
@@ -159,4 +227,165 @@ declare_new_int! {
   const BOUNDS = 0..=100;
   type SqlType = PgU8;
   const SQL_NAME = "int_percentage";
+}
+
+#[cfg(test)]
+mod test {
+  use crate::core::{FinitePeriod, PeriodFrom, PeriodLower};
+  use chrono::{TimeZone, Utc};
+  use std::fs;
+
+  #[allow(clippy::unnecessary_wraps)]
+  fn get_finite_period_one_millisecond() -> FinitePeriod {
+    FinitePeriod {
+      start: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      end: Utc.ymd(2021, 1, 1).and_hms_milli(0, 0, 0, 1),
+    }
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_finite_period_one_millisecond() {
+    let s = fs::read_to_string("../../test-resources/core/core/finite-period/one-millisecond/value.json").unwrap();
+    let actual: FinitePeriod = serde_json::from_str(&s).unwrap();
+    let expected = get_finite_period_one_millisecond();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_finite_period_one_millisecond() {
+    let value = get_finite_period_one_millisecond();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected =
+      fs::read_to_string("../../test-resources/core/core/finite-period/one-millisecond/value.json").unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
+
+  #[allow(clippy::unnecessary_wraps)]
+  fn get_finite_period_one_second() -> FinitePeriod {
+    FinitePeriod {
+      start: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      end: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+    }
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_finite_period_one_second() {
+    let s = fs::read_to_string("../../test-resources/core/core/finite-period/one-second/value.json").unwrap();
+    let actual: FinitePeriod = serde_json::from_str(&s).unwrap();
+    let expected = get_finite_period_one_second();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_finite_period_one_second() {
+    let value = get_finite_period_one_second();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected = fs::read_to_string("../../test-resources/core/core/finite-period/one-second/value.json").unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
+
+  #[allow(clippy::unnecessary_wraps)]
+  fn get_period_from_unbounded() -> PeriodFrom {
+    PeriodFrom {
+      start: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    }
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_period_from_unbounded() {
+    let s = fs::read_to_string("../../test-resources/core/core/period-from/unbounded/value.json").unwrap();
+    let actual: PeriodFrom = serde_json::from_str(&s).unwrap();
+    let expected = get_period_from_unbounded();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_period_from_unbounded() {
+    let value = get_period_from_unbounded();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected = fs::read_to_string("../../test-resources/core/core/period-from/unbounded/value.json").unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
+
+  #[allow(clippy::unnecessary_wraps)]
+  fn get_period_lower_one_millisecond() -> PeriodLower {
+    PeriodLower::Finite(FinitePeriod {
+      start: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      end: Utc.ymd(2021, 1, 1).and_hms_milli(0, 0, 0, 1),
+    })
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_period_lower_one_millisecond() {
+    let s = fs::read_to_string("../../test-resources/core/core/period-lower/one-millisecond/value.json").unwrap();
+    let actual: PeriodLower = serde_json::from_str(&s).unwrap();
+    let expected = get_period_lower_one_millisecond();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_period_lower_one_millisecond() {
+    let value = get_period_lower_one_millisecond();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected =
+      fs::read_to_string("../../test-resources/core/core/period-lower/one-millisecond/value.json").unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
+
+  #[allow(clippy::unnecessary_wraps)]
+  fn get_period_lower_one_second() -> PeriodLower {
+    PeriodLower::Finite(FinitePeriod {
+      start: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      end: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+    })
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_period_lower_one_second() {
+    let s = fs::read_to_string("../../test-resources/core/core/period-lower/one-second/value.json").unwrap();
+    let actual: PeriodLower = serde_json::from_str(&s).unwrap();
+    let expected = get_period_lower_one_second();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_period_lower_one_second() {
+    let value = get_period_lower_one_second();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected = fs::read_to_string("../../test-resources/core/core/period-lower/one-second/value.json").unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
+
+  #[allow(clippy::unnecessary_wraps)]
+  fn get_period_lower_unbounded() -> PeriodLower {
+    PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0))
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_period_lower_unbounded() {
+    let s = fs::read_to_string("../../test-resources/core/core/period-lower/unbounded/value.json").unwrap();
+    let actual: PeriodLower = serde_json::from_str(&s).unwrap();
+    let expected = get_period_lower_unbounded();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_period_lower_unbounded() {
+    let value = get_period_lower_unbounded();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected = fs::read_to_string("../../test-resources/core/core/period-lower/unbounded/value.json").unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
 }

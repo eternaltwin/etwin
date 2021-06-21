@@ -5,7 +5,7 @@ use async_trait::async_trait;
 use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
 #[cfg(feature = "_serde")]
-use etwin_serde_tools::{serialize_ordered_map, Deserialize, Serialize};
+use etwin_serde_tools::{serialize_ordered_map, Deserialize, Serialize, Serializer};
 #[cfg(feature = "sqlx")]
 use sqlx::{database, postgres, Database, Postgres};
 use std::collections::HashMap;
@@ -221,6 +221,7 @@ pub struct ArchivedDinoparcUser {
   pub username: DinoparcUsername,
   pub coins: Option<LatestTemporal<u32>>,
   pub dinoz: Option<LatestTemporal<Vec<ShortDinoparcDinoz>>>,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_opt_temporal_map"))]
   pub inventory: Option<LatestTemporal<HashMap<DinoparcItemId, u32>>>,
 }
 
@@ -341,6 +342,7 @@ pub struct ArchivedDinoparcDinoz {
   pub danger: Option<LatestTemporal<i16>>,
   pub in_tournament: Option<LatestTemporal<bool>>,
   pub elements: Option<LatestTemporal<DinoparcDinozElements>>,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_opt_temporal_map"))]
   pub skills: Option<LatestTemporal<HashMap<DinoparcSkill, DinoparcSkillLevel>>>,
 }
 
@@ -489,74 +491,74 @@ impl<'q> sqlx::Encode<'q, Postgres> for DinoparcDinozElements {
 declare_new_enum!(
   #[derive(IntoEnumIterator)]
   pub enum DinoparcSkill {
-    #[str("Dexterity")]
-    Dexterity,
-    #[str("Intelligence")]
-    Intelligence,
-    #[str("Perception")]
-    Perception,
-    #[str("Stamina")]
-    Stamina,
-    #[str("Strength")]
-    Strength,
-    #[str("Dig")]
-    Dig,
-    #[str("Medicine")]
-    Medicine,
-    #[str("Swim")]
-    Swim,
+    #[str("Bargain")]
+    Bargain,
     #[str("Camouflage")]
     Camouflage,
     #[str("Climb")]
     Climb,
-    #[str("MartialArts")]
-    MartialArts,
-    #[str("Steal")]
-    Steal,
-    #[str("Provoke")]
-    Provoke,
-    #[str("Bargain")]
-    Bargain,
-    #[str("Navigation")]
-    Navigation,
-    #[str("Run")]
-    Run,
-    #[str("Survival")]
-    Survival,
-    #[str("Strategy")]
-    Strategy,
-    #[str("Music")]
-    Music,
-    #[str("Jump")]
-    Jump,
     #[str("Cook")]
     Cook,
-    #[str("Luck")]
-    Luck,
     #[str("Counterattack")]
     Counterattack,
-    #[str("Juggle")]
-    Juggle,
-    #[str("FireProtection")]
-    FireProtection,
-    #[str("FireApprentice")]
-    FireApprentice,
+    #[str("Dexterity")]
+    Dexterity,
+    #[str("Dig")]
+    Dig,
     #[str("EarthApprentice")]
     EarthApprentice,
-    #[str("WaterApprentice")]
-    WaterApprentice,
-    #[str("ThunderApprentice")]
-    ThunderApprentice,
-    #[str("ShadowPower")]
-    ShadowPower,
-    #[str("TotemThief")]
-    TotemThief,
-    #[str("Saboteur")]
-    Saboteur,
-    #[str("Spy")]
-    Spy,
+    #[str("FireApprentice")]
+    FireApprentice,
+    #[str("FireProtection")]
+    FireProtection,
+    #[str("Intelligence")]
+    Intelligence,
+    #[str("Juggle")]
+    Juggle,
+    #[str("Jump")]
+    Jump,
+    #[str("Luck")]
+    Luck,
+    #[str("MartialArts")]
+    MartialArts,
+    #[str("Medicine")]
+    Medicine,
     #[str("Mercenary")]
     Mercenary,
+    #[str("Music")]
+    Music,
+    #[str("Navigation")]
+    Navigation,
+    #[str("Perception")]
+    Perception,
+    #[str("Provoke")]
+    Provoke,
+    #[str("Run")]
+    Run,
+    #[str("Saboteur")]
+    Saboteur,
+    #[str("ShadowPower")]
+    ShadowPower,
+    #[str("Spy")]
+    Spy,
+    #[str("Stamina")]
+    Stamina,
+    #[str("Steal")]
+    Steal,
+    #[str("Strategy")]
+    Strategy,
+    #[str("Strength")]
+    Strength,
+    #[str("Survival")]
+    Survival,
+    #[str("Swim")]
+    Swim,
+    #[str("ThunderApprentice")]
+    ThunderApprentice,
+    #[str("TotemThief")]
+    TotemThief,
+    #[str("WaterApprentice")]
+    WaterApprentice,
   }
   pub type ParseError = DinoparcSkillParseError;
   const SQL_NAME = "dinoparc_skill";
@@ -618,4 +620,137 @@ pub trait DinoparcStore: Send + Sync {
   async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), EtwinError>;
 
   async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError>;
+}
+
+#[cfg(feature = "_serde")]
+pub fn serialize_ordered_opt_temporal_map<K: Ord + Serialize, V: Serialize, S: Serializer>(
+  value: &Option<LatestTemporal<HashMap<K, V>>>,
+  serializer: S,
+) -> Result<S::Ok, S::Error> {
+  value
+    .as_ref()
+    .map(|t| {
+      t.as_ref()
+        .map(|m| m.iter().collect::<std::collections::BTreeMap<_, _>>())
+    })
+    .serialize(serializer)
+}
+
+#[cfg(test)]
+mod test {
+  use crate::core::{IntPercentage, PeriodLower};
+  use crate::dinoparc::{
+    ArchivedDinoparcDinoz, DinoparcDinozElements, DinoparcDinozRace, DinoparcServer, DinoparcSkill, DinoparcSkillLevel,
+  };
+  use crate::temporal::{LatestTemporal, Snapshot};
+  use chrono::{TimeZone, Utc};
+  use std::collections::HashMap;
+  use std::fs;
+
+  #[allow(clippy::unnecessary_wraps)]
+  fn get_archived_dinoparc_dinoz_yasumi() -> ArchivedDinoparcDinoz {
+    ArchivedDinoparcDinoz {
+      server: DinoparcServer::EnDinoparcCom,
+      id: "765483".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      name: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: "Yasumi".parse().unwrap(),
+        },
+      }),
+      location: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: "0".parse().unwrap(),
+        },
+      }),
+      race: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: DinoparcDinozRace::Wanwan,
+        },
+      }),
+      skin: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: "Ac9OrgxOWu1pd7Fp".parse().unwrap(),
+        },
+      }),
+      life: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: IntPercentage::new(30).unwrap(),
+        },
+      }),
+      level: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: 12,
+        },
+      }),
+      experience: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: IntPercentage::new(13).unwrap(),
+        },
+      }),
+      danger: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: 116,
+        },
+      }),
+      in_tournament: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: false,
+        },
+      }),
+      elements: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: DinoparcDinozElements {
+            fire: 10,
+            earth: 0,
+            water: 0,
+            thunder: 7,
+            air: 2,
+          },
+        },
+      }),
+      skills: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: {
+            let mut skills = HashMap::new();
+            skills.insert(DinoparcSkill::Dexterity, DinoparcSkillLevel::new(2).unwrap());
+            skills.insert(DinoparcSkill::Intelligence, DinoparcSkillLevel::new(5).unwrap());
+            skills.insert(DinoparcSkill::Strength, DinoparcSkillLevel::new(5).unwrap());
+            skills.insert(DinoparcSkill::MartialArts, DinoparcSkillLevel::new(5).unwrap());
+            skills
+          },
+        },
+      }),
+    }
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_archived_dinoparc_dinoz_yasumi() {
+    let s = fs::read_to_string("../../test-resources/core/dinoparc/archived-dinoparc-dinoz/yasumi/value.json").unwrap();
+    let actual: ArchivedDinoparcDinoz = serde_json::from_str(&s).unwrap();
+    let expected = get_archived_dinoparc_dinoz_yasumi();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_archived_dinoparc_dinoz_yasumi() {
+    let value = get_archived_dinoparc_dinoz_yasumi();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected =
+      fs::read_to_string("../../test-resources/core/dinoparc/archived-dinoparc-dinoz/yasumi/value.json").unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
 }

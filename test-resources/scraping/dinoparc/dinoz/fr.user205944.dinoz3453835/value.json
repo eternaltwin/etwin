@@ -1,0 +1,137 @@
+{
+  "session_user": {
+    "user": "djtoph",
+    "coins": 4051,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1095080",
+        "name": "boutchou",
+        "location": "7"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1162336",
+        "name": "jo le dino",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2094149",
+        "name": "Blue Devil",
+        "location": "10"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2589135",
+        "name": "Green Devil",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3081875",
+        "name": "Stewie",
+        "location": "22"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3248685",
+        "name": "Aequity",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3453835",
+        "name": "Black Devil",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3684322",
+        "name": "Dreamer",
+        "location": "8"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3685541",
+        "name": "Spyrit",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3741964",
+        "name": "Salazar",
+        "location": "15"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3749415",
+        "name": "Nabaku",
+        "location": "4"
+      }
+    ]
+  },
+  "dinoz": {
+    "type": "DinoparcDinoz",
+    "server": "dinoparc.com",
+    "id": "3453835",
+    "name": "Black Devil",
+    "location": "0",
+    "race": "Kump",
+    "skin": "CBUfOj64r0ZaVmk#",
+    "life": 30,
+    "level": 288,
+    "experience": 0,
+    "danger": -178,
+    "in_tournament": false,
+    "elements": {
+      "fire": 23,
+      "earth": 79,
+      "water": 111,
+      "thunder": 67,
+      "air": 16
+    },
+    "skills": {
+      "Bargain": 5,
+      "Camouflage": 2,
+      "Climb": 5,
+      "Cook": 5,
+      "Counterattack": 1,
+      "Dexterity": 1,
+      "Dig": 5,
+      "EarthApprentice": 5,
+      "FireApprentice": 5,
+      "Intelligence": 5,
+      "Jump": 5,
+      "Luck": 4,
+      "MartialArts": 5,
+      "Medicine": 5,
+      "Music": 5,
+      "Navigation": 5,
+      "Perception": 5,
+      "Provoke": 5,
+      "Run": 5,
+      "ShadowPower": 5,
+      "Stamina": 5,
+      "Steal": 5,
+      "Strategy": 1,
+      "Strength": 4,
+      "Survival": 4,
+      "Swim": 5,
+      "ThunderApprentice": 5,
+      "TotemThief": 1,
+      "WaterApprentice": 5
+    }
+  }
+}

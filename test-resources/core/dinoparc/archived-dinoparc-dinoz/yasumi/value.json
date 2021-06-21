@@ -1,0 +1,116 @@
+{
+  "type": "DinoparcUser",
+  "server": "en.dinoparc.com",
+  "id": "765483",
+  "archived_at": "2021-01-01T00:00:00Z",
+  "name": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": "Yasumi"
+    }
+  },
+  "location": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": "0"
+    }
+  },
+  "race": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": "Wanwan"
+    }
+  },
+  "skin": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": "Ac9OrgxOWu1pd7Fp"
+    }
+  },
+  "life": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": 30
+    }
+  },
+  "level": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": 12
+    }
+  },
+  "experience": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": 13
+    }
+  },
+  "danger": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": 116
+    }
+  },
+  "in_tournament": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": false
+    }
+  },
+  "elements": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": {
+        "fire": 10,
+        "earth": 0,
+        "water": 0,
+        "thunder": 7,
+        "air": 2
+      }
+    }
+  },
+  "skills": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": {
+        "Dexterity": 2,
+        "Intelligence": 5,
+        "MartialArts": 5,
+        "Strength": 5
+      }
+    }
+  }
+}

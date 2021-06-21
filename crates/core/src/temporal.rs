@@ -77,6 +77,13 @@ impl<T> Snapshot<T> {
       value: f(self.value),
     }
   }
+
+  pub fn as_ref(&self) -> Snapshot<&T> {
+    Snapshot {
+      period: self.period,
+      value: &self.value,
+    }
+  }
 }
 
 impl<T: Copy> Snapshot<T> {
@@ -226,6 +233,12 @@ impl<T> LatestTemporal<T> {
   {
     LatestTemporal {
       latest: self.latest.map(f),
+    }
+  }
+
+  pub fn as_ref(&self) -> LatestTemporal<&T> {
+    LatestTemporal {
+      latest: self.latest.as_ref(),
     }
   }
 }
