@@ -194,7 +194,7 @@ CREATE TABLE dinoparc_user_dinoz_counts (
   dinoparc_server DINOPARC_SERVER NOT NULL,
   dinoparc_user_id DINOPARC_USER_ID NOT NULL,
 --
-  dinoz_count U8 NOT NULL,
+  dinoz_count U32 NOT NULL,
   PRIMARY KEY (period, dinoparc_server, dinoparc_user_id),
   EXCLUDE USING gist (dinoparc_server WITH =, dinoparc_user_id WITH =, period WITH &&),
   CONSTRAINT dinoparc_user_dinoz_counts__user__fk FOREIGN KEY (dinoparc_server, dinoparc_user_id) REFERENCES dinoparc_users(dinoparc_server, dinoparc_user_id) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -206,7 +206,7 @@ CREATE TABLE dinoparc_user_dinoz (
   retrieved_at INSTANT_SET NOT NULL,
   dinoparc_server DINOPARC_SERVER NOT NULL,
   dinoparc_user_id DINOPARC_USER_ID NOT NULL,
-  offset_in_list U8 NOT NULL,
+  offset_in_list U32 NOT NULL,
 --
   dinoparc_dinoz_id DINOPARC_DINOZ_ID NOT NULL,
   PRIMARY KEY (period, dinoparc_server, dinoparc_user_id, offset_in_list),

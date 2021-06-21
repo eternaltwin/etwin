@@ -220,7 +220,7 @@ pub struct ArchivedDinoparcUser {
   pub archived_at: Instant,
   pub username: DinoparcUsername,
   pub coins: Option<LatestTemporal<u32>>,
-  pub dinoz: Option<LatestTemporal<Vec<ShortDinoparcDinoz>>>,
+  pub dinoz: Option<LatestTemporal<Vec<DinoparcDinozIdRef>>>,
   #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_opt_temporal_map"))]
   pub inventory: Option<LatestTemporal<HashMap<DinoparcItemId, u32>>>,
 }
@@ -611,8 +611,6 @@ pub trait DinoparcClient: Send + Sync {
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait DinoparcStore: Send + Sync {
-  async fn get_short_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError>;
-
   async fn touch_short_user(&self, options: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, EtwinError>;
 
   async fn touch_inventory(&self, response: &DinoparcInventoryResponse) -> Result<(), EtwinError>;
@@ -620,6 +618,8 @@ pub trait DinoparcStore: Send + Sync {
   async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), EtwinError>;
 
   async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError>;
+
+  async fn get_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError>;
 }
 
 #[cfg(feature = "_serde")]
@@ -640,12 +640,68 @@ pub fn serialize_ordered_opt_temporal_map<K: Ord + Serialize, V: Serialize, S: S
 mod test {
   use crate::core::{IntPercentage, PeriodLower};
   use crate::dinoparc::{
-    ArchivedDinoparcDinoz, DinoparcDinozElements, DinoparcDinozRace, DinoparcServer, DinoparcSkill, DinoparcSkillLevel,
+    ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcDinozElements, DinoparcDinozIdRef, DinoparcDinozRace,
+    DinoparcServer, DinoparcSkill, DinoparcSkillLevel,
   };
   use crate::temporal::{LatestTemporal, Snapshot};
   use chrono::{TimeZone, Utc};
   use std::collections::HashMap;
   use std::fs;
+
+  #[allow(clippy::unnecessary_wraps)]
+  fn get_archived_dinoparc_user_alice_rokky() -> ArchivedDinoparcUser {
+    ArchivedDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      username: "alice".parse().unwrap(),
+      coins: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: 10000,
+        },
+      }),
+      inventory: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: {
+            let mut inventory = HashMap::new();
+            inventory.insert("4".parse().unwrap(), 10);
+            inventory
+          },
+        },
+      }),
+      dinoz: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: vec![DinoparcDinozIdRef {
+            server: DinoparcServer::DinoparcCom,
+            id: "2".parse().unwrap(),
+          }],
+        },
+      }),
+    }
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn read_archived_dinoparc_user_alice_rokky() {
+    let s =
+      fs::read_to_string("../../test-resources/core/dinoparc/archived-dinoparc-user/alice-rokky/value.json").unwrap();
+    let actual: ArchivedDinoparcUser = serde_json::from_str(&s).unwrap();
+    let expected = get_archived_dinoparc_user_alice_rokky();
+    assert_eq!(actual, expected);
+  }
+
+  #[cfg(feature = "_serde")]
+  #[test]
+  fn write_archived_dinoparc_user_alice_rokky() {
+    let value = get_archived_dinoparc_user_alice_rokky();
+    let actual: String = serde_json::to_string_pretty(&value).unwrap();
+    let expected =
+      fs::read_to_string("../../test-resources/core/dinoparc/archived-dinoparc-user/alice-rokky/value.json").unwrap();
+    assert_eq!(&actual, expected.trim());
+  }
 
   #[allow(clippy::unnecessary_wraps)]
   fn get_archived_dinoparc_dinoz_yasumi() -> ArchivedDinoparcDinoz {

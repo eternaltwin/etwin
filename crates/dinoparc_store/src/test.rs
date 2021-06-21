@@ -3,9 +3,10 @@ use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
 use etwin_core::core::{IntPercentage, PeriodLower};
 use etwin_core::dinoparc::{
-  ArchivedDinoparcDinoz, DinoparcDinoz, DinoparcDinozElements, DinoparcDinozRace, DinoparcDinozResponse,
-  DinoparcInventoryResponse, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore,
-  GetDinoparcDinozOptions, GetDinoparcUserOptions, ShortDinoparcDinoz, ShortDinoparcUser,
+  ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcDinoz, DinoparcDinozElements, DinoparcDinozIdRef,
+  DinoparcDinozRace, DinoparcDinozResponse, DinoparcInventoryResponse, DinoparcServer, DinoparcSessionUser,
+  DinoparcSkill, DinoparcSkillLevel, DinoparcStore, GetDinoparcDinozOptions, GetDinoparcUserOptions,
+  ShortDinoparcDinoz, ShortDinoparcUser,
 };
 use etwin_core::temporal::{LatestTemporal, Snapshot};
 use std::collections::HashMap;
@@ -67,7 +68,7 @@ where
     id: "123".parse().unwrap(),
     time: None,
   };
-  let actual = api.dinoparc_store.get_short_user(&options).await.unwrap();
+  let actual = api.dinoparc_store.get_user(&options).await.unwrap();
   let expected = None;
   assert_eq!(actual, expected);
 }
@@ -117,9 +118,9 @@ where
     coins: 10000,
     dinoz: vec![ShortDinoparcDinoz {
       server: DinoparcServer::DinoparcCom,
-      id: "1".parse().unwrap(),
+      id: "2".parse().unwrap(),
       name: "Balboa".parse().unwrap(),
-      location: "1".parse().unwrap(),
+      location: "3".parse().unwrap(),
     }],
   };
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
@@ -130,12 +131,56 @@ where
         session_user: alice.clone(),
         inventory: {
           let mut inventory = HashMap::new();
-          inventory.insert("1".parse().unwrap(), 10);
+          inventory.insert("4".parse().unwrap(), 10);
           inventory
         },
       })
       .await;
     assert_ok!(actual);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .dinoparc_store
+      .get_user(&GetDinoparcUserOptions {
+        server: DinoparcServer::DinoparcCom,
+        id: "1".parse().unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = Some(ArchivedDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      username: "alice".parse().unwrap(),
+      coins: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: 10000,
+        },
+      }),
+      inventory: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: {
+            let mut inventory = HashMap::new();
+            inventory.insert("4".parse().unwrap(), 10);
+            inventory
+          },
+        },
+      }),
+      dinoz: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: vec![DinoparcDinozIdRef {
+            server: DinoparcServer::DinoparcCom,
+            id: "2".parse().unwrap(),
+          }],
+        },
+      }),
+    });
+    assert_eq!(actual, expected);
   }
 }
 

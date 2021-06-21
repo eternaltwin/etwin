@@ -41,7 +41,7 @@ pub fn get_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
   let options: GetDinoparcUserOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
-  let res = async move { inner.get_short_user(&options).await };
+  let res = async move { inner.get_user(&options).await };
   resolve_callback_serde(&mut cx, res, cb)
 }
 

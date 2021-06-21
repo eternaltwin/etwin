@@ -9,7 +9,7 @@ use etwin_core::dinoparc::{
   DinoparcStore, DinoparcUserId, DinoparcUserIdRef, DinoparcUsername, GetDinoparcDinozOptions, GetDinoparcUserOptions,
   ShortDinoparcUser,
 };
-use etwin_core::pg_num::PgU16;
+use etwin_core::pg_num::{PgU16, PgU32};
 use etwin_core::temporal::{LatestTemporal, Snapshot};
 use etwin_core::types::EtwinError;
 use etwin_core::uuid::UuidGenerator;
@@ -67,38 +67,6 @@ where
   TyDatabase: ApiRef<PgPool>,
   TyUuidGenerator: UuidGenerator,
 {
-  async fn get_short_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError> {
-    #[derive(Debug, sqlx::FromRow)]
-    struct Row {
-      dinoparc_server: DinoparcServer,
-      dinoparc_user_id: DinoparcUserId,
-      username: DinoparcUsername,
-      archived_at: Instant,
-    }
-
-    let row: Option<Row> = sqlx::query_as::<_, Row>(
-      r"
-      SELECT dinoparc_server, dinoparc_user_id, username, archived_at
-      FROM dinoparc_users
-      WHERE dinoparc_server = $1::DINOPARC_SERVER AND dinoparc_user_id = $2::DINOPARC_USER_ID;
-    ",
-    )
-    .bind(&options.server)
-    .bind(&options.id)
-    .fetch_optional(self.database.as_ref())
-    .await?;
-
-    Ok(row.map(|r| ArchivedDinoparcUser {
-      server: r.dinoparc_server,
-      id: r.dinoparc_user_id,
-      archived_at: r.archived_at,
-      username: r.username,
-      coins: None,
-      dinoz: None,
-      inventory: None,
-    }))
-  }
-
   async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, EtwinError> {
     let now = self.clock.now();
     sqlx::query(
@@ -303,6 +271,146 @@ where
       in_tournament: to_latest_temporal(row.profile_period, row.profile_in_tournament),
       elements: to_latest_temporal(row.profile_period, row.profile_elements),
       skills: to_latest_temporal(row.profile_period, skills),
+    }))
+  }
+
+  async fn get_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError> {
+    let time = options.time.unwrap_or_else(|| self.clock.now());
+    let mut tx = self.database.as_ref().begin().await?;
+
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      dinoparc_server: DinoparcServer,
+      dinoparc_user_id: DinoparcUserId,
+      archived_at: Instant,
+      username: DinoparcUsername,
+      coins_period: Option<PeriodLower>,
+      coins_value: Option<PgU32>,
+      inventory_period: Option<PeriodLower>,
+      inventory_value: Option<Uuid>,
+      dinoz_count_period: Option<PeriodLower>,
+      dinoz_count_value: Option<PgU32>,
+    }
+
+    let row: Option<Row> = sqlx::query_as::<_, Row>(
+      r"
+      WITH latest_dinoparc_coins AS (
+        SELECT dinoparc_server, dinoparc_user_id,
+          LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(coins) OVER w AS coins
+        FROM dinoparc_coins
+        WHERE lower(period) <= $3::INSTANT
+        WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+      ),
+      latest_dinoparc_inventories AS (
+        SELECT dinoparc_server, dinoparc_user_id,
+          LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(item_counts) OVER w AS item_counts
+        FROM dinoparc_inventories
+        WHERE lower(period) <= $3::INSTANT
+        WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+      ),
+      latest_dinoparc_user_dinoz_counts AS (
+        SELECT dinoparc_server, dinoparc_user_id,
+          LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(dinoz_count) OVER w AS dinoz_count
+        FROM dinoparc_user_dinoz_counts
+        WHERE lower(period) <= $3::INSTANT
+        WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+      )
+      SELECT dinoparc_server, dinoparc_user_id, archived_at, username,
+        coins.period AS coins_period, coins.coins AS coins_value,
+        inventory.period AS inventory_period, inventory.item_counts AS inventory_value,
+        dinoz_count.period AS dinoz_count_period, dinoz_count.dinoz_count AS dinoz_count_value
+      FROM dinoparc_users
+        LEFT OUTER JOIN latest_dinoparc_coins AS coins USING (dinoparc_server, dinoparc_user_id)
+        LEFT OUTER JOIN latest_dinoparc_inventories AS inventory USING (dinoparc_server, dinoparc_user_id)
+        LEFT OUTER JOIN latest_dinoparc_user_dinoz_counts AS dinoz_count USING (dinoparc_server, dinoparc_user_id)
+      WHERE dinoparc_server = $1::DINOPARC_SERVER AND dinoparc_user_id = $2::DINOPARC_USER_ID AND archived_at <= $3::INSTANT;
+    ",
+    )
+      .bind(&options.server)
+      .bind(&options.id)
+      .bind(time)
+      .fetch_optional(&mut tx)
+      .await?;
+
+    let row = match row {
+      Some(row) => row,
+      None => return Ok(None),
+    };
+
+    let inventory = if let Some(inventory) = row.inventory_value {
+      #[derive(Debug, sqlx::FromRow)]
+      struct Row {
+        dinoparc_item_id: DinoparcItemId,
+        count: PgU32,
+      }
+
+      let rows: Vec<Row> = sqlx::query_as::<_, Row>(
+        r"
+      SELECT dinoparc_item_id, count
+      FROM dinoparc_item_count_map_items
+      WHERE dinoparc_item_count_map_id = $1::DINOPARC_ITEM_COUNT_MAP_ID;
+    ",
+      )
+      .bind(inventory)
+      .fetch_all(&mut tx)
+      .await?;
+
+      let inventory: HashMap<DinoparcItemId, u32> = rows.iter().map(|r| (r.dinoparc_item_id, r.count.into())).collect();
+      Some(inventory)
+    } else {
+      None
+    };
+
+    let dinoz = match (row.dinoz_count_period, row.dinoz_count_value) {
+      (Some(period), Some(dinoz_count)) => {
+        #[derive(Debug, sqlx::FromRow)]
+        struct Row {
+          dinoparc_dinoz_id: DinoparcDinozId,
+        }
+
+        let rows: Vec<Row> = sqlx::query_as::<_, Row>(
+              r"
+          SELECT LAST_VALUE(dinoparc_dinoz_id) OVER w AS dinoparc_dinoz_id
+          FROM dinoparc_user_dinoz
+          WHERE dinoparc_server = $1::DINOPARC_SERVER AND dinoparc_user_id = $2::DINOPARC_USER_ID AND lower(period) <= $3::INSTANT AND offset_in_list < $4::U32
+          WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+          ORDER BY offset_in_list;
+        ",
+        )
+          .bind(options.server)
+          .bind(options.id)
+          .bind(time)
+          .bind(dinoz_count)
+          .fetch_all(&mut tx)
+          .await?;
+
+        let dinoz: Vec<DinoparcDinozIdRef> = rows
+          .into_iter()
+          .map(|r| DinoparcDinozIdRef {
+            server: options.server,
+            id: r.dinoparc_dinoz_id,
+          })
+          .collect();
+
+        Some(LatestTemporal {
+          latest: Snapshot { period, value: dinoz },
+        })
+      }
+      (None, None) => None,
+      _ => unreachable!(),
+    };
+
+    Ok(Some(ArchivedDinoparcUser {
+      server: row.dinoparc_server,
+      id: row.dinoparc_user_id,
+      archived_at: row.archived_at,
+      username: row.username,
+      coins: to_latest_temporal(row.coins_period, row.coins_value).map(|t| t.map(u32::from)),
+      inventory: to_latest_temporal(row.inventory_period, inventory),
+      dinoz,
     }))
   }
 }
@@ -627,19 +735,19 @@ async fn touch_dinoparc_user_dinoz_count(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   user: DinoparcUserIdRef,
-  dinoz_count: u8,
+  dinoz_count: u32,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_user_dinoz_counts(
       time($1 period, retrieved_at),
       primary($2 dinoparc_server::DINOPARC_SERVER, $3 dinoparc_user_id::DINOPARC_USER_ID),
-      data($4 dinoz_count::U8),
+      data($4 dinoz_count::U32),
     )
   ))
   .bind(now)
   .bind(user.server)
   .bind(user.id)
-  .bind(i16::from(dinoz_count))
+  .bind(PgU32::from(dinoz_count))
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -654,20 +762,20 @@ async fn touch_dinoparc_user_dinoz_item(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   user: DinoparcUserIdRef,
-  offset: u8,
+  offset: u32,
   dinoz: DinoparcDinozIdRef,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_user_dinoz(
       time($1 period, retrieved_at),
-      primary($2 dinoparc_server::DINOPARC_SERVER, $3 dinoparc_user_id::DINOPARC_USER_ID, $4 offset_in_list::U8),
+      primary($2 dinoparc_server::DINOPARC_SERVER, $3 dinoparc_user_id::DINOPARC_USER_ID, $4 offset_in_list::U32),
       data($5 dinoparc_dinoz_id::DINOPARC_DINOZ_ID),
     )
   ))
   .bind(now)
   .bind(user.server)
   .bind(user.id)
-  .bind(i16::from(offset))
+  .bind(PgU32::from(offset))
   .bind(dinoz.id)
   .execute(&mut *tx)
   .await?;

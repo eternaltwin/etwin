@@ -1,0 +1,42 @@
+{
+  "type": "DinoparcUser",
+  "server": "dinoparc.com",
+  "id": "1",
+  "archived_at": "2021-01-01T00:00:00Z",
+  "username": "alice",
+  "coins": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": 10000
+    }
+  },
+  "dinoz": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": [
+        {
+          "type": "DinoparcDinoz",
+          "server": "dinoparc.com",
+          "id": "2"
+        }
+      ]
+    }
+  },
+  "inventory": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": {
+        "4": 10
+      }
+    }
+  }
+}

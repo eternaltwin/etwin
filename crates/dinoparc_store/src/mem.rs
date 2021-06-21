@@ -48,11 +48,6 @@ impl<TyClock> DinoparcStore for MemDinoparcStore<TyClock>
 where
   TyClock: Clock,
 {
-  async fn get_short_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError> {
-    let state = self.state.read().unwrap();
-    Ok(state.get_user(&options.id).cloned())
-  }
-
   async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, EtwinError> {
     let mut state = self.state.write().unwrap();
     let now = self.clock.now();
@@ -79,6 +74,11 @@ where
 
   async fn get_dinoz(&self, _options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError> {
     todo!()
+  }
+
+  async fn get_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError> {
+    let state = self.state.read().unwrap();
+    Ok(state.get_user(&options.id).cloned())
   }
 }
 
