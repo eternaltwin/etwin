@@ -27,7 +27,13 @@ static SCRAPER_LOCALE_FR: Lazy<ScraperLocale> = Lazy::new(|| ScraperLocale {
     .map(|l| (l.name_fr, l.id))
     .collect(),
   skill_names: std::array::IntoIter::new(SKILLS)
-    .map(|s| (s.name_fr, s.skill))
+    .filter_map(|s| {
+      if s.name_fr.is_empty() {
+        None
+      } else {
+        Some((s.name_fr, s.skill))
+      }
+    })
     .collect(),
 });
 
@@ -37,7 +43,13 @@ static SCRAPER_LOCALE_ES: Lazy<ScraperLocale> = Lazy::new(|| ScraperLocale {
     .map(|l| (l.name_es, l.id))
     .collect(),
   skill_names: std::array::IntoIter::new(SKILLS)
-    .map(|s| (s.name_es, s.skill))
+    .filter_map(|s| {
+      if s.name_es.is_empty() {
+        None
+      } else {
+        Some((s.name_es, s.skill))
+      }
+    })
     .collect(),
 });
 
@@ -47,6 +59,12 @@ static SCRAPER_LOCALE_EN: Lazy<ScraperLocale> = Lazy::new(|| ScraperLocale {
     .map(|l| (l.name_en, l.id))
     .collect(),
   skill_names: std::array::IntoIter::new(SKILLS)
-    .map(|s| (s.name_en, s.skill))
+    .filter_map(|s| {
+      if s.name_en.is_empty() {
+        None
+      } else {
+        Some((s.name_en, s.skill))
+      }
+    })
     .collect(),
 });
