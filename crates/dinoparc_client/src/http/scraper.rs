@@ -31,6 +31,9 @@ static PERCENTAGE_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r#"(\d{1,2}|100)(?:[
 /// Example: `"img/lvl2.gif"` -> `2`
 static SKILL_LEVEL_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r#"lvl([0-5])\."#).unwrap());
 
+/// Regular expression to extract match decimal integer
+static DECIMAL_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r#"0|[1-9]\d*"#).unwrap());
+
 #[cfg_attr(test, derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub(crate) struct BankScraping {
@@ -287,24 +290,39 @@ pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse<DinoparcU
       .select(&Selector::parse(":scope tr:nth-child(3) td").unwrap())
       .exactly_one()
       .map_err(|_| ScraperError::NonUniqueDinozLevel)?;
-    let level = level
-      .get_one_text()
-      .map_err(|_| ScraperError::NonUniqueDinozLevelText)?;
+
+    let level = level.text().next().ok_or(ScraperError::MissingDinozLevelText)?;
+    let level = DECIMAL_RE.find(level).ok_or(ScraperError::MissingDinozLevelDecimal)?;
+    let level = level.as_str();
+
     let level: u16 = level
-      .trim()
       .parse()
       .map_err(|_| ScraperError::InvalidDinozLevel(level.to_string()))?;
     level
   };
   let experience = {
     let experience = def
-      .select(&Selector::parse(":scope tr:nth-child(4) td div.value").unwrap())
+      .select(&Selector::parse(":scope tr:nth-child(4) td").unwrap())
       .exactly_one()
-      .map_err(|_| ScraperError::NonUniqueDinozExperienceValue)?;
-    let experience = experience
-      .get_one_text()
-      .map_err(|_| ScraperError::NonUniqueDinozExperienceValueText)?;
-    parse_percentage(experience).map_err(|_| ScraperError::InvalidDinozExperienceValue(experience.to_string()))?
+      .map_err(|_| ScraperError::NonUniqueDinozExperience)?;
+
+    let can_level_up = experience
+      .select(&Selector::parse(":scope > a").unwrap())
+      .next()
+      .is_some();
+
+    if can_level_up {
+      IntPercentage::new(100).unwrap()
+    } else {
+      let experience = experience
+        .select(&Selector::parse(":scope div.value").unwrap())
+        .exactly_one()
+        .map_err(|_| ScraperError::NonUniqueDinozExperienceValue)?;
+      let experience = experience
+        .get_one_text()
+        .map_err(|_| ScraperError::NonUniqueDinozExperienceValueText)?;
+      parse_percentage(experience).map_err(|_| ScraperError::InvalidDinozExperienceValue(experience.to_string()))?
+    }
   };
   let danger = {
     let danger = def
@@ -627,7 +645,7 @@ mod test {
   use test_generator::test_resources;
 
   #[test_resources("./test-resources/scraping/dinoparc/bank/*/")]
-  fn verify_resource(path: &str) {
+  fn test_scrape_bank(path: &str) {
     let path: PathBuf = Path::join(Path::new("../.."), path);
     let value_path = path.join("value.json");
     let html_path = path.join("main.utf8.html");

@@ -14,7 +14,9 @@ DROP TABLE hammerfest_forum_message_ids;
 DROP TABLE hammerfest_inventories;
 
 ALTER DOMAIN hammerfest_forum_message_id RENAME TO hammerfest_forum_post_id;
+ALTER DOMAIN PERIOD_FROM RENAME TO PERIOD_LOWER;
 
+DROP DOMAIN valid_period;
 DROP DOMAIN hammerfest_date;
 
 CREATE DOMAIN hammerfest_date AS raw_hammerfest_date CHECK (
@@ -54,7 +56,7 @@ $$;
 
 -- Time-variant game tokens <any(logged)>
 CREATE TABLE hammerfest_tokens (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
@@ -67,7 +69,7 @@ CREATE TABLE hammerfest_tokens (
 
 -- Time-variant data unique to the shop <shop>
 CREATE TABLE hammerfest_shops (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
@@ -83,7 +85,7 @@ CREATE TABLE hammerfest_shops (
 
 -- Time-variant Hammerfest godchild list meta <godChildren>
 CREATE TABLE hammerfest_godchild_lists (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
@@ -96,7 +98,7 @@ CREATE TABLE hammerfest_godchild_lists (
 
 -- Time-variant Hammerfest godchild list items (<godChildren>)
 CREATE TABLE hammerfest_godchildren (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
@@ -115,7 +117,7 @@ CREATE TABLE hammerfest_godchildren (
 
 -- Time-variant data unique to the public profile <profile>
 CREATE TABLE hammerfest_profiles (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
@@ -135,7 +137,7 @@ CREATE TABLE hammerfest_profiles (
 
 -- Time-variant linked email <profile(logged)>
 CREATE TABLE hammerfest_emails (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
@@ -150,7 +152,7 @@ CREATE TABLE hammerfest_emails (
 
 -- Time-variant data shared by the public profile and forum author <profile + forumThread>
 CREATE TABLE hammerfest_user_achievements (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
@@ -164,7 +166,7 @@ CREATE TABLE hammerfest_user_achievements (
 
 -- Time-variant data for hammerfest inventories <inventory>
 CREATE TABLE hammerfest_inventories (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
@@ -178,7 +180,7 @@ CREATE TABLE hammerfest_inventories (
 
 -- Time-variant page count (in a theme page, number of pages for the thread list) <forumTheme>
 CREATE TABLE hammerfest_forum_theme_counts (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_theme_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
@@ -191,7 +193,7 @@ CREATE TABLE hammerfest_forum_theme_counts (
 
 -- Time-variant counts of regular threads in a page <forumTheme>
 CREATE TABLE hammerfest_forum_theme_page_counts (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_theme_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
@@ -206,7 +208,7 @@ CREATE TABLE hammerfest_forum_theme_page_counts (
 
 -- Time-variant regular thread list items <forumTheme>
 CREATE TABLE hammerfest_forum_theme_threads (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_theme_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
@@ -224,7 +226,7 @@ CREATE TABLE hammerfest_forum_theme_threads (
 
 -- Time-variant meta for forum threads unique to the thread list <forumTheme>
 CREATE TABLE hammerfest_forum_thread_theme_meta (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
@@ -241,7 +243,7 @@ CREATE TABLE hammerfest_forum_thread_theme_meta (
 
 -- Time-variant meta for forum threads, shared by the thread list and thread page <forumTheme + forumThread>
 CREATE TABLE hammerfest_forum_thread_shared_meta (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
@@ -258,7 +260,7 @@ CREATE TABLE hammerfest_forum_thread_shared_meta (
 
 -- Time-variant meta for forum threads, shared by the thread list and thread page <forumTheme + forumThread>
 CREATE TABLE hammerfest_forum_roles (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,
@@ -271,7 +273,7 @@ CREATE TABLE hammerfest_forum_roles (
 
 -- Time-variant post counts for a thread page <threadPage>
 CREATE TABLE hammerfest_forum_thread_page_counts (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
@@ -285,7 +287,7 @@ CREATE TABLE hammerfest_forum_thread_page_counts (
 
 -- Time-variant data for forum posts <threadPage>
 CREATE TABLE hammerfest_forum_posts (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
@@ -308,7 +310,7 @@ CREATE TABLE hammerfest_forum_posts (
 
 -- Time-variant data for post-position/post id relationship <threadPage>
 CREATE TABLE hammerfest_forum_post_ids (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_thread_id HAMMERFEST_FORUM_THREAD_ID NOT NULL,
@@ -324,7 +326,7 @@ CREATE TABLE hammerfest_forum_post_ids (
 
 -- Time-variant best season rank, as displayed on the forum <threadPage>
 CREATE TABLE hammerfest_best_season_ranks (
-  period PERIOD_FROM NOT NULL,
+  period PERIOD_LOWER NOT NULL,
   retrieved_at INSTANT_SET NOT NULL,
   hammerfest_server HAMMERFEST_SERVER NOT NULL,
   hammerfest_user_id HAMMERFEST_USER_ID NOT NULL,

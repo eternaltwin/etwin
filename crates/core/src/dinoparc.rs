@@ -1,4 +1,5 @@
 use crate::core::{Instant, IntPercentage};
+use crate::temporal::LatestTemporal;
 use crate::types::EtwinError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
@@ -18,6 +19,14 @@ use std::str::FromStr;
 pub struct GetDinoparcUserOptions {
   pub server: DinoparcServer,
   pub id: DinoparcUserId,
+  pub time: Option<Instant>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct GetDinoparcDinozOptions {
+  pub server: DinoparcServer,
+  pub id: DinoparcDinozId,
   pub time: Option<Instant>,
 }
 
@@ -204,12 +213,15 @@ impl ShortDinoparcUser {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcUser"))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ArchivedDinoparcUser {
   pub server: DinoparcServer,
   pub id: DinoparcUserId,
-  pub username: DinoparcUsername,
   pub archived_at: Instant,
+  pub username: DinoparcUsername,
+  pub coins: Option<LatestTemporal<u32>>,
+  pub dinoz: Option<LatestTemporal<Vec<ShortDinoparcDinoz>>>,
+  pub inventory: Option<LatestTemporal<HashMap<DinoparcItemId, u32>>>,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -310,6 +322,26 @@ impl DinoparcDinoz {
       id: self.id,
     }
   }
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcUser"))]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ArchivedDinoparcDinoz {
+  pub server: DinoparcServer,
+  pub id: DinoparcDinozId,
+  pub archived_at: Instant,
+  pub name: Option<LatestTemporal<DinoparcDinozName>>,
+  pub location: Option<LatestTemporal<DinoparcLocationId>>,
+  pub race: Option<LatestTemporal<DinoparcDinozRace>>,
+  pub skin: Option<LatestTemporal<DinoparcDinozSkin>>,
+  pub life: Option<LatestTemporal<IntPercentage>>,
+  pub level: Option<LatestTemporal<u16>>,
+  pub experience: Option<LatestTemporal<IntPercentage>>,
+  pub danger: Option<LatestTemporal<i16>>,
+  pub in_tournament: Option<LatestTemporal<bool>>,
+  pub elements: Option<LatestTemporal<DinoparcDinozElements>>,
+  pub skills: Option<LatestTemporal<HashMap<DinoparcSkill, DinoparcSkillLevel>>>,
 }
 
 declare_new_int! {
@@ -415,7 +447,7 @@ impl sqlx::Type<Postgres> for DinoparcDinozElements {
   }
 
   fn compatible(ty: &postgres::PgTypeInfo) -> bool {
-    *ty == Self::type_info()
+    *ty == Self::type_info() || *ty == postgres::PgTypeInfo::with_name("raw_dinoparc_dinoz_elements")
   }
 }
 
@@ -519,6 +551,12 @@ declare_new_enum!(
     ShadowPower,
     #[str("TotemThief")]
     TotemThief,
+    #[str("Saboteur")]
+    Saboteur,
+    #[str("Spy")]
+    Spy,
+    #[str("Mercenary")]
+    Mercenary,
   }
   pub type ParseError = DinoparcSkillParseError;
   const SQL_NAME = "dinoparc_skill";
@@ -578,4 +616,6 @@ pub trait DinoparcStore: Send + Sync {
   async fn touch_inventory(&self, response: &DinoparcInventoryResponse) -> Result<(), EtwinError>;
 
   async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), EtwinError>;
+
+  async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError>;
 }

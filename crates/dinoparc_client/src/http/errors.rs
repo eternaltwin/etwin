@@ -118,10 +118,14 @@ pub enum ScraperError {
   InvalidDinozLifeValue(String),
   #[error("Zero or many dinoz level, exactly one was expected")]
   NonUniqueDinozLevel,
-  #[error("Zero or many dinoz level text, exactly one was expected")]
-  NonUniqueDinozLevelText,
+  #[error("Missing dinoz level text")]
+  MissingDinozLevelText,
+  #[error("Missing dinoz level decimal number in text")]
+  MissingDinozLevelDecimal,
   #[error("Invalid dinoz level {:?}", .0)]
   InvalidDinozLevel(String),
+  #[error("Zero or many dinoz experience, exactly one was expected")]
+  NonUniqueDinozExperience,
   #[error("Zero or many dinoz experience value, exactly one was expected")]
   NonUniqueDinozExperienceValue,
   #[error("Zero or many dinoz experience value text, exactly one was expected")]

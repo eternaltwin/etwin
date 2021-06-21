@@ -420,19 +420,20 @@ macro_rules! declare_new_int {
       }
 
       fn compatible(ty: &::sqlx::postgres::PgTypeInfo) -> bool {
-        *ty == Self::type_info() || <i64 as ::sqlx::Type<::sqlx::Postgres>>::compatible(ty)
+        *ty == Self::type_info() || <$sql_ty as ::sqlx::Type<::sqlx::Postgres>>::compatible(ty)
       }
     }
 
     #[cfg(feature = "sqlx")]
     impl<'r, Db: ::sqlx::Database> ::sqlx::Decode<'r, Db> for $struct_name
     where
-      i64: ::sqlx::Decode<'r, Db>,
+      $sql_ty: ::sqlx::Decode<'r, Db>,
     {
       fn decode(
         value: <Db as ::sqlx::database::HasValueRef<'r>>::ValueRef,
       ) ->  ::std::result::Result<Self, Box<dyn ::std::error::Error + 'static + Send + Sync>> {
-        let value: i64 = <i64 as ::sqlx::Decode<Db>>::decode(value)?;
+        let value: $sql_ty = <$sql_ty as ::sqlx::Decode<Db>>::decode(value)?;
+        let value: i64 = value.into();
         let value = $struct_name::from_i64(value)?;
         Ok(value)
       }

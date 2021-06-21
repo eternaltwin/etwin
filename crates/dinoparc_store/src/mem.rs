@@ -1,8 +1,8 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::dinoparc::{
-  ArchivedDinoparcUser, DinoparcDinozResponse, DinoparcInventoryResponse, DinoparcStore, DinoparcUserId,
-  GetDinoparcUserOptions, ShortDinoparcUser,
+  ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcDinozResponse, DinoparcInventoryResponse, DinoparcStore,
+  DinoparcUserId, GetDinoparcDinozOptions, GetDinoparcUserOptions, ShortDinoparcUser,
 };
 use etwin_core::types::EtwinError;
 use std::collections::HashMap;
@@ -59,8 +59,11 @@ where
     let user = ArchivedDinoparcUser {
       server: short.server,
       id: short.id,
-      username: short.username.clone(),
       archived_at: now,
+      username: short.username.clone(),
+      coins: None,
+      dinoz: None,
+      inventory: None,
     };
     state.touch_user(user.clone());
     Ok(user)
@@ -71,6 +74,10 @@ where
   }
 
   async fn touch_dinoz(&self, _response: &DinoparcDinozResponse) -> Result<(), EtwinError> {
+    todo!()
+  }
+
+  async fn get_dinoz(&self, _options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError> {
     todo!()
   }
 }

@@ -1,12 +1,13 @@
-use chrono::{TimeZone, Utc};
+use chrono::{Duration, TimeZone, Utc};
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
-use etwin_core::core::IntPercentage;
+use etwin_core::core::{IntPercentage, PeriodLower};
 use etwin_core::dinoparc::{
-  DinoparcDinoz, DinoparcDinozElements, DinoparcDinozRace, DinoparcDinozResponse, DinoparcInventoryResponse,
-  DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore, GetDinoparcUserOptions,
-  ShortDinoparcDinoz, ShortDinoparcUser,
+  ArchivedDinoparcDinoz, DinoparcDinoz, DinoparcDinozElements, DinoparcDinozRace, DinoparcDinozResponse,
+  DinoparcInventoryResponse, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore,
+  GetDinoparcDinozOptions, GetDinoparcUserOptions, ShortDinoparcDinoz, ShortDinoparcUser,
 };
+use etwin_core::temporal::{LatestTemporal, Snapshot};
 use std::collections::HashMap;
 
 #[macro_export]
@@ -202,5 +203,102 @@ where
       })
       .await;
     assert_ok!(actual);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .dinoparc_store
+      .get_dinoz(&GetDinoparcDinozOptions {
+        server: DinoparcServer::EnDinoparcCom,
+        id: "765483".parse().unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = Some(ArchivedDinoparcDinoz {
+      server: DinoparcServer::EnDinoparcCom,
+      id: "765483".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      name: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: "Yasumi".parse().unwrap(),
+        },
+      }),
+      location: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: "0".parse().unwrap(),
+        },
+      }),
+      race: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: DinoparcDinozRace::Wanwan,
+        },
+      }),
+      skin: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: "Ac9OrgxOWu1pd7Fp".parse().unwrap(),
+        },
+      }),
+      life: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: IntPercentage::new(30).unwrap(),
+        },
+      }),
+      level: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: 12,
+        },
+      }),
+      experience: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: IntPercentage::new(13).unwrap(),
+        },
+      }),
+      danger: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: 116,
+        },
+      }),
+      in_tournament: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: false,
+        },
+      }),
+      elements: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: DinoparcDinozElements {
+            fire: 10,
+            earth: 0,
+            water: 0,
+            thunder: 7,
+            air: 2,
+          },
+        },
+      }),
+      skills: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: {
+            let mut skills = HashMap::new();
+            skills.insert(DinoparcSkill::Dexterity, DinoparcSkillLevel::new(2).unwrap());
+            skills.insert(DinoparcSkill::Intelligence, DinoparcSkillLevel::new(5).unwrap());
+            skills.insert(DinoparcSkill::Strength, DinoparcSkillLevel::new(5).unwrap());
+            skills.insert(DinoparcSkill::MartialArts, DinoparcSkillLevel::new(5).unwrap());
+            skills
+          },
+        },
+      }),
+    });
+    assert_eq!(actual, expected);
   }
 }

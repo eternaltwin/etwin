@@ -74,7 +74,7 @@ impl DinoparcSkillMeta {
 }
 
 #[rustfmt::skip]
-pub const SKILLS: [DinoparcSkillMeta; 31] = [
+pub const SKILLS: [DinoparcSkillMeta; 34] = [
   DinoparcSkillMeta::new(DinoparcSkill::Dexterity, "Agilité", "Dexterity", "Agilidad"),
   DinoparcSkillMeta::new(DinoparcSkill::Intelligence, "Intelligence", "Intelligence", "Inteligencia"),
   DinoparcSkillMeta::new(DinoparcSkill::Perception, "Perception", "Perception", "Percepción"),
@@ -99,11 +99,14 @@ pub const SKILLS: [DinoparcSkillMeta; 31] = [
   DinoparcSkillMeta::new(DinoparcSkill::Luck, "Chance", "Luck", "Suerte"),
   DinoparcSkillMeta::new(DinoparcSkill::Counterattack, "Contre Attaque", "Counterattack", "Contraataque"),
   DinoparcSkillMeta::new(DinoparcSkill::Juggle, "Rock", "Juggle", "Malabarismos"),
-  DinoparcSkillMeta::new(DinoparcSkill::FireProtection, "", "", ""),
-  DinoparcSkillMeta::new(DinoparcSkill::FireApprentice, "Apprentis Feu", "Fire Apprentice", ""),
-  DinoparcSkillMeta::new(DinoparcSkill::EarthApprentice, "Apprentis Terre", "Earth Apprentice", ""),
-  DinoparcSkillMeta::new(DinoparcSkill::WaterApprentice, "Apprentis Eau", "Water Apprentice", ""),
-  DinoparcSkillMeta::new(DinoparcSkill::ThunderApprentice, "Apprentis Foudre", "Thunder Apprentice", ""),
-  DinoparcSkillMeta::new(DinoparcSkill::ShadowPower, "Pouvoir Sombre", "Shadow Power", ""),
+  DinoparcSkillMeta::new(DinoparcSkill::FireProtection, "Protection du Feu", "Fire Protection", "Protección del Fuego"),
+  DinoparcSkillMeta::new(DinoparcSkill::FireApprentice, "Apprentis Feu", "Fire Apprentice", "Aprendiz de Fuego"),
+  DinoparcSkillMeta::new(DinoparcSkill::EarthApprentice, "Apprentis Terre", "Earth Apprentice", "Aprendiz de Tierra"),
+  DinoparcSkillMeta::new(DinoparcSkill::WaterApprentice, "Apprentis Eau", "Water Apprentice", "Aprendiz de Agua"),
+  DinoparcSkillMeta::new(DinoparcSkill::ThunderApprentice, "Apprentis Foudre", "Thunder Apprentice", "Aprendiz de Rayo"),
+  DinoparcSkillMeta::new(DinoparcSkill::ShadowPower, "Pouvoir Sombre", "Shadow Power", "Poder Sombra"),
   DinoparcSkillMeta::new(DinoparcSkill::TotemThief, "Voleur de Totem", "", "Ladrón de tótem"),
+  DinoparcSkillMeta::new(DinoparcSkill::Saboteur, "Saboteur", "", "Sabotaje"),
+  DinoparcSkillMeta::new(DinoparcSkill::Spy, "Espion", "", "Espía"),
+  DinoparcSkillMeta::new(DinoparcSkill::Mercenary, "Mercenaire", "", "Mercenario"),
 ];

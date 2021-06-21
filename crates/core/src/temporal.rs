@@ -1,7 +1,10 @@
-use crate::core::{FinitePeriod, Instant, Period, PeriodFrom};
+use crate::core::{FinitePeriod, Instant, PeriodFrom, PeriodLower};
+#[cfg(feature = "_serde")]
+use etwin_serde_tools::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::iter::FromIterator;
 
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct SnapshotFrom<T> {
   period: PeriodFrom,
@@ -35,33 +38,44 @@ impl<T: Copy> SnapshotFrom<T> {
   }
 }
 
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Snapshot<T> {
-  period: Period,
-  value: T,
+  pub period: PeriodLower,
+  pub value: T,
 }
 
 impl<T> Snapshot<T> {
-  pub fn period(&self) -> Period {
+  pub fn period(&self) -> PeriodLower {
     self.period
   }
 
   pub fn start_time(&self) -> Instant {
     match self.period {
-      Period::From(PeriodFrom { start }) => start,
-      Period::Finite(FinitePeriod { start, .. }) => start,
+      PeriodLower::From(PeriodFrom { start }) => start,
+      PeriodLower::Finite(FinitePeriod { start, .. }) => start,
     }
   }
 
   pub fn end_time(&self) -> Option<Instant> {
     match self.period {
-      Period::From(_) => None,
-      Period::Finite(FinitePeriod { end, .. }) => Some(end),
+      PeriodLower::From(_) => None,
+      PeriodLower::Finite(FinitePeriod { end, .. }) => Some(end),
     }
   }
 
   pub fn value_ref(&self) -> &T {
     &self.value
+  }
+
+  pub fn map<U, F>(self, f: F) -> Snapshot<U>
+  where
+    F: FnOnce(T) -> U,
+  {
+    Snapshot {
+      period: self.period,
+      value: f(self.value),
+    }
   }
 }
 
@@ -131,11 +145,11 @@ impl<T: Eq> Temporal<T> {
     while let Some((start, v)) = it.next() {
       let end = it.peek().map(|(t, ..)| *t);
       let period = match end {
-        Some(end) => Period::Finite(FinitePeriod {
+        Some(end) => PeriodLower::Finite(FinitePeriod {
           start: *start,
           end: *end,
         }),
-        None => Period::From(PeriodFrom { start: *start }),
+        None => PeriodLower::From(PeriodFrom { start: *start }),
       };
       let v = f(Snapshot { period, value: v });
       result = match result {
@@ -159,8 +173,8 @@ impl<T: Eq> Temporal<T> {
       .rev()
       .map(move |(start, v)| {
         let period = match next {
-          Some(end) => Period::Finite(FinitePeriod { start: *start, end }),
-          None => Period::From(PeriodFrom { start: *start }),
+          Some(end) => PeriodLower::Finite(FinitePeriod { start: *start, end }),
+          None => PeriodLower::From(PeriodFrom { start: *start }),
         };
         next = Some(*start);
         Snapshot { period, value: v }
@@ -194,5 +208,24 @@ impl<T: Eq> FromIterator<(Instant, T)> for Temporal<T> {
 impl<T: Copy> Temporal<T> {
   pub fn value(&self) -> T {
     self.current.value()
+  }
+}
+
+/// Temporal for data we don't own (mainly archived values)
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+pub struct LatestTemporal<T> {
+  pub latest: Snapshot<T>,
+  // old: BTreeMap<Instant, T>,
+}
+
+impl<T> LatestTemporal<T> {
+  pub fn map<U, F>(self, f: F) -> LatestTemporal<U>
+  where
+    F: Fn(T) -> U,
+  {
+    LatestTemporal {
+      latest: self.latest.map(f),
+    }
   }
 }

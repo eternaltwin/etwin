@@ -1,13 +1,16 @@
 use async_trait::async_trait;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
-use etwin_core::core::{Instant, IntPercentage};
+use etwin_core::core::{Instant, IntPercentage, PeriodLower};
 use etwin_core::dinoparc::{
-  ArchivedDinoparcUser, DinoparcDinozElements, DinoparcDinozIdRef, DinoparcDinozName, DinoparcDinozRace,
-  DinoparcDinozResponse, DinoparcDinozSkin, DinoparcInventoryResponse, DinoparcItemId, DinoparcLocationId,
-  DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore, DinoparcUserId,
-  DinoparcUserIdRef, DinoparcUsername, GetDinoparcUserOptions, ShortDinoparcUser,
+  ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcDinozElements, DinoparcDinozId, DinoparcDinozIdRef,
+  DinoparcDinozName, DinoparcDinozRace, DinoparcDinozResponse, DinoparcDinozSkin, DinoparcInventoryResponse,
+  DinoparcItemId, DinoparcLocationId, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel,
+  DinoparcStore, DinoparcUserId, DinoparcUserIdRef, DinoparcUsername, GetDinoparcDinozOptions, GetDinoparcUserOptions,
+  ShortDinoparcUser,
 };
+use etwin_core::pg_num::PgU16;
+use etwin_core::temporal::{LatestTemporal, Snapshot};
 use etwin_core::types::EtwinError;
 use etwin_core::uuid::UuidGenerator;
 use etwin_populate::dinoparc::populate_dinoparc;
@@ -88,8 +91,11 @@ where
     Ok(row.map(|r| ArchivedDinoparcUser {
       server: r.dinoparc_server,
       id: r.dinoparc_user_id,
-      username: r.username,
       archived_at: r.archived_at,
+      username: r.username,
+      coins: None,
+      dinoz: None,
+      inventory: None,
     }))
   }
 
@@ -112,8 +118,11 @@ where
     Ok(ArchivedDinoparcUser {
       server: short.server,
       id: short.id,
-      username: short.username.clone(),
       archived_at: now,
+      username: short.username.clone(),
+      coins: None,
+      dinoz: None,
+      inventory: None,
     })
   }
 
@@ -157,6 +166,154 @@ where
     tx.commit().await?;
 
     Ok(())
+  }
+
+  async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError> {
+    let time = options.time.unwrap_or_else(|| self.clock.now());
+    let mut tx = self.database.as_ref().begin().await?;
+
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      dinoparc_server: DinoparcServer,
+      dinoparc_dinoz_id: DinoparcDinozId,
+      archived_at: Instant,
+      name_period: Option<PeriodLower>,
+      name_value: Option<DinoparcDinozName>,
+      location_period: Option<PeriodLower>,
+      location_value: Option<DinoparcLocationId>,
+      level_period: Option<PeriodLower>,
+      level_value: Option<PgU16>,
+      profile_period: Option<PeriodLower>,
+      profile_race: Option<DinoparcDinozRace>,
+      profile_skin: Option<DinoparcDinozSkin>,
+      profile_life: Option<IntPercentage>,
+      profile_experience: Option<IntPercentage>,
+      profile_danger: Option<i16>,
+      profile_in_tournament: Option<bool>,
+      profile_elements: Option<DinoparcDinozElements>,
+      profile_skills: Option<Uuid>,
+    }
+
+    let row: Option<Row> = sqlx::query_as::<_, Row>(
+      r"
+      WITH latest_dinoparc_dinoz_names AS (
+        SELECT dinoparc_server, dinoparc_dinoz_id,
+          LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(name) OVER w AS name
+        FROM dinoparc_dinoz_names
+        WHERE lower(period) <= $3::INSTANT
+        WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_dinoz_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+      ),
+      latest_dinoparc_dinoz_locations AS (
+        SELECT dinoparc_server, dinoparc_dinoz_id,
+          LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(location) OVER w AS location
+        FROM dinoparc_dinoz_locations
+        WHERE lower(period) <= $3::INSTANT
+        WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_dinoz_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+      ),
+      latest_dinoparc_dinoz_levels AS (
+        SELECT dinoparc_server, dinoparc_dinoz_id,
+          LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(level) OVER w AS level
+        FROM dinoparc_dinoz_levels
+        WHERE lower(period) <= $3::INSTANT
+        WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_dinoz_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+      ),
+      latest_dinoparc_dinoz_profiles AS (
+        SELECT dinoparc_server, dinoparc_dinoz_id,
+          LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(race) OVER w AS race,
+          LAST_VALUE(skin) OVER w AS skin,
+          LAST_VALUE(life) OVER w AS life,
+          LAST_VALUE(experience) OVER w AS experience,
+          LAST_VALUE(danger) OVER w AS danger,
+          LAST_VALUE(in_tournament) OVER w AS in_tournament,
+          LAST_VALUE(elements) OVER w AS elements,
+          LAST_VALUE(skills) OVER w AS skills
+        FROM dinoparc_dinoz_profiles
+        WHERE lower(period) <= $3::INSTANT
+        WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_dinoz_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+      )
+      SELECT dinoparc_server, dinoparc_dinoz_id, archived_at,
+        name.period AS name_period, name.name AS name_value,
+        location.period AS location_period, location.location AS location_value,
+        level.period AS level_period, level.level AS level_value,
+        profile.period AS profile_period,
+        profile.race AS profile_race, profile.skin AS profile_skin,
+        profile.life AS profile_life, profile.experience AS profile_experience,
+        profile.danger AS profile_danger, profile.in_tournament AS profile_in_tournament,
+        profile.elements AS profile_elements, profile.skills AS profile_skills
+      FROM dinoparc_dinoz
+        LEFT OUTER JOIN latest_dinoparc_dinoz_names AS name USING (dinoparc_server, dinoparc_dinoz_id)
+        LEFT OUTER JOIN latest_dinoparc_dinoz_locations AS location USING (dinoparc_server, dinoparc_dinoz_id)
+        LEFT OUTER JOIN latest_dinoparc_dinoz_levels AS level USING (dinoparc_server, dinoparc_dinoz_id)
+        LEFT OUTER JOIN latest_dinoparc_dinoz_profiles AS profile USING (dinoparc_server, dinoparc_dinoz_id)
+      WHERE dinoparc_server = $1::DINOPARC_SERVER AND dinoparc_dinoz_id = $2::DINOPARC_DINOZ_ID AND archived_at <= $3::INSTANT;
+    ",
+    )
+      .bind(&options.server)
+      .bind(&options.id)
+      .bind(time)
+      .fetch_optional(&mut tx)
+      .await?;
+
+    let row = match row {
+      Some(row) => row,
+      None => return Ok(None),
+    };
+
+    let skills = if let Some(skills) = row.profile_skills {
+      #[derive(Debug, sqlx::FromRow)]
+      struct Row {
+        dinoparc_skill: DinoparcSkill,
+        level: DinoparcSkillLevel,
+      }
+
+      let rows: Vec<Row> = sqlx::query_as::<_, Row>(
+        r"
+      SELECT dinoparc_skill, level
+      FROM dinoparc_skill_level_map_items
+      WHERE dinoparc_skill_level_map_id = $1::DINOPARC_SKILL_LEVEL_MAP_ID;
+    ",
+      )
+      .bind(skills)
+      .fetch_all(&mut tx)
+      .await?;
+
+      let skills: HashMap<DinoparcSkill, DinoparcSkillLevel> =
+        rows.iter().map(|r| (r.dinoparc_skill, r.level)).collect();
+      Some(skills)
+    } else {
+      None
+    };
+
+    Ok(Some(ArchivedDinoparcDinoz {
+      server: row.dinoparc_server,
+      id: row.dinoparc_dinoz_id,
+      archived_at: row.archived_at,
+      name: to_latest_temporal(row.name_period, row.name_value),
+      location: to_latest_temporal(row.location_period, row.location_value),
+      race: to_latest_temporal(row.profile_period, row.profile_race),
+      skin: to_latest_temporal(row.profile_period, row.profile_skin),
+      life: to_latest_temporal(row.profile_period, row.profile_life),
+      level: to_latest_temporal(row.level_period, row.level_value).map(|t| t.map(u16::from)),
+      experience: to_latest_temporal(row.profile_period, row.profile_experience),
+      danger: to_latest_temporal(row.level_period, row.profile_danger),
+      in_tournament: to_latest_temporal(row.profile_period, row.profile_in_tournament),
+      elements: to_latest_temporal(row.profile_period, row.profile_elements),
+      skills: to_latest_temporal(row.profile_period, skills),
+    }))
+  }
+}
+
+fn to_latest_temporal<T>(period: Option<PeriodLower>, value: Option<T>) -> Option<LatestTemporal<T>> {
+  match (period, value) {
+    (Some(period), Some(value)) => Some(LatestTemporal {
+      latest: Snapshot { period, value },
+    }),
+    (None, None) => None,
+    _ => unreachable!(),
   }
 }
 
