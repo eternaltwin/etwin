@@ -3,6 +3,11 @@ import {
   $NullableArchivedDinoparcUser,
   ArchivedDinoparcUser
 } from "@eternal-twin/core/lib/dinoparc/archived-dinoparc-user.js";
+import { $DinoparcDinozResponse, DinoparcDinozResponse } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-response.js";
+import {
+  $DinoparcInventoryResponse,
+  DinoparcInventoryResponse
+} from "@eternal-twin/core/lib/dinoparc/dinoparc-inventory-response.js";
 import {
   $GetDinoparcUserOptions,
   GetDinoparcUserOptions
@@ -24,16 +29,18 @@ export type NativeDinoparcStoreBox = typeof MemDinoparcStoreBox | typeof PgDinop
 
 export abstract class NativeDinoparcStore implements DinoparcStore {
   public readonly box: NativeDinoparcStoreBox;
-  private static GET_SHORT_USER = promisify(native.dinoparcStore.getShortUser);
+  private static GET_USER = promisify(native.dinoparcStore.getUser);
   private static TOUCH_SHORT_USER = promisify(native.dinoparcStore.touchShortUser);
+  private static TOUCH_DINOZ = promisify(native.dinoparcStore.touchDinoz);
+  private static TOUCH_INVENTORY = promisify(native.dinoparcStore.touchInventory);
 
   constructor(box: NativeDinoparcStoreBox) {
     this.box = box;
   }
 
-  async getShortUser(options: Readonly<GetDinoparcUserOptions>): Promise<ArchivedDinoparcUser | null> {
+  async getUser(options: Readonly<GetDinoparcUserOptions>): Promise<ArchivedDinoparcUser | null> {
     const rawOptions: string = $GetDinoparcUserOptions.write(JSON_WRITER, options);
-    const rawOut = await NativeDinoparcStore.GET_SHORT_USER(this.box, rawOptions);
+    const rawOut = await NativeDinoparcStore.GET_USER(this.box, rawOptions);
     return $NullableArchivedDinoparcUser.read(JSON_READER, rawOut);
   }
 
@@ -41,6 +48,16 @@ export abstract class NativeDinoparcStore implements DinoparcStore {
     const rawShort: string = $ShortDinoparcUser.write(JSON_WRITER, short);
     const rawOut = await NativeDinoparcStore.TOUCH_SHORT_USER(this.box, rawShort);
     return $ArchivedDinoparcUser.read(JSON_READER, rawOut);
+  }
+
+  async touchInventory(response: Readonly<DinoparcInventoryResponse>): Promise<void> {
+    const rawShort: string = $DinoparcInventoryResponse.write(JSON_WRITER, response);
+    await NativeDinoparcStore.TOUCH_INVENTORY(this.box, rawShort);
+  }
+
+  async touchDinoz(response: Readonly<DinoparcDinozResponse>): Promise<void> {
+    const rawShort: string = $DinoparcDinozResponse.write(JSON_WRITER, response);
+    await NativeDinoparcStore.TOUCH_DINOZ(this.box, rawShort);
   }
 }
 

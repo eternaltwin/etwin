@@ -8,6 +8,7 @@ import { TsEnumType } from "kryo/lib/ts-enum.js";
 export enum ObjectType {
   Announcement,
   ClientForumActor,
+  DinoparcDinoz,
   DinoparcUser,
   ForumPost,
   ForumPostRevision,

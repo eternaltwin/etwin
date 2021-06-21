@@ -534,7 +534,7 @@ async fn touch_dinoparc_coins(
   .bind(now)
   .bind(user.server)
   .bind(user.id)
-  .bind(i64::from(coins))
+  .bind(PgU32::from(coins))
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -842,7 +842,7 @@ async fn touch_dinoparc_item_counts(
       )
       .bind(map_id)
       .bind(id)
-      .bind(i64::from(*count))
+      .bind(PgU32::from(*count))
       .execute(&mut *tx)
       .await?;
       assert_eq!(res.rows_affected(), 1);
@@ -852,7 +852,7 @@ async fn touch_dinoparc_item_counts(
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       dinoparc_item_id: DinoparcItemId,
-      count: u32,
+      count: PgU32,
     }
 
     let rows: Vec<Row> = sqlx::query_as::<_, Row>(
@@ -866,7 +866,7 @@ async fn touch_dinoparc_item_counts(
     .fetch_all(&mut *tx)
     .await?;
 
-    let actual: BTreeMap<DinoparcItemId, u32> = rows.iter().map(|r| (r.dinoparc_item_id, r.count)).collect();
+    let actual: BTreeMap<DinoparcItemId, u32> = rows.iter().map(|r| (r.dinoparc_item_id, r.count.into())).collect();
 
     assert_eq!(actual, sorted);
   }

@@ -3,6 +3,12 @@ import {
   $DinoparcCredentials,
   DinoparcCredentials
 } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials.js";
+import { $DinoparcDinozId, DinoparcDinozId } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-id.js";
+import { $DinoparcDinozResponse, DinoparcDinozResponse } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-response.js";
+import {
+  $DinoparcInventoryResponse,
+  DinoparcInventoryResponse
+} from "@eternal-twin/core/lib/dinoparc/dinoparc-inventory-response.js";
 import { $DinoparcPassword, DinoparcPassword } from "@eternal-twin/core/lib/dinoparc/dinoparc-password.js";
 import { $DinoparcServer, DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
 import {
@@ -32,6 +38,8 @@ export abstract class NativeDinoparcClient implements DinoparcClient {
   public readonly box: NativeDinoparcClientBox;
   private static CREATE_SESSION = promisify(native.dinoparcClient.createSession);
   private static TEST_SESSION = promisify(native.dinoparcClient.testSession);
+  private static GET_INVENTORY = promisify(native.dinoparcClient.getInventory);
+  private static GET_DINOZ = promisify(native.dinoparcClient.getDinoz);
 
   constructor(box: NativeDinoparcClientBox) {
     this.box = box;
@@ -48,6 +56,19 @@ export abstract class NativeDinoparcClient implements DinoparcClient {
     const rawKey: string = $DinoparcSessionKey.write(JSON_WRITER, key);
     const rawOut = await NativeDinoparcClient.TEST_SESSION(this.box, rawServer, rawKey);
     return $NullableDinoparcSession.read(JSON_READER, rawOut);
+  }
+
+  async getInventory(session: DinoparcSession): Promise<DinoparcInventoryResponse> {
+    const rawSession: string = $DinoparcSession.write(JSON_WRITER, session);
+    const rawOut = await NativeDinoparcClient.GET_INVENTORY(this.box, rawSession);
+    return $DinoparcInventoryResponse.read(JSON_READER, rawOut);
+  }
+
+  async getDinoz(session: DinoparcSession, dinozId: DinoparcDinozId): Promise<DinoparcDinozResponse> {
+    const rawSession: string = $DinoparcSession.write(JSON_WRITER, session);
+    const rawDinozId: string = $DinoparcDinozId.write(JSON_WRITER, dinozId);
+    const rawOut = await NativeDinoparcClient.GET_DINOZ(this.box, rawSession, rawDinozId);
+    return $DinoparcDinozResponse.read(JSON_READER, rawOut);
   }
 }
 

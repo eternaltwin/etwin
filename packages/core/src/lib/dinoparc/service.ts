@@ -24,7 +24,7 @@ export class DefaultDinoparcService implements DinoparcService {
   }
 
   async getUser(_acx: AuthContext, options: Readonly<GetDinoparcUserOptions>): Promise<DinoparcUser | null> {
-    const user: ArchivedDinoparcUser | null = await this.#dinoparcStore.getShortUser(options);
+    const user: ArchivedDinoparcUser | null = await this.#dinoparcStore.getUser(options);
     if (user === null) {
       return null;
     }

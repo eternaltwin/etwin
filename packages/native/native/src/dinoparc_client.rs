@@ -1,7 +1,9 @@
 use crate::dinoparc_client::http::JsHttpDinoparcClient;
 use crate::dinoparc_client::mem::JsMemDinoparcClient;
 use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
-use etwin_core::dinoparc::{DinoparcClient, DinoparcCredentials, DinoparcServer, DinoparcSessionKey};
+use etwin_core::dinoparc::{
+  DinoparcClient, DinoparcCredentials, DinoparcDinozId, DinoparcServer, DinoparcSession, DinoparcSessionKey,
+};
 use neon::prelude::*;
 use std::sync::Arc;
 
@@ -11,6 +13,8 @@ pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject
   ns.set_with(cx, "mem", mem::create_namespace)?;
   ns.set_function(cx, "createSession", create_session)?;
   ns.set_function(cx, "testSession", test_session)?;
+  ns.set_function(cx, "getDinoz", get_dinoz)?;
+  ns.set_function(cx, "getInventory", get_inventory)?;
   Ok(ns)
 }
 
@@ -58,6 +62,32 @@ pub fn test_session(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let key: DinoparcSessionKey = serde_json::from_str(&key_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.test_session(server, &key).await };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn get_dinoz(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_dinoparc_client(&mut cx, inner)?;
+  let session_json = cx.argument::<JsString>(1)?;
+  let dinoz_id_json = cx.argument::<JsString>(2)?;
+  let cb = cx.argument::<JsFunction>(3)?.root(&mut cx);
+
+  let session: DinoparcSession = serde_json::from_str(&session_json.value(&mut cx)).unwrap();
+  let dinoz_id: DinoparcDinozId = serde_json::from_str(&dinoz_id_json.value(&mut cx)).unwrap();
+
+  let res = async move { inner.get_dinoz(&session, dinoz_id).await };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn get_inventory(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_dinoparc_client(&mut cx, inner)?;
+  let session_json = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let session: DinoparcSession = serde_json::from_str(&session_json.value(&mut cx)).unwrap();
+
+  let res = async move { inner.get_inventory(&session).await };
   resolve_callback_serde(&mut cx, res, cb)
 }
 

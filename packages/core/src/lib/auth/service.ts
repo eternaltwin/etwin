@@ -55,6 +55,8 @@ import { SYSTEM_AUTH } from "./system-auth-context.js";
 import { $UserAndSession, UserAndSession } from "./user-and-session.js";
 import { UserCredentials } from "./user-credentials.js";
 import { $UserLogin } from "./user-login.js";
+import { DinoparcInventoryResponse } from "../dinoparc/dinoparc-inventory-response";
+import { DinoparcDinozResponse } from "../dinoparc/dinoparc-dinoz-response";
 
 export interface AuthService {
   /**
@@ -344,6 +346,7 @@ export class DefaultAuthService implements AuthService {
     if (user === null) {
       throw new Error("AssertionError: UserNotFound");
     }
+    archiveDino(this.#dinoparcClient, this.#dinoparcStore, dparcSession);
     return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
   }
 
@@ -551,5 +554,25 @@ export class DefaultAuthService implements AuthService {
       throw new Error("AssertionError: Expected JWT verification result to be an object");
     }
     return $EmailRegistrationJwt.read(JSON_VALUE_READER, tokenObj);
+  }
+}
+
+async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), ms);
+  });
+}
+
+export async function archiveDino(client: DinoparcClient, store: DinoparcStore, dparcSession: DinoparcSession): Promise<void> {
+  try {
+    const inv: DinoparcInventoryResponse = await client.getInventory(dparcSession);
+    await store.touchInventory(inv);
+    for (const dinoz of inv.sessionUser.dinoz) {
+      sleep(100);
+      const d: DinoparcDinozResponse = await client.getDinoz(dparcSession, dinoz.id);
+      await store.touchDinoz(d);
+    }
+  } catch (e) {
+    console.error(e);
   }
 }

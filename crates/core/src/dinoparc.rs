@@ -250,7 +250,7 @@ declare_decimal_id! {
 declare_new_string! {
   pub struct DinoparcDinozName(String);
   pub type ParseError = DinoparcDinozNameParseError;
-  const PATTERN = r"^.{1,15}$";
+  const PATTERN = r"^.{1,50}$";
   const SQL_NAME = "dinoparc_dinoz_name";
 }
 
@@ -357,44 +357,44 @@ declare_new_int! {
 declare_new_enum!(
   #[derive(IntoEnumIterator)]
   pub enum DinoparcDinozRace {
-    #[str("Moueffe")]
-    Moueffe,
-    #[str("Picori")]
-    Picori,
-    #[str("Castivore")]
-    Castivore,
-    #[str("Sirain")]
-    Sirain,
-    #[str("Winks")]
-    Winks,
-    #[str("Gorriloz")]
-    Gorriloz,
     #[str("Cargou")]
     Cargou,
-    #[str("Hippoclamp")]
-    Hippoclamp,
-    #[str("Rokky")]
-    Rokky,
-    #[str("Pigmou")]
-    Pigmou,
-    #[str("Wanwan")]
-    Wanwan,
+    #[str("Castivore")]
+    Castivore,
     #[str("Gluon")]
     Gluon,
-    #[str("Kump")]
-    Kump,
-    #[str("Pteroz")]
-    Pteroz,
-    #[str("Santaz")]
-    Santaz,
-    #[str("Ouistiti")]
-    Ouistiti,
-    #[str("Korgon")]
-    Korgon,
+    #[str("Gorriloz")]
+    Gorriloz,
+    #[str("Hippoclamp")]
+    Hippoclamp,
     #[str("Kabuki")]
     Kabuki,
+    #[str("Korgon")]
+    Korgon,
+    #[str("Kump")]
+    Kump,
+    #[str("Moueffe")]
+    Moueffe,
+    #[str("Ouistiti")]
+    Ouistiti,
+    #[str("Picori")]
+    Picori,
+    #[str("Pigmou")]
+    Pigmou,
+    #[str("Pteroz")]
+    Pteroz,
+    #[str("Rokky")]
+    Rokky,
+    #[str("Santaz")]
+    Santaz,
     #[str("Serpantin")]
     Serpantin,
+    #[str("Sirain")]
+    Sirain,
+    #[str("Wanwan")]
+    Wanwan,
+    #[str("Winks")]
+    Winks,
   }
   pub type ParseError = DinoparcDinozRaceParseError;
   const SQL_NAME = "dinoparc_dinoz_race";

@@ -112,7 +112,7 @@ export class DefaultLinkService implements LinkService {
       if (linkedBy === null) {
         throw new Error("AssertionError: ExpectedUserToExist");
       }
-      const user = await this.#dinoparcStore.getShortUser(raw.current.remote);
+      const user = await this.#dinoparcStore.getUser(raw.current.remote);
       if (user === null) {
         throw new Error("AssertionError: ExpectedDinoparcUserToExist");
       }
