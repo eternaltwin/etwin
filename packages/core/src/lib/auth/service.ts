@@ -6,6 +6,8 @@ import { ObjectType } from "../core/object-type.js";
 import { UuidGenerator } from "../core/uuid-generator.js";
 import { DinoparcClient } from "../dinoparc/client.js";
 import { DinoparcCredentials } from "../dinoparc/dinoparc-credentials.js";
+import { DinoparcDinozResponse } from "../dinoparc/dinoparc-dinoz-response.js";
+import { DinoparcInventoryResponse } from "../dinoparc/dinoparc-inventory-response.js";
 import { DinoparcSession } from "../dinoparc/dinoparc-session.js";
 import { DinoparcStore } from "../dinoparc/store.js";
 import { $EmailAddress, EmailAddress } from "../email/email-address.js";
@@ -55,8 +57,6 @@ import { SYSTEM_AUTH } from "./system-auth-context.js";
 import { $UserAndSession, UserAndSession } from "./user-and-session.js";
 import { UserCredentials } from "./user-credentials.js";
 import { $UserLogin } from "./user-login.js";
-import { DinoparcInventoryResponse } from "../dinoparc/dinoparc-inventory-response";
-import { DinoparcDinozResponse } from "../dinoparc/dinoparc-dinoz-response";
 
 export interface AuthService {
   /**

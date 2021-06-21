@@ -694,6 +694,7 @@ mod test {
   }
 
   #[cfg(feature = "_serde")]
+  #[ignore]
   #[test]
   fn write_archived_dinoparc_user_alice_rokky() {
     let value = get_archived_dinoparc_user_alice_rokky();

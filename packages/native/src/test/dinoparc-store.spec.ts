@@ -71,14 +71,17 @@ function testDinoparcStore(withApi: (fn: (api: TestApi) => Promise<void>) => Pro
     return withApi(async (api: TestApi): Promise<void> => {
       await api.dinoparcStore.touchShortUser({type: ObjectType.DinoparcUser, server: "dinoparc.com", id: "123", username: "alice"});
 
-      const actual: ArchivedDinoparcUser | null = await api.dinoparcStore.getShortUser({server: "dinoparc.com", id: "123"});
+      const actual: ArchivedDinoparcUser | null = await api.dinoparcStore.getUser({server: "dinoparc.com", id: "123"});
       {
         const expected: ArchivedDinoparcUser = {
           type: ObjectType.DinoparcUser,
           server: "dinoparc.com",
           id: "123",
-          username: "alice",
           archivedAt: actual!.archivedAt,
+          username: "alice",
+          coins: null,
+          dinoz: null,
+          inventory: null,
         };
         chai.assert.deepEqual(actual, expected);
       }
@@ -90,7 +93,7 @@ function testDinoparcStore(withApi: (fn: (api: TestApi) => Promise<void>) => Pro
     return withApi(async (api: TestApi): Promise<void> => {
       await api.dinoparcStore.touchShortUser({type: ObjectType.DinoparcUser, server: "dinoparc.com", id: "123", username: "alice"});
 
-      const actual: ArchivedDinoparcUser | null = await api.dinoparcStore.getShortUser({server: "dinoparc.com", id: "999"});
+      const actual: ArchivedDinoparcUser | null = await api.dinoparcStore.getUser({server: "dinoparc.com", id: "999"});
       {
         const expected: null = null;
         chai.assert.deepEqual(actual, expected);
