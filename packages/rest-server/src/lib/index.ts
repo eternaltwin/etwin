@@ -3,7 +3,6 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
 import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service.js";
 import { HttpHeader, HttpRequest, HttpRouter } from "@eternal-twin/core/lib/http/index.js";
 import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
 import { UserService } from "@eternal-twin/core/lib/user/service.js";
@@ -21,7 +20,6 @@ import { KoaAuth } from "./helpers/koa-auth.js";
 import { KoaRestState } from "./koa-state";
 import { Api as UsersApi, createUsersRouter } from "./users.js";
 
-
 export interface Api extends AnnouncementApi, AppApi, AuthApi, ConfigApi, ClockApi, ForumApi, ArchiveApi, UsersApi {
   announcement: AnnouncementService;
   auth: AuthService;
@@ -29,7 +27,6 @@ export interface Api extends AnnouncementApi, AppApi, AuthApi, ConfigApi, ClockA
   dev: DevApi | null;
   dinoparc: DinoparcService;
   forum: ForumService;
-  hammerfest: HammerfestService;
   koaAuth: KoaAuth;
   twinoid: TwinoidService;
   user: UserService;
@@ -42,7 +39,29 @@ export interface DevApi extends ClockDevApi {
 export function createApiRouter(api: Api, nativeRouter: HttpRouter): Router {
   const router: Router = new Router();
 
+  router.get("ETWIN_API_ROOT", "/", (cx) => {
+    cx.response.body = {status: "OK"};
+  });
+
   const nativeMiddleware: Middleware<KoaRestState> = async (cx: RouterContext<KoaRestState>) => {
+    const apiRoot: string = cx.router.route("ETWIN_API_ROOT").path;
+    let path: string = cx.request.path;
+    if (!path.startsWith(apiRoot)) {
+      console.warn(`Failed to route URL: ${cx.request.path}`);
+      return;
+    }
+    if (apiRoot !== "/") {
+      path = path.substr(apiRoot.length);
+    }
+    if (!path.startsWith("/")) {
+      if (apiRoot.endsWith("/")) {
+        path = "/" + path;
+      } else {
+        console.warn(`Failed to route URL: ${cx.request.path}`);
+        return;
+      }
+    }
+
     const headers: HttpHeader[] = [];
     for (const [key, value] of Object.entries(cx.request.headers)) {
       if (typeof value === "string") {
@@ -62,7 +81,7 @@ export function createApiRouter(api: Api, nativeRouter: HttpRouter): Router {
     const body: Buffer = await rawBody(cx.req, {limit: 1024 * 1024});
     const req: HttpRequest = {
       method: cx.request.method,
-      path: cx.state.restPath,
+      path,
       headers,
       body,
     };
@@ -80,7 +99,7 @@ export function createApiRouter(api: Api, nativeRouter: HttpRouter): Router {
   router.use("/announcements", announcements.routes(), announcements.allowedMethods());
   const app = createAppRouter(api);
   router.use("/app", app.routes(), app.allowedMethods());
-  const archive = createArchiveRouter(api, nativeMiddleware);
+  const archive = createArchiveRouter(api);
   router.use("/archive", archive.routes(), archive.allowedMethods());
   const auth = createAuthRouter(api);
   router.use("/auth", auth.routes(), auth.allowedMethods());
@@ -93,7 +112,7 @@ export function createApiRouter(api: Api, nativeRouter: HttpRouter): Router {
   const forum = createForumRouter(api);
   router.use("/forum", forum.routes(), forum.allowedMethods());
 
-  // router.all(["/:a", "/:a/:b", "/:a/:b/:c", "/:a/:b/:c/:d"], nativeMiddleware);
+  router.all(["/:a", "/:a/:b", "/:a/:b/:c", "/:a/:b/:c/:d", "/:a/:b/:c/:d/:e", "/:a/:b/:c/:d/:e/:f"], nativeMiddleware);
 
   return router;
 }

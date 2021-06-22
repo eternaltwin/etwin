@@ -146,7 +146,7 @@ export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer)
       twinoidStore,
       twinoidClient
     });
-    const api: Api = {announcement, auth, dinoparc, clock, dev, forum, hammerfest, koaAuth, twinoid, user};
+    const api: Api = {announcement, auth, dinoparc, clock, dev, forum, koaAuth, twinoid, user};
     const nativeRouter = await NativeRestRouter.create({hammerfest});
 
     const app: Koa = new Koa();

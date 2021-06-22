@@ -36,6 +36,16 @@ impl Reject for GetHammerfestUserError {}
 struct HammerfestUserNotFound {}
 
 pub fn create_rest_filter(api: RouterApi) -> RestFilter {
+  warp::path("archive").and(create_archive_filter(api)).boxed()
+}
+
+pub fn create_archive_filter(api: RouterApi) -> RestFilter {
+  warp::path("hammerfest")
+    .and(create_archive_hammerfest_filter(api))
+    .boxed()
+}
+
+pub fn create_archive_hammerfest_filter(api: RouterApi) -> RestFilter {
   async fn recover(err: Rejection) -> Result<WithStatus<Json>, Infallible> {
     let status: StatusCode;
     let err = if err.is_not_found() {
@@ -50,9 +60,9 @@ pub fn create_rest_filter(api: RouterApi) -> RestFilter {
     Ok(warp::reply::with_status(body, status))
   }
 
-  warp::path!("archive" / "hammerfest" / HammerfestServer / "users" / HammerfestUserId)
+  warp::path!(HammerfestServer / "users" / HammerfestUserId)
     .and_then(move |server: HammerfestServer, id: HammerfestUserId| {
-      let hammerfest = api.hammerfest.clone();
+      let hammerfest = Arc::clone(&api.hammerfest);
       async move {
         let acx = AuthContext::Guest(GuestAuthContext {
           scope: AuthScope::Default,
@@ -65,10 +75,6 @@ pub fn create_rest_filter(api: RouterApi) -> RestFilter {
           Ok(None) => Err(warp::reject::not_found()),
           Err(e) => Err(warp::reject::custom(ServerError(e))),
         };
-        // let res: Result<WithStatus<Json>, Infallible> = match res {
-        //   Ok(r) => Ok(r),
-        //   Err(e) => recover(e).await,
-        // };
         res
       }
     })
