@@ -1,7 +1,6 @@
 import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service";
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
-import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { HttpHeader, HttpRequest, HttpRouter } from "@eternal-twin/core/lib/http/index.js";
 import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
@@ -25,7 +24,6 @@ export interface Api extends AnnouncementApi, AppApi, AuthApi, ConfigApi, ClockA
   auth: AuthService;
   clock: ClockService;
   dev: DevApi | null;
-  dinoparc: DinoparcService;
   forum: ForumService;
   koaAuth: KoaAuth;
   twinoid: TwinoidService;

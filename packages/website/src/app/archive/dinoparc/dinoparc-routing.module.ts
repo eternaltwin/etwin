@@ -1,8 +1,8 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from "@angular/router";
 import { $DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server";
-import { DinoparcUser } from "@eternal-twin/core/lib/dinoparc/dinoparc-user";
 import { $DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id";
+import { NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user";
 import { $Date } from "kryo/lib/date.js";
 import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader.js";
 import { Observable, of as rxOf } from "rxjs";
@@ -12,7 +12,7 @@ import { DinoparcHomeView } from "./dinoparc-home.view";
 import { DinoparcUserView } from "./dinoparc-user.view";
 
 @Injectable()
-export class DinoparcUserResolverService implements Resolve<DinoparcUser | null> {
+export class DinoparcUserResolverService implements Resolve<NullableEtwinDinoparcUser> {
   readonly #router: Router;
   readonly #dinoparc: DinoparcService;
 
@@ -21,7 +21,7 @@ export class DinoparcUserResolverService implements Resolve<DinoparcUser | null>
     this.#dinoparc = dinoparc;
   }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<DinoparcUser | null> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<NullableEtwinDinoparcUser> {
     const server: string | null = route.paramMap.get("server");
     if (server === null || !$DinoparcServer.test(server)) {
       return rxOf(null);

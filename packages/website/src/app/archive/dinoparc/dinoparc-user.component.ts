@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { DinoparcUser } from "@eternal-twin/core/lib/dinoparc/dinoparc-user";
+import { EtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user";
 
 @Component({
   selector: "etwin-dinoparc-user",
@@ -8,7 +8,7 @@ import { DinoparcUser } from "@eternal-twin/core/lib/dinoparc/dinoparc-user";
 })
 export class DinoparcUserComponent {
   @Input()
-  public user!: DinoparcUser;
+  public user!: EtwinDinoparcUser;
 
   constructor() {
   }

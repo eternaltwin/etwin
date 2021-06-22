@@ -226,6 +226,7 @@ pub struct ArchivedDinoparcUser {
   pub inventory: Option<LatestTemporal<HashMap<DinoparcItemId, u32>>>,
 }
 
+/// `ArchivedDinoparcUser` extend with `etwin` to provide Eternaltwin-specific data.
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcUser"))]
 #[derive(Clone, Debug, PartialEq, Eq)]

@@ -1,13 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Data as AnyRouteData } from "@angular/router";
-import { DinoparcUser } from "@eternal-twin/core/lib/dinoparc/dinoparc-user";
+import { EtwinDinoparcUser, NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user";
 import { NEVER as RX_NEVER, Observable } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 
 const DINOPARC_USER_NOT_FOUND: unique symbol = Symbol("DINOPARC_USER_NOT_FOUND");
 
 export interface DinoparcUserRouteData {
-  user: DinoparcUser | null;
+  user: NullableEtwinDinoparcUser;
 }
 
 @Component({
@@ -16,7 +16,7 @@ export interface DinoparcUserRouteData {
   styleUrls: [],
 })
 export class DinoparcUserView implements OnInit {
-  public user$: Observable<DinoparcUser | typeof DINOPARC_USER_NOT_FOUND>;
+  public user$: Observable<EtwinDinoparcUser | typeof DINOPARC_USER_NOT_FOUND>;
   public readonly DINOPARC_USER_NOT_FOUND = DINOPARC_USER_NOT_FOUND;
 
   readonly #route: ActivatedRoute;
@@ -28,7 +28,7 @@ export class DinoparcUserView implements OnInit {
 
   ngOnInit(): void {
     this.user$ = this.#route.data
-      .pipe(rxMap((anyData: AnyRouteData): DinoparcUser | typeof DINOPARC_USER_NOT_FOUND => {
+      .pipe(rxMap((anyData: AnyRouteData): EtwinDinoparcUser | typeof DINOPARC_USER_NOT_FOUND => {
         const data = anyData as DinoparcUserRouteData;
         return data.user !== null ? data.user : DINOPARC_USER_NOT_FOUND;
       }));

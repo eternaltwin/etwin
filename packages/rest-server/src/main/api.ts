@@ -131,7 +131,7 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
     );
   }
 
-  const api: Api = {announcement, auth, dinoparc, clock, dev: null, forum, koaAuth, twinoid, user};
+  const api: Api = {announcement, auth, clock, dev: null, forum, koaAuth, twinoid, user};
   const nativeRouter = await NativeRestRouter.create({dinoparc, hammerfest});
 
   async function teardown(): Promise<void> {

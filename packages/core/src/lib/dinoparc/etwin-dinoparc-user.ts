@@ -16,7 +16,7 @@ import { $DinoparcServer, DinoparcServer } from "./dinoparc-server.js";
 import { $DinoparcUserId, DinoparcUserId } from "./dinoparc-user-id.js";
 import { $DinoparcUsername, DinoparcUsername } from "./dinoparc-username.js";
 
-export interface DinoparcUser {
+export interface EtwinDinoparcUser {
   type: ObjectType.DinoparcUser;
   server: DinoparcServer;
   id: DinoparcUserId;
@@ -28,7 +28,7 @@ export interface DinoparcUser {
   etwin: VersionedEtwinLink;
 }
 
-export const $DinoparcUser: RecordIoType<DinoparcUser> = new RecordType<DinoparcUser>({
+export const $EtwinDinoparcUser: RecordIoType<EtwinDinoparcUser> = new RecordType<EtwinDinoparcUser>({
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.DinoparcUser})},
     server: {type: $DinoparcServer},
@@ -43,6 +43,6 @@ export const $DinoparcUser: RecordIoType<DinoparcUser> = new RecordType<Dinoparc
   changeCase: CaseStyle.SnakeCase,
 });
 
-export type NullableDinoparcUser = null | DinoparcUser;
+export type NullableEtwinDinoparcUser = null | EtwinDinoparcUser;
 
-export const $NullableDinoparcUser: TryUnionType<NullableDinoparcUser> = new TryUnionType({variants: [$Null, $DinoparcUser]});
+export const $NullableEtwinDinoparcUser: TryUnionType<NullableEtwinDinoparcUser> = new TryUnionType({variants: [$Null, $EtwinDinoparcUser]});

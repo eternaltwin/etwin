@@ -1,5 +1,5 @@
 import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { $NullableDinoparcUser, NullableDinoparcUser } from "@eternal-twin/core/lib/dinoparc/dinoparc-user.js";
+import { $NullableEtwinDinoparcUser, NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user.js";
 import {
   $GetDinoparcUserOptions,
   GetDinoparcUserOptions
@@ -37,10 +37,10 @@ export class NativeDinoparcService implements DinoparcService {
     return new NativeDinoparcService(box);
   }
 
-  async getUser(acx: AuthContext, options: Readonly<GetDinoparcUserOptions>): Promise<NullableDinoparcUser> {
+  async getUser(acx: AuthContext, options: Readonly<GetDinoparcUserOptions>): Promise<NullableEtwinDinoparcUser> {
     const rawAcx: string = $AuthContext.write(JSON_WRITER, acx);
     const rawOptions: string = $GetDinoparcUserOptions.write(JSON_WRITER, options);
     const rawOut = await NativeDinoparcService.GET_USER(this.box, rawAcx, rawOptions);
-    return $NullableDinoparcUser.read(JSON_READER, rawOut);
+    return $NullableEtwinDinoparcUser.read(JSON_READER, rawOut);
   }
 }

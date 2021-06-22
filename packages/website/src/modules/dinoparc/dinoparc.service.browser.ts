@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { $TimeQuery } from "@eternal-twin/core/lib/core/time-query";
-import { $DinoparcUser, DinoparcUser } from "@eternal-twin/core/lib/dinoparc/dinoparc-user";
+import { $EtwinDinoparcUser, NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user";
 import { GetDinoparcUserOptions } from "@eternal-twin/core/lib/dinoparc/get-dinoparc-user-options";
 import { Observable, of as rxOf } from "rxjs";
 import { catchError as rxCatchError } from "rxjs/operators";
@@ -17,14 +17,14 @@ export class BrowserDinoparcService extends DinoparcService {
     this.#rest = rest;
   }
 
-  getUser(options: Readonly<GetDinoparcUserOptions>): Observable<DinoparcUser | null> {
+  getUser(options: Readonly<GetDinoparcUserOptions>): Observable<NullableEtwinDinoparcUser> {
     return this.#rest
       .get(
         ["archive", "dinoparc", options.server, "users", options.id],
         {
           queryType: $TimeQuery,
           query: {time: options.time},
-          resType: $DinoparcUser,
+          resType: $EtwinDinoparcUser,
         },
       )
       .pipe(
