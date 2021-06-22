@@ -73,7 +73,8 @@ where
   }
 
   async fn get_dinoz(&self, _options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError> {
-    todo!()
+    eprintln!("Warning: Stub `MemDinoparcStore::get_dinoz` implementation");
+    Ok(None)
   }
 
   async fn get_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError> {

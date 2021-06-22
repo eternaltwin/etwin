@@ -3,7 +3,7 @@ use crate::link_store::get_native_link_store;
 use crate::neon_helpers::{resolve_callback_serde, resolve_callback_with, NeonNamespace};
 use crate::user_store::get_native_user_store;
 use etwin_core::auth::AuthContext;
-use etwin_core::dinoparc::{DinoparcStore, GetDinoparcUserOptions};
+use etwin_core::dinoparc::{DinoparcStore, GetDinoparcDinozOptions, GetDinoparcUserOptions};
 use etwin_core::link::LinkStore;
 use etwin_core::user::UserStore;
 use etwin_services::dinoparc::DinoparcService;
@@ -14,6 +14,7 @@ pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject
   let ns = cx.empty_object();
   ns.set_function(cx, "new", new)?;
   ns.set_function(cx, "getUser", get_user)?;
+  ns.set_function(cx, "getDinoz", get_dinoz)?;
   Ok(ns)
 }
 
@@ -63,5 +64,19 @@ pub fn get_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let options: GetDinoparcUserOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.get_user(&acx, &options).await };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn get_dinoz(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_dinoparc_service(&mut cx, inner)?;
+  let acx_json = cx.argument::<JsString>(1)?;
+  let options_json = cx.argument::<JsString>(2)?;
+  let cb = cx.argument::<JsFunction>(3)?.root(&mut cx);
+
+  let acx: AuthContext = serde_json::from_str(&acx_json.value(&mut cx)).unwrap();
+  let options: GetDinoparcDinozOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
+
+  let res = async move { inner.get_dinoz(&acx, &options).await };
   resolve_callback_serde(&mut cx, res, cb)
 }

@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { $TimeQuery } from "@eternal-twin/core/lib/core/time-query";
+import { $EtwinDinoparcDinoz, NullableEtwinDinoparcDinoz } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-dinoz";
 import { $EtwinDinoparcUser, NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user";
+import { GetDinoparcDinozOptions } from "@eternal-twin/core/lib/dinoparc/get-dinoparc-dinoz-options";
 import { GetDinoparcUserOptions } from "@eternal-twin/core/lib/dinoparc/get-dinoparc-user-options";
 import { Observable, of as rxOf } from "rxjs";
 import { catchError as rxCatchError } from "rxjs/operators";
@@ -25,6 +27,23 @@ export class BrowserDinoparcService extends DinoparcService {
           queryType: $TimeQuery,
           query: {time: options.time},
           resType: $EtwinDinoparcUser,
+        },
+      )
+      .pipe(
+        rxCatchError((err: Error): Observable<null> => {
+          return rxOf(null);
+        }),
+      );
+  }
+
+  getDinoz(options: Readonly<GetDinoparcDinozOptions>): Observable<NullableEtwinDinoparcDinoz> {
+    return this.#rest
+      .get(
+        ["archive", "dinoparc", options.server, "dinoz", options.id],
+        {
+          queryType: $TimeQuery,
+          query: {time: options.time},
+          resType: $EtwinDinoparcDinoz,
         },
       )
       .pipe(

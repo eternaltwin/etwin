@@ -1,11 +1,13 @@
 use etwin_core::auth::{AuthContext, AuthScope, GuestAuthContext};
-use etwin_core::dinoparc::{DinoparcServer, DinoparcUserId, GetDinoparcUserOptions};
-use etwin_core::hammerfest::{GetHammerfestUserOptions, HammerfestServer, HammerfestUserId};
+use etwin_core::dinoparc::{
+  DinoparcDinozId, DinoparcServer, DinoparcUserId, EtwinDinoparcDinoz, EtwinDinoparcUser, GetDinoparcDinozOptions,
+  GetDinoparcUserOptions,
+};
+use etwin_core::hammerfest::{GetHammerfestUserOptions, HammerfestServer, HammerfestUser, HammerfestUserId};
 use etwin_core::types::EtwinError;
 use etwin_services::dinoparc::DynDinoparcService;
 use etwin_services::hammerfest::DynHammerfestService;
 pub use serde::Serialize;
-use std::convert::Infallible;
 use std::sync::Arc;
 use warp::filters::BoxedFilter;
 use warp::http::StatusCode;
@@ -37,108 +39,169 @@ pub fn create_archive_filter(api: RouterApi) -> RestFilter {
 }
 
 pub fn create_archive_dinoparc_filter(api: RouterApi) -> RestFilter {
-  #[derive(Copy, Clone, Debug, Serialize)]
-  #[serde(tag = "error")]
-  enum GetDinoparcUserError {
-    DinoparcUserNotFound(DinoparcUserNotFound),
-    InternalServerError,
-  }
+  let get_user = {
+    #[derive(Copy, Clone, Debug, Serialize)]
+    #[serde(tag = "error")]
+    enum GetDinoparcUserError {
+      DinoparcUserNotFound,
+      InternalServerError,
+    }
 
-  #[derive(Copy, Clone, Debug, Serialize)]
-  struct DinoparcUserNotFound {}
-
-  impl Reject for DinoparcUserNotFound {}
-
-  async fn recover(err: Rejection) -> Result<WithStatus<Json>, Infallible> {
-    let status: StatusCode;
-    let err = if err.is_not_found() {
-      status = StatusCode::NOT_FOUND;
-      GetDinoparcUserError::DinoparcUserNotFound(DinoparcUserNotFound {})
-    } else {
-      eprintln!("{:?}", err);
-      status = StatusCode::INTERNAL_SERVER_ERROR;
-      GetDinoparcUserError::InternalServerError
-    };
-    let body = warp::reply::json(&err);
-    Ok(warp::reply::with_status(body, status))
-  }
-
-  warp::path!(DinoparcServer / "users" / DinoparcUserId)
-    .and_then(move |server: DinoparcServer, id: DinoparcUserId| {
-      let dinoparc = Arc::clone(&api.dinoparc);
-      async move {
-        let acx = AuthContext::Guest(GuestAuthContext {
-          scope: AuthScope::Default,
-        });
-        let res = match dinoparc
-          .get_user(&acx, &GetDinoparcUserOptions { server, id, time: None })
-          .await
-        {
-          Ok(Some(user)) => Ok(warp::reply::with_status(warp::reply::json(&user), StatusCode::OK)),
-          Ok(None) => Err(warp::reject::not_found()),
-          Err(e) => Err(warp::reject::custom(ServerError(e))),
-        };
-        res
+    impl GetDinoparcUserError {
+      pub fn get_status_code(self) -> StatusCode {
+        match self {
+          Self::DinoparcUserNotFound => StatusCode::NOT_FOUND,
+          Self::InternalServerError => StatusCode::INTERNAL_SERVER_ERROR,
+        }
       }
-    })
-    .recover(recover)
-    .unify()
-    .boxed()
+    }
+
+    async fn handle_get_user(
+      dinoparc: &DynDinoparcService,
+      server: DinoparcServer,
+      id: DinoparcUserId,
+    ) -> Result<EtwinDinoparcUser, GetDinoparcUserError> {
+      let acx = AuthContext::Guest(GuestAuthContext {
+        scope: AuthScope::Default,
+      });
+      match dinoparc
+        .get_user(&acx, &GetDinoparcUserOptions { server, id, time: None })
+        .await
+      {
+        Ok(Some(user)) => Ok(user),
+        Ok(None) => Err(GetDinoparcUserError::DinoparcUserNotFound),
+        Err(_) => Err(GetDinoparcUserError::InternalServerError),
+      }
+    }
+
+    let api = api.clone();
+    warp::path!(DinoparcServer / "users" / DinoparcUserId)
+      .and_then(move |server: DinoparcServer, id: DinoparcUserId| {
+        let dinoparc = Arc::clone(&api.dinoparc);
+        async move {
+          let res = handle_get_user(&dinoparc, server, id).await;
+          let reply = match res {
+            Ok(user) => warp::reply::with_status(warp::reply::json(&user), StatusCode::OK),
+            Err(e) => warp::reply::with_status(warp::reply::json(&e), e.get_status_code()),
+          };
+          Ok::<_, Rejection>(reply)
+        }
+      })
+      .boxed()
+  };
+
+  let get_dinoz = {
+    #[derive(Copy, Clone, Debug, Serialize)]
+    #[serde(tag = "error")]
+    enum GetDinoparcDinozError {
+      DinoparcDinozNotFound,
+      InternalServerError,
+    }
+
+    impl GetDinoparcDinozError {
+      pub fn get_status_code(self) -> StatusCode {
+        match self {
+          Self::DinoparcDinozNotFound => StatusCode::NOT_FOUND,
+          Self::InternalServerError => StatusCode::INTERNAL_SERVER_ERROR,
+        }
+      }
+    }
+
+    async fn handle_get_dinoz(
+      dinoparc: &DynDinoparcService,
+      server: DinoparcServer,
+      id: DinoparcDinozId,
+    ) -> Result<EtwinDinoparcDinoz, GetDinoparcDinozError> {
+      let acx = AuthContext::Guest(GuestAuthContext {
+        scope: AuthScope::Default,
+      });
+      match dinoparc
+        .get_dinoz(&acx, &GetDinoparcDinozOptions { server, id, time: None })
+        .await
+      {
+        Ok(Some(user)) => Ok(user),
+        Ok(None) => Err(GetDinoparcDinozError::DinoparcDinozNotFound),
+        Err(_) => Err(GetDinoparcDinozError::InternalServerError),
+      }
+    }
+
+    // let api = api.clone();
+    warp::path!(DinoparcServer / "dinoz" / DinoparcDinozId)
+      .and_then(move |server: DinoparcServer, id: DinoparcDinozId| {
+        let dinoparc = Arc::clone(&api.dinoparc);
+        async move {
+          let res = handle_get_dinoz(&dinoparc, server, id).await;
+          let reply = match res {
+            Ok(dinoz) => warp::reply::with_status(warp::reply::json(&dinoz), StatusCode::OK),
+            Err(e) => warp::reply::with_status(warp::reply::json(&e), e.get_status_code()),
+          };
+          Ok::<_, Rejection>(reply)
+        }
+      })
+      .boxed()
+  };
+
+  get_user.or(get_dinoz).unify().boxed()
 }
 
 pub fn create_archive_hammerfest_filter(api: RouterApi) -> RestFilter {
-  #[derive(Copy, Clone, Debug, Serialize)]
-  #[serde(tag = "error")]
-  enum GetHammerfestUserError {
-    HammerfestUserNotFound(HammerfestUserNotFound),
-    InternalServerError,
-  }
+  let get_user = {
+    #[derive(Copy, Clone, Debug, Serialize)]
+    #[serde(tag = "error")]
+    enum GetHammerfestUserError {
+      HammerfestUserNotFound,
+      InternalServerError,
+    }
 
-  #[derive(Copy, Clone, Debug, Serialize)]
-  struct HammerfestUserNotFound {}
-
-  impl Reject for GetHammerfestUserError {}
-
-  async fn recover(err: Rejection) -> Result<WithStatus<Json>, Infallible> {
-    let status: StatusCode;
-    let err = if err.is_not_found() {
-      status = StatusCode::NOT_FOUND;
-      GetHammerfestUserError::HammerfestUserNotFound(HammerfestUserNotFound {})
-    } else {
-      eprintln!("{:?}", err);
-      status = StatusCode::INTERNAL_SERVER_ERROR;
-      GetHammerfestUserError::InternalServerError
-    };
-    let body = warp::reply::json(&err);
-    Ok(warp::reply::with_status(body, status))
-  }
-
-  warp::path!(HammerfestServer / "users" / HammerfestUserId)
-    .and_then(move |server: HammerfestServer, id: HammerfestUserId| {
-      let hammerfest = Arc::clone(&api.hammerfest);
-      async move {
-        let acx = AuthContext::Guest(GuestAuthContext {
-          scope: AuthScope::Default,
-        });
-        let res = match hammerfest
-          .get_user(&acx, &GetHammerfestUserOptions { server, id, time: None })
-          .await
-        {
-          Ok(Some(user)) => Ok(warp::reply::with_status(warp::reply::json(&user), StatusCode::OK)),
-          Ok(None) => Err(warp::reject::not_found()),
-          Err(e) => Err(warp::reject::custom(ServerError(e))),
-        };
-        res
+    impl GetHammerfestUserError {
+      pub fn get_status_code(self) -> StatusCode {
+        match self {
+          Self::HammerfestUserNotFound => StatusCode::NOT_FOUND,
+          Self::InternalServerError => StatusCode::INTERNAL_SERVER_ERROR,
+        }
       }
-    })
-    .recover(recover)
-    .unify()
-    .boxed()
+    }
+
+    async fn handle_get_user(
+      hammerfest: &DynHammerfestService,
+      server: HammerfestServer,
+      id: HammerfestUserId,
+    ) -> Result<HammerfestUser, GetHammerfestUserError> {
+      let acx = AuthContext::Guest(GuestAuthContext {
+        scope: AuthScope::Default,
+      });
+      match hammerfest
+        .get_user(&acx, &GetHammerfestUserOptions { server, id, time: None })
+        .await
+      {
+        Ok(Some(user)) => Ok(user),
+        Ok(None) => Err(GetHammerfestUserError::HammerfestUserNotFound),
+        Err(_) => Err(GetHammerfestUserError::InternalServerError),
+      }
+    }
+
+    // let api = api.clone();
+    warp::path!(HammerfestServer / "users" / HammerfestUserId)
+      .and_then(move |server: HammerfestServer, id: HammerfestUserId| {
+        let hammerfest = Arc::clone(&api.hammerfest);
+        async move {
+          let res = handle_get_user(&hammerfest, server, id).await;
+          let reply = match res {
+            Ok(user) => warp::reply::with_status(warp::reply::json(&user), StatusCode::OK),
+            Err(e) => warp::reply::with_status(warp::reply::json(&e), e.get_status_code()),
+          };
+          Ok::<_, Rejection>(reply)
+        }
+      })
+      .boxed()
+  };
+
+  get_user.boxed()
 }
 
 #[cfg(test)]
 mod test {
-  use crate::{create_rest_filter, RouterApi};
+  use crate::{create_archive_dinoparc_filter, create_rest_filter, RouterApi};
   use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
   use etwin_core::dinoparc::DinoparcStore;
@@ -180,7 +243,7 @@ mod test {
   }
 
   #[tokio::test]
-  async fn test_router() {
+  async fn test_empty_hammerfest_user() {
     let api = create_api();
     let router = create_rest_filter(api);
 
@@ -189,5 +252,36 @@ mod test {
       .reply(&router)
       .await;
     assert_eq!(res.status(), 404);
+    let body: &str = std::str::from_utf8(res.body()).unwrap();
+    assert_eq!(body, "{\"error\":\"HammerfestUserNotFound\"}");
+  }
+
+  #[tokio::test]
+  async fn test_empty_dinoparc_user() {
+    let api = create_api();
+    let router = create_archive_dinoparc_filter(api);
+
+    let res: warp::http::Response<warp::hyper::body::Bytes> = warp::test::request()
+      .path("/dinoparc.com/users/123")
+      .reply(&router)
+      .await;
+
+    assert_eq!(res.status(), 404);
+    let body: &str = std::str::from_utf8(res.body()).unwrap();
+    assert_eq!(body, "{\"error\":\"DinoparcUserNotFound\"}");
+  }
+
+  #[tokio::test]
+  async fn test_empty_dinoparc_dinoz() {
+    let api = create_api();
+    let router = create_archive_dinoparc_filter(api);
+
+    let res: warp::http::Response<warp::hyper::body::Bytes> = warp::test::request()
+      .path("/dinoparc.com/dinoz/123")
+      .reply(&router)
+      .await;
+    assert_eq!(res.status(), 404);
+    let body: &str = std::str::from_utf8(res.body()).unwrap();
+    assert_eq!(body, "{\"error\":\"DinoparcDinozNotFound\"}");
   }
 }

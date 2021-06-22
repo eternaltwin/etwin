@@ -1,5 +1,13 @@
 import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import {
+  $NullableEtwinDinoparcDinoz,
+  NullableEtwinDinoparcDinoz
+} from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-dinoz.js";
 import { $NullableEtwinDinoparcUser, NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user.js";
+import {
+  $GetDinoparcDinozOptions,
+  GetDinoparcDinozOptions
+} from "@eternal-twin/core/lib/dinoparc/get-dinoparc-dinoz-options.js";
 import {
   $GetDinoparcUserOptions,
   GetDinoparcUserOptions
@@ -25,6 +33,7 @@ export interface NativeDinoparcServiceOptions {
 export class NativeDinoparcService implements DinoparcService {
   private static NEW = promisify(native.services.dinoparc.new);
   private static GET_USER = promisify(native.services.dinoparc.getUser);
+  private static GET_DINOZ = promisify(native.services.dinoparc.getDinoz);
 
   public readonly box: typeof NativeDinoparcServiceBox;
 
@@ -42,5 +51,12 @@ export class NativeDinoparcService implements DinoparcService {
     const rawOptions: string = $GetDinoparcUserOptions.write(JSON_WRITER, options);
     const rawOut = await NativeDinoparcService.GET_USER(this.box, rawAcx, rawOptions);
     return $NullableEtwinDinoparcUser.read(JSON_READER, rawOut);
+  }
+
+  async getDinoz(acx: AuthContext, options: Readonly<GetDinoparcDinozOptions>): Promise<NullableEtwinDinoparcDinoz> {
+    const rawAcx: string = $AuthContext.write(JSON_WRITER, acx);
+    const rawOptions: string = $GetDinoparcDinozOptions.write(JSON_WRITER, options);
+    const rawOut = await NativeDinoparcService.GET_DINOZ(this.box, rawAcx, rawOptions);
+    return $NullableEtwinDinoparcDinoz.read(JSON_READER, rawOut);
   }
 }

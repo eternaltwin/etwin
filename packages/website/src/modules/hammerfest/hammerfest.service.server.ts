@@ -20,6 +20,6 @@ export class ServerHammerfestService extends HammerfestService {
   }
 
   getUser(options: Readonly<GetHammerfestUserOptions>): Observable<HammerfestUser | null> {
-    return rxFrom(this.#hammerfest.getUserById(this.#acx, options));
+    return rxFrom(this.#hammerfest.getUser(this.#acx, options));
   }
 }

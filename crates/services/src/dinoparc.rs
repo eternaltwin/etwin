@@ -1,7 +1,8 @@
 use etwin_core::auth::AuthContext;
 use etwin_core::core::UserDot;
 use etwin_core::dinoparc::{
-  ArchivedDinoparcUser, DinoparcStore, DinoparcUserIdRef, EtwinDinoparcUser, GetDinoparcUserOptions,
+  ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcStore, DinoparcUserIdRef, EtwinDinoparcDinoz, EtwinDinoparcUser,
+  GetDinoparcDinozOptions, GetDinoparcUserOptions,
 };
 use etwin_core::link::{EtwinLink, GetLinkOptions, LinkStore, VersionedEtwinLink, VersionedRawLink};
 use etwin_core::user::{GetShortUserOptions, ShortUser, UserRef, UserStore};
@@ -98,6 +99,16 @@ where
       etwin: etwin_link,
     };
     Ok(Some(dparc_user))
+  }
+
+  pub async fn get_dinoz(
+    &self,
+    _acx: &AuthContext,
+    options: &GetDinoparcDinozOptions,
+  ) -> Result<Option<EtwinDinoparcDinoz>, Box<dyn Error + Send + Sync + 'static>> {
+    let dinoz: Option<ArchivedDinoparcDinoz> = self.dinoparc_store.get_dinoz(options).await?;
+    // TODO: Map owner data to include etwin ref
+    Ok(dinoz)
   }
 }
 

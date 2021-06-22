@@ -16,4 +16,14 @@
   </a>
 </div>
 
+<ng-container *ngIf="user.dinoz !== null">
+  <h2>Dinoz</h2>
+
+  <ul class="moderator-list">
+    <li *ngFor="let d of user.dinoz.latest.value">
+      <a [routerLink]="['', 'archive', 'dinoparc', d.server, 'dinoz', d.id]">Dinoz #{{d.id}}</a>
+    </li>
+  </ul>
+</ng-container>
+
 <pre>{{user | json}}</pre>

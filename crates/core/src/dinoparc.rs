@@ -363,6 +363,8 @@ pub struct ArchivedDinoparcDinoz {
   pub skills: Option<LatestTemporal<HashMap<DinoparcSkill, DinoparcSkillLevel>>>,
 }
 
+pub type EtwinDinoparcDinoz = ArchivedDinoparcDinoz;
+
 declare_new_int! {
   pub struct DinoparcSkillLevel(u8);
   pub type RangeError = DinoparcSkillLevelRangeError;

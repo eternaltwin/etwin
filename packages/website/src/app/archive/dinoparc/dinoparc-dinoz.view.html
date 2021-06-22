@@ -1,0 +1,12 @@
+<etwin-main-layout>
+  <ng-container *ngIf="dinoz$ | async as dinoz">
+    <ng-container [ngSwitch]="dinoz !== DINOPARC_DINOZ_NOT_FOUND">
+      <ng-container *ngSwitchCase="true">
+        <etwin-dinoparc-dinoz [dinoz]="dinoz"></etwin-dinoparc-dinoz>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <h1 i18n="Dinoparc dinoz not found error message@@archive.dinoparc.error.dinozNotFound">Dinoparc dinoz not found</h1>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</etwin-main-layout>

@@ -39,7 +39,7 @@ export class NativeHammerfestService implements HammerfestService {
     return new NativeHammerfestService(box);
   }
 
-  async getUserById(acx: AuthContext, options: Readonly<GetHammerfestUserOptions>): Promise<NullableHammerfestUser> {
+  async getUser(acx: AuthContext, options: Readonly<GetHammerfestUserOptions>): Promise<NullableHammerfestUser> {
     const rawAcx: string = $AuthContext.write(JSON_WRITER, acx);
     const rawOptions: string = $GetHammerfestUserOptions.write(JSON_WRITER, options);
     const rawOut = await NativeHammerfestService.GET_USER(this.box, rawAcx, rawOptions);

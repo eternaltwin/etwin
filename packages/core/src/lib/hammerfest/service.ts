@@ -3,5 +3,5 @@ import { GetHammerfestUserOptions } from "./get-hammerfest-user-options.js";
 import { HammerfestUser } from "./hammerfest-user.js";
 
 export interface HammerfestService {
-  getUserById(acx: AuthContext, options: Readonly<GetHammerfestUserOptions>): Promise<HammerfestUser | null>;
+  getUser(acx: AuthContext, options: Readonly<GetHammerfestUserOptions>): Promise<HammerfestUser | null>;
 }
