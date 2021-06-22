@@ -97,7 +97,7 @@ where
           let etwin: ShortUser = self
             .user_store
             .get_short_user(&GetShortUserOptions {
-              r#ref: UserRef::Id(l.link.user),
+              r#ref: UserRef::Id(l.etwin),
               time: options.time,
             })
             .await?

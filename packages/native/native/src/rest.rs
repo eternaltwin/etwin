@@ -1,6 +1,8 @@
 use crate::neon_helpers::{resolve_callback_with, NeonNamespace};
+use crate::services::dinoparc::get_native_dinoparc_service;
 use crate::services::hammerfest::get_native_hammerfest_service;
 use etwin_rest::{create_rest_filter, RestFilter, RouterApi};
+use etwin_services::dinoparc::DynDinoparcService;
 use etwin_services::hammerfest::DynHammerfestService;
 use neon::borrow::Ref;
 use neon::prelude::*;
@@ -149,13 +151,15 @@ pub fn get_native_rest<'a, C: Context<'a>>(cx: &mut C, value: Handle<JsValue>) -
 }
 
 pub fn new(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-  let hammerfest = cx.argument::<JsValue>(0)?;
-  let cb = cx.argument::<JsFunction>(1)?.root(&mut cx);
+  let dinoparc = cx.argument::<JsValue>(0)?;
+  let hammerfest = cx.argument::<JsValue>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
 
+  let dinoparc: Arc<DynDinoparcService> = get_native_dinoparc_service(&mut cx, dinoparc)?;
   let hammerfest: Arc<DynHammerfestService> = get_native_hammerfest_service(&mut cx, hammerfest)?;
 
   let res = async move {
-    let router_api = RouterApi { hammerfest };
+    let router_api = RouterApi { dinoparc, hammerfest };
     let filter = create_rest_filter(router_api);
     RestFilterHandle::new(filter)
   };

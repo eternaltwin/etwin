@@ -2,11 +2,13 @@ import { HttpRequest, HttpResponse, HttpRouter } from "@eternal-twin/core/lib/ht
 import { promisify } from "util";
 
 import native from "../native/index.js";
+import { NativeDinoparcService } from "./services/dinoparc";
 import { NativeHammerfestService } from "./services/hammerfest.js";
 
 declare const NativeRestRouterBox: unique symbol;
 
 export interface NativeRestRouterOptions {
+  dinoparc: NativeDinoparcService;
   hammerfest: NativeHammerfestService;
 }
 
@@ -21,7 +23,7 @@ export class NativeRestRouter implements HttpRouter {
   }
 
   public static async create(options: Readonly<NativeRestRouterOptions>): Promise<NativeRestRouter> {
-    const box = await NativeRestRouter.NEW(options.hammerfest.box);
+    const box = await NativeRestRouter.NEW(options.dinoparc.box, options.hammerfest.box);
     return new NativeRestRouter(box);
   }
 

@@ -6,8 +6,6 @@ import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service
 import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
 import { $Url, Url } from "@eternal-twin/core/lib/core/url.js";
-import { DefaultDinoparcService, DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
-import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client.js";
@@ -30,11 +28,12 @@ import { ApiType, Config } from "@eternal-twin/local-config";
 import { SystemClock } from "@eternal-twin/native/lib/clock.js";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database.js";
 import { HttpDinoparcClient } from "@eternal-twin/native/lib/dinoparc-client.js";
-import { MemDinoparcStore, PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
+import { MemDinoparcStore, NativeDinoparcStore, PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store.js";
 import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
 import { MemHammerfestStore, NativeHammerfestStore, PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js";
 import { MemLinkStore, NativeLinkStore, PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
 import { ScryptPasswordService } from "@eternal-twin/native/lib/password.js";
+import { NativeDinoparcService } from "@eternal-twin/native/lib/services/dinoparc.js";
 import { NativeHammerfestService } from "@eternal-twin/native/lib/services/hammerfest.js";
 import { MemTokenStore, PgTokenStore } from "@eternal-twin/native/lib/token-store.js";
 import { MemTwinoidStore, PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
@@ -52,7 +51,7 @@ import urljoin from "url-join";
 export interface Api {
   announcement: AnnouncementService;
   auth: AuthService;
-  dinoparc: DinoparcService;
+  dinoparc: NativeDinoparcService;
   clock: ClockService;
   dev: DevApi | null;
   forum: ForumService;
@@ -87,7 +86,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   let announcement: AnnouncementService;
   let auth: AuthService;
   let forum: ForumService;
-  let dinoparcStore: DinoparcStore;
+  let dinoparcStore: NativeDinoparcStore;
   let hammerfestStore: NativeHammerfestStore;
   let linkStore: NativeLinkStore;
   let link: LinkService;
@@ -193,7 +192,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     };
   }
 
-  const dinoparc = new DefaultDinoparcService({dinoparcStore, link});
+  const dinoparc = await NativeDinoparcService.create({dinoparcStore, linkStore, userStore});
   const hammerfest = await NativeHammerfestService.create({hammerfestClient, hammerfestStore, linkStore, userStore});
   const twinoid = new DefaultTwinoidService({twinoidStore, link});
   const user = new DefaultUserService({

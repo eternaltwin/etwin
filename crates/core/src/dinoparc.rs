@@ -1,4 +1,5 @@
 use crate::core::{Instant, IntPercentage};
+use crate::link::VersionedEtwinLink;
 use crate::temporal::LatestTemporal;
 use crate::types::EtwinError;
 use async_trait::async_trait;
@@ -223,6 +224,21 @@ pub struct ArchivedDinoparcUser {
   pub dinoz: Option<LatestTemporal<Vec<DinoparcDinozIdRef>>>,
   #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_opt_temporal_map"))]
   pub inventory: Option<LatestTemporal<HashMap<DinoparcItemId, u32>>>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcUser"))]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct EtwinDinoparcUser {
+  pub server: DinoparcServer,
+  pub id: DinoparcUserId,
+  pub archived_at: Instant,
+  pub username: DinoparcUsername,
+  pub coins: Option<LatestTemporal<u32>>,
+  pub dinoz: Option<LatestTemporal<Vec<DinoparcDinozIdRef>>>,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_opt_temporal_map"))]
+  pub inventory: Option<LatestTemporal<HashMap<DinoparcItemId, u32>>>,
+  pub etwin: VersionedEtwinLink,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]

@@ -1,7 +1,6 @@
 import { PgAnnouncementService } from "@eternal-twin/announcement-pg";
 import { PgAuthService } from "@eternal-twin/auth-pg";
 import { Url } from "@eternal-twin/core/lib/core/url.js";
-import { DefaultDinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config.js";
 import { DefaultLinkService } from "@eternal-twin/core/lib/link/service.js";
 import { DefaultOauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
@@ -21,6 +20,7 @@ import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store.js"
 import { PgLinkStore } from "@eternal-twin/native/lib/link-store.js";
 import { ScryptPasswordService } from "@eternal-twin/native/lib/password.js";
 import { NativeRestRouter } from "@eternal-twin/native/lib/rest.js";
+import { NativeDinoparcService } from "@eternal-twin/native/lib/services/dinoparc.js";
 import { NativeHammerfestService } from "@eternal-twin/native/lib/services/hammerfest.js";
 import { PgTokenStore } from "@eternal-twin/native/lib/token-store.js";
 import { PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store.js";
@@ -92,7 +92,7 @@ export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer)
     const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
     const linkStore = new PgLinkStore({clock, database: nativeDatabase});
     const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
-    const dinoparc = new DefaultDinoparcService({dinoparcStore, link});
+    const dinoparc = await NativeDinoparcService.create({dinoparcStore, linkStore, userStore});
     const hammerfest = await NativeHammerfestService.create({hammerfestClient, hammerfestStore, linkStore, userStore});
     const twinoid = new DefaultTwinoidService({twinoidStore, link});
     const oauthProviderStore = new PgOauthProviderStore({
@@ -147,7 +147,7 @@ export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer)
       twinoidClient
     });
     const api: Api = {announcement, auth, dinoparc, clock, dev, forum, koaAuth, twinoid, user};
-    const nativeRouter = await NativeRestRouter.create({hammerfest});
+    const nativeRouter = await NativeRestRouter.create({dinoparc, hammerfest});
 
     const app: Koa = new Koa();
     const router = createApiRouter(api, nativeRouter);

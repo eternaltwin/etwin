@@ -120,7 +120,7 @@ async function main(api: Api): Promise<void> {
   const ONE_DAY: number = 24 * 3600;
   router.use(koaStaticCache(furi.toSysPath(BROWSER_APP_DIR as any), {maxAge: ONE_DAY}));
 
-  const nativeRouter = await NativeRestRouter.create({hammerfest: api.hammerfest});
+  const nativeRouter = await NativeRestRouter.create({dinoparc: api.dinoparc, hammerfest: api.hammerfest});
   const apiRouter: Router = await createApiRouter(api, nativeRouter);
   router.use(koaMount("/api/v1", apiRouter.routes()));
   router.use(koaMount("/api/v1", apiRouter.allowedMethods()));
