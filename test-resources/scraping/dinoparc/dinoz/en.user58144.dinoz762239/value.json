@@ -1,0 +1,107 @@
+{
+  "session_user": {
+    "user": "josum41",
+    "coins": 4927,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "80132",
+        "name": "Goldy",
+        "location": "3"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "299930",
+        "name": "King-Kong",
+        "location": "20"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "315300",
+        "name": "Godzilla",
+        "location": "4"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "754165",
+        "name": "Cheese",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "754782",
+        "name": "Grinch",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "762239",
+        "name": "Ninja",
+        "location": "17"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "763509",
+        "name": "Ninja",
+        "location": "17"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "763599",
+        "name": "Ninja",
+        "location": "17"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "763647",
+        "name": "Mirey",
+        "location": "20"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "763674",
+        "name": "Ninja",
+        "location": "17"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "763702",
+        "name": "Ninja",
+        "location": "17"
+      }
+    ]
+  },
+  "dinoz": {
+    "type": "DinoparcDinoz",
+    "server": "en.dinoparc.com",
+    "id": "762239",
+    "name": "Ninja",
+    "location": "17",
+    "race": "Ouistiti",
+    "skin": "FbGIuKzWoJ8yRgla",
+    "life": 98,
+    "level": 1,
+    "experience": 26,
+    "danger": 56,
+    "in_tournament": false,
+    "elements": {
+      "fire": 0,
+      "earth": 1,
+      "water": 1,
+      "thunder": 1,
+      "air": 0
+    },
+    "skills": {}
+  }
+}

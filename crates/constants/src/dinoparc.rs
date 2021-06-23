@@ -45,7 +45,7 @@ pub const LOCATIONS: [DinoparcLocation; 23] = unsafe {
     DinoparcLocation::new_unchecked(14, "Crédit Arboricole", "Institute of Olimpic Credit", "Instituto de Crédito Olímpico"),
     DinoparcLocation::new_unchecked(15, "Bazar de l'île de Jazz", "Jazz island Market", "Mercado de la Isla de Jazz"),
     DinoparcLocation::new_unchecked(16, "Marais collant", "Sticky Swamp", "Pantano Pegajoso"),
-    DinoparcLocation::new_unchecked(17, "Jungle des Ouistitis", "Wistitis Jungle", "Jungla de los Wistitis"),
+    DinoparcLocation::new_unchecked(17, "Jungle des Ouistitis", "The Wistitis Jungle", "Jungla de los Wistitis"),
     DinoparcLocation::new_unchecked(18, "Bordeciel", "Bordesky", "Burdecielo"),
     DinoparcLocation::new_unchecked(19, "Source chantante", "Singing Fountain", "Fuente Cantante"),
     DinoparcLocation::new_unchecked(20, "Caverne de l'anomalie", "Anomaly Cavern", "Caverna de la Anomalí"),
