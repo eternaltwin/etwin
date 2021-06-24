@@ -376,7 +376,7 @@ where
           SELECT LAST_VALUE(dinoparc_dinoz_id) OVER w AS dinoparc_dinoz_id
           FROM dinoparc_user_dinoz
           WHERE dinoparc_server = $1::DINOPARC_SERVER AND dinoparc_user_id = $2::DINOPARC_USER_ID AND lower(period) <= $3::INSTANT AND offset_in_list < $4::U32
-          WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+          WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id, offset_in_list) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
           ORDER BY offset_in_list;
         ",
         )
