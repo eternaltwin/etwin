@@ -1,7 +1,7 @@
 import { CaseStyle, IoType } from "kryo";
 import { $Boolean } from "kryo/lib/boolean.js";
 import { $Date } from "kryo/lib/date.js";
-import { $Sint16, $Uint8,$Uint16 } from "kryo/lib/integer.js";
+import { $Sint16, $Uint8, $Uint16 } from "kryo/lib/integer.js";
 import { LiteralType } from "kryo/lib/literal.js";
 import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
@@ -17,6 +17,7 @@ import { $DinoparcDinozRace, DinoparcDinozRace } from "./dinoparc-dinoz-race.js"
 import { $DinoparcLocationId, DinoparcLocationId } from "./dinoparc-location-id.js";
 import { $DinoparcServer, DinoparcServer } from "./dinoparc-server.js";
 import { $DinoparcSkillLevels, DinoparcSkillLevels } from "./dinoparc-skill-levels.js";
+import { $ShortDinoparcUser, ShortDinoparcUser } from "./short-dinoparc-user.js";
 
 export interface EtwinDinoparcDinoz {
   type: ObjectType.DinoparcDinoz;
@@ -24,6 +25,7 @@ export interface EtwinDinoparcDinoz {
   id: DinoparcDinozId;
   archivedAt: Date;
   name: NullableLatestTemporal<DinoparcDinozName>;
+  owner: NullableLatestTemporal<ShortDinoparcUser>;
   location: NullableLatestTemporal<DinoparcLocationId>;
   race: NullableLatestTemporal<DinoparcDinozRace>;
   skin: NullableLatestTemporal<string>;
@@ -43,6 +45,7 @@ export const $EtwinDinoparcDinoz: RecordIoType<EtwinDinoparcDinoz> = new RecordT
     id: {type: $DinoparcDinozId},
     archivedAt: {type: $Date},
     name: {type: $NullableLatestTemporal.apply($DinoparcDinozName) as IoType<NullableLatestTemporal<DinoparcDinozName>>},
+    owner: {type: $NullableLatestTemporal.apply($ShortDinoparcUser) as IoType<NullableLatestTemporal<ShortDinoparcUser>>},
     location: {type: $NullableLatestTemporal.apply($DinoparcLocationId) as IoType<NullableLatestTemporal<DinoparcLocationId>>},
     race: {type: $NullableLatestTemporal.apply($DinoparcDinozRace) as IoType<NullableLatestTemporal<DinoparcDinozRace>>},
     skin: {type: $NullableLatestTemporal.apply($Ucs2String) as IoType<NullableLatestTemporal<string>>},

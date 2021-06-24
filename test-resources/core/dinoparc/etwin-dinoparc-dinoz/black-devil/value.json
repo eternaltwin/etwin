@@ -12,6 +12,20 @@
       "value": "Black Devil"
     }
   },
+  "owner": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:46.935Z",
+        "end": null
+      },
+      "value": {
+        "type": "DinoparcUser",
+        "server": "dinoparc.com",
+        "id": "205944",
+        "username": "djtoph"
+      }
+    }
+  },
   "location": {
     "latest": {
       "period": {

@@ -6,6 +6,7 @@ export const ROUTES: readonly string[] = [
   "/archive",
   "/archive/dinoparc",
   "/archive/dinoparc/:server/users/:user_id",
+  "/archive/dinoparc/:server/dinoz/:dinoz_id",
   "/archive/hammerfest",
   "/archive/hammerfest/:server/users/:user_id",
   "/archive/twinoid",

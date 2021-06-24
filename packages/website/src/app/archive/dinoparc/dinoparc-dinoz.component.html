@@ -1,3 +1,60 @@
-<h1>{{dinoz.id}}</h1>
+<h1>Dinoz #{{dinoz.id}}</h1>
 
-<pre>{{dinoz | json}}</pre>
+<dl>
+  <ng-container *ngIf="dinoz.name !== null">
+    <dt>Name ({{dinoz.name.latest.period.start | date}})</dt>
+    <dd>{{dinoz.name.latest.value}}</dd>
+  </ng-container>
+  <dt>First archived at</dt>
+  <dd>{{dinoz.archivedAt | date}}</dd>
+  <ng-container *ngIf="dinoz.owner !== null">
+    <dt>Owner ({{dinoz.owner.latest.period.start | date}})</dt>
+    <dd><a [routerLink]="['', 'archive', 'dinoparc', dinoz.owner.latest.value.server, 'users', dinoz.owner.latest.value.id]">{{dinoz.owner.latest.value.username}} (#{{dinoz.owner.latest.value.id}}})</a></dd>
+  </ng-container>
+  <ng-container *ngIf="dinoz.location !== null">
+    <dt>Location ({{dinoz.location.latest.period.start | date}})</dt>
+    <dd>Id #{{dinoz.location.latest.value}}</dd>
+  </ng-container>
+  <ng-container *ngIf="dinoz.race !== null">
+    <dt>Race ({{dinoz.race.latest.period.start | date}})</dt>
+    <dd>{{dinoz.race.latest.value}}</dd>
+  </ng-container>
+  <ng-container *ngIf="dinoz.skin !== null">
+    <dt>Skin code ({{dinoz.skin.latest.period.start | date}})</dt>
+    <dd>{{dinoz.skin.latest.value}}</dd>
+  </ng-container>
+  <ng-container *ngIf="dinoz.life !== null">
+    <dt>Life ({{dinoz.life.latest.period.start | date}})</dt>
+    <dd>{{dinoz.life.latest.value}}%</dd>
+  </ng-container>
+  <ng-container *ngIf="dinoz.level !== null">
+    <dt>Level ({{dinoz.level.latest.period.start | date}})</dt>
+    <dd>{{dinoz.level.latest.value}}</dd>
+  </ng-container>
+  <ng-container *ngIf="dinoz.experience !== null">
+    <dt>Experience ({{dinoz.experience.latest.period.start | date}})</dt>
+    <dd>{{dinoz.experience.latest.value}}%</dd>
+  </ng-container>
+  <ng-container *ngIf="dinoz.danger !== null">
+    <dt>Danger ({{dinoz.danger.latest.period.start | date}})</dt>
+    <dd>{{dinoz.danger.latest.value}}</dd>
+  </ng-container>
+  <ng-container *ngIf="dinoz.inTournament !== null">
+    <dt>In tournament ({{dinoz.inTournament.latest.period.start | date}})</dt>
+    <dd>{{dinoz.inTournament.latest.value}}</dd>
+  </ng-container>
+  <ng-container *ngIf="dinoz.elements !== null">
+    <dt>Elements ({{dinoz.elements.latest.period.start | date}})</dt>
+    <dd>fire={{dinoz.elements.latest.value.fire}}/earth={{dinoz.elements.latest.value.earth}}/water={{dinoz.elements.latest.value.water}}/thunder={{dinoz.elements.latest.value.thunder}}/air={{dinoz.elements.latest.value.air}}</dd>
+  </ng-container>
+</dl>
+
+<ng-container *ngIf="dinoz.skills !== null">
+  <h2>Skills ({{dinoz.skills.latest.period.start | date}})</h2>
+
+  <ul>
+    <li *ngFor="let skill of dinoz.skills.latest.value.keys()">
+      {{skill}}: {{dinoz.skills.latest.value.get(skill)}} / 5
+    </li>
+  </ul>
+</ng-container>

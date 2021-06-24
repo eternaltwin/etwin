@@ -375,6 +375,16 @@ where
           value: "Yasumi".parse().unwrap(),
         },
       }),
+      owner: Some(LatestTemporal {
+        latest: Snapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          value: ShortDinoparcUser {
+            server: DinoparcServer::EnDinoparcCom,
+            id: "681579".parse().unwrap(),
+            username: "Kapox".parse().unwrap(),
+          },
+        },
+      }),
       location: Some(LatestTemporal {
         latest: Snapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),

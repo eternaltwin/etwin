@@ -12,6 +12,20 @@
       "value": "Yasumi"
     }
   },
+  "owner": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": null
+      },
+      "value": {
+        "type": "DinoparcUser",
+        "server": "en.dinoparc.com",
+        "id": "681579",
+        "username": "Kapox"
+      }
+    }
+  },
   "location": {
     "latest": {
       "period": {

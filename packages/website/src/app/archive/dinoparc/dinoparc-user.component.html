@@ -16,14 +16,34 @@
   </a>
 </div>
 
-<ng-container *ngIf="user.dinoz !== null">
-  <h2>Dinoz</h2>
+<dl>
+  <dt>User id</dt>
+  <dd>{{user.id}}</dd>
+  <dt>First archived at</dt>
+  <dd>{{user.archivedAt | date}}</dd>
 
-  <ul class="moderator-list">
+  <ng-container *ngIf="user.coins !== null">
+    <dt>Coins ({{user.coins.latest.period.start | date}})</dt>
+    <dd>{{user.coins.latest.value}}</dd>
+  </ng-container>
+</dl>
+
+<ng-container *ngIf="user.dinoz !== null">
+  <h2>Dinoz ({{user.dinoz.latest.period.start | date}})</h2>
+
+  <ul>
     <li *ngFor="let d of user.dinoz.latest.value">
       <a [routerLink]="['', 'archive', 'dinoparc', d.server, 'dinoz', d.id]">Dinoz #{{d.id}}</a>
     </li>
   </ul>
 </ng-container>
 
-<pre>{{user | json}}</pre>
+<ng-container *ngIf="user.inventory !== null">
+  <h2>Inventory ({{user.inventory.latest.period.start | date}})</h2>
+
+  <ul>
+    <li *ngFor="let id of user.inventory.latest.value.keys()">
+      Item #{{id}}: {{user.inventory.latest.value.get(id)}}
+    </li>
+  </ul>
+</ng-container>

@@ -147,6 +147,9 @@ where
       archived_at: Instant,
       name_period: Option<PeriodLower>,
       name_value: Option<DinoparcDinozName>,
+      owner_period: Option<PeriodLower>,
+      owner_id: Option<DinoparcUserId>,
+      owner_username: Option<DinoparcUsername>,
       location_period: Option<PeriodLower>,
       location_value: Option<DinoparcLocationId>,
       level_period: Option<PeriodLower>,
@@ -171,6 +174,16 @@ where
         FROM dinoparc_dinoz_names
         WHERE lower(period) <= $3::INSTANT
         WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_dinoz_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+      ),
+      latest_dinoparc_dinoz_owners AS (
+        SELECT dinoparc_dinoz_owners.dinoparc_server, dinoparc_dinoz_owners.dinoparc_dinoz_id,
+          LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(owner) OVER w AS owner_id,
+          LAST_VALUE(username) OVER w AS owner_username
+        FROM dinoparc_dinoz_owners
+          INNER JOIN dinoparc_users ON (dinoparc_users.dinoparc_server = dinoparc_dinoz_owners.dinoparc_server AND dinoparc_users.dinoparc_user_id = dinoparc_dinoz_owners.owner)
+        WHERE lower(period) <= $3::INSTANT
+        WINDOW w AS (PARTITION BY (dinoparc_dinoz_owners.dinoparc_server, dinoparc_dinoz_owners.dinoparc_dinoz_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
       ),
       latest_dinoparc_dinoz_locations AS (
         SELECT dinoparc_server, dinoparc_dinoz_id,
@@ -205,6 +218,7 @@ where
       )
       SELECT dinoparc_server, dinoparc_dinoz_id, archived_at,
         name.period AS name_period, name.name AS name_value,
+        owner.period AS owner_period, owner.owner_id AS owner_id, owner.owner_username AS owner_username,
         location.period AS location_period, location.location AS location_value,
         level.period AS level_period, level.level AS level_value,
         profile.period AS profile_period,
@@ -214,6 +228,7 @@ where
         profile.elements AS profile_elements, profile.skills AS profile_skills
       FROM dinoparc_dinoz
         LEFT OUTER JOIN latest_dinoparc_dinoz_names AS name USING (dinoparc_server, dinoparc_dinoz_id)
+        LEFT OUTER JOIN latest_dinoparc_dinoz_owners AS owner USING (dinoparc_server, dinoparc_dinoz_id)
         LEFT OUTER JOIN latest_dinoparc_dinoz_locations AS location USING (dinoparc_server, dinoparc_dinoz_id)
         LEFT OUTER JOIN latest_dinoparc_dinoz_levels AS level USING (dinoparc_server, dinoparc_dinoz_id)
         LEFT OUTER JOIN latest_dinoparc_dinoz_profiles AS profile USING (dinoparc_server, dinoparc_dinoz_id)
@@ -256,11 +271,22 @@ where
       None
     };
 
+    let owner = match (row.owner_id, row.owner_username) {
+      (Some(id), Some(username)) => Some(ShortDinoparcUser {
+        server: row.dinoparc_server,
+        id,
+        username,
+      }),
+      (None, None) => None,
+      _ => unreachable!(),
+    };
+
     Ok(Some(ArchivedDinoparcDinoz {
       server: row.dinoparc_server,
       id: row.dinoparc_dinoz_id,
       archived_at: row.archived_at,
       name: to_latest_temporal(row.name_period, row.name_value),
+      owner: to_latest_temporal(row.owner_period, owner),
       location: to_latest_temporal(row.location_period, row.location_value),
       race: to_latest_temporal(row.profile_period, row.profile_race),
       skin: to_latest_temporal(row.profile_period, row.profile_skin),
