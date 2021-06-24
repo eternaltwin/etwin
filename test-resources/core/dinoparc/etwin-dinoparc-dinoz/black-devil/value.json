@@ -1,0 +1,141 @@
+{
+  "type": "DinoparcUser",
+  "server": "dinoparc.com",
+  "id": "3453835",
+  "archived_at": "2021-06-23T13:54:46.935Z",
+  "name": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:46.935Z",
+        "end": null
+      },
+      "value": "Black Devil"
+    }
+  },
+  "location": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:46.935Z",
+        "end": null
+      },
+      "value": "0"
+    }
+  },
+  "race": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:47.670Z",
+        "end": null
+      },
+      "value": "Kump"
+    }
+  },
+  "skin": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:47.670Z",
+        "end": null
+      },
+      "value": "CBUfOj64r0ZaVmk#"
+    }
+  },
+  "life": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:47.670Z",
+        "end": null
+      },
+      "value": 0
+    }
+  },
+  "level": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:47.670Z",
+        "end": null
+      },
+      "value": 288
+    }
+  },
+  "experience": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:47.670Z",
+        "end": null
+      },
+      "value": 2
+    }
+  },
+  "danger": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:47.670Z",
+        "end": null
+      },
+      "value": -231
+    }
+  },
+  "in_tournament": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:47.670Z",
+        "end": null
+      },
+      "value": false
+    }
+  },
+  "elements": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:47.670Z",
+        "end": null
+      },
+      "value": {
+        "fire": 23,
+        "earth": 79,
+        "water": 111,
+        "thunder": 67,
+        "air": 16
+      }
+    }
+  },
+  "skills": {
+    "latest": {
+      "period": {
+        "start": "2021-06-23T13:54:47.670Z",
+        "end": null
+      },
+      "value": {
+        "Bargain": 5,
+        "Camouflage": 2,
+        "Climb": 5,
+        "Cook": 5,
+        "Counterattack": 1,
+        "Dexterity": 1,
+        "Dig": 5,
+        "EarthApprentice": 5,
+        "FireApprentice": 5,
+        "Intelligence": 5,
+        "Jump": 5,
+        "Luck": 4,
+        "MartialArts": 5,
+        "Medicine": 5,
+        "Music": 5,
+        "Navigation": 5,
+        "Perception": 5,
+        "Provoke": 5,
+        "Run": 5,
+        "ShadowPower": 5,
+        "Stamina": 5,
+        "Steal": 5,
+        "Strategy": 1,
+        "Strength": 4,
+        "Survival": 4,
+        "Swim": 5,
+        "ThunderApprentice": 5,
+        "TotemThief": 1,
+        "WaterApprentice": 5
+      }
+    }
+  }
+}

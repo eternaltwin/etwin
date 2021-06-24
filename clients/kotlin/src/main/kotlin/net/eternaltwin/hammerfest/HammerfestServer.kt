@@ -14,9 +14,9 @@ enum class HammerfestServer {
   HammerfestFr,
   HfestNet;
 
-  override fun toString(): String = "HammerfestServer(${this.toHammerfestServerString()})"
+  fun toDebugString(): String = "HammerfestServer(${this})"
 
-  fun toHammerfestServerString(): String =
+  override fun toString(): String =
     when (this) {
       HammerfestEs -> "hammerfest.es"
       HammerfestFr -> "hammerfest.fr"
@@ -28,14 +28,14 @@ enum class HammerfestServer {
       PrimitiveSerialDescriptor("net.eternaltwin.hammerfest.HammerfestServer", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: HammerfestServer) =
-      encoder.encodeString(value.toHammerfestServerString())
+      encoder.encodeString(value.toString())
 
     override fun deserialize(decoder: Decoder): HammerfestServer =
-      fromHammerfestServerString(decoder.decodeString())
+      fromString(decoder.decodeString())
   }
 
   companion object {
-    fun fromHammerfestServerString(raw: String): HammerfestServer =
+    fun fromString(raw: String): HammerfestServer =
       when (raw) {
         "hammerfest.es" -> HammerfestEs
         "hammerfest.fr" -> HammerfestFr

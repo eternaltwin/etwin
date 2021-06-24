@@ -13,17 +13,25 @@ enum Task {
   /// Compile documentation into Angular
   #[clap(name = "docs")]
   Docs(DocsArgs),
+  /// Generate Kotlin definitions
+  #[clap(name = "kotlin")]
+  Kotlin(KotlinArgs),
 }
 
 /// Arguments to the `docs` task.
 #[derive(Debug, Clap)]
 struct DocsArgs {}
 
+/// Arguments to the `kotlin` task.
+#[derive(Debug, Clap)]
+struct KotlinArgs {}
+
 fn main() {
   let args: CliArgs = CliArgs::parse();
 
   let res = match &args.task {
     Task::Docs(ref args) => docs(args),
+    Task::Kotlin(ref args) => kotlin(args),
   };
 
   match res {
@@ -34,4 +42,8 @@ fn main() {
 
 fn docs(_args: &DocsArgs) -> Result<(), Box<dyn Error>> {
   xtask::docs()
+}
+
+fn kotlin(_args: &KotlinArgs) -> Result<(), Box<dyn Error>> {
+  xtask::kotlin()
 }

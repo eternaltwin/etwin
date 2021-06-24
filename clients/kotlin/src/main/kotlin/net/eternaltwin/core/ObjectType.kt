@@ -5,6 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class ObjectType {
   ClientForumActor,
+  DinoparcDinoz,
+  DinoparcUser,
   ForumPost,
   ForumPostRevision,
   ForumSection,

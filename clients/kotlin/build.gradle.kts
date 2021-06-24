@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  kotlin("jvm") version "1.4.10"
-  kotlin("plugin.serialization") version "1.4.10"
-  id("org.jetbrains.dokka") version "1.4.10.2"
+  kotlin("jvm") version "1.5.10"
+  kotlin("plugin.serialization") version "1.5.10"
+  id("org.jetbrains.dokka") version "1.4.30"
   id("maven-publish")
 }
 
@@ -15,16 +15,16 @@ repositories {
 }
 
 dependencies {
-  implementation("com.squareup.okhttp3:okhttp:4.9.0")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
+  implementation("com.squareup.okhttp3:okhttp:4.9.1")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.2.1")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
   testImplementation(kotlin("test-junit5"))
-  testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
-  testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.0")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.7.2")
+  testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.2")
 }
 
 tasks.withType<KotlinCompile>() {
-  kotlinOptions.jvmTarget = "13"
+  kotlinOptions.jvmTarget = "16"
 }
 
 tasks.test {

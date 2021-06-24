@@ -1,0 +1,37 @@
+{
+  "type": "DinoparcUser",
+  "server": "dinoparc.com",
+  "id": "2480723",
+  "archived_at": "2020-12-18T00:56:12.769Z",
+  "username": "demurgos",
+  "coins": null,
+  "dinoz": null,
+  "inventory": null,
+  "etwin": {
+    "current": {
+      "link": {
+        "time": "2020-12-18T00:56:12.769Z",
+        "user": {
+          "type": "User",
+          "id": "9f310484-963b-446b-af69-797feec6813f",
+          "display_name": {
+            "current": {
+              "value": "Demurgos"
+            }
+          }
+        }
+      },
+      "unlink": null,
+      "user": {
+        "type": "User",
+        "id": "9f310484-963b-446b-af69-797feec6813f",
+        "display_name": {
+          "current": {
+            "value": "Demurgos"
+          }
+        }
+      }
+    },
+    "old": []
+  }
+}
