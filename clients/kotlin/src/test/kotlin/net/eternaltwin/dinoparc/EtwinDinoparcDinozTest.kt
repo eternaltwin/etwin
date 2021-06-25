@@ -1,9 +1,7 @@
 package net.eternaltwin.dinoparc;
 
 import net.eternaltwin.SerializationTestItem
-import net.eternaltwin.core.LatestTemporal
-import net.eternaltwin.core.PeriodLower
-import net.eternaltwin.core.Snapshot
+import net.eternaltwin.core.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.time.Instant
@@ -22,37 +20,90 @@ class EtwinDinoparcDinozTest {
             id = DinoparcDinozId("3453835"),
             archivedAt = Instant.parse("2021-06-23T13:54:46.935Z"),
             name = LatestTemporal(
-              Snapshot(
+              ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-23T13:54:46.935Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:50.062Z")),
                 DinoparcDinozName("Black Devil")
               )
             ),
+            owner = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-06-23T13:54:46.935Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:50.062Z")),
+                ShortDinoparcUser(
+                  server = DinoparcServer.DinoparcCom,
+                  id = DinoparcUserId("205944"),
+                  username = DinoparcUsername("djtoph"),
+                )
+              )
+            ),
+            location = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-06-23T13:54:46.935Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:50.062Z")),
+                DinoparcLocationId("0")
+              )
+            ),
             race = LatestTemporal(
-              Snapshot(
+              ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
                 DinoparcDinozRace.Kump
               )
             ),
             skin = LatestTemporal(
-              Snapshot(
+              ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
                 DinoparcDinozSkin("CBUfOj64r0ZaVmk#")
               )
             ),
-            life = LatestTemporal(Snapshot(PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")), 0U)),
-            level = LatestTemporal(Snapshot(PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")), 288U)),
-            experience = LatestTemporal(Snapshot(PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")), 2U)),
-            danger = LatestTemporal(Snapshot(PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")), -231)),
-            inTournament = LatestTemporal(Snapshot(PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")), false)),
-            elements = LatestTemporal(
-              Snapshot(
+            life = LatestTemporal(
+              ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
+                0U
+              )
+            ),
+            level = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
+                288U
+              )
+            ),
+            experience = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
+                2U
+              )
+            ),
+            danger = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
+                -231
+              )
+            ),
+            inTournament = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
+                false
+              )
+            ),
+            elements = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
                 DinoparcDinozElements(23U, 79U, 111U, 67U, 16U)
               )
             ),
             skills = LatestTemporal(
-              Snapshot(
+              ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
                 HashMap(
                   mapOf(
                     DinoparcSkill.Bargain to 5U,

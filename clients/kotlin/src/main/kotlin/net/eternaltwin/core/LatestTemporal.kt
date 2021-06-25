@@ -8,7 +8,7 @@ import kotlinx.serialization.*
  */
 @Serializable
 data class LatestTemporal<T> constructor(
-  val latest: Snapshot<T>,
+  val latest: ForeignSnapshot<T>,
 ) {
   companion object {
     inline fun <reified T> fromJsonString(jsonString: String): LatestTemporal<T> =

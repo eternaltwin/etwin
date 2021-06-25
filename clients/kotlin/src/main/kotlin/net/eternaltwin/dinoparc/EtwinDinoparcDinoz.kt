@@ -17,6 +17,8 @@ data class EtwinDinoparcDinoz constructor(
   @SerialName("archived_at")
   val archivedAt: Instant,
   val name: LatestTemporal<DinoparcDinozName>? = null,
+  val owner: LatestTemporal<ShortDinoparcUser>? = null,
+  val location: LatestTemporal<DinoparcLocationId>? = null,
   val race: LatestTemporal<DinoparcDinozRace>? = null,
   val skin: LatestTemporal<DinoparcDinozSkin>? = null,
   val life: LatestTemporal<UByte>? = null,

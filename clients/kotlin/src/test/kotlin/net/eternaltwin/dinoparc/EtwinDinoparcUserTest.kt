@@ -1,9 +1,7 @@
 package net.eternaltwin.dinoparc;
 
 import net.eternaltwin.SerializationTestItem
-import net.eternaltwin.core.LatestTemporal
-import net.eternaltwin.core.PeriodLower
-import net.eternaltwin.core.Snapshot
+import net.eternaltwin.core.*
 import net.eternaltwin.link.EtwinLink
 import net.eternaltwin.link.LinkAction
 import net.eternaltwin.link.VersionedEtwinLink
@@ -29,6 +27,59 @@ class EtwinDinoparcUserTest {
             coins = null,
             dinoz = null,
             inventory = null,
+            etwin = VersionedEtwinLink(
+              current = EtwinLink(
+                link = LinkAction(
+                  time = Instant.parse("2020-12-18T00:56:12.769Z"),
+                  user = ShortUser(
+                    UserId("9f310484-963b-446b-af69-797feec6813f"),
+                    UserDisplayNameVersions(
+                      UserDisplayNameVersion(UserDisplayName("Demurgos"))
+                    )
+                  )
+                ),
+                unlink = null,
+                user = ShortUser(
+                  UserId("9f310484-963b-446b-af69-797feec6813f"),
+                  UserDisplayNameVersions(
+                    UserDisplayNameVersion(UserDisplayName("Demurgos"))
+                  )
+                )
+              ),
+              listOf(),
+            ),
+          ),
+          "demurgos2" to EtwinDinoparcUser(
+            server = DinoparcServer.DinoparcCom,
+            id = DinoparcDinozId("2480723"),
+            archivedAt = Instant.parse("2020-12-18T00:56:12.769Z"),
+            username = DinoparcUsername("demurgos"),
+            coins = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-06-25T15:20:28.562Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:20:28.600Z")),
+                3000U
+              )
+            ),
+            dinoz = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-06-25T15:20:28.562Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:20:28.600Z")),
+                ArrayList(listOf(
+                  DinoparcDinozIdRef(DinoparcServer.DinoparcCom, DinoparcDinozId("3749448"))
+                ))
+              )
+            ),
+            inventory = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-06-25T15:20:28.562Z")),
+                ForeignRetrieved(Instant.parse("2021-06-25T15:20:28.562Z")),
+                HashMap(mapOf(
+                  DinoparcItemId("1") to 3U,
+                  DinoparcItemId("3") to 2U,
+                ))
+              )
+            ),
             etwin = VersionedEtwinLink(
               current = EtwinLink(
                 link = LinkAction(

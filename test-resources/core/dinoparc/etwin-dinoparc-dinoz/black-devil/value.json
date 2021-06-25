@@ -9,6 +9,9 @@
         "start": "2021-06-23T13:54:46.935Z",
         "end": null
       },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:50.062Z"
+      },
       "value": "Black Devil"
     }
   },
@@ -17,6 +20,9 @@
       "period": {
         "start": "2021-06-23T13:54:46.935Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:50.062Z"
       },
       "value": {
         "type": "DinoparcUser",
@@ -32,6 +38,9 @@
         "start": "2021-06-23T13:54:46.935Z",
         "end": null
       },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:50.062Z"
+      },
       "value": "0"
     }
   },
@@ -40,6 +49,9 @@
       "period": {
         "start": "2021-06-23T13:54:47.670Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:49.651Z"
       },
       "value": "Kump"
     }
@@ -50,6 +62,9 @@
         "start": "2021-06-23T13:54:47.670Z",
         "end": null
       },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:49.651Z"
+      },
       "value": "CBUfOj64r0ZaVmk#"
     }
   },
@@ -58,6 +73,9 @@
       "period": {
         "start": "2021-06-23T13:54:47.670Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:49.651Z"
       },
       "value": 0
     }
@@ -68,6 +86,9 @@
         "start": "2021-06-23T13:54:47.670Z",
         "end": null
       },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:49.651Z"
+      },
       "value": 288
     }
   },
@@ -76,6 +97,9 @@
       "period": {
         "start": "2021-06-23T13:54:47.670Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:49.651Z"
       },
       "value": 2
     }
@@ -86,6 +110,9 @@
         "start": "2021-06-23T13:54:47.670Z",
         "end": null
       },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:49.651Z"
+      },
       "value": -231
     }
   },
@@ -95,6 +122,9 @@
         "start": "2021-06-23T13:54:47.670Z",
         "end": null
       },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:49.651Z"
+      },
       "value": false
     }
   },
@@ -103,6 +133,9 @@
       "period": {
         "start": "2021-06-23T13:54:47.670Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:49.651Z"
       },
       "value": {
         "fire": 23,
@@ -118,6 +151,9 @@
       "period": {
         "start": "2021-06-23T13:54:47.670Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-06-25T15:15:49.651Z"
       },
       "value": {
         "Bargain": 5,
