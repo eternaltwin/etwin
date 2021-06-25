@@ -2,12 +2,15 @@
   "type": "DinoparcUser",
   "server": "en.dinoparc.com",
   "id": "765483",
-  "archived_at": "2021-01-01T00:00:00Z",
+  "archived_at": "2021-01-01T00:00:00.000Z",
   "name": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": "Yasumi"
     }
@@ -15,8 +18,11 @@
   "owner": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": {
         "type": "DinoparcUser",
@@ -29,8 +35,11 @@
   "location": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": "0"
     }
@@ -38,8 +47,11 @@
   "race": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": "Wanwan"
     }
@@ -47,8 +59,11 @@
   "skin": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": "Ac9OrgxOWu1pd7Fp"
     }
@@ -56,8 +71,11 @@
   "life": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": 30
     }
@@ -65,8 +83,11 @@
   "level": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": 12
     }
@@ -74,8 +95,11 @@
   "experience": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": 13
     }
@@ -83,8 +107,11 @@
   "danger": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": 116
     }
@@ -92,8 +119,11 @@
   "in_tournament": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": false
     }
@@ -101,8 +131,11 @@
   "elements": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": {
         "fire": 10,
@@ -116,8 +149,11 @@
   "skills": {
     "latest": {
       "period": {
-        "start": "2021-01-01T00:00:00Z",
+        "start": "2021-01-01T00:00:00.000Z",
         "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
       },
       "value": {
         "Dexterity": 2,

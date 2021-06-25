@@ -1,6 +1,6 @@
 use crate::core::{FinitePeriod, Instant, PeriodFrom, PeriodLower};
 #[cfg(feature = "_serde")]
-use etwin_serde_tools::{Deserialize, Serialize};
+use etwin_serde_tools::{serialize_instant, Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::iter::FromIterator;
 
@@ -36,6 +36,66 @@ impl<T: Copy> SnapshotFrom<T> {
   pub fn value(&self) -> T {
     self.value
   }
+}
+
+/// Snapshot of foreign data
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+pub struct ForeignSnapshot<T> {
+  pub period: PeriodLower,
+  pub retrieved: ForeignRetrieved,
+  pub value: T,
+}
+
+impl<T> ForeignSnapshot<T> {
+  pub fn period(&self) -> PeriodLower {
+    self.period
+  }
+
+  pub fn start_time(&self) -> Instant {
+    match self.period {
+      PeriodLower::From(PeriodFrom { start }) => start,
+      PeriodLower::Finite(FinitePeriod { start, .. }) => start,
+    }
+  }
+
+  pub fn end_time(&self) -> Option<Instant> {
+    match self.period {
+      PeriodLower::From(_) => None,
+      PeriodLower::Finite(FinitePeriod { end, .. }) => Some(end),
+    }
+  }
+
+  pub fn value_ref(&self) -> &T {
+    &self.value
+  }
+
+  pub fn map<U, F>(self, f: F) -> ForeignSnapshot<U>
+  where
+    F: FnOnce(T) -> U,
+  {
+    ForeignSnapshot {
+      period: self.period,
+      retrieved: self.retrieved,
+      value: f(self.value),
+    }
+  }
+
+  pub fn as_ref(&self) -> ForeignSnapshot<&T> {
+    ForeignSnapshot {
+      period: self.period,
+      retrieved: self.retrieved,
+      value: &self.value,
+    }
+  }
+}
+
+/// Finite subset of instants when foreign data was retrieved
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+pub struct ForeignRetrieved {
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
+  pub latest: Instant,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -222,7 +282,7 @@ impl<T: Copy> Temporal<T> {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct LatestTemporal<T> {
-  pub latest: Snapshot<T>,
+  pub latest: ForeignSnapshot<T>,
   // old: BTreeMap<Instant, T>,
 }
 

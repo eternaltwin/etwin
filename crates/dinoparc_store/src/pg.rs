@@ -10,7 +10,7 @@ use etwin_core::dinoparc::{
   ShortDinoparcUser,
 };
 use etwin_core::pg_num::{PgU16, PgU32};
-use etwin_core::temporal::{LatestTemporal, Snapshot};
+use etwin_core::temporal::{ForeignRetrieved, ForeignSnapshot, LatestTemporal};
 use etwin_core::types::EtwinError;
 use etwin_core::uuid::UuidGenerator;
 use etwin_populate::dinoparc::populate_dinoparc;
@@ -146,15 +146,20 @@ where
       dinoparc_dinoz_id: DinoparcDinozId,
       archived_at: Instant,
       name_period: Option<PeriodLower>,
+      name_retrieved_latest: Option<Instant>,
       name_value: Option<DinoparcDinozName>,
       owner_period: Option<PeriodLower>,
+      owner_retrieved_latest: Option<Instant>,
       owner_id: Option<DinoparcUserId>,
       owner_username: Option<DinoparcUsername>,
       location_period: Option<PeriodLower>,
+      location_retrieved_latest: Option<Instant>,
       location_value: Option<DinoparcLocationId>,
       level_period: Option<PeriodLower>,
+      level_retrieved_latest: Option<Instant>,
       level_value: Option<PgU16>,
       profile_period: Option<PeriodLower>,
+      profile_retrieved_latest: Option<Instant>,
       profile_race: Option<DinoparcDinozRace>,
       profile_skin: Option<DinoparcDinozSkin>,
       profile_life: Option<IntPercentage>,
@@ -170,6 +175,7 @@ where
       WITH latest_dinoparc_dinoz_names AS (
         SELECT dinoparc_server, dinoparc_dinoz_id,
           LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(retrieved_at) OVER w AS retrieved,
           LAST_VALUE(name) OVER w AS name
         FROM dinoparc_dinoz_names
         WHERE lower(period) <= $3::INSTANT
@@ -178,6 +184,7 @@ where
       latest_dinoparc_dinoz_owners AS (
         SELECT dinoparc_dinoz_owners.dinoparc_server, dinoparc_dinoz_owners.dinoparc_dinoz_id,
           LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(retrieved_at) OVER w AS retrieved,
           LAST_VALUE(owner) OVER w AS owner_id,
           LAST_VALUE(username) OVER w AS owner_username
         FROM dinoparc_dinoz_owners
@@ -188,6 +195,7 @@ where
       latest_dinoparc_dinoz_locations AS (
         SELECT dinoparc_server, dinoparc_dinoz_id,
           LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(retrieved_at) OVER w AS retrieved,
           LAST_VALUE(location) OVER w AS location
         FROM dinoparc_dinoz_locations
         WHERE lower(period) <= $3::INSTANT
@@ -196,6 +204,7 @@ where
       latest_dinoparc_dinoz_levels AS (
         SELECT dinoparc_server, dinoparc_dinoz_id,
           LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(retrieved_at) OVER w AS retrieved,
           LAST_VALUE(level) OVER w AS level
         FROM dinoparc_dinoz_levels
         WHERE lower(period) <= $3::INSTANT
@@ -204,6 +213,7 @@ where
       latest_dinoparc_dinoz_profiles AS (
         SELECT dinoparc_server, dinoparc_dinoz_id,
           LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(retrieved_at) OVER w AS retrieved,
           LAST_VALUE(race) OVER w AS race,
           LAST_VALUE(skin) OVER w AS skin,
           LAST_VALUE(life) OVER w AS life,
@@ -217,11 +227,11 @@ where
         WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_dinoz_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
       )
       SELECT dinoparc_server, dinoparc_dinoz_id, archived_at,
-        name.period AS name_period, name.name AS name_value,
-        owner.period AS owner_period, owner.owner_id AS owner_id, owner.owner_username AS owner_username,
-        location.period AS location_period, location.location AS location_value,
-        level.period AS level_period, level.level AS level_value,
-        profile.period AS profile_period,
+        name.period AS name_period, name.retrieved[CARDINALITY(name.retrieved)] AS name_retrieved_latest, name.name AS name_value,
+        owner.period AS owner_period, owner.retrieved[CARDINALITY(owner.retrieved)] AS owner_retrieved_latest, owner.owner_id AS owner_id, owner.owner_username AS owner_username,
+        location.period AS location_period, location.retrieved[CARDINALITY(location.retrieved)] AS location_retrieved_latest, location.location AS location_value,
+        level.period AS level_period, level.retrieved[CARDINALITY(level.retrieved)] AS level_retrieved_latest, level.level AS level_value,
+        profile.period AS profile_period, profile.retrieved[CARDINALITY(profile.retrieved)] AS profile_retrieved_latest,
         profile.race AS profile_race, profile.skin AS profile_skin,
         profile.life AS profile_life, profile.experience AS profile_experience,
         profile.danger AS profile_danger, profile.in_tournament AS profile_in_tournament,
@@ -285,18 +295,23 @@ where
       server: row.dinoparc_server,
       id: row.dinoparc_dinoz_id,
       archived_at: row.archived_at,
-      name: to_latest_temporal(row.name_period, row.name_value),
-      owner: to_latest_temporal(row.owner_period, owner),
-      location: to_latest_temporal(row.location_period, row.location_value),
-      race: to_latest_temporal(row.profile_period, row.profile_race),
-      skin: to_latest_temporal(row.profile_period, row.profile_skin),
-      life: to_latest_temporal(row.profile_period, row.profile_life),
-      level: to_latest_temporal(row.level_period, row.level_value).map(|t| t.map(u16::from)),
-      experience: to_latest_temporal(row.profile_period, row.profile_experience),
-      danger: to_latest_temporal(row.level_period, row.profile_danger),
-      in_tournament: to_latest_temporal(row.profile_period, row.profile_in_tournament),
-      elements: to_latest_temporal(row.profile_period, row.profile_elements),
-      skills: to_latest_temporal(row.profile_period, skills),
+      name: to_latest_temporal(row.name_period, row.name_retrieved_latest, row.name_value),
+      owner: to_latest_temporal(row.owner_period, row.owner_retrieved_latest, owner),
+      location: to_latest_temporal(row.location_period, row.location_retrieved_latest, row.location_value),
+      race: to_latest_temporal(row.profile_period, row.profile_retrieved_latest, row.profile_race),
+      skin: to_latest_temporal(row.profile_period, row.profile_retrieved_latest, row.profile_skin),
+      life: to_latest_temporal(row.profile_period, row.profile_retrieved_latest, row.profile_life),
+      level: to_latest_temporal(row.level_period, row.level_retrieved_latest, row.level_value)
+        .map(|t| t.map(u16::from)),
+      experience: to_latest_temporal(row.profile_period, row.profile_retrieved_latest, row.profile_experience),
+      danger: to_latest_temporal(row.profile_period, row.profile_retrieved_latest, row.profile_danger),
+      in_tournament: to_latest_temporal(
+        row.profile_period,
+        row.profile_retrieved_latest,
+        row.profile_in_tournament,
+      ),
+      elements: to_latest_temporal(row.profile_period, row.profile_retrieved_latest, row.profile_elements),
+      skills: to_latest_temporal(row.profile_period, row.profile_retrieved_latest, skills),
     }))
   }
 
@@ -311,10 +326,13 @@ where
       archived_at: Instant,
       username: DinoparcUsername,
       coins_period: Option<PeriodLower>,
+      coins_retrieved_latest: Option<Instant>,
       coins_value: Option<PgU32>,
       inventory_period: Option<PeriodLower>,
+      inventory_retrieved_latest: Option<Instant>,
       inventory_value: Option<Uuid>,
       dinoz_count_period: Option<PeriodLower>,
+      dinoz_count_retrieved_latest: Option<Instant>,
       dinoz_count_value: Option<PgU32>,
     }
 
@@ -323,6 +341,7 @@ where
       WITH latest_dinoparc_coins AS (
         SELECT dinoparc_server, dinoparc_user_id,
           LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(retrieved_at) OVER w AS retrieved,
           LAST_VALUE(coins) OVER w AS coins
         FROM dinoparc_coins
         WHERE lower(period) <= $3::INSTANT
@@ -331,6 +350,7 @@ where
       latest_dinoparc_inventories AS (
         SELECT dinoparc_server, dinoparc_user_id,
           LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(retrieved_at) OVER w AS retrieved,
           LAST_VALUE(item_counts) OVER w AS item_counts
         FROM dinoparc_inventories
         WHERE lower(period) <= $3::INSTANT
@@ -339,15 +359,16 @@ where
       latest_dinoparc_user_dinoz_counts AS (
         SELECT dinoparc_server, dinoparc_user_id,
           LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(retrieved_at) OVER w AS retrieved,
           LAST_VALUE(dinoz_count) OVER w AS dinoz_count
         FROM dinoparc_user_dinoz_counts
         WHERE lower(period) <= $3::INSTANT
         WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
       )
       SELECT dinoparc_server, dinoparc_user_id, archived_at, username,
-        coins.period AS coins_period, coins.coins AS coins_value,
-        inventory.period AS inventory_period, inventory.item_counts AS inventory_value,
-        dinoz_count.period AS dinoz_count_period, dinoz_count.dinoz_count AS dinoz_count_value
+        coins.period AS coins_period, coins.retrieved[CARDINALITY(coins.retrieved)] AS coins_retrieved_latest, coins.coins AS coins_value,
+        inventory.period AS inventory_period, inventory.retrieved[CARDINALITY(inventory.retrieved)] AS inventory_retrieved_latest, inventory.item_counts AS inventory_value,
+        dinoz_count.period AS dinoz_count_period, dinoz_count.retrieved[CARDINALITY(dinoz_count.retrieved)] AS dinoz_count_retrieved_latest, dinoz_count.dinoz_count AS dinoz_count_value
       FROM dinoparc_users
         LEFT OUTER JOIN latest_dinoparc_coins AS coins USING (dinoparc_server, dinoparc_user_id)
         LEFT OUTER JOIN latest_dinoparc_inventories AS inventory USING (dinoparc_server, dinoparc_user_id)
@@ -390,8 +411,12 @@ where
       None
     };
 
-    let dinoz = match (row.dinoz_count_period, row.dinoz_count_value) {
-      (Some(period), Some(dinoz_count)) => {
+    let dinoz = match (
+      row.dinoz_count_period,
+      row.dinoz_count_retrieved_latest,
+      row.dinoz_count_value,
+    ) {
+      (Some(period), Some(latest), Some(dinoz_count)) => {
         #[derive(Debug, sqlx::FromRow)]
         struct Row {
           dinoparc_dinoz_id: DinoparcDinozId,
@@ -422,10 +447,14 @@ where
           .collect();
 
         Some(LatestTemporal {
-          latest: Snapshot { period, value: dinoz },
+          latest: ForeignSnapshot {
+            period,
+            retrieved: ForeignRetrieved { latest },
+            value: dinoz,
+          },
         })
       }
-      (None, None) => None,
+      (None, None, None) => None,
       _ => unreachable!(),
     };
 
@@ -434,19 +463,28 @@ where
       id: row.dinoparc_user_id,
       archived_at: row.archived_at,
       username: row.username,
-      coins: to_latest_temporal(row.coins_period, row.coins_value).map(|t| t.map(u32::from)),
-      inventory: to_latest_temporal(row.inventory_period, inventory),
+      coins: to_latest_temporal(row.coins_period, row.coins_retrieved_latest, row.coins_value)
+        .map(|t| t.map(u32::from)),
+      inventory: to_latest_temporal(row.inventory_period, row.inventory_retrieved_latest, inventory),
       dinoz,
     }))
   }
 }
 
-fn to_latest_temporal<T>(period: Option<PeriodLower>, value: Option<T>) -> Option<LatestTemporal<T>> {
-  match (period, value) {
-    (Some(period), Some(value)) => Some(LatestTemporal {
-      latest: Snapshot { period, value },
+fn to_latest_temporal<T>(
+  period: Option<PeriodLower>,
+  retrieved_latest: Option<Instant>,
+  value: Option<T>,
+) -> Option<LatestTemporal<T>> {
+  match (period, retrieved_latest, value) {
+    (Some(period), Some(latest), Some(value)) => Some(LatestTemporal {
+      latest: ForeignSnapshot {
+        period,
+        retrieved: ForeignRetrieved { latest },
+        value,
+      },
     }),
-    (None, None) => None,
+    (None, None, None) => None,
     _ => unreachable!(),
   }
 }

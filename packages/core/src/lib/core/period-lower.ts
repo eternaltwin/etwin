@@ -5,7 +5,7 @@ import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
 
 /**
- * A listing exposing only the item count
+ * Time period with a finite lower bound
  */
 export interface PeriodLower {
   start: Date;

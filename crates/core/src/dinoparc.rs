@@ -6,7 +6,7 @@ use async_trait::async_trait;
 use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
 #[cfg(feature = "_serde")]
-use etwin_serde_tools::{serialize_ordered_map, Deserialize, Serialize, Serializer};
+use etwin_serde_tools::{serialize_instant, serialize_ordered_map, Deserialize, Serialize, Serializer};
 #[cfg(feature = "sqlx")]
 use sqlx::{database, postgres, Database, Postgres};
 use std::collections::HashMap;
@@ -218,6 +218,7 @@ impl ShortDinoparcUser {
 pub struct ArchivedDinoparcUser {
   pub server: DinoparcServer,
   pub id: DinoparcUserId,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub archived_at: Instant,
   pub username: DinoparcUsername,
   pub coins: Option<LatestTemporal<u32>>,
@@ -233,6 +234,7 @@ pub struct ArchivedDinoparcUser {
 pub struct EtwinDinoparcUser {
   pub server: DinoparcServer,
   pub id: DinoparcUserId,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub archived_at: Instant,
   pub username: DinoparcUsername,
   pub coins: Option<LatestTemporal<u32>>,
@@ -348,6 +350,7 @@ impl DinoparcDinoz {
 pub struct ArchivedDinoparcDinoz {
   pub server: DinoparcServer,
   pub id: DinoparcDinozId,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub archived_at: Instant,
   pub name: Option<LatestTemporal<DinoparcDinozName>>,
   pub owner: Option<LatestTemporal<ShortDinoparcUser>>,
@@ -663,7 +666,7 @@ mod test {
     ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcDinozElements, DinoparcDinozIdRef, DinoparcDinozRace,
     DinoparcServer, DinoparcSkill, DinoparcSkillLevel, ShortDinoparcUser,
   };
-  use crate::temporal::{LatestTemporal, Snapshot};
+  use crate::temporal::{ForeignRetrieved, ForeignSnapshot, LatestTemporal};
   use chrono::{TimeZone, Utc};
   use std::collections::HashMap;
   use std::fs;
@@ -676,14 +679,20 @@ mod test {
       archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
       username: "alice".parse().unwrap(),
       coins: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: 10000,
         },
       }),
       inventory: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: {
             let mut inventory = HashMap::new();
             inventory.insert("4".parse().unwrap(), 10);
@@ -692,8 +701,11 @@ mod test {
         },
       }),
       dinoz: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: vec![DinoparcDinozIdRef {
             server: DinoparcServer::DinoparcCom,
             id: "2".parse().unwrap(),
@@ -714,7 +726,6 @@ mod test {
   }
 
   #[cfg(feature = "_serde")]
-  #[ignore]
   #[test]
   fn write_archived_dinoparc_user_alice_rokky() {
     let value = get_archived_dinoparc_user_alice_rokky();
@@ -731,14 +742,20 @@ mod test {
       id: "765483".parse().unwrap(),
       archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
       name: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: "Yasumi".parse().unwrap(),
         },
       }),
       owner: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: ShortDinoparcUser {
             server: DinoparcServer::EnDinoparcCom,
             id: "681579".parse().unwrap(),
@@ -747,56 +764,83 @@ mod test {
         },
       }),
       location: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: "0".parse().unwrap(),
         },
       }),
       race: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: DinoparcDinozRace::Wanwan,
         },
       }),
       skin: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: "Ac9OrgxOWu1pd7Fp".parse().unwrap(),
         },
       }),
       life: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: IntPercentage::new(30).unwrap(),
         },
       }),
       level: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: 12,
         },
       }),
       experience: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: IntPercentage::new(13).unwrap(),
         },
       }),
       danger: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: 116,
         },
       }),
       in_tournament: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: false,
         },
       }),
       elements: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: DinoparcDinozElements {
             fire: 10,
             earth: 0,
@@ -807,8 +851,11 @@ mod test {
         },
       }),
       skills: Some(LatestTemporal {
-        latest: Snapshot {
+        latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
           value: {
             let mut skills = HashMap::new();
             skills.insert(DinoparcSkill::Dexterity, DinoparcSkillLevel::new(2).unwrap());

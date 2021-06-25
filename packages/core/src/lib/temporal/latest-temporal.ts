@@ -4,16 +4,16 @@ import { $Null } from "kryo/lib/null.js";
 import { RecordIoType, RecordType } from "kryo/lib/record.js";
 import { TryUnionType } from "kryo/lib/try-union.js";
 
-import { $Snapshot, Snapshot } from "./snapshot.js";
+import { $ForeignSnapshot, ForeignSnapshot } from "./foreign-snapshot.js";
 
 export interface LatestTemporal<T> {
-  latest: Snapshot<T>;
+  latest: ForeignSnapshot<T>;
 }
 
 export const $LatestTemporal: GenericIoType<<T>(t: T) => LatestTemporal<T>> = new GenericType({
   apply: <T>(t: IoType<T>): RecordIoType<LatestTemporal<T>> => new RecordType({
     properties: {
-      latest: {type: $Snapshot.apply(t) as RecordIoType<Snapshot<T>>},
+      latest: {type: $ForeignSnapshot.apply(t) as RecordIoType<ForeignSnapshot<T>>},
     },
     changeCase: CaseStyle.SnakeCase,
   }),

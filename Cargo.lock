@@ -802,6 +802,7 @@ dependencies = [
 name = "etwin_serde_tools"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "hex",
  "serde",
  "serde_json",

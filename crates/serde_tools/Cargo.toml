@@ -12,6 +12,7 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
+chrono = { version = "0.4.19", optional = true }
 serde = { version = "1.0.125", features = ["derive"] }
 hex = "0.4.3"
 

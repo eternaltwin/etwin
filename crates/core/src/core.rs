@@ -3,7 +3,7 @@ use crate::pg_num::PgU8;
 use crate::user::{ShortUser, UserIdRef};
 use chrono::{DateTime, Utc};
 #[cfg(feature = "_serde")]
-use serde::{Deserialize, Serialize, Serializer};
+use etwin_serde_tools::{serialize_instant, serialize_opt_instant, Deserialize, Serialize, Serializer};
 #[cfg(feature = "sqlx")]
 use sqlx::postgres::types::PgRange;
 #[cfg(feature = "sqlx")]
@@ -20,7 +20,9 @@ pub type Instant = DateTime<Utc>;
 #[cfg(feature = "_serde")]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 struct SerializablePeriodLower {
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub start: Instant,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_opt_instant"))]
   pub end: Option<Instant>,
 }
 
