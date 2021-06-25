@@ -1,4 +1,4 @@
-package net.eternaltwin.hammerfest
+package net.eternaltwin.user
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable

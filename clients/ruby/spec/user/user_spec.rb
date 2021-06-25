@@ -3,7 +3,7 @@
 
 RSpec.describe Etwin::User::User do  # rubocop:disable Metrics/BlockLength
   items = SerializationTestItem.from_test_dir(
-    'user/user',
+    'core/user/user',
     {
       'demurgos' => Etwin::User::User.new(
         Etwin::User::UserId.new('9f310484-963b-446b-af69-797feec6813f'),

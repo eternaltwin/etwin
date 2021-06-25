@@ -17,7 +17,7 @@ class MaybeCompleteUserTest {
     @JvmStatic
     fun fromJsonString(): Stream<SerializationTestItem<MaybeCompleteUser>> =
       SerializationTestItem.streamFromTestDir(
-        "user/maybe-complete-user",
+        "core/user/maybe-complete-user",
         mapOf(
           "complete-demurgos" to MaybeCompleteUser.Complete(
             CompleteUser(
@@ -25,6 +25,14 @@ class MaybeCompleteUserTest {
               displayName = UserDisplayNameVersions(UserDisplayNameVersion(UserDisplayName("Demurgos"))),
               isAdministrator = true,
               links = VersionedLinks(
+                dinoparcCom = VersionedDinoparcLink(
+                  current = null,
+                  old = listOf()
+                ),
+                enDinoparcCom = VersionedDinoparcLink(
+                  current = null,
+                  old = listOf()
+                ),
                 hammerfestEs = VersionedHammerfestLink(
                   current = null,
                   old = listOf()
@@ -63,6 +71,10 @@ class MaybeCompleteUserTest {
                       username = HammerfestUsername("Demurgos")
                     )
                   ),
+                  old = listOf()
+                ),
+                spDinoparcCom = VersionedDinoparcLink(
+                  current = null,
                   old = listOf()
                 ),
                 twinoid = VersionedTwinoidLink(
@@ -83,7 +95,7 @@ class MaybeCompleteUserTest {
                   old = listOf()
                 ),
               ),
-              ctime = Instant.parse("2017-05-25T23:12:50.000Z"),
+              createdAt = Instant.parse("2017-05-25T23:12:50.000Z"),
               username = null,
               emailAddress = null,
               hasPassword = false,
@@ -95,6 +107,14 @@ class MaybeCompleteUserTest {
               displayName = UserDisplayNameVersions(UserDisplayNameVersion(UserDisplayName("Demurgos"))),
               isAdministrator = true,
               links = VersionedLinks(
+                dinoparcCom = VersionedDinoparcLink(
+                  current = null,
+                  old = listOf()
+                ),
+                enDinoparcCom = VersionedDinoparcLink(
+                  current = null,
+                  old = listOf()
+                ),
                 hammerfestEs = VersionedHammerfestLink(
                   current = null,
                   old = listOf()
@@ -133,6 +153,10 @@ class MaybeCompleteUserTest {
                       username = HammerfestUsername("Demurgos")
                     )
                   ),
+                  old = listOf()
+                ),
+                spDinoparcCom = VersionedDinoparcLink(
+                  current = null,
                   old = listOf()
                 ),
                 twinoid = VersionedTwinoidLink(

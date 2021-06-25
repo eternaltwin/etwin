@@ -1,0 +1,103 @@
+{
+  "type": "User",
+  "id": "8ec810f9-47f6-4f17-8aa1-0335cb4fb0fd",
+  "created_at": "2020-06-23T23:34:57.000Z",
+  "display_name": {
+    "current": {
+      "value": "DJtoph"
+    }
+  },
+  "is_administrator": false,
+  "links": {
+    "dinoparc_com": {
+      "current": {
+        "link": {
+          "time": "2021-06-25T15:15:49.069Z",
+          "user": {
+            "type": "User",
+            "id": "8ec810f9-47f6-4f17-8aa1-0335cb4fb0fd",
+            "display_name": {
+              "current": {
+                "value": "DJtoph"
+              }
+            }
+          }
+        },
+        "unlink": null,
+        "user": {
+          "type": "DinoparcUser",
+          "server": "dinoparc.com",
+          "id": "205944",
+          "username": "djtoph"
+        }
+      },
+      "old": []
+    },
+    "en_dinoparc_com": {
+      "current": {
+        "link": {
+          "time": "2021-06-25T15:14:01.782Z",
+          "user": {
+            "type": "User",
+            "id": "8ec810f9-47f6-4f17-8aa1-0335cb4fb0fd",
+            "display_name": {
+              "current": {
+                "value": "DJtoph"
+              }
+            }
+          }
+        },
+        "unlink": null,
+        "user": {
+          "type": "DinoparcUser",
+          "server": "en.dinoparc.com",
+          "id": "58144",
+          "username": "josum41"
+        }
+      },
+      "old": []
+    },
+    "hammerfest_es": {
+      "current": null,
+      "old": []
+    },
+    "hammerfest_fr": {
+      "current": null,
+      "old": []
+    },
+    "hfest_net": {
+      "current": null,
+      "old": []
+    },
+    "sp_dinoparc_com": {
+      "current": null,
+      "old": []
+    },
+    "twinoid": {
+      "current": {
+        "link": {
+          "time": "2021-04-23T15:45:11.517Z",
+          "user": {
+            "type": "User",
+            "id": "8ec810f9-47f6-4f17-8aa1-0335cb4fb0fd",
+            "display_name": {
+              "current": {
+                "value": "DJtoph"
+              }
+            }
+          }
+        },
+        "unlink": null,
+        "user": {
+          "type": "TwinoidUser",
+          "id": "1225351",
+          "display_name": "Jowpacabra"
+        }
+      },
+      "old": []
+    }
+  },
+  "username": "jonathan",
+  "email_address": null,
+  "has_password": true
+}

@@ -17,13 +17,21 @@ class UserTest {
     @JvmStatic
     fun fromJsonString(): Stream<SerializationTestItem<User>> =
       SerializationTestItem.streamFromTestDir(
-        "user/user",
+        "core/user/user",
         mapOf(
           "demurgos" to User(
             id = UserId("9f310484-963b-446b-af69-797feec6813f"),
             displayName = UserDisplayNameVersions(UserDisplayNameVersion(UserDisplayName("Demurgos"))),
             isAdministrator = true,
             links = VersionedLinks(
+              dinoparcCom = VersionedDinoparcLink(
+                current = null,
+                old = listOf()
+              ),
+              enDinoparcCom = VersionedDinoparcLink(
+                current = null,
+                old = listOf()
+              ),
               hammerfestEs = VersionedHammerfestLink(
                 current = null,
                 old = listOf()
@@ -62,6 +70,10 @@ class UserTest {
                     username = HammerfestUsername("Demurgos")
                   )
                 ),
+                old = listOf()
+              ),
+              spDinoparcCom = VersionedDinoparcLink(
+                current = null,
                 old = listOf()
               ),
               twinoid = VersionedTwinoidLink(

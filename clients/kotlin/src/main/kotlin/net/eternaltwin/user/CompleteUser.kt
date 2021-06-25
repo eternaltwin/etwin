@@ -22,8 +22,9 @@ data class CompleteUser constructor(
   override val isAdministrator: Boolean,
   override val links: VersionedLinks,
   @Serializable(with = InstantSerializer::class)
-  val ctime: Instant,
-  val username: VersionedLinks?,
+  @SerialName("created_at")
+  val createdAt: Instant,
+  val username: Username?,
   @SerialName("email_address")
   val emailAddress: EmailAddress?,
   @SerialName("has_password")

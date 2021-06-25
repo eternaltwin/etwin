@@ -19,7 +19,7 @@ data class EtwinDinoparcUser constructor(
   val archivedAt: Instant,
   val username: DinoparcUsername,
   val coins: LatestTemporal<UInt>? = null,
-  val dinoz: LatestTemporal<ArrayList<DinoparcDinozIdRef>>? = null,
+  val dinoz: LatestTemporal<List<DinoparcDinozIdRef>>? = null,
   val inventory: LatestTemporal<HashMap<DinoparcItemId, UInt>>? = null,
   val etwin: VersionedEtwinLink,
 ) {
