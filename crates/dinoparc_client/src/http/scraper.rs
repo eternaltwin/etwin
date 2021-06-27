@@ -3,9 +3,10 @@ use crate::http::locale::ScraperLocale;
 use crate::http::url::{DinoparcRequest, DinoparcUrls};
 use etwin_core::core::IntPercentage;
 use etwin_core::dinoparc::{
-  DinoparcDinoz, DinoparcDinozElements, DinoparcDinozId, DinoparcDinozName, DinoparcDinozRace, DinoparcDinozResponse,
-  DinoparcInventoryResponse, DinoparcItemId, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel,
-  DinoparcUserId, DinoparcUsername, ShortDinoparcDinoz,
+  DinoparcCollectionResponse, DinoparcDinoz, DinoparcDinozElements, DinoparcDinozId, DinoparcDinozName,
+  DinoparcDinozRace, DinoparcDinozResponse, DinoparcEpicRewardKey, DinoparcInventoryResponse, DinoparcItemId,
+  DinoparcRewardId, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcUserId,
+  DinoparcUsername, ShortDinoparcDinoz,
 };
 use etwin_scraper_tools::{ElementRefExt, FlashVars};
 use itertools::Itertools;
@@ -15,8 +16,8 @@ use regex::Regex;
 use scraper::{ElementRef, Html, Selector};
 #[cfg(test)]
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::convert::TryInto;
+use std::collections::{HashMap, HashSet};
+use std::convert::{TryFrom, TryInto};
 use std::str::FromStr;
 
 /// Regular expression for the one-argument cashFrame.launch call.
@@ -30,6 +31,11 @@ static PERCENTAGE_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r#"(\d{1,2}|100)(?:[
 /// Regular expression to extract the skill level from an image src
 /// Example: `"img/lvl2.gif"` -> `2`
 static SKILL_LEVEL_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r#"lvl([0-5])\."#).unwrap());
+
+/// Regular expression to extract the epic reward key from the image src
+/// Example: `"img/reward/war32a.gif"` -> `war32a`
+static EPIC_REWARD_RE: Lazy<Regex> =
+  Lazy::new(|| Regex::new(r#"^img/rewards/([^./]+)\.(?:jpeg|jpg|gif|png)$"#).unwrap());
 
 /// Regular expression to extract match decimal integer
 static DECIMAL_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r#"0|[1-9]\d*"#).unwrap());
@@ -219,6 +225,81 @@ pub(crate) fn scrape_inventory(doc: &Html) -> Result<DinoparcInventoryResponse<D
   Ok(DinoparcInventoryResponse {
     session_user,
     inventory,
+  })
+}
+
+pub(crate) fn scrape_collection(doc: &Html) -> Result<DinoparcCollectionResponse<DinoparcUsername>, ScraperError> {
+  let root = doc.root_element();
+
+  let context = scrape_context(root)?;
+  let session_user = scrape_session_user(context.server, root)?;
+
+  let mut rewards: Option<HashSet<DinoparcRewardId>> = None;
+  let mut epic_rewards: Option<HashSet<DinoparcEpicRewardKey>> = None;
+
+  for reward_box in root.select(&Selector::parse(".siteContent .contentPane div.rewardBox").unwrap()) {
+    if reward_box
+      .select(&Selector::parse(":scope > div.header").unwrap())
+      .next()
+      .is_some()
+    {
+      // Regular
+      if rewards.is_some() {
+        return Err(ScraperError::DuplicateRegularRewardBox);
+      }
+      let mut new_rewards: HashSet<DinoparcRewardId> = HashSet::new();
+      for (i, cell) in reward_box
+        .select(&Selector::parse(":scope table.rewards td").unwrap())
+        .enumerate()
+      {
+        let is_unlocked = cell.select(&Selector::parse(":scope a").unwrap()).any(|_| true);
+        if is_unlocked {
+          let id = u64::try_from(i).unwrap() + 1;
+          let id =
+            DinoparcRewardId::from_str(id.to_string().as_str()).map_err(|_| ScraperError::InvalidRewardId(id))?;
+          new_rewards.insert(id);
+        }
+      }
+      rewards = Some(new_rewards);
+    } else if reward_box
+      .select(&Selector::parse(":scope > div.epicHeader").unwrap())
+      .next()
+      .is_some()
+    {
+      // Epic
+      if epic_rewards.is_some() {
+        return Err(ScraperError::DuplicateEpicRewardBox);
+      }
+      let mut new_epic_rewards: HashSet<DinoparcEpicRewardKey> = HashSet::new();
+      for cell in reward_box.select(&Selector::parse(":scope table.rewards td").unwrap()) {
+        let reward = cell
+          .select(&Selector::parse(":scope img").unwrap())
+          .at_most_one()
+          .map_err(|_| ScraperError::MultipleEpicRewardImages)?;
+        let reward = if let Some(r) = reward { r } else { continue };
+        let reward = reward.value().attr("src").ok_or(ScraperError::MissingImgSrc)?;
+        let reward = EPIC_REWARD_RE
+          .captures(reward)
+          .ok_or_else(|| ScraperError::InvalidEpicReward(reward.to_string()))?;
+        let reward = reward
+          .get(1)
+          .expect("Epic reward capture should have a group with id 1");
+        let reward: DinoparcEpicRewardKey = reward
+          .as_str()
+          .parse()
+          .map_err(|_| ScraperError::InvalidEpicReward(reward.as_str().to_string()))?;
+        new_epic_rewards.insert(reward);
+      }
+      epic_rewards = Some(new_epic_rewards);
+    } else {
+      return Err(ScraperError::UnexpectedRewardBox);
+    }
+  }
+
+  Ok(DinoparcCollectionResponse {
+    session_user,
+    rewards: rewards.unwrap_or_default(),
+    epic_rewards: epic_rewards.unwrap_or_default(),
   })
 }
 
@@ -638,8 +719,10 @@ fn scrape_sidebar_dinoz(server: DinoparcServer, dinoz: ElementRef) -> Result<Sho
 
 #[cfg(test)]
 mod test {
-  use crate::http::scraper::{scrape_bank, scrape_dinoz, scrape_inventory, BankScraping};
-  use etwin_core::dinoparc::{DinoparcDinozResponse, DinoparcInventoryResponse, DinoparcUsername};
+  use crate::http::scraper::{scrape_bank, scrape_collection, scrape_dinoz, scrape_inventory, BankScraping};
+  use etwin_core::dinoparc::{
+    DinoparcCollectionResponse, DinoparcDinozResponse, DinoparcInventoryResponse, DinoparcUsername,
+  };
   use scraper::Html;
   use std::path::{Path, PathBuf};
   use test_generator::test_resources;
@@ -704,6 +787,28 @@ mod test {
 
     let value_json = ::std::fs::read_to_string(value_path).expect("Failed to read value file");
     let expected = serde_json::from_str::<DinoparcInventoryResponse<DinoparcUsername>>(&value_json)
+      .expect("Failed to parse value file");
+
+    assert_eq!(actual, expected);
+  }
+
+  #[test_resources("./test-resources/scraping/dinoparc/collection/*/")]
+  fn test_scrape_collection(path: &str) {
+    let path: PathBuf = Path::join(Path::new("../.."), path);
+    let value_path = path.join("value.json");
+    let html_path = path.join("main.utf8.html");
+    let actual_path = path.join("rs.actual.json");
+
+    let raw_html = ::std::fs::read_to_string(html_path).expect("Failed to read html file");
+
+    let html = Html::parse_document(&raw_html);
+
+    let actual = scrape_collection(&html).unwrap();
+    let actual_json = serde_json::to_string_pretty(&actual).unwrap();
+    ::std::fs::write(actual_path, format!("{}\n", actual_json)).expect("Failed to write actual file");
+
+    let value_json = ::std::fs::read_to_string(value_path).expect("Failed to read value file");
+    let expected = serde_json::from_str::<DinoparcCollectionResponse<DinoparcUsername>>(&value_json)
       .expect("Failed to parse value file");
 
     assert_eq!(actual, expected);

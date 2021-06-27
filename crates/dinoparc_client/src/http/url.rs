@@ -46,6 +46,10 @@ impl DinoparcUrls {
     self.make_url("inventory", &[])
   }
 
+  pub fn collection(&self) -> Url {
+    self.make_url("collection", &[])
+  }
+
   // pub fn exchange(&self) -> Url {
   //   self.make_url("bill", &[])
   // }

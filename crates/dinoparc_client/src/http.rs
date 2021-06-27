@@ -9,9 +9,9 @@ use ::scraper::Html;
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::dinoparc::{
-  DinoparcClient, DinoparcCredentials, DinoparcDinozId, DinoparcDinozResponse, DinoparcInventoryResponse,
-  DinoparcMachineId, DinoparcServer, DinoparcSession, DinoparcSessionKey, DinoparcSessionUser, DinoparcUsername,
-  ShortDinoparcUser,
+  DinoparcClient, DinoparcCollectionResponse, DinoparcCredentials, DinoparcDinozId, DinoparcDinozResponse,
+  DinoparcInventoryResponse, DinoparcMachineId, DinoparcServer, DinoparcSession, DinoparcSessionKey,
+  DinoparcSessionUser, DinoparcUsername, ShortDinoparcUser,
 };
 use etwin_core::types::EtwinError;
 use md5::{Digest, Md5};
@@ -210,6 +210,27 @@ where
         dinoz: response.session_user.dinoz,
       },
       inventory: response.inventory,
+    })
+  }
+
+  async fn get_collection(&self, session: &DinoparcSession) -> Result<DinoparcCollectionResponse, EtwinError> {
+    let html = self
+      .get_html(DinoparcUrls::new(session.user.server).collection(), Some(&session.key))
+      .await?;
+    let response = scraper::scrape_collection(&html)?;
+    // TODO: Assert username matches
+    Ok(DinoparcCollectionResponse {
+      session_user: DinoparcSessionUser {
+        user: ShortDinoparcUser {
+          server: session.user.server,
+          id: session.user.id,
+          username: response.session_user.user,
+        },
+        coins: response.session_user.coins,
+        dinoz: response.session_user.dinoz,
+      },
+      rewards: response.rewards,
+      epic_rewards: response.epic_rewards,
     })
   }
 }

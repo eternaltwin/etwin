@@ -6,10 +6,12 @@ use async_trait::async_trait;
 use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
 #[cfg(feature = "_serde")]
-use etwin_serde_tools::{serialize_instant, serialize_ordered_map, Deserialize, Serialize, Serializer};
+use etwin_serde_tools::{
+  serialize_instant, serialize_ordered_map, serialize_ordered_set, Deserialize, Serialize, Serializer,
+};
 #[cfg(feature = "sqlx")]
 use sqlx::{database, postgres, Database, Postgres};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::error::Error;
 use std::fmt;
 use std::iter::FusedIterator;
@@ -285,6 +287,20 @@ declare_decimal_id! {
   pub type ParseError = DinoparcLocationIdParseError;
   const BOUNDS = 0..23;
   const SQL_NAME = "dinoparc_location_id";
+}
+
+declare_decimal_id! {
+  pub struct DinoparcRewardId(u8);
+  pub type ParseError = DinoparcRewardIdParseError;
+  const BOUNDS = 1..=49;
+  const SQL_NAME = "dinoparc_reward_id";
+}
+
+declare_new_string! {
+  pub struct DinoparcEpicRewardKey(String);
+  pub type ParseError = DinoparcEpicRewardKeyParseError;
+  const PATTERN = r"^[a-z0-9_]{1,30}$";
+  const SQL_NAME = "dinoparc_epic_reward_key";
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -606,6 +622,16 @@ pub struct DinoparcInventoryResponse<U = ShortDinoparcUser> {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub struct DinoparcCollectionResponse<U = ShortDinoparcUser> {
+  pub session_user: DinoparcSessionUser<U>,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_set"))]
+  pub rewards: HashSet<DinoparcRewardId>,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_set"))]
+  pub epic_rewards: HashSet<DinoparcEpicRewardKey>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct DinoparcDinozResponse<U = ShortDinoparcUser> {
   pub session_user: DinoparcSessionUser<U>,
   pub dinoz: DinoparcDinoz,
@@ -629,6 +655,8 @@ pub trait DinoparcClient: Send + Sync {
   ) -> Result<DinoparcDinozResponse, EtwinError>;
 
   async fn get_inventory(&self, session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError>;
+
+  async fn get_collection(&self, session: &DinoparcSession) -> Result<DinoparcCollectionResponse, EtwinError>;
 }
 
 #[async_trait]

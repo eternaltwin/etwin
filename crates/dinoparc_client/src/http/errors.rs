@@ -94,6 +94,18 @@ pub enum ScraperError {
   NonUniqueItemCountText,
   #[error("Invalid item count {:?}", .0)]
   InvalidItemCount(String),
+  #[error("Unexpected reward box: expected regular or epic")]
+  UnexpectedRewardBox,
+  #[error("Duplicate regular reward box, expected zero or one")]
+  DuplicateRegularRewardBox,
+  #[error("Duplicate epic reward box, expected zero or one")]
+  DuplicateEpicRewardBox,
+  #[error("2 or more images for epic reward cell, zero or one expected")]
+  MultipleEpicRewardImages,
+  #[error("Invalid reward id {:?}", .0)]
+  InvalidRewardId(u64),
+  #[error("Invalid epic reward {:?}", .0)]
+  InvalidEpicReward(String),
   #[error("Zero or many content pane, exactly one was expected")]
   NonUniqueContentPane,
   #[error("Zero or many dinozView table, exactly one was expected")]
