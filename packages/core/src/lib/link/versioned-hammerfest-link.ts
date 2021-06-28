@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { ArrayType } from "kryo/lib/array.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { ArrayType } from "kryo/lib/array";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $NullableHammerfestLink, NullableHammerfestLink } from "./hammerfest-link.js";
 import { $OldHammerfestLink, OldHammerfestLink } from "./old-hammerfest-link.js";

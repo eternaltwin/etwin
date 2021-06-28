@@ -96,6 +96,7 @@ where
       coins: user.coins,
       dinoz: user.dinoz,
       inventory: user.inventory,
+      collection: user.collection,
       etwin: etwin_link,
     };
     Ok(Some(dparc_user))

@@ -15,7 +15,7 @@ import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
 import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
 import { NullableShortUser } from "@eternal-twin/core/lib/user/short-user.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import { UuidHex } from "kryo/lib/uuid-hex.js";
+import { UuidHex } from "kryo/lib/uuid-hex";
 
 export interface InMemoryOauthClient {
   id: OauthClientId;

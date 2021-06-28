@@ -1,5 +1,5 @@
-import { JSON_READER } from "kryo-json/lib/json-reader.js";
-import { JSON_WRITER } from "kryo-json/lib/json-writer.js";
+import { JSON_READER } from "kryo-json/lib/json-reader";
+import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { registerErrMochaTests, registerMochaSuites, TestItem } from "kryo-testing";
 
 import { $HammerfestServer, HammerfestServer } from "../../lib/hammerfest/hammerfest-server.js";

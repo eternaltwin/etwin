@@ -1,9 +1,9 @@
 import { CaseStyle } from "kryo";
-import { ArrayType } from "kryo/lib/array.js";
-import { $Null } from "kryo/lib/null.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
-import { TryUnionType } from "kryo/lib/try-union.js";
-import { $Ucs2String } from "kryo/lib/ucs2-string.js";
+import { ArrayType } from "kryo/lib/array";
+import { $Null } from "kryo/lib/null";
+import { RecordIoType, RecordType } from "kryo/lib/record";
+import { TryUnionType } from "kryo/lib/try-union";
+import { $Ucs2String } from "kryo/lib/ucs2-string";
 
 import { $HtmlText, HtmlText } from "../../core/html-text.js";
 import { $TwinoidLocale, TwinoidLocale } from "../twinoid-locale.js";

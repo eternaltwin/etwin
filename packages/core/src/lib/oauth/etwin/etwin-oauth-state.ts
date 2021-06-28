@@ -1,6 +1,6 @@
-import { $Uint53 } from "kryo/lib/integer.js";
-import { RecordIoType } from "kryo/lib/record.js";
-import { $Ucs2String } from "kryo/lib/ucs2-string.js";
+import { $Uint53 } from "kryo/lib/integer";
+import { RecordIoType } from "kryo/lib/record";
+import { $Ucs2String } from "kryo/lib/ucs2-string";
 
 import { $EtwinOauthStateInput, EtwinOauthStateInput } from "./etwin-oauth-state-input.js";
 

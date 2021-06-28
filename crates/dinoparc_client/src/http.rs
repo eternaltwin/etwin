@@ -229,8 +229,7 @@ where
         coins: response.session_user.coins,
         dinoz: response.session_user.dinoz,
       },
-      rewards: response.rewards,
-      epic_rewards: response.epic_rewards,
+      collection: response.collection,
     })
   }
 }

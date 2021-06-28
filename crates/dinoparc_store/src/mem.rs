@@ -1,8 +1,9 @@
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::dinoparc::{
-  ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcDinozResponse, DinoparcInventoryResponse, DinoparcStore,
-  DinoparcUserId, GetDinoparcDinozOptions, GetDinoparcUserOptions, ShortDinoparcUser,
+  ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcCollectionResponse, DinoparcDinozResponse,
+  DinoparcInventoryResponse, DinoparcStore, DinoparcUserId, GetDinoparcDinozOptions, GetDinoparcUserOptions,
+  ShortDinoparcUser,
 };
 use etwin_core::types::EtwinError;
 use std::collections::HashMap;
@@ -59,12 +60,17 @@ where
       coins: None,
       dinoz: None,
       inventory: None,
+      collection: None,
     };
     state.touch_user(user.clone());
     Ok(user)
   }
 
   async fn touch_inventory(&self, _response: &DinoparcInventoryResponse) -> Result<(), EtwinError> {
+    todo!()
+  }
+
+  async fn touch_collection(&self, _response: &DinoparcCollectionResponse) -> Result<(), EtwinError> {
     todo!()
   }
 

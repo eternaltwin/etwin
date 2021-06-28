@@ -1,7 +1,7 @@
-import { $Null } from "kryo/lib/null.js";
-import { TryUnionType } from "kryo/lib/try-union.js";
-import { $Ucs2String } from "kryo/lib/ucs2-string.js";
-import { WhiteListType } from "kryo/lib/white-list.js";
+import { $Null } from "kryo/lib/null";
+import { TryUnionType } from "kryo/lib/try-union";
+import { $Ucs2String } from "kryo/lib/ucs2-string";
+import { WhiteListType } from "kryo/lib/white-list";
 
 /**
  * An ISO locale ID.

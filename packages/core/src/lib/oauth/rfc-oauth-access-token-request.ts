@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { LiteralType } from "kryo/lib/literal.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { LiteralType } from "kryo/lib/literal";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $Url, Url } from "../core/url.js";
 import { $OauthClientSecret, OauthClientSecret } from "./oauth-client-secret.js";

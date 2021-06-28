@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { LiteralType } from "kryo/lib/literal.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { LiteralType } from "kryo/lib/literal";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $AuthScope, AuthScope } from "./auth-scope.js";
 import { $AuthType, AuthType } from "./auth-type.js";

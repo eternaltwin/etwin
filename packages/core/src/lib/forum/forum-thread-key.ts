@@ -1,6 +1,6 @@
-import { $Null } from "kryo/lib/null.js";
-import { TryUnionType } from "kryo/lib/try-union.js";
-import { $Ucs2String, Ucs2StringType } from "kryo/lib/ucs2-string.js";
+import { $Null } from "kryo/lib/null";
+import { TryUnionType } from "kryo/lib/try-union";
+import { $Ucs2String, Ucs2StringType } from "kryo/lib/ucs2-string";
 
 export type ForumThreadKey = string;
 

@@ -20,7 +20,7 @@ import { DEFAULT_USER_FIELDS } from "@eternal-twin/core/lib/user/default-user-fi
 import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
 import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import { UuidHex } from "kryo/lib/uuid-hex.js";
+import { UuidHex } from "kryo/lib/uuid-hex";
 
 export interface InMemoryAuthServiceOptions {
   dinoparcStore: DinoparcStore;

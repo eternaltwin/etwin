@@ -1,4 +1,4 @@
-import { ArrayIoType,ArrayType } from "kryo/lib/array.js";
+import { ArrayIoType,ArrayType } from "kryo/lib/array";
 
 import { $HammerfestForumTheme, HammerfestForumTheme } from "./hammerfest-forum-theme.js";
 

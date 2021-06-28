@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { $Date } from "kryo/lib/date.js";
-import { LiteralType } from "kryo/lib/literal.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { $Date } from "kryo/lib/date";
+import { LiteralType } from "kryo/lib/literal";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $ForumActor, ForumActor } from "./forum-actor.js";

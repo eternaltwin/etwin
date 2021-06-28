@@ -39,9 +39,9 @@ import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import { TryUnionType } from "kryo/lib/try-union.js";
-import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
-import { JsonValueWriter } from "kryo-json/lib/json-value-writer.js";
+import { TryUnionType } from "kryo/lib/try-union";
+import { JsonValueReader } from "kryo-json/lib/json-value-reader";
+import { JsonValueWriter } from "kryo-json/lib/json-value-writer";
 
 import { KoaAuth, SESSION_COOKIE } from "./helpers/koa-auth.js";
 import { KoaState } from "./koa-state";

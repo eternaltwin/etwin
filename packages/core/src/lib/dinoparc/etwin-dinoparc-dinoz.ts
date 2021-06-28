@@ -1,12 +1,12 @@
 import { CaseStyle, IoType } from "kryo";
-import { $Boolean } from "kryo/lib/boolean.js";
-import { $Date } from "kryo/lib/date.js";
-import { $Sint16, $Uint8, $Uint16 } from "kryo/lib/integer.js";
-import { LiteralType } from "kryo/lib/literal.js";
-import { $Null } from "kryo/lib/null.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
-import { TryUnionType } from "kryo/lib/try-union.js";
-import { $Ucs2String } from "kryo/lib/ucs2-string.js";
+import { $Boolean } from "kryo/lib/boolean";
+import { $Date } from "kryo/lib/date";
+import { $Sint16, $Uint8, $Uint16 } from "kryo/lib/integer";
+import { LiteralType } from "kryo/lib/literal";
+import { $Null } from "kryo/lib/null";
+import { RecordIoType, RecordType } from "kryo/lib/record";
+import { TryUnionType } from "kryo/lib/try-union";
+import { $Ucs2String } from "kryo/lib/ucs2-string";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $NullableLatestTemporal, NullableLatestTemporal } from "../temporal/latest-temporal.js";

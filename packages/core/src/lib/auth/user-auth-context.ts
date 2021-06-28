@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { $Boolean } from "kryo/lib/boolean.js";
-import { LiteralType } from "kryo/lib/literal.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { $Boolean } from "kryo/lib/boolean";
+import { LiteralType } from "kryo/lib/literal";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $ShortUser, ShortUser } from "../user/short-user.js";
 import { $AuthScope, AuthScope } from "./auth-scope.js";

@@ -54,8 +54,8 @@ import {
 import { $HammerfestShop, HammerfestShop } from "@eternal-twin/core/lib/hammerfest/hammerfest-shop.js";
 import { $HammerfestUserId, HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
 import { $HammerfestUsername, HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";
-import { JSON_READER } from "kryo-json/lib/json-reader.js";
-import { JSON_WRITER } from "kryo-json/lib/json-writer.js";
+import { JSON_READER } from "kryo-json/lib/json-reader";
+import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";
 
 import native from "../native/index.js";

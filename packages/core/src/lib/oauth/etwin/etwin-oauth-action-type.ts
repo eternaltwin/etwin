@@ -1,4 +1,4 @@
-import { TsEnumType } from "kryo/lib/ts-enum.js";
+import { TsEnumType } from "kryo/lib/ts-enum";
 
 /**
  * Action type associated to an OAuth state.

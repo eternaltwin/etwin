@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { $Uint53 } from "kryo/lib/integer.js";
-import { LiteralType } from "kryo/lib/literal.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { $Uint53 } from "kryo/lib/integer";
+import { LiteralType } from "kryo/lib/literal";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $OauthTokenType, OauthTokenType } from "./oauth-token-type.js";
 import { $RfcOauthAccessTokenKey, RfcOauthAccessTokenKey } from "./rfc-oauth-access-token-key.js";

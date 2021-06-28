@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $VersionedRawDinoparcLink, VersionedRawDinoparcLink } from "./versioned-raw-dinoparc-link.js";
 import { $VersionedRawHammerfestLink, VersionedRawHammerfestLink } from "./versioned-raw-hammerfest-link.js";

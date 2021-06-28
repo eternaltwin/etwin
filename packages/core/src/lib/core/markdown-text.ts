@@ -1,4 +1,4 @@
-import { $Ucs2String } from "kryo/lib/ucs2-string.js";
+import { $Ucs2String } from "kryo/lib/ucs2-string";
 
 /**
  * Raw markdown content.

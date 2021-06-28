@@ -27,10 +27,10 @@
   },
   "dependencies": {
     "@eternal-twin/core": "workspace:*",
-    "@mapbox/node-pre-gyp": "^1.0.1",
-    "kryo": "^0.11.2",
-    "kryo-json": "^0.11.2",
-    "neon-cli": "^0.8.0"
+    "@mapbox/node-pre-gyp": "^1.0.5",
+    "kryo": "^0.12.2",
+    "kryo-json": "^0.12.2",
+    "neon-cli": "^0.8.3"
   },
   "devDependencies": {
     "@eternal-twin/auth-in-memory": "workspace:*",
@@ -42,14 +42,14 @@
     "@eternal-twin/oauth-provider-in-memory": "workspace:*",
     "@eternal-twin/oauth-provider-pg": "workspace:*",
     "@eternal-twin/pg-db": "workspace:*",
-    "@types/chai": "^4.2.15",
+    "@types/chai": "^4.2.19",
     "@types/mocha": "^8.2.2",
-    "@types/node": "^14.14.37",
+    "@types/node": "^15.12.5",
     "chai": "^4.3.4",
-    "eslint": "^7.23.0",
-    "mocha": "^8.3.2",
+    "eslint": "^7.29.0",
+    "mocha": "^9.0.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.2.3"
+    "typescript": "^4.3.4"
   },
   "type": "module",
   "main": "./native/index.js",

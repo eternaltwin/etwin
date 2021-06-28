@@ -1,5 +1,5 @@
 import { IoType, Reader, Writer } from "kryo";
-import { readVisitor } from "kryo/lib/readers/read-visitor.js";
+import { readVisitor } from "kryo/lib/readers/read-visitor";
 
 /**
  * Date & time with a second precision.

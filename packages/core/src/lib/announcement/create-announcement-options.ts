@@ -1,4 +1,4 @@
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $ForumThreadId, ForumThreadId } from "../forum/forum-thread-id.js";
 

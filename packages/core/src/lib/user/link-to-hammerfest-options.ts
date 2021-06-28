@@ -1,4 +1,4 @@
-import { TaggedUnionType } from "kryo/lib/tagged-union.js";
+import { TaggedUnionType } from "kryo/lib/tagged-union";
 
 import {
   $LinkToHammerfestWithCredentialsOptions,

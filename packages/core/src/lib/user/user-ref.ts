@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $EmailAddress, EmailAddress } from "../email/email-address.js";
 import { $UserId, UserId } from "./user-id.js";

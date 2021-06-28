@@ -13,8 +13,8 @@ import {
   ShortTwinoidUser
 } from "@eternal-twin/core/lib/twinoid/short-twinoid-user.js";
 import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
-import { JSON_READER } from "kryo-json/lib/json-reader.js";
-import { JSON_WRITER } from "kryo-json/lib/json-writer.js";
+import { JSON_READER } from "kryo-json/lib/json-reader";
+import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";
 
 import native from "../native/index.js";

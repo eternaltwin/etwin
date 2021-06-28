@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $NullableTwinoidAccessToken, NullableTwinoidAccessToken } from "./twinoid-access-token.js";
 import { $NullableTwinoidRefreshToken, NullableTwinoidRefreshToken } from "./twinoid-refresh-token.js";

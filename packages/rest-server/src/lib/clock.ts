@@ -3,9 +3,9 @@ import Router, { RouterContext } from "@koa/router";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import { CaseStyle } from "kryo";
-import { $Date } from "kryo/lib/date.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
+import { $Date } from "kryo/lib/date";
+import { RecordIoType, RecordType } from "kryo/lib/record";
+import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
 
 import { KoaState } from "./koa-state.js";
 

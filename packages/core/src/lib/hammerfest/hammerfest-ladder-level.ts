@@ -1,5 +1,5 @@
-import { $Uint8 } from "kryo/lib/integer.js";
-import { WhiteListType } from "kryo/lib/white-list.js";
+import { $Uint8 } from "kryo/lib/integer";
+import { WhiteListType } from "kryo/lib/white-list";
 
 /**
  * Hammerfest pyramid rank

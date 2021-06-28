@@ -10,9 +10,9 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
 import { $ListingQuery, ListingQuery } from "@eternal-twin/core/lib/core/listing-query.js";
 import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
-import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
-import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader.js";
+import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
+import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";
+import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader";
 
 import { KoaAuth } from "./helpers/koa-auth.js";
 import { KoaState } from "./koa-state.js";

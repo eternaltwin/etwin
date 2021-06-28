@@ -20,7 +20,7 @@ import { UserStore } from "@eternal-twin/core/lib/user/store.js";
 import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
 import { SessionRow, UserRow } from "@eternal-twin/etwin-pg/lib/schema.js";
 import { Database } from "@eternal-twin/pg-db";
-import { UuidHex } from "kryo/lib/uuid-hex.js";
+import { UuidHex } from "kryo/lib/uuid-hex";
 
 export interface PgAuthServiceOptions {
   database: Database;

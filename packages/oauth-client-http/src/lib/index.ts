@@ -10,8 +10,8 @@ import { OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
 import { OauthState } from "@eternal-twin/core/lib/oauth/oauth-state.js";
 import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope.js";
 import jsonWebToken from "jsonwebtoken";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
-import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
+import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
+import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";
 
 import { RfcOauthClient } from "./rfc-oauth-client.js";
 import { expandJwt, shrinkJwt } from "./shrink-jwt.js";

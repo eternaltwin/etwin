@@ -57,6 +57,7 @@ describe("ArchivedDinoparcUser", function () {
             ]),
           }
         },
+        collection: null,
       }],
     ])
   );

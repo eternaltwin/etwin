@@ -1,8 +1,8 @@
 import { CaseStyle } from "kryo";
-import { $Uint32 } from "kryo/lib/integer.js";
-import { LiteralType } from "kryo/lib/literal.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
-import { $Ucs2String } from "kryo/lib/ucs2-string.js";
+import { $Uint32 } from "kryo/lib/integer";
+import { LiteralType } from "kryo/lib/literal";
+import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Ucs2String } from "kryo/lib/ucs2-string";
 
 import { $DinoparcServer, DinoparcServer } from "../dinoparc-server.js";
 

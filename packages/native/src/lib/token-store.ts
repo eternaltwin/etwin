@@ -33,8 +33,8 @@ import {
 import { $TwinoidOauth, TwinoidOauth } from "@eternal-twin/core/lib/token/twinoid-oauth.js";
 import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
 import { $TwinoidUserIdRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-id-ref.js";
-import { JSON_READER } from "kryo-json/lib/json-reader.js";
-import { JSON_WRITER } from "kryo-json/lib/json-writer.js";
+import { JSON_READER } from "kryo-json/lib/json-reader";
+import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";
 
 import native from "../native/index.js";

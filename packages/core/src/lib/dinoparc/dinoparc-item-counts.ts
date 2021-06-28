@@ -1,5 +1,5 @@
-import { $Uint32 } from "kryo/lib/integer.js";
-import { MapType } from "kryo/lib/map.js";
+import { $Uint32 } from "kryo/lib/integer";
+import { MapType } from "kryo/lib/map";
 
 import { $DinoparcItemId, DinoparcItemId } from "./dinoparc-item-id.js";
 

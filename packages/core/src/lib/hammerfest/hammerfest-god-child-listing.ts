@@ -1,4 +1,4 @@
-import { ArrayIoType,ArrayType } from "kryo/lib/array.js";
+import { ArrayIoType,ArrayType } from "kryo/lib/array";
 
 import { $HammerfestGodChild, HammerfestGodChild } from "./hammerfest-god-child.js";
 

@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { $Boolean } from "kryo/lib/boolean.js";
-import { $Null } from "kryo/lib/null.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { $Boolean } from "kryo/lib/boolean";
+import { $Null } from "kryo/lib/null";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $UserDot, UserDot } from "./user-dot.js";
 

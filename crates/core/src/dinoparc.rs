@@ -227,6 +227,7 @@ pub struct ArchivedDinoparcUser {
   pub dinoz: Option<LatestTemporal<Vec<DinoparcDinozIdRef>>>,
   #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_opt_temporal_map"))]
   pub inventory: Option<LatestTemporal<HashMap<DinoparcItemId, u32>>>,
+  pub collection: Option<LatestTemporal<DinoparcCollection>>,
 }
 
 /// `ArchivedDinoparcUser` extend with `etwin` to provide Eternaltwin-specific data.
@@ -243,6 +244,7 @@ pub struct EtwinDinoparcUser {
   pub dinoz: Option<LatestTemporal<Vec<DinoparcDinozIdRef>>>,
   #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_opt_temporal_map"))]
   pub inventory: Option<LatestTemporal<HashMap<DinoparcItemId, u32>>>,
+  pub collection: Option<LatestTemporal<DinoparcCollection>>,
   pub etwin: VersionedEtwinLink,
 }
 
@@ -624,6 +626,12 @@ pub struct DinoparcInventoryResponse<U = ShortDinoparcUser> {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct DinoparcCollectionResponse<U = ShortDinoparcUser> {
   pub session_user: DinoparcSessionUser<U>,
+  pub collection: DinoparcCollection,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct DinoparcCollection {
   #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_set"))]
   pub rewards: HashSet<DinoparcRewardId>,
   #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_set"))]
@@ -665,6 +673,8 @@ pub trait DinoparcStore: Send + Sync {
   async fn touch_short_user(&self, options: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, EtwinError>;
 
   async fn touch_inventory(&self, response: &DinoparcInventoryResponse) -> Result<(), EtwinError>;
+
+  async fn touch_collection(&self, response: &DinoparcCollectionResponse) -> Result<(), EtwinError>;
 
   async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), EtwinError>;
 
@@ -728,6 +738,7 @@ mod test {
           },
         },
       }),
+      collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),

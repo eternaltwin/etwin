@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { $Date } from "kryo/lib/date.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { $Date } from "kryo/lib/date";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $RfcOauthAccessTokenKey, RfcOauthAccessTokenKey } from "../oauth/rfc-oauth-access-token-key.js";
 import { $RfcOauthRefreshTokenKey, RfcOauthRefreshTokenKey } from "../oauth/rfc-oauth-refresh-token-key.js";

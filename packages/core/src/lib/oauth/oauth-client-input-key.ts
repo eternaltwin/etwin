@@ -1,4 +1,4 @@
-import { TryUnionType } from "kryo/lib/try-union.js";
+import { TryUnionType } from "kryo/lib/try-union";
 
 import { $OauthClientBareKey, OauthClientBareKey } from "./oauth-client-bare-key.js";
 import { $OauthClientKey, OauthClientKey } from "./oauth-client-key.js";

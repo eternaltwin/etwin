@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { LiteralType } from "kryo/lib/literal.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { LiteralType } from "kryo/lib/literal";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $OauthAccessToken, OauthAccessToken } from "../oauth/oauth-access-token.js";
 import { $LinkToTwinoidMethod, LinkToTwinoidMethod } from "./link-to-twinoid-method.js";

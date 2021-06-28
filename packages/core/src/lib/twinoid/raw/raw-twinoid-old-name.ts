@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $TwinoidUserDisplayName, TwinoidUserDisplayName } from "../twinoid-user-display-name.js";
 import { $TwinoidTime, TwinoidTime } from "./twinoid-time.js";

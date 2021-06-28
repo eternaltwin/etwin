@@ -1,6 +1,6 @@
-import { $Null } from "kryo/lib/null.js";
-import { TryUnionType } from "kryo/lib/try-union.js";
-import { Ucs2StringType } from "kryo/lib/ucs2-string.js";
+import { $Null } from "kryo/lib/null";
+import { TryUnionType } from "kryo/lib/try-union";
+import { Ucs2StringType } from "kryo/lib/ucs2-string";
 
 /**
  * Unique handle used for authentication. Not all users have a username.

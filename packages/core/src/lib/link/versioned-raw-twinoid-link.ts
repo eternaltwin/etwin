@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { ArrayType } from "kryo/lib/array.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { ArrayType } from "kryo/lib/array";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $OldRawTwinoidLink, OldRawTwinoidLink } from "./old-raw-twinoid-link.js";
 import { $NullableRawTwinoidLink, NullableRawTwinoidLink } from "./raw-twinoid-link.js";

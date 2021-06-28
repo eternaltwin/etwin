@@ -82,6 +82,7 @@ function testDinoparcStore(withApi: (fn: (api: TestApi) => Promise<void>) => Pro
           coins: null,
           dinoz: null,
           inventory: null,
+          collection: null,
         };
         chai.assert.deepEqual(actual, expected);
       }

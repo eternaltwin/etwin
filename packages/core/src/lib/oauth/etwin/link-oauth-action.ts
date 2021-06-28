@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { LiteralType } from "kryo/lib/literal.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { LiteralType } from "kryo/lib/literal";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $UserId, UserId } from "../../user/user-id.js";
 import { $EtwinOauthActionType, EtwinOauthActionType } from "./etwin-oauth-action-type.js";

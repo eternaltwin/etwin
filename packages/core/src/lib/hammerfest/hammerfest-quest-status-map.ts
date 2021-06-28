@@ -1,5 +1,5 @@
 import { VersionedType } from "kryo";
-import { MapType } from "kryo/lib/map.js";
+import { MapType } from "kryo/lib/map";
 
 import { $HammerfestQuestId, HammerfestQuestId } from "./hammerfest-quest-id.js";
 import { $HammerfestQuestStatus, HammerfestQuestStatus } from "./hammerfest-quest-status.js";

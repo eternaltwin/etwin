@@ -1,4 +1,4 @@
-import { $Uint32, IntegerType } from "kryo/lib/integer.js";
+import { $Uint32, IntegerType } from "kryo/lib/integer";
 
 export type RawTwinoidGroupId = number;
 

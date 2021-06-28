@@ -3,10 +3,10 @@ use crate::http::locale::ScraperLocale;
 use crate::http::url::{DinoparcRequest, DinoparcUrls};
 use etwin_core::core::IntPercentage;
 use etwin_core::dinoparc::{
-  DinoparcCollectionResponse, DinoparcDinoz, DinoparcDinozElements, DinoparcDinozId, DinoparcDinozName,
-  DinoparcDinozRace, DinoparcDinozResponse, DinoparcEpicRewardKey, DinoparcInventoryResponse, DinoparcItemId,
-  DinoparcRewardId, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcUserId,
-  DinoparcUsername, ShortDinoparcDinoz,
+  DinoparcCollection, DinoparcCollectionResponse, DinoparcDinoz, DinoparcDinozElements, DinoparcDinozId,
+  DinoparcDinozName, DinoparcDinozRace, DinoparcDinozResponse, DinoparcEpicRewardKey, DinoparcInventoryResponse,
+  DinoparcItemId, DinoparcRewardId, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel,
+  DinoparcUserId, DinoparcUsername, ShortDinoparcDinoz,
 };
 use etwin_scraper_tools::{ElementRefExt, FlashVars};
 use itertools::Itertools;
@@ -298,8 +298,10 @@ pub(crate) fn scrape_collection(doc: &Html) -> Result<DinoparcCollectionResponse
 
   Ok(DinoparcCollectionResponse {
     session_user,
-    rewards: rewards.unwrap_or_default(),
-    epic_rewards: epic_rewards.unwrap_or_default(),
+    collection: DinoparcCollection {
+      rewards: rewards.unwrap_or_default(),
+      epic_rewards: epic_rewards.unwrap_or_default(),
+    },
   })
 }
 

@@ -1,8 +1,8 @@
 import { CaseStyle } from "kryo";
-import { $Date } from "kryo/lib/date.js";
-import { $Null } from "kryo/lib/null.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
-import { TryUnionType } from "kryo/lib/try-union.js";
+import { $Date } from "kryo/lib/date";
+import { $Null } from "kryo/lib/null";
+import { RecordIoType, RecordType } from "kryo/lib/record";
+import { TryUnionType } from "kryo/lib/try-union";
 
 import { $RfcOauthAccessTokenKey, RfcOauthAccessTokenKey } from "../oauth/rfc-oauth-access-token-key.js";
 import { $TwinoidUserId, TwinoidUserId } from "../twinoid/twinoid-user-id.js";

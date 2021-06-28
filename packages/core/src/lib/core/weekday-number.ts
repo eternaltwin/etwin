@@ -1,4 +1,4 @@
-import { IntegerType } from "kryo/lib/integer.js";
+import { IntegerType } from "kryo/lib/integer";
 
 /**
  * ISO 8601 weekday number

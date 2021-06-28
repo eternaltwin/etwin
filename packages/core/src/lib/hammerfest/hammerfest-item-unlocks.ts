@@ -1,5 +1,5 @@
-import { $Boolean } from "kryo/lib/boolean.js";
-import { MapType } from "kryo/lib/map.js";
+import { $Boolean } from "kryo/lib/boolean";
+import { MapType } from "kryo/lib/map";
 
 import { $HammerfestItemId, HammerfestItemId } from "./hammerfest-item-id.js";
 

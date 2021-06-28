@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { ArrayType } from "kryo/lib/array.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { ArrayType } from "kryo/lib/array";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $NullableEtwinLink, NullableEtwinLink } from "./etwin-link.js";
 import { $OldEtwinLink, OldEtwinLink } from "./old-etwin-link.js";

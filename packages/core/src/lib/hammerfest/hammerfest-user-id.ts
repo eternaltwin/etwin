@@ -1,4 +1,4 @@
-import { Ucs2StringType } from "kryo/lib/ucs2-string.js";
+import { Ucs2StringType } from "kryo/lib/ucs2-string";
 
 /**
  * A Hammerfest user id.

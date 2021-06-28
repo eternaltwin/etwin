@@ -1,4 +1,4 @@
-import { TaggedUnionType } from "kryo/lib/tagged-union.js";
+import { TaggedUnionType } from "kryo/lib/tagged-union";
 
 import { $LinkToTwinoidWithOauthOptions, LinkToTwinoidWithOauthOptions } from "./link-to-twinoid-with-oauth-options.js";
 import { $LinkToTwinoidWithRefOptions, LinkToTwinoidWithRefOptions } from "./link-to-twinoid-with-ref-options.js";

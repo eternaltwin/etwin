@@ -1,4 +1,4 @@
-import { TsEnumType } from "kryo/lib/ts-enum.js";
+import { TsEnumType } from "kryo/lib/ts-enum";
 
 /**
  * The auth scope allows to precise the scope to use when checking authorizations.

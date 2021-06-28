@@ -1,4 +1,4 @@
-import { Ucs2StringType } from "kryo/lib/ucs2-string.js";
+import { Ucs2StringType } from "kryo/lib/ucs2-string";
 
 /**
  * Oauth Client ID as defined by the RFC (not specific to any provider).

@@ -1,5 +1,5 @@
-import { $Ucs2String } from "kryo/lib/ucs2-string.js";
-import { WhiteListType } from "kryo/lib/white-list.js";
+import { $Ucs2String } from "kryo/lib/ucs2-string";
+import { WhiteListType } from "kryo/lib/white-list";
 
 /**
  * A Dinoparc server.

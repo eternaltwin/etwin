@@ -1,6 +1,6 @@
 import { IoType } from "kryo";
-import { JsonValueReader } from "kryo-json/lib/json-value-reader.js";
-import { JsonValueWriter } from "kryo-json/lib/json-value-writer.js";
+import { JsonValueReader } from "kryo-json/lib/json-value-reader";
+import { JsonValueWriter } from "kryo-json/lib/json-value-writer";
 
 const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
 const JSON_VALUE_WRITER: JsonValueWriter = new JsonValueWriter();

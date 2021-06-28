@@ -4,6 +4,8 @@
     "coins": 10400,
     "dinoz": []
   },
-  "rewards": [],
-  "epic_rewards": []
+  "collection": {
+    "rewards": [],
+    "epic_rewards": []
+  }
 }

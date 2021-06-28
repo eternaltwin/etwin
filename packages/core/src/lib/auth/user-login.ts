@@ -1,4 +1,4 @@
-import { TryUnionType } from "kryo/lib/try-union.js";
+import { TryUnionType } from "kryo/lib/try-union";
 
 import { $EmailAddress, EmailAddress } from "../email/email-address.js";
 import { $Username, Username } from "../user/username.js";

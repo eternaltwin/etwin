@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { $Null } from "kryo/lib/null.js";
-import { TryUnionType } from "kryo/lib/try-union.js";
-import { TsEnumType } from "kryo/lib/ts-enum.js";
+import { $Null } from "kryo/lib/null";
+import { TryUnionType } from "kryo/lib/try-union";
+import { TsEnumType } from "kryo/lib/ts-enum";
 
 export enum TwinoidUserGender {
   Female,

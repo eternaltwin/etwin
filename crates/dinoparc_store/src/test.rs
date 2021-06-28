@@ -3,13 +3,13 @@ use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
 use etwin_core::core::{IntPercentage, PeriodLower};
 use etwin_core::dinoparc::{
-  ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcDinoz, DinoparcDinozElements, DinoparcDinozIdRef,
-  DinoparcDinozRace, DinoparcDinozResponse, DinoparcInventoryResponse, DinoparcServer, DinoparcSessionUser,
-  DinoparcSkill, DinoparcSkillLevel, DinoparcStore, GetDinoparcDinozOptions, GetDinoparcUserOptions,
-  ShortDinoparcDinoz, ShortDinoparcUser,
+  ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcCollection, DinoparcCollectionResponse, DinoparcDinoz,
+  DinoparcDinozElements, DinoparcDinozIdRef, DinoparcDinozRace, DinoparcDinozResponse, DinoparcInventoryResponse,
+  DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore, GetDinoparcDinozOptions,
+  GetDinoparcUserOptions, ShortDinoparcDinoz, ShortDinoparcUser,
 };
 use etwin_core::temporal::{ForeignRetrieved, ForeignSnapshot, LatestTemporal};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 #[macro_export]
 macro_rules! test_dinoparc_store {
@@ -25,6 +25,7 @@ macro_rules! test_dinoparc_store_pg {
     register_test!($(#[$meta])*, $api, test_touch_inventory_no_dinoz);
     register_test!($(#[$meta])*, $api, test_touch_inventory_one_dinoz);
     register_test!($(#[$meta])*, $api, test_touch_inventory_three_dinoz);
+    register_test!($(#[$meta])*, $api, test_touch_collection_one_dinoz);
     register_test!($(#[$meta])*, $api, test_touch_dinoz_yasumi);
   };
 }
@@ -177,6 +178,7 @@ where
           },
         },
       }),
+      collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
@@ -280,6 +282,7 @@ where
           },
         },
       }),
+      collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
           period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
@@ -300,6 +303,110 @@ where
               id: "6".parse().unwrap(),
             },
           ],
+        },
+      }),
+    });
+    assert_eq!(actual, expected);
+  }
+}
+
+pub(crate) async fn test_touch_collection_one_dinoz<TyClock, TyDinoparcStore>(api: TestApi<TyClock, TyDinoparcStore>)
+where
+  TyClock: ApiRef<VirtualClock>,
+  TyDinoparcStore: DinoparcStore,
+{
+  let alice = DinoparcSessionUser {
+    user: ShortDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    coins: 10000,
+    dinoz: vec![ShortDinoparcDinoz {
+      server: DinoparcServer::DinoparcCom,
+      id: "2".parse().unwrap(),
+      name: "Balboa".parse().unwrap(),
+      location: "3".parse().unwrap(),
+    }],
+  };
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .dinoparc_store
+      .touch_collection(&DinoparcCollectionResponse {
+        session_user: alice.clone(),
+        collection: DinoparcCollection {
+          rewards: {
+            let mut rewards = HashSet::new();
+            rewards.insert("4".parse().unwrap());
+            rewards
+          },
+          epic_rewards: {
+            let mut rewards = HashSet::new();
+            rewards.insert("adn".parse().unwrap());
+            rewards
+          },
+        },
+      })
+      .await;
+    assert_ok!(actual);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .dinoparc_store
+      .get_user(&GetDinoparcUserOptions {
+        server: DinoparcServer::DinoparcCom,
+        id: "1".parse().unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = Some(ArchivedDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      username: "alice".parse().unwrap(),
+      coins: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: 10000,
+        },
+      }),
+      inventory: None,
+      collection: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: DinoparcCollection {
+            rewards: {
+              let mut rewards = HashSet::new();
+              rewards.insert("4".parse().unwrap());
+              rewards
+            },
+            epic_rewards: {
+              let mut rewards = HashSet::new();
+              rewards.insert("adn".parse().unwrap());
+              rewards
+            },
+          },
+        },
+      }),
+      dinoz: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: vec![DinoparcDinozIdRef {
+            server: DinoparcServer::DinoparcCom,
+            id: "2".parse().unwrap(),
+          }],
         },
       }),
     });

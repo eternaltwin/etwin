@@ -12,7 +12,7 @@ import { UnlinkFromTwinoidOptions } from "@eternal-twin/core/lib/user/unlink-fro
 import { $UpdateUserPatch, UpdateUserPatch } from "@eternal-twin/core/lib/user/update-user-patch";
 import { $User, User } from "@eternal-twin/core/lib/user/user";
 import { UserId } from "@eternal-twin/core/lib/user/user-id";
-import { $Any } from "kryo/lib/any.js";
+import { $Any } from "kryo/lib/any";
 import { Observable, of as rxOf } from "rxjs";
 import { catchError as rxCatchError, map as rxMap } from "rxjs/operators";
 

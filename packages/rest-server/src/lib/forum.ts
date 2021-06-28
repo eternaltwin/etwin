@@ -19,9 +19,9 @@ import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
-import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
-import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader.js";
+import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
+import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";
+import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader";
 
 import { KoaAuth } from "./helpers/koa-auth.js";
 import { KoaState } from "./koa-state";

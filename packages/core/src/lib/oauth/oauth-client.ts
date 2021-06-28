@@ -1,4 +1,4 @@
-import { RecordIoType } from "kryo/lib/record.js";
+import { RecordIoType } from "kryo/lib/record";
 
 import { $Url, Url } from "../core/url.js";
 import { $NullableShortUser, NullableShortUser } from "../user/short-user";

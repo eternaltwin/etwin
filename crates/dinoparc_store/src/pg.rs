@@ -3,11 +3,11 @@ use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, IntPercentage, PeriodLower};
 use etwin_core::dinoparc::{
-  ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcDinozElements, DinoparcDinozId, DinoparcDinozIdRef,
-  DinoparcDinozName, DinoparcDinozRace, DinoparcDinozResponse, DinoparcDinozSkin, DinoparcInventoryResponse,
-  DinoparcItemId, DinoparcLocationId, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel,
-  DinoparcStore, DinoparcUserId, DinoparcUserIdRef, DinoparcUsername, GetDinoparcDinozOptions, GetDinoparcUserOptions,
-  ShortDinoparcUser,
+  ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcCollection, DinoparcCollectionResponse, DinoparcDinozElements,
+  DinoparcDinozId, DinoparcDinozIdRef, DinoparcDinozName, DinoparcDinozRace, DinoparcDinozResponse, DinoparcDinozSkin,
+  DinoparcEpicRewardKey, DinoparcInventoryResponse, DinoparcItemId, DinoparcLocationId, DinoparcRewardId,
+  DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore, DinoparcUserId,
+  DinoparcUserIdRef, DinoparcUsername, GetDinoparcDinozOptions, GetDinoparcUserOptions, ShortDinoparcUser,
 };
 use etwin_core::pg_num::{PgU16, PgU32};
 use etwin_core::temporal::{ForeignRetrieved, ForeignSnapshot, LatestTemporal};
@@ -19,7 +19,7 @@ use sha3::{Digest, Sha3_256};
 use sqlx::postgres::PgQueryResult;
 use sqlx::types::Uuid;
 use sqlx::{PgPool, Postgres, Transaction};
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::convert::TryInto;
 use std::error::Error;
 
@@ -91,6 +91,7 @@ where
       coins: None,
       dinoz: None,
       inventory: None,
+      collection: None,
     })
   }
 
@@ -101,6 +102,27 @@ where
     let inventory = &response.inventory;
     let items = touch_dinoparc_item_counts(&mut tx, inventory, self.uuid_generator.next()).await?;
     touch_dinoparc_inventory(&mut tx, now, response.session_user.user.as_ref(), items).await?;
+    tx.commit().await?;
+
+    Ok(())
+  }
+
+  async fn touch_collection(&self, response: &DinoparcCollectionResponse) -> Result<(), EtwinError> {
+    let now = self.clock.now();
+    let mut tx = self.database.as_ref().begin().await?;
+    touch_dinoparc_session_user(&mut tx, now, &response.session_user).await?;
+    let regular_rewards =
+      touch_dinoparc_reward_set(&mut tx, &response.collection.rewards, self.uuid_generator.next()).await?;
+    let epic_rewards =
+      touch_dinoparc_epic_reward_set(&mut tx, &response.collection.epic_rewards, self.uuid_generator.next()).await?;
+    touch_dinoparc_collection(
+      &mut tx,
+      now,
+      response.session_user.user.as_ref(),
+      regular_rewards,
+      epic_rewards,
+    )
+    .await?;
     tx.commit().await?;
 
     Ok(())
@@ -331,6 +353,10 @@ where
       inventory_period: Option<PeriodLower>,
       inventory_retrieved_latest: Option<Instant>,
       inventory_value: Option<Uuid>,
+      collection_period: Option<PeriodLower>,
+      collection_retrieved_latest: Option<Instant>,
+      collection_rewards: Option<Uuid>,
+      collection_epic_rewards: Option<Uuid>,
       dinoz_count_period: Option<PeriodLower>,
       dinoz_count_retrieved_latest: Option<Instant>,
       dinoz_count_value: Option<PgU32>,
@@ -356,6 +382,16 @@ where
         WHERE lower(period) <= $3::INSTANT
         WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
       ),
+      latest_dinoparc_collections AS (
+        SELECT dinoparc_server, dinoparc_user_id,
+          LAST_VALUE(period) OVER w AS period,
+          LAST_VALUE(retrieved_at) OVER w AS retrieved,
+          LAST_VALUE(dinoparc_reward_set_id) OVER w AS rewards,
+          LAST_VALUE(dinoparc_epic_reward_set_id) OVER w AS epic_rewards
+        FROM dinoparc_collections
+        WHERE lower(period) <= $3::INSTANT
+        WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+      ),
       latest_dinoparc_user_dinoz_counts AS (
         SELECT dinoparc_server, dinoparc_user_id,
           LAST_VALUE(period) OVER w AS period,
@@ -368,10 +404,12 @@ where
       SELECT dinoparc_server, dinoparc_user_id, archived_at, username,
         coins.period AS coins_period, coins.retrieved[CARDINALITY(coins.retrieved)] AS coins_retrieved_latest, coins.coins AS coins_value,
         inventory.period AS inventory_period, inventory.retrieved[CARDINALITY(inventory.retrieved)] AS inventory_retrieved_latest, inventory.item_counts AS inventory_value,
+        collection.period AS collection_period, collection.retrieved[CARDINALITY(collection.retrieved)] AS collection_retrieved_latest, collection.rewards AS collection_rewards, collection.epic_rewards AS collection_epic_rewards,
         dinoz_count.period AS dinoz_count_period, dinoz_count.retrieved[CARDINALITY(dinoz_count.retrieved)] AS dinoz_count_retrieved_latest, dinoz_count.dinoz_count AS dinoz_count_value
       FROM dinoparc_users
         LEFT OUTER JOIN latest_dinoparc_coins AS coins USING (dinoparc_server, dinoparc_user_id)
         LEFT OUTER JOIN latest_dinoparc_inventories AS inventory USING (dinoparc_server, dinoparc_user_id)
+        LEFT OUTER JOIN latest_dinoparc_collections AS collection USING (dinoparc_server, dinoparc_user_id)
         LEFT OUTER JOIN latest_dinoparc_user_dinoz_counts AS dinoz_count USING (dinoparc_server, dinoparc_user_id)
       WHERE dinoparc_server = $1::DINOPARC_SERVER AND dinoparc_user_id = $2::DINOPARC_USER_ID AND archived_at <= $3::INSTANT;
     ",
@@ -409,6 +447,52 @@ where
       Some(inventory)
     } else {
       None
+    };
+
+    let collection = match (row.collection_rewards, row.collection_epic_rewards) {
+      (Some(rewards), Some(epic_rewards)) => {
+        let rewards: HashSet<DinoparcRewardId> = {
+          #[derive(Debug, sqlx::FromRow)]
+          struct Row {
+            dinoparc_reward_id: DinoparcRewardId,
+          }
+
+          let rows: Vec<Row> = sqlx::query_as::<_, Row>(
+            r"
+            SELECT dinoparc_reward_id
+            FROM dinoparc_reward_set_items
+            WHERE dinoparc_reward_set_id = $1::DINOPARC_REWARD_SET_ID;
+          ",
+          )
+          .bind(rewards)
+          .fetch_all(&mut tx)
+          .await?;
+
+          rows.into_iter().map(|r| r.dinoparc_reward_id).collect()
+        };
+        let epic_rewards: HashSet<DinoparcEpicRewardKey> = {
+          #[derive(Debug, sqlx::FromRow)]
+          struct Row {
+            dinoparc_epic_reward_key: DinoparcEpicRewardKey,
+          }
+
+          let rows: Vec<Row> = sqlx::query_as::<_, Row>(
+            r"
+            SELECT dinoparc_epic_reward_key
+            FROM dinoparc_epic_reward_set_items
+            WHERE dinoparc_epic_reward_set_id = $1::DINOPARC_EPIC_REWARD_SET_ID;
+          ",
+          )
+          .bind(epic_rewards)
+          .fetch_all(&mut tx)
+          .await?;
+
+          rows.into_iter().map(|r| r.dinoparc_epic_reward_key).collect()
+        };
+        Some(DinoparcCollection { rewards, epic_rewards })
+      }
+      (None, None) => None,
+      _ => unreachable!(),
     };
 
     let dinoz = match (
@@ -466,6 +550,7 @@ where
       coins: to_latest_temporal(row.coins_period, row.coins_retrieved_latest, row.coins_value)
         .map(|t| t.map(u32::from)),
       inventory: to_latest_temporal(row.inventory_period, row.inventory_retrieved_latest, inventory),
+      collection: to_latest_temporal(row.collection_period, row.collection_retrieved_latest, collection),
       dinoz,
     }))
   }
@@ -627,6 +712,36 @@ async fn touch_dinoparc_inventory(
   .bind(user.server)
   .bind(user.id)
   .bind(items)
+  .execute(&mut *tx)
+  .await?;
+  // Affected row counts:
+  // 1 : 1 updated (matching data)
+  // 1 : 1 inserted (first insert)
+  // 2 : 1 inserted (data change), 1 invalidated (primary)
+  assert!((1..=2u64).contains(&res.rows_affected()));
+  Ok(())
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn touch_dinoparc_collection(
+  tx: &mut Transaction<'_, Postgres>,
+  now: Instant,
+  user: DinoparcUserIdRef,
+  regular_rewards: Uuid,
+  epic_rewards: Uuid,
+) -> Result<(), EtwinError> {
+  let res: PgQueryResult = sqlx::query(upsert_archive_query!(
+    dinoparc_collections(
+      time($1 period, retrieved_at),
+      primary($2 dinoparc_server::DINOPARC_SERVER, $3 dinoparc_user_id::DINOPARC_USER_ID),
+      data($4 dinoparc_reward_set_id::DINOPARC_REWARD_SET_ID, $5 dinoparc_epic_reward_set_id::DINOPARC_EPIC_REWARD_SET_ID),
+    )
+  ))
+  .bind(now)
+  .bind(user.server)
+  .bind(user.id)
+  .bind(regular_rewards)
+  .bind(epic_rewards)
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -936,6 +1051,176 @@ async fn touch_dinoparc_item_counts(
   }
 
   Ok(map_id)
+}
+
+async fn touch_dinoparc_reward_set(
+  tx: &mut Transaction<'_, Postgres>,
+  items: &HashSet<DinoparcRewardId>,
+  new_id: Uuid,
+) -> Result<Uuid, EtwinError> {
+  let sorted: BTreeSet<DinoparcRewardId> = items.iter().cloned().collect();
+  let hash = {
+    let json = serde_json::to_string(&sorted).unwrap();
+    let hash = Sha3_256::digest(json.as_bytes());
+    hash
+  };
+
+  let set_id = {
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      dinoparc_reward_set_id: Uuid,
+    }
+    let row: Row = sqlx::query_as::<_, Row>(
+      r"
+      WITH
+        input_row(dinoparc_reward_set_id, _sha3_256) AS (
+          VALUES($1::DINOPARC_REWARD_SET_ID, $2::BYTEA)
+        ),
+        inserted_rows AS (
+          INSERT
+          INTO dinoparc_reward_sets(dinoparc_reward_set_id, _sha3_256)
+          SELECT * FROM input_row
+          ON CONFLICT DO NOTHING
+          RETURNING dinoparc_reward_set_id
+        )
+      SELECT dinoparc_reward_set_id FROM inserted_rows
+      UNION ALL
+      SELECT old.dinoparc_reward_set_id FROM dinoparc_reward_sets AS old INNER JOIN input_row USING(_sha3_256);
+      ",
+    )
+    .bind(new_id)
+    .bind(hash.as_slice())
+    .fetch_one(&mut *tx)
+    .await?;
+
+    row.dinoparc_reward_set_id
+  };
+
+  if set_id == new_id {
+    // Newly created set: fill its content
+    for id in sorted.iter() {
+      let res: PgQueryResult = sqlx::query(
+        r"
+        INSERT
+        INTO dinoparc_reward_set_items(dinoparc_reward_set_id, dinoparc_reward_id)
+        VALUES ($1::DINOPARC_REWARD_SET_ID, $2::DINOPARC_REWARD_ID);
+      ",
+      )
+      .bind(set_id)
+      .bind(id)
+      .execute(&mut *tx)
+      .await?;
+      assert_eq!(res.rows_affected(), 1);
+    }
+  } else {
+    // Re-using old id, check for hash collision
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      dinoparc_reward_id: DinoparcRewardId,
+    }
+
+    let rows: Vec<Row> = sqlx::query_as::<_, Row>(
+      r"
+      SELECT dinoparc_reward_id
+      FROM dinoparc_reward_set_items
+      WHERE dinoparc_reward_set_id = $1::DINOPARC_REWARD_SET_ID;
+    ",
+    )
+    .bind(set_id)
+    .fetch_all(&mut *tx)
+    .await?;
+
+    let actual: BTreeSet<DinoparcRewardId> = rows.iter().map(|r| r.dinoparc_reward_id).collect();
+
+    assert_eq!(actual, sorted);
+  }
+
+  Ok(set_id)
+}
+
+async fn touch_dinoparc_epic_reward_set(
+  tx: &mut Transaction<'_, Postgres>,
+  items: &HashSet<DinoparcEpicRewardKey>,
+  new_id: Uuid,
+) -> Result<Uuid, EtwinError> {
+  let sorted: BTreeSet<DinoparcEpicRewardKey> = items.iter().cloned().collect();
+  let hash = {
+    let json = serde_json::to_string(&sorted).unwrap();
+    let hash = Sha3_256::digest(json.as_bytes());
+    hash
+  };
+
+  let set_id = {
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      dinoparc_epic_reward_set_id: Uuid,
+    }
+    let row: Row = sqlx::query_as::<_, Row>(
+      r"
+      WITH
+        input_row(dinoparc_epic_reward_set_id, _sha3_256) AS (
+          VALUES($1::DINOPARC_EPIC_REWARD_SET_ID, $2::BYTEA)
+        ),
+        inserted_rows AS (
+          INSERT
+          INTO dinoparc_epic_reward_sets(dinoparc_epic_reward_set_id, _sha3_256)
+          SELECT * FROM input_row
+          ON CONFLICT DO NOTHING
+          RETURNING dinoparc_epic_reward_set_id
+        )
+      SELECT dinoparc_epic_reward_set_id FROM inserted_rows
+      UNION ALL
+      SELECT old.dinoparc_epic_reward_set_id FROM dinoparc_epic_reward_sets AS old INNER JOIN input_row USING(_sha3_256);
+      ",
+    )
+      .bind(new_id)
+      .bind(hash.as_slice())
+      .fetch_one(&mut *tx)
+      .await?;
+
+    row.dinoparc_epic_reward_set_id
+  };
+
+  if set_id == new_id {
+    // Newly created set: fill its content
+    for id in sorted.iter() {
+      let res: PgQueryResult = sqlx::query(
+        r"
+        INSERT
+        INTO dinoparc_epic_reward_set_items(dinoparc_epic_reward_set_id, dinoparc_epic_reward_key)
+        VALUES ($1::DINOPARC_EPIC_REWARD_SET_ID, $2::DINOPARC_EPIC_REWARD_KEY);
+      ",
+      )
+      .bind(set_id)
+      .bind(id)
+      .execute(&mut *tx)
+      .await?;
+      assert_eq!(res.rows_affected(), 1);
+    }
+  } else {
+    // Re-using old id, check for hash collision
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      dinoparc_epic_reward_key: DinoparcEpicRewardKey,
+    }
+
+    let rows: Vec<Row> = sqlx::query_as::<_, Row>(
+      r"
+      SELECT dinoparc_epic_reward_key
+      FROM dinoparc_epic_reward_set_items
+      WHERE dinoparc_epic_reward_set_id = $1::DINOPARC_EPIC_REWARD_SET_ID;
+    ",
+    )
+    .bind(set_id)
+    .fetch_all(&mut *tx)
+    .await?;
+
+    let actual: BTreeSet<DinoparcEpicRewardKey> = rows.into_iter().map(|r| r.dinoparc_epic_reward_key).collect();
+
+    assert_eq!(actual, sorted);
+  }
+
+  Ok(set_id)
 }
 
 async fn touch_dinoparc_skill_levels(

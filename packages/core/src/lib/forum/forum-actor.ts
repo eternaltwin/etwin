@@ -1,4 +1,4 @@
-import { TaggedUnionType } from "kryo/lib/tagged-union.js";
+import { TaggedUnionType } from "kryo/lib/tagged-union";
 
 import { $ClientForumActor, ClientForumActor } from "./client-forum-actor.js";
 import { $RoleForumActor, RoleForumActor } from "./role-forum-actor.js";

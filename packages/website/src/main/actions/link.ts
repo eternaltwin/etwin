@@ -17,7 +17,7 @@ import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
+import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
 
 export interface Api {
   auth: AuthService;

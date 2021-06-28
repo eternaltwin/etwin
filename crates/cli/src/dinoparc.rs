@@ -60,8 +60,7 @@ pub async fn run(_args: &DinoparcArgs) -> Result<(), EtwinError> {
 
   let collection = dinoparc_client.get_collection(&session).await.unwrap();
   eprintln!("AcquiredCollection:");
-  eprintln!("{:#?}", &collection.rewards);
-  eprintln!("{:#?}", &collection.epic_rewards);
+  eprintln!("{:#?}", &collection.collection);
 
   for dino in inv.session_user.dinoz.iter() {
     tokio::time::sleep(Duration::from_millis(100)).await;

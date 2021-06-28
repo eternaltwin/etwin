@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { $Null } from "kryo/lib/null.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
-import { TryUnionType } from "kryo/lib/try-union.js";
+import { $Null } from "kryo/lib/null";
+import { RecordIoType, RecordType } from "kryo/lib/record";
+import { TryUnionType } from "kryo/lib/try-union";
 
 import { $HtmlText, HtmlText } from "../core/html-text.js";
 import { $MarktwinText, MarktwinText } from "../core/marktwin-text.js";

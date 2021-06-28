@@ -1,4 +1,4 @@
-import { TaggedUnionType } from "kryo/lib/tagged-union.js";
+import { TaggedUnionType } from "kryo/lib/tagged-union";
 
 import { $CompleteIfSelfUserFields, CompleteIfSelfUserFields } from "./complete-if-self-user-fields.js";
 import { $CompleteUserFields, CompleteUserFields } from "./complete-user-fields.js";

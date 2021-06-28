@@ -1,5 +1,5 @@
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
-import { $Ucs2String } from "kryo/lib/ucs2-string.js";
+import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Ucs2String } from "kryo/lib/ucs2-string";
 
 import { $EtwinOauthAction, EtwinOauthAction } from "./etwin-oauth-action.js";
 

@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { ArrayType } from "kryo/lib/array.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { ArrayType } from "kryo/lib/array";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $OldRawDinoparcLink, OldRawDinoparcLink } from "./old-raw-dinoparc-link.js";
 import { $NullableRawDinoparcLink, NullableRawDinoparcLink } from "./raw-dinoparc-link.js";

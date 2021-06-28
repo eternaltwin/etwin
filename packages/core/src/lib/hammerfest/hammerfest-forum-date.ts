@@ -1,6 +1,6 @@
 import { CaseStyle, IoType } from "kryo";
-import { IntegerType } from "kryo/lib/integer.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { IntegerType } from "kryo/lib/integer";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $MonthNumber, MonthNumber } from "../core/month-number.js";
 import { $WeekdayNumber, WeekdayNumber } from "../core/weekday-number.js";

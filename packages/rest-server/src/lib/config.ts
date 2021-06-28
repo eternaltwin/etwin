@@ -1,7 +1,7 @@
 import { $Config, Config } from "@eternal-twin/core/lib/config/config.js";
 import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
 import Router, { RouterContext } from "@koa/router";
-import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
+import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";
 
 import { KoaState } from "./koa-state";
 

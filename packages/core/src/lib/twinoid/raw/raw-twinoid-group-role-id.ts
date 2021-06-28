@@ -1,4 +1,4 @@
-import { $Sint32, IntegerType } from "kryo/lib/integer.js";
+import { $Sint32, IntegerType } from "kryo/lib/integer";
 
 export type RawTwinoidGroupRoleId = number;
 

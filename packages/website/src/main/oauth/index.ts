@@ -34,10 +34,10 @@ import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader.js";
-import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
-import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader.js";
-import { QS_VALUE_WRITER } from "kryo-qs/lib/qs-value-writer.js";
+import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
+import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";
+import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader";
+import { QS_VALUE_WRITER } from "kryo-qs/lib/qs-value-writer";
 import querystring from "querystring";
 
 export interface Api {

@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $OauthAccessToken, OauthAccessToken } from "../oauth-access-token.js";
 import { $EtwinOauthState, EtwinOauthState } from "./etwin-oauth-state.js";

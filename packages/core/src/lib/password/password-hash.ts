@@ -1,6 +1,6 @@
-import { BytesType } from "kryo/lib/bytes.js";
-import { $Null } from "kryo/lib/null.js";
-import { TryUnionType } from "kryo/lib/try-union.js";
+import { BytesType } from "kryo/lib/bytes";
+import { $Null } from "kryo/lib/null";
+import { TryUnionType } from "kryo/lib/try-union";
 
 /**
  * Password hash output.

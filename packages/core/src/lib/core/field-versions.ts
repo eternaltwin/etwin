@@ -1,7 +1,7 @@
 import { CaseStyle, IoType } from "kryo";
-import { ArrayType } from "kryo/lib/array.js";
-import { GenericIoType, GenericType } from "kryo/lib/generic.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { ArrayType } from "kryo/lib/array";
+import { GenericIoType, GenericType } from "kryo/lib/generic";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $FieldCurrentVersion, FieldCurrentVersion } from "./field-current-version.js";
 import { $FieldOldVersion, FieldOldVersion } from "./field-old-version.js";

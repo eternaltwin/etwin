@@ -4,7 +4,7 @@ import { $TwinoidUser, TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoi
 import { $TwinoidUserId, TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
 import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
-import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer.js";
+import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";
 
 import { KoaAuth } from "../helpers/koa-auth.js";
 import { KoaState } from "../koa-state.js";

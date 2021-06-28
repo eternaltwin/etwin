@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { ArrayType } from "kryo/lib/array.js";
-import { $Uint32 } from "kryo/lib/integer.js";
-import { RecordIoType, RecordType } from "kryo/lib/record.js";
+import { ArrayType } from "kryo/lib/array";
+import { $Uint32 } from "kryo/lib/integer";
+import { RecordIoType, RecordType } from "kryo/lib/record";
 
 import { $ForumPostRevision, ForumPostRevision } from "./forum-post-revision.js";
 

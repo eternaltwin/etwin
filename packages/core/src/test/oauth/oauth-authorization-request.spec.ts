@@ -1,6 +1,6 @@
-import { QsReader } from "kryo-qs/lib/qs-reader.js";
-import { QsValueReader } from "kryo-qs/lib/qs-value-reader.js";
-import { QsWriter } from "kryo-qs/lib/qs-writer.js";
+import { QsReader } from "kryo-qs/lib/qs-reader";
+import { QsValueReader } from "kryo-qs/lib/qs-value-reader";
+import { QsWriter } from "kryo-qs/lib/qs-writer";
 import { registerErrMochaTests, registerMochaSuites, TestItem } from "kryo-testing";
 
 import { Url } from "../../lib/core/url.js";
