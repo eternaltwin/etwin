@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/twinoid-client-http",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Eternal-Twin `EtwinClientService` implementation using the HTTP REST API",
   "repository": {

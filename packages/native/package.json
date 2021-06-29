@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/native",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Native module for Eternal-Twin",
   "author": "Charles Samborski <demurgos@demurgos.net>",
   "licenses": [
@@ -58,7 +58,7 @@
   },
   "files": [
     "./lib/",
-    "./native/src",
+    "./native/src/**/*",
     "./native/build.rs",
     "./native/Cargo.lock",
     "./native/Cargo.toml",

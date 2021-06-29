@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/forum-test",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Implementation-independent tests for Eternal-Twin's `ForumService`",
   "repository": {
