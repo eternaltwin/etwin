@@ -1,28 +1,28 @@
-import { DinoparcClient } from "@eternal-twin/core/lib/dinoparc/client.js";
+import { DinoparcClient } from "@eternal-twin/core/lib/dinoparc/client";
 import {
   $DinoparcCredentials,
   DinoparcCredentials
-} from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials.js";
-import { $DinoparcDinozId, DinoparcDinozId } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-id.js";
-import { $DinoparcDinozResponse, DinoparcDinozResponse } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-response.js";
+} from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials";
+import { $DinoparcDinozId, DinoparcDinozId } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-id";
+import { $DinoparcDinozResponse, DinoparcDinozResponse } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-response";
 import {
   $DinoparcInventoryResponse,
   DinoparcInventoryResponse
-} from "@eternal-twin/core/lib/dinoparc/dinoparc-inventory-response.js";
-import { $DinoparcPassword, DinoparcPassword } from "@eternal-twin/core/lib/dinoparc/dinoparc-password.js";
-import { $DinoparcServer, DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
+} from "@eternal-twin/core/lib/dinoparc/dinoparc-inventory-response";
+import { $DinoparcPassword, DinoparcPassword } from "@eternal-twin/core/lib/dinoparc/dinoparc-password";
+import { $DinoparcServer, DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server";
 import {
   $DinoparcSession,
   $NullableDinoparcSession,
   DinoparcSession,
   NullableDinoparcSession
-} from "@eternal-twin/core/lib/dinoparc/dinoparc-session.js";
+} from "@eternal-twin/core/lib/dinoparc/dinoparc-session";
 import {
   $DinoparcSessionKey,
   DinoparcSessionKey
-} from "@eternal-twin/core/lib/dinoparc/dinoparc-session-key.js";
-import { $DinoparcUserId, DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
-import { $DinoparcUsername, DinoparcUsername } from "@eternal-twin/core/lib/dinoparc/dinoparc-username.js";
+} from "@eternal-twin/core/lib/dinoparc/dinoparc-session-key";
+import { $DinoparcUserId, DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id";
+import { $DinoparcUsername, DinoparcUsername } from "@eternal-twin/core/lib/dinoparc/dinoparc-username";
 import { JSON_READER } from "kryo-json/lib/json-reader";
 import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";

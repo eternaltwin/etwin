@@ -1,13 +1,13 @@
-import { $Announcement, Announcement } from "@eternal-twin/core/lib/announcement/announcement.js";
-import { $AnnouncementListing, AnnouncementListing } from "@eternal-twin/core/lib/announcement/announcement-listing.js";
+import { $Announcement, Announcement } from "@eternal-twin/core/lib/announcement/announcement";
+import { $AnnouncementListing, AnnouncementListing } from "@eternal-twin/core/lib/announcement/announcement-listing";
 import {
   $CreateAnnouncementOptions,
   CreateAnnouncementOptions
-} from "@eternal-twin/core/lib/announcement/create-announcement-options.js";
-import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { $ListingQuery, ListingQuery } from "@eternal-twin/core/lib/core/listing-query.js";
+} from "@eternal-twin/core/lib/announcement/create-announcement-options";
+import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { $ListingQuery, ListingQuery } from "@eternal-twin/core/lib/core/listing-query";
 import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";

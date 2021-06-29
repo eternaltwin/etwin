@@ -1,7 +1,7 @@
-import { $RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
-import { $SimpleUser, SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
-import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
-import { Username } from "@eternal-twin/core/lib/user/username.js";
+import { $RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
+import { $SimpleUser, SimpleUser } from "@eternal-twin/core/lib/user/simple-user";
+import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name";
+import { Username } from "@eternal-twin/core/lib/user/username";
 import chai from "chai";
 import http from "http";
 

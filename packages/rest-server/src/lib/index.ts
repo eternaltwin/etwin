@@ -1,10 +1,10 @@
 import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service";
-import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
-import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
-import { HttpHeader, HttpRequest, HttpRouter } from "@eternal-twin/core/lib/http/index.js";
-import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { ClockService } from "@eternal-twin/core/lib/clock/service";
+import { ForumService } from "@eternal-twin/core/lib/forum/service";
+import { HttpHeader, HttpRequest, HttpRouter } from "@eternal-twin/core/lib/http/index";
+import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service";
+import { UserService } from "@eternal-twin/core/lib/user/service";
 import Router, { Middleware, RouterContext } from "@koa/router";
 import rawBody from "raw-body";
 

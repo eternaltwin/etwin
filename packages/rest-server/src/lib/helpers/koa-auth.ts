@@ -1,12 +1,12 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
-import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { $SessionId, SessionId } from "@eternal-twin/core/lib/auth/session-id.js";
-import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
-import { UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { $SessionId, SessionId } from "@eternal-twin/core/lib/auth/session-id";
+import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session";
+import { UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
 import authHeader from "auth-header";
 import Koa from "koa";
 

@@ -1,7 +1,7 @@
-import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
-import { Url } from "@eternal-twin/core/lib/core/url.js";
-import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
-import { EmailTemplateService } from "@eternal-twin/core/lib/email-template/service.js";
+import { LocaleId } from "@eternal-twin/core/lib/core/locale-id";
+import { Url } from "@eternal-twin/core/lib/core/url";
+import { EmailContent } from "@eternal-twin/core/lib/email/email-content";
+import { EmailTemplateService } from "@eternal-twin/core/lib/email-template/service";
 import urlJoin from "url-join";
 
 export class EtwinEmailTemplateService implements EmailTemplateService {

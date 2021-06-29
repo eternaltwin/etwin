@@ -1,8 +1,8 @@
-import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { Url } from "@eternal-twin/core/lib/core/url.js";
-import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
-import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store.js";
+import { ClockService } from "@eternal-twin/core/lib/clock/service";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { Url } from "@eternal-twin/core/lib/core/url";
+import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client";
+import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store";
 import chai from "chai";
 
 export interface Api {

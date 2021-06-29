@@ -54,7 +54,7 @@
   "type": "module",
   "main": "./native/index.js",
   "exports": {
-    "./lib/": "./lib/"
+    "./lib/*": "./lib/*.js"
   },
   "files": [
     "./lib/",

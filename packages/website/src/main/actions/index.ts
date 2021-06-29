@@ -1,7 +1,7 @@
-import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
-import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
+import { UserService } from "@eternal-twin/core/lib/user/service";
+import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
 import Router, { RouterContext } from "@koa/router";
 
 import { createLinkRouter } from "./link.js";

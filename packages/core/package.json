@@ -48,7 +48,7 @@
   },
   "type": "module",
   "exports": {
-    "./lib/": "./lib/"
+    "./lib/*": "./lib/*.js"
   },
   "files": [
     "./lib/"

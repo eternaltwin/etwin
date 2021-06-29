@@ -6,7 +6,7 @@ import { ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
 import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id";
 import { ForumSectionKey } from "@eternal-twin/core/lib/forum/forum-section-key";
-import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing.js";
+import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing";
 import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
 import { ForumThreadId } from "@eternal-twin/core/lib/forum/forum-thread-id";
 import { ForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key";

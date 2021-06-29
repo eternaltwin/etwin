@@ -1,10 +1,10 @@
-import { $Url, Url } from "@eternal-twin/core/lib/core/url.js";
-import { $OauthAccessToken, OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
-import { OauthGrantType } from "@eternal-twin/core/lib/oauth/oauth-grant-type.js";
+import { $Url, Url } from "@eternal-twin/core/lib/core/url";
+import { $OauthAccessToken, OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token";
+import { OauthGrantType } from "@eternal-twin/core/lib/oauth/oauth-grant-type";
 import {
   $RfcOauthAccessTokenRequest,
   RfcOauthAccessTokenRequest
-} from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-request.js";
+} from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-request";
 import authHeader from "auth-header";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";

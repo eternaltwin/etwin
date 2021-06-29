@@ -1,38 +1,38 @@
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { $DinoparcServer, DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
-import { $DinoparcSessionKey, DinoparcSessionKey } from "@eternal-twin/core/lib/dinoparc/dinoparc-session-key.js";
-import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id.js";
-import { $DinoparcUserIdRef } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id-ref.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { $DinoparcServer, DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server";
+import { $DinoparcSessionKey, DinoparcSessionKey } from "@eternal-twin/core/lib/dinoparc/dinoparc-session-key";
+import { DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id";
+import { $DinoparcUserIdRef } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id-ref";
 import {
   $NullableStoredDinoparcSession,
   $StoredDinoparcSession,
   NullableStoredDinoparcSession,
   StoredDinoparcSession
-} from "@eternal-twin/core/lib/dinoparc/stored-dinoparc-session.js";
-import { $HammerfestServer, HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
-import { $HammerfestSessionKey, HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
-import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
-import { $HammerfestUserIdRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id-ref.js";
+} from "@eternal-twin/core/lib/dinoparc/stored-dinoparc-session";
+import { $HammerfestServer, HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
+import { $HammerfestSessionKey, HammerfestSessionKey } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key";
+import { HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
+import { $HammerfestUserIdRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id-ref";
 import {
   $NullableStoredHammerfestSession, $StoredHammerfestSession,
   NullableStoredHammerfestSession, StoredHammerfestSession
-} from "@eternal-twin/core/lib/hammerfest/stored-hammerfest-session.js";
+} from "@eternal-twin/core/lib/hammerfest/stored-hammerfest-session";
 import {
   $RfcOauthAccessTokenKey,
   RfcOauthAccessTokenKey
-} from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key.js";
+} from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key";
 import {
   $RfcOauthRefreshTokenKey,
   RfcOauthRefreshTokenKey
-} from "@eternal-twin/core/lib/oauth/rfc-oauth-refresh-token-key.js";
-import { TokenService } from "@eternal-twin/core/lib/token/service.js";
+} from "@eternal-twin/core/lib/oauth/rfc-oauth-refresh-token-key";
+import { TokenService } from "@eternal-twin/core/lib/token/service";
 import {
   $TouchOauthTokenOptions,
   TouchOauthTokenOptions
-} from "@eternal-twin/core/lib/token/touch-oauth-token-options.js";
-import { $TwinoidOauth, TwinoidOauth } from "@eternal-twin/core/lib/token/twinoid-oauth.js";
-import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
-import { $TwinoidUserIdRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-id-ref.js";
+} from "@eternal-twin/core/lib/token/touch-oauth-token-options";
+import { $TwinoidOauth, TwinoidOauth } from "@eternal-twin/core/lib/token/twinoid-oauth";
+import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id";
+import { $TwinoidUserIdRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-id-ref";
 import { JSON_READER } from "kryo-json/lib/json-reader";
 import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";

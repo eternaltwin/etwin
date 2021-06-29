@@ -1,19 +1,19 @@
 import { Announcement } from "@eternal-twin/core/lib/announcement/announcement";
-import { AnnouncementListing } from "@eternal-twin/core/lib/announcement/announcement-listing.js";
-import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { GUEST_AUTH } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
-import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
-import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
-import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section.js";
-import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
-import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
-import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name.js";
-import { Username } from "@eternal-twin/core/lib/user/username.js";
+import { AnnouncementListing } from "@eternal-twin/core/lib/announcement/announcement-listing";
+import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { GUEST_AUTH } from "@eternal-twin/core/lib/auth/guest-auth-context";
+import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session";
+import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
+import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
+import { ForumService } from "@eternal-twin/core/lib/forum/service";
+import { UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name";
+import { Username } from "@eternal-twin/core/lib/user/username";
 import chai from "chai";
 
 export interface Api {

@@ -1,7 +1,7 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
-import { $TwinoidUser, TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user.js";
-import { $TwinoidUserId, TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service";
+import { $TwinoidUser, TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user";
+import { $TwinoidUserId, TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id";
 import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";

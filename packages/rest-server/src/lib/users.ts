@@ -1,40 +1,40 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context";
 import {
   $RegisterWithUsernameOptions,
   RegisterWithUsernameOptions,
-} from "@eternal-twin/core/lib/auth/register-with-username-options.js";
+} from "@eternal-twin/core/lib/auth/register-with-username-options";
 import {
   $RegisterWithVerifiedEmailOptions,
   RegisterWithVerifiedEmailOptions,
-} from "@eternal-twin/core/lib/auth/register-with-verified-email-options.js";
-import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
-import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
-import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server.js";
-import { $DinoparcUserIdRef, DinoparcUserIdRef } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id-ref.js";
-import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
-import { $HammerfestUserIdRef, HammerfestUserIdRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id-ref.js";
-import { $VersionedDinoparcLink, VersionedDinoparcLink } from "@eternal-twin/core/lib/link/versioned-dinoparc-link.js";
+} from "@eternal-twin/core/lib/auth/register-with-verified-email-options";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session";
+import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
+import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server";
+import { $DinoparcUserIdRef, DinoparcUserIdRef } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id-ref";
+import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
+import { $HammerfestUserIdRef, HammerfestUserIdRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id-ref";
+import { $VersionedDinoparcLink, VersionedDinoparcLink } from "@eternal-twin/core/lib/link/versioned-dinoparc-link";
 import {
   $VersionedHammerfestLink,
   VersionedHammerfestLink
-} from "@eternal-twin/core/lib/link/versioned-hammerfest-link.js";
-import { $VersionedTwinoidLink, VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link.js";
-import { $TwinoidUserIdRef, TwinoidUserIdRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-id-ref.js";
-import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user.js";
-import { $LinkToDinoparcOptions, LinkToDinoparcOptions } from "@eternal-twin/core/lib/user/link-to-dinoparc-options.js";
+} from "@eternal-twin/core/lib/link/versioned-hammerfest-link";
+import { $VersionedTwinoidLink, VersionedTwinoidLink } from "@eternal-twin/core/lib/link/versioned-twinoid-link";
+import { $TwinoidUserIdRef, TwinoidUserIdRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-id-ref";
+import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
+import { $LinkToDinoparcOptions, LinkToDinoparcOptions } from "@eternal-twin/core/lib/user/link-to-dinoparc-options";
 import {
   $LinkToHammerfestOptions,
   LinkToHammerfestOptions
-} from "@eternal-twin/core/lib/user/link-to-hammerfest-options.js";
-import { $LinkToTwinoidOptions, LinkToTwinoidOptions } from "@eternal-twin/core/lib/user/link-to-twinoid-options.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
-import { $UpdateUserPatch, UpdateUserPatch } from "@eternal-twin/core/lib/user/update-user-patch.js";
-import { $User, User } from "@eternal-twin/core/lib/user/user.js";
-import { $UserId, UserId } from "@eternal-twin/core/lib/user/user-id.js";
+} from "@eternal-twin/core/lib/user/link-to-hammerfest-options";
+import { $LinkToTwinoidOptions, LinkToTwinoidOptions } from "@eternal-twin/core/lib/user/link-to-twinoid-options";
+import { UserService } from "@eternal-twin/core/lib/user/service";
+import { $UpdateUserPatch, UpdateUserPatch } from "@eternal-twin/core/lib/user/update-user-patch";
+import { $User, User } from "@eternal-twin/core/lib/user/user";
+import { $UserId, UserId } from "@eternal-twin/core/lib/user/user-id";
 import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";

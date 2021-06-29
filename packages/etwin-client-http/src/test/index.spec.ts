@@ -1,4 +1,4 @@
-import { Url } from "@eternal-twin/core/lib/core/url.js";
+import { Url } from "@eternal-twin/core/lib/core/url";
 import chai from "chai";
 
 import { HttpEtwinClient } from "../lib/index.js";

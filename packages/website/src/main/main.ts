@@ -1,11 +1,11 @@
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context.js";
-import { Url } from "@eternal-twin/core/lib/core/url.js";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context";
+import { Url } from "@eternal-twin/core/lib/core/url";
 import { ApiType, Config, getLocalConfig } from "@eternal-twin/local-config";
 import * as marktwin from "@eternal-twin/marktwin";
-import { NativeRestRouter } from "@eternal-twin/native/lib/rest.js";
-import { createApiRouter } from "@eternal-twin/rest-server/lib/index.js";
+import { NativeRestRouter } from "@eternal-twin/native/lib/rest";
+import { createApiRouter } from "@eternal-twin/rest-server/lib/index";
 import koaCors from "@koa/cors";
 import Router  from "@koa/router";
 import fs from "fs";

@@ -1,5 +1,5 @@
 import { NgModuleFactory, StaticProvider, Type } from "@angular/core";
-import { Url } from "@eternal-twin/core/lib/core/url.js";
+import { Url } from "@eternal-twin/core/lib/core/url";
 import { ɵCommonEngine as CommonEngine } from "@nguniversal/common/engine";
 import fs from "fs";
 

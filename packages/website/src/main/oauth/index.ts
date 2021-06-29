@@ -1,35 +1,35 @@
-import { $AuthContext,AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
-import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
-import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
-import { $Url, Url } from "@eternal-twin/core/lib/core/url.js";
-import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
-import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type.js";
-import { EtwinOauthStateAndAccessToken } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-and-access-token.js";
+import { $AuthContext,AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session";
+import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
+import { $Url, Url } from "@eternal-twin/core/lib/core/url";
+import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
+import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type";
+import { EtwinOauthStateAndAccessToken } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-and-access-token";
 import {
   $EtwinOauthAccessTokenRequest,
   EtwinOauthAccessTokenRequest
-} from "@eternal-twin/core/lib/oauth/etwin-oauth-access-token-request.js";
-import { $OauthAccessToken, OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token.js";
+} from "@eternal-twin/core/lib/oauth/etwin-oauth-access-token-request";
+import { $OauthAccessToken, OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token";
 import {
   $OauthAuthorizationError,
   OauthAuthorizationError,
-} from "@eternal-twin/core/lib/oauth/oauth-authorization-error.js";
+} from "@eternal-twin/core/lib/oauth/oauth-authorization-error";
 import {
   $OauthAuthorizationRequest,
   OauthAuthorizationRequest,
-} from "@eternal-twin/core/lib/oauth/oauth-authorization-request.js";
-import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
-import { $OauthCode, OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code.js";
-import { OauthResponseType } from "@eternal-twin/core/lib/oauth/oauth-response-type.js";
-import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service.js";
-import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client.js";
-import { LinkToTwinoidMethod } from "@eternal-twin/core/lib/user/link-to-twinoid-method.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
-import { KoaAuth, SESSION_COOKIE } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
+} from "@eternal-twin/core/lib/oauth/oauth-authorization-request";
+import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client";
+import { $OauthCode, OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code";
+import { OauthResponseType } from "@eternal-twin/core/lib/oauth/oauth-response-type";
+import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service";
+import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client";
+import { LinkToTwinoidMethod } from "@eternal-twin/core/lib/user/link-to-twinoid-method";
+import { UserService } from "@eternal-twin/core/lib/user/service";
+import { KoaAuth, SESSION_COOKIE } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
 import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";

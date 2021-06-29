@@ -1,5 +1,5 @@
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { $HammerfestUser, HammerfestUser } from "@eternal-twin/core/lib/hammerfest/hammerfest-user.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { $HammerfestUser, HammerfestUser } from "@eternal-twin/core/lib/hammerfest/hammerfest-user";
 import chai from "chai";
 import chaiHttp from "chai-http";
 

@@ -1,4 +1,4 @@
-import { $Config, Config } from "@eternal-twin/core/lib/config/config.js";
+import { $Config, Config } from "@eternal-twin/core/lib/config/config";
 import chai from "chai";
 import chaiHttp from "chai-http";
 

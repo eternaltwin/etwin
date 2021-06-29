@@ -1,6 +1,6 @@
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { ArchivedHammerfestUser } from "@eternal-twin/core/lib/hammerfest/archived-hammerfest-user.js";
-import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { ArchivedHammerfestUser } from "@eternal-twin/core/lib/hammerfest/archived-hammerfest-user";
+import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";

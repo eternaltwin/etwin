@@ -1,19 +1,19 @@
-import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { AuthMethod } from "@eternal-twin/core/lib/auth/auth-method.js";
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { $CreateSessionQuery, CreateSessionQuery } from "@eternal-twin/core/lib/auth/create-session-query.js";
-import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
-import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
-import { $UserCredentials, UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
-import { $DinoparcCredentials, DinoparcCredentials } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials.js";
+import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { AuthMethod } from "@eternal-twin/core/lib/auth/auth-method";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { $CreateSessionQuery, CreateSessionQuery } from "@eternal-twin/core/lib/auth/create-session-query";
+import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session";
+import { $UserCredentials, UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials";
+import { $DinoparcCredentials, DinoparcCredentials } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials";
 import {
   $HammerfestCredentials,
   HammerfestCredentials,
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
-import { $MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
+import { $MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user";
+import { UserService } from "@eternal-twin/core/lib/user/service";
 import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";

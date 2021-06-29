@@ -6,7 +6,7 @@ import { StaticProvider } from "@angular/core";
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
-import { Url } from "@eternal-twin/core/lib/core/url.js";
+import { Url } from "@eternal-twin/core/lib/core/url";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
 import Router, { RouterContext } from "@koa/router";
 import * as furi from "furi";

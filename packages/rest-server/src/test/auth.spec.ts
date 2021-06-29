@@ -1,10 +1,10 @@
-import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { $RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
-import { $UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials.js";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { $SimpleUser, SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
+import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { $RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
+import { $UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { $SimpleUser, SimpleUser } from "@eternal-twin/core/lib/user/simple-user";
 import chai from "chai";
 import chaiHttp from "chai-http";
 import { $Null } from "kryo/lib/null";

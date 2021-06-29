@@ -1,4 +1,4 @@
-import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service.js";
+import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service";
 import Router from "@koa/router";
 
 import { KoaAuth } from "../helpers/koa-auth.js";

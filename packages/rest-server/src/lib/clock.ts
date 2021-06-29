@@ -1,4 +1,4 @@
-import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
+import { ClockService } from "@eternal-twin/core/lib/clock/service";
 import Router, { RouterContext } from "@koa/router";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";

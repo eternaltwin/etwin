@@ -1,23 +1,23 @@
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { CompleteIfSelfUserFields } from "@eternal-twin/core/lib/user/complete-if-self-user-fields.js";
-import { $CompleteSimpleUser, CompleteSimpleUser } from "@eternal-twin/core/lib/user/complete-simple-user.js";
-import { CompleteUserFields } from "@eternal-twin/core/lib/user/complete-user-fields.js";
-import { $CreateUserOptions, CreateUserOptions } from "@eternal-twin/core/lib/user/create-user-options.js";
-import { DefaultUserFields } from "@eternal-twin/core/lib/user/default-user-fields.js";
-import { $GetShortUserOptions, GetShortUserOptions } from "@eternal-twin/core/lib/user/get-short-user-options.js";
-import { $GetUserOptions, GetUserOptions } from "@eternal-twin/core/lib/user/get-user-options.js";
-import { $NullableGetUserResult } from "@eternal-twin/core/lib/user/get-user-result.js";
-import { $NullableShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user.js";
-import { ShortUserFields } from "@eternal-twin/core/lib/user/short-user-fields.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { CompleteIfSelfUserFields } from "@eternal-twin/core/lib/user/complete-if-self-user-fields";
+import { $CompleteSimpleUser, CompleteSimpleUser } from "@eternal-twin/core/lib/user/complete-simple-user";
+import { CompleteUserFields } from "@eternal-twin/core/lib/user/complete-user-fields";
+import { $CreateUserOptions, CreateUserOptions } from "@eternal-twin/core/lib/user/create-user-options";
+import { DefaultUserFields } from "@eternal-twin/core/lib/user/default-user-fields";
+import { $GetShortUserOptions, GetShortUserOptions } from "@eternal-twin/core/lib/user/get-short-user-options";
+import { $GetUserOptions, GetUserOptions } from "@eternal-twin/core/lib/user/get-user-options";
+import { $NullableGetUserResult } from "@eternal-twin/core/lib/user/get-user-result";
+import { $NullableShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user";
+import { ShortUserFields } from "@eternal-twin/core/lib/user/short-user-fields";
 import {
   $NullableShortUserWithPassword,
   ShortUserWithPassword
-} from "@eternal-twin/core/lib/user/short-user-with-password.js";
-import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user.js";
-import { UserStore } from "@eternal-twin/core/lib/user/store.js";
-import { $UpdateStoreUserOptions, UpdateStoreUserOptions } from "@eternal-twin/core/lib/user/update-store-user-options.js";
-import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
-import { $UserIdRef } from "@eternal-twin/core/lib/user/user-id-ref.js";
+} from "@eternal-twin/core/lib/user/short-user-with-password";
+import { SimpleUser } from "@eternal-twin/core/lib/user/simple-user";
+import { UserStore } from "@eternal-twin/core/lib/user/store";
+import { $UpdateStoreUserOptions, UpdateStoreUserOptions } from "@eternal-twin/core/lib/user/update-store-user-options";
+import { UserId } from "@eternal-twin/core/lib/user/user-id";
+import { $UserIdRef } from "@eternal-twin/core/lib/user/user-id-ref";
 import { JSON_READER } from "kryo-json/lib/json-reader";
 import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";

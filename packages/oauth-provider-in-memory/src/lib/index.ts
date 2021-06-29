@@ -1,20 +1,20 @@
 import { ClockService } from "@eternal-twin/core/lib/clock/service";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { Url } from "@eternal-twin/core/lib/core/url.js";
-import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { Url } from "@eternal-twin/core/lib/core/url";
+import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator";
 import { CreateStoredOauthAccessTokenOptions } from "@eternal-twin/core/lib/oauth/create-stored-oauth-access-token-options";
-import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client.js";
-import { OauthClientDisplayName } from "@eternal-twin/core/lib/oauth/oauth-client-display-name.js";
+import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client";
+import { OauthClientDisplayName } from "@eternal-twin/core/lib/oauth/oauth-client-display-name";
 import { OauthClientId } from "@eternal-twin/core/lib/oauth/oauth-client-id";
 import { OauthClientKey } from "@eternal-twin/core/lib/oauth/oauth-client-key";
 import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store";
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key";
 import { StoredOauthAccessToken } from "@eternal-twin/core/lib/oauth/stored-oauth-access-token";
 import { TouchStoredSystemClientOptions } from "@eternal-twin/core/lib/oauth/touch-stored-system-client-options";
-import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash.js";
-import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
-import { NullableShortUser } from "@eternal-twin/core/lib/user/short-user.js";
-import { UserId } from "@eternal-twin/core/lib/user/user-id.js";
+import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
+import { PasswordService } from "@eternal-twin/core/lib/password/service";
+import { NullableShortUser } from "@eternal-twin/core/lib/user/short-user";
+import { UserId } from "@eternal-twin/core/lib/user/user-id";
 import { UuidHex } from "kryo/lib/uuid-hex";
 
 export interface InMemoryOauthClient {

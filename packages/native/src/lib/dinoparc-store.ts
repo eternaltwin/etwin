@@ -2,18 +2,18 @@ import {
   $ArchivedDinoparcUser,
   $NullableArchivedDinoparcUser,
   ArchivedDinoparcUser
-} from "@eternal-twin/core/lib/dinoparc/archived-dinoparc-user.js";
-import { $DinoparcDinozResponse, DinoparcDinozResponse } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-response.js";
+} from "@eternal-twin/core/lib/dinoparc/archived-dinoparc-user";
+import { $DinoparcDinozResponse, DinoparcDinozResponse } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-response";
 import {
   $DinoparcInventoryResponse,
   DinoparcInventoryResponse
-} from "@eternal-twin/core/lib/dinoparc/dinoparc-inventory-response.js";
+} from "@eternal-twin/core/lib/dinoparc/dinoparc-inventory-response";
 import {
   $GetDinoparcUserOptions,
   GetDinoparcUserOptions
-} from "@eternal-twin/core/lib/dinoparc/get-dinoparc-user-options.js";
-import { $ShortDinoparcUser, ShortDinoparcUser } from "@eternal-twin/core/lib/dinoparc/short-dinoparc-user.js";
-import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
+} from "@eternal-twin/core/lib/dinoparc/get-dinoparc-user-options";
+import { $ShortDinoparcUser, ShortDinoparcUser } from "@eternal-twin/core/lib/dinoparc/short-dinoparc-user";
+import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store";
 import { JSON_READER } from "kryo-json/lib/json-reader";
 import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";

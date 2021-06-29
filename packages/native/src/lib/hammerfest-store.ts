@@ -2,17 +2,17 @@ import {
   $ArchivedHammerfestUser,
   $NullableArchivedHammerfestUser,
   ArchivedHammerfestUser
-} from "@eternal-twin/core/lib/hammerfest/archived-hammerfest-user.js";
+} from "@eternal-twin/core/lib/hammerfest/archived-hammerfest-user";
 import {
   $GetHammerfestUserOptions,
   GetHammerfestUserOptions
-} from "@eternal-twin/core/lib/hammerfest/get-hammerfest-user-options.js";
+} from "@eternal-twin/core/lib/hammerfest/get-hammerfest-user-options";
 import {
   $NullableShortHammerfestUser,
   $ShortHammerfestUser,
   ShortHammerfestUser
-} from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user.js";
-import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store.js";
+} from "@eternal-twin/core/lib/hammerfest/short-hammerfest-user";
+import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store";
 import { JSON_READER } from "kryo-json/lib/json-reader";
 import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";

@@ -1,6 +1,6 @@
 import { Password } from "@eternal-twin/core/lib/password/password";
 import { PasswordHash } from "@eternal-twin/core/lib/password/password-hash";
-import { PasswordService } from "@eternal-twin/core/lib/password/service.js";
+import { PasswordService } from "@eternal-twin/core/lib/password/service";
 import { promisify } from "util";
 
 import native from "../native/index.js";

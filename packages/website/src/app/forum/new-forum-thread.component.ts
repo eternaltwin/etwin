@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { HtmlText } from "@eternal-twin/core/lib/core/html-text.js";
+import { HtmlText } from "@eternal-twin/core/lib/core/html-text";
 import { $MarktwinText, MarktwinText } from "@eternal-twin/core/lib/core/marktwin-text";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
 import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id";

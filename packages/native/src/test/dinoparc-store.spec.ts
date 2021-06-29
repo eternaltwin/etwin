@@ -1,6 +1,6 @@
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { ArchivedDinoparcUser } from "@eternal-twin/core/lib/dinoparc/archived-dinoparc-user.js";
-import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { ArchivedDinoparcUser } from "@eternal-twin/core/lib/dinoparc/archived-dinoparc-user";
+import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";

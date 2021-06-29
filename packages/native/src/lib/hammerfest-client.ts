@@ -1,59 +1,59 @@
-import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client.js";
+import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client";
 import {
   $HammerfestCredentials,
   HammerfestCredentials
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
 import {
   $HammerfestForumThemeId,
   HammerfestForumThemeId
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-id.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-id";
 import {
   $HammerfestForumThemeListing,
   HammerfestForumThemeListing
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-listing.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-listing";
 import {
   $HammerfestForumThemePage,
   HammerfestForumThemePage
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-page.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-page";
 import {
   $HammerfestForumThreadId,
   HammerfestForumThreadId
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-id.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-id";
 import {
   $HammerfestForumThreadPage,
   HammerfestForumThreadPage
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-page.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-page";
 import {
   $HammerfestGetProfileByIdOptions,
   HammerfestGetProfileByIdOptions
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-get-profile-by-id-options.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-get-profile-by-id-options";
 import {
   $HammerfestGodChildListing,
   HammerfestGodChildListing
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-god-child-listing.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-god-child-listing";
 import {
   $HammerfestItemCounts,
   HammerfestItemCounts
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-item-counts.js";
-import { $HammerfestPassword, HammerfestPassword } from "@eternal-twin/core/lib/hammerfest/hammerfest-password.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-item-counts";
+import { $HammerfestPassword, HammerfestPassword } from "@eternal-twin/core/lib/hammerfest/hammerfest-password";
 import {
   $NullableHammerfestProfile,
   NullableHammerfestProfile
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-profile.js";
-import { $HammerfestServer, HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-profile";
+import { $HammerfestServer, HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
 import {
   $HammerfestSession,
   $NullableHammerfestSession,
   HammerfestSession,
   NullableHammerfestSession
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-session.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-session";
 import {
   $HammerfestSessionKey,
   HammerfestSessionKey
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key.js";
-import { $HammerfestShop, HammerfestShop } from "@eternal-twin/core/lib/hammerfest/hammerfest-shop.js";
-import { $HammerfestUserId, HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id.js";
-import { $HammerfestUsername, HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key";
+import { $HammerfestShop, HammerfestShop } from "@eternal-twin/core/lib/hammerfest/hammerfest-shop";
+import { $HammerfestUserId, HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
+import { $HammerfestUsername, HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username";
 import { JSON_READER } from "kryo-json/lib/json-reader";
 import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";

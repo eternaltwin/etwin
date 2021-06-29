@@ -1,10 +1,10 @@
-import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { Url } from "@eternal-twin/core/lib/core/url.js";
-import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
-import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type.js";
-import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input.js";
-import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope.js";
-import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { Url } from "@eternal-twin/core/lib/core/url";
+import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
+import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type";
+import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input";
+import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope";
+import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
 import Router, { RouterContext } from "@koa/router";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";

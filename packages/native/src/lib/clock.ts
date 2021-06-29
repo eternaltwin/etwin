@@ -1,4 +1,4 @@
-import { ClockService } from "@eternal-twin/core/lib/clock/service.js";
+import { ClockService } from "@eternal-twin/core/lib/clock/service";
 
 import native from "../native/index.js";
 

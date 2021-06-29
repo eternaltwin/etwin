@@ -1,57 +1,57 @@
 import {
   $DeleteDinoparcLinkOptions,
   DeleteDinoparcLinkOptions
-} from "@eternal-twin/core/lib/link/delete-dinoparc-link-options.js";
+} from "@eternal-twin/core/lib/link/delete-dinoparc-link-options";
 import {
   $DeleteHammerfestLinkOptions,
   DeleteHammerfestLinkOptions
-} from "@eternal-twin/core/lib/link/delete-hammerfest-link-options.js";
+} from "@eternal-twin/core/lib/link/delete-hammerfest-link-options";
 import {
   $DeleteTwinoidLinkOptions,
   DeleteTwinoidLinkOptions
-} from "@eternal-twin/core/lib/link/delete-twinoid-link-options.js";
+} from "@eternal-twin/core/lib/link/delete-twinoid-link-options";
 import {
   $GetLinkFromDinoparcOptions,
   GetLinkFromDinoparcOptions
-} from "@eternal-twin/core/lib/link/get-link-from-dinoparc-options.js";
+} from "@eternal-twin/core/lib/link/get-link-from-dinoparc-options";
 import {
   $GetLinkFromHammerfestOptions,
   GetLinkFromHammerfestOptions
-} from "@eternal-twin/core/lib/link/get-link-from-hammerfest-options.js";
+} from "@eternal-twin/core/lib/link/get-link-from-hammerfest-options";
 import {
   $GetLinkFromTwinoidOptions,
   GetLinkFromTwinoidOptions
-} from "@eternal-twin/core/lib/link/get-link-from-twinoid-options.js";
+} from "@eternal-twin/core/lib/link/get-link-from-twinoid-options";
 import {
   $GetLinksFromEtwinOptions,
   GetLinksFromEtwinOptions
-} from "@eternal-twin/core/lib/link/get-links-from-etwin-options.js";
-import { LinkStore } from "@eternal-twin/core/lib/link/store.js";
+} from "@eternal-twin/core/lib/link/get-links-from-etwin-options";
+import { LinkStore } from "@eternal-twin/core/lib/link/store";
 import {
   $TouchDinoparcLinkOptions,
   TouchDinoparcLinkOptions
-} from "@eternal-twin/core/lib/link/touch-dinoparc-link-options.js";
+} from "@eternal-twin/core/lib/link/touch-dinoparc-link-options";
 import {
   $TouchHammerfestLinkOptions,
   TouchHammerfestLinkOptions
-} from "@eternal-twin/core/lib/link/touch-hammerfest-link-options.js";
+} from "@eternal-twin/core/lib/link/touch-hammerfest-link-options";
 import {
   $TouchTwinoidLinkOptions,
   TouchTwinoidLinkOptions
-} from "@eternal-twin/core/lib/link/touch-twinoid-link-options.js";
+} from "@eternal-twin/core/lib/link/touch-twinoid-link-options";
 import {
   $VersionedRawDinoparcLink,
   VersionedRawDinoparcLink
-} from "@eternal-twin/core/lib/link/versioned-raw-dinoparc-link.js";
+} from "@eternal-twin/core/lib/link/versioned-raw-dinoparc-link";
 import {
   $VersionedRawHammerfestLink,
   VersionedRawHammerfestLink
-} from "@eternal-twin/core/lib/link/versioned-raw-hammerfest-link.js";
-import { $VersionedRawLinks, VersionedRawLinks } from "@eternal-twin/core/lib/link/versioned-raw-links.js";
+} from "@eternal-twin/core/lib/link/versioned-raw-hammerfest-link";
+import { $VersionedRawLinks, VersionedRawLinks } from "@eternal-twin/core/lib/link/versioned-raw-links";
 import {
   $VersionedRawTwinoidLink,
   VersionedRawTwinoidLink
-} from "@eternal-twin/core/lib/link/versioned-raw-twinoid-link.js";
+} from "@eternal-twin/core/lib/link/versioned-raw-twinoid-link";
 import { JSON_READER } from "kryo-json/lib/json-reader";
 import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";

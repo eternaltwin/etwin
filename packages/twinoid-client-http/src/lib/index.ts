@@ -1,7 +1,7 @@
 import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-key";
-import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client.js";
-import { TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user.js";
-import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id.js";
+import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client";
+import { TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user";
+import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id";
 import superagent from "superagent";
 import url from "url";
 

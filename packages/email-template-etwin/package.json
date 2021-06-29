@@ -46,7 +46,7 @@
   "type": "module",
   "exports": {
     ".": "./lib/index.js",
-    "./lib/": "./lib/"
+    "./lib/*": "./lib/*.js"
   },
   "main": "./lib/index.js",
   "module": "./lib/index.js",

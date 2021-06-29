@@ -1,18 +1,18 @@
-import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
+import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import {
   $NullableEtwinDinoparcDinoz,
   NullableEtwinDinoparcDinoz
-} from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-dinoz.js";
-import { $NullableEtwinDinoparcUser, NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user.js";
+} from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-dinoz";
+import { $NullableEtwinDinoparcUser, NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user";
 import {
   $GetDinoparcDinozOptions,
   GetDinoparcDinozOptions
-} from "@eternal-twin/core/lib/dinoparc/get-dinoparc-dinoz-options.js";
+} from "@eternal-twin/core/lib/dinoparc/get-dinoparc-dinoz-options";
 import {
   $GetDinoparcUserOptions,
   GetDinoparcUserOptions
-} from "@eternal-twin/core/lib/dinoparc/get-dinoparc-user-options.js";
-import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service.js";
+} from "@eternal-twin/core/lib/dinoparc/get-dinoparc-user-options";
+import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service";
 import { JSON_READER } from "kryo-json/lib/json-reader";
 import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";

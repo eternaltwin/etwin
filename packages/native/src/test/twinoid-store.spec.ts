@@ -1,6 +1,6 @@
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
 import { ArchivedTwinoidUser } from "@eternal-twin/core/lib/twinoid/archived-twinoid-user";
-import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
+import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";

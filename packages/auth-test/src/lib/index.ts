@@ -1,19 +1,19 @@
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context.js";
-import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/core/lib/auth/register-or-login-with-email-options.js";
-import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options.js";
-import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/register-with-verified-email-options.js";
-import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session.js";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
-import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials.js";
-import { LinkService } from "@eternal-twin/core/lib/link/service.js";
-import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link.js";
-import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links.js";
+import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context";
+import { RegisterOrLoginWithEmailOptions } from "@eternal-twin/core/lib/auth/register-or-login-with-email-options";
+import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
+import { RegisterWithVerifiedEmailOptions } from "@eternal-twin/core/lib/auth/register-with-verified-email-options";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { EmailContent } from "@eternal-twin/core/lib/email/email-content";
+import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
+import { LinkService } from "@eternal-twin/core/lib/link/service";
+import { VersionedEtwinLink } from "@eternal-twin/core/lib/link/versioned-etwin-link";
+import { VersionedLinks } from "@eternal-twin/core/lib/link/versioned-links";
 import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
-import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client.js";
+import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client";
 import chai from "chai";
 
 export interface Api {

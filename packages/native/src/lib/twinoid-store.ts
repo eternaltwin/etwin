@@ -2,17 +2,17 @@ import {
   $ArchivedTwinoidUser,
   $NullableArchivedTwinoidUser,
   ArchivedTwinoidUser
-} from "@eternal-twin/core/lib/twinoid/archived-twinoid-user.js";
+} from "@eternal-twin/core/lib/twinoid/archived-twinoid-user";
 import {
   $GetTwinoidUserOptions,
   GetTwinoidUserOptions
-} from "@eternal-twin/core/lib/twinoid/get-twinoid-user-options.js";
+} from "@eternal-twin/core/lib/twinoid/get-twinoid-user-options";
 import {
   $NullableShortTwinoidUser,
   $ShortTwinoidUser,
   ShortTwinoidUser
-} from "@eternal-twin/core/lib/twinoid/short-twinoid-user.js";
-import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store.js";
+} from "@eternal-twin/core/lib/twinoid/short-twinoid-user";
+import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store";
 import { JSON_READER } from "kryo-json/lib/json-reader";
 import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";

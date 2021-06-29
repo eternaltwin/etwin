@@ -1,4 +1,4 @@
-import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
+import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator";
 import { UuidHex } from "kryo/lib/uuid-hex";
 
 import native from "../native/index.js";

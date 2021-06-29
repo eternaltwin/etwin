@@ -1,5 +1,5 @@
-import { Url } from "@eternal-twin/core/lib/core/url.js";
-import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
+import { Url } from "@eternal-twin/core/lib/core/url";
+import { EmailContent } from "@eternal-twin/core/lib/email/email-content";
 import chai from "chai";
 
 import { JsonEmailTemplateService } from "../lib/index.js";

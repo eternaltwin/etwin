@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
 import { $DinoparcUserIdRef } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id-ref";
 import { $HammerfestUserIdRef } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id-ref";
 import { $TwinoidUserIdRef } from "@eternal-twin/core/lib/twinoid/twinoid-user-id-ref";

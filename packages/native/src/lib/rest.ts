@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponse, HttpRouter } from "@eternal-twin/core/lib/http/index.js";
+import { HttpRequest, HttpResponse, HttpRouter } from "@eternal-twin/core/lib/http/index";
 import { promisify } from "util";
 
 import native from "../native/index.js";

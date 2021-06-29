@@ -1,7 +1,7 @@
-import { Url } from "@eternal-twin/core/lib/core/url.js";
-import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
-import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type.js";
-import { VirtualClock } from "@eternal-twin/native/lib/clock.js";
+import { Url } from "@eternal-twin/core/lib/core/url";
+import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
+import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type";
+import { VirtualClock } from "@eternal-twin/native/lib/clock";
 import chai from "chai";
 
 import { HttpOauthClientService } from "../lib/index.js";

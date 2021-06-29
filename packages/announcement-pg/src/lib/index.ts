@@ -1,20 +1,20 @@
-import { Announcement } from "@eternal-twin/core/lib/announcement/announcement.js";
-import { AnnouncementId } from "@eternal-twin/core/lib/announcement/announcement-id.js";
-import { AnnouncementListing } from "@eternal-twin/core/lib/announcement/announcement-listing.js";
-import { CreateAnnouncementOptions } from "@eternal-twin/core/lib/announcement/create-announcement-options.js";
-import { GetAnnouncementsOptions } from "@eternal-twin/core/lib/announcement/get-announcements-options.js";
-import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service.js";
-import { ShortAnnouncement } from "@eternal-twin/core/lib/announcement/short-announcement.js";
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context.js";
-import { LocaleId } from "@eternal-twin/core/lib/core/locale-id.js";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type.js";
-import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator.js";
-import { UuidHex } from "@eternal-twin/core/lib/core/uuid-hex.js";
-import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread.js";
-import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
-import { AnnouncementRow } from "@eternal-twin/etwin-pg/lib/schema.js";
+import { Announcement } from "@eternal-twin/core/lib/announcement/announcement";
+import { AnnouncementId } from "@eternal-twin/core/lib/announcement/announcement-id";
+import { AnnouncementListing } from "@eternal-twin/core/lib/announcement/announcement-listing";
+import { CreateAnnouncementOptions } from "@eternal-twin/core/lib/announcement/create-announcement-options";
+import { GetAnnouncementsOptions } from "@eternal-twin/core/lib/announcement/get-announcements-options";
+import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service";
+import { ShortAnnouncement } from "@eternal-twin/core/lib/announcement/short-announcement";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
+import { LocaleId } from "@eternal-twin/core/lib/core/locale-id";
+import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
+import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator";
+import { UuidHex } from "@eternal-twin/core/lib/core/uuid-hex";
+import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
+import { ForumService } from "@eternal-twin/core/lib/forum/service";
+import { AnnouncementRow } from "@eternal-twin/etwin-pg/lib/schema";
 import { Database, Queryable, TransactionMode } from "@eternal-twin/pg-db";
 
 export interface PgAnnouncementServiceOptions {

@@ -1,10 +1,10 @@
-import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { $GetHammerfestUserOptions, GetHammerfestUserOptions } from "@eternal-twin/core/lib/hammerfest/get-hammerfest-user-options.js";
+import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { $GetHammerfestUserOptions, GetHammerfestUserOptions } from "@eternal-twin/core/lib/hammerfest/get-hammerfest-user-options";
 import {
   $NullableHammerfestUser,
   NullableHammerfestUser
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-user.js";
-import { HammerfestService} from "@eternal-twin/core/lib/hammerfest/service.js";
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-user";
+import { HammerfestService} from "@eternal-twin/core/lib/hammerfest/service";
 import { JSON_READER } from "kryo-json/lib/json-reader";
 import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";

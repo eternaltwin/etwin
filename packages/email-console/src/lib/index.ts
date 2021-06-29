@@ -1,6 +1,6 @@
-import { EmailAddress } from "@eternal-twin/core/lib/email/email-address.js";
-import { EmailContent } from "@eternal-twin/core/lib/email/email-content.js";
-import { EmailService } from "@eternal-twin/core/lib/email/service.js";
+import { EmailAddress } from "@eternal-twin/core/lib/email/email-address";
+import { EmailContent } from "@eternal-twin/core/lib/email/email-content";
+import { EmailService } from "@eternal-twin/core/lib/email/service";
 
 export class ConsoleEmailService implements EmailService {
   constructor() {

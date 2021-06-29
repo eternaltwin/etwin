@@ -1,18 +1,18 @@
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context.js";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type.js";
-import { AuthService } from "@eternal-twin/core/lib/auth/service.js";
-import { Url } from "@eternal-twin/core/lib/core/url.js";
-import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service.js";
-import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type.js";
-import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input.js";
-import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope.js";
-import { $LinkToDinoparcOptions, LinkToDinoparcOptions } from "@eternal-twin/core/lib/user/link-to-dinoparc-options.js";
+import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
+import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { AuthService } from "@eternal-twin/core/lib/auth/service";
+import { Url } from "@eternal-twin/core/lib/core/url";
+import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
+import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type";
+import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input";
+import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope";
+import { $LinkToDinoparcOptions, LinkToDinoparcOptions } from "@eternal-twin/core/lib/user/link-to-dinoparc-options";
 import {
   $LinkToHammerfestOptions,
   LinkToHammerfestOptions
-} from "@eternal-twin/core/lib/user/link-to-hammerfest-options.js";
-import { UserService } from "@eternal-twin/core/lib/user/service.js";
-import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth.js";
+} from "@eternal-twin/core/lib/user/link-to-hammerfest-options";
+import { UserService } from "@eternal-twin/core/lib/user/service";
+import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
 import Router, { RouterContext } from "@koa/router";
 import Koa from "koa";
 import koaBodyParser from "koa-bodyparser";

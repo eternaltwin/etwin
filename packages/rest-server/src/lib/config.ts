@@ -1,5 +1,5 @@
-import { $Config, Config } from "@eternal-twin/core/lib/config/config.js";
-import { ForumService } from "@eternal-twin/core/lib/forum/service.js";
+import { $Config, Config } from "@eternal-twin/core/lib/config/config";
+import { ForumService } from "@eternal-twin/core/lib/forum/service";
 import Router, { RouterContext } from "@koa/router";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";
 
