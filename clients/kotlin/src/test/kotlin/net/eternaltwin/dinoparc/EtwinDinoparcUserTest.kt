@@ -65,19 +65,19 @@ class EtwinDinoparcUserTest {
               ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-25T15:20:28.562Z")),
                 ForeignRetrieved(Instant.parse("2021-06-25T15:20:28.600Z")),
-                ArrayList(listOf(
+                listOf(
                   DinoparcDinozIdRef(DinoparcServer.DinoparcCom, DinoparcDinozId("3749448"))
-                ))
+                )
               )
             ),
             inventory = LatestTemporal(
               ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-25T15:20:28.562Z")),
                 ForeignRetrieved(Instant.parse("2021-06-25T15:20:28.562Z")),
-                HashMap(mapOf(
+                mapOf(
                   DinoparcItemId("1") to 3U,
                   DinoparcItemId("3") to 2U,
-                ))
+                )
               )
             ),
             etwin = VersionedEtwinLink(

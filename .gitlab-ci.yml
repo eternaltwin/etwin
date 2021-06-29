@@ -115,6 +115,17 @@ test-ruby3:
     - bundle exec srb tc
   after_script: []
 
+test-jvm16:
+  stage: "check"
+  # openjdk:16.0.1-slim-buster
+  image: "openjdk@sha256:77a90136a7a3bd2342adc2a4e10815a5bd71598fa2c8b5906c284dfd24e10ccc"
+  before_script:
+    - "cd clients/kotlin"
+  script:
+    # GRADLE_OPTS="-Dorg.gradle.daemon=false" ./gradlew test
+    - "./gradlew test --no-daemon"
+  after_script: []
+
 test-rust:
   stage: "check"
   script:

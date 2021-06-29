@@ -15,6 +15,8 @@ pub fn register_dinoparc(builder: &mut TypeRegistryBuilder) -> Result<(), anyhow
   builder.add_unique(group.with_type("dinoparc_location_id")?, MgType::String)?;
   builder.add_unique(group.with_type("dinoparc_user_id")?, MgType::String)?;
   builder.add_unique(group.with_type("dinoparc_username")?, MgType::String)?;
+  builder.add_unique(group.with_type("dinoparc_reward_id")?, MgType::String)?;
+  builder.add_unique(group.with_type("dinoparc_epic_reward_key")?, MgType::String)?;
   Ok(())
 }
 

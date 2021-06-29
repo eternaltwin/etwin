@@ -28,7 +28,7 @@ data class EtwinDinoparcDinoz constructor(
   @SerialName("in_tournament")
   val inTournament: LatestTemporal<Boolean>? = null,
   val elements: LatestTemporal<DinoparcDinozElements>? = null,
-  val skills: LatestTemporal<HashMap<DinoparcSkill, UByte>>? = null,
+  val skills: LatestTemporal<Map<DinoparcSkill, UByte>>? = null,
 ) {
   companion object {
     fun fromJsonString(jsonString: String): EtwinDinoparcDinoz = JSON_FORMAT.decodeFromString(jsonString)

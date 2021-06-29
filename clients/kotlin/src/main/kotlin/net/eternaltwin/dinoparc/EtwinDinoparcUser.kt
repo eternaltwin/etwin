@@ -20,7 +20,8 @@ data class EtwinDinoparcUser constructor(
   val username: DinoparcUsername,
   val coins: LatestTemporal<UInt>? = null,
   val dinoz: LatestTemporal<List<DinoparcDinozIdRef>>? = null,
-  val inventory: LatestTemporal<HashMap<DinoparcItemId, UInt>>? = null,
+  val inventory: LatestTemporal<Map<DinoparcItemId, UInt>>? = null,
+  val collection: LatestTemporal<DinoparcCollection>? = null,
   val etwin: VersionedEtwinLink,
 ) {
   companion object {
