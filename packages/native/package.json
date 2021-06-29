@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/native",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Native module for Eternal-Twin",
   "author": "Charles Samborski <demurgos@demurgos.net>",
   "licenses": [
@@ -18,7 +18,7 @@
     "format": "eslint --fix \"./src/**/*.ts\"",
     "native:build": "cd native && cargo build ${CARGO_FLAGS:-\"--lib\"}",
     "build": "yarn run native:build && tsc --build src/lib/tsconfig.json",
-    "//install": "node-pre-gyp install --fallback-to-build=false || yarn run native:build",
+    "//install": "node-pre-gyp install --fallback-to-build=false || cargo build --manifest-path ./native/Cargo.toml --lib",
     "prepack": "yarn run build && rimraf \"native/@(artifacts.json|index.node)\"",
     "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha \"test/**/*.spec.js\"",
