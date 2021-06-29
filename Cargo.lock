@@ -543,7 +543,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_cli"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "chrono",
  "clap",
@@ -564,7 +564,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_config"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "once_cell",
  "serde",
@@ -574,7 +574,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_constants"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "etwin_core",
  "once_cell",
@@ -582,7 +582,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_core"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "async-trait",
  "auto_impl",
@@ -603,7 +603,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_db_schema"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "etwin_config",
  "etwin_squirrel",
@@ -615,7 +615,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_dinoparc_client"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "async-trait",
  "chrono",
@@ -641,7 +641,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_dinoparc_store"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "async-trait",
  "chrono",
@@ -661,7 +661,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_hammerfest_client"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "async-trait",
  "chrono",
@@ -680,7 +680,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_hammerfest_store"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "async-trait",
  "chrono",
@@ -700,7 +700,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_link_store"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "async-trait",
  "chrono",
@@ -719,7 +719,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_native"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "chrono",
  "etwin_core",
@@ -746,7 +746,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_password"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "etwin_core",
  "hex",
@@ -761,7 +761,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_populate"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "etwin_constants",
  "etwin_core",
@@ -770,11 +770,11 @@ dependencies = [
 
 [[package]]
 name = "etwin_postgres_tools"
-version = "0.1.0"
+version = "0.6.0"
 
 [[package]]
 name = "etwin_rest"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "chrono",
  "etwin_core",
@@ -791,7 +791,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_scraper_tools"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "html5ever",
  "scraper",
@@ -800,7 +800,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_serde_tools"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "chrono",
  "hex",
@@ -810,7 +810,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_services"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "chrono",
  "etwin_config",
@@ -828,7 +828,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_squirrel"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "futures-util",
  "include_dir",
@@ -843,7 +843,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_token_store"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "async-trait",
  "chrono",
@@ -864,7 +864,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_twinoid_store"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "async-trait",
  "chrono",
@@ -880,7 +880,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_user_store"
-version = "0.1.0"
+version = "0.6.0"
 dependencies = [
  "async-trait",
  "chrono",

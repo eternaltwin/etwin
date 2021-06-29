@@ -1,6 +1,6 @@
 [package]
 name = "etwin_serde_tools"
-version = "0.1.0"
+version = "0.6.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Helper functions for `serde`"
 documentation = "https://github.com/eternal-twin/etwin"

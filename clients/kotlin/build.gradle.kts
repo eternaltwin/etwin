@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "net.eternaltwin"
-version = "0.3.6"
+version = "0.6.0"
 
 repositories {
   mavenCentral()

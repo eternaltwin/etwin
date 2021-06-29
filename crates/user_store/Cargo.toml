@@ -1,6 +1,6 @@
 [package]
 name = "etwin_user_store"
-version = "0.1.0"
+version = "0.6.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Simple user service for Postgres (Rust)"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -14,8 +14,8 @@ edition = "2018"
 [dependencies]
 async-trait = "0.1.48"
 chrono = "0.4.19"
-etwin_core = { version = "0.1.0", features = ["sqlx"] }
-etwin_db_schema = { version = "0.1.0" }
+etwin_core = { version = "0.6.0", features = ["sqlx"] }
+etwin_db_schema = { version = "0.6.0" }
 neon = { version = "0.8.0", optional = true, default-features = false, features = ["napi-runtime"] }
 regex = "1.4.5"
 sqlx = { version = "0.5.1", default-features = false, features = ["macros", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
@@ -23,6 +23,6 @@ thiserror = "1.0.24"
 uuid = { version = "0.8.2", default-features = false, features = ["serde", "v4"] }
 
 [dev-dependencies]
-etwin_config = { version = "0.1.0" }
+etwin_config = { version = "0.6.0" }
 serial_test = "0.5.1"
 tokio = { version = "1.4.0", features = ["macros", "rt"] }
