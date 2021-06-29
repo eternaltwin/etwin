@@ -63,6 +63,6 @@ public class Main {
 
 - `./gradlew :test`: Run the test suite
 - `./gradlew :dokkaHtml`: Generate the documentation
-- `./gradlew :publish`: Publish the new library version
+- `MAVEN_TOKEN=<TOKEN> ./gradlew :publish`: Publish the new library version
 
 [bintray]: https://bintray.com/eternal-twin/maven/etwin

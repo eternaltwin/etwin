@@ -1,6 +1,7 @@
 package net.eternaltwin.client
 
 import net.eternaltwin.auth.AuthContext
+import net.eternaltwin.dinoparc.*
 import net.eternaltwin.user.MaybeCompleteUser
 import net.eternaltwin.user.UserId
 import okhttp3.HttpUrl
@@ -46,6 +47,38 @@ class HttpEtwinClient(etwinUri: URI) : EtwinClient {
         throw RuntimeException("Unexpected code $response")
       }
       return MaybeCompleteUser.fromJsonString(response.body!!.string())
+    }
+  }
+
+  override fun getDinoparcUser(auth: Auth, options: GetDinoparcUserOptions): EtwinDinoparcUser {
+    val request = auth.apply(
+      Request.Builder()
+        .url(this.resolve(listOf("archive", "dinoparc", options.server.toString(), "users", options.id.toString())))
+        .get()
+    )
+      .build()
+
+    this.client.newCall(request).execute().use { response ->
+      if (!response.isSuccessful) {
+        throw RuntimeException("Unexpected code $response")
+      }
+      return EtwinDinoparcUser.fromJsonString(response.body!!.string())
+    }
+  }
+
+  override fun getDinoparcDinoz(auth: Auth, options: GetDinoparcDinozOptions): EtwinDinoparcDinoz {
+    val request = auth.apply(
+      Request.Builder()
+        .url(this.resolve(listOf("archive", "dinoparc", options.server.toString(), "dinoz", options.id.toString())))
+        .get()
+    )
+      .build()
+
+    this.client.newCall(request).execute().use { response ->
+      if (!response.isSuccessful) {
+        throw RuntimeException("Unexpected code $response")
+      }
+      return EtwinDinoparcDinoz.fromJsonString(response.body!!.string())
     }
   }
 

@@ -58,7 +58,13 @@
   },
   "files": [
     "./lib/",
-    "./native/"
+    "./native/src",
+    "./native/build.rs",
+    "./native/Cargo.lock",
+    "./native/Cargo.toml",
+    "./native/index.d.ts",
+    "./native/index.js",
+    "./native/package.json"
   ],
   "binary": {
     "pkg_path": ".",
