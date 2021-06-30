@@ -9,8 +9,10 @@ data class GetDinoparcDinozOptions constructor(
   val id: DinoparcDinozId,
 ) {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): GetDinoparcDinozOptions = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: GetDinoparcDinozOptions): String = JSON_FORMAT.encodeToString(value)
   }
 }

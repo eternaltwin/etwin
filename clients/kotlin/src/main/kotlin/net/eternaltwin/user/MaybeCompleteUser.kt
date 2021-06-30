@@ -38,9 +38,11 @@ sealed class MaybeCompleteUser : UserLike {
     }
 
     companion object {
+      @JvmStatic
       fun fromJsonString(jsonString: String): MaybeCompleteUser.Complete =
         JSON_FORMAT.decodeFromString(jsonString)
 
+      @JvmStatic
       fun toJsonString(value: MaybeCompleteUser.Complete): String =
         JSON_FORMAT.encodeToString(value)
     }
@@ -69,9 +71,11 @@ sealed class MaybeCompleteUser : UserLike {
     }
 
     companion object {
+      @JvmStatic
       fun fromJsonString(jsonString: String): MaybeCompleteUser.Simple =
         JSON_FORMAT.decodeFromString(jsonString)
 
+      @JvmStatic
       fun toJsonString(value: MaybeCompleteUser.Simple): String =
         JSON_FORMAT.encodeToString(value)
     }
@@ -85,9 +89,11 @@ sealed class MaybeCompleteUser : UserLike {
   }
 
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): MaybeCompleteUser =
       JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: MaybeCompleteUser): String =
       JSON_FORMAT.encodeToString(value)
   }

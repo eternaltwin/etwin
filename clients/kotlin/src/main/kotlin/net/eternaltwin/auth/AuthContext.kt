@@ -26,9 +26,11 @@ sealed class AuthContext {
     }
 
     companion object {
+      @JvmStatic
       fun fromJsonString(jsonString: String): AuthContext.AccessToken =
         JSON_FORMAT.decodeFromString(jsonString)
 
+      @JvmStatic
       fun toJsonString(value: AuthContext.AccessToken): String =
         JSON_FORMAT.encodeToString(value)
     }
@@ -48,9 +50,11 @@ sealed class AuthContext {
     }
 
     companion object {
+      @JvmStatic
       fun fromJsonString(jsonString: String): AuthContext.Guest =
         JSON_FORMAT.decodeFromString(jsonString)
 
+      @JvmStatic
       fun toJsonString(value: AuthContext.Guest): String =
         JSON_FORMAT.encodeToString(value)
     }
@@ -70,9 +74,11 @@ sealed class AuthContext {
     }
 
     companion object {
+      @JvmStatic
       fun fromJsonString(jsonString: String): AuthContext.User =
         JSON_FORMAT.decodeFromString(jsonString)
 
+      @JvmStatic
       fun toJsonString(value: AuthContext.User): String =
         JSON_FORMAT.encodeToString(value)
     }

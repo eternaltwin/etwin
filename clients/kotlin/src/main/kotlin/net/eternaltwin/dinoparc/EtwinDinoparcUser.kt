@@ -25,8 +25,10 @@ data class EtwinDinoparcUser constructor(
   val etwin: VersionedEtwinLink,
 ) {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): EtwinDinoparcUser = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: EtwinDinoparcUser): String = JSON_FORMAT.encodeToString(value)
   }
 }

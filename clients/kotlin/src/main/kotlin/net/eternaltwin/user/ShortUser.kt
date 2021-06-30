@@ -16,8 +16,10 @@ data class ShortUser constructor(
   override val displayName: UserDisplayNameVersions,
 ) : ShortUserLike {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): ShortUser = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: ShortUser): String = JSON_FORMAT.encodeToString(value)
   }
 }

@@ -12,8 +12,10 @@ data class DinoparcDinozIdRef constructor(
   val id: DinoparcDinozId,
 ) {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): DinoparcDinozIdRef = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: DinoparcDinozIdRef): String = JSON_FORMAT.encodeToString(value)
   }
 }

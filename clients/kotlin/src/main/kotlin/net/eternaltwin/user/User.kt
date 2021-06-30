@@ -17,8 +17,10 @@ data class User constructor(
   override val links: VersionedLinks,
 ) : UserLike {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): User = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: User): String = JSON_FORMAT.encodeToString(value)
   }
 }

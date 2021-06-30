@@ -13,8 +13,10 @@ data class ShortDinoparcUser constructor(
   val username: DinoparcUsername,
 ) {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): ShortDinoparcUser = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: ShortDinoparcUser): String = JSON_FORMAT.encodeToString(value)
   }
 }

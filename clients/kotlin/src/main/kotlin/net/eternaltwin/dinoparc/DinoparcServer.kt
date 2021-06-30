@@ -37,6 +37,7 @@ enum class DinoparcServer {
   }
 
   companion object {
+    @JvmStatic
     fun fromString(raw: String): DinoparcServer =
       when (raw) {
         "dinoparc.com" -> DinoparcCom
@@ -45,8 +46,10 @@ enum class DinoparcServer {
         else -> throw IllegalArgumentException(raw)
       }
 
+    @JvmStatic
     fun fromJsonString(jsonString: String): DinoparcServer = JSON_FORMAT.decodeFromString(Serializer, jsonString)
 
+    @JvmStatic
     fun toJsonString(value: DinoparcServer): String = JSON_FORMAT.encodeToString(value)
   }
 }

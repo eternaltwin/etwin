@@ -14,8 +14,10 @@ data class ShortOauthClient constructor(
   override val displayName: OauthClientDisplayName,
 ) : ShortOauthClientLike {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): ShortOauthClient = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: ShortOauthClient): String = JSON_FORMAT.encodeToString(value)
   }
 }

@@ -16,8 +16,10 @@ data class PeriodLower constructor(
   val end: Instant? = null,
 ) {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): PeriodLower = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: PeriodLower): String = JSON_FORMAT.encodeToString(value)
   }
 }

@@ -15,8 +15,10 @@ data class DinoparcDinozElements constructor(
   val air: UShort,
 ) {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): DinoparcDinozElements = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: DinoparcDinozElements): String = JSON_FORMAT.encodeToString(value)
   }
 }

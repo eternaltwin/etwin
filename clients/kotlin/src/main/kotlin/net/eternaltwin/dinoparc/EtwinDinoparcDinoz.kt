@@ -31,8 +31,10 @@ data class EtwinDinoparcDinoz constructor(
   val skills: LatestTemporal<Map<DinoparcSkill, UByte>>? = null,
 ) {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): EtwinDinoparcDinoz = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: EtwinDinoparcDinoz): String = JSON_FORMAT.encodeToString(value)
   }
 }

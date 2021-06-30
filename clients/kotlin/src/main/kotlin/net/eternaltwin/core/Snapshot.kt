@@ -12,9 +12,11 @@ data class Snapshot<T> constructor(
   val value: T,
 ) {
   companion object {
+    @JvmStatic
     inline fun <reified T> fromJsonString(jsonString: String): Snapshot<T> =
       JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun <T> toJsonString(value: Snapshot<T>): String = JSON_FORMAT.encodeToString(value)
   }
 }

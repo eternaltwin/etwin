@@ -14,8 +14,10 @@ data class ForeignRetrieved constructor(
   val latest: Instant,
 ) {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): ForeignRetrieved = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: ForeignRetrieved): String = JSON_FORMAT.encodeToString(value)
   }
 }

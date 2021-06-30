@@ -31,8 +31,10 @@ data class CompleteUser constructor(
   val hasPassword: Boolean,
 ) : UserLike {
   companion object {
+    @JvmStatic
     fun fromJsonString(jsonString: String): CompleteUser = JSON_FORMAT.decodeFromString(jsonString)
 
+    @JvmStatic
     fun toJsonString(value: CompleteUser): String = JSON_FORMAT.encodeToString(value)
   }
 }
