@@ -1,10 +1,12 @@
 package net.eternaltwin.dinoparc
 
+import JSON_FORMAT
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
@@ -12,7 +14,7 @@ import kotlinx.serialization.encoding.Encoder
 enum class DinoparcServer {
   DinoparcCom,
   EnDinoparcCom,
-  EsDinoparcCom;
+  SpDinoparcCom;
 
   fun toDebugString(): String = "DinoparcServer(${this})"
 
@@ -20,7 +22,7 @@ enum class DinoparcServer {
     when (this) {
       DinoparcCom -> "dinoparc.com"
       EnDinoparcCom -> "en.dinoparc.com"
-      EsDinoparcCom -> "es.dinoparc.com"
+      SpDinoparcCom -> "sp.dinoparc.com"
     }
 
   object Serializer : KSerializer<DinoparcServer> {
@@ -39,8 +41,12 @@ enum class DinoparcServer {
       when (raw) {
         "dinoparc.com" -> DinoparcCom
         "en.dinoparc.com" -> EnDinoparcCom
-        "es.dinoparc.com" -> EsDinoparcCom
+        "sp.dinoparc.com" -> SpDinoparcCom
         else -> throw IllegalArgumentException(raw)
       }
+
+    fun fromJsonString(jsonString: String): DinoparcServer = JSON_FORMAT.decodeFromString(Serializer, jsonString)
+
+    fun toJsonString(value: DinoparcServer): String = JSON_FORMAT.encodeToString(value)
   }
 }
