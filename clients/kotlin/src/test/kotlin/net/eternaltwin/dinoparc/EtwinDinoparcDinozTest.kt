@@ -62,21 +62,21 @@ class EtwinDinoparcDinozTest {
               ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
                 ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
-                0U
+                0
               )
             ),
             level = LatestTemporal(
               ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
                 ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
-                288U
+                288
               )
             ),
             experience = LatestTemporal(
               ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
                 ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
-                2U
+                2
               )
             ),
             danger = LatestTemporal(
@@ -97,7 +97,7 @@ class EtwinDinoparcDinozTest {
               ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
                 ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
-                DinoparcDinozElements(23U, 79U, 111U, 67U, 16U)
+                DinoparcDinozElements(23, 79, 111, 67, 16)
               )
             ),
             skills = LatestTemporal(
@@ -105,35 +105,35 @@ class EtwinDinoparcDinozTest {
                 PeriodLower(Instant.parse("2021-06-23T13:54:47.670Z")),
                 ForeignRetrieved(Instant.parse("2021-06-25T15:15:49.651Z")),
                 mapOf(
-                  DinoparcSkill.Bargain to 5U,
-                  DinoparcSkill.Camouflage to 2U,
-                  DinoparcSkill.Climb to 5U,
-                  DinoparcSkill.Cook to 5U,
-                  DinoparcSkill.Counterattack to 1U,
-                  DinoparcSkill.Dexterity to 1U,
-                  DinoparcSkill.Dig to 5U,
-                  DinoparcSkill.EarthApprentice to 5U,
-                  DinoparcSkill.FireApprentice to 5U,
-                  DinoparcSkill.Intelligence to 5U,
-                  DinoparcSkill.Jump to 5U,
-                  DinoparcSkill.Luck to 4U,
-                  DinoparcSkill.MartialArts to 5U,
-                  DinoparcSkill.Medicine to 5U,
-                  DinoparcSkill.Music to 5U,
-                  DinoparcSkill.Navigation to 5U,
-                  DinoparcSkill.Perception to 5U,
-                  DinoparcSkill.Provoke to 5U,
-                  DinoparcSkill.Run to 5U,
-                  DinoparcSkill.ShadowPower to 5U,
-                  DinoparcSkill.Stamina to 5U,
-                  DinoparcSkill.Steal to 5U,
-                  DinoparcSkill.Strategy to 1U,
-                  DinoparcSkill.Strength to 4U,
-                  DinoparcSkill.Survival to 4U,
-                  DinoparcSkill.Swim to 5U,
-                  DinoparcSkill.ThunderApprentice to 5U,
-                  DinoparcSkill.TotemThief to 1U,
-                  DinoparcSkill.WaterApprentice to 5U,
+                  DinoparcSkill.Bargain to 5,
+                  DinoparcSkill.Camouflage to 2,
+                  DinoparcSkill.Climb to 5,
+                  DinoparcSkill.Cook to 5,
+                  DinoparcSkill.Counterattack to 1,
+                  DinoparcSkill.Dexterity to 1,
+                  DinoparcSkill.Dig to 5,
+                  DinoparcSkill.EarthApprentice to 5,
+                  DinoparcSkill.FireApprentice to 5,
+                  DinoparcSkill.Intelligence to 5,
+                  DinoparcSkill.Jump to 5,
+                  DinoparcSkill.Luck to 4,
+                  DinoparcSkill.MartialArts to 5,
+                  DinoparcSkill.Medicine to 5,
+                  DinoparcSkill.Music to 5,
+                  DinoparcSkill.Navigation to 5,
+                  DinoparcSkill.Perception to 5,
+                  DinoparcSkill.Provoke to 5,
+                  DinoparcSkill.Run to 5,
+                  DinoparcSkill.ShadowPower to 5,
+                  DinoparcSkill.Stamina to 5,
+                  DinoparcSkill.Steal to 5,
+                  DinoparcSkill.Strategy to 1,
+                  DinoparcSkill.Strength to 4,
+                  DinoparcSkill.Survival to 4,
+                  DinoparcSkill.Swim to 5,
+                  DinoparcSkill.ThunderApprentice to 5,
+                  DinoparcSkill.TotemThief to 1,
+                  DinoparcSkill.WaterApprentice to 5,
                 )
               )
             ),

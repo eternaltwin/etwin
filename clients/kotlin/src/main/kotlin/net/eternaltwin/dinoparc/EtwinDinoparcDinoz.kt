@@ -21,14 +21,14 @@ data class EtwinDinoparcDinoz constructor(
   val location: LatestTemporal<DinoparcLocationId>? = null,
   val race: LatestTemporal<DinoparcDinozRace>? = null,
   val skin: LatestTemporal<DinoparcDinozSkin>? = null,
-  val life: LatestTemporal<UByte>? = null,
-  val level: LatestTemporal<UShort>? = null,
-  val experience: LatestTemporal<UByte>? = null,
+  val life: LatestTemporal<Short>? = null, // TODO: UByte
+  val level: LatestTemporal<Int>? = null, // TODO: UShort
+  val experience: LatestTemporal<Short>? = null, // TODO: UByte
   val danger: LatestTemporal<Short>? = null,
   @SerialName("in_tournament")
   val inTournament: LatestTemporal<Boolean>? = null,
   val elements: LatestTemporal<DinoparcDinozElements>? = null,
-  val skills: LatestTemporal<Map<DinoparcSkill, UByte>>? = null,
+  val skills: LatestTemporal<Map<DinoparcSkill, Byte>>? = null, // TODO: UByte
 ) {
   companion object {
     @JvmStatic
