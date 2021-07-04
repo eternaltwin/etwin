@@ -130,6 +130,84 @@ pub fn serialize_opt_instant<S: Serializer>(value: &Option<DateTime<Utc>>, seria
     .serialize(serializer)
 }
 
+#[cfg(feature = "serde-http")]
+mod http {
+  use http::header::HeaderName;
+  use http::{HeaderMap, HeaderValue, StatusCode};
+  use reqwest::Response;
+  use serde::ser::SerializeSeq;
+  use serde::{Serialize, Serializer};
+
+  #[derive(Serialize)]
+  struct SerializableResponse<'a> {
+    #[serde(serialize_with = "serialize_status_code")]
+    status: StatusCode,
+    #[serde(serialize_with = "serialize_header_map")]
+    headers: &'a HeaderMap,
+    url: &'a str,
+  }
+
+  impl<'a> From<&'a Response> for SerializableResponse<'a> {
+    fn from(res: &'a Response) -> Self {
+      Self {
+        status: res.status(),
+        headers: res.headers(),
+        url: res.url().as_str(),
+      }
+    }
+  }
+
+  pub fn serialize_status_code<S: Serializer>(value: &StatusCode, serializer: S) -> Result<S::Ok, S::Error> {
+    value.as_u16().serialize(serializer)
+  }
+
+  pub fn serialize_response<S: Serializer>(value: &reqwest::Response, serializer: S) -> Result<S::Ok, S::Error> {
+    SerializableResponse::from(value).serialize(serializer)
+  }
+
+  pub fn serialize_opt_response_ref<S: Serializer>(
+    value: &Option<&reqwest::Response>,
+    serializer: S,
+  ) -> Result<S::Ok, S::Error> {
+    value.map(SerializableResponse::from).serialize(serializer)
+  }
+
+  #[derive(Copy, Clone)]
+  struct HeaderMapPair<'a>(&'a HeaderName, &'a HeaderValue);
+  impl<'a> Serialize for HeaderMapPair<'a> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+      S: Serializer,
+    {
+      let is_human_readable = serializer.is_human_readable();
+      let HeaderMapPair(k, v) = *self;
+      let mut pair = serializer.serialize_seq(Some(2))?;
+      pair.serialize_element(k.as_str())?;
+      if is_human_readable {
+        match v.to_str() {
+          Ok(v) => pair.serialize_element(v)?,
+          Err(_) => pair.serialize_element(v.as_bytes())?,
+        }
+      } else {
+        pair.serialize_element(v.as_bytes())?;
+      }
+      pair.end()
+    }
+  }
+
+  pub fn serialize_header_map<S: Serializer>(value: &HeaderMap, serializer: S) -> Result<S::Ok, S::Error> {
+    let count = value.iter().count();
+    let mut map = serializer.serialize_seq(Some(count))?;
+    for (k, v) in value.iter() {
+      map.serialize_element(&HeaderMapPair(k, v))?;
+    }
+    map.end()
+  }
+}
+
+#[cfg(feature = "serde-http")]
+pub use self::http::{serialize_header_map, serialize_opt_response_ref, serialize_response, serialize_status_code};
+
 #[cfg(test)]
 mod test {
   use super::{deserialize_explicit_option, deserialize_nested_option};

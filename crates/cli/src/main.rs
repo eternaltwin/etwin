@@ -8,7 +8,9 @@ async fn main() {
   let res = run(&args).await;
 
   match res {
-    Err(_) => res.unwrap(),
+    Err(e) => {
+      eprintln!("{}", e);
+    }
     Ok(()) => {}
   }
 }

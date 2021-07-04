@@ -19,10 +19,11 @@ dialoguer = "0.8.0"
 etwin_core = { version = "0.6.0" }
 etwin_dinoparc_client = { version = "0.6.0", features = ["http"] }
 etwin_dinoparc_store = { version = "0.6.0" }
-etwin_link_store = { version = "0.6.0" }
-etwin_hammerfest_store = { version = "0.6.0" }
-etwin_user_store = { version = "0.6.0" }
 etwin_hammerfest_client = { version = "0.6.0" }
+etwin_hammerfest_store = { version = "0.6.0" }
+etwin_link_store = { version = "0.6.0" }
+etwin_log = { version = "0.6.0" }
+etwin_user_store = { version = "0.6.0" }
 etwin_rest = { version = "0.6.0" }
 etwin_services = { version = "0.6.0" }
 tokio = { version = "1.4.0", features = ["full"] }

@@ -4,6 +4,7 @@ use etwin_core::clock::SystemClock;
 use etwin_core::dinoparc::{DinoparcClient, DinoparcCredentials, DinoparcPassword, DinoparcServer, DinoparcUsername};
 use etwin_core::types::EtwinError;
 use etwin_dinoparc_client::http::HttpDinoparcClient;
+use etwin_log::NoopLogger;
 use std::str::FromStr;
 use std::time::Duration;
 
@@ -48,7 +49,7 @@ pub async fn run(_args: &DinoparcArgs) -> Result<(), EtwinError> {
   };
 
   let clock = SystemClock;
-  let dinoparc_client = HttpDinoparcClient::new(clock).unwrap();
+  let dinoparc_client = HttpDinoparcClient::new(clock, NoopLogger).unwrap();
   let session = dinoparc_client.create_session(&credentials).await.unwrap();
 
   eprintln!("AcquiredSession:");

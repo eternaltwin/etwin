@@ -1,4 +1,4 @@
-use etwin_core::dinoparc::{DinoparcUserIdParseError, DinoparcUsernameParseError};
+use etwin_core::dinoparc::{DinoparcServer, DinoparcUserIdParseError, DinoparcUsername, DinoparcUsernameParseError};
 use reqwest::StatusCode;
 use thiserror::Error;
 
@@ -6,8 +6,8 @@ use thiserror::Error;
 pub enum ScraperError {
   #[error("Failed to login due to unexpected login response")]
   UnexpectedLoginResponse,
-  // #[error("Invalid credentials on {} for username: {}", .0.as_str(), .1.as_str())]
-  // InvalidCredentials(DinoparcServer, DinoparcUsername),
+  #[error("Invalid credentials on {} for username: {}", .0.as_str(), .1.as_str())]
+  InvalidCredentials(DinoparcServer, DinoparcUsername),
   #[error("Missing Dinoparc session cookie from response")]
   MissingSessionCookie,
   #[error("Dinoparc session cookie is invalid or malformed")]

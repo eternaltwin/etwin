@@ -95,7 +95,8 @@ pub mod http {
   use crate::clock::get_native_clock;
   use crate::neon_helpers::NeonNamespace;
   use etwin_core::clock::Clock;
-  use etwin_dinoparc_client::http::HttpDinoparcClient;
+  use etwin_dinoparc_client::http::{HttpDinoparcClient, HttpDinoparcClientEvent};
+  use etwin_log::{Logger, NoopLogger};
   use neon::prelude::*;
   use std::sync::Arc;
 
@@ -105,12 +106,17 @@ pub mod http {
     Ok(ns)
   }
 
-  pub type JsHttpDinoparcClient = JsBox<Arc<HttpDinoparcClient<Arc<dyn Clock>>>>;
+  pub type JsHttpDinoparcClient =
+    JsBox<Arc<HttpDinoparcClient<Arc<dyn Clock>, Arc<dyn for<'r> Logger<HttpDinoparcClientEvent<'r, &'r [u8]>>>>>>;
 
   pub fn new(mut cx: FunctionContext) -> JsResult<JsHttpDinoparcClient> {
     let clock = cx.argument::<JsValue>(0)?;
     let clock: Arc<dyn Clock> = get_native_clock(&mut cx, clock)?;
-    let inner: Arc<HttpDinoparcClient<Arc<dyn Clock>>> = Arc::new(HttpDinoparcClient::new(clock).unwrap());
+    let logger: Arc<dyn for<'r> Logger<HttpDinoparcClientEvent<'r, &'r [u8]>>> = Arc::new(NoopLogger);
+    #[allow(clippy::type_complexity)]
+    let inner: Arc<
+      HttpDinoparcClient<Arc<dyn Clock>, Arc<dyn for<'r> Logger<HttpDinoparcClientEvent<'r, &'r [u8]>>>>,
+    > = Arc::new(HttpDinoparcClient::new(clock, logger).unwrap());
     Ok(cx.boxed(inner))
   }
 }

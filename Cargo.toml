@@ -16,6 +16,7 @@ etwin_dinoparc_store = { path = "./crates/dinoparc_store" }
 etwin_hammerfest_client = { path = "./crates/hammerfest_client" }
 etwin_hammerfest_store = { path = "./crates/hammerfest_store" }
 etwin_link_store = { path = "./crates/link_store" }
+etwin_log = { path = "./crates/log" }
 etwin_password = { path = "./crates/password" }
 etwin_populate = { path = "./crates/populate" }
 etwin_postgres_tools = { path = "./crates/postgres_tools" }

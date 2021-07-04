@@ -6,7 +6,9 @@ mod url;
 use self::errors::ScraperError;
 use crate::http::url::DinoparcUrls;
 use ::scraper::Html;
+use ::url::Url;
 use async_trait::async_trait;
+use erased_serde::Serialize as ErasedSerialize;
 use etwin_core::clock::Clock;
 use etwin_core::dinoparc::{
   DinoparcClient, DinoparcCollectionResponse, DinoparcCredentials, DinoparcDinozId, DinoparcDinozResponse,
@@ -14,19 +16,182 @@ use etwin_core::dinoparc::{
   DinoparcSessionUser, DinoparcUsername, ShortDinoparcUser,
 };
 use etwin_core::types::EtwinError;
+use etwin_log::Logger;
+use etwin_serde_tools::{serialize_header_map, serialize_status_code};
 use md5::{Digest, Md5};
-use reqwest::{Client, RequestBuilder, StatusCode};
+use reqwest::header::HeaderMap;
+use reqwest::{Client, RequestBuilder, Response, StatusCode};
 use serde::Serialize;
-use std::error::Error as StdError;
+use std::convert::TryInto;
+use std::fmt::Debug;
+use std::fs;
+use std::path::PathBuf;
 use std::str::FromStr;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Duration;
 
 const USER_AGENT: &str = "EtwinDinoparcScraper";
 const TIMEOUT: Duration = Duration::from_millis(5000);
 
-pub struct HttpDinoparcClient<TyClock> {
+struct StderrLogger;
+
+impl<T> Logger<T> for StderrLogger
+where
+  T: Debug,
+{
+  fn log(&self, ev: T) {
+    eprintln!("{:?}", ev);
+  }
+}
+
+struct FsLogger<L>
+where
+  L: for<'r> Logger<&'r dyn Debug>,
+{
+  dir: PathBuf,
+  next_id: AtomicU64,
+  fallback_logger: L,
+}
+
+impl<'a, L> Logger<HttpEvent<'a>> for FsLogger<L>
+where
+  L: for<'r> Logger<&'r dyn Debug>,
+{
+  fn log(&self, ev: HttpEvent<'a>) {
+    let id = self.next_id.fetch_add(1, Ordering::Relaxed);
+    let dir = self.dir.join(format!("{}-{}", id, ev.target));
+    if let Err(e) = fs::create_dir(&dir) {
+      return self.fallback_logger.log(&e);
+    }
+    let meta = match serde_json::to_vec_pretty(&*ev.meta) {
+      Ok(meta) => meta,
+      Err(e) => return self.fallback_logger.log(&e),
+    };
+    if let Err(e) = fs::write(dir.join("meta.json"), meta) {
+      return self.fallback_logger.log(&e);
+    }
+    for (i, html) in ev.html.iter().cloned().enumerate() {
+      if let Err(e) = fs::write(dir.join(format!("main{}.html", i).as_str()), html) {
+        return self.fallback_logger.log(&e);
+      }
+    }
+  }
+}
+
+pub struct HttpEvent<'a> {
+  target: &'static str,
+  html: Vec<&'a [u8]>,
+  meta: Box<dyn ErasedSerialize + 'a>,
+}
+
+fn take_bytes<'a>(bytes: Option<&'a [u8]>, sink: &mut Vec<&'a [u8]>) -> Option<usize> {
+  match bytes {
+    Some(b) => {
+      let id = sink.len();
+      sink.push(b);
+      Some(id)
+    }
+    None => None,
+  }
+}
+
+fn take_bytesu64<'a>(bytes: Option<&'a [u8]>, sink: &mut Vec<&'a [u8]>) -> Option<u64> {
+  take_bytes(bytes, sink).map(|id| id.try_into().unwrap())
+}
+
+#[derive(Copy, Clone, Debug)]
+pub enum HttpDinoparcClientEvent<'a, Html: 'a> {
+  CreateSession(CreateSessionEvent<'a, Html>),
+}
+
+impl<'a, Html: 'a> From<CreateSessionEvent<'a, Html>> for HttpDinoparcClientEvent<'a, Html> {
+  fn from(ev: CreateSessionEvent<'a, Html>) -> Self {
+    Self::CreateSession(ev)
+  }
+}
+
+impl HttpDinoparcClientEvent<'_, &[u8]> {
+  pub fn filter_map<'a>(ev: HttpDinoparcClientEvent<'a, &'a [u8]>) -> Option<HttpEvent<'a>> {
+    Some(ev.into())
+  }
+}
+
+impl<'a> From<HttpDinoparcClientEvent<'a, &'a [u8]>> for HttpEvent<'a> {
+  fn from(ev: HttpDinoparcClientEvent<'a, &'a [u8]>) -> Self {
+    match ev {
+      HttpDinoparcClientEvent::CreateSession(ev) => ev.into(),
+    }
+  }
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct HttpResponseMeta {
+  uri: Url,
+  #[serde(serialize_with = "serialize_status_code")]
+  status: StatusCode,
+  #[serde(serialize_with = "serialize_header_map")]
+  headers: HeaderMap,
+}
+
+impl<'a> From<&'a Response> for HttpResponseMeta {
+  fn from(response: &'a Response) -> Self {
+    Self {
+      uri: response.url().clone(),
+      status: response.status(),
+      headers: response.headers().clone(),
+    }
+  }
+}
+
+#[derive(Copy, Clone, Debug, Serialize)]
+pub struct CreateSessionEvent<'a, Html: 'a> {
+  state: &'static str,
+  server: DinoparcServer,
+  username: &'a DinoparcUsername,
+  error: Option<&'a str>,
+  login_response: Option<&'a HttpResponseMeta>,
+  bank_response: Option<&'a HttpResponseMeta>,
+  bank_html: Option<Html>,
+}
+
+impl<'a, Html: 'a> CreateSessionEvent<'a, Html> {
+  pub const fn new(server: DinoparcServer, username: &'a DinoparcUsername) -> Self {
+    Self {
+      state: "new",
+      server,
+      username,
+      error: None,
+      login_response: None,
+      bank_response: None,
+      bank_html: None,
+    }
+  }
+}
+
+impl<'a> From<CreateSessionEvent<'a, &'a [u8]>> for HttpEvent<'a> {
+  fn from(ev: CreateSessionEvent<'a, &'a [u8]>) -> Self {
+    let mut files: Vec<&'a [u8]> = Vec::new();
+    let meta: CreateSessionEvent<'a, u64> = CreateSessionEvent {
+      state: ev.state,
+      server: ev.server,
+      username: ev.username,
+      error: ev.error,
+      login_response: ev.login_response,
+      bank_response: ev.bank_response,
+      bank_html: take_bytesu64(ev.bank_html, &mut files),
+    };
+    HttpEvent {
+      target: "create_session",
+      html: files,
+      meta: Box::new(meta),
+    }
+  }
+}
+
+pub struct HttpDinoparcClient<TyClock, TyLogger> {
   client: Client,
   clock: TyClock,
+  logger: TyLogger,
 }
 
 trait RequestBuilderExt {
@@ -45,11 +210,12 @@ impl RequestBuilderExt for RequestBuilder {
   }
 }
 
-impl<TyClock> HttpDinoparcClient<TyClock>
+impl<TyClock, TyLogger> HttpDinoparcClient<TyClock, TyLogger>
 where
   TyClock: Clock,
+  TyLogger: for<'r> Logger<HttpDinoparcClientEvent<'r, &'r [u8]>>,
 {
-  pub fn new(clock: TyClock) -> Result<Self, Box<dyn StdError>> {
+  pub fn new(clock: TyClock, logger: TyLogger) -> Result<Self, EtwinError> {
     Ok(Self {
       client: Client::builder()
         .user_agent(USER_AGENT)
@@ -57,6 +223,7 @@ where
         .redirect(reqwest::redirect::Policy::none())
         .build()?,
       clock,
+      logger,
     })
   }
 
@@ -94,11 +261,15 @@ fn derive_machine_id(username: &DinoparcUsername) -> DinoparcMachineId {
 }
 
 #[async_trait]
-impl<TyClock> DinoparcClient for HttpDinoparcClient<TyClock>
+impl<TyClock, TyLogger> DinoparcClient for HttpDinoparcClient<TyClock, TyLogger>
 where
   TyClock: Clock,
+  TyLogger: for<'r> Logger<HttpDinoparcClientEvent<'r, &'r [u8]>>,
 {
   async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, EtwinError> {
+    let logger = &self.logger;
+    let mut event: CreateSessionEvent<&[u8]> = CreateSessionEvent::new(options.server, &options.username);
+
     #[derive(Serialize)]
     struct LoginForm<'a> {
       login: &'a str,
@@ -115,26 +286,58 @@ where
         pass: options.password.as_str(),
       })
       .send()
-      .await?;
+      .await
+      .log_on_err(event, logger)?;
+    event.state = "login_response";
+    let login_res_meta = HttpResponseMeta::from(&res);
+    event.login_response = Some(&login_res_meta);
 
     if res.status() != StatusCode::OK {
-      return Err(ScraperError::UnexpectedLoginResponse.into());
+      return Err(ScraperError::UnexpectedLoginResponse.into()).log_on_err(event, logger);
     }
+    event.state = "login_response_ok";
 
     let session_key = res
       .cookies()
       .find(|cookie| cookie.name() == "sid")
       .map(|cookie| cookie.value().to_owned())
-      .ok_or(ScraperError::MissingSessionCookie)?;
-    let session_key = DinoparcSessionKey::from_str(&session_key).map_err(|_| ScraperError::InvalidSessionCookie)?;
+      .ok_or(ScraperError::MissingSessionCookie)
+      .log_on_err(event, logger)?;
+    event.state = "login_session_key_found";
+    let session_key = DinoparcSessionKey::from_str(&session_key)
+      .map_err(|_| ScraperError::InvalidSessionCookie)
+      .log_on_err(event, logger)?;
+    event.state = "login_session_key_ok";
 
     {
       touch_ad_tracking(&self.client, session_key.clone(), options.server, &options.username).await?;
+      event.state = "login_touched_ad_tracking";
       confirm_login(&self.client, session_key.clone(), options.server).await?;
+      event.state = "login_confirm_login";
     }
 
-    let html = self.get_html(urls.bank(), Some(&session_key)).await?;
-    let user = scraper::scrape_bank(&html)?;
+    let mut builder = self.client.get(urls.bank());
+
+    // No need to escape, per DinoparcSessionKey invariants.
+    let session_cookie = "sid=".to_owned() + session_key.as_str();
+    builder = builder.header(reqwest::header::COOKIE, session_cookie);
+
+    let resp = builder.send().await.log_on_err(event, logger)?;
+    event.state = "login_bank_response";
+    let bank_res_meta = HttpResponseMeta::from(&resp);
+    event.bank_response = Some(&bank_res_meta);
+    if resp.status() == StatusCode::FOUND {
+      // Redirected: it means we are _not_ logged in
+      return Err(ScraperError::InvalidCredentials(options.server, options.username.clone()).into())
+        .log_on_err(event, logger);
+    }
+    let text = resp.error_for_status()?.text().await.log_on_err(event, logger)?;
+    event.bank_html = Some(text.as_bytes());
+    let html = Html::parse_document(&text);
+    event.state = "login_bank_html";
+
+    let user = scraper::scrape_bank(&html).log_on_err(event, logger)?;
+    event.state = "login_scraped_bank";
     Ok(DinoparcSession {
       ctime: now,
       atime: now,
@@ -194,12 +397,21 @@ where
   }
 
   async fn get_inventory(&self, session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError> {
-    let html = self
-      .get_html(DinoparcUrls::new(session.user.server).inventory(), Some(&session.key))
-      .await?;
-    let response = scraper::scrape_inventory(&html)?;
-    // TODO: Assert username matches
-    Ok(DinoparcInventoryResponse {
+    let uri = DinoparcUrls::new(session.user.server).inventory();
+
+    let mut builder = self.client.get(uri.clone());
+    {
+      // No need to escape, per DinoparcSessionKey invariants.
+      let session_cookie = "sid=".to_owned() + session.key.as_str();
+      builder = builder.header(reqwest::header::COOKIE, session_cookie);
+    }
+
+    let resp = builder.send().await?;
+    let text = resp.error_for_status()?.text().await?;
+    let text = text.as_str();
+    let html = Html::parse_document(text);
+    let result = scraper::scrape_inventory(&html).map(|response| DinoparcInventoryResponse {
+      // TODO: Assert username matches
       session_user: DinoparcSessionUser {
         user: ShortDinoparcUser {
           server: session.user.server,
@@ -210,7 +422,12 @@ where
         dinoz: response.session_user.dinoz,
       },
       inventory: response.inventory,
-    })
+    });
+    // self.logger.log(GetInventoryLogEvent::Complete(session, &result));
+    let res = result?;
+    // logger.event("got_result", ());
+    // let response = result?;
+    Ok(res)
   }
 
   async fn get_collection(&self, session: &DinoparcSession) -> Result<DinoparcCollectionResponse, EtwinError> {
@@ -274,4 +491,36 @@ async fn confirm_login(
 }
 
 #[cfg(feature = "neon")]
-impl<TyClock> neon::prelude::Finalize for HttpDinoparcClient<TyClock> where TyClock: Clock {}
+impl<TyClock, TyLogger> neon::prelude::Finalize for HttpDinoparcClient<TyClock, TyLogger>
+where
+  TyClock: Clock,
+  TyLogger: for<'r> Logger<HttpDinoparcClientEvent<'r, &'r [u8]>>,
+{
+}
+
+pub trait ResultExt {
+  fn log_on_err<'a, L: ?Sized + for<'r> Logger<HttpDinoparcClientEvent<'r, &'r [u8]>>>(
+    self,
+    event: CreateSessionEvent<'a, &'a [u8]>,
+    logger: &L,
+  ) -> Self;
+}
+
+impl<Ok, Err: Debug> ResultExt for Result<Ok, Err> {
+  fn log_on_err<'a, L: ?Sized + for<'r> Logger<HttpDinoparcClientEvent<'r, &'r [u8]>>>(
+    self,
+    event: CreateSessionEvent<'a, &'a [u8]>,
+    logger: &L,
+  ) -> Self {
+    match self {
+      Self::Ok(ok) => Self::Ok(ok),
+      Self::Err(e) => {
+        let err_msg = format!("{:?}", &e);
+        let mut ev = event;
+        ev.error = Some(err_msg.as_str());
+        logger.log(ev.into());
+        Self::Err(e)
+      }
+    }
+  }
+}

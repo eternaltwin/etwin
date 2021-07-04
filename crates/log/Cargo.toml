@@ -1,0 +1,14 @@
+[package]
+name = "etwin_log"
+version = "0.6.0"
+authors = ["Charles Samborski <demurgos@demurgos.net>"]
+description = "Structured logs for etwin"
+documentation = "https://github.com/eternal-twin/etwin"
+homepage = "https://github.com/eternal-twin/etwin"
+repository = "https://github.com/eternal-twin/etwin"
+readme = "./README.md"
+keywords = ["etwin"]
+license = "AGPL-3.0-or-later"
+edition = "2018"
+
+[dependencies]

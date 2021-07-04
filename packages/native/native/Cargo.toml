@@ -25,6 +25,7 @@ etwin_dinoparc_store = { version = "0.6.0", features = ["neon"] }
 etwin_hammerfest_client = { version = "0.6.0", features = ["neon"] }
 etwin_hammerfest_store = { version = "0.6.0", features = ["neon"] }
 etwin_link_store = { version = "0.6.0", features = ["neon"] }
+etwin_log = { version = "0.6.0" }
 etwin_password = { version = "0.6.0", features = ["neon"] }
 etwin_rest = { version = "0.6.0" }
 etwin_services = { version = "0.6.0", features = ["neon"] }
