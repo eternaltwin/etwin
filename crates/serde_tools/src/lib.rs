@@ -134,7 +134,7 @@ pub fn serialize_opt_instant<S: Serializer>(value: &Option<DateTime<Utc>>, seria
 mod http {
   use http::header::HeaderName;
   use http::{HeaderMap, HeaderValue, StatusCode};
-  use reqwest::Response;
+  use reqwest::{Response, Url};
   use serde::ser::SerializeSeq;
   use serde::{Serialize, Serializer};
 
@@ -155,6 +155,10 @@ mod http {
         url: res.url().as_str(),
       }
     }
+  }
+
+  pub fn serialize_url<S: Serializer>(value: &Url, serializer: S) -> Result<S::Ok, S::Error> {
+    value.as_str().serialize(serializer)
   }
 
   pub fn serialize_status_code<S: Serializer>(value: &StatusCode, serializer: S) -> Result<S::Ok, S::Error> {
@@ -206,7 +210,9 @@ mod http {
 }
 
 #[cfg(feature = "serde-http")]
-pub use self::http::{serialize_header_map, serialize_opt_response_ref, serialize_response, serialize_status_code};
+pub use self::http::{
+  serialize_header_map, serialize_opt_response_ref, serialize_response, serialize_status_code, serialize_url,
+};
 
 #[cfg(test)]
 mod test {

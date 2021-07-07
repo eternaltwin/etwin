@@ -16,6 +16,7 @@ use std::error::Error;
 use std::fmt;
 use std::iter::FusedIterator;
 use std::str::FromStr;
+use thiserror::Error;
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -120,7 +121,7 @@ where
 declare_decimal_id! {
   pub struct DinoparcUserId(u32);
   pub type ParseError = DinoparcUserIdParseError;
-  const BOUNDS = 1..1_000_000_000;
+  const BOUNDS = 0..1_000_000_000;
   const SQL_NAME = "dinoparc_user_id";
 }
 
@@ -259,7 +260,7 @@ pub struct DinoparcUserIdRef {
 declare_decimal_id! {
   pub struct DinoparcDinozId(u32);
   pub type ParseError = DinoparcDinozIdParseError;
-  const BOUNDS = 1..1_000_000_000;
+  const BOUNDS = 0..1_000_000_000;
   const SQL_NAME = "dinoparc_dinoz_id";
 }
 
@@ -324,6 +325,25 @@ pub struct ShortDinoparcDinoz {
 }
 
 impl ShortDinoparcDinoz {
+  pub const fn as_ref(&self) -> DinoparcDinozIdRef {
+    DinoparcDinozIdRef {
+      server: self.server,
+      id: self.id,
+    }
+  }
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcDinoz"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ShortDinoparcDinozWithLevel {
+  pub server: DinoparcServer,
+  pub id: DinoparcDinozId,
+  pub name: DinoparcDinozName,
+  pub level: u16,
+}
+
+impl ShortDinoparcDinozWithLevel {
   pub const fn as_ref(&self) -> DinoparcDinozIdRef {
     DinoparcDinozIdRef {
       server: self.server,
@@ -624,6 +644,16 @@ pub struct DinoparcInventoryResponse<U = ShortDinoparcUser> {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub struct DinoparcExchangeWithResponse<U = ShortDinoparcUser> {
+  pub session_user: DinoparcSessionUser<U>,
+  pub own_bills: u32,
+  pub own_dinoz: Vec<ShortDinoparcDinozWithLevel>,
+  pub other_user: ShortDinoparcUser,
+  pub other_dinoz: Vec<ShortDinoparcDinozWithLevel>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct DinoparcCollectionResponse<U = ShortDinoparcUser> {
   pub session_user: DinoparcSessionUser<U>,
   pub collection: DinoparcCollection,
@@ -662,6 +692,12 @@ pub trait DinoparcClient: Send + Sync {
     id: DinoparcDinozId,
   ) -> Result<DinoparcDinozResponse, EtwinError>;
 
+  async fn get_exchange_with(
+    &self,
+    session: &DinoparcSession,
+    other_user: DinoparcUserId,
+  ) -> Result<DinoparcExchangeWithResponse, EtwinError>;
+
   async fn get_inventory(&self, session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError>;
 
   async fn get_collection(&self, session: &DinoparcSession) -> Result<DinoparcCollectionResponse, EtwinError>;
@@ -678,11 +714,20 @@ pub trait DinoparcStore: Send + Sync {
 
   async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), EtwinError>;
 
+  async fn touch_exchange_with(&self, response: &DinoparcExchangeWithResponse) -> Result<(), EtwinError>;
+
   async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError>;
 
   async fn get_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError>;
 }
 
+#[derive(Debug, Error)]
+pub enum GetExchangeWithError {
+  #[error("A user cannot exchange with itself")]
+  SelfExchange,
+}
+
+// TODO: Move to serde_tools
 #[cfg(feature = "_serde")]
 pub fn serialize_ordered_opt_temporal_map<K: Ord + Serialize, V: Serialize, S: Serializer>(
   value: &Option<LatestTemporal<HashMap<K, V>>>,

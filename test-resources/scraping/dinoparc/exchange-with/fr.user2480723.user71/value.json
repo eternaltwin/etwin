@@ -1,0 +1,40 @@
+{
+  "session_user": {
+    "user": "demurgos",
+    "coins": 2000,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3749448",
+        "name": "Boréo",
+        "location": "0"
+      }
+    ]
+  },
+  "own_bills": 0,
+  "own_dinoz": [
+    {
+      "type": "DinoparcDinoz",
+      "server": "dinoparc.com",
+      "id": "3749448",
+      "name": "Boréo",
+      "level": 1
+    }
+  ],
+  "other_user": {
+    "type": "DinoparcUser",
+    "server": "dinoparc.com",
+    "id": "71",
+    "username": "warp"
+  },
+  "other_dinoz": [
+    {
+      "type": "DinoparcDinoz",
+      "server": "dinoparc.com",
+      "id": "2812554",
+      "name": "Xxx",
+      "level": 1
+    }
+  ]
+}

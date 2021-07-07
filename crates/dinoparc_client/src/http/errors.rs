@@ -1,5 +1,6 @@
 use etwin_core::dinoparc::{DinoparcServer, DinoparcUserIdParseError, DinoparcUsername, DinoparcUsernameParseError};
 use reqwest::StatusCode;
+use std::num::ParseIntError;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -106,6 +107,26 @@ pub enum ScraperError {
   InvalidRewardId(u64),
   #[error("Invalid epic reward {:?}", .0)]
   InvalidEpicReward(String),
+  #[error("Zero or many exchange table, exactly one was expected")]
+  NonUniqueExchangeTable,
+  #[error("Unexpected exchange table layout")]
+  UnexpectedExchangeTableLayout,
+  #[error("Zero or many exchange target, exactly one was expected")]
+  NonUniqueExchangeTarget,
+  #[error("Zero or many bill count, exactly one was expected")]
+  NonUniqueBillCount,
+  #[error("Invalid bill count '{:?}'", .0)]
+  InvalidBillCount(String, ParseIntError),
+  #[error("Zero or many exchange dinoz list, exactly one was expected")]
+  NonUniqueExchangeDinozList,
+  #[error("Missing value attribute on exchange dinoz")]
+  MissingExchangeDinozId,
+  #[error("Zero or many exchange dinoz text, exactly one was expected")]
+  NonUniqueExchangeDinozText,
+  #[error("Invalid exchange dinoz name and level '{:?}'", .0)]
+  InvalidExchangeDinozNameLevel(String),
+  #[error("Zero or many user id in link, exactly one was expected")]
+  NonUniqueUserIdInLink,
   #[error("Zero or many content pane, exactly one was expected")]
   NonUniqueContentPane,
   #[error("Zero or many dinozView table, exactly one was expected")]

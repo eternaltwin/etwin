@@ -5,9 +5,10 @@ use etwin_core::core::{Instant, IntPercentage, PeriodLower};
 use etwin_core::dinoparc::{
   ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcCollection, DinoparcCollectionResponse, DinoparcDinozElements,
   DinoparcDinozId, DinoparcDinozIdRef, DinoparcDinozName, DinoparcDinozRace, DinoparcDinozResponse, DinoparcDinozSkin,
-  DinoparcEpicRewardKey, DinoparcInventoryResponse, DinoparcItemId, DinoparcLocationId, DinoparcRewardId,
-  DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore, DinoparcUserId,
-  DinoparcUserIdRef, DinoparcUsername, GetDinoparcDinozOptions, GetDinoparcUserOptions, ShortDinoparcUser,
+  DinoparcEpicRewardKey, DinoparcExchangeWithResponse, DinoparcInventoryResponse, DinoparcItemId, DinoparcLocationId,
+  DinoparcRewardId, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore,
+  DinoparcUserId, DinoparcUserIdRef, DinoparcUsername, GetDinoparcDinozOptions, GetDinoparcUserOptions,
+  ShortDinoparcUser,
 };
 use etwin_core::pg_num::{PgU16, PgU32};
 use etwin_core::temporal::{ForeignRetrieved, ForeignSnapshot, LatestTemporal};
@@ -156,6 +157,10 @@ where
     tx.commit().await?;
 
     Ok(())
+  }
+
+  async fn touch_exchange_with(&self, _response: &DinoparcExchangeWithResponse) -> Result<(), EtwinError> {
+    todo!()
   }
 
   async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError> {

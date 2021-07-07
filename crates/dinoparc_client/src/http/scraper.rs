@@ -4,9 +4,10 @@ use crate::http::url::{DinoparcRequest, DinoparcUrls};
 use etwin_core::core::IntPercentage;
 use etwin_core::dinoparc::{
   DinoparcCollection, DinoparcCollectionResponse, DinoparcDinoz, DinoparcDinozElements, DinoparcDinozId,
-  DinoparcDinozName, DinoparcDinozRace, DinoparcDinozResponse, DinoparcEpicRewardKey, DinoparcInventoryResponse,
-  DinoparcItemId, DinoparcRewardId, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel,
-  DinoparcUserId, DinoparcUsername, ShortDinoparcDinoz,
+  DinoparcDinozName, DinoparcDinozRace, DinoparcDinozResponse, DinoparcEpicRewardKey, DinoparcExchangeWithResponse,
+  DinoparcInventoryResponse, DinoparcItemId, DinoparcRewardId, DinoparcServer, DinoparcSessionUser, DinoparcSkill,
+  DinoparcSkillLevel, DinoparcUserId, DinoparcUsername, ShortDinoparcDinoz, ShortDinoparcDinozWithLevel,
+  ShortDinoparcUser,
 };
 use etwin_scraper_tools::{ElementRefExt, FlashVars};
 use itertools::Itertools;
@@ -39,6 +40,9 @@ static EPIC_REWARD_RE: Lazy<Regex> =
 
 /// Regular expression to extract match decimal integer
 static DECIMAL_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r#"0|[1-9]\d*"#).unwrap());
+
+/// Regular expression to extract data from a dinoz exhange list
+static EXCHANGE_DINOZ_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r#"^(.+) \(niv ([1-9]\d*)\)$"#).unwrap());
 
 #[cfg_attr(test, derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -303,6 +307,143 @@ pub(crate) fn scrape_collection(doc: &Html) -> Result<DinoparcCollectionResponse
       epic_rewards: epic_rewards.unwrap_or_default(),
     },
   })
+}
+
+pub(crate) fn scrape_exchange_with(doc: &Html) -> Result<DinoparcExchangeWithResponse<DinoparcUsername>, ScraperError> {
+  let root = doc.root_element();
+
+  let context = scrape_context(root)?;
+  let session_user = scrape_session_user(context.server, root)?;
+
+  let exchange_table = root
+    .select(&Selector::parse(".siteContent .contentPane form > table").unwrap())
+    .exactly_one()
+    .map_err(|_| ScraperError::NonUniqueExchangeTable)?;
+
+  let rows: Vec<ElementRef> = exchange_table
+    .select(&Selector::parse(":scope > tbody > tr").unwrap())
+    .collect();
+
+  if rows.len() != 6 {
+    return Err(ScraperError::UnexpectedExchangeTableLayout);
+  }
+
+  let other_user: ShortDinoparcUser = {
+    let other_user = rows[0]
+      .select(&Selector::parse(":scope > th > a").unwrap())
+      .exactly_one()
+      .map_err(|_| ScraperError::NonUniqueExchangeTarget)?;
+
+    let id = {
+      let other_user = other_user.value().attr("href").ok_or(ScraperError::MissingLinkHref)?;
+      let other_user = DinoparcUrls::new(context.server)
+        .parse_from_root(other_user)
+        .map_err(|_| ScraperError::InvalidLinkHref(other_user.to_string()))?;
+      let req = other_user
+        .query_pairs()
+        .filter_map(|(k, v)| if k.as_ref() == "r" { Some(v) } else { None })
+        .exactly_one()
+        .map_err(|_| ScraperError::NonUniqueDinoparcRequest)?;
+      let req = DinoparcRequest::new(req.as_ref());
+      let id = req
+        .pairs()
+        .filter_map(|(k, v)| if k == "id" { Some(v) } else { None })
+        .exactly_one()
+        .map_err(|_| ScraperError::NonUniqueUserIdInLink)?;
+      DinoparcUserId::from_str(id).map_err(|e| ScraperError::InvalidUserId(id.to_string(), e))?
+    };
+    let username = {
+      let username = other_user
+        .get_one_text()
+        .map_err(|_| ScraperError::NonUniqueUsernameText)?;
+      // No trimming: already trimmed
+      DinoparcUsername::from_str(username).map_err(|e| ScraperError::InvalidUsername(username.to_string(), e))?
+    };
+    ShortDinoparcUser {
+      server: context.server,
+      id,
+      username,
+    }
+  };
+
+  let own_bills: u32 = {
+    let max_bills = rows[1]
+      .select(&Selector::parse(":scope > td > span.bill").unwrap())
+      .exactly_one()
+      .map_err(|_| ScraperError::NonUniqueExchangeTarget)?;
+
+    let max_bills = max_bills
+      .text()
+      .filter_map(|t| DECIMAL_RE.find(t))
+      .exactly_one()
+      .map_err(|_| ScraperError::NonUniqueBillCount)?;
+
+    let max_bills = max_bills.as_str();
+    let max_bills: u32 = max_bills
+      .parse()
+      .map_err(|e| ScraperError::InvalidBillCount(max_bills.to_string(), e))?;
+    max_bills
+  };
+
+  Ok(DinoparcExchangeWithResponse {
+    session_user,
+    own_bills,
+    own_dinoz: scrape_exchange_dinoz_list(context.server, rows[2])?,
+    other_user,
+    other_dinoz: scrape_exchange_dinoz_list(context.server, rows[5])?,
+  })
+}
+
+fn scrape_exchange_dinoz_list(
+  server: DinoparcServer,
+  row: ElementRef,
+) -> Result<Vec<ShortDinoparcDinozWithLevel>, ScraperError> {
+  let dinoz = row
+    .select(&Selector::parse(":scope > td > select").unwrap())
+    .exactly_one()
+    .map_err(|_| ScraperError::NonUniqueExchangeDinozList)?;
+
+  dinoz
+    .select(&Selector::parse(":scope > option").unwrap())
+    .enumerate()
+    .filter_map(|(i, dinoz)| if i == 0 { None } else { Some(dinoz) })
+    .map(|dinoz| -> Result<ShortDinoparcDinozWithLevel, ScraperError> {
+      let id = dinoz
+        .value()
+        .attr("value")
+        .ok_or(ScraperError::MissingExchangeDinozId)?;
+      let id: DinoparcDinozId = id.parse().map_err(|_| ScraperError::InvalidDinozId(id.to_string()))?;
+
+      let name_level = dinoz
+        .get_one_text()
+        .map_err(|_| ScraperError::NonUniqueExchangeDinozText)?;
+      let name_level = EXCHANGE_DINOZ_RE
+        .captures(name_level)
+        .ok_or_else(|| ScraperError::InvalidExchangeDinozNameLevel(name_level.to_string()))?;
+      let name = name_level
+        .get(1)
+        .expect("Echange dinoz name and level capture should have a group with id 1")
+        .as_str();
+      let level = name_level
+        .get(2)
+        .expect("Echange dinoz name and level capture should have a group with id 1")
+        .as_str();
+
+      let name: DinoparcDinozName = name
+        .parse()
+        .map_err(|_| ScraperError::InvalidDinozName(name.to_string()))?;
+      let level: u16 = level
+        .parse()
+        .map_err(|_| ScraperError::InvalidDinozLevel(level.to_string()))?;
+
+      Ok(ShortDinoparcDinozWithLevel {
+        server,
+        id,
+        name,
+        level,
+      })
+    })
+    .collect()
 }
 
 pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse<DinoparcUsername>, ScraperError> {
@@ -721,9 +862,12 @@ fn scrape_sidebar_dinoz(server: DinoparcServer, dinoz: ElementRef) -> Result<Sho
 
 #[cfg(test)]
 mod test {
-  use crate::http::scraper::{scrape_bank, scrape_collection, scrape_dinoz, scrape_inventory, BankScraping};
+  use crate::http::scraper::{
+    scrape_bank, scrape_collection, scrape_dinoz, scrape_exchange_with, scrape_inventory, BankScraping,
+  };
   use etwin_core::dinoparc::{
-    DinoparcCollectionResponse, DinoparcDinozResponse, DinoparcInventoryResponse, DinoparcUsername,
+    DinoparcCollectionResponse, DinoparcDinozResponse, DinoparcExchangeWithResponse, DinoparcInventoryResponse,
+    DinoparcUsername,
   };
   use scraper::Html;
   use std::path::{Path, PathBuf};
@@ -811,6 +955,28 @@ mod test {
 
     let value_json = ::std::fs::read_to_string(value_path).expect("Failed to read value file");
     let expected = serde_json::from_str::<DinoparcCollectionResponse<DinoparcUsername>>(&value_json)
+      .expect("Failed to parse value file");
+
+    assert_eq!(actual, expected);
+  }
+
+  #[test_resources("./test-resources/scraping/dinoparc/exchange-with/*/")]
+  fn test_scrape_exchange_with(path: &str) {
+    let path: PathBuf = Path::join(Path::new("../.."), path);
+    let value_path = path.join("value.json");
+    let html_path = path.join("main.utf8.html");
+    let actual_path = path.join("rs.actual.json");
+
+    let raw_html = ::std::fs::read_to_string(html_path).expect("Failed to read html file");
+
+    let html = Html::parse_document(&raw_html);
+
+    let actual = scrape_exchange_with(&html).unwrap();
+    let actual_json = serde_json::to_string_pretty(&actual).unwrap();
+    ::std::fs::write(actual_path, format!("{}\n", actual_json)).expect("Failed to write actual file");
+
+    let value_json = ::std::fs::read_to_string(value_path).expect("Failed to read value file");
+    let expected = serde_json::from_str::<DinoparcExchangeWithResponse<DinoparcUsername>>(&value_json)
       .expect("Failed to parse value file");
 
     assert_eq!(actual, expected);

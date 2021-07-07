@@ -2,8 +2,8 @@ use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::dinoparc::{
   ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcCollectionResponse, DinoparcDinozResponse,
-  DinoparcInventoryResponse, DinoparcStore, DinoparcUserId, GetDinoparcDinozOptions, GetDinoparcUserOptions,
-  ShortDinoparcUser,
+  DinoparcExchangeWithResponse, DinoparcInventoryResponse, DinoparcStore, DinoparcUserId, GetDinoparcDinozOptions,
+  GetDinoparcUserOptions, ShortDinoparcUser,
 };
 use etwin_core::types::EtwinError;
 use std::collections::HashMap;
@@ -75,6 +75,10 @@ where
   }
 
   async fn touch_dinoz(&self, _response: &DinoparcDinozResponse) -> Result<(), EtwinError> {
+    todo!()
+  }
+
+  async fn touch_exchange_with(&self, _response: &DinoparcExchangeWithResponse) -> Result<(), EtwinError> {
     todo!()
   }
 

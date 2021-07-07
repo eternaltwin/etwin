@@ -12,12 +12,12 @@ use erased_serde::Serialize as ErasedSerialize;
 use etwin_core::clock::Clock;
 use etwin_core::dinoparc::{
   DinoparcClient, DinoparcCollectionResponse, DinoparcCredentials, DinoparcDinozId, DinoparcDinozResponse,
-  DinoparcInventoryResponse, DinoparcMachineId, DinoparcServer, DinoparcSession, DinoparcSessionKey,
-  DinoparcSessionUser, DinoparcUsername, ShortDinoparcUser,
+  DinoparcExchangeWithResponse, DinoparcInventoryResponse, DinoparcMachineId, DinoparcServer, DinoparcSession,
+  DinoparcSessionKey, DinoparcSessionUser, DinoparcUserId, DinoparcUsername, GetExchangeWithError, ShortDinoparcUser,
 };
 use etwin_core::types::EtwinError;
 use etwin_log::Logger;
-use etwin_serde_tools::{serialize_header_map, serialize_status_code};
+use etwin_serde_tools::{serialize_header_map, serialize_status_code, serialize_url};
 use md5::{Digest, Md5};
 use reqwest::header::HeaderMap;
 use reqwest::{Client, RequestBuilder, Response, StatusCode};
@@ -126,6 +126,7 @@ impl<'a> From<HttpDinoparcClientEvent<'a, &'a [u8]>> for HttpEvent<'a> {
 
 #[derive(Clone, Debug, Serialize)]
 pub struct HttpResponseMeta {
+  #[serde(serialize_with = "serialize_url")]
   uri: Url,
   #[serde(serialize_with = "serialize_status_code")]
   status: StatusCode,
@@ -393,6 +394,40 @@ where
         dinoz: response.session_user.dinoz,
       },
       dinoz: response.dinoz,
+    })
+  }
+
+  async fn get_exchange_with(
+    &self,
+    session: &DinoparcSession,
+    other_user: DinoparcUserId,
+  ) -> Result<DinoparcExchangeWithResponse, EtwinError> {
+    if other_user == session.user.id {
+      return Err(Box::new(GetExchangeWithError::SelfExchange));
+    }
+
+    let html = self
+      .get_html(
+        DinoparcUrls::new(session.user.server).exchange_with(other_user),
+        Some(&session.key),
+      )
+      .await?;
+    let response = scraper::scrape_exchange_with(&html)?;
+    // TODO: Assert username matches
+    Ok(DinoparcExchangeWithResponse {
+      session_user: DinoparcSessionUser {
+        user: ShortDinoparcUser {
+          server: session.user.server,
+          id: session.user.id,
+          username: response.session_user.user,
+        },
+        coins: response.session_user.coins,
+        dinoz: response.session_user.dinoz,
+      },
+      own_bills: response.own_bills,
+      own_dinoz: response.own_dinoz,
+      other_user: response.other_user,
+      other_dinoz: response.other_dinoz,
     })
   }
 

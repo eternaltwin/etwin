@@ -1,4 +1,4 @@
-use etwin_core::dinoparc::{DinoparcDinozId, DinoparcMachineId, DinoparcServer};
+use etwin_core::dinoparc::{DinoparcDinozId, DinoparcMachineId, DinoparcServer, DinoparcUserId};
 use reqwest::Url;
 
 pub struct DinoparcUrls {
@@ -53,10 +53,10 @@ impl DinoparcUrls {
   // pub fn exchange(&self) -> Url {
   //   self.make_url("bill", &[])
   // }
-  //
-  // pub fn exchange_with(&self, user_id: DinoparcUserId) -> Url {
-  //   user_id.with_str(|user| self.make_url("bill", &[("uid", user)]))
-  // }
+
+  pub fn exchange_with(&self, user_id: DinoparcUserId) -> Url {
+    user_id.with_str(|user| self.make_url("bill", &[("uid", user)]))
+  }
 
   pub fn dinoz(&self, dinoz_id: DinoparcDinozId) -> Url {
     dinoz_id.with_str(|dinoz| self.make_url("dino", &[("id", dinoz)]))

@@ -1,0 +1,32 @@
+{
+  "session_user": {
+    "user": "demurgos",
+    "coins": 4050,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "en.dinoparc.com",
+        "id": "765440",
+        "name": "Gator",
+        "location": "4"
+      }
+    ]
+  },
+  "own_bills": 0,
+  "own_dinoz": [
+    {
+      "type": "DinoparcDinoz",
+      "server": "en.dinoparc.com",
+      "id": "765440",
+      "name": "Gator",
+      "level": 1
+    }
+  ],
+  "other_user": {
+    "type": "DinoparcUser",
+    "server": "en.dinoparc.com",
+    "id": "2",
+    "username": "margaret"
+  },
+  "other_dinoz": []
+}

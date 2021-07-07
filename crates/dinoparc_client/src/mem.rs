@@ -3,8 +3,8 @@ use etwin_core::clock::Clock;
 use etwin_core::core::Instant;
 use etwin_core::dinoparc::{
   DinoparcClient, DinoparcCollectionResponse, DinoparcCredentials, DinoparcDinozId, DinoparcDinozResponse,
-  DinoparcInventoryResponse, DinoparcPassword, DinoparcServer, DinoparcSession, DinoparcSessionKey, DinoparcUserId,
-  DinoparcUsername, ShortDinoparcUser,
+  DinoparcExchangeWithResponse, DinoparcInventoryResponse, DinoparcPassword, DinoparcServer, DinoparcSession,
+  DinoparcSessionKey, DinoparcUserId, DinoparcUsername, ShortDinoparcUser,
 };
 use etwin_core::types::EtwinError;
 use std::collections::hash_map::Entry;
@@ -224,7 +224,15 @@ where
     _session: &DinoparcSession,
     _id: DinoparcDinozId,
   ) -> Result<DinoparcDinozResponse, EtwinError> {
-    unimplemented!()
+    todo!()
+  }
+
+  async fn get_exchange_with(
+    &self,
+    _session: &DinoparcSession,
+    _other_user: DinoparcUserId,
+  ) -> Result<DinoparcExchangeWithResponse, EtwinError> {
+    todo!()
   }
 
   async fn get_inventory(&self, _session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError> {
