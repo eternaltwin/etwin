@@ -127,7 +127,7 @@ declare_decimal_id! {
 declare_new_string! {
   pub struct DinoparcUsername(String);
   pub type ParseError = DinoparcUsernameParseError;
-  const PATTERN = r"^[0-9A-Za-z-]{1,14}$";
+  const PATTERN = r"^[0-9A-Za-z_-]{1,14}$";
   const SQL_NAME = "dinoparc_username";
 }
 
