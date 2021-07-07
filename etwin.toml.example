@@ -62,6 +62,12 @@ app_uri = "http://myhordes.localhost"
 callback_uri = "http://myhordes.localhost/oauth/callback"
 secret = "dev_secret"
 
+[clients.kingdom]
+display_name = "Kingdom"
+app_uri = "http://localhost:8000"
+callback_uri = "http://localhost:8000/oauth/callback"
+secret = "dev_secret"
+
 [clients.neoparc]
 display_name = "NeoParc"
 app_uri = "http://neoparc.localhost"
