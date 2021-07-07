@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+use etwin_constants::dinoparc::MAX_SIDEBAR_DINOZ_COUNT;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, IntPercentage, PeriodLower};
@@ -8,7 +9,7 @@ use etwin_core::dinoparc::{
   DinoparcEpicRewardKey, DinoparcExchangeWithResponse, DinoparcInventoryResponse, DinoparcItemId, DinoparcLocationId,
   DinoparcRewardId, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore,
   DinoparcUserId, DinoparcUserIdRef, DinoparcUsername, GetDinoparcDinozOptions, GetDinoparcUserOptions,
-  ShortDinoparcUser,
+  ShortDinoparcDinozWithLevel, ShortDinoparcUser,
 };
 use etwin_core::pg_num::{PgU16, PgU32};
 use etwin_core::temporal::{ForeignRetrieved, ForeignSnapshot, LatestTemporal};
@@ -21,7 +22,7 @@ use sqlx::postgres::PgQueryResult;
 use sqlx::types::Uuid;
 use sqlx::{PgPool, Postgres, Transaction};
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
-use std::convert::TryInto;
+use std::convert::TryFrom;
 use std::error::Error;
 
 pub struct PgDinoparcStore<TyClock, TyDatabase, TyUuidGenerator>
@@ -159,8 +160,16 @@ where
     Ok(())
   }
 
-  async fn touch_exchange_with(&self, _response: &DinoparcExchangeWithResponse) -> Result<(), EtwinError> {
-    todo!()
+  async fn touch_exchange_with(&self, response: &DinoparcExchangeWithResponse) -> Result<(), EtwinError> {
+    let now = self.clock.now();
+    let mut tx = self.database.as_ref().begin().await?;
+    touch_dinoparc_session_user(&mut tx, now, &response.session_user).await?;
+    touch_dinoparc_bills(&mut tx, now, response.session_user.user.as_ref(), response.own_bills).await?;
+    touch_dinoparc_user(&mut tx, now, &response.other_user).await?;
+    touch_dinoparc_exchange_dinoz(&mut tx, now, response.session_user.user.as_ref(), &response.own_dinoz).await?;
+    touch_dinoparc_exchange_dinoz(&mut tx, now, response.other_user.as_ref(), &response.other_dinoz).await?;
+    tx.commit().await?;
+    Ok(())
   }
 
   async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError> {
@@ -367,16 +376,19 @@ where
       dinoz_count_value: Option<PgU32>,
     }
 
+    // TODO: Use the pattern from `latest_dinoparc_coins` for all properties
     let row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
       WITH latest_dinoparc_coins AS (
-        SELECT dinoparc_server, dinoparc_user_id,
-          LAST_VALUE(period) OVER w AS period,
-          LAST_VALUE(retrieved_at) OVER w AS retrieved,
-          LAST_VALUE(coins) OVER w AS coins
+        SELECT
+          dinoparc_server, dinoparc_user_id, period, retrieved_at, coins
         FROM dinoparc_coins
-        WHERE lower(period) <= $3::INSTANT
-        WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+        WHERE
+          dinoparc_server = $1::DINOPARC_SERVER
+          AND dinoparc_user_id = $2::DINOPARC_USER_ID
+          AND lower(period) <= $3::INSTANT
+        ORDER BY lower(period) DESC
+        LIMIT 1
       ),
       latest_dinoparc_inventories AS (
         SELECT dinoparc_server, dinoparc_user_id,
@@ -407,7 +419,7 @@ where
         WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
       )
       SELECT dinoparc_server, dinoparc_user_id, archived_at, username,
-        coins.period AS coins_period, coins.retrieved[CARDINALITY(coins.retrieved)] AS coins_retrieved_latest, coins.coins AS coins_value,
+        coins.period AS coins_period, coins.retrieved_at[CARDINALITY(coins.retrieved_at)] AS coins_retrieved_latest, coins.coins AS coins_value,
         inventory.period AS inventory_period, inventory.retrieved[CARDINALITY(inventory.retrieved)] AS inventory_retrieved_latest, inventory.item_counts AS inventory_value,
         collection.period AS collection_period, collection.retrieved[CARDINALITY(collection.retrieved)] AS collection_retrieved_latest, collection.rewards AS collection_rewards, collection.epic_rewards AS collection_epic_rewards,
         dinoz_count.period AS dinoz_count_period, dinoz_count.retrieved[CARDINALITY(dinoz_count.retrieved)] AS dinoz_count_retrieved_latest, dinoz_count.dinoz_count AS dinoz_count_value
@@ -512,20 +524,23 @@ where
         }
 
         let rows: Vec<Row> = sqlx::query_as::<_, Row>(
-              r"
-          SELECT LAST_VALUE(dinoparc_dinoz_id) OVER w AS dinoparc_dinoz_id
+          r"
+          SELECT DISTINCT ON (offset_in_list) dinoparc_dinoz_id
           FROM dinoparc_user_dinoz
-          WHERE dinoparc_server = $1::DINOPARC_SERVER AND dinoparc_user_id = $2::DINOPARC_USER_ID AND lower(period) <= $3::INSTANT AND offset_in_list < $4::U32
-          WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_user_id, offset_in_list) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
-          ORDER BY offset_in_list;
+          WHERE
+            dinoparc_server = $1::DINOPARC_SERVER
+            AND dinoparc_user_id = $2::DINOPARC_USER_ID
+            AND lower(period) <= $3::INSTANT
+            AND offset_in_list < $4::U32
+          ORDER BY offset_in_list, lower(period) DESC;
         ",
         )
-          .bind(options.server)
-          .bind(options.id)
-          .bind(time)
-          .bind(dinoz_count)
-          .fetch_all(&mut tx)
-          .await?;
+        .bind(options.server)
+        .bind(options.id)
+        .bind(time)
+        .bind(dinoz_count)
+        .fetch_all(&mut tx)
+        .await?;
 
         let dinoz: Vec<DinoparcDinozIdRef> = rows
           .into_iter()
@@ -598,26 +613,47 @@ async fn touch_dinoparc_session_user(
   touch_dinoparc_user(tx, now, &session_user.user).await?;
   let user = session_user.user.as_ref();
   touch_dinoparc_coins(tx, now, user, session_user.coins).await?;
-  touch_dinoparc_user_dinoz_count(
-    tx,
-    now,
-    user,
-    session_user.dinoz.len().try_into().expect("OverflowOnUserDinozCount"),
-  )
-  .await?;
-  for (offset, dinoz) in session_user.dinoz.iter().enumerate() {
+  for dinoz in session_user.dinoz.iter() {
     touch_dinoparc_dinoz(tx, now, dinoz.as_ref()).await?;
-    touch_dinoparc_user_dinoz_item(
-      tx,
-      now,
-      user,
-      offset.try_into().expect("OverflowOnUserDinozOffset"),
-      dinoz.as_ref(),
-    )
-    .await?;
+  }
+  let dinoz_count = u32::try_from(session_user.dinoz.len()).expect("OverflowOnUserDinozCount");
+  if dinoz_count < u32::from(MAX_SIDEBAR_DINOZ_COUNT) {
+    touch_dinoparc_user_dinoz_count(tx, now, user, dinoz_count).await?;
+    for (offset, dinoz) in session_user.dinoz.iter().enumerate() {
+      let offset = u32::try_from(offset).expect("OverflowOnUserDinozOffset");
+      touch_dinoparc_dinoz(tx, now, dinoz.as_ref()).await?;
+      touch_dinoparc_user_dinoz_item(tx, now, user, offset, dinoz.as_ref()).await?;
+    }
+  }
+  for dinoz in session_user.dinoz.iter() {
     touch_dinoparc_dinoz_owner(tx, now, dinoz.as_ref(), user).await?;
     touch_dinoparc_dinoz_name(tx, now, dinoz.as_ref(), &dinoz.name).await?;
     touch_dinoparc_dinoz_location(tx, now, dinoz.as_ref(), dinoz.location).await?;
+  }
+  Ok(())
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn touch_dinoparc_exchange_dinoz(
+  tx: &mut Transaction<'_, Postgres>,
+  now: Instant,
+  owner: DinoparcUserIdRef,
+  list: &[ShortDinoparcDinozWithLevel],
+) -> Result<(), EtwinError> {
+  for dinoz in list.iter() {
+    touch_dinoparc_dinoz(tx, now, dinoz.as_ref()).await?;
+  }
+  let dinoz_count = u32::try_from(list.len()).expect("OverflowOnExchangeDinozCount");
+  touch_dinoparc_user_dinoz_count(tx, now, owner, dinoz_count).await?;
+  for (offset, dinoz) in list.iter().enumerate() {
+    let offset = u32::try_from(offset).expect("OverflowOnExchangeDinozOffset");
+    touch_dinoparc_dinoz(tx, now, dinoz.as_ref()).await?;
+    touch_dinoparc_user_dinoz_item(tx, now, owner, offset, dinoz.as_ref()).await?;
+  }
+  for dinoz in list.iter() {
+    touch_dinoparc_dinoz_owner(tx, now, dinoz.as_ref(), owner).await?;
+    touch_dinoparc_dinoz_name(tx, now, dinoz.as_ref(), &dinoz.name).await?;
+    touch_dinoparc_dinoz_level(tx, now, dinoz.as_ref(), dinoz.level).await?;
   }
   Ok(())
 }
@@ -689,6 +725,34 @@ async fn touch_dinoparc_coins(
   .bind(user.server)
   .bind(user.id)
   .bind(PgU32::from(coins))
+  .execute(&mut *tx)
+  .await?;
+  // Affected row counts:
+  // 1 : 1 updated (matching data)
+  // 1 : 1 inserted (first insert)
+  // 2 : 1 inserted (data change), 1 invalidated (primary)
+  assert!((1..=2u64).contains(&res.rows_affected()));
+  Ok(())
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn touch_dinoparc_bills(
+  tx: &mut Transaction<'_, Postgres>,
+  now: Instant,
+  user: DinoparcUserIdRef,
+  bills: u32,
+) -> Result<(), EtwinError> {
+  let res: PgQueryResult = sqlx::query(upsert_archive_query!(
+    dinoparc_bills(
+      time($1 period, retrieved_at),
+      primary($2 dinoparc_server::DINOPARC_SERVER, $3 dinoparc_user_id::DINOPARC_USER_ID),
+      data($4 bills::U32),
+    )
+  ))
+  .bind(now)
+  .bind(user.server)
+  .bind(user.id)
+  .bind(PgU32::from(bills))
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -939,6 +1003,7 @@ async fn touch_dinoparc_user_dinoz_count(
   // 1 : 1 inserted (first insert)
   // 2 : 1 inserted (data change), 1 invalidated (primary)
   assert!((1..=2u64).contains(&res.rows_affected()));
+
   Ok(())
 }
 
@@ -954,6 +1019,7 @@ async fn touch_dinoparc_user_dinoz_item(
       time($1 period, retrieved_at),
       primary($2 dinoparc_server::DINOPARC_SERVER, $3 dinoparc_user_id::DINOPARC_USER_ID, $4 offset_in_list::U32),
       data($5 dinoparc_dinoz_id::DINOPARC_DINOZ_ID),
+      unique(dinoz(dinoparc_server, dinoparc_dinoz_id)),
     )
   ))
   .bind(now)

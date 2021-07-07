@@ -10,7 +10,7 @@ SessionUser, Vec<InventoryItem>
 SessionUser, DinoparcDinoz
 
 <exchangeWith> (/?a=bill;uid=$USER)
-SessionUser, ShortDinoparcUser, DinozIdNameLevel
+SessionUser, ShortDinoparcUser, Vec<ShortDinoparcDinozWithLevel>
 ```
 
 ## Permanent data
@@ -43,4 +43,20 @@ dinoparc_inventories(dinoparc_server, dinoparc_user_id; item_counts);
 
 <dinoz>
 dinoparc_dinoz_profiles(dinoparc_server, dinoparc_dinoz_id; race, skin, life, level, experience, danger, in_tournament, elements, skills);
+
+<exchangeWith>
+dinoparc_bills(dinoparc_server, dinoparc_user_id; bills);
 ```
+
+## Note
+
+The Dinoz list requires special handling. The sidebar displays only the first
+150 Dinoz. If the player has 151 Dinoz or more, the full list is only available
+in the `exchangeWith` section.
+
+If the player has 149 Dinoz or less, we can always snapshot the whole list.
+If the player has 150 Dinoz, we cannot be sure that the sidebar contains the
+whole list.
+
+Because of this, if the player has 150 Dinoz in the sidebar, we ignore the
+sidebar list.

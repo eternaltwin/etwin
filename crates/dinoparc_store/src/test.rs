@@ -4,9 +4,9 @@ use etwin_core::clock::VirtualClock;
 use etwin_core::core::{IntPercentage, PeriodLower};
 use etwin_core::dinoparc::{
   ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcCollection, DinoparcCollectionResponse, DinoparcDinoz,
-  DinoparcDinozElements, DinoparcDinozIdRef, DinoparcDinozRace, DinoparcDinozResponse, DinoparcInventoryResponse,
-  DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore, GetDinoparcDinozOptions,
-  GetDinoparcUserOptions, ShortDinoparcDinoz, ShortDinoparcUser,
+  DinoparcDinozElements, DinoparcDinozIdRef, DinoparcDinozRace, DinoparcDinozResponse, DinoparcExchangeWithResponse,
+  DinoparcInventoryResponse, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore,
+  GetDinoparcDinozOptions, GetDinoparcUserOptions, ShortDinoparcDinoz, ShortDinoparcDinozWithLevel, ShortDinoparcUser,
 };
 use etwin_core::temporal::{ForeignRetrieved, ForeignSnapshot, LatestTemporal};
 use std::collections::{HashMap, HashSet};
@@ -28,6 +28,9 @@ macro_rules! test_dinoparc_store_pg {
     register_test!($(#[$meta])*, $api, test_touch_collection_one_dinoz);
     register_test!($(#[$meta])*, $api, test_touch_dinoz_yasumi);
     register_test!($(#[$meta])*, $api, test_touch_dinoz_king_kong);
+    register_test!($(#[$meta])*, $api, test_touch_exchange_with_none_admin);
+    register_test!($(#[$meta])*, $api, test_touch_exchange_with_extra);
+    register_test!($(#[$meta])*, $api, test_touch_exchange_with_extra_then_drop_some);
   };
 }
 
@@ -829,6 +832,408 @@ where
             skills.insert(DinoparcSkill::Run, DinoparcSkillLevel::new(1).unwrap());
             skills.insert(DinoparcSkill::Stamina, DinoparcSkillLevel::new(4).unwrap());
             skills
+          },
+        },
+      }),
+    });
+    assert_eq!(actual, expected);
+  }
+}
+
+pub(crate) async fn test_touch_exchange_with_none_admin<TyClock, TyDinoparcStore>(
+  api: TestApi<TyClock, TyDinoparcStore>,
+) where
+  TyClock: ApiRef<VirtualClock>,
+  TyDinoparcStore: DinoparcStore,
+{
+  let alice = DinoparcSessionUser {
+    user: ShortDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    coins: 10000,
+    dinoz: Vec::new(),
+  };
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .dinoparc_store
+      .touch_exchange_with(&DinoparcExchangeWithResponse {
+        session_user: alice.clone(),
+        own_bills: 1,
+        own_dinoz: Vec::new(),
+        other_user: ShortDinoparcUser {
+          server: DinoparcServer::DinoparcCom,
+          id: "0".parse().unwrap(),
+          username: "admin".parse().unwrap(),
+        },
+        other_dinoz: vec![ShortDinoparcDinozWithLevel {
+          server: DinoparcServer::DinoparcCom,
+          id: "2".parse().unwrap(),
+          name: "Balboa".parse().unwrap(),
+          level: 1,
+        }],
+      })
+      .await;
+    assert_ok!(actual);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .dinoparc_store
+      .get_user(&GetDinoparcUserOptions {
+        server: DinoparcServer::DinoparcCom,
+        id: "1".parse().unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = Some(ArchivedDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      username: "alice".parse().unwrap(),
+      coins: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: 10000,
+        },
+      }),
+      inventory: None,
+      collection: None,
+      dinoz: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: Vec::new(),
+        },
+      }),
+    });
+    assert_eq!(actual, expected);
+  }
+}
+
+pub(crate) async fn test_touch_exchange_with_extra<TyClock, TyDinoparcStore>(api: TestApi<TyClock, TyDinoparcStore>)
+where
+  TyClock: ApiRef<VirtualClock>,
+  TyDinoparcStore: DinoparcStore,
+{
+  let alice = DinoparcSessionUser {
+    user: ShortDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    coins: 10000,
+    dinoz: {
+      let mut list = Vec::new();
+      for i in 0..150 {
+        list.push(ShortDinoparcDinoz {
+          server: DinoparcServer::DinoparcCom,
+          id: format!("{}", i).parse().unwrap(),
+          name: format!("Dino{}", i).parse().unwrap(),
+          location: "0".parse().unwrap(),
+        })
+      }
+      list
+    },
+  };
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .dinoparc_store
+      .touch_exchange_with(&DinoparcExchangeWithResponse {
+        session_user: alice.clone(),
+        own_bills: 1,
+        own_dinoz: {
+          let mut list = Vec::new();
+          for i in 0..160 {
+            list.push(ShortDinoparcDinozWithLevel {
+              server: DinoparcServer::DinoparcCom,
+              id: format!("{}", i).parse().unwrap(),
+              name: format!("Dino{}", i).parse().unwrap(),
+              level: 1,
+            })
+          }
+          list
+        },
+        other_user: ShortDinoparcUser {
+          server: DinoparcServer::DinoparcCom,
+          id: "0".parse().unwrap(),
+          username: "admin".parse().unwrap(),
+        },
+        other_dinoz: Vec::new(),
+      })
+      .await;
+    assert_ok!(actual);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .dinoparc_store
+      .get_user(&GetDinoparcUserOptions {
+        server: DinoparcServer::DinoparcCom,
+        id: "1".parse().unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = Some(ArchivedDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      username: "alice".parse().unwrap(),
+      coins: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: 10000,
+        },
+      }),
+      inventory: None,
+      collection: None,
+      dinoz: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: {
+            let mut list = Vec::new();
+            for i in 0..160 {
+              list.push(DinoparcDinozIdRef {
+                server: DinoparcServer::DinoparcCom,
+                id: format!("{}", i).parse().unwrap(),
+              })
+            }
+            list
+          },
+        },
+      }),
+    });
+    assert_eq!(actual, expected);
+  }
+}
+
+pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDinoparcStore>(
+  api: TestApi<TyClock, TyDinoparcStore>,
+) where
+  TyClock: ApiRef<VirtualClock>,
+  TyDinoparcStore: DinoparcStore,
+{
+  let alice = DinoparcSessionUser {
+    user: ShortDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    coins: 10000,
+    dinoz: {
+      let mut list = Vec::new();
+      for i in 0..150 {
+        list.push(ShortDinoparcDinoz {
+          server: DinoparcServer::DinoparcCom,
+          id: format!("{}", i).parse().unwrap(),
+          name: format!("Dino{}", i).parse().unwrap(),
+          location: "0".parse().unwrap(),
+        })
+      }
+      list
+    },
+  };
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .dinoparc_store
+      .touch_exchange_with(&DinoparcExchangeWithResponse {
+        session_user: alice.clone(),
+        own_bills: 1,
+        own_dinoz: {
+          let mut list = Vec::new();
+          for i in 0..160 {
+            list.push(ShortDinoparcDinozWithLevel {
+              server: DinoparcServer::DinoparcCom,
+              id: format!("{}", i).parse().unwrap(),
+              name: format!("Dino{}", i).parse().unwrap(),
+              level: 1,
+            })
+          }
+          list
+        },
+        other_user: ShortDinoparcUser {
+          server: DinoparcServer::DinoparcCom,
+          id: "0".parse().unwrap(),
+          username: "admin".parse().unwrap(),
+        },
+        other_dinoz: Vec::new(),
+      })
+      .await;
+    assert_ok!(actual);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .dinoparc_store
+      .touch_inventory(&DinoparcInventoryResponse {
+        session_user: DinoparcSessionUser {
+          dinoz: {
+            let mut list = Vec::new();
+            for i in 20..170 {
+              list.push(ShortDinoparcDinoz {
+                server: DinoparcServer::DinoparcCom,
+                id: format!("{}", i).parse().unwrap(),
+                name: format!("Dino{}", i).parse().unwrap(),
+                location: "0".parse().unwrap(),
+              })
+            }
+            list
+          },
+          ..alice.clone()
+        },
+        inventory: HashMap::new(),
+      })
+      .await;
+    assert_ok!(actual);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .dinoparc_store
+      .get_user(&GetDinoparcUserOptions {
+        server: DinoparcServer::DinoparcCom,
+        id: "1".parse().unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = Some(ArchivedDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      username: "alice".parse().unwrap(),
+      coins: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+          },
+          value: 10000,
+        },
+      }),
+      inventory: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+          },
+          value: HashMap::new(),
+        },
+      }),
+      collection: None,
+      dinoz: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: {
+            let mut list = Vec::new();
+            for i in 0..160 {
+              list.push(DinoparcDinozIdRef {
+                server: DinoparcServer::DinoparcCom,
+                id: format!("{}", i).parse().unwrap(),
+              })
+            }
+            list
+          },
+        },
+      }),
+    });
+    assert_eq!(actual, expected);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .dinoparc_store
+      .touch_inventory(&DinoparcInventoryResponse {
+        session_user: DinoparcSessionUser {
+          dinoz: {
+            let mut list = Vec::new();
+            for i in 21..170 {
+              list.push(ShortDinoparcDinoz {
+                server: DinoparcServer::DinoparcCom,
+                id: format!("{}", i).parse().unwrap(),
+                name: format!("Dino{}", i).parse().unwrap(),
+                location: "0".parse().unwrap(),
+              })
+            }
+            list
+          },
+          ..alice
+        },
+        inventory: HashMap::new(),
+      })
+      .await;
+    assert_ok!(actual);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .dinoparc_store
+      .get_user(&GetDinoparcUserOptions {
+        server: DinoparcServer::DinoparcCom,
+        id: "1".parse().unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = Some(ArchivedDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      username: "alice".parse().unwrap(),
+      coins: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+          },
+          value: 10000,
+        },
+      }),
+      inventory: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+          },
+          value: HashMap::new(),
+        },
+      }),
+      collection: None,
+      dinoz: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 3)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+          },
+          value: {
+            let mut list = Vec::new();
+            for i in 21..170 {
+              list.push(DinoparcDinozIdRef {
+                server: DinoparcServer::DinoparcCom,
+                id: format!("{}", i).parse().unwrap(),
+              })
+            }
+            list
           },
         },
       }),

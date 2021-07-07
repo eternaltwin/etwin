@@ -69,9 +69,9 @@ macro_rules! upsert_archive_query {
         "WHERE NOT EXISTS (SELECT 1 FROM matching_current_row)",
       "), ",
       "current_rows AS (",
-        "SELECT * FROM current_row_primary ",
+        "SELECT * FROM current_row_primary",
         $($(
-        "UNION SELECT * FROM current_row_", stringify!($ukey),
+        " UNION SELECT * FROM current_row_", stringify!($ukey),
         )*)?
       "), ",
       "rows_to_invalidate AS (",

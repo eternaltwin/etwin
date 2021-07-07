@@ -143,6 +143,30 @@ impl PeriodLower {
   pub const fn unbounded(start: Instant) -> Self {
     Self::From(PeriodFrom { start })
   }
+
+  pub const fn bounded(start: Instant, end: Instant) -> Self {
+    Self::Finite(FinitePeriod { start, end })
+  }
+
+  /// Updates the end instant to be the minimum of the current end and provided value
+  pub fn end_min(self, other_end: Option<Instant>) -> Self {
+    if let Some(end) = other_end {
+      Self::Finite(self.bounded_end_min(end))
+    } else {
+      self
+    }
+  }
+
+  /// Updates the end instant to be the minimum of the current end and provided value
+  pub fn bounded_end_min(self, other_end: Instant) -> FinitePeriod {
+    match self {
+      Self::From(PeriodFrom { start }) => FinitePeriod { start, end: other_end },
+      Self::Finite(FinitePeriod { start, end }) => FinitePeriod {
+        start,
+        end: Instant::min(end, other_end),
+      },
+    }
+  }
 }
 
 #[cfg(feature = "_serde")]

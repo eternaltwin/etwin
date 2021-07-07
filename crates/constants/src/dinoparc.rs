@@ -1,5 +1,7 @@
 use etwin_core::dinoparc::{DinoparcLocationId, DinoparcSkill};
 
+pub const MAX_SIDEBAR_DINOZ_COUNT: u8 = 150;
+
 /// Represents a location in the official Dinoparc game
 ///
 /// The names are the ones displayed on the HTML parts of the website.
