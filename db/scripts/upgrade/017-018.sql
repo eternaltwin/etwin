@@ -56,4 +56,3 @@ CREATE TABLE dinoparc_collections (
   CONSTRAINT dinoparc_collections__rewards__fk FOREIGN KEY (dinoparc_reward_set_id) REFERENCES dinoparc_reward_sets(dinoparc_reward_set_id) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT dinoparc_collections__epic_rewards__fk FOREIGN KEY (dinoparc_epic_reward_set_id) REFERENCES dinoparc_epic_reward_sets(dinoparc_epic_reward_set_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
-

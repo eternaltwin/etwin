@@ -27,6 +27,7 @@ macro_rules! test_dinoparc_store_pg {
     register_test!($(#[$meta])*, $api, test_touch_inventory_three_dinoz);
     register_test!($(#[$meta])*, $api, test_touch_collection_one_dinoz);
     register_test!($(#[$meta])*, $api, test_touch_dinoz_yasumi);
+    register_test!($(#[$meta])*, $api, test_touch_dinoz_king_kong);
   };
 }
 
@@ -615,6 +616,218 @@ where
             skills.insert(DinoparcSkill::Intelligence, DinoparcSkillLevel::new(5).unwrap());
             skills.insert(DinoparcSkill::Strength, DinoparcSkillLevel::new(5).unwrap());
             skills.insert(DinoparcSkill::MartialArts, DinoparcSkillLevel::new(5).unwrap());
+            skills
+          },
+        },
+      }),
+    });
+    assert_eq!(actual, expected);
+  }
+}
+
+pub(crate) async fn test_touch_dinoz_king_kong<TyClock, TyDinoparcStore>(api: TestApi<TyClock, TyDinoparcStore>)
+where
+  TyClock: ApiRef<VirtualClock>,
+  TyDinoparcStore: DinoparcStore,
+{
+  let alice = DinoparcSessionUser {
+    user: ShortDinoparcUser {
+      server: DinoparcServer::EnDinoparcCom,
+      id: "58144".parse().unwrap(),
+      username: "josum41".parse().unwrap(),
+    },
+    coins: 4927,
+    dinoz: vec![ShortDinoparcDinoz {
+      server: DinoparcServer::EnDinoparcCom,
+      id: "299930".parse().unwrap(),
+      name: "King-Kong".parse().unwrap(),
+      location: "20".parse().unwrap(),
+    }],
+  };
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .dinoparc_store
+      .touch_dinoz(&DinoparcDinozResponse {
+        session_user: alice.clone(),
+        dinoz: DinoparcDinoz {
+          server: DinoparcServer::EnDinoparcCom,
+          id: "299930".parse().unwrap(),
+          name: "King-Kong".parse().unwrap(),
+          location: "20".parse().unwrap(),
+          race: DinoparcDinozRace::Gorilloz,
+          skin: "5I3Qvg92CQLxvGE4".parse().unwrap(),
+          life: IntPercentage::new(18).unwrap(),
+          level: 25,
+          experience: IntPercentage::new(27).unwrap(),
+          danger: -65,
+          in_tournament: false,
+          elements: DinoparcDinozElements {
+            fire: 2,
+            earth: 19,
+            water: 17,
+            thunder: 13,
+            air: 4,
+          },
+          skills: {
+            let mut skills = HashMap::new();
+            skills.insert(DinoparcSkill::Bargain, DinoparcSkillLevel::new(2).unwrap());
+            skills.insert(DinoparcSkill::Climb, DinoparcSkillLevel::new(5).unwrap());
+            skills.insert(DinoparcSkill::Dexterity, DinoparcSkillLevel::new(2).unwrap());
+            skills.insert(DinoparcSkill::Dig, DinoparcSkillLevel::new(5).unwrap());
+            skills.insert(DinoparcSkill::Intelligence, DinoparcSkillLevel::new(5).unwrap());
+            skills.insert(DinoparcSkill::Medicine, DinoparcSkillLevel::new(4).unwrap());
+            skills.insert(DinoparcSkill::Perception, DinoparcSkillLevel::new(2).unwrap());
+            skills.insert(DinoparcSkill::Run, DinoparcSkillLevel::new(1).unwrap());
+            skills.insert(DinoparcSkill::Stamina, DinoparcSkillLevel::new(4).unwrap());
+            skills
+          },
+        },
+      })
+      .await;
+    assert_ok!(actual);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .dinoparc_store
+      .get_dinoz(&GetDinoparcDinozOptions {
+        server: DinoparcServer::EnDinoparcCom,
+        id: "299930".parse().unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = Some(ArchivedDinoparcDinoz {
+      server: DinoparcServer::EnDinoparcCom,
+      id: "299930".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      name: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: "King-Kong".parse().unwrap(),
+        },
+      }),
+      owner: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: ShortDinoparcUser {
+            server: DinoparcServer::EnDinoparcCom,
+            id: "58144".parse().unwrap(),
+            username: "josum41".parse().unwrap(),
+          },
+        },
+      }),
+      location: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: "20".parse().unwrap(),
+        },
+      }),
+      race: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: DinoparcDinozRace::Gorilloz,
+        },
+      }),
+      skin: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: "5I3Qvg92CQLxvGE4".parse().unwrap(),
+        },
+      }),
+      life: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: IntPercentage::new(18).unwrap(),
+        },
+      }),
+      level: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: 25,
+        },
+      }),
+      experience: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: IntPercentage::new(27).unwrap(),
+        },
+      }),
+      danger: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: -65,
+        },
+      }),
+      in_tournament: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: false,
+        },
+      }),
+      elements: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: DinoparcDinozElements {
+            fire: 2,
+            earth: 19,
+            water: 17,
+            thunder: 13,
+            air: 4,
+          },
+        },
+      }),
+      skills: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: {
+            let mut skills = HashMap::new();
+            skills.insert(DinoparcSkill::Bargain, DinoparcSkillLevel::new(2).unwrap());
+            skills.insert(DinoparcSkill::Climb, DinoparcSkillLevel::new(5).unwrap());
+            skills.insert(DinoparcSkill::Dexterity, DinoparcSkillLevel::new(2).unwrap());
+            skills.insert(DinoparcSkill::Dig, DinoparcSkillLevel::new(5).unwrap());
+            skills.insert(DinoparcSkill::Intelligence, DinoparcSkillLevel::new(5).unwrap());
+            skills.insert(DinoparcSkill::Medicine, DinoparcSkillLevel::new(4).unwrap());
+            skills.insert(DinoparcSkill::Perception, DinoparcSkillLevel::new(2).unwrap());
+            skills.insert(DinoparcSkill::Run, DinoparcSkillLevel::new(1).unwrap());
+            skills.insert(DinoparcSkill::Stamina, DinoparcSkillLevel::new(4).unwrap());
             skills
           },
         },

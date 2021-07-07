@@ -404,8 +404,8 @@ declare_new_enum!(
     Castivore,
     #[str("Gluon")]
     Gluon,
-    #[str("Gorriloz")]
-    Gorriloz,
+    #[str("Gorilloz")]
+    Gorilloz,
     #[str("Hippoclamp")]
     Hippoclamp,
     #[str("Kabuki")]
@@ -450,7 +450,7 @@ impl DinoparcDinozRace {
         '2' => Self::Castivore,
         '3' => Self::Sirain,
         '4' => Self::Winks,
-        '5' => Self::Gorriloz,
+        '5' => Self::Gorilloz,
         '6' => Self::Cargou,
         '7' => Self::Hippoclamp,
         '8' => Self::Rokky,

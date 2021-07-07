@@ -7,7 +7,7 @@ enum class DinoparcDinozRace {
   Cargou,
   Castivore,
   Gluon,
-  Gorriloz,
+  Gorilloz,
   Hippoclamp,
   Kabuki,
   Korgon,

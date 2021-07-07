@@ -8,7 +8,7 @@ export type DinoparcDinozRace =
   "Cargou"
   | "Castivore"
   | "Gluon"
-  | "Gorriloz"
+  | "Gorilloz"
   | "Hippoclamp"
   | "Kabuki"
   | "Korgon"
@@ -31,7 +31,7 @@ export const $DinoparcDinozRace: WhiteListType<DinoparcDinozRace> = new WhiteLis
     "Cargou",
     "Castivore",
     "Gluon",
-    "Gorriloz",
+    "Gorilloz",
     "Hippoclamp",
     "Kabuki",
     "Korgon",
