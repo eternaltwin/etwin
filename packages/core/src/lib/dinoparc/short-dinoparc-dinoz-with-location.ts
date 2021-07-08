@@ -8,7 +8,7 @@ import { $DinoparcDinozName, DinoparcDinozName } from "./dinoparc-dinoz-name.js"
 import { $DinoparcLocationId, DinoparcLocationId } from "./dinoparc-location-id.js";
 import { $DinoparcServer, DinoparcServer } from "./dinoparc-server.js";
 
-export interface ShortDinoparcDinoz {
+export interface ShortDinoparcDinozWithLocation {
   type: ObjectType.DinoparcDinoz;
   server: DinoparcServer;
   id: DinoparcDinozId;
@@ -16,7 +16,7 @@ export interface ShortDinoparcDinoz {
   location: DinoparcLocationId;
 }
 
-export const $ShortDinoparcDinoz: RecordIoType<ShortDinoparcDinoz> = new RecordType<ShortDinoparcDinoz>({
+export const $ShortDinoparcDinozWithLocation: RecordIoType<ShortDinoparcDinozWithLocation> = new RecordType<ShortDinoparcDinozWithLocation>({
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.DinoparcDinoz})},
     server: {type: $DinoparcServer},

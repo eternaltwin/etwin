@@ -6,7 +6,7 @@ use etwin_core::dinoparc::{
   DinoparcCollection, DinoparcCollectionResponse, DinoparcDinoz, DinoparcDinozElements, DinoparcDinozId,
   DinoparcDinozName, DinoparcDinozRace, DinoparcDinozResponse, DinoparcEpicRewardKey, DinoparcExchangeWithResponse,
   DinoparcInventoryResponse, DinoparcItemId, DinoparcRewardId, DinoparcServer, DinoparcSessionUser, DinoparcSkill,
-  DinoparcSkillLevel, DinoparcUserId, DinoparcUsername, ShortDinoparcDinoz, ShortDinoparcDinozWithLevel,
+  DinoparcSkillLevel, DinoparcUserId, DinoparcUsername, ShortDinoparcDinozWithLevel, ShortDinoparcDinozWithLocation,
   ShortDinoparcUser,
 };
 use etwin_scraper_tools::{ElementRefExt, FlashVars};
@@ -789,7 +789,7 @@ fn scrape_session_user(
       .exactly_one()
       .map_err(|_| ScraperError::NonUniqueDinozList)?;
 
-    let dinoz: Result<Vec<ShortDinoparcDinoz>, ScraperError> = dinoz_list
+    let dinoz: Result<Vec<ShortDinoparcDinozWithLocation>, ScraperError> = dinoz_list
       .select(&Selector::parse(":scope > li").unwrap())
       .map(|e| scrape_sidebar_dinoz(server, e))
       .collect();
@@ -803,7 +803,10 @@ fn scrape_session_user(
   })
 }
 
-fn scrape_sidebar_dinoz(server: DinoparcServer, dinoz: ElementRef) -> Result<ShortDinoparcDinoz, ScraperError> {
+fn scrape_sidebar_dinoz(
+  server: DinoparcServer,
+  dinoz: ElementRef,
+) -> Result<ShortDinoparcDinozWithLocation, ScraperError> {
   let id = {
     let link: ElementRef = dinoz
       .select(&Selector::parse(":scope > a").unwrap())
@@ -852,7 +855,7 @@ fn scrape_sidebar_dinoz(server: DinoparcServer, dinoz: ElementRef) -> Result<Sho
 
   // <span class="money" title="4051 pièces">4051 <img src="img/icons/tiny_coin.gif"></span>
 
-  Ok(ShortDinoparcDinoz {
+  Ok(ShortDinoparcDinozWithLocation {
     server,
     id,
     name,

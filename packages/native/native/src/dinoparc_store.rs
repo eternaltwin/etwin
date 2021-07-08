@@ -2,7 +2,8 @@ use crate::dinoparc_store::mem::JsMemDinoparcStore;
 use crate::dinoparc_store::pg::JsPgDinoparcStore;
 use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
 use etwin_core::dinoparc::{
-  DinoparcDinozResponse, DinoparcInventoryResponse, DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser,
+  DinoparcCollectionResponse, DinoparcDinozResponse, DinoparcExchangeWithResponse, DinoparcInventoryResponse,
+  DinoparcStore, GetDinoparcUserOptions, ShortDinoparcUser,
 };
 use neon::prelude::*;
 use std::sync::Arc;
@@ -14,7 +15,9 @@ pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject
   ns.set_function(cx, "getUser", get_user)?;
   ns.set_function(cx, "touchShortUser", touch_short_user)?;
   ns.set_function(cx, "touchInventory", touch_inventory)?;
+  ns.set_function(cx, "touchCollection", touch_collection)?;
   ns.set_function(cx, "touchDinoz", touch_dinoz)?;
+  ns.set_function(cx, "touchExchangeWith", touch_exchange_with)?;
   Ok(ns)
 }
 
@@ -73,6 +76,18 @@ pub fn touch_inventory(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   resolve_callback_serde(&mut cx, res, cb)
 }
 
+pub fn touch_collection(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_dinoparc_store(&mut cx, inner)?;
+  let response_json = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let response: DinoparcCollectionResponse = serde_json::from_str(&response_json.value(&mut cx)).unwrap();
+
+  let res = async move { inner.touch_collection(&response).await };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
 pub fn touch_dinoz(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let inner = cx.argument::<JsValue>(0)?;
   let inner = get_native_dinoparc_store(&mut cx, inner)?;
@@ -82,6 +97,18 @@ pub fn touch_dinoz(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let response: DinoparcDinozResponse = serde_json::from_str(&response_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.touch_dinoz(&response).await };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn touch_exchange_with(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_dinoparc_store(&mut cx, inner)?;
+  let response_json = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let response: DinoparcExchangeWithResponse = serde_json::from_str(&response_json.value(&mut cx)).unwrap();
+
+  let res = async move { inner.touch_exchange_with(&response).await };
   resolve_callback_serde(&mut cx, res, cb)
 }
 

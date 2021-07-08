@@ -3,7 +3,15 @@ import {
   $NullableArchivedDinoparcUser,
   ArchivedDinoparcUser
 } from "@eternal-twin/core/lib/dinoparc/archived-dinoparc-user";
+import {
+  $DinoparcCollectionResponse,
+  DinoparcCollectionResponse
+} from "@eternal-twin/core/lib/dinoparc/dinoparc-collection-response";
 import { $DinoparcDinozResponse, DinoparcDinozResponse } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-response";
+import {
+  $DinoparcExchangeWithResponse,
+  DinoparcExchangeWithResponse
+} from "@eternal-twin/core/lib/dinoparc/dinoparc-exchange-with-response";
 import {
   $DinoparcInventoryResponse,
   DinoparcInventoryResponse
@@ -33,6 +41,8 @@ export abstract class NativeDinoparcStore implements DinoparcStore {
   private static TOUCH_SHORT_USER = promisify(native.dinoparcStore.touchShortUser);
   private static TOUCH_DINOZ = promisify(native.dinoparcStore.touchDinoz);
   private static TOUCH_INVENTORY = promisify(native.dinoparcStore.touchInventory);
+  private static TOUCH_COLLECTION = promisify(native.dinoparcStore.touchCollection);
+  private static TOUCH_EXCHANGE_WITH = promisify(native.dinoparcStore.touchExchangeWith);
 
   constructor(box: NativeDinoparcStoreBox) {
     this.box = box;
@@ -55,9 +65,19 @@ export abstract class NativeDinoparcStore implements DinoparcStore {
     await NativeDinoparcStore.TOUCH_INVENTORY(this.box, rawShort);
   }
 
+  async touchCollection(response: Readonly<DinoparcCollectionResponse>): Promise<void> {
+    const rawShort: string = $DinoparcCollectionResponse.write(JSON_WRITER, response);
+    await NativeDinoparcStore.TOUCH_COLLECTION(this.box, rawShort);
+  }
+
   async touchDinoz(response: Readonly<DinoparcDinozResponse>): Promise<void> {
     const rawShort: string = $DinoparcDinozResponse.write(JSON_WRITER, response);
     await NativeDinoparcStore.TOUCH_DINOZ(this.box, rawShort);
+  }
+
+  async touchExchangeWith(response: Readonly<DinoparcExchangeWithResponse>): Promise<void> {
+    const rawShort: string = $DinoparcExchangeWithResponse.write(JSON_WRITER, response);
+    await NativeDinoparcStore.TOUCH_EXCHANGE_WITH(this.box, rawShort);
   }
 }
 

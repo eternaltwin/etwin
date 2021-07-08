@@ -5,10 +5,13 @@ import { LocaleId } from "../core/locale-id.js";
 import { ObjectType } from "../core/object-type.js";
 import { UuidGenerator } from "../core/uuid-generator.js";
 import { DinoparcClient } from "../dinoparc/client.js";
+import { DinoparcCollectionResponse } from "../dinoparc/dinoparc-collection-response.js";
 import { DinoparcCredentials } from "../dinoparc/dinoparc-credentials.js";
+import { DinoparcDinozIdRef } from "../dinoparc/dinoparc-dinoz-id-ref.js";
 import { DinoparcDinozResponse } from "../dinoparc/dinoparc-dinoz-response.js";
 import { DinoparcInventoryResponse } from "../dinoparc/dinoparc-inventory-response.js";
 import { DinoparcSession } from "../dinoparc/dinoparc-session.js";
+import { DinoparcUserId } from "../dinoparc/dinoparc-user-id";
 import { DinoparcStore } from "../dinoparc/store.js";
 import { $EmailAddress, EmailAddress } from "../email/email-address.js";
 import { EmailService } from "../email/service.js";
@@ -567,7 +570,17 @@ export async function archiveDino(client: DinoparcClient, store: DinoparcStore, 
   try {
     const inv: DinoparcInventoryResponse = await client.getInventory(dparcSession);
     await store.touchInventory(inv);
-    for (const dinoz of inv.sessionUser.dinoz) {
+    const coll: DinoparcCollectionResponse = await client.getCollection(dparcSession);
+    await store.touchCollection(coll);
+    let dinozList: readonly DinoparcDinozIdRef[] = inv.sessionUser.dinoz;
+    if (dinozList.length >= 150) {
+      const targets: [DinoparcUserId, DinoparcUserId] = await client.getPreferredExchangeWith(dparcSession.user.server);
+      const target = targets[0] !== dparcSession.user.id ? targets[0] : targets[1];
+      const exchangeWith = await client.getExchangeWith(dparcSession, target);
+      await store.touchExchangeWith(exchangeWith);
+      dinozList = exchangeWith.ownDinoz;
+    }
+    for (const dinoz of dinozList) {
       sleep(100);
       const d: DinoparcDinozResponse = await client.getDinoz(dparcSession, dinoz.id);
       await store.touchDinoz(d);

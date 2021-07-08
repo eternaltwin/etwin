@@ -6,7 +6,8 @@ use etwin_core::dinoparc::{
   ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcCollection, DinoparcCollectionResponse, DinoparcDinoz,
   DinoparcDinozElements, DinoparcDinozIdRef, DinoparcDinozRace, DinoparcDinozResponse, DinoparcExchangeWithResponse,
   DinoparcInventoryResponse, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore,
-  GetDinoparcDinozOptions, GetDinoparcUserOptions, ShortDinoparcDinoz, ShortDinoparcDinozWithLevel, ShortDinoparcUser,
+  GetDinoparcDinozOptions, GetDinoparcUserOptions, ShortDinoparcDinozWithLevel, ShortDinoparcDinozWithLocation,
+  ShortDinoparcUser,
 };
 use etwin_core::temporal::{ForeignRetrieved, ForeignSnapshot, LatestTemporal};
 use std::collections::{HashMap, HashSet};
@@ -122,7 +123,7 @@ where
       username: "alice".parse().unwrap(),
     },
     coins: 10000,
-    dinoz: vec![ShortDinoparcDinoz {
+    dinoz: vec![ShortDinoparcDinozWithLocation {
       server: DinoparcServer::DinoparcCom,
       id: "2".parse().unwrap(),
       name: "Balboa".parse().unwrap(),
@@ -213,19 +214,19 @@ where
     },
     coins: 10000,
     dinoz: vec![
-      ShortDinoparcDinoz {
+      ShortDinoparcDinozWithLocation {
         server: DinoparcServer::DinoparcCom,
         id: "2".parse().unwrap(),
         name: "One".parse().unwrap(),
         location: "3".parse().unwrap(),
       },
-      ShortDinoparcDinoz {
+      ShortDinoparcDinozWithLocation {
         server: DinoparcServer::DinoparcCom,
         id: "4".parse().unwrap(),
         name: "Two".parse().unwrap(),
         location: "5".parse().unwrap(),
       },
-      ShortDinoparcDinoz {
+      ShortDinoparcDinozWithLocation {
         server: DinoparcServer::DinoparcCom,
         id: "6".parse().unwrap(),
         name: "Three".parse().unwrap(),
@@ -326,7 +327,7 @@ where
       username: "alice".parse().unwrap(),
     },
     coins: 10000,
-    dinoz: vec![ShortDinoparcDinoz {
+    dinoz: vec![ShortDinoparcDinozWithLocation {
       server: DinoparcServer::DinoparcCom,
       id: "2".parse().unwrap(),
       name: "Balboa".parse().unwrap(),
@@ -431,13 +432,13 @@ where
     },
     coins: 527051,
     dinoz: vec![
-      ShortDinoparcDinoz {
+      ShortDinoparcDinozWithLocation {
         server: DinoparcServer::EnDinoparcCom,
         id: "765483".parse().unwrap(),
         name: "Yasumi".parse().unwrap(),
         location: "0".parse().unwrap(),
       },
-      ShortDinoparcDinoz {
+      ShortDinoparcDinozWithLocation {
         server: DinoparcServer::EnDinoparcCom,
         id: "765484".parse().unwrap(),
         name: "Manaka".parse().unwrap(),
@@ -640,7 +641,7 @@ where
       username: "josum41".parse().unwrap(),
     },
     coins: 4927,
-    dinoz: vec![ShortDinoparcDinoz {
+    dinoz: vec![ShortDinoparcDinozWithLocation {
       server: DinoparcServer::EnDinoparcCom,
       id: "299930".parse().unwrap(),
       name: "King-Kong".parse().unwrap(),
@@ -934,7 +935,7 @@ where
     dinoz: {
       let mut list = Vec::new();
       for i in 0..150 {
-        list.push(ShortDinoparcDinoz {
+        list.push(ShortDinoparcDinozWithLocation {
           server: DinoparcServer::DinoparcCom,
           id: format!("{}", i).parse().unwrap(),
           name: format!("Dino{}", i).parse().unwrap(),
@@ -1039,7 +1040,7 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
     dinoz: {
       let mut list = Vec::new();
       for i in 0..150 {
-        list.push(ShortDinoparcDinoz {
+        list.push(ShortDinoparcDinozWithLocation {
           server: DinoparcServer::DinoparcCom,
           id: format!("{}", i).parse().unwrap(),
           name: format!("Dino{}", i).parse().unwrap(),
@@ -1087,7 +1088,7 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
           dinoz: {
             let mut list = Vec::new();
             for i in 20..170 {
-              list.push(ShortDinoparcDinoz {
+              list.push(ShortDinoparcDinozWithLocation {
                 server: DinoparcServer::DinoparcCom,
                 id: format!("{}", i).parse().unwrap(),
                 name: format!("Dino{}", i).parse().unwrap(),
@@ -1168,7 +1169,7 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
           dinoz: {
             let mut list = Vec::new();
             for i in 21..170 {
-              list.push(ShortDinoparcDinoz {
+              list.push(ShortDinoparcDinozWithLocation {
                 server: DinoparcServer::DinoparcCom,
                 id: format!("{}", i).parse().unwrap(),
                 name: format!("Dino{}", i).parse().unwrap(),

@@ -317,14 +317,14 @@ pub struct DinoparcDinozIdRef {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcDinoz"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ShortDinoparcDinoz {
+pub struct ShortDinoparcDinozWithLocation {
   pub server: DinoparcServer,
   pub id: DinoparcDinozId,
   pub name: DinoparcDinozName,
   pub location: DinoparcLocationId,
 }
 
-impl ShortDinoparcDinoz {
+impl ShortDinoparcDinozWithLocation {
   pub const fn as_ref(&self) -> DinoparcDinozIdRef {
     DinoparcDinozIdRef {
       server: self.server,
@@ -631,7 +631,7 @@ declare_new_enum!(
 pub struct DinoparcSessionUser<U = ShortDinoparcUser> {
   pub user: U,
   pub coins: u32,
-  pub dinoz: Vec<ShortDinoparcDinoz>,
+  pub dinoz: Vec<ShortDinoparcDinozWithLocation>,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -678,6 +678,11 @@ pub struct DinoparcDinozResponse<U = ShortDinoparcUser> {
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait DinoparcClient: Send + Sync {
+  /// Returns the id of two distinct existing users on the provided Dinoparc server.
+  /// These users should be used when an `exchangeWith` query is required to fetch the
+  /// full Dinoz list but the specific target does not matter.
+  async fn get_preferred_exchange_with(&self, server: DinoparcServer) -> [DinoparcUserId; 2];
+
   async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, EtwinError>;
 
   async fn test_session(
@@ -695,7 +700,7 @@ pub trait DinoparcClient: Send + Sync {
   async fn get_exchange_with(
     &self,
     session: &DinoparcSession,
-    other_user: DinoparcUserId,
+    recipient: DinoparcUserId,
   ) -> Result<DinoparcExchangeWithResponse, EtwinError>;
 
   async fn get_inventory(&self, session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError>;

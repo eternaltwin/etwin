@@ -9,5 +9,5 @@ export const $DinoparcRewardId: Ucs2StringType = new Ucs2StringType({
   minLength: 1,
   maxLength: 2,
   trimmed: true,
-  pattern: /^[1-9]\d?$/,
+  pattern: /^(:?[1-9]|[1-4]\d)?$/,
 });

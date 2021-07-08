@@ -1,10 +1,15 @@
 import { DinoparcClient } from "@eternal-twin/core/lib/dinoparc/client";
 import {
+  $DinoparcCollectionResponse,
+  DinoparcCollectionResponse
+} from "@eternal-twin/core/lib/dinoparc/dinoparc-collection-response";
+import {
   $DinoparcCredentials,
   DinoparcCredentials
 } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials";
 import { $DinoparcDinozId, DinoparcDinozId } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-id";
 import { $DinoparcDinozResponse, DinoparcDinozResponse } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-response";
+import { $DinoparcExchangeWithResponse, DinoparcExchangeWithResponse } from "@eternal-twin/core/lib/dinoparc/dinoparc-exchange-with-response";
 import {
   $DinoparcInventoryResponse,
   DinoparcInventoryResponse
@@ -23,6 +28,8 @@ import {
 } from "@eternal-twin/core/lib/dinoparc/dinoparc-session-key";
 import { $DinoparcUserId, DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id";
 import { $DinoparcUsername, DinoparcUsername } from "@eternal-twin/core/lib/dinoparc/dinoparc-username";
+import { IoType } from "kryo";
+import { ArrayType } from "kryo/lib/array";
 import { JSON_READER } from "kryo-json/lib/json-reader";
 import { JSON_WRITER } from "kryo-json/lib/json-writer";
 import { promisify } from "util";
@@ -34,15 +41,26 @@ declare const HttpDinoparcClientBox: unique symbol;
 declare const MemDinoparcClientBox: unique symbol;
 export type NativeDinoparcClientBox = typeof HttpDinoparcClientBox | typeof MemDinoparcClientBox;
 
+const $DinoparcUserIdPair: IoType<[DinoparcUserId, DinoparcUserId]> = new ArrayType({itemType: $DinoparcUserId, minLength: 2, maxLength: 2}) as unknown as IoType<[DinoparcUserId, DinoparcUserId]>;
+
 export abstract class NativeDinoparcClient implements DinoparcClient {
   public readonly box: NativeDinoparcClientBox;
+  private static GET_PREFERRED_EXCHANGE_WITH = promisify(native.dinoparcClient.getPreferredExchangeWith);
   private static CREATE_SESSION = promisify(native.dinoparcClient.createSession);
   private static TEST_SESSION = promisify(native.dinoparcClient.testSession);
-  private static GET_INVENTORY = promisify(native.dinoparcClient.getInventory);
+  private static GET_EXCHANGE_WITH = promisify(native.dinoparcClient.getExchangeWith);
   private static GET_DINOZ = promisify(native.dinoparcClient.getDinoz);
+  private static GET_INVENTORY = promisify(native.dinoparcClient.getInventory);
+  private static GET_COLLECTION = promisify(native.dinoparcClient.getCollection);
 
   constructor(box: NativeDinoparcClientBox) {
     this.box = box;
+  }
+
+  async getPreferredExchangeWith(options: DinoparcServer): Promise<[DinoparcUserId, DinoparcUserId]> {
+    const rawOptions: string = $DinoparcServer.write(JSON_WRITER, options);
+    const rawOut = await NativeDinoparcClient.GET_PREFERRED_EXCHANGE_WITH(this.box, rawOptions);
+    return $DinoparcUserIdPair.read(JSON_READER, rawOut);
   }
 
   async createSession(options: DinoparcCredentials): Promise<DinoparcSession> {
@@ -58,17 +76,30 @@ export abstract class NativeDinoparcClient implements DinoparcClient {
     return $NullableDinoparcSession.read(JSON_READER, rawOut);
   }
 
+  async getDinoz(session: DinoparcSession, dinozId: DinoparcDinozId): Promise<DinoparcDinozResponse> {
+    const rawSession: string = $DinoparcSession.write(JSON_WRITER, session);
+    const rawDinozId: string = $DinoparcDinozId.write(JSON_WRITER, dinozId);
+    const rawOut = await NativeDinoparcClient.GET_DINOZ(this.box, rawSession, rawDinozId);
+    return $DinoparcDinozResponse.read(JSON_READER, rawOut);
+  }
+
+  async getExchangeWith(session: DinoparcSession, otherUser: DinoparcUserId): Promise<DinoparcExchangeWithResponse> {
+    const rawSession: string = $DinoparcSession.write(JSON_WRITER, session);
+    const rawOtherUser: string = $DinoparcUserId.write(JSON_WRITER, otherUser);
+    const rawOut = await NativeDinoparcClient.GET_EXCHANGE_WITH(this.box, rawSession, rawOtherUser);
+    return $DinoparcExchangeWithResponse.read(JSON_READER, rawOut);
+  }
+
   async getInventory(session: DinoparcSession): Promise<DinoparcInventoryResponse> {
     const rawSession: string = $DinoparcSession.write(JSON_WRITER, session);
     const rawOut = await NativeDinoparcClient.GET_INVENTORY(this.box, rawSession);
     return $DinoparcInventoryResponse.read(JSON_READER, rawOut);
   }
 
-  async getDinoz(session: DinoparcSession, dinozId: DinoparcDinozId): Promise<DinoparcDinozResponse> {
+  async getCollection(session: DinoparcSession): Promise<DinoparcCollectionResponse> {
     const rawSession: string = $DinoparcSession.write(JSON_WRITER, session);
-    const rawDinozId: string = $DinoparcDinozId.write(JSON_WRITER, dinozId);
-    const rawOut = await NativeDinoparcClient.GET_DINOZ(this.box, rawSession, rawDinozId);
-    return $DinoparcDinozResponse.read(JSON_READER, rawOut);
+    const rawOut = await NativeDinoparcClient.GET_COLLECTION(this.box, rawSession);
+    return $DinoparcCollectionResponse.read(JSON_READER, rawOut);
   }
 }
 

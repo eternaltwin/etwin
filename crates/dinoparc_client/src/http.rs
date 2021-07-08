@@ -267,6 +267,14 @@ where
   TyClock: Clock,
   TyLogger: for<'r> Logger<HttpDinoparcClientEvent<'r, &'r [u8]>>,
 {
+  async fn get_preferred_exchange_with(&self, server: DinoparcServer) -> [DinoparcUserId; 2] {
+    match server {
+      DinoparcServer::DinoparcCom => ["71".parse().unwrap(), "72".parse().unwrap()],
+      DinoparcServer::EnDinoparcCom => ["1".parse().unwrap(), "2".parse().unwrap()],
+      DinoparcServer::SpDinoparcCom => ["2".parse().unwrap(), "1".parse().unwrap()],
+    }
+  }
+
   async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, EtwinError> {
     let logger = &self.logger;
     let mut event: CreateSessionEvent<&[u8]> = CreateSessionEvent::new(options.server, &options.username);

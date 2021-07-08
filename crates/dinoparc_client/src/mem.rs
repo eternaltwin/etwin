@@ -163,6 +163,10 @@ impl<TyClock> DinoparcClient for MemDinoparcClient<TyClock>
 where
   TyClock: Clock,
 {
+  async fn get_preferred_exchange_with(&self, _server: DinoparcServer) -> [DinoparcUserId; 2] {
+    todo!()
+  }
+
   async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, EtwinError> {
     let mut state = self
       .state
