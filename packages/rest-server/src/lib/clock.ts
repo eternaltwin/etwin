@@ -1,5 +1,6 @@
 import { ClockService } from "@eternal-twin/core/lib/clock/service";
-import Router, { RouterContext } from "@koa/router";
+import Router from "@koa/router";
+import { ParameterizedContext } from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import { CaseStyle } from "kryo";
@@ -38,7 +39,7 @@ export function createClockRouter(api: Api): any {
 
   router.get("/", getClock);
 
-  async function getClock(cx: RouterContext<KoaState>): Promise<void> {
+  async function getClock(cx: ParameterizedContext<KoaState>): Promise<void> {
     const time = api.clock.now().toISOString();
     cx.response.body = {time};
   }
@@ -49,7 +50,7 @@ export function createClockRouter(api: Api): any {
     router.put("/", koaCompose([koaBodyParser(), setClock]));
 
     // eslint-disable-next-line no-inner-declarations
-    async function setClock(cx: RouterContext<KoaState>): Promise<void> {
+    async function setClock(cx: ParameterizedContext<KoaState>): Promise<void> {
       let body: ClockBody;
       try {
         body = $ClockBody.read(JSON_VALUE_READER, cx.request.body);

@@ -35,8 +35,8 @@ import { UserService } from "@eternal-twin/core/lib/user/service";
 import { $UpdateUserPatch, UpdateUserPatch } from "@eternal-twin/core/lib/user/update-user-patch";
 import { $User, User } from "@eternal-twin/core/lib/user/user";
 import { $UserId, UserId } from "@eternal-twin/core/lib/user/user-id";
-import Router, { RouterContext } from "@koa/router";
-import Koa from "koa";
+import Router  from "@koa/router";
+import Koa, { ParameterizedContext } from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import { TryUnionType } from "kryo/lib/try-union";
@@ -68,7 +68,7 @@ export function createUsersRouter(api: Api): Router {
 
   router.post("/", koaCompose([koaBodyParser(), createUser]));
 
-  async function createUser(cx: RouterContext<KoaState>): Promise<void> {
+  async function createUser(cx: ParameterizedContext<KoaState>): Promise<void> {
     const variantValue = $CreateUserBody.variantRead(JSON_VALUE_READER, cx.request.body);
     let userAndSession: UserAndSession;
     switch (variantValue.variant) {
@@ -104,7 +104,7 @@ export function createUsersRouter(api: Api): Router {
 
   router.get("/:user_id", getUserById);
 
-  async function getUserById(cx: RouterContext<KoaState>): Promise<void> {
+  async function getUserById(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawUserId = cx.params["user_id"];
     const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$UserId.test(rawUserId)) {
@@ -128,7 +128,7 @@ export function createUsersRouter(api: Api): Router {
 
   router.patch("/:user_id", koaCompose([koaBodyParser(), updateUserById]));
 
-  async function updateUserById(cx: RouterContext<KoaState>): Promise<void> {
+  async function updateUserById(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawUserId = cx.params["user_id"];
     const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$UserId.test(rawUserId)) {
@@ -159,7 +159,7 @@ export function createUsersRouter(api: Api): Router {
 
   router.put("/:user_id/links/:remote", koaCompose([koaBodyParser(), putUserLink]));
 
-  async function putUserLink(cx: RouterContext<KoaState>): Promise<void> {
+  async function putUserLink(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawUserId = cx.params["user_id"];
     const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$UserId.test(rawUserId)) {
@@ -262,7 +262,7 @@ export function createUsersRouter(api: Api): Router {
 
   router.delete("/:user_id/links/:remote", koaCompose([koaBodyParser(), deleteUserLink]));
 
-  async function deleteUserLink(cx: RouterContext<KoaState>): Promise<void> {
+  async function deleteUserLink(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawUserId = cx.params["user_id"];
     const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$UserId.test(rawUserId)) {

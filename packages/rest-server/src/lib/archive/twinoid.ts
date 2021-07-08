@@ -2,8 +2,8 @@ import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service";
 import { $TwinoidUser, TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user";
 import { $TwinoidUserId, TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id";
-import Router, { RouterContext } from "@koa/router";
-import Koa from "koa";
+import Router  from "@koa/router";
+import Koa, { ParameterizedContext } from "koa";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";
 
 import { KoaAuth } from "../helpers/koa-auth.js";
@@ -19,7 +19,7 @@ export function createTwinoidRouter(api: Api): Router {
 
   router.get("/users/:user_id", getUserById);
 
-  async function getUserById(cx: RouterContext<KoaState>): Promise<void> {
+  async function getUserById(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawUserId: string = cx.params["user_id"];
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$TwinoidUserId.test(rawUserId)) {

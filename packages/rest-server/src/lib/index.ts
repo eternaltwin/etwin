@@ -5,7 +5,8 @@ import { ForumService } from "@eternal-twin/core/lib/forum/service";
 import { HttpHeader, HttpRequest, HttpRouter } from "@eternal-twin/core/lib/http/index";
 import { TwinoidService } from "@eternal-twin/core/lib/twinoid/service";
 import { UserService } from "@eternal-twin/core/lib/user/service";
-import Router, { Middleware, RouterContext } from "@koa/router";
+import Router, { Middleware } from "@koa/router";
+import { ParameterizedContext } from "koa";
 import rawBody from "raw-body";
 
 import { Api as AnnouncementApi, createAnnouncementsRouter } from "./announcements.js";
@@ -41,7 +42,7 @@ export function createApiRouter(api: Api, nativeRouter: HttpRouter): Router {
     cx.response.body = {status: "OK"};
   });
 
-  const nativeMiddleware: Middleware<KoaRestState> = async (cx: RouterContext<KoaRestState>) => {
+  const nativeMiddleware: Middleware<KoaRestState> = async (cx: ParameterizedContext<KoaRestState>) => {
     const apiRoot: string = cx.router.route("ETWIN_API_ROOT").path;
     let path: string = cx.request.path;
     if (!path.startsWith(apiRoot)) {

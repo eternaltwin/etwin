@@ -13,8 +13,8 @@ import {
 } from "@eternal-twin/core/lib/user/link-to-hammerfest-options";
 import { UserService } from "@eternal-twin/core/lib/user/service";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
-import Router, { RouterContext } from "@koa/router";
-import Koa from "koa";
+import Router from "@koa/router";
+import Koa, { ParameterizedContext } from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
@@ -51,7 +51,7 @@ export async function createLinkRouter(api: Api): Promise<Router> {
 
   router.post("/dinoparc", koaCompose([koaBodyParser(), linkToDinoparc]));
 
-  async function linkToDinoparc(cx: RouterContext): Promise<void> {
+  async function linkToDinoparc(cx: ParameterizedContext): Promise<void> {
     const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (acx.type !== AuthType.User) {
       cx.response.status = 401;
@@ -81,7 +81,7 @@ export async function createLinkRouter(api: Api): Promise<Router> {
 
   router.post("/hammerfest", koaCompose([koaBodyParser(), linkToHammerfest]));
 
-  async function linkToHammerfest(cx: RouterContext): Promise<void> {
+  async function linkToHammerfest(cx: ParameterizedContext): Promise<void> {
     const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (acx.type !== AuthType.User) {
       cx.response.status = 401;
@@ -111,7 +111,7 @@ export async function createLinkRouter(api: Api): Promise<Router> {
 
   router.post("/twinoid", koaCompose([koaBodyParser(), linkToTwinoid]));
 
-  async function linkToTwinoid(cx: RouterContext): Promise<void> {
+  async function linkToTwinoid(cx: ParameterizedContext): Promise<void> {
     const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (acx.type !== AuthType.User) {
       cx.response.redirect("/settings");

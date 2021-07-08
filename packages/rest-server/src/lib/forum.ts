@@ -15,8 +15,8 @@ import { $ForumThreadKey, ForumThreadKey } from "@eternal-twin/core/lib/forum/fo
 import { ForumService } from "@eternal-twin/core/lib/forum/service";
 import { $UpdatePostOptions, UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options";
 import { $UserIdRef, UserIdRef } from "@eternal-twin/core/lib/user/user-id-ref";
-import Router, { RouterContext } from "@koa/router";
-import Koa from "koa";
+import Router  from "@koa/router";
+import Koa, { ParameterizedContext } from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
@@ -37,7 +37,7 @@ export function createForumRouter(api: Api): Router {
 
   router.get("/sections", getSections);
 
-  async function getSections(cx: RouterContext<KoaState>): Promise<void> {
+  async function getSections(cx: ParameterizedContext<KoaState>): Promise<void> {
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     const sections: ForumSectionListing = await api.forum.getSections(auth);
     cx.response.body = $ForumSectionListing.write(JSON_VALUE_WRITER, sections);
@@ -45,7 +45,7 @@ export function createForumRouter(api: Api): Router {
 
   router.get("/sections/:section_id", getSectionById);
 
-  async function getSectionById(cx: RouterContext<KoaState>): Promise<void> {
+  async function getSectionById(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawSectionIdOrKey: string = cx.params["section_id"];
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumSectionId.test(rawSectionIdOrKey) && !$ForumSectionKey.test(rawSectionIdOrKey)) {
@@ -76,7 +76,7 @@ export function createForumRouter(api: Api): Router {
 
   router.post("/sections/:section_id", koaCompose([koaBodyParser(), createThread]));
 
-  async function createThread(cx: RouterContext<KoaState>): Promise<void> {
+  async function createThread(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawSectionIdOrKey: string = cx.params["section_id"];
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumSectionId.test(rawSectionIdOrKey) && !$ForumSectionKey.test(rawSectionIdOrKey)) {
@@ -99,7 +99,7 @@ export function createForumRouter(api: Api): Router {
 
   router.post("/sections/:section_id/role_grants", koaCompose([koaBodyParser(), addModerator]));
 
-  async function addModerator(cx: RouterContext<KoaState>): Promise<void> {
+  async function addModerator(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawSectionIdOrKey: string = cx.params["section_id"];
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumSectionId.test(rawSectionIdOrKey) && !$ForumSectionKey.test(rawSectionIdOrKey)) {
@@ -122,7 +122,7 @@ export function createForumRouter(api: Api): Router {
 
   router.delete("/sections/:section_id/role_grants", koaCompose([koaBodyParser(), deleteModerator]));
 
-  async function deleteModerator(cx: RouterContext<KoaState>): Promise<void> {
+  async function deleteModerator(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawSectionIdOrKey: string = cx.params["section_id"];
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumSectionId.test(rawSectionIdOrKey) && !$ForumSectionKey.test(rawSectionIdOrKey)) {
@@ -145,7 +145,7 @@ export function createForumRouter(api: Api): Router {
 
   router.get("/threads/:thread_id", getThreadByIdOrKey);
 
-  async function getThreadByIdOrKey(cx: RouterContext<KoaState>): Promise<void> {
+  async function getThreadByIdOrKey(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawThreadIdOrKey: string = cx.params["thread_id"];
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumThreadId.test(rawThreadIdOrKey) && !$ForumThreadKey.test(rawThreadIdOrKey)) {
@@ -176,7 +176,7 @@ export function createForumRouter(api: Api): Router {
 
   router.post("/threads/:thread_id", koaCompose([koaBodyParser(), createPost]));
 
-  async function createPost(cx: RouterContext<KoaState>): Promise<void> {
+  async function createPost(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawThreadIdOrKey: string = cx.params["thread_id"];
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumThreadId.test(rawThreadIdOrKey) && !$ForumThreadKey.test(rawThreadIdOrKey)) {
@@ -199,7 +199,7 @@ export function createForumRouter(api: Api): Router {
 
   router.get("/posts/:post_id", getPost);
 
-  async function getPost(cx: RouterContext<KoaState>): Promise<void> {
+  async function getPost(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawPostId: string = cx.params["post_id"];
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumPostId.test(rawPostId)) {
@@ -230,7 +230,7 @@ export function createForumRouter(api: Api): Router {
 
   router.patch("/posts/:post_id", koaCompose([koaBodyParser(), updatePost]));
 
-  async function updatePost(cx: RouterContext<KoaState>): Promise<void> {
+  async function updatePost(cx: ParameterizedContext<KoaState>): Promise<void> {
     const rawPostId: string = cx.params["post_id"];
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     if (!$ForumPostId.test(rawPostId)) {

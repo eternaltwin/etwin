@@ -8,8 +8,8 @@ import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service
 import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import { AuthService } from "@eternal-twin/core/lib/auth/service";
 import { $ListingQuery, ListingQuery } from "@eternal-twin/core/lib/core/listing-query";
-import Router, { RouterContext } from "@koa/router";
-import Koa from "koa";
+import Router  from "@koa/router";
+import Koa, { ParameterizedContext } from "koa";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
 import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";
 import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader";
@@ -28,7 +28,7 @@ export function createAnnouncementsRouter(api: Api): Router {
 
   router.get("/", getAnnouncements);
 
-  async function getAnnouncements(cx: RouterContext<KoaState>): Promise<void> {
+  async function getAnnouncements(cx: ParameterizedContext<KoaState>): Promise<void> {
     let query: ListingQuery;
     try {
       query = $ListingQuery.read(QS_VALUE_READER, cx.request.query);
@@ -55,7 +55,7 @@ export function createAnnouncementsRouter(api: Api): Router {
 
   router.post("/", postAnnouncement);
 
-  async function postAnnouncement(cx: RouterContext<KoaState>): Promise<void> {
+  async function postAnnouncement(cx: ParameterizedContext<KoaState>): Promise<void> {
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     let body: CreateAnnouncementOptions;
     try {
@@ -71,7 +71,7 @@ export function createAnnouncementsRouter(api: Api): Router {
 
   router.get("/:id", getAnnouncement);
 
-  async function getAnnouncement(cx: RouterContext<KoaState>): Promise<void> {
+  async function getAnnouncement(cx: ParameterizedContext<KoaState>): Promise<void> {
 
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     const announcement: Announcement | null = await api.announcement.getAnnouncementById(auth, cx.params["id"]);

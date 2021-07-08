@@ -30,8 +30,8 @@ import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client";
 import { LinkToTwinoidMethod } from "@eternal-twin/core/lib/user/link-to-twinoid-method";
 import { UserService } from "@eternal-twin/core/lib/user/service";
 import { KoaAuth, SESSION_COOKIE } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
-import Router, { RouterContext } from "@koa/router";
-import Koa from "koa";
+import Router  from "@koa/router";
+import Koa, { ParameterizedContext } from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
@@ -59,7 +59,7 @@ export async function createOauthRouter(api: Api): Promise<Router> {
 
   router.get("/authorize", grantOauthAuthorization);
 
-  async function grantOauthAuthorization(cx: RouterContext): Promise<void> {
+  async function grantOauthAuthorization(cx: ParameterizedContext): Promise<void> {
     // We start by checking for early errors that may correspond to malicious queries.
     // If the client id is missing, the client does not exist or there is a
     // mismatch on the `redirect_uri`, then we consider we treat it as a
@@ -135,7 +135,7 @@ export async function createOauthRouter(api: Api): Promise<Router> {
 
   router.post("/token", koaCompose([koaBodyParser(), getAccessToken]));
 
-  async function getAccessToken(cx: RouterContext): Promise<void> {
+  async function getAccessToken(cx: ParameterizedContext): Promise<void> {
     const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
     const req: EtwinOauthAccessTokenRequest = $EtwinOauthAccessTokenRequest.read(JSON_VALUE_READER, cx.request.body);
     let accessToken: OauthAccessToken;
@@ -155,7 +155,7 @@ export async function createOauthRouter(api: Api): Promise<Router> {
 
   router.get("/callback", onAuthorizationGrant);
 
-  async function onAuthorizationGrant(cx: RouterContext): Promise<void> {
+  async function onAuthorizationGrant(cx: ParameterizedContext): Promise<void> {
     if (cx.request.query.error !== undefined) {
       cx.response.body = {error: cx.request.query.error};
     }

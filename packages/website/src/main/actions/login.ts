@@ -5,7 +5,8 @@ import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-o
 import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input";
 import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
-import Router, { RouterContext } from "@koa/router";
+import Router from "@koa/router";
+import { ParameterizedContext } from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 
@@ -40,7 +41,7 @@ export async function createLoginRouter(api: Api): Promise<Router> {
 
   router.post("/twinoid", koaCompose([koaBodyParser(), loginWithTwinoid]));
 
-  async function loginWithTwinoid(cx: RouterContext): Promise<void> {
+  async function loginWithTwinoid(cx: ParameterizedContext): Promise<void> {
     // const csrfToken: string = await api.koaAuth.getOrCreateCsrfToken(cx);
     const csrfToken: string = "TODO";
     const state: EtwinOauthStateInput = {

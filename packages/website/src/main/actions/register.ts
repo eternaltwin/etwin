@@ -9,8 +9,8 @@ import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session";
 import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name";
 import { $Username, Username } from "@eternal-twin/core/lib/user/username";
 import { KoaAuth, SESSION_COOKIE } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
-import Router, { RouterContext } from "@koa/router";
-import Koa from "koa";
+import Router  from "@koa/router";
+import Koa, { ParameterizedContext } from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import { CaseStyle } from "kryo";
@@ -72,7 +72,7 @@ export async function createRegisterRouter(api: Api): Promise<Router> {
 
   router.post("/", koaCompose([koaBodyParser(), registerUser]));
 
-  async function registerUser(cx: RouterContext): Promise<void> {
+  async function registerUser(cx: ParameterizedContext): Promise<void> {
     let auth: AuthContext;
     try {
       auth = await api.koaAuth.auth(cx as any as Koa.Context);

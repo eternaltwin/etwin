@@ -1,4 +1,5 @@
-import Router, { RouterContext } from "@koa/router";
+import Router  from "@koa/router";
+import { ParameterizedContext } from "koa";
 
 import { KoaState } from "./koa-state";
 
@@ -10,7 +11,7 @@ export function createAppRouter(_api: Api): Router<KoaState> {
 
   router.get("/releases", getReleases);
 
-  async function getReleases(cx: RouterContext<KoaState>): Promise<void> {
+  async function getReleases(cx: ParameterizedContext<KoaState>): Promise<void> {
     cx.response.body = {
       latest: {
         version: "0.5.3",

@@ -1,9 +1,7 @@
 import { Config, getLocalConfig } from "@eternal-twin/local-config";
+import { Api, main, withApi } from "@eternal-twin/website";
 
-import { Api, withApi } from "./api.js";
-import { main } from "./index.js";
-
-async function realMain(): Promise<void> {
+export async function runStart(_args: readonly string[]): Promise<number> {
   const config: Config = await getLocalConfig();
 
   return withApi(config, (api: Api): Promise<never> => {
@@ -13,9 +11,3 @@ async function realMain(): Promise<void> {
     });
   });
 }
-
-realMain()
-  .catch((err: Error): never => {
-    console.error(err.stack);
-    process.exit(1);
-  });

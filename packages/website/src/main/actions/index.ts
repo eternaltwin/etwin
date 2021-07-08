@@ -2,7 +2,8 @@ import { AuthService } from "@eternal-twin/core/lib/auth/service";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
 import { UserService } from "@eternal-twin/core/lib/user/service";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
-import Router, { RouterContext } from "@koa/router";
+import Router from "@koa/router";
+import { ParameterizedContext } from "koa";
 
 import { createLinkRouter } from "./link.js";
 import { createLoginRouter } from "./login.js";
@@ -25,7 +26,7 @@ export async function createActionsRouter(api: Api): Promise<Router> {
   const register: Router = await createRegisterRouter(api);
   router.use("/register", register.routes(), register.allowedMethods());
 
-  router.use((cx: RouterContext) => {
+  router.use((cx: ParameterizedContext) => {
     cx.response.status = 404;
     cx.body = {error: "ActionNotFound"};
   });

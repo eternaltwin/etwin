@@ -1,0 +1,59 @@
+{
+  "name": "@eternal-twin/cli",
+  "version": "0.6.3",
+  "homepage": "https://gitlab.com/eternal-twin/etwin",
+  "description": "Eternaltwin Command Line Interface (CLI)",
+  "repository": {
+    "type": "git",
+    "url": "git://gitlab.com:eternal-twin/etwin.git"
+  },
+  "licenses": [
+    {
+      "type": "AGPL-3.0-or-later",
+      "url": "https://spdx.org/licenses/AGPL-3.0-or-later.html"
+    }
+  ],
+  "bin": {
+    "etwin": "./main/main.js"
+  },
+  "scripts": {
+    "lint": "eslint \"./src/**/*.ts\"",
+    "format": "eslint --fix \"./src/**/*.ts\"",
+    "build": "tsc --build src/lib/tsconfig.json",
+    "prepack": "yarn run build",
+    "native:build": "cd ../native && yarn run native:build",
+    "website:build": "cd ../website && yarn run build",
+    "main:dirty-build": "tsc --build src/main/tsconfig.json",
+    "main:build": "yarn run native:build && yarn run website:build && tsc --build src/main/tsconfig.json",
+    "start": "yarn run main:build && node --experimental-wasm-modules main/main.js",
+    "dirty-start": "yarn run main:dirty-build && node --experimental-wasm-modules main/main.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [],
+  "engines": {
+    "node": ">=14.13.1"
+  },
+  "dependencies": {
+    "@eternal-twin/core": "workspace:*",
+    "@eternal-twin/etwin-pg": "workspace:*",
+    "@eternal-twin/local-config": "workspace:*",
+    "@eternal-twin/pg-db": "workspace:*",
+    "@eternal-twin/website": "workspace:*",
+    "foreground-child": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.5",
+    "eslint": "^7.29.0",
+    "typescript": "^4.3.4"
+  },
+  "type": "module",
+  "exports": {
+    "./lib/*": "./lib/*.js"
+  },
+  "files": [
+    "./lib/"
+  ]
+}
