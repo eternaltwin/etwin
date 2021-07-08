@@ -279,6 +279,241 @@ environment variable or a configuration file. See <a routerLink="/docs/app/confi
 <ng-container *ngSwitchCase="&quot;app&quot;">
 <p><a routerLink="/docs/">Home</a> | <a routerLink="/docs/app">Applications</a></p><h1>Application Development</h1><p>This section provides guides to help when developing Eternal-Twin applications and games.</p><ul><li><a routerLink="/docs/app/guidelines">Guidelines</a></li><li><a routerLink="/docs/app/config">Application Configuration</a></li><li><a routerLink="/docs/app/etwin-integration">Eternal-Twin integration</a></li><li><a routerLink="/docs/app/etwin-oauth">Eternal-Twin for OAuth</a></li><li><a routerLink="/docs/app/etwin-api">Eternal-Twin API</a></li></ul>
 </ng-container>
+<ng-container *ngSwitchCase="&quot;archive&quot;">
+<h1>Archive</h1><p>This document describes the technical aspects of the Eternaltwin archive. The
+archive is the component storing data from the official Motion Twin websites.
+It's purpose is similar to the <a href="https://archive.org/web/">archive.org WaybackMachine</a> but
+tailored for Motion Twin.</p><h2>Overview</h2><p>The archive is organized as a sequence of snapshots, updated when we get
+responses from a Motion Twin server.</p><p>A snapshot is a group of data that remained the same over a consecutive period
+of time. In addition to data itself, we add two extra fields: a time period
+for our best guess when the data was valid and the set of timestamps when the
+data was retrieved.</p><p><strong>Example</strong>: Every 5 minutes, we check the rank in the leaderboard for a given
+Hammerfest player.</p><p>Here is a possible archive:</p><pre>period    | retrieved_at     | player_id | rank | score
+----------|------------------|-----------|------|------
+[ 0, 10[  | {{ "{" }}0, 5}           | 1         | 1    | 1000
+[10, 15[  | {{ "{" }}10}             | 1         | 2    | 1000
+[15, 35[  | {{ "{" }}15, 20, 25, 30} | 1         | 1    | 2000
+[35, inf[ | {{ "{" }}35}             | 1         | 1    | 3000
+</pre><p>The player was the best with a score of 1000, then someone else beat him, and
+he fell to the second place. He then improved his score to 2000 (reclaiming the
+first place), and after a while could improve it further to 3000.</p><h2>Uniqueness</h2><p>When presented with a new server response, there are two cases:</p><ul><li>The data is the same as the latest known state</li><li>The data is fresh (new or different)</li></ul><p>When we already had the data, there is nothing much to do apart from adding the
+retrieval time to the <code>retrieved_at</code> set for the corresponding row.</p><p>When the data is fresh, the first step is to insert it as a new row. But we
+also need to invalidate some other rows. The goal is to maintain
+"point in time" uniqueness constraints.</p><p>If we continue from the example in the <em>Overview</em> section, the first
+"point in time" constraint is "at any point in time, there is only one best
+score per player". This is derived from the fact that if we only stored the
+current state then <code>player_id</code> would be a primary key.
+At the SQL level, this constraint can be directly enforced by the database
+with a statement like "there are no two rows with the same <code>player_id</code> and
+overlapping <code>period</code>".</p><p>After inserting a 5th fresh row, we could get:</p><pre>period    | retrieved_at     | player_id | rank | score
+----------|------------------|-----------|------|------
+[ 0, 10[  | {{ "{" }}0, 5}           | 1         | 1    | 1000
+[10, 15[  | {{ "{" }}10}             | 1         | 2    | 1000
+[15, 35[  | {{ "{" }}15, 20, 25, 30} | 1         | 1    | 2000
+[35, inf[ | {{ "{" }}35}             | 1         | 1    | 3000
+[40, inf[ | {{ "{" }}40}             | 1         | 1    | 4000
+</pre><p>The row 4 and 5 are now in conflict: we must invalidate the 4th row.</p><p>Invalidating a row means setting the upper bound of its time period to a finite
+value. In our case it produces:</p><pre>period    | retrieved_at     | player_id | rank | score
+----------|------------------|-----------|------|------
+[ 0, 10[  | {{ "{" }}0, 5}           | 1         | 1    | 1000
+[10, 15[  | {{ "{" }}10}             | 1         | 2    | 1000
+[15, 35[  | {{ "{" }}15, 20, 25, 30} | 1         | 1    | 2000
+[35, 40[  | {{ "{" }}35}             | 1         | 1    | 3000
+[40, inf[ | {{ "{" }}40}             | 1         | 1    | 4000
+</pre><p>Invalidation occurs with any uniqueness constraint, not only with primary keys.
+In our scenario, we should also enforce a "Point in Time" uniqueness on the
+rank: no two players can be at the same rank at the same time.</p><p>To see the effect of multiple invalidations, lets start tracking the
+player with id <code>2</code> now.</p><p>At time 45, we retrieve that he is in the second place with a score of 1500.
+There is no conflict so far. We have multiple currently valid rows but they
+refer to non-conflicting data so it's OK.</p><pre>period    | retrieved_at     | player_id | rank | score
+----------|------------------|-----------|------|------
+[ 0, 10[  | {{ "{" }}0, 5}           | 1         | 1    | 1000
+[10, 15[  | {{ "{" }}10}             | 1         | 2    | 1000
+[15, 35[  | {{ "{" }}15, 20, 25, 30} | 1         | 1    | 2000
+[35, 40[  | {{ "{" }}35}             | 1         | 1    | 3000
+[40, inf[ | {{ "{" }}40}             | 1         | 1    | 4000
+[45, inf[ | {{ "{" }}45}             | 2         | 2    | 1500
+</pre><p>At timee 50, we find out had he had very good run with a score 5000 and is now
+at the top of the leaderboard. After adding the row we get:</p><pre>period    | retrieved_at     | player_id | rank | score
+----------|------------------|-----------|------|------
+[ 0, 10[  | {{ "{" }}0, 5}           | 1         | 1    | 1000
+[10, 15[  | {{ "{" }}10}             | 1         | 2    | 1000
+[15, 35[  | {{ "{" }}15, 20, 25, 30} | 1         | 1    | 2000
+[35, 40[  | {{ "{" }}35}             | 1         | 1    | 3000
+[40, inf[ | {{ "{" }}40}             | 1         | 1    | 4000
+[45, inf[ | {{ "{" }}45}             | 2         | 2    | 1500
+[50, inf[ | {{ "{" }}50}             | 2         | 1    | 5000
+</pre><p>We have two conflicts now: we know that the score of the player 2 is no longer
+1500 (primary key) but we also know that the player 1 can no longer be ranked
+first. <strong>Inserting a single row may invalidate multiple rows.</strong></p><pre>period    | retrieved_at     | player_id | rank | score
+----------|------------------|-----------|------|------
+[ 0, 10[  | {{ "{" }}0, 5}           | 1         | 1    | 1000
+[10, 15[  | {{ "{" }}10}             | 1         | 2    | 1000
+[15, 35[  | {{ "{" }}15, 20, 25, 30} | 1         | 1    | 2000
+[35, 40[  | {{ "{" }}35}             | 1         | 1    | 3000
+[40, 50[  | {{ "{" }}40}             | 1         | 1    | 4000
+[45, 50[  | {{ "{" }}45}             | 2         | 2    | 1500
+[50, inf[ | {{ "{" }}50}             | 2         | 1    | 5000
+</pre><p>At minute 55, we may wish to query the state of the player 1 again :</p><pre>period    | retrieved_at     | player_id | rank | score
+----------|------------------|-----------|------|------
+...
+[40, 50[  | {{ "{" }}40}             | 1         | 1    | 4000
+[45, 50[  | {{ "{" }}45}             | 2         | 2    | 1500
+[50, inf[ | {{ "{" }}50}             | 2         | 1    | 5000
+[55, inf[ | {{ "{" }}50}             | 1         | 3    | 4500
+</pre><p>He improved its score to 4500, but due to the competition he is now at rank 3!.</p><h2>Periods as an optimization</h2><p>Let's focus on player 1 and ignore the rows from player 2:</p><pre>period    | retrieved_at     | player_id | rank | score
+----------|------------------|-----------|------|------
+[ 0, 10[  | {{ "{" }}0, 5}           | 1         | 1    | 1000
+[10, 15[  | {{ "{" }}10}             | 1         | 2    | 1000
+[15, 35[  | {{ "{" }}15, 20, 25, 30} | 1         | 1    | 2000
+[35, 40[  | {{ "{" }}35}             | 1         | 1    | 3000
+[40, 50[  | {{ "{" }}40}             | 1         | 1    | 4000
+[40, 50[  | {{ "{" }}40}             | 1         | 1    | 4000
+[55, inf[ | {{ "{" }}50}             | 1         | 3    | 4500
+</pre><p>Notice that all the period are consecutive... except for a gap between minute
+50 and 55! What was the state of the player at this point? We have no idea.</p><p>Actually it's worse than that. We have no idea about the state at minute 12.
+The best score could still be 1000, or already be 2000, or be 1500 (and we
+missed it by not querying the server at the right time).</p><p>Even in a single row we have this problem. Every week, Hammerfest scores are
+reset. It's possible that this reset occured on minute 21 and the player
+immediately played a run where he got a score of 2000. There was a reset, the
+score changed to zero, but the archive missed it and did not even notice any
+change!</p><p>The only instant when we actually know the state of player is the instant when
+we retrieve it. Any state between two retrievals is only a guess.</p><p>This means that this whole representation with time periods is only an
+optimization to avoid adding rows when the data does not change: the most
+common case is for data to stay the same between two retrievals.</p><p>If we accept data duplication, we could use the following (strictly equivalent)
+representation:</p><pre>retrieved_at | player_id | rank | score
+-------------|-----------|------|------
+0            | 1         | 1    | 1000
+5            | 1         | 1    | 1000
+10           | 1         | 2    | 1000
+15           | 1         | 1    | 2000
+20           | 1         | 1    | 2000
+25           | 1         | 1    | 2000
+30           | 1         | 1    | 2000
+35           | 1         | 1    | 3000
+40           | 1         | 1    | 4000
+50           | 1         | 3    | 4500
+</pre><h2>Partial views and shards</h2><p>Until now, we considered how to archive data from a single source: the highscore
+page. When extracting data from the high-score page, we get
+<code>(player_id, rank, score)</code> tuples as our input data.</p><p>We can also retrieve forum pages. On Hammerfest, each message has some
+information about the author, in particular its rank and whether he retrieved
+its carrot (has beaten the game). We can extract <code>(player_id, rank, has_carrot)</code>
+tuples from forum pages.</p><p>This is a common situation: we want to get all the data about a player
+<code>(player_id, rank, score, has_carrot)</code> but can only perform queries returning
+partial results: either <code>(player_id, rank, score)</code> or
+<code>(player_id, rank, has_carrot)</code>.</p><p>How should we archive such data where we only have access to partial views?</p><p>The solution is to list all the responses supported by the server:</p><ul><li><code>(player_id, rank, score)</code> (from the highscore page response)</li><li><code>(player_id, rank, has_carrot)</code> (from the forum page response)</li></ul><p>We then group the fields according to a Venn diagram of the sources. Each field
+in the same region is grouped together:</p><pre>        +--------------------+
+        |       score        |
+  +-----+------------+       |
+  |     | player_id  |       |
+  |     | rank       |       |
+  |     +------------+-------+
+  |   has_carrot     |
+  +------------------+
+</pre><p>We augment each group with a primary key if needed. The result we get is what
+we call shards:</p><ul><li><code>(player_id, rank)</code></li><li><code>(player_id, has_carrot)</code></li><li><code>(player_id, score)</code></li></ul><p>A <strong>shard</strong> is a group of data that can only change together. Data in a shard
+is tracked together in the same table. Data in different shards
+can be retrieved (and archived) at different independent moments.</p><p>In this case it means that we would have 3 tables in the database to archive
+the response of these two kinds of pages.</p><p>Archiving a "highscore page response" now requires us to update the 2 shards
+<code>(player_id, rank)</code> and <code>(player_id, score)</code>.</p><p>Archiving a "forum page response" now requires to update the 2 shards
+<code>(player_id, rank)</code> and <code>(player_id, has_carrot)</code>.</p><p>Shards for the same response are updated in the same transaction.</p><h2>Pagination</h2><p>Another important source of partial knowledge is pagination. When viewing
+paginated content such as a forum thread, we only get to see a small part of
+it.</p><p>When later asked to return the state of a page at a given point in time, it is
+important to be careful about how we model paginated content to avoid
+returning a virtual page that could not have existed at the time. This is
+especially important when elements can move or be deleted (e.g. the main
+page of a forum section has a list of threads, this is a highly dynamic
+paginated list).</p><p>The main issue is to represent empty list and detect item removals.
+This is achieved by explicitly storing the list size along the items.</p><p>TODO: Expand on this section (example of the Twinoid comments).</p><h3>List</h3><p>The solution is to instead represent the highscore list directly even if it
+involves creating more tables to support referential integrity.</p><p>We split it into shards as <code>(player, ladder_rank, score)</code> and
+<code>(ladder_rank, highscore_list)</code> and then represent the <code>thread_list</code> as an
+immutable collection.</p><pre>(player, ladder_rank, score)
+period    | retrieved_at | player | ladder_rank | score
+----------|--------------|--------|-------------|-------
+[ 0, inf[ | {{ "{" }}0,5}        | 1      | 1           | 5000
+[ 0, inf[ | {{ "{" }}0,5}        | 2      | 1           | 4500
+[ 0, inf[ | {{ "{" }}0}          | 3      | 1           | 1000
+
+
+(ladder_rank, highscore_list)
+period    | retrieved_at | ladder_rank  | highscore_list
+----------|--------------|--------------|--------------------------------------
+[ 0, 5  [ | {{ "{" }}0}          | 1            | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+[ 5, inf[ | {{ "{" }}5}          | 1            | bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+
+highscore_lists:
+highscore_list
+-------------------------------------
+aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb
+
+highscore_list_items:
+highscore_list                       | player | offset
+-------------------------------------|--------|--------
+aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | 1      | 0
+aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | 2      | 1
+aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa | 3      | 2
+bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb | 1      | 0
+bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb | 2      | 1
+</pre><h2>Upsertion query</h2><p><strong>⚠ This section is highly technical and describes how snapshot upsertion is
+actually implemented. Feel free to skip it.</strong></p><p>Snapshots are inserted into shard within a single (but complex) query. It
+ensures that each shard is updated atomically (even without transactions).</p><p>This sections describes this query. At the moment this article is written, the
+upsertion query is defined through a Rust macro in <a href="https://gitlab.com/eternal-twin/etwin/-/blob/master/crates/postgres_tools/src/lib.rs"><code>crates/postgres_tools/src/lib.rs</code></a>.</p><p>The query uses a syntax called <a href="https://www.postgresql.org/docs/current/queries-with.html">Common Table Expression (CTE)</a>
+to build the query from smaller parts.</p><ol><li><p><code>input_row</code>: The new snapshot we wish to insert, written as if the data is
+fresh (new or different).</p><pre>input_row:
+
+period    | retrieved_at     | player_id | x | y
+----------|------------------|-----------|---|---
+[40, inf[ | {{ "{" }}40}             | 1         | 3 | 7
+</pre></li><li><p><code>current_row_primary</code> and <code>current_row_&lt;ukey&gt;</code>: For each "point in time"
+uniqueness constraint (primary key and extra unique keys), check if we have
+an already valid snaphot (with an infinite upper bound on the time period)
+matching the key in <code>input_row</code>.
+We only need to track the identity of such rows, hence why we only keep
+the primary key and period.</p></li><li><p><code>matching_current_row</code>: At this step we take the intersection of all the rows
+from step 2. If they are all the same row we also check if its data fields
+are the same as the one from <code>input_row</code>.</p><p><code>matching_current_row</code> can contain only 0 or 1 row. If it has a row, this is
+a pre-existing snapshot where the data fields are exactly the same as the
+ones in <code>input_row</code>: the retrieved value is the same as the one we had.
+If there is no row in <code>matching_current_row</code>, the <code>input_row</code> is new or
+different (and may also invalidate some snapshots due to unique constraints).</p></li><li><p><code>missing_input_row</code>: Following the logic from the previous point we either:</p><ul><li>accept <code>input_row</code> as is and put in <code>missing_input_row</code> (if the data is
+fresh / <code>matching_current_row</code> is empty)</li><li>reject <code>input_row</code> (by not putting it in <code>missing_input_row</code>) and will
+update <code>matching_current</code> (it is non-empty).</li></ul></li><li><p><code>current_rows</code> and <code>rows_to_invalidate</code>: <code>current_rows</code> the union of the rows
+from step 2, we then remove <code>matching_current_row</code> from them to get
+<code>rows_to_invalidate</code>. <code>rows_to_invalidate</code> will either be empty or it will
+be all the rows from <code>current_rows</code>. We either update <code>matching_current_row</code>
+and there is no invalidation at all (because <code>matching_current_row</code> was
+already present) or we invalidate all these rows because they had a common
+unique key with <code>input_row</code> but differed in some other fields.</p></li></ol><p>At this point we have 3 categories of rows:</p><ul><li>Rows to <strong>update</strong>: if <code>matching_current_row</code> exists, only update its
+<code>retrieved_at</code> field.</li><li>Rows to <strong>insert</strong> and <strong>invalidate</strong>: if <code>matching_current_row</code> does not
+exist then insert <code>input_row</code> (through <code>maybe_input_row</code>) and invalidate the
+rows from <code>rows_to_invalidate</code> by setting the upper bound of their time period
+to the current time (so it is no longer infinite).</li></ul><p>These 3 categories are distinct and can be applied simultaneously. This is the
+last step of the query. The top-level query aggregets the 3 mutating queries.</p><h2>Sampling window</h2><p>As we saw in the section "periods as an optimization", the representation we use
+already tries to optimize space by reducing data duplication.</p><p>This representation is probably one of the most efficient to keep track of all
+the data without any ambiguity.</p><p>What if we allowed to lose some of the data?</p><p>When retrieving archived data, we are mostly interested in the most recent
+data. We may also be interested in historic data (after all it's the reason
+why we keep a history). But we can probably get away with a less strict
+tracking of our retrieval timestamps.</p><p>Here is our example from the start:</p><pre>period    | retrieved_at     | player_id | rank | score
+----------|------------------|-----------|------|------
+[ 0, 10[  | {{ "{" }}0, 5}           | 1         | 1    | 1000
+[10, 15[  | {{ "{" }}10}             | 1         | 2    | 1000
+[15, 35[  | {{ "{" }}15, 20, 25, 30} | 1         | 1    | 2000
+[35, 40[  | {{ "{" }}35}             | 1         | 1    | 3000
+[40, inf[ | {{ "{" }}40}             | 1         | 1    | 4000
+</pre><p>The third row stores its timestamps: <code>{{ "{" }}15, 20, 25, 30}</code>. We can imagine a
+data that changes fairly rarely but is found on many pages. In such a
+scenario the set of timestamps can grow fairly large.</p><p>A solution to this is to apply a "sampling window". This operation ensures
+that we only keep at most 2 timestamps per window of X units of time.</p><p>This allows to optimize retrieval sets when there is a quick burst of closely
+related requests that leads to getting the same reply quite often.</p><p>For example if we take a window of <code>12 minutes</code> and apply it to the timestamps
+from our third row, we see that when the window is between <code>14</code> and <code>26</code> minutes,
+we have 3 points: <code>15</code>, <code>20</code> and <code>25</code>.</p><p>When there is an excess of values, the sampling window drops the ones in the
+middle. The sampling window is applied from the smallest (oldest) to the
+largest (most recent) values.</p><p>Applying a sampling window of 12 minutes to <code>{{ "{" }}15, 20, 25, 30}</code> reduces it
+to <code>{{ "{" }}15, 25, 30}</code>.</p><p>It is shorter, but we lose the information that we queried the server at
+minute 20.</p><p>It is currently still debated if a sampling window should be applied and how to
+determine its size.</p>
+</ng-container>
 <ng-container *ngSwitchCase="&quot;db&quot;">
 <p><a routerLink="/docs/">Home</a></p><h1>Database</h1><p>Eternal-Twin uses Postgres as its main database.</p><h2>Initialize the Postgres cluster</h2><pre># Run as the Postgres user
 initdb --locale "en_US.UTF-8" --encoding="UTF8" --pgdata="/var/lib/postgres/data/"
@@ -313,25 +548,23 @@ Success. You can now start the database server using:
 </pre><h2>Create a dev DB superuser</h2><pre># Run as the Postgres user
 createuser --encrypted --interactive --pwprompt
 </pre><p>Example</p><pre>postgres@host $ createuser --encrypted --interactive --pwprompt
-Enter name of role to add: etwin
+Enter name of role to add: etwin.dev.admin
 Enter password for new role: dev
 Enter it again: dev
 Shall the new role be a superuser? (y/n) y
 </pre><h2>Create a DB</h2><pre>createdb --owner=&lt;dbuser&gt; &lt;dbname&gt;
 psql &lt;dbname&gt;
 ALTER SCHEMA public OWNER TO &lt;dbuser&gt;;
-</pre><p>Example:</p><pre>$ createdb --owner=etwin etwindb
+</pre><p>Example:</p><pre>$ createdb --owner=etwin.dev.admin etwin.dev
 $ psql etwindb
-psql (9.6.10)
+psql (13.3)
 Type "help" for help.
 
-etwindb=# ALTER SCHEMA public OWNER TO etwin;
-</pre><h2>PgCrypto</h2><p>Enable pgcrypto.</p><pre>$ psql dbname
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+etwin.dev=# ALTER SCHEMA public OWNER TO "etwin.dev.admin";
 </pre>
 </ng-container>
 <ng-container *ngSwitchCase="&quot;desktop&quot;">
-<p><a routerLink="/docs/">Home</a></p><h1>Desktop Application</h1><p>Eternal-Twin provides a desktop application. It allows you to play Motion Twin's Flash games.</p><h2>Download</h2><p>Latest version: 0.5.2 (2021-01-31)</p><ul><li><a href="https://eternal-twin.net/assets/app/EternaltwinSetup-0.5.2-x64.exe">Windows 64-bit installer</a></li><li><a href="https://eternal-twin.net/assets/app/EternaltwinSetup-0.5.2-ia32.exe">Windows 32-bit installer</a></li><li><a href="https://eternal-twin.net/assets/app/etwin-0.5.2.pacman">Linux - Pacman package</a></li><li><a href="https://eternal-twin.net/assets/app/etwin_0.5.2_amd64.deb">Linux - Debian package</a></li><li><a href="https://eternal-twin.net/assets/app/etwin-0.5.2.tar.gz">Linux - Archive</a></li><li><a href="https://eternal-twin.net/assets/app/Eternaltwin-0.5.2.dmg">Mac installer</a></li></ul><h2>Contribute</h2><p><a href="https://gitlab.com/eternal-twin/etwin-app">Repository</a></p><p>The application is still in a beta state: please help us to improve it.</p><p>In particular, we need to ensure the app only tries to open trusted websites
+<p><a routerLink="/docs/">Home</a></p><h1>Desktop Application</h1><p>Eternal-Twin provides a desktop application. It allows you to play Motion Twin's Flash games.</p><h2>Download</h2><p>Latest version: 0.5.3 (2021-06-29)</p><ul><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin-64bit.exe?job=release">Windows 64-bit installer</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin-32bit.exe?job=release">Windows 32-bit installer</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.pacman?job=release">Linux - Pacman package</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.deb?job=release">Linux - Debian package</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.tar.gz?job=release">Linux - Archive</a></li><li><a href="https://eternal-twin.net/assets/app/v0.5.3/etwin.dmg">Mac installer</a></li></ul><h2>Contribute</h2><p><a href="https://gitlab.com/eternal-twin/etwin-app">Repository</a></p><p>The application is still in a beta state: please help us to improve it.</p><p>In particular, we need to ensure the app only tries to open trusted websites
 (from Eternal-Twin or Motion-Twin).</p><h2>Issues</h2><p>Report issues <a href="https://gitlab.com/eternal-twin/etwin-app/-/issues">on Gitlab</a>.</p>
 </ng-container>
 <ng-container *ngSwitchCase="&quot;&quot;">

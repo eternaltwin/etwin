@@ -55,7 +55,7 @@ Example
 
 ```sh
 postgres@host $ createuser --encrypted --interactive --pwprompt
-Enter name of role to add: etwin
+Enter name of role to add: etwin.dev.admin
 Enter password for new role: dev
 Enter it again: dev
 Shall the new role be a superuser? (y/n) y
@@ -72,19 +72,10 @@ ALTER SCHEMA public OWNER TO <dbuser>;
 Example:
 
 ```sh
-$ createdb --owner=etwin etwindb
+$ createdb --owner=etwin.dev.admin etwin.dev
 $ psql etwindb
-psql (9.6.10)
+psql (13.3)
 Type "help" for help.
 
-etwindb=# ALTER SCHEMA public OWNER TO etwin;
-```
-
-## PgCrypto
-
-Enable pgcrypto.
-
-```
-$ psql dbname
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+etwin.dev=# ALTER SCHEMA public OWNER TO "etwin.dev.admin";
 ```

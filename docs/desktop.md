@@ -6,14 +6,14 @@ Eternal-Twin provides a desktop application. It allows you to play Motion Twin's
 
 ## Download
 
-Latest version: 0.5.2 (2021-01-31)
+Latest version: 0.5.3 (2021-06-29)
 
-- [Windows 64-bit installer](https://eternal-twin.net/assets/app/EternaltwinSetup-0.5.2-x64.exe)
-- [Windows 32-bit installer](https://eternal-twin.net/assets/app/EternaltwinSetup-0.5.2-ia32.exe)
-- [Linux - Pacman package](https://eternal-twin.net/assets/app/etwin-0.5.2.pacman)
-- [Linux - Debian package](https://eternal-twin.net/assets/app/etwin_0.5.2_amd64.deb)
-- [Linux - Archive](https://eternal-twin.net/assets/app/etwin-0.5.2.tar.gz)
-- [Mac installer](https://eternal-twin.net/assets/app/Eternaltwin-0.5.2.dmg)
+- [Windows 64-bit installer](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin-64bit.exe?job=release)
+- [Windows 32-bit installer](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin-32bit.exe?job=release)
+- [Linux - Pacman package](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.pacman?job=release)
+- [Linux - Debian package](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.deb?job=release)
+- [Linux - Archive](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.tar.gz?job=release)
+- [Mac installer](https://eternal-twin.net/assets/app/v0.5.3/etwin.dmg)
 
 ## Contribute
 
