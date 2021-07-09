@@ -259,6 +259,7 @@ declare_new_int! {
 mod test {
   use crate::core::{FinitePeriod, PeriodFrom, PeriodLower};
   use chrono::{TimeZone, Utc};
+  #[cfg(feature = "_serde")]
   use std::fs;
 
   #[allow(clippy::unnecessary_wraps)]

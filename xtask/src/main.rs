@@ -16,6 +16,9 @@ enum Task {
   /// Generate Kotlin definitions
   #[clap(name = "kotlin")]
   Kotlin(KotlinArgs),
+  /// Publish the CLI and all its dependencies
+  #[clap(name = "publish")]
+  Publish(PublishArgs),
 }
 
 /// Arguments to the `docs` task.
@@ -26,12 +29,17 @@ struct DocsArgs {}
 #[derive(Debug, Clap)]
 struct KotlinArgs {}
 
+/// Arguments to the `publish` task.
+#[derive(Debug, Clap)]
+struct PublishArgs {}
+
 fn main() {
   let args: CliArgs = CliArgs::parse();
 
   let res = match &args.task {
     Task::Docs(ref args) => docs(args),
     Task::Kotlin(ref args) => kotlin(args),
+    Task::Publish(ref args) => publish(args),
   };
 
   match res {
@@ -46,4 +54,8 @@ fn docs(_args: &DocsArgs) -> Result<(), Box<dyn Error>> {
 
 fn kotlin(_args: &KotlinArgs) -> Result<(), Box<dyn Error>> {
   xtask::kotlin()
+}
+
+fn publish(_args: &PublishArgs) -> Result<(), Box<dyn Error>> {
+  xtask::publish()
 }

@@ -720,6 +720,7 @@ mod test {
   use crate::hammerfest::{HammerfestServer, HammerfestUser, ShortHammerfestUser};
   use crate::link::VersionedEtwinLink;
   use chrono::{TimeZone, Utc};
+  #[cfg(feature = "_serde")]
   use std::fs;
 
   #[allow(clippy::unnecessary_wraps)]

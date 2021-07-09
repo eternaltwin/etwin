@@ -37,6 +37,7 @@ declare_new_enum!(
 mod test {
   use crate::auth::{AuthContext, AuthScope, GuestAuthContext, UserAuthContext};
   use crate::user::{ShortUser, UserDisplayNameVersion, UserDisplayNameVersions};
+  #[cfg(feature = "_serde")]
   use std::fs;
 
   fn get_auth_context_guest() -> AuthContext {

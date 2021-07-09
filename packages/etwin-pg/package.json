@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/etwin-pg",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin",
   "description": "Postgres schema for Eternal-Twin",
   "repository": {

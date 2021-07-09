@@ -1,6 +1,6 @@
 [package]
 name = "etwin_squirrel"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Manager for SQL schemas"
 documentation = "https://github.com/eternal-twin/etwin"
