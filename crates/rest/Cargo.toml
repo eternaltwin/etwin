@@ -12,16 +12,16 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-etwin_core = { version = "0.7.2" }
-etwin_services = { version = "0.7.2" }
-serde = { version = "1.0.125", features = ["derive"] }
-tokio = { version = "1.4.0", features = ["full"] }
+etwin_core = "0.7.2"
+etwin_services = "0.7.2"
+serde = { version = "1.0.126", features = ["derive"] }
+tokio = { version = "1.8.1", features = ["full"] }
 warp = "0.3.1"
 
 [dev-dependencies]
 chrono = "0.4.19"
-etwin_dinoparc_store = { version = "0.7.2" }
-etwin_hammerfest_client = { version = "0.7.2" }
-etwin_hammerfest_store = { version = "0.7.2" }
-etwin_link_store = { version = "0.7.2" }
-etwin_user_store = { version = "0.7.2" }
+etwin_dinoparc_store = "0.7.2"
+etwin_hammerfest_client = "0.7.2"
+etwin_hammerfest_store = "0.7.2"
+etwin_link_store = "0.7.2"
+etwin_user_store = "0.7.2"

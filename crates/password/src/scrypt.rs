@@ -51,7 +51,9 @@ impl ScryptParams {
     let total_mem = {
       let mut sys = System::new();
       sys.refresh_memory();
-      sys.get_total_memory()
+      let mem_kb = sys.total_memory();
+      // Convert to bytes
+      mem_kb * 1024
     };
     assert!(total_mem > 0);
     let mem_limit: u64 = f64::round((total_mem as f64) * max_mem_frac) as u64;
@@ -178,7 +180,7 @@ impl<R: CryptoRng + RngCore + Send + Sync> PasswordService for ScryptPasswordSer
         key
       };
       *checksum = Sha256::digest(prefix48)[0..16].try_into().unwrap();
-      let mut mac = HmacSha256::new_varkey(&key[32..]).unwrap();
+      let mut mac = HmacSha256::new_from_slice(&key[32..]).unwrap();
       mac.update(prefix64);
       *hmachash = mac.finalize().into_bytes().try_into().unwrap();
     }
@@ -215,7 +217,7 @@ impl<R: CryptoRng + RngCore + Send + Sync> PasswordService for ScryptPasswordSer
     };
     let actual_hmac = {
       type HmacSha256 = Hmac<Sha256>;
-      let mut mac = HmacSha256::new_varkey(&key[32..]).unwrap();
+      let mut mac = HmacSha256::new_from_slice(&key[32..]).unwrap();
       mac.update(&hash[0..64]);
       mac.finalize().into_bytes()
     };

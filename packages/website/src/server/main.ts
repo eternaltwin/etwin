@@ -75,6 +75,7 @@ export async function app(options?: Partial<ServerAppConfig>): Promise<Koa> {
   const indexFuri = config.isIndexNextToServerMain
     ? furi.join(serverDir, "index.html")
     : furi.join(serverDir, "../../browser", furi.basename(serverDir), "index.html");
+  const staticFuri = furi.join(serverDir, "../../browser", furi.basename(serverDir));
 
   const app = new Koa();
 
@@ -94,6 +95,7 @@ export async function app(options?: Partial<ServerAppConfig>): Promise<Koa> {
     indexFuri,
     bootstrap: AppServerModule,
     providers,
+    staticFuri,
   });
 
   const router = new Router();

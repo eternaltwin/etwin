@@ -1,3 +1,5 @@
+@use "sass:math";
+
 /* --- GAMES BOXES --- */
 
 article.game {
@@ -158,8 +160,7 @@ article.tridiv {
         width: 100%;
         height: 100%;
         background-repeat:no-repeat;
-        background-image:
-          url("/assets/box_cover_rt.svg"),
+        background-image: url("/assets/box_cover_rt.svg"),
       }
     }
 
@@ -244,10 +245,8 @@ article.game:focus-within {
 /* --- MOBILE CONTENT --- */
 
 
-@media only screen and (max-width: $desktopBreakpoint / 2) {
-
+@media only screen and (max-width: math.div($desktopBreakpoint, 2)) {
   article.game {
     flex-direction: column;
   }
-
 }

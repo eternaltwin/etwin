@@ -1,3 +1,5 @@
+@use "sass:math";
+
 /* --- MAIN BUTTONS --- */
 
 // THERE ARE 4 DISTINCT BUTTON STYLES:
@@ -52,21 +54,21 @@ button { border: none; background: none; }
   .actionBox {
     // two actionBox in a box will automatically balance their content left and right
 
-    margin-left: (-$gutterWidth / 2);
-    margin-right: (-$gutterWidth / 2);
+    margin-left: math.div(-$gutterWidth, 2);
+    margin-right: math.div(-$gutterWidth, 2);
 
     & + .actionBox { justify-content: flex-end; }
 
     @media only screen and (max-width: $desktopBreakpoint) {
       min-width: 100% !important;
-      margin-right: (-$gutterWidth / 2) !important;
-      margin-left: (-$gutterWidth / 2) !important;
+      margin-right: math.div(-$gutterWidth, 2) !important;
+      margin-left: math.div(-$gutterWidth, 2) !important;
       .btn:not(:only-child) {
         max-width: 100% ;
       }
     }
 
-    @media only screen and (max-width: $desktopBreakpoint / 2) {
+    @media only screen and (max-width: math.div($desktopBreakpoint, 2)) {
       .btn {
         max-width: 100% ;
       }
@@ -107,7 +109,7 @@ button { border: none; background: none; }
 
     min-height: 2.5em;
     padding: .7em 1.7em;
-    margin: ($gutterWidth / 2);
+    margin: math.div($gutterWidth, 2);
     cursor: pointer;
     background-color: $darkViolet;
     border-radius: .25em;
@@ -239,18 +241,18 @@ button { border: none; background: none; }
 
   .actionBox.multi .btn, .btn.multi {
     border-radius: 0;
-    margin: ($gutterWidth / 2) -1px;
+    margin: math.div($gutterWidth, 2) -1px;
     clip-path: inset(-4px 1px -4px -4px);
     -webkit-clip-path: inset(-4px 1px -4px -4px);
 
     &:first-child {
       border-radius: 4px 0 0 4px;
-      margin-left: ($gutterWidth / 2);
+      margin-left: math.div($gutterWidth, 2);
     }
 
     &:last-child {
       border-radius: 0 4px 4px 0;
-      margin-right: ($gutterWidth / 2);
+      margin-right: math.div($gutterWidth, 2);
       clip-path: inset(-4px -4px -4px -4px);
       -webkit-clip-path: inset(-4px -4px -4px -4px);
     }
@@ -260,7 +262,7 @@ button { border: none; background: none; }
       -webkit-clip-path: inset(-4px -4px -4px -4px);
     }
   }
-  
+
   .toolbar{
     .btn {
       font-weight: normal;
@@ -271,7 +273,7 @@ button { border: none; background: none; }
       border: none;
       margin: 0 0.1em;
     }
-    
+
     .btn:hover{
       transform: none !important;
     }

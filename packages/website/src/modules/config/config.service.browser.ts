@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
-import { Config } from "@eternal-twin/core/lib/config/config";
+import { $Config, Config } from "@eternal-twin/core/lib/config/config";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
+import { JSON_READER } from "kryo-json/lib/json-reader";
 
 import { ConfigService } from "./config.service";
 import { CONFIG_KEY } from "./state-keys";
@@ -12,7 +13,8 @@ export class BrowserConfigService extends ConfigService {
 
   constructor(transferState: TransferState) {
     super();
-    this.#config = transferState.get(CONFIG_KEY, {forum: {threadsPerPage: 20, postsPerPage: 10}});
+    const rawConfig: unknown = transferState.get(CONFIG_KEY, {forum: {threadsPerPage: 20, postsPerPage: 10}});
+    this.#config = $Config.read(JSON_READER, rawConfig);
   }
 
   forum(): ForumConfig {

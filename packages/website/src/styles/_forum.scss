@@ -1,3 +1,5 @@
+@use "sass:math";
+
 nav.breadcrumb {
   font-size: .85em;
   font-weight: 600;
@@ -326,7 +328,7 @@ etwin-new-forum-thread {
     .toolbar .show-preview { justify-content: inherit; }
   }
 
-  @media only screen and (max-width: $contentWidth / 2) {
+  @media only screen and (max-width: math.div($contentWidth, 2)) {
     .tools button { @include tooltip; }
     .tools div button:nth-child(1n + 5) { display: none; } //hide all buttons from the fifth
   }

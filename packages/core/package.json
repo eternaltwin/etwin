@@ -34,17 +34,17 @@
     "kryo": "^0.12.2"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.19",
-    "@types/mocha": "^8.2.2",
-    "@types/node": "^15.12.5",
+    "@types/chai": "^4.2.21",
+    "@types/mocha": "^8.2.3",
+    "@types/node": "^16.3.0",
     "chai": "^4.3.4",
-    "eslint": "^7.29.0",
+    "eslint": "^7.30.0",
     "furi": "^2.0.0",
     "kryo-json": "^0.12.2",
     "kryo-qs": "^0.12.2",
     "kryo-testing": "^0.12.2",
-    "mocha": "^9.0.1",
-    "typescript": "^4.3.4"
+    "mocha": "^9.0.2",
+    "typescript": "^4.3.5"
   },
   "type": "module",
   "exports": {

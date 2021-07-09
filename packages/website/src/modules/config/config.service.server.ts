@@ -1,7 +1,8 @@
 import { Inject, Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
-import { Config } from "@eternal-twin/core/lib/config/config";
+import { $Config, Config } from "@eternal-twin/core/lib/config/config";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
+import { JSON_WRITER } from "kryo-json/lib/json-writer";
 
 import { CONFIG } from "../../server/tokens";
 import { ConfigService } from "./config.service";
@@ -13,7 +14,8 @@ export class ServerConfigService extends ConfigService {
 
   constructor(@Inject(CONFIG) config: Config, transferState: TransferState) {
     super();
-    transferState.set(CONFIG_KEY, config);
+    const rawConfig = $Config.write(JSON_WRITER, config);
+    transferState.set(CONFIG_KEY, rawConfig);
     this.#config = config;
   }
 

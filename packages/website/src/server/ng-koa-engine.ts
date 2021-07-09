@@ -1,9 +1,14 @@
 import { NgModuleFactory, StaticProvider, Type } from "@angular/core";
 import { Url } from "@eternal-twin/core/lib/core/url";
-import { ɵCommonEngine as CommonEngine } from "@nguniversal/common/engine";
+import { CommonEngine } from "@nguniversal/common/engine";
 import fs from "fs";
+import { fileURLToPath } from "url";
 
 export interface EngineOptions {
+  /**
+   * File URI to the directory containing the static files.
+   */
+  staticFuri: Url;
   indexFuri: Url;
   bootstrap: Type<{}> | NgModuleFactory<{}>;
   providers: StaticProvider[];
@@ -16,6 +21,7 @@ export interface RenderOptions {
 
 export class NgKoaEngine {
   private readonly document: string;
+  private readonly publicPath: string;
   private readonly commonEngine: CommonEngine;
   private readonly bootstrap: Type<{}> | NgModuleFactory<{}>;
 
@@ -25,6 +31,7 @@ export class NgKoaEngine {
   }
 
   private constructor(options: EngineOptions, document: string) {
+    this.publicPath = fileURLToPath(options.staticFuri.toString());
     this.document = document;
     this.bootstrap = options.bootstrap;
     this.commonEngine = new CommonEngine(options.bootstrap, options.providers);
@@ -36,6 +43,7 @@ export class NgKoaEngine {
       document: this.document,
       url: options.url.toString(),
       providers: options.providers,
+      publicPath: this.publicPath,
     });
   }
 }

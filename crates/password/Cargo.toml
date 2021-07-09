@@ -13,13 +13,13 @@ edition = "2018"
 
 [dependencies]
 etwin_core = { version = "0.7.2", features = ["sqlx"] }
-hmac = "0.10.1"
-neon = { version = "0.8.0", optional = true, default-features = false, features = ["napi-runtime"] }
-rand_core = { version = "0.6.2", features = ["getrandom"] }
-scrypt = "0.6.4"
-sha2 = "0.9.3"
+hmac = "0.11.0"
+neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-runtime"] }
+rand_core = { version = "0.6.3", features = ["getrandom"] }
+scrypt = "0.7.0"
+sha2 = "0.9.5"
 subtle = "2.4.0"
-sysinfo = "0.16.5"
+sysinfo = "0.19.1"
 
 [dev-dependencies]
 hex = "0.4.3"

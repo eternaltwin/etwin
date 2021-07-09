@@ -1,3 +1,5 @@
+@use "sass:math";
+
 html {
   min-height: 100%;
   display: flex;
@@ -85,7 +87,7 @@ etwin-main-layout, etwin-small-layout {
       a {
         display: block;
         text-align: center;
-        max-width: $bannerWidth / 2;
+        max-width: math.div($bannerWidth, 2);
         height: $bannerHeight;
         color: transparent;
         margin: auto;
