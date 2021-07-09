@@ -58,7 +58,7 @@ class EtwinDinoparcUserTest {
               ForeignSnapshot(
                 PeriodLower(Instant.parse("2021-06-25T15:20:28.562Z")),
                 ForeignRetrieved(Instant.parse("2021-06-25T15:20:28.600Z")),
-                3000
+                DinoparcUserCoins(3000U)
               )
             ),
             dinoz = LatestTemporal(
@@ -75,8 +75,8 @@ class EtwinDinoparcUserTest {
                 PeriodLower(Instant.parse("2021-06-25T15:20:28.562Z")),
                 ForeignRetrieved(Instant.parse("2021-06-25T15:20:28.562Z")),
                 mapOf(
-                  DinoparcItemId("1") to 3,
-                  DinoparcItemId("3") to 2,
+                  DinoparcItemId("1") to DinoparcItemCount(3U),
+                  DinoparcItemId("3") to DinoparcItemCount(2U),
                 )
               )
             ),

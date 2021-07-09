@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::fmt;
 use std::fmt::Write;
 use std::marker::PhantomData;
+use std::ops::RangeInclusive;
 
 #[derive(Debug, Clone)]
 pub struct TypeRegistry {
@@ -224,7 +225,99 @@ impl MgTypePath {
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum MgType {
   String,
+  Uint(MgUintType),
+  Sint(MgSintType),
   Unique(MgTypeId, Box<MgType>),
+}
+
+impl MgType {
+  pub const U8: Self = Self::Uint(MgUintType::U8);
+  pub const U16: Self = Self::Uint(MgUintType::U16);
+  pub const U32: Self = Self::Uint(MgUintType::U32);
+  pub const U64: Self = Self::Uint(MgUintType::U64);
+  pub const I8: Self = Self::Sint(MgSintType::I8);
+  pub const I16: Self = Self::Sint(MgSintType::I16);
+  pub const I32: Self = Self::Sint(MgSintType::I32);
+  pub const I64: Self = Self::Sint(MgSintType::I64);
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct MgUintType {
+  min: u64,
+  max: u64,
+}
+
+impl MgUintType {
+  pub const U8: Self = Self {
+    min: 0,
+    max: u8::MAX as u64,
+  };
+  pub const U16: Self = Self {
+    min: 0,
+    max: u16::MAX as u64,
+  };
+  pub const U32: Self = Self {
+    min: 0,
+    max: u32::MAX as u64,
+  };
+  pub const U64: Self = Self { min: 0, max: u64::MAX };
+
+  pub fn can_convert_from(self, other: Self) -> bool {
+    self.min() <= other.min() && other.max() <= self.max()
+  }
+
+  pub fn can_convert_to(self, other: Self) -> bool {
+    other.min() <= self.min() && self.max() <= other.max()
+  }
+
+  pub fn min(self) -> u64 {
+    self.min
+  }
+
+  pub fn max(self) -> u64 {
+    self.max
+  }
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct MgSintType {
+  min: i64,
+  max: i64,
+}
+
+impl MgSintType {
+  pub const I8: Self = Self {
+    min: i8::MIN as i64,
+    max: i8::MAX as i64,
+  };
+  pub const I16: Self = Self {
+    min: i16::MIN as i64,
+    max: i16::MAX as i64,
+  };
+  pub const I32: Self = Self {
+    min: i32::MIN as i64,
+    max: i32::MAX as i64,
+  };
+  pub const I64: Self = Self {
+    min: i64::MIN,
+    max: i64::MAX,
+  };
+
+  pub fn can_convert_from(self, other: Self) -> bool {
+    self.min() <= other.min() && other.max() <= self.max()
+  }
+
+  pub fn can_convert_to(self, other: Self) -> bool {
+    other.min() <= self.min() && self.max() <= other.max()
+  }
+
+  pub fn min(self) -> i64 {
+    self.min
+  }
+
+  pub fn max(self) -> i64 {
+    self.max
+  }
 }
 
 pub trait MetagenBackend {

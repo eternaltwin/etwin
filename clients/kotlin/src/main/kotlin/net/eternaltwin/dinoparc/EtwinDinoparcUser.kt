@@ -18,9 +18,9 @@ data class EtwinDinoparcUser constructor(
   @SerialName("archived_at")
   val archivedAt: Instant,
   val username: DinoparcUsername,
-  val coins: LatestTemporal<Long>? = null, // TODO: UInt
+  val coins: LatestTemporal<DinoparcUserCoins>? = null,
   val dinoz: LatestTemporal<List<DinoparcDinozIdRef>>? = null,
-  val inventory: LatestTemporal<Map<DinoparcItemId, Long>>? = null, // TODO: UInt
+  val inventory: LatestTemporal<Map<DinoparcItemId, DinoparcItemCount>>? = null,
   val collection: LatestTemporal<DinoparcCollection>? = null,
   val etwin: VersionedEtwinLink,
 ) {

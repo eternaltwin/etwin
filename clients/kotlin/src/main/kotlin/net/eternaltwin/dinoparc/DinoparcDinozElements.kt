@@ -8,11 +8,11 @@ import kotlinx.serialization.*
  */
 @Serializable
 data class DinoparcDinozElements constructor(
-  val fire: Int, // TODO: UShort
-  val earth: Int, // TODO: UShort
-  val water: Int, // TODO: UShort
-  val thunder: Int, // TODO: UShort
-  val air: Int, // TODO: UShort
+  val fire: DinoparcDinozElementLevel,
+  val earth: DinoparcDinozElementLevel,
+  val water: DinoparcDinozElementLevel,
+  val thunder: DinoparcDinozElementLevel,
+  val air: DinoparcDinozElementLevel,
 ) {
   companion object {
     @JvmStatic
