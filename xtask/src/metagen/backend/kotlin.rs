@@ -89,6 +89,7 @@ struct KotlinNewString<'typ> {
 }
 
 impl<'typ> fmt::Display for KotlinNewString<'typ> {
+  #[allow(clippy::write_with_newline)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(
       f,
@@ -140,9 +141,10 @@ struct KotlinNewSint<'typ> {
 }
 
 impl<'typ> fmt::Display for KotlinNewSint<'typ> {
+  #[allow(clippy::write_with_newline)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     let (kt_typ, _) = std::array::IntoIter::new(KOTLIN_SINT)
-      .find(|(name, range)| self.typ.can_convert_to(*range))
+      .find(|(_, range)| self.typ.can_convert_to(*range))
       .unwrap();
 
     write!(
@@ -168,43 +170,43 @@ data class {class_name}(
       package = self.package,
       class_name = self.class_name,
       kt_typ = kt_typ,
-    );
+    )?;
 
     for (i, r) in std::array::IntoIter::new(KOTLIN_SINT) {
       if i == kt_typ || !r.can_convert_to(self.typ) {
         continue;
       }
-      write!(
+      writeln!(
         f,
         "  constructor(value: {int}): this(value.to{kt_typ}())\n",
         int = i,
         kt_typ = kt_typ
-      );
+      )?;
     }
     for i in std::array::IntoIter::new(KOTLIN_INT) {
-      write!(f, "  fun to{int}(): {int} = this.inner", int = i,);
+      write!(f, "  fun to{int}(): {int} = this.inner", int = i)?;
       if i != kt_typ {
-        write!(f, ".to{}()", i);
+        write!(f, ".to{}()", i)?;
       }
-      write!(f, "\n");
+      write!(f, "\n")?;
     }
-    write!(f, "\n  companion object {{\n");
+    write!(f, "\n  companion object {{\n")?;
     for i in std::array::IntoIter::new(KOTLIN_INT) {
-      write!(f, "    @JvmStatic\n");
+      write!(f, "    @JvmStatic\n")?;
       write!(
         f,
         "    fun from{int}(value: {int}): {class_name} = {class_name}(value",
         int = i,
         class_name = self.class_name,
-      );
+      )?;
 
       if i != kt_typ {
-        write!(f, ".to{}()", kt_typ);
+        write!(f, ".to{}()", kt_typ)?;
       }
 
-      write!(f, ")\n");
+      write!(f, ")\n")?;
     }
-    write!(f, "  }}\n");
+    write!(f, "  }}\n")?;
 
     write!(
       f,
@@ -239,9 +241,10 @@ struct KotlinNewUint<'typ> {
 }
 
 impl<'typ> fmt::Display for KotlinNewUint<'typ> {
+  #[allow(clippy::write_with_newline)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     let (kt_typ, _) = std::array::IntoIter::new(KOTLIN_UINT)
-      .find(|(name, range)| self.typ.can_convert_to(*range))
+      .find(|(_, range)| self.typ.can_convert_to(*range))
       .unwrap();
 
     write!(
@@ -267,7 +270,7 @@ data class {class_name}(
       package = self.package,
       class_name = self.class_name,
       kt_typ = kt_typ,
-    );
+    )?;
 
     for (i, r) in std::array::IntoIter::new(KOTLIN_UINT) {
       if i == kt_typ || !r.can_convert_to(self.typ) {
@@ -278,32 +281,32 @@ data class {class_name}(
         "  constructor(value: {int}): this(value.to{kt_typ}())\n",
         int = i,
         kt_typ = kt_typ
-      );
+      )?;
     }
     for i in std::array::IntoIter::new(KOTLIN_INT) {
-      write!(f, "  fun to{int}(): {int} = this.inner", int = i,);
+      write!(f, "  fun to{int}(): {int} = this.inner", int = i,)?;
       if i != kt_typ {
-        write!(f, ".to{}()", i);
+        write!(f, ".to{}()", i)?;
       }
-      write!(f, "\n");
+      write!(f, "\n")?;
     }
-    write!(f, "\n  companion object {{\n");
+    write!(f, "\n  companion object {{\n")?;
     for i in std::array::IntoIter::new(KOTLIN_INT) {
-      write!(f, "    @JvmStatic\n");
+      write!(f, "    @JvmStatic\n")?;
       write!(
         f,
         "    fun from{int}(value: {int}): {class_name} = {class_name}(value",
         int = i,
         class_name = self.class_name,
-      );
+      )?;
 
       if i != kt_typ {
-        write!(f, ".to{}()", kt_typ);
+        write!(f, ".to{}()", kt_typ)?;
       }
 
-      write!(f, ")\n");
+      write!(f, ")\n")?;
     }
-    write!(f, "  }}\n");
+    write!(f, "  }}\n")?;
 
     write!(
       f,

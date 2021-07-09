@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use std::fmt;
 use std::fmt::Write;
 use std::marker::PhantomData;
-use std::ops::RangeInclusive;
 
 #[derive(Debug, Clone)]
 pub struct TypeRegistry {
