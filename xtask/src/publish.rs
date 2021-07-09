@@ -75,16 +75,18 @@ pub fn publish() -> Result<(), Box<dyn Error>> {
   for p in std::array::IntoIter::new(NPM_PACKAGES) {
     eprintln!("Publishing: {}", p);
     let dir = packages_dir.join(p);
-    if p == "native" {
-      publish_npm_native(dir)?;
-      continue;
+    match p {
+      "etwin-pg" => publish_npm_etwin_pg(dir)?,
+      "native" => publish_npm_native(dir)?,
+      _ => {
+        let mut cmd = Command::new("yarn");
+        cmd.current_dir(dir);
+        cmd.arg("npm").arg("publish");
+        let s = cmd.status()?;
+        assert!(s.success());
+        sleep(Duration::from_secs(30));
+      }
     }
-    let mut cmd = Command::new("yarn");
-    cmd.current_dir(dir);
-    cmd.arg("npm").arg("publish");
-    let s = cmd.status()?;
-    assert!(s.success());
-    sleep(Duration::from_secs(30));
   }
 
   Ok(())
@@ -109,7 +111,28 @@ fn publish_npm_native(pkg_dir: PathBuf) -> Result<(), Box<dyn Error>> {
   assert!(s.success());
   sleep(Duration::from_secs(30));
 
+  fs::remove_file(pkg_dir.join("native/Cargo.lock"))?;
   fs::write(pkg_dir.join("native/Cargo.toml"), dev_toml)?;
   fs::write(pkg_dir.join("package.json"), dev_package_json)?;
+  Ok(())
+}
+
+fn publish_npm_etwin_pg(pkg_dir: PathBuf) -> Result<(), Box<dyn Error>> {
+  let scripts = pkg_dir.join("scripts");
+  let scripts_tmp = pkg_dir.join("scripts-tmp");
+  fs::rename(&scripts, &scripts_tmp)?;
+  fs::create_dir(&scripts)?;
+  let options = fs_extra::dir::CopyOptions::new();
+  fs_extra::dir::copy(&scripts_tmp, &scripts, &options)?;
+
+  let mut cmd = Command::new("yarn");
+  cmd.current_dir(&pkg_dir);
+  cmd.arg("npm").arg("publish");
+  let s = cmd.status()?;
+  assert!(s.success());
+  sleep(Duration::from_secs(30));
+
+  fs::remove_dir_all(&scripts)?;
+  fs::rename(&scripts_tmp, &scripts)?;
   Ok(())
 }
