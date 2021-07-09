@@ -27,6 +27,7 @@ macro_rules! test_dinoparc_store_pg {
     register_test!($(#[$meta])*, $api, test_touch_inventory_one_dinoz);
     register_test!($(#[$meta])*, $api, test_touch_inventory_three_dinoz);
     register_test!($(#[$meta])*, $api, test_touch_collection_one_dinoz);
+    register_test!($(#[$meta])*, $api, test_touch_collection_jonathan);
     register_test!($(#[$meta])*, $api, test_touch_dinoz_yasumi);
     register_test!($(#[$meta])*, $api, test_touch_dinoz_king_kong);
     register_test!($(#[$meta])*, $api, test_touch_exchange_with_none_admin);
@@ -397,6 +398,218 @@ where
             epic_rewards: {
               let mut rewards = HashSet::new();
               rewards.insert("adn".parse().unwrap());
+              rewards
+            },
+          },
+        },
+      }),
+      dinoz: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: vec![DinoparcDinozIdRef {
+            server: DinoparcServer::DinoparcCom,
+            id: "2".parse().unwrap(),
+          }],
+        },
+      }),
+    });
+    assert_eq!(actual, expected);
+  }
+}
+
+pub(crate) async fn test_touch_collection_jonathan<TyClock, TyDinoparcStore>(api: TestApi<TyClock, TyDinoparcStore>)
+where
+  TyClock: ApiRef<VirtualClock>,
+  TyDinoparcStore: DinoparcStore,
+{
+  let alice = DinoparcSessionUser {
+    user: ShortDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    coins: 10000,
+    dinoz: vec![ShortDinoparcDinozWithLocation {
+      server: DinoparcServer::DinoparcCom,
+      id: "2".parse().unwrap(),
+      name: "Balboa".parse().unwrap(),
+      location: "3".parse().unwrap(),
+    }],
+  };
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .dinoparc_store
+      .touch_collection(&DinoparcCollectionResponse {
+        session_user: alice.clone(),
+        collection: DinoparcCollection {
+          rewards: {
+            let mut rewards = HashSet::new();
+            rewards.insert("2".parse().unwrap());
+            rewards.insert("3".parse().unwrap());
+            rewards.insert("6".parse().unwrap());
+            rewards.insert("9".parse().unwrap());
+            rewards.insert("12".parse().unwrap());
+            rewards.insert("15".parse().unwrap());
+            rewards.insert("16".parse().unwrap());
+            rewards.insert("17".parse().unwrap());
+            rewards.insert("18".parse().unwrap());
+            rewards.insert("19".parse().unwrap());
+            rewards.insert("20".parse().unwrap());
+            rewards.insert("21".parse().unwrap());
+            rewards.insert("22".parse().unwrap());
+            rewards.insert("23".parse().unwrap());
+            rewards.insert("24".parse().unwrap());
+            rewards.insert("25".parse().unwrap());
+            rewards.insert("26".parse().unwrap());
+            rewards.insert("27".parse().unwrap());
+            rewards.insert("28".parse().unwrap());
+            rewards.insert("29".parse().unwrap());
+            rewards.insert("30".parse().unwrap());
+            rewards.insert("31".parse().unwrap());
+            rewards.insert("32".parse().unwrap());
+            rewards.insert("33".parse().unwrap());
+            rewards.insert("34".parse().unwrap());
+            rewards.insert("35".parse().unwrap());
+            rewards.insert("36".parse().unwrap());
+            rewards.insert("37".parse().unwrap());
+            rewards.insert("38".parse().unwrap());
+            rewards.insert("39".parse().unwrap());
+            rewards.insert("40".parse().unwrap());
+            rewards.insert("41".parse().unwrap());
+            rewards.insert("42".parse().unwrap());
+            rewards.insert("43".parse().unwrap());
+            rewards.insert("44".parse().unwrap());
+            rewards.insert("45".parse().unwrap());
+            rewards.insert("46".parse().unwrap());
+            rewards.insert("47".parse().unwrap());
+            rewards.insert("48".parse().unwrap());
+            rewards.insert("49".parse().unwrap());
+            rewards
+          },
+          epic_rewards: {
+            let mut rewards = HashSet::new();
+            rewards.insert("adn".parse().unwrap());
+            rewards.insert("beer".parse().unwrap());
+            rewards.insert("globe_bronze".parse().unwrap());
+            rewards.insert("globe_charbon".parse().unwrap());
+            rewards.insert("kabuki".parse().unwrap());
+            rewards.insert("letter".parse().unwrap());
+            rewards.insert("scroll2".parse().unwrap());
+            rewards.insert("star_full".parse().unwrap());
+            rewards.insert("war18b".parse().unwrap());
+            rewards.insert("war29b".parse().unwrap());
+            rewards.insert("war31b".parse().unwrap());
+            rewards.insert("war32a".parse().unwrap());
+            rewards.insert("war32b".parse().unwrap());
+            rewards.insert("war_stone10".parse().unwrap());
+            rewards.insert("war_stone11".parse().unwrap());
+            rewards.insert("war_stone8".parse().unwrap());
+            rewards
+          },
+        },
+      })
+      .await;
+    assert_ok!(actual);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  {
+    let actual = api
+      .dinoparc_store
+      .get_user(&GetDinoparcUserOptions {
+        server: DinoparcServer::DinoparcCom,
+        id: "1".parse().unwrap(),
+        time: None,
+      })
+      .await
+      .unwrap();
+    let expected = Some(ArchivedDinoparcUser {
+      server: DinoparcServer::DinoparcCom,
+      id: "1".parse().unwrap(),
+      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      username: "alice".parse().unwrap(),
+      coins: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: 10000,
+        },
+      }),
+      inventory: None,
+      collection: Some(LatestTemporal {
+        latest: ForeignSnapshot {
+          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          retrieved: ForeignRetrieved {
+            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+          },
+          value: DinoparcCollection {
+            rewards: {
+              let mut rewards = HashSet::new();
+              rewards.insert("2".parse().unwrap());
+              rewards.insert("3".parse().unwrap());
+              rewards.insert("6".parse().unwrap());
+              rewards.insert("9".parse().unwrap());
+              rewards.insert("12".parse().unwrap());
+              rewards.insert("15".parse().unwrap());
+              rewards.insert("16".parse().unwrap());
+              rewards.insert("17".parse().unwrap());
+              rewards.insert("18".parse().unwrap());
+              rewards.insert("19".parse().unwrap());
+              rewards.insert("20".parse().unwrap());
+              rewards.insert("21".parse().unwrap());
+              rewards.insert("22".parse().unwrap());
+              rewards.insert("23".parse().unwrap());
+              rewards.insert("24".parse().unwrap());
+              rewards.insert("25".parse().unwrap());
+              rewards.insert("26".parse().unwrap());
+              rewards.insert("27".parse().unwrap());
+              rewards.insert("28".parse().unwrap());
+              rewards.insert("29".parse().unwrap());
+              rewards.insert("30".parse().unwrap());
+              rewards.insert("31".parse().unwrap());
+              rewards.insert("32".parse().unwrap());
+              rewards.insert("33".parse().unwrap());
+              rewards.insert("34".parse().unwrap());
+              rewards.insert("35".parse().unwrap());
+              rewards.insert("36".parse().unwrap());
+              rewards.insert("37".parse().unwrap());
+              rewards.insert("38".parse().unwrap());
+              rewards.insert("39".parse().unwrap());
+              rewards.insert("40".parse().unwrap());
+              rewards.insert("41".parse().unwrap());
+              rewards.insert("42".parse().unwrap());
+              rewards.insert("43".parse().unwrap());
+              rewards.insert("44".parse().unwrap());
+              rewards.insert("45".parse().unwrap());
+              rewards.insert("46".parse().unwrap());
+              rewards.insert("47".parse().unwrap());
+              rewards.insert("48".parse().unwrap());
+              rewards.insert("49".parse().unwrap());
+              rewards
+            },
+            epic_rewards: {
+              let mut rewards = HashSet::new();
+              rewards.insert("adn".parse().unwrap());
+              rewards.insert("beer".parse().unwrap());
+              rewards.insert("globe_bronze".parse().unwrap());
+              rewards.insert("globe_charbon".parse().unwrap());
+              rewards.insert("kabuki".parse().unwrap());
+              rewards.insert("letter".parse().unwrap());
+              rewards.insert("scroll2".parse().unwrap());
+              rewards.insert("star_full".parse().unwrap());
+              rewards.insert("war18b".parse().unwrap());
+              rewards.insert("war29b".parse().unwrap());
+              rewards.insert("war31b".parse().unwrap());
+              rewards.insert("war32a".parse().unwrap());
+              rewards.insert("war32b".parse().unwrap());
+              rewards.insert("war_stone10".parse().unwrap());
+              rewards.insert("war_stone11".parse().unwrap());
+              rewards.insert("war_stone8".parse().unwrap());
               rewards
             },
           },
