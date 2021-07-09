@@ -567,25 +567,49 @@ async function sleep(ms: number): Promise<void> {
 }
 
 export async function archiveDino(client: DinoparcClient, store: DinoparcStore, dparcSession: DinoparcSession): Promise<void> {
+  let dinozList: readonly DinoparcDinozIdRef[];
   try {
     const inv: DinoparcInventoryResponse = await client.getInventory(dparcSession);
-    await store.touchInventory(inv);
+    try {
+      await store.touchInventory(inv);
+    } catch (e) {
+      console.error(`touchInventory: ${dparcSession.user.server}/${dparcSession.user.id}`);
+      console.error(e);
+    }
     const coll: DinoparcCollectionResponse = await client.getCollection(dparcSession);
-    await store.touchCollection(coll);
-    let dinozList: readonly DinoparcDinozIdRef[] = inv.sessionUser.dinoz;
+    try {
+      await store.touchCollection(coll);
+    } catch (e) {
+      console.error(`touchCollection: ${dparcSession.user.server}/${dparcSession.user.id}`);
+      console.error(e);
+    }
+    dinozList = inv.sessionUser.dinoz;
     if (dinozList.length >= 150) {
       const targets: [DinoparcUserId, DinoparcUserId] = await client.getPreferredExchangeWith(dparcSession.user.server);
       const target = targets[0] !== dparcSession.user.id ? targets[0] : targets[1];
       const exchangeWith = await client.getExchangeWith(dparcSession, target);
-      await store.touchExchangeWith(exchangeWith);
+      try {
+
+        await store.touchExchangeWith(exchangeWith);
+      } catch (e) {
+        console.error(`touchExchangeWith: ${dparcSession.user.server}/${dparcSession.user.id}`);
+        console.error(e);
+      }
       dinozList = exchangeWith.ownDinoz;
-    }
-    for (const dinoz of dinozList) {
-      sleep(100);
-      const d: DinoparcDinozResponse = await client.getDinoz(dparcSession, dinoz.id);
-      await store.touchDinoz(d);
     }
   } catch (e) {
     console.error(e);
+    return;
+  }
+
+  for (const dinoz of dinozList) {
+    sleep(100);
+    try {
+      const d: DinoparcDinozResponse = await client.getDinoz(dparcSession, dinoz.id);
+      await store.touchDinoz(d);
+    } catch (e) {
+      console.error(`touchExchangeWith: ${dparcSession.user.server}/${dparcSession.user.id}/${dinoz.id}`);
+      console.error(e);
+    }
   }
 }

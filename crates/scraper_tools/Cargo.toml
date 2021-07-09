@@ -1,6 +1,6 @@
 [package]
 name = "etwin_scraper_tools"
-version = "0.7.0"
+version = "0.7.2"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Helper functions for `scraper`"
 documentation = "https://github.com/eternal-twin/etwin"
