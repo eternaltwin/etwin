@@ -608,7 +608,7 @@ export async function archiveDino(client: DinoparcClient, store: DinoparcStore, 
       const d: DinoparcDinozResponse = await client.getDinoz(dparcSession, dinoz.id);
       await store.touchDinoz(d);
     } catch (e) {
-      console.error(`touchExchangeWith: ${dparcSession.user.server}/${dparcSession.user.id}/${dinoz.id}`);
+      console.error(`touchDinoz: ${dparcSession.user.server}/${dparcSession.user.id}/${dinoz.id}`);
       console.error(e);
     }
   }

@@ -16,7 +16,7 @@ data class EtwinDinoparcDinoz constructor(
   @Serializable(with = InstantSerializer::class)
   @SerialName("archived_at")
   val archivedAt: Instant,
-  val name: LatestTemporal<DinoparcDinozName>? = null,
+  val name: LatestTemporal<DinoparcDinozName?>? = null,
   val owner: LatestTemporal<ShortDinoparcUser>? = null,
   val location: LatestTemporal<DinoparcLocationId>? = null,
   val race: LatestTemporal<DinoparcDinozRace>? = null,

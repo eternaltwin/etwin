@@ -1,0 +1,78 @@
+{
+  "type": "DinoparcDinoz",
+  "server": "dinoparc.com",
+  "id": "3561648",
+  "archived_at": "2021-01-01T00:00:00.000Z",
+  "name": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00.000Z",
+        "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
+      },
+      "value": null
+    }
+  },
+  "owner": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00.000Z",
+        "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
+      },
+      "value": {
+        "type": "DinoparcUser",
+        "server": "dinoparc.com",
+        "id": "205944",
+        "username": "djtoph"
+      }
+    }
+  },
+  "location": null,
+  "race": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00.000Z",
+        "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
+      },
+      "value": "Cargou"
+    }
+  },
+  "skin": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00.000Z",
+        "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
+      },
+      "value": "6eLfXvvKAabR6TNY"
+    }
+  },
+  "life": null,
+  "level": {
+    "latest": {
+      "period": {
+        "start": "2021-01-01T00:00:00.000Z",
+        "end": null
+      },
+      "retrieved": {
+        "latest": "2021-01-01T00:00:00.000Z"
+      },
+      "value": 1
+    }
+  },
+  "experience": null,
+  "danger": null,
+  "in_tournament": null,
+  "elements": null,
+  "skills": null
+}

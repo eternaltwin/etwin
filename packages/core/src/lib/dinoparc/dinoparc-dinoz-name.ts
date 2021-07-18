@@ -1,3 +1,5 @@
+import { $Null } from "kryo/lib/null";
+import { TryUnionType } from "kryo/lib/try-union";
 import { Ucs2StringType } from "kryo/lib/ucs2-string";
 
 /**
@@ -11,3 +13,7 @@ export const $DinoparcDinozName: Ucs2StringType = new Ucs2StringType({
   maxLength: 50,
   pattern: /^.{1,50}$/,
 });
+
+export type NullableDinoparcDinozName = null | DinoparcDinozName;
+
+export const $NullableDinoparcDinozName: TryUnionType<NullableDinoparcDinozName> = new TryUnionType({variants: [$Null, $DinoparcDinozName]});

@@ -1,28 +1,32 @@
 import { CaseStyle } from "kryo";
+import { $Uint16 } from "kryo/lib/integer";
 import { LiteralType } from "kryo/lib/literal";
 import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Ucs2String } from "kryo/lib/ucs2-string";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $DinoparcDinozId, DinoparcDinozId } from "./dinoparc-dinoz-id.js";
-import { $NullableDinoparcDinozName, NullableDinoparcDinozName } from "./dinoparc-dinoz-name.js";
-import { $NullableDinoparcLocationId, NullableDinoparcLocationId } from "./dinoparc-location-id.js";
+import { $DinoparcDinozRace, DinoparcDinozRace } from "./dinoparc-dinoz-race.js";
 import { $DinoparcServer, DinoparcServer } from "./dinoparc-server.js";
 
-export interface ShortDinoparcDinozWithLocation {
+export interface UnnamedDinoparcDinoz {
   type: ObjectType.DinoparcDinoz;
   server: DinoparcServer;
   id: DinoparcDinozId;
-  name: NullableDinoparcDinozName;
-  location: NullableDinoparcLocationId;
+  race: DinoparcDinozRace;
+  skin: string;
+  level: number;
+  name?: null;
 }
 
-export const $ShortDinoparcDinozWithLocation: RecordIoType<ShortDinoparcDinozWithLocation> = new RecordType<ShortDinoparcDinozWithLocation>({
+export const $UnnamedDinoparcDinoz: RecordIoType<UnnamedDinoparcDinoz> = new RecordType<UnnamedDinoparcDinoz>({
   properties: {
     type: {type: new LiteralType({type: $ObjectType, value: ObjectType.DinoparcDinoz})},
     server: {type: $DinoparcServer},
     id: {type: $DinoparcDinozId},
-    name: {type: $NullableDinoparcDinozName},
-    location: {type: $NullableDinoparcLocationId},
+    race: {type: $DinoparcDinozRace},
+    skin: {type: $Ucs2String},
+    level: {type: $Uint16},
   },
   changeCase: CaseStyle.SnakeCase,
 });

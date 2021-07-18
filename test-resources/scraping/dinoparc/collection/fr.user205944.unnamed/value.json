@@ -1,0 +1,153 @@
+{
+  "session_user": {
+    "user": "djtoph",
+    "coins": 2405,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1095080",
+        "name": "boutchou",
+        "location": "7"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1162336",
+        "name": "jo le dino",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2094149",
+        "name": "Blue Devil",
+        "location": "10"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2589135",
+        "name": "Green Devil",
+        "location": "8"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3081875",
+        "name": "Stewie",
+        "location": "13"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3248685",
+        "name": "Aequity",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3453835",
+        "name": "Black Devil",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3561648",
+        "name": null,
+        "location": null
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3684322",
+        "name": "Dreamer",
+        "location": "1"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3685541",
+        "name": "Spyrit",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3741964",
+        "name": "Salazar",
+        "location": "15"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3749415",
+        "name": "Nabaku",
+        "location": "3"
+      }
+    ]
+  },
+  "collection": {
+    "rewards": [
+      "2",
+      "3",
+      "6",
+      "9",
+      "12",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31",
+      "32",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47",
+      "48",
+      "49"
+    ],
+    "epic_rewards": [
+      "adn",
+      "beer",
+      "globe_bronze",
+      "globe_charbon",
+      "kabuki",
+      "letter",
+      "scroll2",
+      "star_full",
+      "war18b",
+      "war29b",
+      "war31b",
+      "war32a",
+      "war32b",
+      "war_stone10",
+      "war_stone11",
+      "war_stone8"
+    ]
+  }
+}

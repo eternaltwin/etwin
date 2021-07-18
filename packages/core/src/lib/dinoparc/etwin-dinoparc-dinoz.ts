@@ -12,7 +12,7 @@ import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $NullableLatestTemporal, NullableLatestTemporal } from "../temporal/latest-temporal.js";
 import { $DinoparcDinozElements, DinoparcDinozElements } from "./dinoparc-dinoz-elements.js";
 import { $DinoparcDinozId, DinoparcDinozId } from "./dinoparc-dinoz-id.js";
-import { $DinoparcDinozName, DinoparcDinozName } from "./dinoparc-dinoz-name.js";
+import { $NullableDinoparcDinozName, NullableDinoparcDinozName } from "./dinoparc-dinoz-name.js";
 import { $DinoparcDinozRace, DinoparcDinozRace } from "./dinoparc-dinoz-race.js";
 import { $DinoparcLocationId, DinoparcLocationId } from "./dinoparc-location-id.js";
 import { $DinoparcServer, DinoparcServer } from "./dinoparc-server.js";
@@ -24,7 +24,7 @@ export interface EtwinDinoparcDinoz {
   server: DinoparcServer;
   id: DinoparcDinozId;
   archivedAt: Date;
-  name: NullableLatestTemporal<DinoparcDinozName>;
+  name: NullableLatestTemporal<NullableDinoparcDinozName>;
   owner: NullableLatestTemporal<ShortDinoparcUser>;
   location: NullableLatestTemporal<DinoparcLocationId>;
   race: NullableLatestTemporal<DinoparcDinozRace>;
@@ -44,7 +44,7 @@ export const $EtwinDinoparcDinoz: RecordIoType<EtwinDinoparcDinoz> = new RecordT
     server: {type: $DinoparcServer},
     id: {type: $DinoparcDinozId},
     archivedAt: {type: $Date},
-    name: {type: $NullableLatestTemporal.apply($DinoparcDinozName) as IoType<NullableLatestTemporal<DinoparcDinozName>>},
+    name: {type: $NullableLatestTemporal.apply($NullableDinoparcDinozName) as IoType<NullableLatestTemporal<NullableDinoparcDinozName>>},
     owner: {type: $NullableLatestTemporal.apply($ShortDinoparcUser) as IoType<NullableLatestTemporal<ShortDinoparcUser>>},
     location: {type: $NullableLatestTemporal.apply($DinoparcLocationId) as IoType<NullableLatestTemporal<DinoparcLocationId>>},
     race: {type: $NullableLatestTemporal.apply($DinoparcDinozRace) as IoType<NullableLatestTemporal<DinoparcDinozRace>>},

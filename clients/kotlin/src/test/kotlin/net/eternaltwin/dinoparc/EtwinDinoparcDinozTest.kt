@@ -144,6 +144,161 @@ class EtwinDinoparcDinozTest {
               )
             ),
           ),
+          "unnamed" to EtwinDinoparcDinoz(
+            server = DinoparcServer.DinoparcCom,
+            id = DinoparcDinozId("3561648"),
+            archivedAt = Instant.parse("2021-01-01T00:00:00.000Z"),
+            name = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                null,
+              )
+            ),
+            owner = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ShortDinoparcUser(
+                  server = DinoparcServer.DinoparcCom,
+                  id = DinoparcUserId("205944"),
+                  username = DinoparcUsername("djtoph"),
+                )
+              )
+            ),
+            location = null,
+            race = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcDinozRace.Cargou
+              )
+            ),
+            skin = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcDinozSkin("6eLfXvvKAabR6TNY")
+              )
+            ),
+            life = null,
+            level = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcDinozLevel(1U)
+              )
+            ),
+            experience = null,
+            danger = null,
+            inTournament = null,
+            elements = null,
+            skills = null,
+          ),
+          "yasumi" to EtwinDinoparcDinoz(
+            server = DinoparcServer.EnDinoparcCom,
+            id = DinoparcDinozId("765483"),
+            archivedAt = Instant.parse("2021-01-01T00:00:00.000Z"),
+            name = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcDinozName("Yasumi")
+              )
+            ),
+            owner = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ShortDinoparcUser(
+                  server = DinoparcServer.EnDinoparcCom,
+                  id = DinoparcUserId("681579"),
+                  username = DinoparcUsername("Kapox"),
+                )
+              )
+            ),
+            location = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcLocationId("0")
+              )
+            ),
+            race = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcDinozRace.Wanwan
+              )
+            ),
+            skin = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcDinozSkin("Ac9OrgxOWu1pd7Fp")
+              )
+            ),
+            life = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcDinozLife(30U)
+              )
+            ),
+            level = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcDinozLevel(12U)
+              )
+            ),
+            experience = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcDinozExperience(13U)
+              )
+            ),
+            danger = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcDinozDanger(116)
+              )
+            ),
+            inTournament = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                false
+              )
+            ),
+            elements = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                DinoparcDinozElements(
+                  DinoparcDinozElementLevel(10U),
+                  DinoparcDinozElementLevel(0U),
+                  DinoparcDinozElementLevel(0U),
+                  DinoparcDinozElementLevel(7U),
+                  DinoparcDinozElementLevel(2U)
+                )
+              )
+            ),
+            skills = LatestTemporal(
+              ForeignSnapshot(
+                PeriodLower(Instant.parse("2021-01-01T00:00:00.000Z")),
+                ForeignRetrieved(Instant.parse("2021-01-01T00:00:00.000Z")),
+                mapOf(
+                  DinoparcSkill.Dexterity to DinoparcSkillLevel(2U),
+                  DinoparcSkill.Intelligence to DinoparcSkillLevel(5U),
+                  DinoparcSkill.MartialArts to DinoparcSkillLevel(5U),
+                  DinoparcSkill.Strength to DinoparcSkillLevel(5U),
+                )
+              )
+            ),
+          ),
         ),
       )
   }

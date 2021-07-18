@@ -320,8 +320,8 @@ pub struct DinoparcDinozIdRef {
 pub struct ShortDinoparcDinozWithLocation {
   pub server: DinoparcServer,
   pub id: DinoparcDinozId,
-  pub name: DinoparcDinozName,
-  pub location: DinoparcLocationId,
+  pub name: Option<DinoparcDinozName>,
+  pub location: Option<DinoparcLocationId>,
 }
 
 impl ShortDinoparcDinozWithLocation {
@@ -339,7 +339,7 @@ impl ShortDinoparcDinozWithLocation {
 pub struct ShortDinoparcDinozWithLevel {
   pub server: DinoparcServer,
   pub id: DinoparcDinozId,
-  pub name: DinoparcDinozName,
+  pub name: Option<DinoparcDinozName>,
   pub level: u16,
 }
 
@@ -358,13 +358,21 @@ impl ShortDinoparcDinozWithLevel {
 pub struct DinoparcDinoz {
   pub server: DinoparcServer,
   pub id: DinoparcDinozId,
-  pub name: DinoparcDinozName,
-  pub location: DinoparcLocationId,
   pub race: DinoparcDinozRace,
   /// Raw skin code
   pub skin: DinoparcDinozSkin,
-  pub life: IntPercentage,
   pub level: u16,
+  #[cfg_attr(feature = "_serde", serde(flatten))]
+  pub named: Option<NamedDinoparcDinozFields>,
+}
+
+/// Fields only available on named Dinoz
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct NamedDinoparcDinozFields {
+  pub name: DinoparcDinozName,
+  pub location: DinoparcLocationId,
+  pub life: IntPercentage,
   pub experience: IntPercentage,
   pub danger: i16,
   pub in_tournament: bool,
@@ -380,17 +388,27 @@ impl DinoparcDinoz {
       id: self.id,
     }
   }
+
+  pub const fn name(&self) -> Option<&DinoparcDinozName> {
+    // TODO(demurgos): Remove this clippy exception once `Option::map` is const-compatible (or clippy stop complaining)
+    #[allow(clippy::manual_map)]
+    if let Some(named) = self.named.as_ref() {
+      Some(&named.name)
+    } else {
+      None
+    }
+  }
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcUser"))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcDinoz"))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ArchivedDinoparcDinoz {
   pub server: DinoparcServer,
   pub id: DinoparcDinozId,
   #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub archived_at: Instant,
-  pub name: Option<LatestTemporal<DinoparcDinozName>>,
+  pub name: Option<LatestTemporal<Option<DinoparcDinozName>>>,
   pub owner: Option<LatestTemporal<ShortDinoparcUser>>,
   pub location: Option<LatestTemporal<DinoparcLocationId>>,
   pub race: Option<LatestTemporal<DinoparcDinozRace>>,
@@ -836,7 +854,7 @@ mod test {
           retrieved: ForeignRetrieved {
             latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
           },
-          value: "Yasumi".parse().unwrap(),
+          value: Some("Yasumi".parse().unwrap()),
         },
       }),
       owner: Some(LatestTemporal {
@@ -961,7 +979,7 @@ mod test {
   #[cfg(feature = "_serde")]
   #[test]
   fn read_archived_dinoparc_dinoz_yasumi() {
-    let s = fs::read_to_string("../../test-resources/core/dinoparc/archived-dinoparc-dinoz/yasumi/value.json").unwrap();
+    let s = fs::read_to_string("../../test-resources/core/dinoparc/etwin-dinoparc-dinoz/yasumi/value.json").unwrap();
     let actual: ArchivedDinoparcDinoz = serde_json::from_str(&s).unwrap();
     let expected = get_archived_dinoparc_dinoz_yasumi();
     assert_eq!(actual, expected);
@@ -973,7 +991,7 @@ mod test {
     let value = get_archived_dinoparc_dinoz_yasumi();
     let actual: String = serde_json::to_string_pretty(&value).unwrap();
     let expected =
-      fs::read_to_string("../../test-resources/core/dinoparc/archived-dinoparc-dinoz/yasumi/value.json").unwrap();
+      fs::read_to_string("../../test-resources/core/dinoparc/etwin-dinoparc-dinoz/yasumi/value.json").unwrap();
     assert_eq!(&actual, expected.trim());
   }
 }

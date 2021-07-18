@@ -1,0 +1,1096 @@
+{
+  "session_user": {
+    "user": "bad_boy3_3",
+    "coins": 6607,
+    "dinoz": [
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "205766",
+        "name": "Pandore",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1162260",
+        "name": "Aizen",
+        "location": "15"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1191760",
+        "name": "Hippotinus",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1280327",
+        "name": "Renusia",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1452268",
+        "name": "Francky",
+        "location": "1"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1494740",
+        "name": "Joker",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1804365",
+        "name": "Matsumoto",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1904799",
+        "name": "Feziox",
+        "location": "20"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1928853",
+        "name": "Damanix",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "1932599",
+        "name": "Seiya",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2015229",
+        "name": "Doggy",
+        "location": "20"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2186080",
+        "name": "Hellboy",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2232664",
+        "name": "Buck",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2242849",
+        "name": "king_kong",
+        "location": "1"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2270814",
+        "name": "Mysterieux",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2329384",
+        "name": "makake",
+        "location": "1"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2367557",
+        "name": "RastaWasta",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2370176",
+        "name": "kabukman",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2392631",
+        "name": "Frangin",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2424013",
+        "name": "Donkey",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2443877",
+        "name": "X dark",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2630336",
+        "name": "Darkos",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2666474",
+        "name": "Eclatant",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2787445",
+        "name": "Overdoz",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2805200",
+        "name": "Clarabul",
+        "location": "1"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2821059",
+        "name": "Cancerus",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2829730",
+        "name": "Lunestiti",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2843433",
+        "name": "Chiko",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2851345",
+        "name": "Bouffy",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2871109",
+        "name": "Vertigo",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2903285",
+        "name": "Dexter",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2921902",
+        "name": "Monster",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2952288",
+        "name": "Hades",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2967106",
+        "name": "Cristmas",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2968904",
+        "name": "Lutin",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2975259",
+        "name": "Santa",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2980042",
+        "name": "Caribou",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2980151",
+        "name": "Ultron",
+        "location": "1"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "2982214",
+        "name": "Monkey",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3000649",
+        "name": "Tenefix",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3018488",
+        "name": "Yvouxy",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3022136",
+        "name": "Lenka",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3029876",
+        "name": "Warsistiti",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3061396",
+        "name": "Kaji",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3073983",
+        "name": "Bad_boy",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3080461",
+        "name": "Ralf",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3101605",
+        "name": "Emeraude",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3169984",
+        "name": "Nutella",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3182056",
+        "name": "Galak",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3190222",
+        "name": "Foxy",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3208814",
+        "name": "Terra",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3210532",
+        "name": "Malice",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3228856",
+        "name": "Bifrost",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3237337",
+        "name": "Lune-rouge",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3253496",
+        "name": "Badystiti",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3261156",
+        "name": "X-zibit",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3262112",
+        "name": "Légende",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3287988",
+        "name": "Sasquatch",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3300681",
+        "name": "Donk",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3349569",
+        "name": "Obscure",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3381617",
+        "name": "Winter",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3382408",
+        "name": "Nowel",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3386864",
+        "name": "Rudolph",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3387613",
+        "name": "Alpaco",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3401869",
+        "name": "Globox",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3435136",
+        "name": "Jadex",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3479116",
+        "name": "Serpantard",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3572407",
+        "name": "Brownie",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3583125",
+        "name": "Luxor",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3585721",
+        "name": "Belzebuth",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3618318",
+        "name": "Zohan",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3630855",
+        "name": "Cartoon",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3633316",
+        "name": "Furia",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3682885",
+        "name": "Parfait",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3714057",
+        "name": "Loki",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3720554",
+        "name": "Dior",
+        "location": "19"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3720759",
+        "name": "Démonax",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3721640",
+        "name": "Zenka",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3727625",
+        "name": "Abysse",
+        "location": "19"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3728812",
+        "name": "Mephisto",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3729325",
+        "name": "Joke",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3732876",
+        "name": "Kunro",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3735104",
+        "name": "Allien",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3736529",
+        "name": "Indiana",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3736624",
+        "name": "Rasvarik",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3736945",
+        "name": "Zen",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3736972",
+        "name": "Good-Day",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3737094",
+        "name": "Offering",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3737205",
+        "name": "The-First",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3737552",
+        "name": "Neox",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3737672",
+        "name": "Perfect",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3737680",
+        "name": "Beautiful",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3737748",
+        "name": "Dragibus",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3737807",
+        "name": "Magik",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3738001",
+        "name": "Nocturne",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3738049",
+        "name": "Osiris",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3738105",
+        "name": "Zeox",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3738146",
+        "name": "Empereur",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3738534",
+        "name": "Invictus",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3738768",
+        "name": "Armani",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3738914",
+        "name": "Odin",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3738956",
+        "name": "Orage",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3738987",
+        "name": "Michto",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3739249",
+        "name": "Surprise",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3739365",
+        "name": "Brasil",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3739378",
+        "name": "Mojito",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3739424",
+        "name": "Ivoirien",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3739518",
+        "name": "Nicaragua",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3740612",
+        "name": "César",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3741379",
+        "name": "Romian",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3741384",
+        "name": "Fun",
+        "location": "15"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3741522",
+        "name": "Roadkill",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3741623",
+        "name": "Lucifer",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3741670",
+        "name": "Tok",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3741687",
+        "name": "Morning",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3741755",
+        "name": "Babouin",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742104",
+        "name": "Cacahuéte",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742193",
+        "name": "Satanas",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742197",
+        "name": "Marlboro",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742230",
+        "name": "Djinh",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742442",
+        "name": "Wortz",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742472",
+        "name": "Emphasis",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742577",
+        "name": "Neïaa",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742641",
+        "name": "Drenn",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742703",
+        "name": "Toruviel",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742713",
+        "name": "Jalisha",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742748",
+        "name": "Symply",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742776",
+        "name": "midnight",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742906",
+        "name": "HANGOVER",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3742936",
+        "name": "Yago",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743018",
+        "name": "Sequoïa",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743024",
+        "name": "Toretto",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743114",
+        "name": "Arachide",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743149",
+        "name": "Cancun",
+        "location": "15"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743208",
+        "name": "Aexode",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743411",
+        "name": "Tropical",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743474",
+        "name": "Nemesis",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743533",
+        "name": "Chance",
+        "location": "1"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743557",
+        "name": "Unforget",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743601",
+        "name": "--Clayton--",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743610",
+        "name": "Shifoumi",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743653",
+        "name": "Razer",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743678",
+        "name": "Virus",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743686",
+        "name": "Niork",
+        "location": "1"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743720",
+        "name": "--Galago--",
+        "location": "15"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743755",
+        "name": "Tamarin",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743773",
+        "name": "--Insomnia--",
+        "location": "1"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743843",
+        "name": "Tizarz",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743857",
+        "name": "Gremlins",
+        "location": "0"
+      },
+      {
+        "type": "DinoparcDinoz",
+        "server": "dinoparc.com",
+        "id": "3743862",
+        "name": "Inglourious",
+        "location": "1"
+      }
+    ]
+  },
+  "dinoz": {
+    "type": "DinoparcDinoz",
+    "server": "dinoparc.com",
+    "id": "3736945",
+    "name": "Zen",
+    "location": "0",
+    "race": "Ouistiti",
+    "skin": "FWnL1r6v1QeGN6rI",
+    "life": 0,
+    "level": 69,
+    "experience": 9,
+    "danger": -75,
+    "in_tournament": false,
+    "elements": {
+      "fire": 0,
+      "earth": 22,
+      "water": 25,
+      "thunder": 20,
+      "air": 4
+    },
+    "skills": {
+      "Bargain": 5,
+      "Camouflage": 4,
+      "Climb": 5,
+      "Cook": 3,
+      "Dig": 5,
+      "Intelligence": 5,
+      "Jump": 1,
+      "Medicine": 5,
+      "Music": 4,
+      "Navigation": 5,
+      "Perception": 5,
+      "Provoke": 5,
+      "Run": 5,
+      "Stamina": 5,
+      "Swim": 5
+    }
+  }
+}

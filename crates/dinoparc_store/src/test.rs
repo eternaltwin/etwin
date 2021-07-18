@@ -6,8 +6,8 @@ use etwin_core::dinoparc::{
   ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcCollection, DinoparcCollectionResponse, DinoparcDinoz,
   DinoparcDinozElements, DinoparcDinozIdRef, DinoparcDinozRace, DinoparcDinozResponse, DinoparcExchangeWithResponse,
   DinoparcInventoryResponse, DinoparcServer, DinoparcSessionUser, DinoparcSkill, DinoparcSkillLevel, DinoparcStore,
-  GetDinoparcDinozOptions, GetDinoparcUserOptions, ShortDinoparcDinozWithLevel, ShortDinoparcDinozWithLocation,
-  ShortDinoparcUser,
+  GetDinoparcDinozOptions, GetDinoparcUserOptions, NamedDinoparcDinozFields, ShortDinoparcDinozWithLevel,
+  ShortDinoparcDinozWithLocation, ShortDinoparcUser,
 };
 use etwin_core::temporal::{ForeignRetrieved, ForeignSnapshot, LatestTemporal};
 use std::collections::{HashMap, HashSet};
@@ -127,8 +127,8 @@ where
     dinoz: vec![ShortDinoparcDinozWithLocation {
       server: DinoparcServer::DinoparcCom,
       id: "2".parse().unwrap(),
-      name: "Balboa".parse().unwrap(),
-      location: "3".parse().unwrap(),
+      name: Some("Balboa".parse().unwrap()),
+      location: Some("3".parse().unwrap()),
     }],
   };
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
@@ -218,20 +218,20 @@ where
       ShortDinoparcDinozWithLocation {
         server: DinoparcServer::DinoparcCom,
         id: "2".parse().unwrap(),
-        name: "One".parse().unwrap(),
-        location: "3".parse().unwrap(),
+        name: Some("One".parse().unwrap()),
+        location: Some("3".parse().unwrap()),
       },
       ShortDinoparcDinozWithLocation {
         server: DinoparcServer::DinoparcCom,
         id: "4".parse().unwrap(),
-        name: "Two".parse().unwrap(),
-        location: "5".parse().unwrap(),
+        name: Some("Two".parse().unwrap()),
+        location: Some("5".parse().unwrap()),
       },
       ShortDinoparcDinozWithLocation {
         server: DinoparcServer::DinoparcCom,
         id: "6".parse().unwrap(),
-        name: "Three".parse().unwrap(),
-        location: "7".parse().unwrap(),
+        name: Some("Three".parse().unwrap()),
+        location: Some("7".parse().unwrap()),
       },
     ],
   };
@@ -331,8 +331,8 @@ where
     dinoz: vec![ShortDinoparcDinozWithLocation {
       server: DinoparcServer::DinoparcCom,
       id: "2".parse().unwrap(),
-      name: "Balboa".parse().unwrap(),
-      location: "3".parse().unwrap(),
+      name: Some("Balboa".parse().unwrap()),
+      location: Some("3".parse().unwrap()),
     }],
   };
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
@@ -435,8 +435,8 @@ where
     dinoz: vec![ShortDinoparcDinozWithLocation {
       server: DinoparcServer::DinoparcCom,
       id: "2".parse().unwrap(),
-      name: "Balboa".parse().unwrap(),
-      location: "3".parse().unwrap(),
+      name: Some("Balboa".parse().unwrap()),
+      location: Some("3".parse().unwrap()),
     }],
   };
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
@@ -648,14 +648,14 @@ where
       ShortDinoparcDinozWithLocation {
         server: DinoparcServer::EnDinoparcCom,
         id: "765483".parse().unwrap(),
-        name: "Yasumi".parse().unwrap(),
-        location: "0".parse().unwrap(),
+        name: Some("Yasumi".parse().unwrap()),
+        location: Some("0".parse().unwrap()),
       },
       ShortDinoparcDinozWithLocation {
         server: DinoparcServer::EnDinoparcCom,
         id: "765484".parse().unwrap(),
-        name: "Manaka".parse().unwrap(),
-        location: "1".parse().unwrap(),
+        name: Some("Manaka".parse().unwrap()),
+        location: Some("1".parse().unwrap()),
       },
     ],
   };
@@ -668,30 +668,32 @@ where
         dinoz: DinoparcDinoz {
           server: DinoparcServer::EnDinoparcCom,
           id: "765483".parse().unwrap(),
-          name: "Yasumi".parse().unwrap(),
-          location: "0".parse().unwrap(),
           race: DinoparcDinozRace::Wanwan,
           skin: "Ac9OrgxOWu1pd7Fp".parse().unwrap(),
-          life: IntPercentage::new(30).unwrap(),
           level: 12,
-          experience: IntPercentage::new(13).unwrap(),
-          danger: 116,
-          in_tournament: false,
-          elements: DinoparcDinozElements {
-            fire: 10,
-            earth: 0,
-            water: 0,
-            thunder: 7,
-            air: 2,
-          },
-          skills: {
-            let mut skills = HashMap::new();
-            skills.insert(DinoparcSkill::Dexterity, DinoparcSkillLevel::new(2).unwrap());
-            skills.insert(DinoparcSkill::Intelligence, DinoparcSkillLevel::new(5).unwrap());
-            skills.insert(DinoparcSkill::Strength, DinoparcSkillLevel::new(5).unwrap());
-            skills.insert(DinoparcSkill::MartialArts, DinoparcSkillLevel::new(5).unwrap());
-            skills
-          },
+          named: Some(NamedDinoparcDinozFields {
+            name: "Yasumi".parse().unwrap(),
+            location: "0".parse().unwrap(),
+            life: IntPercentage::new(30).unwrap(),
+            experience: IntPercentage::new(13).unwrap(),
+            danger: 116,
+            in_tournament: false,
+            elements: DinoparcDinozElements {
+              fire: 10,
+              earth: 0,
+              water: 0,
+              thunder: 7,
+              air: 2,
+            },
+            skills: {
+              let mut skills = HashMap::new();
+              skills.insert(DinoparcSkill::Dexterity, DinoparcSkillLevel::new(2).unwrap());
+              skills.insert(DinoparcSkill::Intelligence, DinoparcSkillLevel::new(5).unwrap());
+              skills.insert(DinoparcSkill::Strength, DinoparcSkillLevel::new(5).unwrap());
+              skills.insert(DinoparcSkill::MartialArts, DinoparcSkillLevel::new(5).unwrap());
+              skills
+            },
+          }),
         },
       })
       .await;
@@ -718,7 +720,7 @@ where
           retrieved: ForeignRetrieved {
             latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
           },
-          value: "Yasumi".parse().unwrap(),
+          value: Some("Yasumi".parse().unwrap()),
         },
       }),
       owner: Some(LatestTemporal {
@@ -857,8 +859,8 @@ where
     dinoz: vec![ShortDinoparcDinozWithLocation {
       server: DinoparcServer::EnDinoparcCom,
       id: "299930".parse().unwrap(),
-      name: "King-Kong".parse().unwrap(),
-      location: "20".parse().unwrap(),
+      name: Some("King-Kong".parse().unwrap()),
+      location: Some("20".parse().unwrap()),
     }],
   };
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
@@ -870,35 +872,37 @@ where
         dinoz: DinoparcDinoz {
           server: DinoparcServer::EnDinoparcCom,
           id: "299930".parse().unwrap(),
-          name: "King-Kong".parse().unwrap(),
-          location: "20".parse().unwrap(),
           race: DinoparcDinozRace::Gorilloz,
           skin: "5I3Qvg92CQLxvGE4".parse().unwrap(),
-          life: IntPercentage::new(18).unwrap(),
           level: 25,
-          experience: IntPercentage::new(27).unwrap(),
-          danger: -65,
-          in_tournament: false,
-          elements: DinoparcDinozElements {
-            fire: 2,
-            earth: 19,
-            water: 17,
-            thunder: 13,
-            air: 4,
-          },
-          skills: {
-            let mut skills = HashMap::new();
-            skills.insert(DinoparcSkill::Bargain, DinoparcSkillLevel::new(2).unwrap());
-            skills.insert(DinoparcSkill::Climb, DinoparcSkillLevel::new(5).unwrap());
-            skills.insert(DinoparcSkill::Dexterity, DinoparcSkillLevel::new(2).unwrap());
-            skills.insert(DinoparcSkill::Dig, DinoparcSkillLevel::new(5).unwrap());
-            skills.insert(DinoparcSkill::Intelligence, DinoparcSkillLevel::new(5).unwrap());
-            skills.insert(DinoparcSkill::Medicine, DinoparcSkillLevel::new(4).unwrap());
-            skills.insert(DinoparcSkill::Perception, DinoparcSkillLevel::new(2).unwrap());
-            skills.insert(DinoparcSkill::Run, DinoparcSkillLevel::new(1).unwrap());
-            skills.insert(DinoparcSkill::Stamina, DinoparcSkillLevel::new(4).unwrap());
-            skills
-          },
+          named: Some(NamedDinoparcDinozFields {
+            name: "King-Kong".parse().unwrap(),
+            location: "20".parse().unwrap(),
+            life: IntPercentage::new(18).unwrap(),
+            experience: IntPercentage::new(27).unwrap(),
+            danger: -65,
+            in_tournament: false,
+            elements: DinoparcDinozElements {
+              fire: 2,
+              earth: 19,
+              water: 17,
+              thunder: 13,
+              air: 4,
+            },
+            skills: {
+              let mut skills = HashMap::new();
+              skills.insert(DinoparcSkill::Bargain, DinoparcSkillLevel::new(2).unwrap());
+              skills.insert(DinoparcSkill::Climb, DinoparcSkillLevel::new(5).unwrap());
+              skills.insert(DinoparcSkill::Dexterity, DinoparcSkillLevel::new(2).unwrap());
+              skills.insert(DinoparcSkill::Dig, DinoparcSkillLevel::new(5).unwrap());
+              skills.insert(DinoparcSkill::Intelligence, DinoparcSkillLevel::new(5).unwrap());
+              skills.insert(DinoparcSkill::Medicine, DinoparcSkillLevel::new(4).unwrap());
+              skills.insert(DinoparcSkill::Perception, DinoparcSkillLevel::new(2).unwrap());
+              skills.insert(DinoparcSkill::Run, DinoparcSkillLevel::new(1).unwrap());
+              skills.insert(DinoparcSkill::Stamina, DinoparcSkillLevel::new(4).unwrap());
+              skills
+            },
+          }),
         },
       })
       .await;
@@ -925,7 +929,7 @@ where
           retrieved: ForeignRetrieved {
             latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
           },
-          value: "King-Kong".parse().unwrap(),
+          value: Some("King-Kong".parse().unwrap()),
         },
       }),
       owner: Some(LatestTemporal {
@@ -1085,7 +1089,7 @@ pub(crate) async fn test_touch_exchange_with_none_admin<TyClock, TyDinoparcStore
         other_dinoz: vec![ShortDinoparcDinozWithLevel {
           server: DinoparcServer::DinoparcCom,
           id: "2".parse().unwrap(),
-          name: "Balboa".parse().unwrap(),
+          name: Some("Balboa".parse().unwrap()),
           level: 1,
         }],
       })
@@ -1151,8 +1155,8 @@ where
         list.push(ShortDinoparcDinozWithLocation {
           server: DinoparcServer::DinoparcCom,
           id: format!("{}", i).parse().unwrap(),
-          name: format!("Dino{}", i).parse().unwrap(),
-          location: "0".parse().unwrap(),
+          name: Some(format!("Dino{}", i).parse().unwrap()),
+          location: Some("0".parse().unwrap()),
         })
       }
       list
@@ -1171,7 +1175,7 @@ where
             list.push(ShortDinoparcDinozWithLevel {
               server: DinoparcServer::DinoparcCom,
               id: format!("{}", i).parse().unwrap(),
-              name: format!("Dino{}", i).parse().unwrap(),
+              name: Some(format!("Dino{}", i).parse().unwrap()),
               level: 1,
             })
           }
@@ -1256,8 +1260,8 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
         list.push(ShortDinoparcDinozWithLocation {
           server: DinoparcServer::DinoparcCom,
           id: format!("{}", i).parse().unwrap(),
-          name: format!("Dino{}", i).parse().unwrap(),
-          location: "0".parse().unwrap(),
+          name: Some(format!("Dino{}", i).parse().unwrap()),
+          location: Some("0".parse().unwrap()),
         })
       }
       list
@@ -1276,7 +1280,7 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
             list.push(ShortDinoparcDinozWithLevel {
               server: DinoparcServer::DinoparcCom,
               id: format!("{}", i).parse().unwrap(),
-              name: format!("Dino{}", i).parse().unwrap(),
+              name: Some(format!("Dino{}", i).parse().unwrap()),
               level: 1,
             })
           }
@@ -1304,8 +1308,8 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
               list.push(ShortDinoparcDinozWithLocation {
                 server: DinoparcServer::DinoparcCom,
                 id: format!("{}", i).parse().unwrap(),
-                name: format!("Dino{}", i).parse().unwrap(),
-                location: "0".parse().unwrap(),
+                name: Some(format!("Dino{}", i).parse().unwrap()),
+                location: Some("0".parse().unwrap()),
               })
             }
             list
@@ -1385,8 +1389,8 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
               list.push(ShortDinoparcDinozWithLocation {
                 server: DinoparcServer::DinoparcCom,
                 id: format!("{}", i).parse().unwrap(),
-                name: format!("Dino{}", i).parse().unwrap(),
-                location: "0".parse().unwrap(),
+                name: Some(format!("Dino{}", i).parse().unwrap()),
+                location: Some("0".parse().unwrap()),
               })
             }
             list

@@ -6,8 +6,8 @@ use etwin_core::dinoparc::{
   DinoparcCollection, DinoparcCollectionResponse, DinoparcDinoz, DinoparcDinozElements, DinoparcDinozId,
   DinoparcDinozName, DinoparcDinozRace, DinoparcDinozResponse, DinoparcEpicRewardKey, DinoparcExchangeWithResponse,
   DinoparcInventoryResponse, DinoparcItemId, DinoparcRewardId, DinoparcServer, DinoparcSessionUser, DinoparcSkill,
-  DinoparcSkillLevel, DinoparcUserId, DinoparcUsername, ShortDinoparcDinozWithLevel, ShortDinoparcDinozWithLocation,
-  ShortDinoparcUser,
+  DinoparcSkillLevel, DinoparcUserId, DinoparcUsername, NamedDinoparcDinozFields, ShortDinoparcDinozWithLevel,
+  ShortDinoparcDinozWithLocation, ShortDinoparcUser,
 };
 use etwin_scraper_tools::{ElementRefExt, FlashVars};
 use itertools::Itertools;
@@ -429,9 +429,15 @@ fn scrape_exchange_dinoz_list(
         .expect("Echange dinoz name and level capture should have a group with id 1")
         .as_str();
 
-      let name: DinoparcDinozName = name
-        .parse()
-        .map_err(|_| ScraperError::InvalidDinozName(name.to_string()))?;
+      let name: Option<DinoparcDinozName> = if name == "null" {
+        None
+      } else {
+        Some(
+          name
+            .parse()
+            .map_err(|_| ScraperError::InvalidDinozName(name.to_string()))?,
+        )
+      };
       let level: u16 = level
         .parse()
         .map_err(|_| ScraperError::InvalidDinozLevel(level.to_string()))?;
@@ -457,24 +463,41 @@ pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse<DinoparcU
     .exactly_one()
     .map_err(|_| ScraperError::NonUniqueContentPane)?;
 
-  let name = {
-    let name = content_pane
-      .select(&Selector::parse(":scope > h1").unwrap())
-      .exactly_one()
-      .map_err(|_| ScraperError::NonUniqueDinozName)?;
-    let name = name.text().next().ok_or(ScraperError::NonUniqueDinozNameText)?;
-    let name: DinoparcDinozName = name
-      .trim()
-      .parse()
-      .map_err(|_| ScraperError::InvalidDinozName(name.to_string()))?;
-    name
-  };
-
   let dinoz_view = content_pane
     .select(&Selector::parse(":scope > table.dinoView").unwrap())
-    .exactly_one()
+    .at_most_one()
     .map_err(|_| ScraperError::NonUniqueDinozView)?;
 
+  let dinoz = if let Some(dinoz_view) = dinoz_view {
+    let name = {
+      let name = content_pane
+        .select(&Selector::parse(":scope > h1").unwrap())
+        .exactly_one()
+        .map_err(|_| ScraperError::NonUniqueDinozName)?;
+      let name = name.text().next().ok_or(ScraperError::NonUniqueDinozNameText)?;
+      let name: DinoparcDinozName = name
+        .trim()
+        .parse()
+        .map_err(|_| ScraperError::InvalidDinozName(name.to_string()))?;
+      name
+    };
+    scrape_named_dinoz(context.server, name, dinoz_view)?
+  } else {
+    let dinoz_sheet = content_pane
+      .select(&Selector::parse(":scope > table.dinoSheet").unwrap())
+      .exactly_one()
+      .map_err(|_| ScraperError::NonUniqueDinozView)?;
+    scrape_unnamed_dinoz(context.server, dinoz_sheet)?
+  };
+
+  Ok(DinoparcDinozResponse { session_user, dinoz })
+}
+
+fn scrape_named_dinoz(
+  server: DinoparcServer,
+  name: DinoparcDinozName,
+  dinoz_view: ElementRef,
+) -> Result<DinoparcDinoz, ScraperError> {
   let dinoz_pane = dinoz_view
     .select(&Selector::parse(":scope div.dino").unwrap())
     .exactly_one()
@@ -615,7 +638,7 @@ pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse<DinoparcU
         let name = name
           .get_one_text()
           .map_err(|_| ScraperError::NonUniqueDinozSkillNameText)?;
-        let name = ScraperLocale::get(context.server)
+        let name = ScraperLocale::get(server)
           .skill_names
           .get(name)
           .cloned()
@@ -654,7 +677,7 @@ pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse<DinoparcU
       .any(|important| {
         important
           .text()
-          .any(|t| ScraperLocale::get(context.server).in_tournament_pattern.is_match(t))
+          .any(|t| ScraperLocale::get(server).in_tournament_pattern.is_match(t))
       })
   };
 
@@ -671,7 +694,7 @@ pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse<DinoparcU
     let location = location
       .get_one_text()
       .map_err(|_| ScraperError::NonUniqueLocationNameText)?;
-    ScraperLocale::get(context.server)
+    ScraperLocale::get(server)
       .location_names
       .get(location)
       .cloned()
@@ -684,7 +707,7 @@ pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse<DinoparcU
       .exactly_one()
       .map_err(|_| ScraperError::NonUniquePlaceLink)?;
     let place_link = place_link.value().attr("href").ok_or(ScraperError::MissingLinkHref)?;
-    let place_link = DinoparcUrls::new(context.server)
+    let place_link = DinoparcUrls::new(server)
       .parse_from_root(place_link)
       .map_err(|_| ScraperError::InvalidLinkHref(place_link.to_string()))?;
     let req = place_link
@@ -701,25 +724,96 @@ pub(crate) fn scrape_dinoz(doc: &Html) -> Result<DinoparcDinozResponse<DinoparcU
     DinoparcDinozId::from_str(id).map_err(|_| ScraperError::InvalidDinozId(id.to_string()))?
   };
 
-  Ok(DinoparcDinozResponse {
-    session_user,
-    dinoz: DinoparcDinoz {
-      server: context.server,
-      id,
+  Ok(DinoparcDinoz {
+    server,
+    id,
+    race: DinoparcDinozRace::from_skin_code(skin.as_str()),
+    skin: skin
+      .parse()
+      .map_err(|_| ScraperError::InvalidDinozSkin(skin.to_string()))?,
+    level,
+    named: Some(NamedDinoparcDinozFields {
       name,
       location,
-      race: DinoparcDinozRace::from_skin_code(skin.as_str()),
-      skin: skin
-        .parse()
-        .map_err(|_| ScraperError::InvalidDinozSkin(skin.to_string()))?,
       life,
-      level,
       experience,
       danger,
       in_tournament,
       elements,
       skills,
-    },
+    }),
+  })
+}
+
+fn scrape_unnamed_dinoz(server: DinoparcServer, dinoz_sheet: ElementRef) -> Result<DinoparcDinoz, ScraperError> {
+  let skin = {
+    let skin = dinoz_sheet
+      .select(&Selector::parse(":scope td.picBox object > param[name=FlashVars]").unwrap())
+      .exactly_one()
+      .map_err(|_| ScraperError::NonUniqueDinozSkinFlashVars)?;
+    let skin = skin.value().attr("value").ok_or(ScraperError::MissingFlashVarsValue)?;
+    let skin: &str = FlashVars::new(skin)
+      .into_iter()
+      .filter_map(|(k, v)| if k == "data" { Some(v) } else { None })
+      .exactly_one()
+      .map_err(|_| ScraperError::NonUniqueDinozSkinData)?;
+    skin.to_string()
+  };
+
+  let form = dinoz_sheet
+    .select(&Selector::parse(":scope form").unwrap())
+    .exactly_one()
+    .map_err(|_| ScraperError::NonUniqueDinozNameForm)?;
+
+  let id = {
+    let form_action = form.value().attr("action").ok_or(ScraperError::MissingFormAction)?;
+    let form_action = DinoparcUrls::new(server)
+      .parse_from_root(form_action)
+      .map_err(|_| ScraperError::InvalidFormAction(form_action.to_string()))?;
+    let req = form_action
+      .query_pairs()
+      .filter_map(|(k, v)| if k.as_ref() == "r" { Some(v) } else { None })
+      .exactly_one()
+      .map_err(|_| ScraperError::NonUniqueDinoparcRequest)?;
+    let req = DinoparcRequest::new(req.as_ref());
+    let id = req
+      .pairs()
+      .filter_map(|(k, v)| if k == "id" { Some(v) } else { None })
+      .exactly_one()
+      .map_err(|_| ScraperError::NonUniqueDinozIdInLink)?;
+    DinoparcDinozId::from_str(id).map_err(|_| ScraperError::InvalidDinozId(id.to_string()))?
+  };
+
+  let def = form
+    .select(&Selector::parse(":scope > table.def").unwrap())
+    .exactly_one()
+    .map_err(|_| ScraperError::NonUniqueDinozDefTable)?;
+
+  let level = {
+    let level = def
+      .select(&Selector::parse(":scope tr:nth-child(1) td").unwrap())
+      .exactly_one()
+      .map_err(|_| ScraperError::NonUniqueDinozLevel)?;
+
+    let level = level.text().next().ok_or(ScraperError::MissingDinozLevelText)?;
+    let level = DECIMAL_RE.find(level).ok_or(ScraperError::MissingDinozLevelDecimal)?;
+    let level = level.as_str();
+
+    let level: u16 = level
+      .parse()
+      .map_err(|_| ScraperError::InvalidDinozLevel(level.to_string()))?;
+    level
+  };
+
+  Ok(DinoparcDinoz {
+    server,
+    id,
+    race: DinoparcDinozRace::from_skin_code(skin.as_str()),
+    skin: skin
+      .parse()
+      .map_err(|_| ScraperError::InvalidDinozSkin(skin.to_string()))?,
+    level,
+    named: None,
   })
 }
 
@@ -832,13 +926,25 @@ fn scrape_sidebar_dinoz(
   let name = {
     let name = dinoz
       .select(&Selector::parse(":scope p.name").unwrap())
-      .exactly_one()
+      .at_most_one()
       .map_err(|_| ScraperError::NonUniqueDinozName)?;
-    let name = name.get_one_text().map_err(|_| ScraperError::NonUniqueDinozNameText)?;
-    // No trimming: already trimmed
-    DinoparcDinozName::from_str(name).map_err(|_| ScraperError::InvalidDinozName(name.to_string()))?
+    if let Some(name) = name {
+      let name = name.get_one_text().map_err(|_| ScraperError::NonUniqueDinozNameText)?;
+      // No trimming: already trimmed
+      Some(DinoparcDinozName::from_str(name).map_err(|_| ScraperError::InvalidDinozName(name.to_string()))?)
+    } else if dinoz
+      .select(&Selector::parse(":scope p.notify").unwrap())
+      .next()
+      .is_some()
+    {
+      // Unnamed dinoz, the `p.notify` is the "Pick a name" prompt
+      None
+    } else {
+      // No name or prompt to pick a name
+      return Err(ScraperError::NonUniqueDinozName);
+    }
   };
-  let location = {
+  let location = if name.is_some() {
     let location = dinoz
       .select(&Selector::parse(":scope p.placeName").unwrap())
       .exactly_one()
@@ -846,14 +952,15 @@ fn scrape_sidebar_dinoz(
     let location = location
       .get_one_text()
       .map_err(|_| ScraperError::NonUniqueLocationNameText)?;
-    ScraperLocale::get(server)
+    let location = ScraperLocale::get(server)
       .location_names
       .get(location)
       .cloned()
-      .ok_or_else(|| ScraperError::InvalidLocationName(location.to_string()))?
+      .ok_or_else(|| ScraperError::InvalidLocationName(location.to_string()))?;
+    Some(location)
+  } else {
+    None
   };
-
-  // <span class="money" title="4051 pièces">4051 <img src="img/icons/tiny_coin.gif"></span>
 
   Ok(ShortDinoparcDinozWithLocation {
     server,

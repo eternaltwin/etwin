@@ -3,7 +3,14 @@
 <dl>
   <ng-container *ngIf="dinoz.name !== null">
     <dt>Name ({{dinoz.name.latest.period.start | date}})</dt>
-    <dd>{{dinoz.name.latest.value}}</dd>
+    <dd>
+      <ng-container [ngSwitch]="dinoz.name.latest.value !== null">
+        <ng-container *ngSwitchCase="true">
+          {{dinoz.name.latest.value}}
+        </ng-container>
+        <em *ngSwitchDefault>Unnamed</em>
+      </ng-container>
+    </dd>
   </ng-container>
   <dt>Archived since</dt>
   <dd>{{dinoz.archivedAt | date}}</dd>

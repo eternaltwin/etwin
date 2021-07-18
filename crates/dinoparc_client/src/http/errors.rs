@@ -63,6 +63,10 @@ pub enum ScraperError {
   MissingLinkHref,
   #[error("Invalid dinoz link {:?}", .0)]
   InvalidLinkHref(String),
+  #[error("Missing action attribute on form")]
+  MissingFormAction,
+  #[error("Invalid form action link {:?}", .0)]
+  InvalidFormAction(String),
   #[error("Zero or many `r` param in link, exactly one was expected")]
   NonUniqueDinoparcRequest,
   #[error("Zero or many dinoz id in link, exactly one was expected")]
@@ -133,6 +137,8 @@ pub enum ScraperError {
   NonUniqueDinozView,
   #[error("Zero or many dinoz pane, exactly one was expected")]
   NonUniqueDinozPane,
+  #[error("Zero or many dinoz new name form, exactly one was expected")]
+  NonUniqueDinozNameForm,
   #[error("Zero or many dinoz skin FlashVars node, exactly one was expected")]
   NonUniqueDinozSkinFlashVars,
   #[error("Missing `value` attr on FlashVars node")]

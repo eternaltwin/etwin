@@ -136,25 +136,25 @@ where
     touch_dinoparc_session_user(&mut tx, now, &response.session_user).await?;
     let dinoz = &response.dinoz;
     touch_dinoparc_dinoz(&mut tx, now, dinoz.as_ref()).await?;
-    // touch_dinoparc_dinoz_owner(tx, now, dinoz.as_ref(), user).await?;
-    touch_dinoparc_dinoz_name(&mut tx, now, dinoz.as_ref(), &dinoz.name).await?;
-    touch_dinoparc_dinoz_location(&mut tx, now, dinoz.as_ref(), dinoz.location).await?;
     touch_dinoparc_dinoz_level(&mut tx, now, dinoz.as_ref(), dinoz.level).await?;
-    let skills = touch_dinoparc_skill_levels(&mut tx, &dinoz.skills, self.uuid_generator.next()).await?;
-    touch_dinoparc_dinoz_profile(
-      &mut tx,
-      now,
-      dinoz.as_ref(),
-      dinoz.race,
-      &dinoz.skin,
-      dinoz.life,
-      dinoz.experience,
-      dinoz.danger,
-      dinoz.in_tournament,
-      dinoz.elements,
-      skills,
-    )
-    .await?;
+    touch_dinoparc_dinoz_skin(&mut tx, now, dinoz.as_ref(), dinoz.race, &dinoz.skin).await?;
+    touch_dinoparc_dinoz_name(&mut tx, now, dinoz.as_ref(), dinoz.name()).await?;
+    if let Some(fields) = dinoz.named.as_ref() {
+      touch_dinoparc_dinoz_location(&mut tx, now, dinoz.as_ref(), fields.location).await?;
+      let skills = touch_dinoparc_skill_levels(&mut tx, &fields.skills, self.uuid_generator.next()).await?;
+      touch_dinoparc_dinoz_profile(
+        &mut tx,
+        now,
+        dinoz.as_ref(),
+        fields.life,
+        fields.experience,
+        fields.danger,
+        fields.in_tournament,
+        fields.elements,
+        skills,
+      )
+      .await?;
+    }
     tx.commit().await?;
 
     Ok(())
@@ -194,10 +194,12 @@ where
       level_period: Option<PeriodLower>,
       level_retrieved_latest: Option<Instant>,
       level_value: Option<PgU16>,
+      skin_period: Option<PeriodLower>,
+      skin_retrieved_latest: Option<Instant>,
+      skin_race: Option<DinoparcDinozRace>,
+      skin_skin: Option<DinoparcDinozSkin>,
       profile_period: Option<PeriodLower>,
       profile_retrieved_latest: Option<Instant>,
-      profile_race: Option<DinoparcDinozRace>,
-      profile_skin: Option<DinoparcDinozSkin>,
       profile_life: Option<IntPercentage>,
       profile_experience: Option<IntPercentage>,
       profile_danger: Option<i16>,
@@ -246,12 +248,21 @@ where
         WHERE lower(period) <= $3::INSTANT
         WINDOW w AS (PARTITION BY (dinoparc_server, dinoparc_dinoz_id) ORDER BY lower(period) ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
       ),
+      latest_dinoparc_dinoz_skins AS (
+        SELECT
+          dinoparc_server, dinoparc_dinoz_id, period, retrieved_at, race, skin
+        FROM dinoparc_dinoz_skins
+        WHERE
+          dinoparc_server = $1::DINOPARC_SERVER
+          AND dinoparc_dinoz_id = $2::DINOPARC_USER_ID
+          AND lower(period) <= $3::INSTANT
+        ORDER BY lower(period) DESC
+        LIMIT 1
+      ),
       latest_dinoparc_dinoz_profiles AS (
         SELECT dinoparc_server, dinoparc_dinoz_id,
           LAST_VALUE(period) OVER w AS period,
           LAST_VALUE(retrieved_at) OVER w AS retrieved,
-          LAST_VALUE(race) OVER w AS race,
-          LAST_VALUE(skin) OVER w AS skin,
           LAST_VALUE(life) OVER w AS life,
           LAST_VALUE(experience) OVER w AS experience,
           LAST_VALUE(danger) OVER w AS danger,
@@ -267,8 +278,8 @@ where
         owner.period AS owner_period, owner.retrieved[CARDINALITY(owner.retrieved)] AS owner_retrieved_latest, owner.owner_id AS owner_id, owner.owner_username AS owner_username,
         location.period AS location_period, location.retrieved[CARDINALITY(location.retrieved)] AS location_retrieved_latest, location.location AS location_value,
         level.period AS level_period, level.retrieved[CARDINALITY(level.retrieved)] AS level_retrieved_latest, level.level AS level_value,
+        skin.period AS skin_period, skin.retrieved_at[CARDINALITY(skin.retrieved_at)] AS skin_retrieved_latest, skin.race AS skin_race, skin.skin AS skin_skin,
         profile.period AS profile_period, profile.retrieved[CARDINALITY(profile.retrieved)] AS profile_retrieved_latest,
-        profile.race AS profile_race, profile.skin AS profile_skin,
         profile.life AS profile_life, profile.experience AS profile_experience,
         profile.danger AS profile_danger, profile.in_tournament AS profile_in_tournament,
         profile.elements AS profile_elements, profile.skills AS profile_skills
@@ -277,6 +288,7 @@ where
         LEFT OUTER JOIN latest_dinoparc_dinoz_owners AS owner USING (dinoparc_server, dinoparc_dinoz_id)
         LEFT OUTER JOIN latest_dinoparc_dinoz_locations AS location USING (dinoparc_server, dinoparc_dinoz_id)
         LEFT OUTER JOIN latest_dinoparc_dinoz_levels AS level USING (dinoparc_server, dinoparc_dinoz_id)
+        LEFT OUTER JOIN latest_dinoparc_dinoz_skins AS skin USING (dinoparc_server, dinoparc_dinoz_id)
         LEFT OUTER JOIN latest_dinoparc_dinoz_profiles AS profile USING (dinoparc_server, dinoparc_dinoz_id)
       WHERE dinoparc_server = $1::DINOPARC_SERVER AND dinoparc_dinoz_id = $2::DINOPARC_DINOZ_ID AND archived_at <= $3::INSTANT;
     ",
@@ -331,11 +343,19 @@ where
       server: row.dinoparc_server,
       id: row.dinoparc_dinoz_id,
       archived_at: row.archived_at,
-      name: to_latest_temporal(row.name_period, row.name_retrieved_latest, row.name_value),
+      name: to_latest_temporal(
+        row.name_period,
+        row.name_retrieved_latest,
+        if row.name_period.is_some() {
+          Some(row.name_value)
+        } else {
+          None
+        },
+      ),
       owner: to_latest_temporal(row.owner_period, row.owner_retrieved_latest, owner),
       location: to_latest_temporal(row.location_period, row.location_retrieved_latest, row.location_value),
-      race: to_latest_temporal(row.profile_period, row.profile_retrieved_latest, row.profile_race),
-      skin: to_latest_temporal(row.profile_period, row.profile_retrieved_latest, row.profile_skin),
+      race: to_latest_temporal(row.skin_period, row.skin_retrieved_latest, row.skin_race),
+      skin: to_latest_temporal(row.skin_period, row.skin_retrieved_latest, row.skin_skin),
       life: to_latest_temporal(row.profile_period, row.profile_retrieved_latest, row.profile_life),
       level: to_latest_temporal(row.level_period, row.level_retrieved_latest, row.level_value)
         .map(|t| t.map(u16::from)),
@@ -627,8 +647,10 @@ async fn touch_dinoparc_session_user(
   }
   for dinoz in session_user.dinoz.iter() {
     touch_dinoparc_dinoz_owner(tx, now, dinoz.as_ref(), user).await?;
-    touch_dinoparc_dinoz_name(tx, now, dinoz.as_ref(), &dinoz.name).await?;
-    touch_dinoparc_dinoz_location(tx, now, dinoz.as_ref(), dinoz.location).await?;
+    touch_dinoparc_dinoz_name(tx, now, dinoz.as_ref(), dinoz.name.as_ref()).await?;
+    if let Some(location) = dinoz.location {
+      touch_dinoparc_dinoz_location(tx, now, dinoz.as_ref(), location).await?;
+    }
   }
   Ok(())
 }
@@ -652,7 +674,7 @@ async fn touch_dinoparc_exchange_dinoz(
   }
   for dinoz in list.iter() {
     touch_dinoparc_dinoz_owner(tx, now, dinoz.as_ref(), owner).await?;
-    touch_dinoparc_dinoz_name(tx, now, dinoz.as_ref(), &dinoz.name).await?;
+    touch_dinoparc_dinoz_name(tx, now, dinoz.as_ref(), dinoz.name.as_ref()).await?;
     touch_dinoparc_dinoz_level(tx, now, dinoz.as_ref(), dinoz.level).await?;
   }
   Ok(())
@@ -826,13 +848,13 @@ async fn touch_dinoparc_dinoz_name(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   dinoz: DinoparcDinozIdRef,
-  name: &DinoparcDinozName,
+  name: Option<&DinoparcDinozName>,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_dinoz_names(
       time($1 period, retrieved_at),
       primary($2 dinoparc_server::DINOPARC_SERVER, $3 dinoparc_dinoz_id::DINOPARC_DINOZ_ID),
-      data($4 name::DINOPARC_DINOZ_NAME),
+      data($4 name::DINOPARC_DINOZ_NAME?),
     )
   ))
   .bind(now)
@@ -933,28 +955,19 @@ async fn touch_dinoparc_dinoz_level(
 }
 
 #[allow(clippy::too_many_arguments)]
-async fn touch_dinoparc_dinoz_profile(
+async fn touch_dinoparc_dinoz_skin(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   dinoz: DinoparcDinozIdRef,
   race: DinoparcDinozRace,
   skin: &DinoparcDinozSkin,
-  life: IntPercentage,
-  experience: IntPercentage,
-  danger: i16,
-  in_tournameent: bool,
-  elements: DinoparcDinozElements,
-  skills: Uuid,
 ) -> Result<(), EtwinError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
-    dinoparc_dinoz_profiles(
+    dinoparc_dinoz_skins(
       time($1 period, retrieved_at),
       primary($2 dinoparc_server::DINOPARC_SERVER, $3 dinoparc_dinoz_id::DINOPARC_DINOZ_ID),
       data(
-        $4 race::DINOPARC_DINOZ_RACE, $5 skin::DINOPARC_DINOZ_SKIN,
-        $6 life::INT_PERCENTAGE, $7 experience::INT_PERCENTAGE, $8 danger::I16,
-        $9 in_tournament::BOOLEAN, $10 elements::DINOPARC_DINOZ_ELEMENTS,
-        $11 skills::dinoparc_skill_level_map_id
+        $4 race::DINOPARC_DINOZ_RACE, $5 skin::DINOPARC_DINOZ_SKIN
       ),
     )
   ))
@@ -963,10 +976,46 @@ async fn touch_dinoparc_dinoz_profile(
   .bind(dinoz.id)
   .bind(race)
   .bind(skin)
+  .execute(&mut *tx)
+  .await?;
+  // Affected row counts:
+  // 1 : 1 updated (matching data)
+  // 1 : 1 inserted (first insert)
+  // 2 : 1 inserted (data change), 1 invalidated (primary)
+  assert!((1..=2u64).contains(&res.rows_affected()));
+  Ok(())
+}
+
+#[allow(clippy::too_many_arguments)]
+async fn touch_dinoparc_dinoz_profile(
+  tx: &mut Transaction<'_, Postgres>,
+  now: Instant,
+  dinoz: DinoparcDinozIdRef,
+  life: IntPercentage,
+  experience: IntPercentage,
+  danger: i16,
+  in_tournament: bool,
+  elements: DinoparcDinozElements,
+  skills: Uuid,
+) -> Result<(), EtwinError> {
+  let res: PgQueryResult = sqlx::query(upsert_archive_query!(
+    dinoparc_dinoz_profiles(
+      time($1 period, retrieved_at),
+      primary($2 dinoparc_server::DINOPARC_SERVER, $3 dinoparc_dinoz_id::DINOPARC_DINOZ_ID),
+      data(
+        $4 life::INT_PERCENTAGE, $5 experience::INT_PERCENTAGE, $6 danger::I16,
+        $7 in_tournament::BOOLEAN, $8 elements::DINOPARC_DINOZ_ELEMENTS,
+        $9 skills::dinoparc_skill_level_map_id
+      ),
+    )
+  ))
+  .bind(now)
+  .bind(dinoz.server)
+  .bind(dinoz.id)
   .bind(life)
   .bind(experience)
   .bind(danger)
-  .bind(in_tournameent)
+  .bind(in_tournament)
   .bind(elements)
   .bind(skills)
   .execute(&mut *tx)
