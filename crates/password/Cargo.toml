@@ -14,7 +14,7 @@ edition = "2018"
 [dependencies]
 etwin_core = { version = "0.7.2", features = ["sqlx"] }
 hmac = "0.11.0"
-neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-runtime"] }
+neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
 rand_core = { version = "0.6.3", features = ["getrandom"] }
 scrypt = "0.7.0"
 sha2 = "0.9.5"

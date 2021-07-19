@@ -1,122 +1,83 @@
-# demurgos/node:latest
-image: "demurgos/node@sha256:e172659979fa07cc05f2c2f6c2074906b695f1e30097df7d02fcda82258a6b1b"
-
-services:
-  - "postgres:latest"
-
-cache:
-  paths:
-    - ".cache/sccache/"
-    - ".cargo/bin/"
-    - ".cargo/registry/cache/"
-    - ".cargo/registry/index/"
-    - ".cargo/git/db/"
-    - ".yarn/"
-
-variables:
-  CARGO_HOME: ".cargo"
-  POSTGRES_DB: "etwindb"
-  POSTGRES_USER: "etwin"
-  POSTGRES_PASSWORD: "dev"
-  RUSTFLAGS: "-C target-feature=-crt-static"
-
-before_script:
-  - "node --version"
-  - "yarn --version"
-  - "rustc --version"
-  - "cargo --version"
-  - "cargo fmt --version"
-  - "cargo clippy --version"
-  - "export SCCACHE_DIR=\"$(pwd)/.cache/sccache\""
-  - "export RUSTC_WRAPPER=sccache"
-  - "yarn install --immutable"
-  - |
-    cat >etwin.toml <<EOL
-    [etwin]
-    api = "postgres"
-    secret = "dev_secret"
-    http_port = 50320
-    external_uri = "http://localhost:50320"
-
-    [db]
-    host = "postgres"
-    port = 5432
-    name = "${POSTGRES_DB}"
-    admin_user = "${POSTGRES_USER}"
-    admin_password = "${POSTGRES_PASSWORD}"
-    user = "${POSTGRES_USER}"
-    password = "${POSTGRES_PASSWORD}"
-
-    [clients.eternalfest]
-    display_name = "Eternalfest"
-    app_uri = "http://localhost:50313"
-    callback_uri = "http://localhost:50313/oauth/callback"
-    secret = "eternalfest_secret"
-
-    [auth.twinoid]
-    client_id = "380"
-    secret = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-
-    [forum]
-    posts_per_page = 10
-    threads_per_page = 20
-
-    [forum.sections.fr_main]
-    display_name = "Forum Général"
-    locale = "fr-FR"
-    EOL
-
 stages:
   - "check"
+  - "release"
 
 lint:
   stage: "check"
+  needs: []
+  tags:
+    - "linux"
+  # demurgos/node:latest
+  image: "demurgos/node@sha256:e172659979fa07cc05f2c2f6c2074906b695f1e30097df7d02fcda82258a6b1b"
+  variables:
+    CARGO_HOME: ".cargo"
+    RUSTFLAGS: "-C target-feature=-crt-static"
+  before_script:
+    - "node --version"
+    - "yarn --version"
+    - "rustc --version"
+    - "cargo --version"
+    - "cargo fmt --version"
+    - "cargo clippy --version"
+    - "export SCCACHE_DIR=\"$(pwd)/.cache/sccache\""
+    - "export RUSTC_WRAPPER=sccache"
+    - "yarn install --immutable"
   script:
     - |
       cargo fmt -- --check \
       && cargo clippy --all-targets --all-features -- -D warnings \
       && yarn run lint
-
-test-node:
-  stage: "check"
-  script:
-    - |
-      sccache --start-server \
-      && yarn run test \
-      && sccache --stop-server
+  after_script: []
+  cache:
+    paths:
+      - ".cache/sccache/"
+      - ".cargo/bin/"
+      - ".cargo/registry/cache/"
+      - ".cargo/registry/index/"
+      - ".cargo/git/db/"
+      - ".yarn/cache"
 
 test-ruby2:
   stage: "check"
+  needs: []
+  tags:
+    - "linux"
   # ruby:2.7.2-buster
   image: "ruby@sha256:19cfb36f6e63fa964c984bd7837d7e2ba18263e34a5da1725324b80271dd475a"
   before_script:
-    - ruby --version
-    - bundler --version
-    - cd clients/ruby
-    - bundle install
+    - "ruby --version"
+    - "bundler --version"
+    - "cd clients/ruby"
+    - "bundle install"
   script:
-    - bundle exec rubocop
-    - bundle exec rspec
-    - bundle exec srb tc
+    - "bundle exec rubocop"
+    - "bundle exec rspec"
+    - "bundle exec srb tc"
   after_script: []
 
 test-ruby3:
   stage: "check"
+  needs: []
+  tags:
+    - "linux"
   # ruby:3.0.1-buster
   image: "ruby@sha256:d5c828809239010c8549eeaf1f6da84f67bee7f61353e6a4a52159bf3f397aa6"
   before_script:
-    - ruby --version
-    - bundler --version
-    - cd clients/ruby
-    - bundle install
+    - "ruby --version"
+    - "bundler --version"
+    - "cd clients/ruby"
+    - "bundle install"
   script:
-    - bundle exec rubocop
-    - bundle exec rspec
-    - bundle exec srb tc
+    - "bundle exec rubocop"
+    - "bundle exec rspec"
+    - "bundle exec srb tc"
   after_script: []
 
 test-jvm16:
   stage: "check"
+  needs: []
+  tags:
+    - "linux"
   # openjdk:16.0.1-slim-buster
   image: "openjdk@sha256:77a90136a7a3bd2342adc2a4e10815a5bd71598fa2c8b5906c284dfd24e10ccc"
   before_script:
@@ -128,14 +89,174 @@ test-jvm16:
 
 test-rust:
   stage: "check"
+  needs: []
+  tags:
+    - "linux"
+  # demurgos/node:latest
+  image: "demurgos/node@sha256:e172659979fa07cc05f2c2f6c2074906b695f1e30097df7d02fcda82258a6b1b"
+  services:
+    - "postgres:latest"
+  variables:
+    CARGO_HOME: ".cargo"
+    POSTGRES_DB: "etwin"
+    POSTGRES_USER: "etwin.dev"
+    POSTGRES_PASSWORD: "dev"
+    RUSTFLAGS: "-C target-feature=-crt-static"
+  before_script:
+    - "node --version"
+    - "yarn --version"
+    - "rustc --version"
+    - "cargo --version"
+    - "cargo fmt --version"
+    - "cargo clippy --version"
+    - "export SCCACHE_DIR=\"$(pwd)/.cache/sccache\""
+    - "export RUSTC_WRAPPER=sccache"
+    - "yarn install --immutable"
+    - |
+      cat >etwin.toml <<EOL
+      [etwin]
+      api = "postgres"
+      secret = "dev_secret"
+      http_port = 50320
+      external_uri = "http://localhost:50320"
+
+      [db]
+      host = "postgres"
+      port = 5432
+      name = "${POSTGRES_DB}"
+      admin_user = "${POSTGRES_USER}"
+      admin_password = "${POSTGRES_PASSWORD}"
+      user = "${POSTGRES_USER}"
+      password = "${POSTGRES_PASSWORD}"
+
+      [clients.eternalfest]
+      display_name = "Eternalfest"
+      app_uri = "http://localhost:50313"
+      callback_uri = "http://localhost:50313/oauth/callback"
+      secret = "eternalfest_secret"
+
+      [auth.twinoid]
+      client_id = "380"
+      secret = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+      [forum]
+      posts_per_page = 10
+      threads_per_page = 20
+
+      [forum.sections.fr_main]
+      display_name = "Forum Général"
+      locale = "fr-FR"
+      EOL
   script:
     - |
       sccache --start-server \
       && cargo test --no-fail-fast -- -Z unstable-options --report-time \
       && sccache --stop-server
+  after_script: []
+  cache:
+    paths:
+      - ".cache/sccache/"
+      - ".cargo/bin/"
+      - ".cargo/registry/cache/"
+      - ".cargo/registry/index/"
+      - ".cargo/git/db/"
+      - ".yarn/cache"
+
+test-node:
+  stage: "check"
+  needs: []
+  tags:
+    - "linux"
+  # demurgos/node:latest
+  image: "demurgos/node@sha256:e172659979fa07cc05f2c2f6c2074906b695f1e30097df7d02fcda82258a6b1b"
+  services:
+    - "postgres:latest"
+  variables:
+    CARGO_HOME: ".cargo"
+    POSTGRES_DB: "etwin"
+    POSTGRES_USER: "etwin.dev"
+    POSTGRES_PASSWORD: "dev"
+    RUSTFLAGS: "-C target-feature=-crt-static"
+  before_script:
+    - "node --version"
+    - "yarn --version"
+    - "rustc --version"
+    - "cargo --version"
+    - "cargo fmt --version"
+    - "cargo clippy --version"
+    - "export SCCACHE_DIR=\"$(pwd)/.cache/sccache\""
+    - "export RUSTC_WRAPPER=sccache"
+    - "yarn install --immutable"
+    - |
+      cat >etwin.toml <<EOL
+      [etwin]
+      api = "postgres"
+      secret = "dev_secret"
+      http_port = 50320
+      external_uri = "http://localhost:50320"
+
+      [db]
+      host = "postgres"
+      port = 5432
+      name = "${POSTGRES_DB}"
+      admin_user = "${POSTGRES_USER}"
+      admin_password = "${POSTGRES_PASSWORD}"
+      user = "${POSTGRES_USER}"
+      password = "${POSTGRES_PASSWORD}"
+
+      [clients.eternalfest]
+      display_name = "Eternalfest"
+      app_uri = "http://localhost:50313"
+      callback_uri = "http://localhost:50313/oauth/callback"
+      secret = "eternalfest_secret"
+
+      [auth.twinoid]
+      client_id = "380"
+      secret = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+      [forum]
+      posts_per_page = 10
+      threads_per_page = 20
+
+      [forum.sections.fr_main]
+      display_name = "Forum Général"
+      locale = "fr-FR"
+      EOL
+  script:
+    - |
+      sccache --start-server \
+      && yarn run test \
+      && sccache --stop-server
+  after_script: []
+  cache:
+    paths:
+      - ".cache/sccache/"
+      - ".cargo/bin/"
+      - ".cargo/registry/cache/"
+      - ".cargo/registry/index/"
+      - ".cargo/git/db/"
+      - ".yarn/cache"
 
 build:
   stage: "check"
+  needs: []
+  tags:
+    - "linux"
+  # demurgos/node:latest
+  image: "demurgos/node@sha256:e172659979fa07cc05f2c2f6c2074906b695f1e30097df7d02fcda82258a6b1b"
+  variables:
+    CARGO_HOME: ".cargo"
+    RUSTFLAGS: "-C target-feature=-crt-static"
+  before_script:
+    - "node --version"
+    - "yarn --version"
+    - "rustc --version"
+    - "cargo --version"
+    - "cargo fmt --version"
+    - "cargo clippy --version"
+    - "export SCCACHE_DIR=\"$(pwd)/.cache/sccache\""
+    - "export RUSTC_WRAPPER=sccache"
+    - "yarn install --immutable"
   script:
     - |
       sccache --start-server \
@@ -143,3 +264,12 @@ build:
       && yarn --cwd packages/website run build \
       && yarn --cwd packages/cli run main:dirty-build \
       && sccache --stop-server
+  after_script: []
+  cache:
+    paths:
+      - ".cache/sccache/"
+      - ".cargo/bin/"
+      - ".cargo/registry/cache/"
+      - ".cargo/registry/index/"
+      - ".cargo/git/db/"
+      - ".yarn/cache"

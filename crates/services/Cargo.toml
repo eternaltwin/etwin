@@ -14,7 +14,7 @@ edition = "2018"
 [dependencies]
 chrono = "0.4.19"
 etwin_core = "0.7.2"
-neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-runtime"] }
+neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
 
 [dev-dependencies]
 etwin_config = "0.7.2"

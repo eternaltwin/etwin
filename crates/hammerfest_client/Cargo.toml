@@ -22,7 +22,7 @@ chrono = "0.4.19"
 etwin_constants = "0.7.2"
 etwin_core = "0.7.2"
 etwin_scraper_tools = { version = "0.7.2", optional = true }
-neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-runtime"] }
+neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
 rand = "0.8.4"
 reqwest = { version = "0.11.4", optional = true, features = ["cookies"] }
 scraper = { version = "0.12.0", optional = true }

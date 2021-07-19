@@ -16,7 +16,7 @@ async-trait = "0.1.50"
 chrono = "0.4.19"
 etwin_core = { version = "0.7.2", features = ["sqlx"] }
 etwin_db_schema = "0.7.2"
-neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-runtime"] }
+neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
 regex = "1.5.4"
 sqlx = { version = "0.5.5", default-features = false, features = ["macros", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 thiserror = "1.0.26"

@@ -17,7 +17,7 @@ etwin_core = { version = "0.7.2", features = ["_serde", "sqlx"] }
 etwin_db_schema = "0.7.2"
 etwin_populate = "0.7.2"
 etwin_postgres_tools = "0.7.2"
-neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-runtime"] }
+neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
 regex = "1.5.4"
 serde_json = "1.0.64"
 sha3 = "0.9.1"

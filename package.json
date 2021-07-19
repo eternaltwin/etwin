@@ -10,7 +10,7 @@
     "lint": "eslint \"packages/*/src/**/*.ts\"",
     "format": "eslint --fix \"packages/*/src/**/*.ts\"",
     "start": "cd packages/website && yarn run start",
-    "clean": "rimraf \"packages/*/@(lib|main|test)\" \"packages/website/app/@(browser|server)\" \"packages/native/native/@(artifacts.json|index.node)\" \"target\" \"./*.profraw\"",
+    "clean": "rimraf \"packages/*/@(bin|lib|main|test)\" \"packages/website/app/@(browser|server)\" \"packages/native/native/@(artifacts.json|build|index.node)\" \"target\" \"./*.profraw\"",
     "build:production": "CARGO_FLAGS=\"--release\" && cd packages/website && yarn run build",
     "db:check": "cd packages/etwin-pg && yarn run start check",
     "db:create": "cd packages/etwin-pg && yarn run start create",

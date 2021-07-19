@@ -16,18 +16,23 @@
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
+    "clean": "rimraf \"./@(bin|lib|test)\" \"native/@(artifacts.json|build|index.node|target)\"",
     "native:build": "cd native && cargo build ${CARGO_FLAGS:-\"--lib\"}",
-    "build": "yarn run native:build && tsc --build src/lib/tsconfig.json",
-    "//install": "node-pre-gyp install --fallback-to-build=false || cargo build --manifest-path ./native/Cargo.toml --lib",
-    "prepack": "yarn run build && rimraf \"native/@(artifacts.json|index.node)\"",
+    "lib:build": "tsc --build src/lib/tsconfig.json",
+    "build": "yarn run native:build && yarn run lib:build",
+    "//install": "node bin/install.js",
+    "crossbuild:linux64": "ETWIN_NEON_TARGET=x86_64-unknown-linux-gnu yarn run crossbuild:_internal",
+    "crossbuild:mac64": "ETWIN_NEON_TARGET=x86_64-apple-darwin yarn run crossbuild:_internal",
+    "crossbuild:windows64": "ETWIN_NEON_TARGET=x86_64-pc-windows-msvc yarn run crossbuild:_internal",
+    "crossbuild:_internal": "cargo build --manifest-path ./native/Cargo.toml --lib --release --target ${ETWIN_NEON_TARGET}",
+    "prepack": "yarn run lib:build && yarn run bin:build && yarn run crossbuild:linux64 && yarn run crossbuild:windows64",
     "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha \"test/**/*.spec.js\"",
-    "main:build": "yarn run build",
-    "start": "yarn run main:build && node --experimental-wasm-modules src/main/main.js"
+    "bin:build": "tsc --build src/bin/tsconfig.json"
   },
   "dependencies": {
     "@eternal-twin/core": "workspace:*",
-    "@mapbox/node-pre-gyp": "^1.0.5",
+    "foreground-child": "^2.0.0",
     "kryo": "^0.12.2",
     "kryo-json": "^0.12.2",
     "neon-cli": "^0.8.3"
@@ -57,21 +62,15 @@
     "./lib/*": "./lib/*.js"
   },
   "files": [
+    "./bin/",
     "./lib/",
     "./native/src/**/*",
     "./native/build.rs",
+    "./native/build",
     "./native/Cargo.lock",
     "./native/Cargo.toml",
     "./native/index.d.ts",
     "./native/index.js",
     "./native/package.json"
-  ],
-  "binary": {
-    "pkg_path": ".",
-    "module_path": "./native",
-    "module_name": "index",
-    "host": "https://gitlab.com/eternal-twin/etwin/-/jobs/artifacts/",
-    "remote_path": "native-v{version}/raw",
-    "package_name": "{node_abi}-{platform}-{arch}.tar.gz"
-  }
+  ]
 }
