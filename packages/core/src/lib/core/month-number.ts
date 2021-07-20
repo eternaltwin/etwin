@@ -1,4 +1,4 @@
-import { IntegerType } from "kryo/lib/integer";
+import { IntegerType } from "kryo/integer";
 
 /**
  * ISO 8601 month number

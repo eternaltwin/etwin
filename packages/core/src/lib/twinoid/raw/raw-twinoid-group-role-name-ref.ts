@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $TwinoidGroupRoleName, TwinoidGroupRoleName } from "../twinoid-group-role-name.js";
 

@@ -1,7 +1,7 @@
-import { $Null } from "kryo/lib/null";
-import { TryUnionType } from "kryo/lib/try-union";
-import { $Ucs2String } from "kryo/lib/ucs2-string";
-import { WhiteListType } from "kryo/lib/white-list";
+import { $Null } from "kryo/null";
+import { TryUnionType } from "kryo/try-union";
+import { $Ucs2String } from "kryo/ucs2-string";
+import { WhiteListType } from "kryo/white-list";
 
 export type TwinoidLocale = "en" | "es" | "fr";
 

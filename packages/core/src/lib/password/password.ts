@@ -1,6 +1,6 @@
-import { BytesType } from "kryo/lib/bytes";
-import { $Null } from "kryo/lib/null";
-import { TryUnionType } from "kryo/lib/try-union";
+import { BytesType } from "kryo/bytes";
+import { $Null } from "kryo/null";
+import { TryUnionType } from "kryo/try-union";
 
 /**
  * Represents a clear password as sent by the user.

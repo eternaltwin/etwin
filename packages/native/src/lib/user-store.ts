@@ -18,8 +18,8 @@ import { UserStore } from "@eternal-twin/core/lib/user/store";
 import { $UpdateStoreUserOptions, UpdateStoreUserOptions } from "@eternal-twin/core/lib/user/update-store-user-options";
 import { UserId } from "@eternal-twin/core/lib/user/user-id";
 import { $UserIdRef } from "@eternal-twin/core/lib/user/user-id-ref";
-import { JSON_READER } from "kryo-json/lib/json-reader";
-import { JSON_WRITER } from "kryo-json/lib/json-writer";
+import { JSON_READER } from "kryo-json/json-reader";
+import { JSON_WRITER } from "kryo-json/json-writer";
 import { promisify } from "util";
 
 import native from "../native/index.js";

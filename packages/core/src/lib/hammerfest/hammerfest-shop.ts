@@ -1,9 +1,9 @@
 import { CaseStyle } from "kryo";
-import { $Boolean } from "kryo/lib/boolean";
-import { $Uint32 } from "kryo/lib/integer";
-import { $Null } from "kryo/lib/null";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { TryUnionType } from "kryo/lib/try-union";
+import { $Boolean } from "kryo/boolean";
+import { $Uint32 } from "kryo/integer";
+import { $Null } from "kryo/null";
+import { RecordIoType, RecordType } from "kryo/record";
+import { TryUnionType } from "kryo/try-union";
 
 export interface HammerfestShop {
   tokens: number;

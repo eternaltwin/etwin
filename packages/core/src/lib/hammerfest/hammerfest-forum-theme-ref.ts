@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { $Ucs2String } from "kryo/lib/ucs2-string";
+import { RecordIoType, RecordType } from "kryo/record";
+import { $Ucs2String } from "kryo/ucs2-string";
 
 import { $HammerfestForumThemeId, HammerfestForumThemeId } from "./hammerfest-forum-theme-id.js";
 import { $HammerfestServer, HammerfestServer } from "./hammerfest-server.js";

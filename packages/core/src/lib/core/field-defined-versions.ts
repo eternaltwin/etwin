@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { ArrayType } from "kryo/lib/array";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { ArrayType } from "kryo/array";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $FieldDefinedCurrentVersion, FieldDefinedCurrentVersion } from "./field-defined-current-version.js";
 import { $FieldDefinedOldVersion, FieldDefinedOldVersion } from "./field-defined-old-version.js";

@@ -1,5 +1,5 @@
-import { $Uint53 } from "kryo/lib/integer";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Uint53 } from "kryo/integer";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $EmailAddress, EmailAddress } from "../email/email-address.js";
 

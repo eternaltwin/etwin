@@ -1,11 +1,11 @@
 import { CaseStyle, IoType } from "kryo";
-import { ArrayType } from "kryo/lib/array";
-import { $Date } from "kryo/lib/date";
-import { $Uint32 } from "kryo/lib/integer";
-import { LiteralType } from "kryo/lib/literal";
-import { $Null } from "kryo/lib/null";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { TryUnionType } from "kryo/lib/try-union";
+import { ArrayType } from "kryo/array";
+import { $Date } from "kryo/date";
+import { $Uint32 } from "kryo/integer";
+import { LiteralType } from "kryo/literal";
+import { $Null } from "kryo/null";
+import { RecordIoType, RecordType } from "kryo/record";
+import { TryUnionType } from "kryo/try-union";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $VersionedEtwinLink, VersionedEtwinLink } from "../link/versioned-etwin-link.js";

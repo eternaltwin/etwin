@@ -1,9 +1,9 @@
 import { CaseStyle } from "kryo";
-import { $Boolean } from "kryo/lib/boolean";
-import { $Sint16, $Uint8,$Uint16 } from "kryo/lib/integer";
-import { LiteralType } from "kryo/lib/literal";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { $Ucs2String } from "kryo/lib/ucs2-string";
+import { $Boolean } from "kryo/boolean";
+import { $Sint16, $Uint8,$Uint16 } from "kryo/integer";
+import { LiteralType } from "kryo/literal";
+import { RecordIoType, RecordType } from "kryo/record";
+import { $Ucs2String } from "kryo/ucs2-string";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $DinoparcDinozElements, DinoparcDinozElements } from "./dinoparc-dinoz-elements.js";

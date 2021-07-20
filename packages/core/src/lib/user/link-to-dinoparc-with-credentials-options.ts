@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { LiteralType } from "kryo/lib/literal";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { LiteralType } from "kryo/literal";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $DinoparcPassword, DinoparcPassword } from "../dinoparc/dinoparc-password.js";
 import { $DinoparcServer, DinoparcServer } from "../dinoparc/dinoparc-server.js";

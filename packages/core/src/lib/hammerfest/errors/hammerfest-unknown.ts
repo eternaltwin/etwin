@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { LiteralType } from "kryo/lib/literal";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { $Ucs2String } from "kryo/lib/ucs2-string";
+import { LiteralType } from "kryo/literal";
+import { RecordIoType, RecordType } from "kryo/record";
+import { $Ucs2String } from "kryo/ucs2-string";
 
 import { $ErrorLike, ErrorLike } from "../../core/error-like.js";
 import { $HammerfestServer, HammerfestServer } from "../hammerfest-server.js";

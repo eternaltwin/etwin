@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $NullableEmailAddress, NullableEmailAddress } from "../email/email-address.js";
 import { $NullablePasswordHash, NullablePasswordHash } from "../password/password-hash.js";

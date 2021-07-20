@@ -1,4 +1,4 @@
-import { TryUnionType } from "kryo/lib/try-union";
+import { TryUnionType } from "kryo/try-union";
 
 import { $NamedDinoparcDinoz, NamedDinoparcDinoz } from "./named-dinoparc-dinoz.js";
 import { $UnnamedDinoparcDinoz, UnnamedDinoparcDinoz } from "./unnamed-dinoparc-dinoz.js";

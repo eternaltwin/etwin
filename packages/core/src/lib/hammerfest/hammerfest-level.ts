@@ -1,4 +1,4 @@
-import { IntegerType } from "kryo/lib/integer";
+import { IntegerType } from "kryo/integer";
 
 /**
  * A Hammerfest score.

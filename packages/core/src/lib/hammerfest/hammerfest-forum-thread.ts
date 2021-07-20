@@ -1,8 +1,8 @@
 import { CaseStyle } from "kryo";
-import { $Boolean } from "kryo/lib/boolean";
-import { $Uint32 } from "kryo/lib/integer";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { $Ucs2String } from "kryo/lib/ucs2-string";
+import { $Boolean } from "kryo/boolean";
+import { $Uint32 } from "kryo/integer";
+import { RecordIoType, RecordType } from "kryo/record";
+import { $Ucs2String } from "kryo/ucs2-string";
 
 import { $HammerfestForumDate, HammerfestForumDate } from "./hammerfest-forum-date.js";
 import { $HammerfestForumThreadId, HammerfestForumThreadId } from "./hammerfest-forum-thread-id.js";

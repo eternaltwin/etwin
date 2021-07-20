@@ -1,6 +1,6 @@
 import chai from "chai";
 import chaiHttp from "chai-http";
-import { $Any } from "kryo/lib/any";
+import { $Any } from "kryo/any";
 
 import { TestAgent } from "./test-agent.js";
 import { withTestServer } from "./test-server.js";

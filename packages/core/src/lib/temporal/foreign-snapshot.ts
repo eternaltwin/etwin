@@ -1,6 +1,6 @@
 import { CaseStyle, IoType } from "kryo";
-import { GenericIoType, GenericType } from "kryo/lib/generic";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { GenericIoType, GenericType } from "kryo/generic";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $PeriodLower, PeriodLower } from "../core/period-lower.js";
 import { $ForeignRetrieved, ForeignRetrieved } from "./foreign-retrieved.js";

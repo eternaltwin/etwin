@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $UpdateStoreUserPatch, UpdateStoreUserPatch } from "./update-store-user-patch.js";
 import { $UserIdRef, UserIdRef } from "./user-id-ref.js";

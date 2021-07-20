@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { $Uint32 } from "kryo/lib/integer";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { $Ucs2String } from "kryo/lib/ucs2-string";
+import { $Uint32 } from "kryo/integer";
+import { RecordIoType, RecordType } from "kryo/record";
+import { $Ucs2String } from "kryo/ucs2-string";
 
 import { $Url, Url } from "../../core/url.js";
 

@@ -1,8 +1,8 @@
 import { CaseStyle } from "kryo";
-import { $Date } from "kryo/lib/date";
-import { $Null } from "kryo/lib/null";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { TryUnionType } from "kryo/lib/try-union";
+import { $Date } from "kryo/date";
+import { $Null } from "kryo/null";
+import { RecordIoType, RecordType } from "kryo/record";
+import { TryUnionType } from "kryo/try-union";
 
 import { $HammerfestSessionKey, HammerfestSessionKey } from "./hammerfest-session-key.js";
 import { $HammerfestUserIdRef, HammerfestUserIdRef } from "./hammerfest-user-id-ref.js";

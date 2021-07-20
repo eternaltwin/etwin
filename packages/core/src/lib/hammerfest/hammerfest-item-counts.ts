@@ -1,5 +1,5 @@
-import { $Uint32 } from "kryo/lib/integer";
-import { MapType } from "kryo/lib/map";
+import { $Uint32 } from "kryo/integer";
+import { MapType } from "kryo/map";
 
 import { $HammerfestItemId, HammerfestItemId } from "./hammerfest-item-id.js";
 

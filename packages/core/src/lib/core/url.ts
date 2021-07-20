@@ -1,5 +1,5 @@
 import { IoType, Reader, Writer } from "kryo";
-import { readVisitor } from "kryo/lib/readers/read-visitor";
+import { readVisitor } from "kryo/readers/read-visitor";
 
 export type UrlConstructor = typeof globalThis extends { URL: infer C }
   ? C

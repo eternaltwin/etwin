@@ -7,7 +7,7 @@ import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
 import { $SimpleUser, SimpleUser } from "@eternal-twin/core/lib/user/simple-user";
 import chai from "chai";
 import chaiHttp from "chai-http";
-import { $Null } from "kryo/lib/null";
+import { $Null } from "kryo/null";
 
 import { TestAgent } from "./test-agent.js";
 import { withTestServer } from "./test-server.js";

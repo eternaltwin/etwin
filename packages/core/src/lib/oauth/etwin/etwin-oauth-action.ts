@@ -1,4 +1,4 @@
-import { TaggedUnionType } from "kryo/lib/tagged-union";
+import { TaggedUnionType } from "kryo/tagged-union";
 
 import { $LinkOauthAction, LinkOauthAction } from "./link-oauth-action.js";
 import { $LoginOauthAction, LoginOauthAction } from "./login-oauth-action.js";

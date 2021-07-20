@@ -2,8 +2,8 @@ import chai from "chai";
 import fs from "fs";
 import furi from "furi";
 import { IoType } from "kryo";
-import { JSON_READER } from "kryo-json/lib/json-reader";
-import { PRETTY_JSON_WRITER } from "kryo-json/lib/json-writer";
+import { JSON_READER } from "kryo-json/json-reader";
+import { PRETTY_JSON_WRITER } from "kryo-json/json-writer";
 
 const TEST_ROOT = furi.join(import.meta.url, "../../../../test-resources");
 

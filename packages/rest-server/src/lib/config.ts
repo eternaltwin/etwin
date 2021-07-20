@@ -2,7 +2,7 @@ import { $Config, Config } from "@eternal-twin/core/lib/config/config";
 import { ForumService } from "@eternal-twin/core/lib/forum/service";
 import Router  from "@koa/router";
 import { ParameterizedContext } from "koa";
-import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";
+import { JSON_VALUE_WRITER } from "kryo-json/json-value-writer";
 
 import { KoaState } from "./koa-state";
 

@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { $Uint32 } from "kryo/lib/integer";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Uint32 } from "kryo/integer";
+import { RecordIoType, RecordType } from "kryo/record";
 
 export interface ForumConfig {
   threadsPerPage: number;

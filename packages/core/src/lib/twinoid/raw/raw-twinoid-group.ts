@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { ArrayType } from "kryo/lib/array";
-import { $Uint8 } from "kryo/lib/integer";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { ArrayType } from "kryo/array";
+import { $Uint8 } from "kryo/integer";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $Url, Url } from "../../core/url.js";
 import { $TwinoidGroupName, TwinoidGroupName } from "../twinoid-group-name.js";

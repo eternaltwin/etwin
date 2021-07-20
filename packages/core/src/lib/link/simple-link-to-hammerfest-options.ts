@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $HammerfestServer, HammerfestServer } from "../hammerfest/hammerfest-server.js";
 import { $HammerfestUserId, HammerfestUserId } from "../hammerfest/hammerfest-user-id.js";

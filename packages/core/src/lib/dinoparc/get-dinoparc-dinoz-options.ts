@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { $Date } from "kryo/lib/date";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Date } from "kryo/date";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $DinoparcDinozId, DinoparcDinozId } from "./dinoparc-dinoz-id.js";
 import { $DinoparcServer, DinoparcServer } from "./dinoparc-server.js";

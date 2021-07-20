@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $HtmlText, HtmlText } from "../core/html-text.js";
 import { $HammerfestForumDate, HammerfestForumDate } from "./hammerfest-forum-date.js";

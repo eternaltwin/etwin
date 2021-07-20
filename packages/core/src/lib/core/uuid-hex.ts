@@ -1,1 +1,1 @@
-export { $UuidHex, UuidHex } from "kryo/lib/uuid-hex";
+export { $UuidHex, UuidHex } from "kryo/uuid-hex";

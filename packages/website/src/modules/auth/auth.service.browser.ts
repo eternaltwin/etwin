@@ -18,7 +18,7 @@ import {
   HammerfestCredentials,
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
 import { $User, User } from "@eternal-twin/core/lib/user/user";
-import { JsonValueReader } from "kryo-json/lib/json-value-reader";
+import { JsonValueReader } from "kryo-json/json-value-reader";
 import { concat as rxConcat, NEVER as RX_NEVER, Observable, of as rxOf, ReplaySubject } from "rxjs";
 import { map as rxMap, tap as rxTap } from "rxjs/operators";
 

@@ -13,7 +13,7 @@ import { $UpdateUserPatch } from "@eternal-twin/core/lib/user/update-user-patch"
 import { $User, User } from "@eternal-twin/core/lib/user/user";
 import chai from "chai";
 import chaiHttp from "chai-http";
-import { $Null } from "kryo/lib/null";
+import { $Null } from "kryo/null";
 
 import { populateUsers } from "./populate/users.js";
 import { TestAgent } from "./test-agent.js";

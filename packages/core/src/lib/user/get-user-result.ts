@@ -1,5 +1,5 @@
-import { $Null } from "kryo/lib/null";
-import { TryUnionType } from "kryo/lib/try-union";
+import { $Null } from "kryo/null";
+import { TryUnionType } from "kryo/try-union";
 
 import { $CompleteSimpleUser, CompleteSimpleUser } from "./complete-simple-user.js";
 import { $ShortUser, ShortUser } from "./short-user.js";

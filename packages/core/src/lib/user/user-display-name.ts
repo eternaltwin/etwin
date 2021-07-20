@@ -1,4 +1,4 @@
-import { Ucs2StringType } from "kryo/lib/ucs2-string";
+import { Ucs2StringType } from "kryo/ucs2-string";
 
 /**
  * The user display name: the name of the user as it should be displayed on interfaces.

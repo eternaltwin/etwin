@@ -1,6 +1,6 @@
-import { JSON_READER } from "kryo-json/lib/json-reader";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
-import { JSON_WRITER } from "kryo-json/lib/json-writer";
+import { JSON_READER } from "kryo-json/json-reader";
+import { JSON_VALUE_READER } from "kryo-json/json-value-reader";
+import { JSON_WRITER } from "kryo-json/json-writer";
 import { registerErrMochaTests, registerMochaSuites, TestItem } from "kryo-testing";
 
 import { ObjectType } from "../../lib/core/object-type.js";

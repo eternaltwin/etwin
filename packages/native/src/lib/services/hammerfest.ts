@@ -5,8 +5,8 @@ import {
   NullableHammerfestUser
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-user";
 import { HammerfestService} from "@eternal-twin/core/lib/hammerfest/service";
-import { JSON_READER } from "kryo-json/lib/json-reader";
-import { JSON_WRITER } from "kryo-json/lib/json-writer";
+import { JSON_READER } from "kryo-json/json-reader";
+import { JSON_WRITER } from "kryo-json/json-writer";
 import { promisify } from "util";
 
 import native from "../../native/index.js";

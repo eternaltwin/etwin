@@ -29,9 +29,9 @@ import {
 import { $DinoparcUserId, DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id";
 import { $DinoparcUsername, DinoparcUsername } from "@eternal-twin/core/lib/dinoparc/dinoparc-username";
 import { IoType } from "kryo";
-import { ArrayType } from "kryo/lib/array";
-import { JSON_READER } from "kryo-json/lib/json-reader";
-import { JSON_WRITER } from "kryo-json/lib/json-writer";
+import { ArrayType } from "kryo/array";
+import { JSON_READER } from "kryo-json/json-reader";
+import { JSON_WRITER } from "kryo-json/json-writer";
 import { promisify } from "util";
 
 import native from "../native/index.js";

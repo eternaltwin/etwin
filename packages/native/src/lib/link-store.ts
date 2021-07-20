@@ -52,8 +52,8 @@ import {
   $VersionedRawTwinoidLink,
   VersionedRawTwinoidLink
 } from "@eternal-twin/core/lib/link/versioned-raw-twinoid-link";
-import { JSON_READER } from "kryo-json/lib/json-reader";
-import { JSON_WRITER } from "kryo-json/lib/json-writer";
+import { JSON_READER } from "kryo-json/json-reader";
+import { JSON_WRITER } from "kryo-json/json-writer";
 import { promisify } from "util";
 
 import native from "../native/index.js";

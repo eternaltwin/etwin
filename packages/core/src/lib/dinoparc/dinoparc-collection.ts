@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { SetType } from "kryo/lib/set";
+import { RecordIoType, RecordType } from "kryo/record";
+import { SetType } from "kryo/set";
 
 import { $DinoparcEpicRewardKey, DinoparcEpicRewardKey } from "./dinoparc-epic-reward-key.js";
 import { $DinoparcRewardId, DinoparcRewardId } from "./dinoparc-reward-id.js";

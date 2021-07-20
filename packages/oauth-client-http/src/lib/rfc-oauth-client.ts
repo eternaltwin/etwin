@@ -6,8 +6,8 @@ import {
   RfcOauthAccessTokenRequest
 } from "@eternal-twin/core/lib/oauth/rfc-oauth-access-token-request";
 import authHeader from "auth-header";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
-import { JSON_VALUE_WRITER } from "kryo-json/lib/json-value-writer";
+import { JSON_VALUE_READER } from "kryo-json/json-value-reader";
+import { JSON_VALUE_WRITER } from "kryo-json/json-value-writer";
 import superagent from "superagent";
 
 export interface RfcOauthClientOptions {

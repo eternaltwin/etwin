@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { $Uint16 } from "kryo/lib/integer";
-import { LiteralType } from "kryo/lib/literal";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Uint16 } from "kryo/integer";
+import { LiteralType } from "kryo/literal";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $DinoparcDinozId, DinoparcDinozId } from "./dinoparc-dinoz-id.js";

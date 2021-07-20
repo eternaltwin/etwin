@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
 import { $Config, Config } from "@eternal-twin/core/lib/config/config";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
-import { JSON_WRITER } from "kryo-json/lib/json-writer";
+import { JSON_WRITER } from "kryo-json/json-writer";
 
 import { CONFIG } from "../../server/tokens";
 import { ConfigService } from "./config.service";

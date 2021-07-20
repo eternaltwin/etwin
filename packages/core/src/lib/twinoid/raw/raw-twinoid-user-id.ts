@@ -1,4 +1,4 @@
-import { $Uint32, IntegerType } from "kryo/lib/integer";
+import { $Uint32, IntegerType } from "kryo/integer";
 
 export type RawTwinoidUserId = number;
 

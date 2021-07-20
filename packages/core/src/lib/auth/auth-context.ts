@@ -1,4 +1,4 @@
-import { TaggedUnionType } from "kryo/lib/tagged-union";
+import { TaggedUnionType } from "kryo/tagged-union";
 
 import { $AccessTokenAuthContext, AccessTokenAuthContext } from "./access-token-auth-context.js";
 import { $GuestAuthContext, GuestAuthContext } from "./guest-auth-context.js";

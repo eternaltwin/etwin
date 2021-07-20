@@ -1,5 +1,5 @@
-import { $Uint8 } from "kryo/lib/integer";
-import { WhiteListType } from "kryo/lib/white-list";
+import { $Uint8 } from "kryo/integer";
+import { WhiteListType } from "kryo/white-list";
 
 /**
  * Hammerfest pyramid rank

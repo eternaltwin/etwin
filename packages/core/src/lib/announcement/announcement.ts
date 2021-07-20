@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { $Date } from "kryo/lib/date";
-import { LiteralType } from "kryo/lib/literal";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Date } from "kryo/date";
+import { LiteralType } from "kryo/literal";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $LocaleId, LocaleId } from "../core/locale-id.js";
 import { $ObjectType, ObjectType } from "../core/object-type.js";

@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { $Date } from "kryo/lib/date";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Date } from "kryo/date";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $UserIdRef, UserIdRef } from "../user/user-id-ref.js";
 import { $OauthClientIdRef, OauthClientIdRef } from "./oauth-client-id-ref.js";

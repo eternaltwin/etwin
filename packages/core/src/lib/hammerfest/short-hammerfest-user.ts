@@ -1,8 +1,8 @@
 import { CaseStyle } from "kryo";
-import { LiteralType } from "kryo/lib/literal";
-import { $Null } from "kryo/lib/null";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { TryUnionType } from "kryo/lib/try-union";
+import { LiteralType } from "kryo/literal";
+import { $Null } from "kryo/null";
+import { RecordIoType, RecordType } from "kryo/record";
+import { TryUnionType } from "kryo/try-union";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $HammerfestServer, HammerfestServer } from "./hammerfest-server.js";

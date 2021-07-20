@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $DinoparcCollection, DinoparcCollection } from "./dinoparc-collection.js";
 import { $DinoparcSessionUser, DinoparcSessionUser } from "./dinoparc-session-user.js";

@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { $Date } from "kryo/lib/date";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Date } from "kryo/date";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $TwinoidUserIdRef, TwinoidUserIdRef } from "../twinoid/twinoid-user-id-ref.js";
 

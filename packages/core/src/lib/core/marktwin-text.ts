@@ -1,6 +1,6 @@
-import { $Null } from "kryo/lib/null";
-import { TryUnionType } from "kryo/lib/try-union";
-import { $Ucs2String } from "kryo/lib/ucs2-string";
+import { $Null } from "kryo/null";
+import { TryUnionType } from "kryo/try-union";
+import { $Ucs2String } from "kryo/ucs2-string";
 
 /**
  * Raw marktwin content.

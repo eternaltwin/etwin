@@ -4,9 +4,9 @@ import { ParameterizedContext } from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import { CaseStyle } from "kryo";
-import { $Date } from "kryo/lib/date";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
+import { $Date } from "kryo/date";
+import { RecordIoType, RecordType } from "kryo/record";
+import { JSON_VALUE_READER } from "kryo-json/json-value-reader";
 
 import { KoaState } from "./koa-state.js";
 

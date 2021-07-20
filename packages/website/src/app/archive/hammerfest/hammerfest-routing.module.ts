@@ -3,8 +3,8 @@ import { ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnaps
 import { $HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
 import { HammerfestUser } from "@eternal-twin/core/lib/hammerfest/hammerfest-user";
 import { $HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
-import { $Date } from "kryo/lib/date";
-import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader";
+import { $Date } from "kryo/date";
+import { QS_VALUE_READER } from "kryo-qs/qs-value-reader";
 import { Observable, of as rxOf } from "rxjs";
 
 import { HammerfestService } from "../../../modules/hammerfest/hammerfest.service";

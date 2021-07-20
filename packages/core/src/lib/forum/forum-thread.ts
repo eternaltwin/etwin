@@ -1,8 +1,8 @@
 import { CaseStyle } from "kryo";
-import { $Boolean } from "kryo/lib/boolean";
-import { $Date } from "kryo/lib/date";
-import { LiteralType } from "kryo/lib/literal";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Boolean } from "kryo/boolean";
+import { $Date } from "kryo/date";
+import { LiteralType } from "kryo/literal";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $ForumPostListing, ForumPostListing } from "./forum-post-listing.js";

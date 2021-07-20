@@ -1,10 +1,10 @@
 import { CaseStyle } from "kryo";
-import { $Boolean } from "kryo/lib/boolean";
-import { $Date } from "kryo/lib/date";
-import { $Uint32 } from "kryo/lib/integer";
-import { $Null } from "kryo/lib/null";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { TryUnionType } from "kryo/lib/try-union";
+import { $Boolean } from "kryo/boolean";
+import { $Date } from "kryo/date";
+import { $Uint32 } from "kryo/integer";
+import { $Null } from "kryo/null";
+import { RecordIoType, RecordType } from "kryo/record";
+import { TryUnionType } from "kryo/try-union";
 
 import { $HammerfestItemUnlocks, HammerfestItemUnlocks } from "./hammerfest-item-unlocks.js";
 import { $HammerfestQuestStatusMap, HammerfestQuestStatusMap } from "./hammerfest-quest-status-map.js";

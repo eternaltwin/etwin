@@ -1,4 +1,4 @@
-import { $Ucs2String, Ucs2StringType } from "kryo/lib/ucs2-string";
+import { $Ucs2String, Ucs2StringType } from "kryo/ucs2-string";
 
 /**
  * A Twinoid user display name

@@ -1,5 +1,5 @@
 import { IoType, Reader, Writer } from "kryo";
-import { readVisitor } from "kryo/lib/readers/read-visitor";
+import { readVisitor } from "kryo/readers/read-visitor";
 
 import { Url } from "../../core/url.js";
 

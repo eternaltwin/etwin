@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { $Boolean } from "kryo/lib/boolean";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Boolean } from "kryo/boolean";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $ShortUser, ShortUser } from "../user/short-user.js";
 import { $Session, Session } from "./session.js";

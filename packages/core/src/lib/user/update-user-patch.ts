@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $NullablePassword, NullablePassword } from "../password/password.js";
 import { $UserDisplayName, UserDisplayName } from "./user-display-name.js";

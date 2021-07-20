@@ -5,7 +5,7 @@ import { RfcOauthAccessTokenKey } from "@eternal-twin/core/lib/oauth/rfc-oauth-a
 import { $ShortUser, ShortUser } from "@eternal-twin/core/lib/user/short-user";
 import { UserId } from "@eternal-twin/core/lib/user/user-id";
 import { IoType } from "kryo";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
+import { JSON_VALUE_READER } from "kryo-json/json-value-reader";
 import superagent from "superagent";
 import urlJoin from "url-join";
 

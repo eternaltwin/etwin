@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $HammerfestForumPostListing, HammerfestForumPostListing } from "./hammerfest-forum-post-listing.js";
 import { $HammerfestForumThemeRef, HammerfestForumThemeRef } from "./hammerfest-forum-theme-ref.js";

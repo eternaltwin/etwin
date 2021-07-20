@@ -1,6 +1,6 @@
 import { CaseStyle, IoType } from "kryo";
-import { GenericIoType, GenericType } from "kryo/lib/generic";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { GenericIoType, GenericType } from "kryo/generic";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $FieldShortVersion, FieldShortVersion } from "./field-short-version.js";
 

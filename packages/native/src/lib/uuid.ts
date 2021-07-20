@@ -1,5 +1,5 @@
 import { UuidGenerator } from "@eternal-twin/core/lib/core/uuid-generator";
-import { UuidHex } from "kryo/lib/uuid-hex";
+import { UuidHex } from "kryo/uuid-hex";
 
 import native from "../native/index.js";
 

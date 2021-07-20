@@ -1,11 +1,11 @@
 import jsonWebToken from "jsonwebtoken";
-import { ArrayType } from "kryo/lib/array";
-import { $Uint53 } from "kryo/lib/integer";
-import { LiteralType } from "kryo/lib/literal";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { $Ucs2String } from "kryo/lib/ucs2-string";
-import { UuidHex } from "kryo/lib/uuid-hex";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
+import { ArrayType } from "kryo/array";
+import { $Uint53 } from "kryo/integer";
+import { LiteralType } from "kryo/literal";
+import { RecordIoType, RecordType } from "kryo/record";
+import { $Ucs2String } from "kryo/ucs2-string";
+import { UuidHex } from "kryo/uuid-hex";
+import { JSON_VALUE_READER } from "kryo-json/json-value-reader";
 
 import { AuthContext } from "../auth/auth-context.js";
 import { AuthType } from "../auth/auth-type.js";

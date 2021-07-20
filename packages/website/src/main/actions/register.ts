@@ -14,10 +14,10 @@ import Koa, { ParameterizedContext } from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { TryUnionType } from "kryo/lib/try-union";
-import { $Ucs2String } from "kryo/lib/ucs2-string";
-import { JsonValueReader } from "kryo-json/lib/json-value-reader";
+import { RecordIoType, RecordType } from "kryo/record";
+import { TryUnionType } from "kryo/try-union";
+import { $Ucs2String } from "kryo/ucs2-string";
+import { JsonValueReader } from "kryo-json/json-value-reader";
 
 const JSON_VALUE_READER: JsonValueReader = new JsonValueReader();
 

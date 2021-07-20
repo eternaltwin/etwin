@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $OauthCode, OauthCode } from "./oauth-code";
 import { $OauthState, OauthState } from "./oauth-state.js";

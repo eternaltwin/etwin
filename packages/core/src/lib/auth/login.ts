@@ -1,4 +1,4 @@
-import { TaggedUnionType } from "kryo/lib/tagged-union";
+import { TaggedUnionType } from "kryo/tagged-union";
 
 import { $EmailLogin, EmailLogin } from "./email-login.js";
 import { $OauthClientKeyLogin, OauthClientKeyLogin } from "./oauth-client-key-login.js";

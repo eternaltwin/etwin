@@ -1,4 +1,4 @@
-import { TsEnumType } from "kryo/lib/ts-enum";
+import { TsEnumType } from "kryo/ts-enum";
 
 export enum AuthMethod {
   Dinoparc,

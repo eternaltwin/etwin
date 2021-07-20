@@ -1,5 +1,5 @@
 import jsonWebToken from "jsonwebtoken";
-import { JSON_VALUE_READER } from "kryo-json/lib/json-value-reader";
+import { JSON_VALUE_READER } from "kryo-json/json-value-reader";
 
 import { LocaleId } from "../core/locale-id.js";
 import { ObjectType } from "../core/object-type.js";

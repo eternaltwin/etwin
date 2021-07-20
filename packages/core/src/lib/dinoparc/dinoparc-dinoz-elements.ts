@@ -1,6 +1,6 @@
 import { CaseStyle } from "kryo";
-import { $Uint16 } from "kryo/lib/integer";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { $Uint16 } from "kryo/integer";
+import { RecordIoType, RecordType } from "kryo/record";
 
 export interface DinoparcDinozElements {
   fire: number,

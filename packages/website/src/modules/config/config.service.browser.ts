@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
 import { $Config, Config } from "@eternal-twin/core/lib/config/config";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
-import { JSON_READER } from "kryo-json/lib/json-reader";
+import { JSON_READER } from "kryo-json/json-reader";
 
 import { ConfigService } from "./config.service";
 import { CONFIG_KEY } from "./state-keys";

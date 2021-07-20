@@ -1,8 +1,8 @@
 import { CaseStyle, IoType } from "kryo";
-import { GenericIoType, GenericType } from "kryo/lib/generic";
-import { $Null } from "kryo/lib/null";
-import { RecordIoType, RecordType } from "kryo/lib/record";
-import { TryUnionType } from "kryo/lib/try-union";
+import { GenericIoType, GenericType } from "kryo/generic";
+import { $Null } from "kryo/null";
+import { RecordIoType, RecordType } from "kryo/record";
+import { TryUnionType } from "kryo/try-union";
 
 import { $ForeignSnapshot, ForeignSnapshot } from "./foreign-snapshot.js";
 

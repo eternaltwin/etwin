@@ -5,8 +5,8 @@ import { $DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server
 import { $DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id";
 import { NullableEtwinDinoparcDinoz } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-dinoz";
 import { NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user";
-import { $Date } from "kryo/lib/date";
-import { QS_VALUE_READER } from "kryo-qs/lib/qs-value-reader";
+import { $Date } from "kryo/date";
+import { QS_VALUE_READER } from "kryo-qs/qs-value-reader";
 import { Observable, of as rxOf } from "rxjs";
 
 import { DinoparcService } from "../../../modules/dinoparc/dinoparc.service";

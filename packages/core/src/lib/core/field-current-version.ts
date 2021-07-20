@@ -1,7 +1,7 @@
 import { CaseStyle, IoType } from "kryo";
-import { GenericIoType, GenericType } from "kryo/lib/generic";
-import { $Null } from "kryo/lib/null";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { GenericIoType, GenericType } from "kryo/generic";
+import { $Null } from "kryo/null";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $UserDot, UserDot } from "./user-dot.js";
 

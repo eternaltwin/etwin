@@ -1,7 +1,7 @@
 import { CaseStyle } from "kryo";
-import { ArrayType } from "kryo/lib/array";
-import { $Uint32 } from "kryo/lib/integer";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { ArrayType } from "kryo/array";
+import { $Uint32 } from "kryo/integer";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $ShortDinoparcDinozWithLocation, ShortDinoparcDinozWithLocation } from "./short-dinoparc-dinoz-with-location.js";
 import { $ShortDinoparcUser, ShortDinoparcUser } from "./short-dinoparc-user.js";

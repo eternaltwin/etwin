@@ -1,4 +1,4 @@
-import { TryUnionType } from "kryo/lib/try-union";
+import { TryUnionType } from "kryo/try-union";
 
 import { $OauthClientIdRef, OauthClientIdRef } from "./oauth-client-id-ref.js";
 import { $OauthClientKeyRef, OauthClientKeyRef } from "./oauth-client-key-ref.js";

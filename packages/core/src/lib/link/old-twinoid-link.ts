@@ -1,5 +1,5 @@
 import { CaseStyle } from "kryo";
-import { RecordIoType, RecordType } from "kryo/lib/record";
+import { RecordIoType, RecordType } from "kryo/record";
 
 import { $UserDot, UserDot } from "../core/user-dot.js";
 import { $ShortTwinoidUser, ShortTwinoidUser } from "../twinoid/short-twinoid-user.js";
