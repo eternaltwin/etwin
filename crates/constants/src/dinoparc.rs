@@ -45,12 +45,12 @@ pub const LOCATIONS: [DinoparcLocation; 23] = unsafe {
     DinoparcLocation::new_unchecked(12, "L'Ile de la Pitié", "Pity Island", "Isla de la Piedad"),
     DinoparcLocation::new_unchecked(13, "Ruines Mayinca", "Mayinca Ruins", "Ruinas Mayinca"),
     DinoparcLocation::new_unchecked(14, "Crédit Arboricole", "Institute of Olimpic Credit", "Instituto de Crédito Olímpico"),
-    DinoparcLocation::new_unchecked(15, "Bazar de l'île de Jazz", "Jazz island Market", "Mercado de la Isla de Jazz"),
+    DinoparcLocation::new_unchecked(15, "Bazar de l'île de Jazz", "Jazz island Market", "Mercado de la isla de Jazz"),
     DinoparcLocation::new_unchecked(16, "Marais collant", "Sticky Swamp", "Pantano Pegajoso"),
     DinoparcLocation::new_unchecked(17, "Jungle des Ouistitis", "The Wistitis Jungle", "Jungla de los Wistitis"),
     DinoparcLocation::new_unchecked(18, "Bordeciel", "Bordesky", "Burdecielo"),
     DinoparcLocation::new_unchecked(19, "Source chantante", "Singing Fountain", "Fuente Cantante"),
-    DinoparcLocation::new_unchecked(20, "Caverne de l'anomalie", "Anomaly Cavern", "Caverna de la Anomalí"),
+    DinoparcLocation::new_unchecked(20, "Caverne de l'anomalie", "Anomaly Cavern", "Caverna de la Anomalía"),
     DinoparcLocation::new_unchecked(21, "Hutte du vieux sage", "Wise Old Man's shack", "Casucha del viejo sabio"),
     DinoparcLocation::new_unchecked(22, "Cratère du grand Tout-Chaud", "Crater of the Great Lord Burn-All", "Cráter del Gran Señor-Todo-Quema"),
   ]
@@ -108,7 +108,7 @@ pub const SKILLS: [DinoparcSkillMeta; 34] = [
   DinoparcSkillMeta::new(DinoparcSkill::ThunderApprentice, "Apprentis Foudre", "Thunder Apprentice", "Aprendiz de Rayo"),
   DinoparcSkillMeta::new(DinoparcSkill::ShadowPower, "Pouvoir Sombre", "Shadow Power", "Poder Sombra"),
   DinoparcSkillMeta::new(DinoparcSkill::TotemThief, "Voleur de Totem", "", "Ladrón de tótem"),
-  DinoparcSkillMeta::new(DinoparcSkill::Saboteur, "Saboteur", "", "Sabotaje"),
+  DinoparcSkillMeta::new(DinoparcSkill::Saboteur, "Saboteur", "", "Saboteador"),
   DinoparcSkillMeta::new(DinoparcSkill::Spy, "Espion", "", "Espía"),
   DinoparcSkillMeta::new(DinoparcSkill::Mercenary, "Mercenaire", "", "Mercenario"),
 ];
