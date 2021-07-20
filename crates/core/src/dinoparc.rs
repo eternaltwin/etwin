@@ -125,6 +125,12 @@ declare_decimal_id! {
   const SQL_NAME = "dinoparc_user_id";
 }
 
+impl DinoparcUserId {
+  pub const fn and_server(&self, server: DinoparcServer) -> DinoparcUserIdRef {
+    DinoparcUserIdRef { server, id: *self }
+  }
+}
+
 declare_new_string! {
   pub struct DinoparcUsername(String);
   pub type ParseError = DinoparcUsernameParseError;
@@ -225,6 +231,7 @@ pub struct ArchivedDinoparcUser {
   pub archived_at: Instant,
   pub username: DinoparcUsername,
   pub coins: Option<LatestTemporal<u32>>,
+  // pub bills: Option<LatestTemporal<u32>>,
   pub dinoz: Option<LatestTemporal<Vec<DinoparcDinozIdRef>>>,
   #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_opt_temporal_map"))]
   pub inventory: Option<LatestTemporal<HashMap<DinoparcItemId, u32>>>,
@@ -262,6 +269,12 @@ declare_decimal_id! {
   pub type ParseError = DinoparcDinozIdParseError;
   const BOUNDS = 0..1_000_000_000;
   const SQL_NAME = "dinoparc_dinoz_id";
+}
+
+impl DinoparcDinozId {
+  pub const fn and_server(&self, server: DinoparcServer) -> DinoparcDinozIdRef {
+    DinoparcDinozIdRef { server, id: *self }
+  }
 }
 
 declare_decimal_id! {
@@ -308,7 +321,7 @@ declare_new_string! {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "_serde", serde(tag = "type", rename = "DinoparcDinoz"))]
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct DinoparcDinozIdRef {
   pub server: DinoparcServer,
   pub id: DinoparcDinozId,

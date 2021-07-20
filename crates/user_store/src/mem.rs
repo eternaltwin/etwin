@@ -28,7 +28,7 @@ impl From<MemUserSnapshot<'_>> for ShortUser {
       id: user.id,
       display_name: UserDisplayNameVersions {
         current: UserDisplayNameVersion {
-          value: user.display_name.at(time).unwrap().value().clone(),
+          value: user.display_name.at(time).unwrap().into_value().clone(),
         },
       },
     }
@@ -43,7 +43,7 @@ impl From<MemUserSnapshot<'_>> for SimpleUser {
       created_at: user.created_at,
       display_name: UserDisplayNameVersions {
         current: UserDisplayNameVersion {
-          value: user.display_name.at(time).unwrap().value().clone(),
+          value: user.display_name.at(time).unwrap().into_value().clone(),
         },
       },
       is_administrator: user.is_administrator,
@@ -58,13 +58,13 @@ impl From<MemUserSnapshot<'_>> for CompleteSimpleUser {
       id: user.id,
       display_name: UserDisplayNameVersions {
         current: UserDisplayNameVersion {
-          value: user.display_name.at(time).unwrap().value().clone(),
+          value: user.display_name.at(time).unwrap().into_value().clone(),
         },
       },
       is_administrator: user.is_administrator,
       created_at: user.created_at,
-      username: user.username.at(time).unwrap().value().clone(),
-      email_address: user.email_address.at(time).unwrap().value().clone(),
+      username: user.username.at(time).unwrap().into_value().clone(),
+      email_address: user.email_address.at(time).unwrap().into_value().clone(),
     }
   }
 }
@@ -121,7 +121,7 @@ impl StoreState {
           .users_by_username
           .get(&r.username)? // Never used
           .at(time)? // time < firstUse
-          .value();
+          .into_value();
         let uid = (*uid)?; // unused at `time`
         (uid, true)
       }
@@ -130,7 +130,7 @@ impl StoreState {
           .users_by_email
           .get(&r.email)? // Never used
           .at(time)? // time < firstUse
-          .value();
+          .into_value();
         let uid = (*uid)?; // unused at `time`
         (uid, true)
       }
@@ -288,7 +288,7 @@ where
     let mem_user: Option<&MemUser> = state.get(&options.r#ref, options.time);
 
     Ok(mem_user.map(|u| u.at(options.time)).map(|user| {
-      let password = user.user.password.value_ref().clone();
+      let password = user.user.password.current_value().clone();
       let short: ShortUser = user.into();
       ShortUserWithPassword {
         id: short.id,

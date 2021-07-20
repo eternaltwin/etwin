@@ -1491,9 +1491,4 @@ mod test {
     #[serial]
     || make_test_api().await
   );
-
-  test_dinoparc_store_pg!(
-    #[serial]
-    || make_test_api().await
-  );
 }

@@ -140,6 +140,13 @@ pub enum PeriodLower {
 }
 
 impl PeriodLower {
+  pub const fn new(start: Instant, end: Option<Instant>) -> Self {
+    match end {
+      Some(end) => Self::bounded(start, end),
+      None => Self::unbounded(start),
+    }
+  }
+
   pub const fn unbounded(start: Instant) -> Self {
     Self::From(PeriodFrom { start })
   }

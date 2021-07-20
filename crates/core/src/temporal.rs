@@ -27,13 +27,11 @@ impl<T> SnapshotFrom<T> {
     self.period.start
   }
 
-  pub fn value_ref(&self) -> &T {
+  pub fn value(&self) -> &T {
     &self.value
   }
-}
 
-impl<T: Copy> SnapshotFrom<T> {
-  pub fn value(&self) -> T {
+  pub fn into_value(self) -> T {
     self.value
   }
 }
@@ -86,6 +84,16 @@ impl<T> ForeignSnapshot<T> {
       period: self.period,
       retrieved: self.retrieved,
       value: &self.value,
+    }
+  }
+}
+
+impl<T: Clone> ForeignSnapshot<&T> {
+  pub fn cloned(&self) -> ForeignSnapshot<T> {
+    ForeignSnapshot {
+      period: self.period,
+      retrieved: self.retrieved,
+      value: (*self.value).clone(),
     }
   }
 }
@@ -152,6 +160,7 @@ impl<T: Copy> Snapshot<T> {
   }
 }
 
+/// First-party time-varying data
 pub struct Temporal<T> {
   current: SnapshotFrom<T>,
   old: BTreeMap<Instant, T>,
@@ -196,8 +205,8 @@ impl<T: Eq> Temporal<T> {
     self.current.start_time()
   }
 
-  pub fn value_ref(&self) -> &T {
-    &self.current.value_ref()
+  pub fn current_value(&self) -> &T {
+    &self.current.value()
   }
 
   pub fn map<B: Eq, F: FnMut(Snapshot<&T>) -> B>(&self, mut f: F) -> Temporal<B> {
@@ -248,6 +257,10 @@ impl<T: Eq> Temporal<T> {
       })
       .rev()
   }
+
+  pub fn into_current_value(self) -> T {
+    self.current.into_value()
+  }
 }
 
 impl<T: Eq> FromIterator<(Instant, T)> for Temporal<T> {
@@ -269,12 +282,6 @@ impl<T: Eq> FromIterator<(Instant, T)> for Temporal<T> {
       current: SnapshotFrom::new(cur.0, cur.1),
       old,
     }
-  }
-}
-
-impl<T: Copy> Temporal<T> {
-  pub fn value(&self) -> T {
-    self.current.value()
   }
 }
 
@@ -300,5 +307,92 @@ impl<T> LatestTemporal<T> {
     LatestTemporal {
       latest: self.latest.as_ref(),
     }
+  }
+}
+
+/// Third-party time-varying data history supporting only direct snapshots
+/// (if you need indirect invalidation support, use [CheckedSnapshotLogEvent])
+#[derive(Clone, Default, Eq, PartialEq, Debug)]
+pub struct SnapshotLog<T> {
+  snapshots: BTreeMap<Instant, T>,
+}
+
+impl<T> SnapshotLog<T> {
+  pub fn new() -> Self {
+    Self {
+      snapshots: BTreeMap::new(),
+    }
+  }
+
+  pub fn snapshot(&mut self, t: Instant, val: T) {
+    self.snapshots.insert(t, val);
+  }
+}
+
+impl<T: Eq> SnapshotLog<T> {
+  pub fn latest(&self) -> Option<ForeignSnapshot<&T>> {
+    let mut res: Option<(Instant, Instant, &T)> = None;
+    for (t, ev) in self.snapshots.iter().rev() {
+      match (res, ev) {
+        (None, v) => res = Some((*t, *t, v)),
+        (Some((_, latest, val)), v) if v == val => res = Some((*t, latest, val)),
+        _ => break,
+      }
+    }
+    res.map(|(start, latest, value)| ForeignSnapshot {
+      period: PeriodLower::unbounded(start),
+      retrieved: ForeignRetrieved { latest },
+      value,
+    })
+  }
+}
+
+/// Third-party time-varying data history with indirect invalidation support
+#[derive(Clone, Default, Eq, PartialEq, Debug)]
+pub struct CheckedSnapshotLog<T> {
+  events: BTreeMap<Instant, CheckedSnapshotLogEvent<T>>,
+}
+
+#[derive(Clone, Eq, PartialEq, Debug)]
+enum CheckedSnapshotLogEvent<T> {
+  Snapshot(T),
+  Invalidate,
+}
+
+impl<T> CheckedSnapshotLog<T> {
+  pub fn new() -> Self {
+    Self {
+      events: BTreeMap::new(),
+    }
+  }
+
+  /// Invalidate the data: we know it is no longer valid but don't know the new
+  /// value.
+  pub fn invalidate(&mut self, t: Instant) {
+    self.events.insert(t, CheckedSnapshotLogEvent::Invalidate);
+  }
+
+  pub fn snapshot(&mut self, t: Instant, val: T) {
+    self.events.insert(t, CheckedSnapshotLogEvent::Snapshot(val));
+  }
+}
+
+impl<T: Eq> CheckedSnapshotLog<T> {
+  pub fn latest(&self) -> Option<ForeignSnapshot<&T>> {
+    let mut end: Option<Instant> = None;
+    let mut res: Option<(Instant, Instant, &T)> = None;
+    for (t, ev) in self.events.iter().rev() {
+      match (res, ev) {
+        (None, CheckedSnapshotLogEvent::Invalidate) => end = Some(*t),
+        (None, CheckedSnapshotLogEvent::Snapshot(v)) => res = Some((*t, *t, v)),
+        (Some((_, latest, val)), CheckedSnapshotLogEvent::Snapshot(v)) if v == val => res = Some((*t, latest, val)),
+        _ => break,
+      }
+    }
+    res.map(|(start, latest, value)| ForeignSnapshot {
+      period: PeriodLower::new(start, end),
+      retrieved: ForeignRetrieved { latest },
+      value,
+    })
   }
 }
