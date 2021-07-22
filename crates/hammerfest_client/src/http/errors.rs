@@ -1,5 +1,6 @@
 use etwin_core::email::EmailAddressParseError;
 use etwin_core::hammerfest::*;
+use etwin_scraper_tools::TextNodeExcess;
 use reqwest::Url;
 use thiserror::Error;
 
@@ -55,4 +56,28 @@ pub enum ScraperError {
   UnknownUserRole,
   #[error("Unexpected thread kind: '{}'", .0)]
   UnexpectedThreadKind(String),
+  #[error("Expected exactly one <title> tag")]
+  NonUniqueTitle,
+  #[error("Expected exactly one text node in <title> tag")]
+  NonUniqueTitleText,
+  #[error("Failed to detect server from page title: {:?}", .0)]
+  FailedServerDetection(String),
+  #[error("Expected exactly one `div.topMainBar`")]
+  NonUniqueTopBar,
+  #[error("Expected at most one `div.playerInfo > a:nth-child(1)`")]
+  TooManyPlayerInfo,
+  #[error("Expected exactly one `form span.enter`")]
+  NonUniqueSignInButton,
+  #[error("Expected exactly one text node in player link")]
+  NonUniquePlayerText,
+  #[error("Expected exactly one `div.playerInfo > a:nth-child(3)`")]
+  NonUniqueTokenLink,
+  #[error("Expected exactly one text node in token link")]
+  NonUniqueTokenText,
+}
+
+impl From<TextNodeExcess> for ScraperError {
+  fn from(_: TextNodeExcess) -> Self {
+    Self::TooManyHtmlFragments("<inner-text>".to_string())
+  }
 }

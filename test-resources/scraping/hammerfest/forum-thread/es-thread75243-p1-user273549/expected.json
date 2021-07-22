@@ -1,188 +1,199 @@
 {
-  "theme": {
-    "server": "hammerfest.es",
-    "id": "2",
-    "name": "Caverna del Aprendiz",
-    "is_public": true
+  "session": {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hammerfest.es",
+      "id": "273549",
+      "username": "Eternalfest"
+    },
+    "tokens": 50
   },
-  "thread": {
-    "server": "hammerfest.es",
-    "id": "75243",
-    "name": "ActualizaciÓn (eternalfest)",
-    "is_closed": false
-  },
-  "posts": {
-    "page1": 1,
-    "pages": 1,
-    "items": [
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.es",
-          "id": "151493",
-          "username": "chubacaa44",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": 1,
-          "role": "None"
+  "page": {
+    "theme": {
+      "server": "hammerfest.es",
+      "id": "2",
+      "name": "Caverna del Aprendiz",
+      "is_public": true
+    },
+    "thread": {
+      "server": "hammerfest.es",
+      "id": "75243",
+      "name": "ActualizaciÓn (eternalfest)",
+      "is_closed": false
+    },
+    "posts": {
+      "page1": 1,
+      "pages": 1,
+      "items": [
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.es",
+            "id": "151493",
+            "username": "chubacaa44",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": 1,
+            "role": "None"
+          },
+          "ctime": {
+            "month": 5,
+            "day": 2,
+            "weekday": 6,
+            "hour": 6,
+            "minute": 24
+          },
+          "content": ""
         },
-        "ctime": {
-          "month": 5,
-          "day": 2,
-          "weekday": 6,
-          "hour": 6,
-          "minute": 24
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.es",
+            "id": "224817",
+            "username": "Matiax333",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": null,
+            "role": "None"
+          },
+          "ctime": {
+            "month": 5,
+            "day": 3,
+            "weekday": 7,
+            "hour": 9,
+            "minute": 7
+          },
+          "content": ""
         },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.es",
-          "id": "224817",
-          "username": "Matiax333",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": null,
-          "role": "None"
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.es",
+            "id": "151493",
+            "username": "chubacaa44",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": 1,
+            "role": "None"
+          },
+          "ctime": {
+            "month": 5,
+            "day": 4,
+            "weekday": 1,
+            "hour": 7,
+            "minute": 48
+          },
+          "content": ""
         },
-        "ctime": {
-          "month": 5,
-          "day": 3,
-          "weekday": 7,
-          "hour": 9,
-          "minute": 7
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.es",
+            "id": "136399",
+            "username": "Seba52",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": 1,
+            "role": "Moderator"
+          },
+          "ctime": {
+            "month": 5,
+            "day": 9,
+            "weekday": 6,
+            "hour": 5,
+            "minute": 12
+          },
+          "content": ""
         },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.es",
-          "id": "151493",
-          "username": "chubacaa44",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": 1,
-          "role": "None"
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.es",
+            "id": "148195",
+            "username": "home37",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": 1,
+            "role": "Moderator"
+          },
+          "ctime": {
+            "month": 5,
+            "day": 15,
+            "weekday": 5,
+            "hour": 2,
+            "minute": 16
+          },
+          "content": ""
         },
-        "ctime": {
-          "month": 5,
-          "day": 4,
-          "weekday": 1,
-          "hour": 7,
-          "minute": 48
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.es",
+            "id": "151493",
+            "username": "chubacaa44",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": 1,
+            "role": "None"
+          },
+          "ctime": {
+            "month": 5,
+            "day": 15,
+            "weekday": 5,
+            "hour": 2,
+            "minute": 34
+          },
+          "content": ""
         },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.es",
-          "id": "136399",
-          "username": "Seba52",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": 1,
-          "role": "Moderator"
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.es",
+            "id": "136399",
+            "username": "Seba52",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": 1,
+            "role": "Moderator"
+          },
+          "ctime": {
+            "month": 5,
+            "day": 15,
+            "weekday": 5,
+            "hour": 2,
+            "minute": 58
+          },
+          "content": ""
         },
-        "ctime": {
-          "month": 5,
-          "day": 9,
-          "weekday": 6,
-          "hour": 5,
-          "minute": 12
-        },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.es",
-          "id": "148195",
-          "username": "home37",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": 1,
-          "role": "Moderator"
-        },
-        "ctime": {
-          "month": 5,
-          "day": 15,
-          "weekday": 5,
-          "hour": 2,
-          "minute": 16
-        },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.es",
-          "id": "151493",
-          "username": "chubacaa44",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": 1,
-          "role": "None"
-        },
-        "ctime": {
-          "month": 5,
-          "day": 15,
-          "weekday": 5,
-          "hour": 2,
-          "minute": 34
-        },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.es",
-          "id": "136399",
-          "username": "Seba52",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": 1,
-          "role": "Moderator"
-        },
-        "ctime": {
-          "month": 5,
-          "day": 15,
-          "weekday": 5,
-          "hour": 2,
-          "minute": 58
-        },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.es",
-          "id": "151493",
-          "username": "chubacaa44",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": 1,
-          "role": "None"
-        },
-        "ctime": {
-          "month": 5,
-          "day": 19,
-          "weekday": 2,
-          "hour": 23,
-          "minute": 56
-        },
-        "content": ""
-      }
-    ]
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.es",
+            "id": "151493",
+            "username": "chubacaa44",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": 1,
+            "role": "None"
+          },
+          "ctime": {
+            "month": 5,
+            "day": 19,
+            "weekday": 2,
+            "hour": 23,
+            "minute": 56
+          },
+          "content": ""
+        }
+      ]
+    }
   }
 }

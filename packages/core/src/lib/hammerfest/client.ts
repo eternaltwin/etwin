@@ -1,17 +1,17 @@
 import { HammerfestCredentials } from "./hammerfest-credentials.js";
-import { HammerfestForumTheme } from "./hammerfest-forum-theme.js";
+import { HammerfestForumHomeResponse } from "./hammerfest-forum-home-response.js";
 import { HammerfestForumThemeId } from "./hammerfest-forum-theme-id.js";
-import { HammerfestForumThemePage } from "./hammerfest-forum-theme-page.js";
+import { HammerfestForumThemePageResponse } from "./hammerfest-forum-theme-page-response.js";
 import { HammerfestForumThreadId } from "./hammerfest-forum-thread-id.js";
-import { HammerfestForumThreadPage } from "./hammerfest-forum-thread-page.js";
+import { HammerfestForumThreadPageResponse } from "./hammerfest-forum-thread-page-response.js";
 import { HammerfestGetProfileByIdOptions } from "./hammerfest-get-profile-by-id-options.js";
-import { HammerfestGodChild } from "./hammerfest-god-child.js";
-import { HammerfestItemCounts } from "./hammerfest-item-counts.js";
-import { HammerfestProfile } from "./hammerfest-profile.js";
+import { HammerfestGodchildrenResponse } from "./hammerfest-godchildren-response.js";
+import { HammerfestInventoryResponse } from "./hammerfest-inventory-response.js";
+import { HammerfestProfileResponse } from "./hammerfest-profile-response.js";
 import { HammerfestServer } from "./hammerfest-server.js";
 import { HammerfestSession } from "./hammerfest-session.js";
 import { HammerfestSessionKey } from "./hammerfest-session-key.js";
-import { HammerfestShop } from "./hammerfest-shop.js";
+import { HammerfestShopResponse } from "./hammerfest-shop-response.js";
 
 export interface HammerfestClient {
   /**
@@ -33,17 +33,17 @@ export interface HammerfestClient {
    */
   testSession(server: HammerfestServer, key: HammerfestSessionKey): Promise<HammerfestSession | null>;
 
-  getProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfile | null>;
+  getProfileById(session: HammerfestSession | null, options: HammerfestGetProfileByIdOptions): Promise<HammerfestProfileResponse>;
 
-  getOwnItems(session: HammerfestSession): Promise<HammerfestItemCounts>;
+  getOwnItems(session: HammerfestSession): Promise<HammerfestInventoryResponse>;
 
-  getOwnGodChildren(session: HammerfestSession): Promise<HammerfestGodChild[]>;
+  getOwnGodChildren(session: HammerfestSession): Promise<HammerfestGodchildrenResponse>;
 
-  getOwnShop(session: HammerfestSession): Promise<HammerfestShop>;
+  getOwnShop(session: HammerfestSession): Promise<HammerfestShopResponse>;
 
-  getForumThemes(session: HammerfestSession | null, server: HammerfestServer): Promise<HammerfestForumTheme[]>;
+  getForumThemes(session: HammerfestSession | null, server: HammerfestServer): Promise<HammerfestForumHomeResponse>;
 
-  getForumThemePage(session: HammerfestSession | null, server: HammerfestServer, themeId: HammerfestForumThemeId, page1: number): Promise<HammerfestForumThemePage>;
+  getForumThemePage(session: HammerfestSession | null, server: HammerfestServer, themeId: HammerfestForumThemeId, page1: number): Promise<HammerfestForumThemePageResponse>;
 
-  getForumThreadPage(session: HammerfestSession | null, server: HammerfestServer, threadId: HammerfestForumThreadId, page1: number): Promise<HammerfestForumThreadPage>;
+  getForumThreadPage(session: HammerfestSession | null, server: HammerfestServer, threadId: HammerfestForumThreadId, page1: number): Promise<HammerfestForumThreadPageResponse>;
 }

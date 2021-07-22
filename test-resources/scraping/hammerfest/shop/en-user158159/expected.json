@@ -1,6 +1,16 @@
 {
-  "tokens": 50,
-  "weekly_tokens": 0,
-  "purchased_tokens": 0,
-  "has_quest_bonus": true
+  "session": {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hfest.net",
+      "id": "158159",
+      "username": "moulins"
+    },
+    "tokens": 50
+  },
+  "shop": {
+    "weekly_tokens": 0,
+    "purchased_tokens": 0,
+    "has_quest_bonus": true
+  }
 }

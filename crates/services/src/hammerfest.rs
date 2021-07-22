@@ -61,7 +61,7 @@ where
             server: options.server,
             user_id: options.id,
           };
-          self.hammerfest_client.get_profile_by_id(None, &options).await?
+          self.hammerfest_client.get_profile_by_id(None, &options).await?.profile
         };
         match profile {
           Some(profile) => {

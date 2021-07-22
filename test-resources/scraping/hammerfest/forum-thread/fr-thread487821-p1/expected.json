@@ -1,146 +1,157 @@
 {
-  "theme": {
-    "server": "hammerfest.fr",
-    "id": "3",
-    "name": "Les secrets de Tuberculoz",
-    "is_public": true
+  "session": {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hammerfest.fr",
+      "id": "1053072",
+      "username": "Erneraude"
+    },
+    "tokens": 50
   },
-  "thread": {
-    "server": "hammerfest.fr",
-    "id": "487821",
-    "name": "[Épreuve du mois] Octobre",
-    "is_closed": false
-  },
-  "posts": {
-    "page1": 1,
-    "pages": 1,
-    "items": [
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.fr",
-          "id": "383128",
-          "username": "philippe1",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": 1,
-          "role": "None"
+  "page": {
+    "theme": {
+      "server": "hammerfest.fr",
+      "id": "3",
+      "name": "Les secrets de Tuberculoz",
+      "is_public": true
+    },
+    "thread": {
+      "server": "hammerfest.fr",
+      "id": "487821",
+      "name": "[Épreuve du mois] Octobre",
+      "is_closed": false
+    },
+    "posts": {
+      "page1": 1,
+      "pages": 1,
+      "items": [
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.fr",
+            "id": "383128",
+            "username": "philippe1",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": 1,
+            "role": "None"
+          },
+          "ctime": {
+            "month": 10,
+            "day": 14,
+            "weekday": 6,
+            "hour": 12,
+            "minute": 11
+          },
+          "content": ""
         },
-        "ctime": {
-          "month": 10,
-          "day": 14,
-          "weekday": 6,
-          "hour": 12,
-          "minute": 11
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.fr",
+            "id": "905739",
+            "username": "maxdefolsch",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": null,
+            "role": "None"
+          },
+          "ctime": {
+            "month": 10,
+            "day": 14,
+            "weekday": 6,
+            "hour": 13,
+            "minute": 5
+          },
+          "content": ""
         },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.fr",
-          "id": "905739",
-          "username": "maxdefolsch",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": null,
-          "role": "None"
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.fr",
+            "id": "1053072",
+            "username": "Erneraude",
+            "has_carrot": true,
+            "ladder_level": 4,
+            "rank": 1,
+            "role": "None"
+          },
+          "ctime": {
+            "month": 10,
+            "day": 14,
+            "weekday": 6,
+            "hour": 13,
+            "minute": 29
+          },
+          "content": ""
         },
-        "ctime": {
-          "month": 10,
-          "day": 14,
-          "weekday": 6,
-          "hour": 13,
-          "minute": 5
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.fr",
+            "id": "905739",
+            "username": "maxdefolsch",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": null,
+            "role": "None"
+          },
+          "ctime": {
+            "month": 10,
+            "day": 14,
+            "weekday": 6,
+            "hour": 13,
+            "minute": 53
+          },
+          "content": ""
         },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.fr",
-          "id": "1053072",
-          "username": "Erneraude",
-          "has_carrot": true,
-          "ladder_level": 4,
-          "rank": 1,
-          "role": "None"
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.fr",
+            "id": "383128",
+            "username": "philippe1",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": 1,
+            "role": "None"
+          },
+          "ctime": {
+            "month": 10,
+            "day": 14,
+            "weekday": 6,
+            "hour": 17,
+            "minute": 54
+          },
+          "content": ""
         },
-        "ctime": {
-          "month": 10,
-          "day": 14,
-          "weekday": 6,
-          "hour": 13,
-          "minute": 29
-        },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.fr",
-          "id": "905739",
-          "username": "maxdefolsch",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": null,
-          "role": "None"
-        },
-        "ctime": {
-          "month": 10,
-          "day": 14,
-          "weekday": 6,
-          "hour": 13,
-          "minute": 53
-        },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.fr",
-          "id": "383128",
-          "username": "philippe1",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": 1,
-          "role": "None"
-        },
-        "ctime": {
-          "month": 10,
-          "day": 14,
-          "weekday": 6,
-          "hour": 17,
-          "minute": 54
-        },
-        "content": ""
-      },
-      {
-        "id": null,
-        "author": {
-          "type": "HammerfestUser",
-          "server": "hammerfest.fr",
-          "id": "383128",
-          "username": "philippe1",
-          "has_carrot": true,
-          "ladder_level": 0,
-          "rank": 1,
-          "role": "None"
-        },
-        "ctime": {
-          "month": 10,
-          "day": 14,
-          "weekday": 6,
-          "hour": 18,
-          "minute": 6
-        },
-        "content": ""
-      }
-    ]
+        {
+          "id": null,
+          "author": {
+            "type": "HammerfestUser",
+            "server": "hammerfest.fr",
+            "id": "383128",
+            "username": "philippe1",
+            "has_carrot": true,
+            "ladder_level": 0,
+            "rank": 1,
+            "role": "None"
+          },
+          "ctime": {
+            "month": 10,
+            "day": 14,
+            "weekday": 6,
+            "hour": 18,
+            "minute": 6
+          },
+          "content": ""
+        }
+      ]
+    }
   }
 }

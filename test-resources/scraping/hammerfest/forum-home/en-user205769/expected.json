@@ -1,9 +1,20 @@
-[
-  {
-    "server": "hfest.net",
-    "id": "3",
-    "name": "Tuber's secrets",
-    "is_public": true,
-    "description": "Share here all the mysterious secrets of Hammerfest"
-  }
-]
+{
+  "session": {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hfest.net",
+      "id": "205769",
+      "username": "Demurgos"
+    },
+    "tokens": 50
+  },
+  "themes": [
+    {
+      "server": "hfest.net",
+      "id": "3",
+      "name": "Tuber's secrets",
+      "is_public": true,
+      "description": "Share here all the mysterious secrets of Hammerfest"
+    }
+  ]
+}

@@ -7,11 +7,16 @@ use crate::http::scraper::utils::parse_u32;
 use etwin_core::core::Instant;
 use etwin_core::email::EmailAddress;
 use etwin_core::hammerfest::*;
-use etwin_scraper_tools::ElementRefExt;
-use scraper::ElementRef;
+use etwin_scraper_tools::{selector, ElementRefExt};
+use itertools::Itertools;
+use scraper::{ElementRef, Selector};
 use std::collections::{HashMap, HashSet};
 use std::num::NonZeroU16;
 use std::str::FromStr;
+
+const TITLE_FR: &str = "Les Cavernes de Hammerfest";
+const TITLE_ES: &str = "Las Cavernas de Hammerfest";
+const TITLE_EN: &str = "The Caverns of Hammerfest";
 
 pub type Html = scraper::Html;
 pub type Result<T> = std::result::Result<T, ScraperError>;
@@ -23,6 +28,79 @@ pub fn is_login_page_error(html: &Html) -> bool {
     .is_some()
 }
 
+struct ScraperContext {
+  server: HammerfestServer,
+  session: Option<HammerfestSessionUser>,
+}
+
+fn scrape_context(root: ElementRef) -> Result<ScraperContext> {
+  let title = root
+    .select(selector!(":scope > head > title"))
+    .exactly_one()
+    .map_err(|_| ScraperError::NonUniqueTitle)?;
+  let title = title.get_one_text().map_err(|_| ScraperError::NonUniqueTitleText)?;
+  let server = if title.starts_with(TITLE_FR) {
+    HammerfestServer::HammerfestFr
+  } else if title.starts_with(TITLE_EN) {
+    HammerfestServer::HfestNet
+  } else if title.starts_with(TITLE_ES) {
+    HammerfestServer::HammerfestEs
+  } else {
+    return Err(ScraperError::FailedServerDetection(title.to_string()));
+  };
+  let session = scrape_session(root, server)?;
+  Ok(ScraperContext { server, session })
+}
+
+pub(crate) fn scrape_session(root: ElementRef, server: HammerfestServer) -> Result<Option<HammerfestSessionUser>> {
+  if root.select(selector!("h2.evni")).next().is_some() {
+    return Err(ScraperError::Evni);
+  }
+
+  let top_bar = root
+    .select(selector!("div.topMainBar"))
+    .exactly_one()
+    .map_err(|_| ScraperError::NonUniqueTopBar)?;
+
+  let player = top_bar
+    .select(selector!("div.playerInfo > a:nth-child(1)"))
+    .at_most_one()
+    .map_err(|_| ScraperError::TooManyPlayerInfo)?;
+
+  let player = if let Some(player) = player {
+    player
+  } else {
+    // No player, check that the page is valid and contains a sign-in button
+    return match top_bar.select(selector!("form span.enter")).exactly_one() {
+      Ok(_) => Ok(None),
+      Err(_) => Err(ScraperError::NonUniqueSignInButton),
+    };
+  };
+
+  let username = player.get_one_text().map_err(|_| ScraperError::NonUniquePlayerText)?;
+  let username =
+    HammerfestUsername::from_str(username).map_err(|e| ScraperError::InvalidUsername(username.to_string(), e))?;
+
+  let id = player
+    .value()
+    .attr("href")
+    .and_then(|s| s.rsplit("user.html/").next())
+    .unwrap_or("<missing href>");
+  let id = HammerfestUserId::from_str(id).map_err(|e| ScraperError::InvalidUserId(id.to_string(), e))?;
+
+  let user = ShortHammerfestUser { server, id, username };
+
+  let tokens = top_bar
+    .select(selector!("div.playerInfo > a:nth-child(3)"))
+    .exactly_one()
+    .map_err(|_| ScraperError::NonUniqueTokenLink)?;
+  let tokens = tokens.get_one_text().map_err(|_| ScraperError::NonUniqueTokenText)?;
+  let tokens = utils::parse_u32(tokens)?;
+
+  let session = HammerfestSessionUser { user, tokens };
+  Ok(Some(session))
+}
+
 struct RawUserLink<'a> {
   username: &'a str,
   user_id: &'a str,
@@ -30,7 +108,7 @@ struct RawUserLink<'a> {
 
 impl<'a> RawUserLink<'a> {
   fn scrape(user_link: ElementRef<'a>) -> Result<RawUserLink<'a>> {
-    let username = utils::get_inner_text(user_link)?.trim();
+    let username = user_link.get_opt_text()?.unwrap_or("").trim();
     let user_id = user_link
       .value()
       .attr("href")
@@ -47,32 +125,6 @@ impl<'a> RawUserLink<'a> {
       .parse()
       .map_err(|err| ScraperError::InvalidUserId(self.user_id.to_owned(), err))?;
     Ok(ShortHammerfestUser { server, id, username })
-  }
-}
-
-fn scrape_raw_top_bar(html: &Html) -> Result<Option<(ElementRef<'_>, RawUserLink<'_>)>> {
-  let selectors = Selectors::get();
-  let root = html.root_element();
-
-  if selectors.select(root, "h2.evni").next().is_some() {
-    return Err(ScraperError::Evni);
-  }
-
-  let top_bar = selectors.select_one(root, "div.topMainBar")?;
-  match selectors.select_one_opt(root, "div.playerInfo > a:nth-child(1)")? {
-    None => {
-      // Check that the signin button exists.
-      selectors.select_one(top_bar, "form span.enter")?;
-      Ok(None)
-    }
-    Some(user_link) => Ok(Some((top_bar, RawUserLink::scrape(user_link)?))),
-  }
-}
-
-pub fn scrape_user_base(server: HammerfestServer, html: &Html) -> Result<Option<ShortHammerfestUser>> {
-  match scrape_raw_top_bar(html)? {
-    Some((_, user_link)) => Ok(Some(user_link.to_user(server)?)),
-    None => Ok(None),
   }
 }
 
@@ -133,17 +185,25 @@ fn parse_thread_title(title: &str) -> Result<HammerfestForumThreadTitle> {
 pub fn scrape_user_profile(
   server: HammerfestServer,
   id: HammerfestUserId,
-  html: &Html,
-) -> Result<Option<HammerfestProfile>> {
-  let selectors = Selectors::get();
-  let texts = ScraperTexts::get(server);
-  let root = html.root_element();
+  doc: &Html,
+) -> Result<HammerfestProfileResponse> {
+  let root = doc.root_element();
 
-  let is_logged_in = match scrape_raw_top_bar(html) {
-    Ok(top_bar) => top_bar.is_some(),
-    Err(ScraperError::Evni) => return Ok(None),
-    Err(err) => return Err(err),
+  let selectors = Selectors::get();
+
+  let context = match scrape_context(root) {
+    Ok(context) => context,
+    Err(ScraperError::Evni) => {
+      return Ok(HammerfestProfileResponse {
+        session: None,
+        profile: None,
+      })
+    }
+    Err(e) => return Err(e),
   };
+  let is_logged_in = context.session.is_some();
+
+  let texts = ScraperTexts::get(context.server);
 
   let mut email_elem = None;
   let [username_elem, best_score_elem, best_level_elem, season_score_elem, rank_elem] = selectors
@@ -156,11 +216,11 @@ pub fn scrape_user_profile(
       }
     })?;
 
-  let username = utils::get_inner_text(username_elem)?.trim();
+  let username = username_elem.get_opt_text()?.unwrap_or("").trim();
   let username =
     HammerfestUsername::from_str(username).map_err(|err| ScraperError::InvalidUsername(username.to_owned(), err))?;
-  let best_score = utils::parse_dotted_u32(utils::get_inner_text(best_score_elem)?)?;
-  let season_score = utils::parse_dotted_u32(utils::get_inner_text(season_score_elem)?)?;
+  let best_score = utils::parse_dotted_u32(best_score_elem.get_opt_text()?.unwrap_or(""))?;
+  let season_score = utils::parse_dotted_u32(season_score_elem.get_opt_text()?.unwrap_or(""))?;
   let best_level = {
     let raw_best_level = best_level_elem.text().next().unwrap_or("").trim();
     if raw_best_level.is_empty() {
@@ -174,7 +234,7 @@ pub fn scrape_user_profile(
     (None, true) => Some(None),
     (None, false) => None,
     (Some(email), _) => Some(Some({
-      let raw_email = utils::get_inner_text(email)?;
+      let raw_email = email.get_opt_text()?.unwrap_or("");
       EmailAddress::from_str(raw_email).map_err(|err| ScraperError::InvalidEmail(raw_email.to_owned(), err))?
     })),
   };
@@ -185,7 +245,9 @@ pub fn scrape_user_profile(
       let words_fame_info_elem = selectors.select_one(root, "div.wordsFameInfo")?;
       let words_fame_msg_elem = selectors.select_one(root, "dd.wordsFameUser")?;
 
-      let raw_date = utils::get_inner_text(words_fame_info_elem)?
+      let raw_date = words_fame_info_elem
+        .get_opt_text()?
+        .unwrap_or("")
         .split(' ')
         .last()
         .unwrap_or("");
@@ -193,7 +255,7 @@ pub fn scrape_user_profile(
         Ok(date) => Ok(Instant::from_utc(date.and_hms(0, 0, 0), chrono::Utc)),
         Err(err) => Err(ScraperError::InvalidDate(raw_date.to_owned(), Some(err))),
       }?;
-      let message = utils::get_inner_text(words_fame_msg_elem)?.trim().to_owned();
+      let message = words_fame_msg_elem.get_opt_text()?.unwrap_or("").trim().to_owned();
 
       HammerfestHallOfFameMessage { date, message }
     })
@@ -220,7 +282,7 @@ pub fn scrape_user_profile(
 
   let quests = quest_elems
     .map(|(name, status)| {
-      let name = utils::get_inner_text(name)?.trim();
+      let name = name.get_opt_text()?.unwrap_or("").trim();
       match texts.quest_names.get(name) {
         Some(id) => Ok((*id, status)),
         None => Err(ScraperError::UnknownQuestName(name.to_owned())),
@@ -228,40 +290,48 @@ pub fn scrape_user_profile(
     })
     .collect::<Result<HashMap<_, _>>>()?;
 
-  Ok(Some(HammerfestProfile {
-    user: ShortHammerfestUser { server, id, username },
-    email,
-    best_level,
-    best_score,
-    season_score,
-    has_carrot,
-    ladder_level,
-    hall_of_fame,
-    items,
-    quests,
-  }))
+  Ok(HammerfestProfileResponse {
+    session: context.session,
+    profile: Some(HammerfestProfile {
+      user: ShortHammerfestUser { server, id, username },
+      email,
+      best_level,
+      best_score,
+      season_score,
+      has_carrot,
+      ladder_level,
+      hall_of_fame,
+      items,
+      quests,
+    }),
+  })
 }
 
-pub fn scrape_user_inventory(html: &Html) -> Result<Option<HashMap<HammerfestItemId, u32>>> {
+pub fn scrape_user_inventory(doc: &Html) -> Result<HammerfestInventoryResponse> {
+  let root = doc.root_element();
+
+  let context = scrape_context(root)?;
+  let session_user = context.session.ok_or(ScraperError::InvalidSessionCookie)?;
+
   let selectors = Selectors::get();
 
-  if scrape_raw_top_bar(html)?.is_none() {
-    return Ok(None);
-  }
-
-  selectors
-    .select(html.root_element(), "table.fridge tbody tr")
+  let inventory = selectors
+    .select(root, "table.fridge tbody tr")
     .map(|row_elem| {
       let item_url = selectors.select_one_attr(row_elem, "img", "src")?;
       let qty_elem = selectors.select_one(row_elem, "td.quantity")?;
 
       let item = parse_item_url(item_url)?;
-      let qty = utils::get_inner_text(qty_elem)?;
+      let qty = qty_elem.get_opt_text()?.unwrap_or("");
       let qty = utils::parse_u32(qty.strip_prefix("x").unwrap_or(qty))?;
       Ok((item, qty))
     })
-    .collect::<Result<HashMap<_, _>>>()
-    .map(Some)
+    .collect::<Result<HashMap<_, _>>>()?;
+
+  Ok(HammerfestInventoryResponse {
+    session: session_user,
+    inventory,
+  })
 }
 
 fn parse_weekly_tokens_number(text: &str) -> Result<u8> {
@@ -293,30 +363,25 @@ fn parse_purchased_tokens_number(text: &str) -> Result<u8> {
   utils::parse_u8(num)
 }
 
-pub fn scrape_user_shop(html: &Html) -> Result<Option<HammerfestShop>> {
+pub fn scrape_user_shop(doc: &Html) -> Result<HammerfestShopResponse> {
+  let root = doc.root_element();
+
+  let context = scrape_context(root)?;
+  let session_user = context.session.ok_or(ScraperError::InvalidSessionCookie)?;
+
   let selectors = Selectors::get();
-  let root = html.root_element();
-
-  let top_bar_elem = match scrape_raw_top_bar(html)? {
-    Some((top_bar, _)) => top_bar,
-    None => return Ok(None),
-  };
-
-  let tokens_elem = selectors.select_one(top_bar_elem, "div.playerInfo > a:nth-child(3)")?;
-  let tokens = utils::get_inner_text(tokens_elem)?;
-  let _tokens = utils::parse_u32(tokens)?;
 
   let shop_status_elem = selectors.select_one(root, "div.freeDays")?;
 
   let weekly_tokens_elem = selectors.select_one_opt(shop_status_elem, "div.weeklyStatus")?;
   let weekly_tokens = match weekly_tokens_elem {
-    Some(elem) => utils::get_inner_text(elem).and_then(parse_weekly_tokens_number)?,
+    Some(elem) => parse_weekly_tokens_number(elem.get_opt_text()?.unwrap_or(""))?,
     None => 0,
   };
 
   let purchased_tokens_elem = selectors.select_one_opt(shop_status_elem, "div.stepLabel")?;
   let purchased_tokens = match purchased_tokens_elem {
-    Some(elem) => Some(utils::get_inner_text(elem).and_then(parse_purchased_tokens_number)?),
+    Some(elem) => Some(parse_purchased_tokens_number(elem.get_opt_text()?.unwrap_or(""))?),
     // Couldn't find the number of purchased tokens. This can means two things:
     // - The user never bought any tokens.
     // - The user bought enough tokens to complete all reward steps.
@@ -326,34 +391,41 @@ pub fn scrape_user_shop(html: &Html) -> Result<Option<HammerfestShop>> {
 
   let has_quest_bonus = selectors.select_one_opt(root, "div.bankBonus > div.pic")?.is_some();
 
-  Ok(Some(HammerfestShop {
-    weekly_tokens,
-    purchased_tokens,
-    has_quest_bonus,
-  }))
+  Ok(HammerfestShopResponse {
+    session: session_user,
+    shop: HammerfestShop {
+      weekly_tokens,
+      purchased_tokens,
+      has_quest_bonus,
+    },
+  })
 }
 
-pub fn scrape_user_god_children(server: HammerfestServer, html: &Html) -> Result<Option<Vec<HammerfestGodchild>>> {
+pub fn scrape_user_god_children(server: HammerfestServer, doc: &Html) -> Result<HammerfestGodchildrenResponse> {
+  let root = doc.root_element();
+  let context = scrape_context(root)?;
+  let session_user = context.session.ok_or(ScraperError::InvalidSessionCookie)?;
+
   let selectors = Selectors::get();
 
-  if scrape_raw_top_bar(html)?.is_none() {
-    return Ok(None);
-  }
-
-  selectors
-    .select(html.root_element(), "table.sponsor tbody tr")
+  let godchildren = selectors
+    .select(root, "table.sponsor tbody tr")
     .map(|row| {
       let user_elem = selectors.select_one(row, "a")?;
       let user = RawUserLink::scrape(user_elem)?.to_user(server)?;
 
       let tokens_elem = selectors.select_one(row, "td:nth-child(2)")?;
-      let tokens = utils::get_inner_text(tokens_elem)?.trim();
+      let tokens = tokens_elem.get_opt_text()?.unwrap_or("").trim();
       let tokens = tokens.parse().unwrap_or(0);
 
       Ok(HammerfestGodchild { user, tokens })
     })
-    .collect::<Result<Vec<_>>>()
-    .map(Some)
+    .collect::<Result<Vec<_>>>()?;
+
+  Ok(HammerfestGodchildrenResponse {
+    session: session_user,
+    godchildren,
+  })
 }
 
 fn parse_generic_id_url<T: FromStr>(
@@ -381,15 +453,14 @@ fn parse_forum_post_id_url(url: &str) -> Result<HammerfestForumPostId> {
   parse_generic_id_url(url, "/forum.html/message/", ScraperError::InvalidForumPostId)
 }
 
-pub fn scrape_forum_home(server: HammerfestServer, html: &Html) -> Result<Vec<HammerfestForumTheme>> {
+pub fn scrape_forum_home(server: HammerfestServer, doc: &Html) -> Result<HammerfestForumHomeResponse> {
+  let root = doc.root_element();
+  let context = scrape_context(root)?;
   let texts = ScraperTexts::get(server);
   let selectors = Selectors::get();
 
-  // Check session validity.
-  scrape_raw_top_bar(html)?;
-
-  selectors
-    .select(html.root_element(), "div.forumCat dl")
+  let themes = selectors
+    .select(root, "div.forumCat dl")
     .map(|theme_elem| {
       let theme_desc_elem = selectors.select_one(theme_elem, "dd.categDesc")?;
       let theme_url = selectors.select_one_attr(theme_elem, "dt.categ a", "href")?;
@@ -401,11 +472,12 @@ pub fn scrape_forum_home(server: HammerfestServer, html: &Html) -> Result<Vec<Ha
       let is_public = texts.public_forum_themes.contains(&id);
 
       let name = selectors
-        .select_one(theme_elem, "dt.categ a")
-        .and_then(utils::get_inner_text)?
+        .select_one(theme_elem, "dt.categ a")?
+        .get_opt_text()?
+        .unwrap_or("")
         .trim();
       let name = parse_theme_title(name)?;
-      let description = utils::get_inner_text(theme_desc_elem)?.trim();
+      let description = theme_desc_elem.get_opt_text()?.unwrap_or("").trim();
       let description = parse_theme_description(description)?;
       Ok(Some(HammerfestForumTheme {
         short: ShortHammerfestForumTheme {
@@ -418,7 +490,12 @@ pub fn scrape_forum_home(server: HammerfestServer, html: &Html) -> Result<Vec<Ha
       }))
     })
     .filter_map(|e| e.transpose())
-    .collect()
+    .collect::<Result<Vec<_>>>()?;
+
+  Ok(HammerfestForumHomeResponse {
+    session: context.session,
+    themes,
+  })
 }
 
 fn parse_forum_date(texts: &ScraperTexts, date: &str) -> Result<HammerfestDate> {
@@ -444,14 +521,14 @@ fn parse_forum_page_numbers(text: &str) -> Result<(NonZeroU16, NonZeroU16)> {
   }
 }
 
-pub fn scrape_forum_theme(server: HammerfestServer, html: &Html) -> Result<HammerfestForumThemePage> {
+pub fn scrape_forum_theme(server: HammerfestServer, doc: &Html) -> Result<HammerfestForumThemePageResponse> {
+  let root = doc.root_element();
+  let context = scrape_context(root)?;
+
   let selectors = Selectors::get();
   let texts = ScraperTexts::get(server);
 
-  // Check session validity.
-  scrape_raw_top_bar(html)?;
-
-  let forum_elem = selectors.select_one(html.root_element(), "div.forum")?;
+  let forum_elem = selectors.select_one(root, "div.forum")?;
   let paginate_elem = selectors.select_one(forum_elem, "div.paginateBox")?;
 
   let theme = {
@@ -471,7 +548,11 @@ pub fn scrape_forum_theme(server: HammerfestServer, html: &Html) -> Result<Hamme
   };
 
   let (page1, pages) = {
-    let raw = utils::get_inner_text(selectors.select_one(paginate_elem, "div.currentPage")?)?.trim();
+    let raw = selectors
+      .select_one(paginate_elem, "div.currentPage")?
+      .get_opt_text()?
+      .unwrap_or("")
+      .trim();
     parse_forum_page_numbers(raw)?
   };
 
@@ -480,7 +561,7 @@ pub fn scrape_forum_theme(server: HammerfestServer, html: &Html) -> Result<Hamme
   let mut current_date = None;
   for thread_elem in selectors.select(forum_elem, "table.threads tr").skip(1) {
     if let Some(date_elem) = selectors.select_one_opt(thread_elem, "td.forumDate")? {
-      current_date = Some(parse_forum_date(texts, utils::get_inner_text(date_elem)?)?);
+      current_date = Some(parse_forum_date(texts, date_elem.get_opt_text()?.unwrap_or(""))?);
       continue;
     }
 
@@ -508,10 +589,10 @@ pub fn scrape_forum_theme(server: HammerfestServer, html: &Html) -> Result<Hamme
 
     let id = parse_forum_thread_id_url(subject_elem.value().attr("href").unwrap_or("<missing-href>"))?;
 
-    let name = utils::get_inner_text(subject_elem)?;
+    let name = subject_elem.get_opt_text()?.unwrap_or("");
     let name = parse_thread_title(name)?;
     let author = RawUserLink::scrape(author_elem)?.to_user(server)?;
-    let reply_count = utils::parse_u16(utils::get_inner_text(replies_elem)?.trim())?;
+    let reply_count = utils::parse_u16(replies_elem.get_opt_text()?.unwrap_or("").trim())?;
 
     let thread = HammerfestForumThread {
       short: ShortHammerfestForumThread {
@@ -538,10 +619,13 @@ pub fn scrape_forum_theme(server: HammerfestServer, html: &Html) -> Result<Hamme
     }
   }
 
-  Ok(HammerfestForumThemePage {
-    theme,
-    sticky,
-    threads: HammerfestForumThreadListing { page1, pages, items },
+  Ok(HammerfestForumThemePageResponse {
+    session: context.session,
+    page: HammerfestForumThemePage {
+      theme,
+      sticky,
+      threads: HammerfestForumThreadListing { page1, pages, items },
+    },
   })
 }
 
@@ -563,19 +647,19 @@ fn parse_forum_date_time(texts: &ScraperTexts, date_time: &str) -> Result<Hammer
 pub fn scrape_forum_thread(
   server: HammerfestServer,
   id: HammerfestForumThreadId,
-  html: &Html,
-) -> Result<HammerfestForumThreadPage> {
+  doc: &Html,
+) -> Result<HammerfestForumThreadPageResponse> {
+  let root = doc.root_element();
+  let context = scrape_context(root)?;
+
   let selectors = Selectors::get();
   let texts = ScraperTexts::get(server);
 
-  // Check session validity.
-  scrape_raw_top_bar(html)?;
-
-  let forum_elem = selectors.select_one(html.root_element(), "div.forum")?;
+  let forum_elem = selectors.select_one(root, "div.forum")?;
 
   let theme = {
     let theme_link = selectors.select_one(forum_elem, "h1 a:nth-of-type(2)")?;
-    let name = utils::get_inner_text(theme_link)?;
+    let name = theme_link.get_opt_text()?.unwrap_or("");
     let name = parse_theme_title(name)?;
     let id = parse_forum_theme_id_url(theme_link.value().attr("href").unwrap_or("<missing-href>"))?;
     let is_public = texts.public_forum_themes.contains(&id);
@@ -588,7 +672,10 @@ pub fn scrape_forum_thread(
   };
 
   let thread = {
-    let name = utils::get_inner_text(selectors.select_one(forum_elem, "h2.view span")?)?;
+    let name = selectors
+      .select_one(forum_elem, "h2.view span")?
+      .get_opt_text()?
+      .unwrap_or("");
     let name = parse_thread_title(name)?;
     let is_closed: bool = selectors
       .select(forum_elem, ":scope > ul.menuf > li.isClosed")
@@ -603,7 +690,7 @@ pub fn scrape_forum_thread(
   };
 
   let (page1, pages) = match selectors.select_one_opt(forum_elem, "div.paginateBox div.currentPage")? {
-    Some(elem) => parse_forum_page_numbers(utils::get_inner_text(elem)?.trim())?,
+    Some(elem) => parse_forum_page_numbers(elem.get_opt_text()?.unwrap_or("").trim())?,
     None => (NonZeroU16::new(1).unwrap(), NonZeroU16::new(1).unwrap()),
   };
 
@@ -617,7 +704,11 @@ pub fn scrape_forum_thread(
       let content = selectors.select_one(msg_elem, "div.content")?.inner_html();
 
       let header_elem = selectors.select_one(msg_elem, "div.header")?;
-      let raw_ctime = utils::get_inner_text(selectors.select_one(header_elem, "div.date")?)?.trim();
+      let raw_ctime = selectors
+        .select_one(header_elem, "div.date")?
+        .get_opt_text()?
+        .unwrap_or("")
+        .trim();
       let ctime = parse_forum_date_time(texts, raw_ctime)?;
 
       let author_elem = selectors.select_one(header_elem, "div.author")?;
@@ -650,9 +741,12 @@ pub fn scrape_forum_thread(
     })
     .collect::<Result<Vec<_>>>()?;
 
-  Ok(HammerfestForumThreadPage {
-    theme,
-    thread,
-    posts: HammerfestForumPostListing { page1, pages, items },
+  Ok(HammerfestForumThreadPageResponse {
+    session: context.session,
+    page: HammerfestForumThreadPage {
+      theme,
+      thread,
+      posts: HammerfestForumPostListing { page1, pages, items },
+    },
   })
 }

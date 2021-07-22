@@ -1076,24 +1076,30 @@ where
   async fn touch_shop(&self, response: &HammerfestShopResponse) -> Result<(), EtwinError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
-    touch_hammerfest_session_user(&mut tx, now, &response.session_user).await?;
-    touch_hammerfest_shop(&mut tx, now, response.session_user.user.as_ref(), &response.shop).await?;
+    touch_hammerfest_session_user(&mut tx, now, &response.session).await?;
+    touch_hammerfest_shop(&mut tx, now, response.session.user.as_ref(), &response.shop).await?;
     tx.commit().await?;
     Ok(())
   }
 
   async fn touch_profile(&self, response: &HammerfestProfileResponse) -> Result<(), EtwinError> {
+    let profile = if let Some(profile) = response.profile.as_ref() {
+      profile
+    } else {
+      return Ok(());
+    };
+
     assert_eq!(
-      response.session_user.is_some(),
-      response.profile.email.is_some(),
+      response.session.is_some(),
+      profile.email.is_some(),
       "session user presence must match email knowledge presence"
     );
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
-    if let Some(session_user) = response.session_user.as_ref() {
+    if let Some(session_user) = response.session.as_ref() {
       touch_hammerfest_session_user(&mut tx, now, &session_user).await?;
     }
-    let options = &response.profile;
+    let options = profile;
     touch_hammerfest_user(&mut tx, now, &options.user).await?;
     let quests = touch_hammerfest_quest_statuses(&mut tx, &options.quests, self.uuid_generator.next()).await?;
     let unlocked_items = touch_hammerfest_unlocked_items(&mut tx, &options.items, self.uuid_generator.next()).await?;
@@ -1134,10 +1140,10 @@ where
   async fn touch_inventory(&self, response: &HammerfestInventoryResponse) -> Result<(), EtwinError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
-    touch_hammerfest_session_user(&mut tx, now, &response.session_user).await?;
+    touch_hammerfest_session_user(&mut tx, now, &response.session).await?;
     let inventory = &response.inventory;
     let items = touch_hammerfest_item_counts(&mut tx, inventory, self.uuid_generator.next()).await?;
-    touch_hammerfest_inventory(&mut tx, now, response.session_user.user.as_ref(), items).await?;
+    touch_hammerfest_inventory(&mut tx, now, response.session.user.as_ref(), items).await?;
     tx.commit().await?;
 
     Ok(())
@@ -1146,11 +1152,11 @@ where
   async fn touch_godchildren(&self, response: &HammerfestGodchildrenResponse) -> Result<(), EtwinError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
-    touch_hammerfest_session_user(&mut tx, now, &response.session_user).await?;
+    touch_hammerfest_session_user(&mut tx, now, &response.session).await?;
     touch_hammerfest_godchild_list(
       &mut tx,
       now,
-      response.session_user.user.as_ref(),
+      response.session.user.as_ref(),
       response.godchildren.len().try_into().expect("OverflowOnGodchildCount"),
     )
     .await?;
@@ -1159,7 +1165,7 @@ where
       touch_hammerfest_godchild(
         &mut tx,
         now,
-        response.session_user.user.as_ref(),
+        response.session.user.as_ref(),
         offset_in_list.try_into().expect("OverflowOnGodchildOffest"),
         godchild.user.as_ref(),
         godchild.tokens,
@@ -1174,7 +1180,7 @@ where
   async fn touch_theme_page(&self, response: &HammerfestForumThemePageResponse) -> Result<(), EtwinError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
-    if let Some(session_user) = response.session_user.as_ref() {
+    if let Some(session_user) = response.session.as_ref() {
       touch_hammerfest_session_user(&mut tx, now, &session_user).await?;
     }
     let options = &response.page;
@@ -1297,7 +1303,7 @@ where
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     let mut session_user_is_moderator = false;
-    if let Some(session_user) = response.session_user.as_ref() {
+    if let Some(session_user) = response.session.as_ref() {
       touch_hammerfest_session_user(&mut tx, now, &session_user).await?;
     }
     let options = &response.page;
@@ -1360,7 +1366,7 @@ where
         touch_hammerfest_forum_post_id(&mut tx, now, options.thread.as_ref(), options.posts.page1, offset, mid).await?;
       }
     }
-    if let Some(session_user) = response.session_user.as_ref() {
+    if let Some(session_user) = response.session.as_ref() {
       touch_hammerfest_forum_role(
         &mut tx,
         now,

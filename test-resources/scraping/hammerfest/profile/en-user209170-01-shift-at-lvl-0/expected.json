@@ -1,17 +1,28 @@
 {
-  "user": {
-    "type": "HammerfestUser",
-    "server": "hfest.net",
-    "id": "209170",
-    "username": "eternalbot"
+  "session": {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hfest.net",
+      "id": "209170",
+      "username": "eternalbot"
+    },
+    "tokens": 4
   },
-  "email": null,
-  "best_score": 0,
-  "best_level": 0,
-  "has_carrot": false,
-  "season_score": 0,
-  "ladder_level": 4,
-  "hall_of_fame": null,
-  "items": [],
-  "quests": {}
+  "profile": {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hfest.net",
+      "id": "209170",
+      "username": "eternalbot"
+    },
+    "email": null,
+    "best_score": 0,
+    "best_level": 0,
+    "has_carrot": false,
+    "season_score": 0,
+    "ladder_level": 4,
+    "hall_of_fame": null,
+    "items": [],
+    "quests": {}
+  }
 }

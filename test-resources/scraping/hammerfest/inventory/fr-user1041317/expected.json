@@ -1,1 +1,12 @@
-{}
+{
+  "session": {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hammerfest.fr",
+      "id": "1041317",
+      "username": "Eternalfest"
+    },
+    "tokens": 1
+  },
+  "inventory": {}
+}

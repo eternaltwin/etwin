@@ -4,42 +4,42 @@ import {
   HammerfestCredentials
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
 import {
+  $HammerfestForumHomeResponse,
+  HammerfestForumHomeResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-home-response";
+import {
   $HammerfestForumThemeId,
   HammerfestForumThemeId
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-id";
 import {
-  $HammerfestForumThemeListing,
-  HammerfestForumThemeListing
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-listing";
-import {
-  $HammerfestForumThemePage,
-  HammerfestForumThemePage
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-page";
+  $HammerfestForumThemePageResponse,
+  HammerfestForumThemePageResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-page-response";
 import {
   $HammerfestForumThreadId,
   HammerfestForumThreadId
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-id";
 import {
-  $HammerfestForumThreadPage,
-  HammerfestForumThreadPage
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-page";
+  $HammerfestForumThreadPageResponse,
+  HammerfestForumThreadPageResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-page-response";
 import {
   $HammerfestGetProfileByIdOptions,
   HammerfestGetProfileByIdOptions
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-get-profile-by-id-options";
 import {
-  $HammerfestGodChildListing,
-  HammerfestGodChildListing
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-god-child-listing";
+  $HammerfestGodchildrenResponse,
+  HammerfestGodchildrenResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-godchildren-response";
 import {
-  $HammerfestItemCounts,
-  HammerfestItemCounts
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-item-counts";
+  $HammerfestInventoryResponse,
+  HammerfestInventoryResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-inventory-response";
 import { $HammerfestPassword, HammerfestPassword } from "@eternal-twin/core/lib/hammerfest/hammerfest-password";
 import {
-  $NullableHammerfestProfile,
-  NullableHammerfestProfile
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-profile";
+  $HammerfestProfileResponse,
+  HammerfestProfileResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-profile-response";
 import { $HammerfestServer, HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
 import {
   $HammerfestSession,
@@ -51,7 +51,10 @@ import {
   $HammerfestSessionKey,
   HammerfestSessionKey
 } from "@eternal-twin/core/lib/hammerfest/hammerfest-session-key";
-import { $HammerfestShop, HammerfestShop } from "@eternal-twin/core/lib/hammerfest/hammerfest-shop";
+import {
+  $HammerfestShopResponse,
+  HammerfestShopResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-shop-response";
 import { $HammerfestUserId, HammerfestUserId } from "@eternal-twin/core/lib/hammerfest/hammerfest-user-id";
 import { $HammerfestUsername, HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username";
 import { JSON_READER } from "kryo-json/json-reader";
@@ -97,11 +100,11 @@ export abstract class NativeHammerfestClient implements HammerfestClient {
   async getProfileById(
     session: NullableHammerfestSession,
     options: HammerfestGetProfileByIdOptions
-  ): Promise<NullableHammerfestProfile> {
+  ): Promise<HammerfestProfileResponse> {
     const rawSession: string = $NullableHammerfestSession.write(JSON_WRITER, session);
     const rawOptions: string = $HammerfestGetProfileByIdOptions.write(JSON_WRITER, options);
     const rawOut = await NativeHammerfestClient.GET_PROFILE_BY_ID(this.box, rawSession, rawOptions);
-    return $NullableHammerfestProfile.read(JSON_READER, rawOut);
+    return $HammerfestProfileResponse.read(JSON_READER, rawOut);
   }
 
   async getForumThemePage(
@@ -109,23 +112,23 @@ export abstract class NativeHammerfestClient implements HammerfestClient {
     server: HammerfestServer,
     themeId: HammerfestForumThemeId,
     page1: number
-  ): Promise<HammerfestForumThemePage> {
+  ): Promise<HammerfestForumThemePageResponse> {
     const rawSession: string = $NullableHammerfestSession.write(JSON_WRITER, session);
     const rawServer: string = $HammerfestServer.write(JSON_WRITER, server);
     const rawThemeId: string = $HammerfestForumThemeId.write(JSON_WRITER, themeId);
     const rawPage1: string = JSON.stringify(page1);
     const rawOut = await NativeHammerfestClient.GET_FORUM_THEME_PAGE(this.box, rawSession, rawServer, rawThemeId, rawPage1);
-    return $HammerfestForumThemePage.read(JSON_READER, rawOut);
+    return $HammerfestForumThemePageResponse.read(JSON_READER, rawOut);
   }
 
   async getForumThemes(
     session: NullableHammerfestSession,
     server: HammerfestServer
-  ): Promise<HammerfestForumThemeListing> {
+  ): Promise<HammerfestForumHomeResponse> {
     const rawSession: string = $NullableHammerfestSession.write(JSON_WRITER, session);
     const rawServer: string = $HammerfestServer.write(JSON_WRITER, server);
     const rawOut = await NativeHammerfestClient.GET_FORUM_THEMES(this.box, rawSession, rawServer);
-    return $HammerfestForumThemeListing.read(JSON_READER, rawOut);
+    return $HammerfestForumHomeResponse.read(JSON_READER, rawOut);
   }
 
   async getForumThreadPage(
@@ -133,31 +136,31 @@ export abstract class NativeHammerfestClient implements HammerfestClient {
     server: HammerfestServer,
     threadId: HammerfestForumThreadId,
     page1: number
-  ): Promise<HammerfestForumThreadPage> {
+  ): Promise<HammerfestForumThreadPageResponse> {
     const rawSession: string = $NullableHammerfestSession.write(JSON_WRITER, session);
     const rawServer: string = $HammerfestServer.write(JSON_WRITER, server);
     const rawThreadId: string = $HammerfestForumThreadId.write(JSON_WRITER, threadId);
     const rawPage1: string = JSON.stringify(page1);
     const rawOut = await NativeHammerfestClient.GET_FORUM_THREAD_PAGE(this.box, rawSession, rawServer, rawThreadId, rawPage1);
-    return $HammerfestForumThreadPage.read(JSON_READER, rawOut);
+    return $HammerfestForumThreadPageResponse.read(JSON_READER, rawOut);
   }
 
-  async getOwnGodChildren(session: HammerfestSession): Promise<HammerfestGodChildListing> {
+  async getOwnGodChildren(session: HammerfestSession): Promise<HammerfestGodchildrenResponse> {
     const rawSession: string = $HammerfestSession.write(JSON_WRITER, session);
     const rawOut = await NativeHammerfestClient.GET_OWN_GOD_CHILDREN(this.box, rawSession);
-    return $HammerfestGodChildListing.read(JSON_READER, rawOut);
+    return $HammerfestGodchildrenResponse.read(JSON_READER, rawOut);
   }
 
-  async getOwnItems(session: HammerfestSession): Promise<HammerfestItemCounts> {
+  async getOwnItems(session: HammerfestSession): Promise<HammerfestInventoryResponse> {
     const rawSession: string = $HammerfestSession.write(JSON_WRITER, session);
     const rawOut = await NativeHammerfestClient.GET_OWN_ITEMS(this.box, rawSession);
-    return $HammerfestItemCounts.read(JSON_READER, rawOut);
+    return $HammerfestInventoryResponse.read(JSON_READER, rawOut);
   }
 
-  async getOwnShop(session: HammerfestSession): Promise<HammerfestShop> {
+  async getOwnShop(session: HammerfestSession): Promise<HammerfestShopResponse> {
     const rawSession: string = $HammerfestSession.write(JSON_WRITER, session);
     const rawOut = await NativeHammerfestClient.GET_OWN_SHOP(this.box, rawSession);
-    return $HammerfestShop.read(JSON_READER, rawOut);
+    return $HammerfestShopResponse.read(JSON_READER, rawOut);
   }
 }
 

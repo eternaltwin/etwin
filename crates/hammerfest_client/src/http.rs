@@ -4,20 +4,17 @@ mod scraper;
 mod tests;
 mod url;
 
-use std::collections::HashMap;
-use std::time::Duration;
-
+use self::errors::ScraperError;
+use self::url::HammerfestUrls;
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::hammerfest::*;
+use etwin_core::types::EtwinError;
 use reqwest::{Client, StatusCode};
 use serde::Serialize;
-
-use self::errors::ScraperError;
-use self::url::HammerfestUrls;
-use etwin_core::types::EtwinError;
 use std::num::NonZeroU16;
 use std::str::FromStr;
+use std::time::Duration;
 
 type Result<T> = std::result::Result<T, EtwinError>;
 
@@ -109,12 +106,13 @@ where
     let session_key = HammerfestSessionKey::from_str(&session_key).map_err(|_| ScraperError::InvalidSessionCookie)?;
 
     let html = self.get_html(urls.root(), Some(&session_key)).await?;
-    let user = scraper::scrape_user_base(options.server, &html)?.ok_or(ScraperError::LoginSessionRevoked)?;
+    let session =
+      scraper::scrape_session(html.root_element(), options.server)?.ok_or(ScraperError::LoginSessionRevoked)?;
     Ok(HammerfestSession {
       ctime: now,
       atime: now,
       key: session_key,
-      user,
+      user: session.user,
     })
   }
 
@@ -126,11 +124,12 @@ where
     let urls = HammerfestUrls::new(server);
     let now = self.clock.now();
     let html = self.get_html(urls.root(), Some(key)).await?;
-    Ok(scraper::scrape_user_base(server, &html)?.map(|user| HammerfestSession {
+    let session = scraper::scrape_session(html.root_element(), server)?;
+    Ok(session.map(|s| HammerfestSession {
       ctime: now,
       atime: now,
       key: key.clone(),
-      user,
+      user: s.user,
     }))
   }
 
@@ -138,7 +137,7 @@ where
     &self,
     session: Option<&HammerfestSession>,
     options: &HammerfestGetProfileByIdOptions,
-  ) -> Result<Option<HammerfestProfile>> {
+  ) -> Result<HammerfestProfileResponse> {
     let urls = HammerfestUrls::new(options.server);
     let html = self
       .get_html(urls.user(&options.user_id), session.map(|sess| &sess.key))
@@ -146,30 +145,30 @@ where
     Ok(scraper::scrape_user_profile(options.server, options.user_id, &html)?)
   }
 
-  async fn get_own_items(&self, session: &HammerfestSession) -> Result<HashMap<HammerfestItemId, u32>> {
+  async fn get_own_items(&self, session: &HammerfestSession) -> Result<HammerfestInventoryResponse> {
     let urls = HammerfestUrls::new(session.user.server);
     let html = self.get_html(urls.inventory(), Some(&session.key)).await?;
-    scraper::scrape_user_inventory(&html)?.ok_or_else(|| ScraperError::InvalidSessionCookie.into())
+    Ok(scraper::scrape_user_inventory(&html)?)
   }
 
-  async fn get_own_godchildren(&self, session: &HammerfestSession) -> Result<Vec<HammerfestGodchild>> {
+  async fn get_own_godchildren(&self, session: &HammerfestSession) -> Result<HammerfestGodchildrenResponse> {
     let server = session.user.server;
     let urls = HammerfestUrls::new(server);
     let html = self.get_html(urls.god_children(), Some(&session.key)).await?;
-    scraper::scrape_user_god_children(server, &html)?.ok_or_else(|| ScraperError::InvalidSessionCookie.into())
+    Ok(scraper::scrape_user_god_children(server, &html)?)
   }
 
-  async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShop> {
+  async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShopResponse> {
     let urls = HammerfestUrls::new(session.user.server);
     let html = self.get_html(urls.shop(), Some(&session.key)).await?;
-    scraper::scrape_user_shop(&html)?.ok_or_else(|| ScraperError::InvalidSessionCookie.into())
+    Ok(scraper::scrape_user_shop(&html)?)
   }
 
   async fn get_forum_themes(
     &self,
     session: Option<&HammerfestSession>,
     server: HammerfestServer,
-  ) -> Result<Vec<HammerfestForumTheme>> {
+  ) -> Result<HammerfestForumHomeResponse> {
     let urls = HammerfestUrls::new(server);
     let html = self.get_html(urls.forum_home(), session.map(|sess| &sess.key)).await?;
     Ok(scraper::scrape_forum_home(server, &html)?)
@@ -181,7 +180,7 @@ where
     server: HammerfestServer,
     theme_id: HammerfestForumThemeId,
     page1: NonZeroU16,
-  ) -> Result<HammerfestForumThemePage> {
+  ) -> Result<HammerfestForumThemePageResponse> {
     let urls = HammerfestUrls::new(server);
     let html = self
       .get_html(urls.forum_theme(theme_id, page1), session.map(|sess| &sess.key))
@@ -195,7 +194,7 @@ where
     server: HammerfestServer,
     thread_id: HammerfestForumThreadId,
     page1: NonZeroU16,
-  ) -> Result<HammerfestForumThreadPage> {
+  ) -> Result<HammerfestForumThreadPageResponse> {
     let urls = HammerfestUrls::new(server);
     let html = self
       .get_html(urls.forum_thread(thread_id, page1), session.map(|sess| &sess.key))

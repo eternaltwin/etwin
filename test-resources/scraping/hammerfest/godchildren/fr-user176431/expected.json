@@ -1,110 +1,121 @@
-[
-  {
+{
+  "session": {
     "user": {
       "type": "HammerfestUser",
       "server": "hammerfest.fr",
-      "id": "650873",
-      "username": "badbooy67"
+      "id": "176431",
+      "username": "maniaclan"
     },
-    "tokens": 63
+    "tokens": 5096
   },
-  {
-    "user": {
-      "type": "HammerfestUser",
-      "server": "hammerfest.fr",
-      "id": "324653",
-      "username": "sandy6868"
+  "godchildren": [
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "650873",
+        "username": "badbooy67"
+      },
+      "tokens": 63
     },
-    "tokens": 23
-  },
-  {
-    "user": {
-      "type": "HammerfestUser",
-      "server": "hammerfest.fr",
-      "id": "772828",
-      "username": "tortueg"
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "324653",
+        "username": "sandy6868"
+      },
+      "tokens": 23
     },
-    "tokens": 12
-  },
-  {
-    "user": {
-      "type": "HammerfestUser",
-      "server": "hammerfest.fr",
-      "id": "330463",
-      "username": "Raphiloudi"
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "772828",
+        "username": "tortueg"
+      },
+      "tokens": 12
     },
-    "tokens": 0
-  },
-  {
-    "user": {
-      "type": "HammerfestUser",
-      "server": "hammerfest.fr",
-      "id": "453951",
-      "username": "mattg"
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "330463",
+        "username": "Raphiloudi"
+      },
+      "tokens": 0
     },
-    "tokens": 0
-  },
-  {
-    "user": {
-      "type": "HammerfestUser",
-      "server": "hammerfest.fr",
-      "id": "565233",
-      "username": "oberon"
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "453951",
+        "username": "mattg"
+      },
+      "tokens": 0
     },
-    "tokens": 0
-  },
-  {
-    "user": {
-      "type": "HammerfestUser",
-      "server": "hammerfest.fr",
-      "id": "729999",
-      "username": "phoenyx68"
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "565233",
+        "username": "oberon"
+      },
+      "tokens": 0
     },
-    "tokens": 0
-  },
-  {
-    "user": {
-      "type": "HammerfestUser",
-      "server": "hammerfest.fr",
-      "id": "739772",
-      "username": "barho"
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "729999",
+        "username": "phoenyx68"
+      },
+      "tokens": 0
     },
-    "tokens": 0
-  },
-  {
-    "user": {
-      "type": "HammerfestUser",
-      "server": "hammerfest.fr",
-      "id": "744785",
-      "username": "willili"
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "739772",
+        "username": "barho"
+      },
+      "tokens": 0
     },
-    "tokens": 0
-  },
-  {
-    "user": {
-      "type": "HammerfestUser",
-      "server": "hammerfest.fr",
-      "id": "960729",
-      "username": "Galeos"
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "744785",
+        "username": "willili"
+      },
+      "tokens": 0
     },
-    "tokens": 0
-  },
-  {
-    "user": {
-      "type": "HammerfestUser",
-      "server": "hammerfest.fr",
-      "id": "1021711",
-      "username": "Androsy"
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "960729",
+        "username": "Galeos"
+      },
+      "tokens": 0
     },
-    "tokens": 0
-  },
-  {
-    "user": {
-      "type": "HammerfestUser",
-      "server": "hammerfest.fr",
-      "id": "1042559",
-      "username": "chessdidou"
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "1021711",
+        "username": "Androsy"
+      },
+      "tokens": 0
     },
-    "tokens": 0
-  }
-]
+    {
+      "user": {
+        "type": "HammerfestUser",
+        "server": "hammerfest.fr",
+        "id": "1042559",
+        "username": "chessdidou"
+      },
+      "tokens": 0
+    }
+  ]
+}

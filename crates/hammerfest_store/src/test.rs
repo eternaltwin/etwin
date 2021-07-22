@@ -199,8 +199,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: None,
-        profile: HammerfestProfile {
+        session: None,
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -215,7 +215,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -232,8 +232,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: None,
-        profile: HammerfestProfile {
+        session: None,
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -248,7 +248,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -258,8 +258,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: None,
-        profile: HammerfestProfile {
+        session: None,
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -274,7 +274,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -290,8 +290,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: None,
-        profile: HammerfestProfile {
+        session: None,
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -306,7 +306,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -316,8 +316,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: None,
-        profile: HammerfestProfile {
+        session: None,
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -332,7 +332,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -348,8 +348,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: None,
-        profile: HammerfestProfile {
+        session: None,
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -364,7 +364,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -374,8 +374,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: None,
-        profile: HammerfestProfile {
+        session: None,
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -390,7 +390,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -400,8 +400,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: None,
-        profile: HammerfestProfile {
+        session: None,
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -416,7 +416,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -441,8 +441,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: Some(alice.clone()),
-        profile: HammerfestProfile {
+        session: Some(alice.clone()),
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -457,7 +457,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -482,8 +482,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: Some(alice.clone()),
-        profile: HammerfestProfile {
+        session: Some(alice.clone()),
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -498,7 +498,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -508,8 +508,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: Some(alice.clone()),
-        profile: HammerfestProfile {
+        session: Some(alice.clone()),
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -524,7 +524,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -549,8 +549,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: Some(alice.clone()),
-        profile: HammerfestProfile {
+        session: Some(alice.clone()),
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -565,7 +565,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -575,8 +575,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: Some(alice.clone()),
-        profile: HammerfestProfile {
+        session: Some(alice.clone()),
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -591,7 +591,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -601,8 +601,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: Some(alice.clone()),
-        profile: HammerfestProfile {
+        session: Some(alice.clone()),
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -617,7 +617,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -642,8 +642,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: Some(alice.clone()),
-        profile: HammerfestProfile {
+        session: Some(alice.clone()),
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -658,7 +658,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -668,8 +668,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: Some(alice.clone()),
-        profile: HammerfestProfile {
+        session: Some(alice.clone()),
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "234".parse().unwrap(),
@@ -684,7 +684,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -694,8 +694,8 @@ where
     let actual = api
       .hammerfest_store
       .touch_profile(&HammerfestProfileResponse {
-        session_user: Some(alice.clone()),
-        profile: HammerfestProfile {
+        session: Some(alice.clone()),
+        profile: Some(HammerfestProfile {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
             id: "123".parse().unwrap(),
@@ -710,7 +710,7 @@ where
           hall_of_fame: None,
           items: Default::default(),
           quests: Default::default(),
-        },
+        }),
       })
       .await;
     assert_ok!(actual);
@@ -761,7 +761,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_theme_page(&HammerfestForumThemePageResponse {
-        session_user: Some(alice.clone()),
+        session: Some(alice.clone()),
         page: HammerfestForumThemePage {
           theme: ShortHammerfestForumTheme {
             server: HammerfestServer::HammerfestFr,
@@ -807,7 +807,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_thread_page(&HammerfestForumThreadPageResponse {
-        session_user: None,
+        session: None,
         page: HammerfestForumThreadPage {
           theme: ShortHammerfestForumTheme {
             server: HammerfestServer::HammerfestFr,
@@ -895,7 +895,7 @@ pub(crate) async fn test_touch_forum_thread_page_as_moderator<TyClock, TyHammerf
     let actual = api
       .hammerfest_store
       .touch_thread_page(&HammerfestForumThreadPageResponse {
-        session_user: Some(alice),
+        session: Some(alice),
         page: HammerfestForumThreadPage {
           theme: ShortHammerfestForumTheme {
             server: HammerfestServer::HammerfestFr,
@@ -982,7 +982,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_godchildren(&HammerfestGodchildrenResponse {
-        session_user: alice.clone(),
+        session: alice.clone(),
         godchildren: vec![],
       })
       .await;
@@ -994,7 +994,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_godchildren(&HammerfestGodchildrenResponse {
-        session_user: alice.clone(),
+        session: alice.clone(),
         godchildren: vec![HammerfestGodchild {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
@@ -1013,7 +1013,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_godchildren(&HammerfestGodchildrenResponse {
-        session_user: alice.clone(),
+        session: alice.clone(),
         godchildren: vec![
           HammerfestGodchild {
             user: ShortHammerfestUser {
@@ -1042,7 +1042,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_godchildren(&HammerfestGodchildrenResponse {
-        session_user: alice.clone(),
+        session: alice.clone(),
         godchildren: vec![HammerfestGodchild {
           user: ShortHammerfestUser {
             server: HammerfestServer::HammerfestFr,
@@ -1061,7 +1061,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_godchildren(&HammerfestGodchildrenResponse {
-        session_user: alice.clone(),
+        session: alice.clone(),
         godchildren: vec![
           HammerfestGodchild {
             user: ShortHammerfestUser {
@@ -1090,7 +1090,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_godchildren(&HammerfestGodchildrenResponse {
-        session_user: alice.clone(),
+        session: alice.clone(),
         godchildren: vec![
           HammerfestGodchild {
             user: ShortHammerfestUser {
@@ -1133,7 +1133,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_shop(&HammerfestShopResponse {
-        session_user: alice.clone(),
+        session: alice.clone(),
         shop: HammerfestShop {
           weekly_tokens: 0,
           purchased_tokens: None,
@@ -1149,7 +1149,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_shop(&HammerfestShopResponse {
-        session_user: alice.clone(),
+        session: alice.clone(),
         shop: HammerfestShop {
           weekly_tokens: 0,
           purchased_tokens: Some(5),
@@ -1165,7 +1165,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_shop(&HammerfestShopResponse {
-        session_user: alice.clone(),
+        session: alice.clone(),
         shop: HammerfestShop {
           weekly_tokens: 0,
           purchased_tokens: Some(5),
@@ -1181,7 +1181,7 @@ where
     let actual = api
       .hammerfest_store
       .touch_shop(&HammerfestShopResponse {
-        session_user: alice.clone(),
+        session: alice.clone(),
         shop: HammerfestShop {
           weekly_tokens: 0,
           purchased_tokens: Some(5),
@@ -1212,7 +1212,7 @@ pub(crate) async fn test_touch_hammerfest_inventory<TyClock, TyHammerfestStore>(
     let actual = api
       .hammerfest_store
       .touch_inventory(&HammerfestInventoryResponse {
-        session_user: alice.clone(),
+        session: alice.clone(),
         inventory: {
           let mut inventory = HashMap::new();
           inventory.insert("1000".parse().unwrap(), 10);

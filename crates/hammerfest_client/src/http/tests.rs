@@ -23,14 +23,14 @@ macro_rules! declare_scraper_tests {
 }
 
 declare_scraper_tests! {
-  base(login__en_guest_default);
-  base(login__en_guest_error);
-  base(login__es_guest_default);
-  base(login__es_guest_error);
-  base(login__es_user273549_default);
-  base(login__fr_guest_default);
-  base(login__fr_guest_error);
-  base(home__fr_user127);
+  session(login__en_guest_default);
+  session(login__en_guest_error);
+  session(login__es_guest_default);
+  session(login__es_guest_error);
+  session(login__es_user273549_default);
+  session(login__fr_guest_default);
+  session(login__fr_guest_error);
+  session(home__fr_user127);
 
   profile(profile__en_user180098_guest);
   profile(profile__en_user180098_user205769);
@@ -126,7 +126,7 @@ mod tests_helpers {
 mod tests_impl {
   use super::*;
 
-  pub fn base(path: PathBuf) {
+  pub fn session(path: PathBuf) {
     #[derive(Deserialize)]
     struct Options {
       server: HammerfestServer,
@@ -135,13 +135,13 @@ mod tests_impl {
     #[derive(Serialize, Deserialize, PartialEq, Eq, Debug)]
     struct Output {
       #[serde(rename = "self")]
-      this: Option<ShortHammerfestUser>,
+      this: Option<HammerfestSessionUser>,
       is_error: bool,
     }
 
     tests_helpers::test_scraper(path, |options: Options, html| {
       Ok(Output {
-        this: scraper::scrape_user_base(options.server, html)?,
+        this: scraper::scrape_session(html.root_element(), options.server)?,
         is_error: scraper::is_login_page_error(html),
       })
     });
@@ -214,7 +214,7 @@ mod tests_impl {
       // This means that the serialized HTML isn't deterministic, so we can't compare it
       // for equality and we have to ignore it.
       // See: https://github.com/causal-agent/scraper/issues/54
-      for msg in &mut thread.posts.items {
+      for msg in &mut thread.page.posts.items {
         msg.content.clear();
       }
 

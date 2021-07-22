@@ -208,8 +208,8 @@ declare_new_int! {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HammerfestProfileResponse {
-  pub session_user: Option<HammerfestSessionUser>,
-  pub profile: HammerfestProfile,
+  pub session: Option<HammerfestSessionUser>,
+  pub profile: Option<HammerfestProfile>,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -241,7 +241,7 @@ pub struct HammerfestProfile {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct HammerfestInventoryResponse {
-  pub session_user: HammerfestSessionUser,
+  pub session: HammerfestSessionUser,
   #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_ordered_map"))]
   pub inventory: HashMap<HammerfestItemId, u32>,
 }
@@ -270,7 +270,7 @@ declare_decimal_id! {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestShopResponse {
-  pub session_user: HammerfestSessionUser,
+  pub session: HammerfestSessionUser,
   pub shop: HammerfestShop,
 }
 
@@ -292,7 +292,7 @@ pub struct HammerfestGodchild {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestGodchildrenResponse {
-  pub session_user: HammerfestSessionUser,
+  pub session: HammerfestSessionUser,
   pub godchildren: Vec<HammerfestGodchild>,
 }
 
@@ -468,6 +468,13 @@ impl ShortHammerfestForumTheme {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct HammerfestForumHomeResponse {
+  pub session: Option<HammerfestSessionUser>,
+  pub themes: Vec<HammerfestForumTheme>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumTheme {
   #[cfg_attr(feature = "_serde", serde(flatten))]
   pub short: ShortHammerfestForumTheme,
@@ -477,7 +484,7 @@ pub struct HammerfestForumTheme {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumThemePageResponse {
-  pub session_user: Option<HammerfestSessionUser>,
+  pub session: Option<HammerfestSessionUser>,
   pub page: HammerfestForumThemePage,
 }
 
@@ -569,7 +576,7 @@ impl HammerfestForumThread {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct HammerfestForumThreadPageResponse {
-  pub session_user: Option<HammerfestSessionUser>,
+  pub session: Option<HammerfestSessionUser>,
   pub page: HammerfestForumThreadPage,
 }
 
@@ -653,19 +660,20 @@ pub trait HammerfestClient: Send + Sync {
     &self,
     session: Option<&HammerfestSession>,
     options: &HammerfestGetProfileByIdOptions,
-  ) -> Result<Option<HammerfestProfile>, EtwinError>;
+  ) -> Result<HammerfestProfileResponse, EtwinError>;
 
-  async fn get_own_items(&self, session: &HammerfestSession) -> Result<HashMap<HammerfestItemId, u32>, EtwinError>;
+  async fn get_own_items(&self, session: &HammerfestSession) -> Result<HammerfestInventoryResponse, EtwinError>;
 
-  async fn get_own_godchildren(&self, session: &HammerfestSession) -> Result<Vec<HammerfestGodchild>, EtwinError>;
+  async fn get_own_godchildren(&self, session: &HammerfestSession)
+    -> Result<HammerfestGodchildrenResponse, EtwinError>;
 
-  async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShop, EtwinError>;
+  async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShopResponse, EtwinError>;
 
   async fn get_forum_themes(
     &self,
     session: Option<&HammerfestSession>,
     server: HammerfestServer,
-  ) -> Result<Vec<HammerfestForumTheme>, EtwinError>;
+  ) -> Result<HammerfestForumHomeResponse, EtwinError>;
 
   async fn get_forum_theme_page(
     &self,
@@ -673,7 +681,7 @@ pub trait HammerfestClient: Send + Sync {
     server: HammerfestServer,
     theme_id: HammerfestForumThemeId,
     page1: NonZeroU16,
-  ) -> Result<HammerfestForumThemePage, EtwinError>;
+  ) -> Result<HammerfestForumThemePageResponse, EtwinError>;
 
   async fn get_forum_thread_page(
     &self,
@@ -681,7 +689,7 @@ pub trait HammerfestClient: Send + Sync {
     server: HammerfestServer,
     thread_id: HammerfestForumThreadId,
     page1: NonZeroU16,
-  ) -> Result<HammerfestForumThreadPage, EtwinError>;
+  ) -> Result<HammerfestForumThreadPageResponse, EtwinError>;
 }
 
 #[async_trait]

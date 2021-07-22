@@ -1,3 +1,14 @@
 {
-  "1051": 1
+  "session": {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hfest.net",
+      "id": "209170",
+      "username": "eternalbot"
+    },
+    "tokens": 2
+  },
+  "inventory": {
+    "1051": 1
+  }
 }

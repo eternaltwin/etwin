@@ -124,15 +124,6 @@ impl Selectors {
   }
 }
 
-pub fn get_inner_text(node: ElementRef) -> Result<&str> {
-  let mut it = node.text();
-  match (it.next(), it.next()) {
-    (None, _) => Ok(""),
-    (Some(text), None) => Ok(text),
-    (Some(_), Some(_)) => Err(ScraperError::TooManyHtmlFragments("<inner-text>".into())),
-  }
-}
-
 fn parse_dotted_number_inner<T: FromStr>(mut s: &str, buf: &mut [u8]) -> std::result::Result<Option<T>, T::Err> {
   let (negative, len) = {
     let (negative, buf) = if s.starts_with('-') {

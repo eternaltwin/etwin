@@ -1,17 +1,28 @@
 {
-  "user": {
-    "type": "HammerfestUser",
-    "server": "hfest.net",
-    "id": "205769",
-    "username": "Demurgos"
+  "session": {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hfest.net",
+      "id": "205769",
+      "username": "Demurgos"
+    },
+    "tokens": 1
   },
-  "email": "demurgos@demurgos.net",
-  "best_score": 0,
-  "best_level": 71,
-  "has_carrot": false,
-  "season_score": 0,
-  "ladder_level": 2,
-  "hall_of_fame": null,
-  "items": [],
-  "quests": {}
+  "profile": {
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hfest.net",
+      "id": "205769",
+      "username": "Demurgos"
+    },
+    "email": "demurgos@demurgos.net",
+    "best_score": 0,
+    "best_level": 71,
+    "has_carrot": false,
+    "season_score": 0,
+    "ladder_level": 2,
+    "hall_of_fame": null,
+    "items": [],
+    "quests": {}
+  }
 }

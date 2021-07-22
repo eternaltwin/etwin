@@ -1,8 +1,12 @@
 {
   "self": {
-    "server": "hammerfest.fr",
-    "id": "127",
-    "username": "Elseabora"
+    "user": {
+      "type": "HammerfestUser",
+      "server": "hammerfest.fr",
+      "id": "127",
+      "username": "Elseabora"
+    },
+    "tokens": 1121
   },
   "is_error": false
 }

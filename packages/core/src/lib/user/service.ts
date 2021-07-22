@@ -331,7 +331,8 @@ export class DefaultUserService implements UserService {
     if (!acx.isAdministrator) {
       throw new Error("Forbidden");
     }
-    const hfProfile = await this.#hammerfestClient.getProfileById(null, {server: options.hammerfestServer, userId: options.userId});
+    const hfProfileRes = await this.#hammerfestClient.getProfileById(null, {server: options.hammerfestServer, userId: options.userId});
+    const hfProfile = hfProfileRes.profile;
     if (hfProfile === null) {
       throw new Error("InvalidHammerfestRef");
     }

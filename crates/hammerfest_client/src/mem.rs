@@ -31,6 +31,23 @@ struct MemUser {
   user: ShortHammerfestUser,
   password: HammerfestPassword,
   current_session: Option<HammerfestSessionKey>,
+  tokens: u32,
+  inventory: HashMap<HammerfestItemId, u32>,
+  godchildren: Vec<HammerfestGodchild>,
+  shop: HammerfestShop,
+}
+
+impl MemUser {
+  pub(crate) fn to_session_user(&self) -> HammerfestSessionUser {
+    HammerfestSessionUser {
+      user: self.user.clone(),
+      tokens: self.tokens,
+    }
+  }
+
+  pub(crate) fn id(&self) -> HammerfestUserId {
+    self.user.id
+  }
 }
 
 struct MemSession {
@@ -44,10 +61,10 @@ struct MemForumTheme {
 }
 
 impl MemForumTheme {
-  fn is_visible_by(&self, user: Option<&HammerfestUserId>) -> bool {
+  fn is_visible_by(&self, user: Option<HammerfestUserId>) -> bool {
     match (user, self.hidden_by.as_ref()) {
       (_, None) => true,
-      (Some(user), Some(hidden_by)) => user == hidden_by,
+      (Some(user), Some(hidden_by)) => user == *hidden_by,
       _ => false,
     }
   }
@@ -65,6 +82,22 @@ struct MemServer {
   forum_themes: HashMap<HammerfestForumThemeId, MemForumTheme>,
   forum_threads: HashMap<HammerfestForumThreadId, MemForumThread>,
   active_sessions: HashMap<HammerfestSessionKey, MemSession>,
+}
+
+impl MemServer {
+  pub(crate) fn get_user_by_session(&self, skey: &HammerfestSessionKey) -> Option<&MemUser> {
+    let session = self.active_sessions.get(skey)?;
+    let user = self
+      .users
+      .get(&session.user_id)
+      .expect("ActiveSessionMustAlwaysReferenceExistingUser");
+    assert_eq!(
+      user.current_session.as_ref(),
+      Some(skey),
+      "ActiveSessionUserAndUserCurrentSessionMustAgree"
+    );
+    Some(user)
+  }
 }
 
 pub struct MemHammerfestClient<TyClock> {
@@ -118,6 +151,14 @@ impl<TyClock> MemHammerfestClient<TyClock> {
           server,
           username: user,
         },
+        inventory: HashMap::new(),
+        godchildren: Vec::new(),
+        shop: HammerfestShop {
+          weekly_tokens: 0,
+          purchased_tokens: Some(0),
+          has_quest_bonus: false,
+        },
+        tokens: 0,
       }),
     };
   }
@@ -274,26 +315,6 @@ impl<TyClock> MemHammerfestClient<TyClock> {
       .ok_or_else(|| Error::ServerNotFound(server).into())
       .map(|server| server.get_mut().unwrap())
   }
-
-  fn check_session<'a>(&self, session: &'a HammerfestSession) -> Result<&'a HammerfestUserId> {
-    let server = self.get_server(session.user.server)?.read().unwrap();
-    if let Some(sess) = server.active_sessions.get(&session.key) {
-      if sess.user_id == session.user.id {
-        return Ok(&session.user.id);
-      }
-    }
-    Err(Error::InvalidSession.into())
-  }
-
-  fn check_opt_session<'a>(
-    &self,
-    session: Option<&'a HammerfestSession>,
-    server: HammerfestServer,
-  ) -> Option<&'a HammerfestUserId> {
-    session
-      .filter(|sess| sess.user.server == server)
-      .and_then(|sess| self.check_session(sess).ok())
-  }
 }
 
 fn make_forum_date(date: Instant) -> HammerfestDateTime {
@@ -399,16 +420,15 @@ where
     &self,
     session: Option<&HammerfestSession>,
     options: &HammerfestGetProfileByIdOptions,
-  ) -> Result<Option<HammerfestProfile>> {
+  ) -> Result<HammerfestProfileResponse> {
     let server = self.get_server(options.server)?.read().unwrap();
-    let is_self = self
-      .check_opt_session(session, options.server)
-      .filter(|user_id| **user_id == options.user_id)
-      .is_some();
+    let session = session.and_then(|s| server.get_user_by_session(&s.key));
+    let session = session.map(MemUser::to_session_user);
+    let can_view_email = session.is_some();
 
-    Ok(server.users.get(&options.user_id).map(|user| HammerfestProfile {
-      user: user.user.clone(),
-      email: if is_self { Some(None) } else { None },
+    let profile = server.users.get(&options.user_id).map(|mem_user| HammerfestProfile {
+      user: mem_user.user.clone(),
+      email: can_view_email.then(|| None),
       ladder_level: 4.try_into().unwrap(),
       hall_of_fame: None,
       has_carrot: false,
@@ -417,29 +437,41 @@ where
       season_score: 0,
       items: HashSet::new(),
       quests: HashMap::new(),
-    }))
+    });
+
+    Ok(HammerfestProfileResponse { session, profile })
   }
 
-  async fn get_own_items(&self, session: &HammerfestSession) -> Result<HashMap<HammerfestItemId, u32>> {
-    self.check_session(session)?;
+  async fn get_own_items(&self, session: &HammerfestSession) -> Result<HammerfestInventoryResponse> {
+    let server = self.get_server(session.user.server)?.read().unwrap();
+    let user = server.get_user_by_session(&session.key);
+    let user: &MemUser = user.ok_or(Error::InvalidSession)?;
 
-    let mut map = HashMap::new();
-    map.insert("0".parse().unwrap(), 5);
-    map.insert("1000".parse().unwrap(), 5);
-    Ok(map)
+    Ok(HammerfestInventoryResponse {
+      session: user.to_session_user(),
+      inventory: user.inventory.clone(),
+    })
   }
 
-  async fn get_own_godchildren(&self, session: &HammerfestSession) -> Result<Vec<HammerfestGodchild>> {
-    self.check_session(session)?;
-    Ok(Vec::new())
+  async fn get_own_godchildren(&self, session: &HammerfestSession) -> Result<HammerfestGodchildrenResponse> {
+    let server = self.get_server(session.user.server)?.read().unwrap();
+    let user = server.get_user_by_session(&session.key);
+    let user: &MemUser = user.ok_or(Error::InvalidSession)?;
+
+    Ok(HammerfestGodchildrenResponse {
+      session: user.to_session_user(),
+      godchildren: user.godchildren.clone(),
+    })
   }
 
-  async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShop> {
-    self.check_session(session)?;
-    Ok(HammerfestShop {
-      purchased_tokens: Some(0),
-      weekly_tokens: 0,
-      has_quest_bonus: false,
+  async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShopResponse> {
+    let server = self.get_server(session.user.server)?.read().unwrap();
+    let user = server.get_user_by_session(&session.key);
+    let user: &MemUser = user.ok_or(Error::InvalidSession)?;
+
+    Ok(HammerfestShopResponse {
+      session: user.to_session_user(),
+      shop: user.shop.clone(),
     })
   }
 
@@ -447,21 +479,22 @@ where
     &self,
     session: Option<&HammerfestSession>,
     server: HammerfestServer,
-  ) -> Result<Vec<HammerfestForumTheme>> {
-    let user = self.check_opt_session(session, server);
+  ) -> Result<HammerfestForumHomeResponse> {
+    let server = self.get_server(server)?.read().unwrap();
+    let user = session.and_then(|s| server.get_user_by_session(&s.key));
 
-    let mut themes = self
-      .get_server(server)?
-      .read()
-      .unwrap()
+    let mut themes = server
       .forum_themes
-      .iter()
-      .filter(|(_, theme)| theme.is_visible_by(user))
-      .map(|(_, theme)| theme.theme.clone())
+      .values()
+      .filter(|theme| theme.is_visible_by(user.map(MemUser::id)))
+      .map(|theme| theme.theme.clone())
       .collect::<Vec<_>>();
 
     themes.sort_by(|a, b| a.short.id.cmp(&b.short.id));
-    Ok(themes)
+    Ok(HammerfestForumHomeResponse {
+      session: user.map(MemUser::to_session_user),
+      themes,
+    })
   }
 
   async fn get_forum_theme_page(
@@ -470,14 +503,14 @@ where
     server: HammerfestServer,
     theme_id: HammerfestForumThemeId,
     page1: NonZeroU16,
-  ) -> Result<HammerfestForumThemePage> {
-    let user = self.check_opt_session(session, server);
-
+  ) -> Result<HammerfestForumThemePageResponse> {
     let server = self.get_server(server)?.read().unwrap();
+    let user = session.and_then(|s| server.get_user_by_session(&s.key));
+
     let theme = server
       .forum_themes
       .get(&theme_id)
-      .filter(|theme| theme.is_visible_by(user))
+      .filter(|theme| theme.is_visible_by(user.map(MemUser::id)))
       .ok_or(Error::ForumThemeNotFound(theme_id))?;
 
     let (mut sticky, mut threads) = server
@@ -495,7 +528,7 @@ where
     sticky.sort_by_key(|t| t.true_last_message_date);
     threads.sort_by_key(|t| t.true_last_message_date);
 
-    Ok(HammerfestForumThemePage {
+    let page = HammerfestForumThemePage {
       theme: theme.theme.short.clone(),
       sticky: sticky.iter().map(|t| t.thread.clone()).collect(),
       threads: HammerfestForumThreadListing {
@@ -503,6 +536,11 @@ where
         pages: NonZeroU16::new(1).unwrap(),
         items: threads.iter().map(|t| t.thread.clone()).collect(),
       },
+    };
+
+    Ok(HammerfestForumThemePageResponse {
+      session: user.map(MemUser::to_session_user),
+      page,
     })
   }
 
@@ -512,9 +550,9 @@ where
     server: HammerfestServer,
     thread_id: HammerfestForumThreadId,
     page1: NonZeroU16,
-  ) -> Result<HammerfestForumThreadPage> {
-    let user = self.check_opt_session(session, server);
+  ) -> Result<HammerfestForumThreadPageResponse> {
     let server = self.get_server(server)?.read().unwrap();
+    let user = session.and_then(|s| server.get_user_by_session(&s.key));
 
     let (thread, theme) = server
       .forum_threads
@@ -528,7 +566,7 @@ where
             .expect("thread without valid theme"),
         )
       })
-      .filter(|(_, t)| t.is_visible_by(user))
+      .filter(|(_, theme)| theme.is_visible_by(user.map(MemUser::id)))
       .ok_or(Error::ForumThreadNotFound(thread_id))?;
 
     let messages = if page1.get() > 1 {
@@ -537,7 +575,7 @@ where
       Vec::new()
     };
 
-    Ok(HammerfestForumThreadPage {
+    let page = HammerfestForumThreadPage {
       theme: theme.theme.short.clone(),
       thread: thread.thread.short.clone(),
       posts: HammerfestForumPostListing {
@@ -545,6 +583,10 @@ where
         pages: NonZeroU16::new(1).unwrap(),
         items: messages,
       },
+    };
+    Ok(HammerfestForumThreadPageResponse {
+      session: user.map(MemUser::to_session_user),
+      page,
     })
   }
 }
