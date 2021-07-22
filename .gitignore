@@ -51,6 +51,7 @@ db/scripts/grant.sql
 tmp/
 logs/
 *.profraw
+hammerfest.json
 
 ###############################################################################
 # Other                                                                       #

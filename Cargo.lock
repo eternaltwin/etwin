@@ -718,6 +718,7 @@ dependencies = [
  "etwin_postgres_tools",
  "neon",
  "regex",
+ "serde",
  "serde_json",
  "serial_test",
  "sha3",
