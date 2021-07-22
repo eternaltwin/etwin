@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/oauth-client-http",
-  "version": "0.7.3",
+  "version": "0.8.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Oauth client for Eternal-Twin and Twinoid.",
   "repository": {

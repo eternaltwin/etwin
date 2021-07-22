@@ -1,6 +1,6 @@
 [package]
 name = "etwin_constants"
-version = "0.7.2"
+version = "0.8.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Hammerfest store implementation"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -12,5 +12,5 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-etwin_core = "0.7.2"
+etwin_core = "0.8.0"
 once_cell = "1.8.0"

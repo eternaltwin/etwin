@@ -1,6 +1,6 @@
 [package]
 name = "etwin_db_schema"
-version = "0.7.2"
+version = "0.8.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Manager for Eternal-Twin SQL schemas"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -12,8 +12,8 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-etwin_config = "0.7.2"
-etwin_squirrel = "0.7.2"
+etwin_config = "0.8.0"
+etwin_squirrel = "0.8.0"
 include_dir = "0.6.1"
 lazy_static = "1.4.0"
 sqlx = { version = "0.5.5", default-features = false, features = ["offline", "postgres", "runtime-tokio-rustls"] }

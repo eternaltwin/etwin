@@ -1,6 +1,6 @@
 [package]
 name = "etwin_dinoparc_client"
-version = "0.7.2"
+version = "0.8.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "DinoparcClient implementations"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -19,11 +19,11 @@ mem = []
 [dependencies]
 async-trait = "0.1.50"
 chrono = "0.4.19"
-etwin_core = "0.7.2"
-etwin_constants = "0.7.2"
-etwin_log = "0.7.2"
-etwin_scraper_tools = { version = "0.7.2", optional = true }
-etwin_serde_tools = { version = "0.7.2", optional = true, features = ["serde-http"] }
+etwin_core = "0.8.0"
+etwin_constants = "0.8.0"
+etwin_log = "0.8.0"
+etwin_scraper_tools = { version = "0.8.0", optional = true }
+etwin_serde_tools = { version = "0.8.0", optional = true, features = ["serde-http"] }
 itertools = "0.10.1"
 md-5 = "0.9.1"
 neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
@@ -41,6 +41,6 @@ url = "2.2.2"
 erased-serde = "0.3.16"
 
 [dev-dependencies]
-etwin_core = { version = "0.7.2", features = ["_serde"] }
+etwin_core = { version = "0.8.0", features = ["_serde"] }
 serde = { version = "1.0.126", features = ["derive"] }
 test-generator = "0.3.0"

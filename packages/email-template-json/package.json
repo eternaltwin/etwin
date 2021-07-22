@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/email-template-json",
-  "version": "0.7.3",
+  "version": "0.8.0",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Eternal-Twin `EmailTemplateService` json-based implementation",
   "repository": {

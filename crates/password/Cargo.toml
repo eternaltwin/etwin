@@ -1,6 +1,6 @@
 [package]
 name = "etwin_password"
-version = "0.7.2"
+version = "0.8.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Password implementation"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -12,7 +12,7 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-etwin_core = { version = "0.7.2", features = ["sqlx"] }
+etwin_core = { version = "0.8.0", features = ["sqlx"] }
 hmac = "0.11.0"
 neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
 rand_core = { version = "0.6.3", features = ["getrandom"] }

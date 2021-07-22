@@ -1,6 +1,6 @@
 [package]
 name = "etwin_log"
-version = "0.7.2"
+version = "0.8.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Structured logs for etwin"
 documentation = "https://github.com/eternal-twin/etwin"

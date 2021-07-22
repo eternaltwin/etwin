@@ -1,6 +1,6 @@
 [package]
 name = "etwin_services"
-version = "0.7.2"
+version = "0.8.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Top-level Eternal-Twin services"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -13,16 +13,16 @@ edition = "2018"
 
 [dependencies]
 chrono = "0.4.19"
-etwin_core = "0.7.2"
+etwin_core = "0.8.0"
 neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
 
 [dev-dependencies]
-etwin_config = "0.7.2"
-etwin_db_schema = "0.7.2"
-etwin_link_store = "0.7.2"
-etwin_hammerfest_store = "0.7.2"
-etwin_user_store = "0.7.2"
-etwin_hammerfest_client = "0.7.2"
+etwin_config = "0.8.0"
+etwin_db_schema = "0.8.0"
+etwin_link_store = "0.8.0"
+etwin_hammerfest_store = "0.8.0"
+etwin_user_store = "0.8.0"
+etwin_hammerfest_client = "0.8.0"
 serial_test = "0.5.1"
 sqlx = { version = "0.5.5", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 tokio = { version = "1.8.1", features = ["macros", "rt"] }

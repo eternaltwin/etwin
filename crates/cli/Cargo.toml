@@ -1,6 +1,6 @@
 [package]
 name = "etwin_cli"
-version = "0.7.2"
+version = "0.8.0"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "DinoparcClient implementations"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -16,15 +16,15 @@ console = "0.14.1"
 chrono = "0.4.19"
 clap = "3.0.0-beta.2"
 dialoguer = "0.8.0"
-etwin_core = "0.7.2"
-etwin_dinoparc_client = { version = "0.7.2", features = ["http"] }
-etwin_dinoparc_store = "0.7.2"
-etwin_hammerfest_client = "0.7.2"
-etwin_hammerfest_store = "0.7.2"
-etwin_link_store = "0.7.2"
-etwin_log = "0.7.2"
-etwin_user_store = "0.7.2"
-etwin_rest = "0.7.2"
-etwin_services = "0.7.2"
+etwin_core = "0.8.0"
+etwin_dinoparc_client = { version = "0.8.0", features = ["http"] }
+etwin_dinoparc_store = "0.8.0"
+etwin_hammerfest_client = "0.8.0"
+etwin_hammerfest_store = "0.8.0"
+etwin_link_store = "0.8.0"
+etwin_log = "0.8.0"
+etwin_user_store = "0.8.0"
+etwin_rest = "0.8.0"
+etwin_services = "0.8.0"
 tokio = { version = "1.8.1", features = ["full"] }
 warp = "0.3.1"
