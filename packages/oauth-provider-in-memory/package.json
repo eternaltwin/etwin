@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/oauth-provider-in-memory",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Eternal-Twin `OauthProviderService` in-memory implementation",
   "repository": {
