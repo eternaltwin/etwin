@@ -349,7 +349,7 @@ export class DefaultAuthService implements AuthService {
     if (user === null) {
       throw new Error("AssertionError: UserNotFound");
     }
-    archiveDino(this.#dinoparcClient, this.#dinoparcStore, dparcSession);
+    archiveDinoparc(this.#dinoparcClient, this.#dinoparcStore, dparcSession);
     return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
   }
 
@@ -393,6 +393,7 @@ export class DefaultAuthService implements AuthService {
     if (user === null) {
       throw new Error("AssertionError: UserNotFound");
     }
+    archiveHammerfest(this.#hammerfestClient, this.#hammerfestStore, hfSession);
     return $UserAndSession.clone({user, isAdministrator: user.isAdministrator, session});
   }
 
@@ -566,7 +567,7 @@ async function sleep(ms: number): Promise<void> {
   });
 }
 
-export async function archiveDino(client: DinoparcClient, store: DinoparcStore, dparcSession: DinoparcSession): Promise<void> {
+export async function archiveDinoparc(client: DinoparcClient, store: DinoparcStore, dparcSession: DinoparcSession): Promise<void> {
   let dinozList: readonly DinoparcDinozIdRef[];
   try {
     const inv: DinoparcInventoryResponse = await client.getInventory(dparcSession);
@@ -611,5 +612,36 @@ export async function archiveDino(client: DinoparcClient, store: DinoparcStore, 
       console.error(`touchDinoz: ${dparcSession.user.server}/${dparcSession.user.id}/${dinoz.id}`);
       console.error(e);
     }
+  }
+}
+
+export async function archiveHammerfest(client: HammerfestClient, store: HammerfestStore, hfSession: HammerfestSession): Promise<void> {
+  try {
+    const res = await client.getOwnItems(hfSession);
+    await store.touchInventory(res);
+  } catch (e) {
+    console.error(`touchInventory: ${hfSession.user.server}/${hfSession.user.id}`);
+    console.error(e);
+  }
+  try {
+    const res = await client.getProfileById(hfSession, {server: hfSession.user.server, userId: hfSession.user.id});
+    await store.touchProfile(res);
+  } catch (e) {
+    console.error(`touchProfile: ${hfSession.user.server}/${hfSession.user.id}`);
+    console.error(e);
+  }
+  try {
+    const res = await client.getOwnShop(hfSession);
+    await store.touchShop(res);
+  } catch (e) {
+    console.error(`touchShop: ${hfSession.user.server}/${hfSession.user.id}`);
+    console.error(e);
+  }
+  try {
+    const res = await client.getOwnGodChildren(hfSession);
+    await store.touchGodchildren(res);
+  } catch (e) {
+    console.error(`touchGodchildren: ${hfSession.user.server}/${hfSession.user.id}`);
+    console.error(e);
   }
 }

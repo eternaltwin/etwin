@@ -1,47 +1,19 @@
 import { JSON_READER } from "kryo-json/json-reader";
-import { JSON_WRITER } from "kryo-json/json-writer";
-import { registerErrMochaTests, registerMochaSuites, TestItem } from "kryo-testing";
+import { registerErrMochaTests } from "kryo-testing";
 
 import { $HammerfestServer, HammerfestServer } from "../../lib/hammerfest/hammerfest-server.js";
+import { registerJsonIoTests } from "../helpers.js";
 
 describe("HammerfestServer", function () {
-  const items: TestItem<HammerfestServer>[] = [
-    {
-      name: "hammerfest.fr",
-      value: "hammerfest.fr",
-      io: [
-        {
-          writer: JSON_WRITER,
-          reader: JSON_READER,
-          raw: "\"hammerfest.fr\"",
-        },
-      ],
-    },
-    {
-      name: "hfest.net",
-      value: "hfest.net",
-      io: [
-        {
-          writer: JSON_WRITER,
-          reader: JSON_READER,
-          raw: "\"hfest.net\"",
-        },
-      ],
-    },
-    {
-      name: "hammerfest.es",
-      value: "hammerfest.es",
-      io: [
-        {
-          writer: JSON_WRITER,
-          reader: JSON_READER,
-          raw: "\"hammerfest.es\"",
-        },
-      ],
-    },
-  ];
-
-  registerMochaSuites($HammerfestServer, items);
+  registerJsonIoTests<HammerfestServer>(
+    $HammerfestServer,
+    "core/hammerfest/hammerfest-server",
+    new Map([
+      ["es", "hammerfest.es"],
+      ["fr", "hammerfest.fr"],
+      ["net", "hfest.net"],
+    ])
+  );
 
   describe("Reader", function () {
     const invalids: string[] = [

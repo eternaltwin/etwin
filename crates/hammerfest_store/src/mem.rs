@@ -78,27 +78,33 @@ where
   }
 
   async fn touch_shop(&self, _response: &HammerfestShopResponse) -> Result<(), EtwinError> {
-    unimplemented!()
+    eprintln!("Stub: Incomplete `MemHammerfestSore::touch_shop` implementation");
+    Ok(())
   }
 
   async fn touch_profile(&self, _response: &HammerfestProfileResponse) -> Result<(), EtwinError> {
-    unimplemented!()
+    eprintln!("Stub: Incomplete `MemHammerfestSore::touch_profile` implementation");
+    Ok(())
   }
 
   async fn touch_inventory(&self, _respone: &HammerfestInventoryResponse) -> Result<(), EtwinError> {
-    unimplemented!()
+    eprintln!("Stub: Incomplete `MemHammerfestSore::touch_inventory` implementation");
+    Ok(())
   }
 
   async fn touch_godchildren(&self, _response: &HammerfestGodchildrenResponse) -> Result<(), EtwinError> {
-    unimplemented!()
+    eprintln!("Stub: Incomplete `MemHammerfestSore::touch_godchildren` implementation");
+    Ok(())
   }
 
   async fn touch_theme_page(&self, _response: &HammerfestForumThemePageResponse) -> Result<(), EtwinError> {
-    unimplemented!()
+    eprintln!("Stub: Incomplete `MemHammerfestSore::touch_theme_page` implementation");
+    Ok(())
   }
 
   async fn touch_thread_page(&self, _response: &HammerfestForumThreadPageResponse) -> Result<(), EtwinError> {
-    unimplemented!()
+    eprintln!("Stub: Incomplete `MemHammerfestSore::touch_thread_page` implementation");
+    Ok(())
   }
 }
 

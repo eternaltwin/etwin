@@ -41,6 +41,7 @@ macro_rules! test_hammerfest_store_pg {
     register_test!($(#[$meta])*, $api, test_touch_godchildren);
     register_test!($(#[$meta])*, $api, test_touch_hammerfest_shop);
     register_test!($(#[$meta])*, $api, test_touch_hammerfest_inventory);
+    register_test!($(#[$meta])*, $api, test_touch_hammerfest_inventory_twice);
   };
 }
 
@@ -1208,6 +1209,52 @@ pub(crate) async fn test_touch_hammerfest_inventory<TyClock, TyHammerfestStore>(
     tokens: 50,
   };
   api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_inventory(&HammerfestInventoryResponse {
+        session: alice.clone(),
+        inventory: {
+          let mut inventory = HashMap::new();
+          inventory.insert("1000".parse().unwrap(), 10);
+          inventory
+        },
+      })
+      .await;
+    assert_ok!(actual);
+  }
+}
+
+pub(crate) async fn test_touch_hammerfest_inventory_twice<TyClock, TyHammerfestStore>(
+  api: TestApi<TyClock, TyHammerfestStore>,
+) where
+  TyClock: ApiRef<VirtualClock>,
+  TyHammerfestStore: HammerfestStore,
+{
+  let alice = HammerfestSessionUser {
+    user: ShortHammerfestUser {
+      server: HammerfestServer::HammerfestFr,
+      id: "123".parse().unwrap(),
+      username: "alice".parse().unwrap(),
+    },
+    tokens: 50,
+  };
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  {
+    let actual = api
+      .hammerfest_store
+      .touch_inventory(&HammerfestInventoryResponse {
+        session: alice.clone(),
+        inventory: {
+          let mut inventory = HashMap::new();
+          inventory.insert("1000".parse().unwrap(), 10);
+          inventory
+        },
+      })
+      .await;
+    assert_ok!(actual);
+  }
+  api.clock.as_ref().advance_by(Duration::seconds(1));
   {
     let actual = api
       .hammerfest_store

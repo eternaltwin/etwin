@@ -1,7 +1,11 @@
 use crate::hammerfest_store::mem::JsMemHammerfestStore;
 use crate::hammerfest_store::pg::JsPgHammerfestStore;
 use crate::neon_helpers::{resolve_callback_serde, NeonNamespace};
-use etwin_core::hammerfest::{GetHammerfestUserOptions, HammerfestStore, ShortHammerfestUser};
+use etwin_core::hammerfest::{
+  GetHammerfestUserOptions, HammerfestForumThemePageResponse, HammerfestForumThreadPageResponse,
+  HammerfestGodchildrenResponse, HammerfestInventoryResponse, HammerfestProfileResponse, HammerfestShopResponse,
+  HammerfestStore, ShortHammerfestUser,
+};
 use neon::prelude::*;
 use std::sync::Arc;
 
@@ -12,6 +16,12 @@ pub fn create_namespace<'a, C: Context<'a>>(cx: &mut C) -> JsResult<'a, JsObject
   ns.set_function(cx, "getUser", get_user)?;
   ns.set_function(cx, "getShortUser", get_short_user)?;
   ns.set_function(cx, "touchShortUser", touch_short_user)?;
+  ns.set_function(cx, "touchShop", touch_shop)?;
+  ns.set_function(cx, "touchProfile", touch_profile)?;
+  ns.set_function(cx, "touchInventory", touch_inventory)?;
+  ns.set_function(cx, "touchGodchildren", touch_godchildren)?;
+  ns.set_function(cx, "touchThemePage", touch_theme_page)?;
+  ns.set_function(cx, "touchThreadPage", touch_thread_page)?;
   Ok(ns)
 }
 
@@ -69,6 +79,78 @@ pub fn touch_short_user(mut cx: FunctionContext) -> JsResult<JsUndefined> {
   let short: ShortHammerfestUser = serde_json::from_str(&short_json.value(&mut cx)).unwrap();
 
   let res = async move { inner.touch_short_user(&short).await };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn touch_shop(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_hammerfest_store(&mut cx, inner)?;
+  let hf_res = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let hf_res: HammerfestShopResponse = serde_json::from_str(&hf_res.value(&mut cx)).unwrap();
+
+  let res = async move { inner.touch_shop(&hf_res).await };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn touch_profile(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_hammerfest_store(&mut cx, inner)?;
+  let hf_res = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let hf_res: HammerfestProfileResponse = serde_json::from_str(&hf_res.value(&mut cx)).unwrap();
+
+  let res = async move { inner.touch_profile(&hf_res).await };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn touch_inventory(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_hammerfest_store(&mut cx, inner)?;
+  let hf_res = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let hf_res: HammerfestInventoryResponse = serde_json::from_str(&hf_res.value(&mut cx)).unwrap();
+
+  let res = async move { inner.touch_inventory(&hf_res).await };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn touch_godchildren(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_hammerfest_store(&mut cx, inner)?;
+  let hf_res = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let hf_res: HammerfestGodchildrenResponse = serde_json::from_str(&hf_res.value(&mut cx)).unwrap();
+
+  let res = async move { inner.touch_godchildren(&hf_res).await };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn touch_theme_page(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_hammerfest_store(&mut cx, inner)?;
+  let hf_res = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let hf_res: HammerfestForumThemePageResponse = serde_json::from_str(&hf_res.value(&mut cx)).unwrap();
+
+  let res = async move { inner.touch_theme_page(&hf_res).await };
+  resolve_callback_serde(&mut cx, res, cb)
+}
+
+pub fn touch_thread_page(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+  let inner = cx.argument::<JsValue>(0)?;
+  let inner = get_native_hammerfest_store(&mut cx, inner)?;
+  let hf_res = cx.argument::<JsString>(1)?;
+  let cb = cx.argument::<JsFunction>(2)?.root(&mut cx);
+
+  let hf_res: HammerfestForumThreadPageResponse = serde_json::from_str(&hf_res.value(&mut cx)).unwrap();
+
+  let res = async move { inner.touch_thread_page(&hf_res).await };
   resolve_callback_serde(&mut cx, res, cb)
 }
 

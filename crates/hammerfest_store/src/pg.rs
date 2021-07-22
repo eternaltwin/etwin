@@ -13,6 +13,7 @@ use etwin_core::hammerfest::{
   HammerfestShop, HammerfestShopResponse, HammerfestStore, HammerfestUserId, HammerfestUserIdRef, HammerfestUsername,
   ShortHammerfestUser, StoredHammerfestUser,
 };
+use etwin_core::pg_num::{PgU32, PgU8};
 use etwin_core::types::EtwinError;
 use etwin_core::uuid::UuidGenerator;
 use etwin_populate::hammerfest::populate_hammerfest;
@@ -22,7 +23,7 @@ use sqlx::postgres::PgQueryResult;
 use sqlx::types::Uuid;
 use sqlx::{PgPool, Postgres, Transaction};
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
-use std::convert::{TryFrom, TryInto};
+use std::convert::TryInto;
 use std::error::Error;
 use std::num::NonZeroU16;
 
@@ -646,7 +647,7 @@ async fn touch_hammerfest_item_counts(
       )
       .bind(map_id)
       .bind(id)
-      .bind(i32::try_from(*count).unwrap()) // TODO: Handle overflow
+      .bind(PgU32::from(*count))
       .execute(&mut *tx)
       .await?;
       assert_eq!(res.rows_affected(), 1);
@@ -656,7 +657,7 @@ async fn touch_hammerfest_item_counts(
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       hammerfest_item_id: HammerfestItemId,
-      count: u32,
+      count: PgU32,
     }
 
     let rows: Vec<Row> = sqlx::query_as::<_, Row>(
@@ -670,7 +671,10 @@ async fn touch_hammerfest_item_counts(
     .fetch_all(&mut *tx)
     .await?;
 
-    let actual: BTreeMap<HammerfestItemId, u32> = rows.iter().map(|r| (r.hammerfest_item_id, r.count)).collect();
+    let actual: BTreeMap<HammerfestItemId, u32> = rows
+      .iter()
+      .map(|r| (r.hammerfest_item_id, u32::from(r.count)))
+      .collect();
 
     assert_eq!(actual, sorted);
   }
@@ -710,9 +714,9 @@ async fn touch_hammerfest_profile(
     .bind(now)
     .bind(user.server)
     .bind(user.id)
-    .bind(best_score)
-    .bind(i16::from(best_level))
-    .bind(season_score)
+    .bind(PgU32::from(best_score))
+    .bind(PgU8::from(best_level))
+    .bind(PgU32::from(season_score))
     .bind(quests)
     .bind(unlocked_items)
     .execute(&mut *tx)
@@ -802,7 +806,7 @@ async fn touch_hammerfest_best_season_rank(
   .bind(now)
   .bind(user.server)
   .bind(user.id)
-  .bind(season_rank.map(i64::from))
+  .bind(season_rank.map(PgU32::from))
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -916,7 +920,7 @@ async fn touch_hammerfest_tokens(
   .bind(now)
   .bind(user.server)
   .bind(user.id)
-  .bind(i64::from(tokens))
+  .bind(PgU32::from(tokens))
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -944,7 +948,7 @@ async fn touch_hammerfest_godchild_list(
   .bind(now)
   .bind(godfather.server)
   .bind(godfather.id)
-  .bind(i64::from(godchild_count))
+  .bind(PgU32::from(godchild_count))
   .execute(&mut *tx)
   .await?;
   // Affected row counts:
@@ -976,9 +980,9 @@ async fn touch_hammerfest_godchild(
   .bind(now)
   .bind(godfather.server)
   .bind(godfather.id)
-  .bind(i64::from(offset_in_list))
+  .bind(PgU32::from(offset_in_list))
   .bind(godchild.id)
-  .bind(i64::from(tokens))
+  .bind(PgU32::from(tokens))
   .execute(&mut *tx)
   .await?;
   // Affected row counts:

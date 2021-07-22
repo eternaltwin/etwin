@@ -8,6 +8,30 @@ import {
   GetHammerfestUserOptions
 } from "@eternal-twin/core/lib/hammerfest/get-hammerfest-user-options";
 import {
+  $HammerfestForumThemePageResponse,
+  HammerfestForumThemePageResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-theme-page-response";
+import {
+  $HammerfestForumThreadPageResponse,
+  HammerfestForumThreadPageResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-forum-thread-page-response";
+import {
+  $HammerfestGodchildrenResponse,
+  HammerfestGodchildrenResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-godchildren-response";
+import {
+  $HammerfestInventoryResponse,
+  HammerfestInventoryResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-inventory-response";
+import {
+  $HammerfestProfileResponse,
+  HammerfestProfileResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-profile-response";
+import {
+  $HammerfestShopResponse,
+  HammerfestShopResponse
+} from "@eternal-twin/core/lib/hammerfest/hammerfest-shop-response";
+import {
   $NullableShortHammerfestUser,
   $ShortHammerfestUser,
   ShortHammerfestUser
@@ -20,7 +44,7 @@ import { promisify } from "util";
 import native from "../native/index.js";
 import { NativeClock } from "./clock.js";
 import { Database } from "./database.js";
-import { NativeUuidGenerator } from "./uuid";
+import { NativeUuidGenerator } from "./uuid.js";
 
 declare const MemHammerfestStoreBox: unique symbol;
 declare const PgHammerfestStoreBox: unique symbol;
@@ -31,6 +55,12 @@ export abstract class NativeHammerfestStore implements HammerfestStore {
   private static GET_USER = promisify(native.hammerfestStore.getUser);
   private static GET_SHORT_USER = promisify(native.hammerfestStore.getShortUser);
   private static TOUCH_SHORT_USER = promisify(native.hammerfestStore.touchShortUser);
+  private static TOUCH_SHOP = promisify(native.hammerfestStore.touchShop);
+  private static TOUCH_PROFILE = promisify(native.hammerfestStore.touchProfile);
+  private static TOUCH_INVENTORY = promisify(native.hammerfestStore.touchInventory);
+  private static TOUCH_GODCHILDREN = promisify(native.hammerfestStore.touchGodchildren);
+  private static TOUCH_THEME_PAGE = promisify(native.hammerfestStore.touchThemePage);
+  private static TOUCH_THREAD_PAGE = promisify(native.hammerfestStore.touchThreadPage);
 
   constructor(box: NativeHammerfestStoreBox) {
     this.box = box;
@@ -52,6 +82,36 @@ export abstract class NativeHammerfestStore implements HammerfestStore {
     const rawShort: string = $ShortHammerfestUser.write(JSON_WRITER, short);
     const rawOut = await NativeHammerfestStore.TOUCH_SHORT_USER(this.box, rawShort);
     return $ArchivedHammerfestUser.read(JSON_READER, rawOut);
+  }
+
+  async touchShop(res: Readonly<HammerfestShopResponse>): Promise<void> {
+    const rawRes: string = $HammerfestShopResponse.write(JSON_WRITER, res);
+    await NativeHammerfestStore.TOUCH_SHOP(this.box, rawRes);
+  }
+
+  async touchProfile(res: Readonly<HammerfestProfileResponse>): Promise<void> {
+    const rawRes: string = $HammerfestProfileResponse.write(JSON_WRITER, res);
+    await NativeHammerfestStore.TOUCH_PROFILE(this.box, rawRes);
+  }
+
+  async touchInventory(res: Readonly<HammerfestInventoryResponse>): Promise<void> {
+    const rawRes: string = $HammerfestInventoryResponse.write(JSON_WRITER, res);
+    await NativeHammerfestStore.TOUCH_INVENTORY(this.box, rawRes);
+  }
+
+  async touchGodchildren(res: Readonly<HammerfestGodchildrenResponse>): Promise<void> {
+    const rawRes: string = $HammerfestGodchildrenResponse.write(JSON_WRITER, res);
+    await NativeHammerfestStore.TOUCH_GODCHILDREN(this.box, rawRes);
+  }
+
+  async touchThemePage(res: Readonly<HammerfestForumThemePageResponse>): Promise<void> {
+    const rawRes: string = $HammerfestForumThemePageResponse.write(JSON_WRITER, res);
+    await NativeHammerfestStore.TOUCH_THEME_PAGE(this.box, rawRes);
+  }
+
+  async touchThreadPage(res: Readonly<HammerfestForumThreadPageResponse>): Promise<void> {
+    const rawRes: string = $HammerfestForumThreadPageResponse.write(JSON_WRITER, res);
+    await NativeHammerfestStore.TOUCH_THREAD_PAGE(this.box, rawRes);
   }
 }
 

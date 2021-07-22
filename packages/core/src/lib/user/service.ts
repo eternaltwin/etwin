@@ -1,6 +1,6 @@
 import { AuthContext } from "../auth/auth-context.js";
 import { AuthType } from "../auth/auth-type.js";
-import { archiveDino } from "../auth/service.js";
+import { archiveDinoparc, archiveHammerfest } from "../auth/service.js";
 import { ObjectType } from "../core/object-type.js";
 import { DinoparcClient } from "../dinoparc/client.js";
 import { DinoparcStore } from "../dinoparc/store.js";
@@ -198,7 +198,7 @@ export class DefaultUserService implements UserService {
       password: options.dinoparcPassword,
     });
     await this.#dinoparcStore.touchShortUser(dparcSession.user);
-    archiveDino(this.#dinoparcClient, this.#dinoparcStore, dparcSession);
+    archiveDinoparc(this.#dinoparcClient, this.#dinoparcStore, dparcSession);
     await this.#token.touchDinoparc(dparcSession.user.server, dparcSession.key, dparcSession.user.id);
     return await this.#link.linkToDinoparc({
       userId: acx.user.id,
@@ -293,6 +293,7 @@ export class DefaultUserService implements UserService {
       password: options.hammerfestPassword,
     });
     await this.#hammerfestStore.touchShortUser(hfSession.user);
+    archiveHammerfest(this.#hammerfestClient, this.#hammerfestStore, hfSession);
     await this.#token.touchHammerfest(hfSession.user.server, hfSession.key, hfSession.user.id);
     return await this.#link.linkToHammerfest({
       userId: acx.user.id,
@@ -315,6 +316,7 @@ export class DefaultUserService implements UserService {
       throw new Error("InvalidHammerfestSession");
     }
     await this.#hammerfestStore.touchShortUser(hfSession.user);
+    archiveHammerfest(this.#hammerfestClient, this.#hammerfestStore, hfSession);
     await this.#token.touchHammerfest(hfSession.user.server, hfSession.key, hfSession.user.id);
     return await this.#link.linkToHammerfest({
       userId: acx.user.id,

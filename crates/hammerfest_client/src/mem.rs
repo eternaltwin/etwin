@@ -386,6 +386,7 @@ where
         ctime,
       },
     );
+    server.users.get_mut(&user.id).expect("UserMustExist").current_session = Some(key.clone());
 
     Ok(HammerfestSession {
       user,
