@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/oauth-provider-pg",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Eternal-Twin `OauthProviderService` Postgres implementation",
   "repository": {
