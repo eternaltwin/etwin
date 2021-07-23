@@ -106,12 +106,18 @@ fn publish_npm_native(pkg_dir: PathBuf) -> Result<(), Box<dyn Error>> {
 
   let mut cmd = Command::new("yarn");
   cmd.current_dir(&pkg_dir);
-  cmd.arg("npm").arg("publish");
+  cmd.arg("pack");
+  let s = cmd.status()?;
+  assert!(s.success());
+  let mut cmd = Command::new("npm");
+  cmd.current_dir(&pkg_dir);
+  cmd.arg("publish").arg("package.tgz");
   let s = cmd.status()?;
   assert!(s.success());
   sleep(Duration::from_secs(30));
 
   fs::remove_file(pkg_dir.join("native/Cargo.lock"))?;
+  fs::remove_file(pkg_dir.join("package.tgz"))?;
   fs::write(pkg_dir.join("native/Cargo.toml"), dev_toml)?;
   fs::write(pkg_dir.join("package.json"), dev_package_json)?;
   Ok(())

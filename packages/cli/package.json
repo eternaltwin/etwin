@@ -19,14 +19,13 @@
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
-    "build": "tsc --build src/lib/tsconfig.json",
-    "prepack": "yarn run build",
+    "prepack": "yarn run script:build",
+    "script:build": "tsc --build src/main/tsconfig.json",
     "native:build": "cd ../native && yarn run native:build",
     "website:build": "cd ../website && yarn run build",
-    "main:dirty-build": "tsc --build src/main/tsconfig.json",
-    "main:build": "yarn run native:build && yarn run website:build && tsc --build src/main/tsconfig.json",
+    "build": "yarn run script:build && yarn run native:build && yarn run website:build",
     "start": "yarn run main:build && node --experimental-wasm-modules main/main.js",
-    "dirty-start": "yarn run main:dirty-build && node --experimental-wasm-modules main/main.js"
+    "dirty-start": "yarn run script:build && node --experimental-wasm-modules main/main.js"
   },
   "publishConfig": {
     "access": "public",
