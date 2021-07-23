@@ -1,5 +1,6 @@
 use clap::Clap;
 use std::error::Error;
+use xtask::PublishArgs;
 
 #[derive(Debug, Clap)]
 #[clap(author = "Charles \"Demurgos\" Samborski")]
@@ -29,10 +30,6 @@ struct DocsArgs {}
 #[derive(Debug, Clap)]
 struct KotlinArgs {}
 
-/// Arguments to the `publish` task.
-#[derive(Debug, Clap)]
-struct PublishArgs {}
-
 fn main() {
   let args: CliArgs = CliArgs::parse();
 
@@ -56,6 +53,6 @@ fn kotlin(_args: &KotlinArgs) -> Result<(), Box<dyn Error>> {
   xtask::kotlin()
 }
 
-fn publish(_args: &PublishArgs) -> Result<(), Box<dyn Error>> {
-  xtask::publish()
+fn publish(args: &PublishArgs) -> Result<(), Box<dyn Error>> {
+  xtask::publish(args)
 }

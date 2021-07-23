@@ -1,3 +1,4 @@
+use clap::Clap;
 use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
@@ -57,19 +58,28 @@ const NPM_PACKAGES: [&str; 24] = [
   "cli",
 ];
 
-pub fn publish() -> Result<(), Box<dyn Error>> {
+/// Arguments to the `publish` task.
+#[derive(Debug, Clap)]
+pub struct PublishArgs {
+  #[clap(long)]
+  skip_rust: bool,
+}
+
+pub fn publish(args: &PublishArgs) -> Result<(), Box<dyn Error>> {
   let working_dir = std::env::current_dir()?;
   let crates_dir = working_dir.join("crates");
   let packages_dir = working_dir.join("packages");
 
-  for c in std::array::IntoIter::new(CRATES) {
-    eprintln!("Publishing: {}", c);
-    let mut cmd = Command::new("cargo");
-    cmd.current_dir(crates_dir.join(c));
-    cmd.arg("publish");
-    let s = cmd.status()?;
-    assert!(s.success());
-    sleep(Duration::from_secs(30));
+  if !args.skip_rust {
+    for c in std::array::IntoIter::new(CRATES) {
+      eprintln!("Publishing: {}", c);
+      let mut cmd = Command::new("cargo");
+      cmd.current_dir(crates_dir.join(c));
+      cmd.arg("publish");
+      let s = cmd.status()?;
+      assert!(s.success());
+      sleep(Duration::from_secs(30));
+    }
   }
 
   for p in std::array::IntoIter::new(NPM_PACKAGES) {
@@ -128,7 +138,8 @@ fn publish_npm_etwin_pg(pkg_dir: PathBuf) -> Result<(), Box<dyn Error>> {
   let scripts_tmp = pkg_dir.join("scripts-tmp");
   fs::rename(&scripts, &scripts_tmp)?;
   fs::create_dir(&scripts)?;
-  let options = fs_extra::dir::CopyOptions::new();
+  let mut options = fs_extra::dir::CopyOptions::new();
+  options.content_only = true;
   fs_extra::dir::copy(&scripts_tmp, &scripts, &options)?;
 
   let mut cmd = Command::new("yarn");

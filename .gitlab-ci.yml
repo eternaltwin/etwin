@@ -262,7 +262,7 @@ build:
       sccache --start-server \
       && yarn --cwd packages/rest-server run main:build \
       && yarn --cwd packages/website run build \
-      && yarn --cwd packages/cli run main:dirty-build \
+      && yarn --cwd packages/cli run script:build \
       && sccache --stop-server
   after_script: []
   cache:
