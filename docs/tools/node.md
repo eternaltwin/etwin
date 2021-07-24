@@ -7,7 +7,7 @@
 > **Node.js** is an open-source, cross-platform, back-end, JavaScript runtime
 > environment that executes JavaScript code outside a web browser.
 
-Eternal-Twin uses **Node.js** for its website and various command-line tools.
+Eternaltwin uses **Node.js** for its website and various command-line tools.
 
 ## Intallation
 

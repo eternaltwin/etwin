@@ -4,7 +4,7 @@
 
 ### Code
 
-All code in the Eternal-Twin repositories should be licensed with the AGPL3 license:
+All code in the Eternaltwin repositories should be licensed with the AGPL3 license:
 
 - Full name: `GNU Affero General Public License v3.0 or later`
 - Short name: `AGPL-3.0-or-later`

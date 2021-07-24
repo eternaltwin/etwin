@@ -2,7 +2,7 @@
 
 # Database
 
-Eternal-Twin uses Postgres as its main database.
+Eternaltwin uses Postgres as its main database.
 
 ## Initialize the Postgres cluster
 

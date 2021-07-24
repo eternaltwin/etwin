@@ -2,14 +2,14 @@
 
 ## Environment
 
-| Name     | Version                      |
-|----------|------------------------------|
-| JRE      | 15                           |
-| Nginx    | 1.19                         |
-| Node.js  | 14 or newer (at your choice) |
-| PHP      | 8.0                          |
-| Postgres | 13.2                         |
-| Ruby     | 2.7                          |
+| Name     | Version                           |
+|----------|-----------------------------------|
+| JRE      | 16                                |
+| Nginx    | 1.20                              |
+| Node.js  | 14.13.1 or newer (at your choice) |
+| PHP      | 8.0                               |
+| Postgres | 13.2                              |
+| Ruby     | 2.7                               |
 
 ## Network
 

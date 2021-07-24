@@ -2,7 +2,7 @@
 
 # Desktop Application
 
-Eternal-Twin provides a desktop application. It allows you to play Motion Twin's Flash games.
+Eternaltwin provides a desktop application. It allows you to play Motion Twin's Flash games.
 
 ## Download
 
@@ -22,7 +22,7 @@ Latest version: 0.5.3 (2021-06-29)
 The application is still in a beta state: please help us to improve it.
 
 In particular, we need to ensure the app only tries to open trusted websites
-(from Eternal-Twin or Motion-Twin).
+(from Eternaltwin or Motion-Twin).
 
 ## Issues
 

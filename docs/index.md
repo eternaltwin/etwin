@@ -1,8 +1,8 @@
 [Home](./index.md)
 
-# Eternal-Twin Documentation
+# Eternaltwin Documentation
 
-Welcome to the Eternal-Twin documentation. This section describes various technical aspects relating to Eternal-Twin.
+Welcome to the Eternaltwin documentation. This section describes various technical aspects relating to Eternaltwin.
 
 ## General
 
@@ -13,9 +13,9 @@ Welcome to the Eternal-Twin documentation. This section describes various techni
 
 - [Guidelines](./app/guidelines.md)
 - [Application Configuration](./app/config.md)
-- [Eternal-Twin integration](./app/etwin-integration.md)
-- [Eternal-Twin for OAuth](./app/etwin-oauth.md)
-- [Eternal-Twin API](./app/etwin-api.md)
+- [Eternaltwin integration](./app/etwin-integration.md)
+- [Eternaltwin for OAuth](./app/etwin-oauth.md)
+- [Eternaltwin API](./app/etwin-api.md)
 
 ## [Tools](./tools/index.md)
 

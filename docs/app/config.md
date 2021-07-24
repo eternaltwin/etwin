@@ -2,7 +2,7 @@
 
 # Application configuration
 
-Every Eternal-Twin game or application must be able to be configured using
+Every Eternaltwin game or application must be able to be configured using
 either  environment variables or a configuration file.
 
 ## Configuration format
@@ -43,25 +43,25 @@ should only use this configuration value.
 
 This section contains a list of values the must configurable.
 
-### Eternal-Twin URI
+### Eternaltwin URI
 
-Eternal-Twin URI, used for OAuth and the API.
+Eternaltwin URI, used for OAuth and the API.
 
 Example values:
 - `http://localhost:50320/`
 - `https://eternal-twin.net/`
 
-### Eternal-Twin OAuth client id
+### Eternaltwin OAuth client id
 
-OAuth `client_id` for Eternal-Twin.
+OAuth `client_id` for Eternaltwin.
 
 Example values:
 - `eternalfest@clients`
 - `d19e61a3-83d3-410f-84ec-49aaab841559`
 
-### Eternal-Twin OAuth client secret
+### Eternaltwin OAuth client secret
 
-OAuth `client_secret` for Eternal-Twin.
+OAuth `client_secret` for Eternaltwin.
 
 Example values:
 - `dev_secret`

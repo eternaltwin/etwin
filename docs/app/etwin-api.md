@@ -1,8 +1,8 @@
 [Home](../index.md) | [Applications](./index.md)
 
-# Eternal-Twin API
+# Eternaltwin API
 
-Eternal-Twin exposes all its data through a REST API.
+Eternaltwin exposes all its data through a REST API.
 Some resources are protected and require the right authorization.
 
 There are [official clients](https://gitlab.com/eternal-twin/etwin/-/tree/master/clients)

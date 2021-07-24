@@ -2,7 +2,7 @@
 
 # Tools
 
-Help for the tools used around Eternal-Twin.
+Help for the tools used around Eternaltwin.
 
 - [Apache](./apache.md)
 - [Node.js](./node.md)
