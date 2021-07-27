@@ -3,6 +3,9 @@ use crate::rest::RestArgs;
 use clap::Clap;
 use etwin_core::types::EtwinError;
 
+pub mod cmd {
+  pub mod dump;
+}
 pub mod dinoparc;
 pub mod rest;
 
