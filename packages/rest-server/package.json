@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/rest-server",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "homepage": "https://gitlab.com/eternal-twin/etwin",
   "description": "HTTP REST interface for the Eternal-Twin API",
   "repository": {
