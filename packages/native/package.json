@@ -16,7 +16,7 @@
   "scripts": {
     "lint": "eslint \"./src/**/*.ts\"",
     "format": "eslint --fix \"./src/**/*.ts\"",
-    "clean": "rimraf \"./@(bin|lib|test)\" \"native/@(artifacts.json|build|index.node|target)\"",
+    "clean": "rimraf \"./@(bin|lib|test)\" \"native/@(artifacts.json|Cargo.lock|build|index.node|target)\"",
     "native:build": "cd native && cargo build ${CARGO_FLAGS:-\"--lib\"}",
     "lib:build": "tsc --build src/lib/tsconfig.json",
     "build": "yarn run native:build && yarn run lib:build",
@@ -24,7 +24,7 @@
     "crossbuild:linux64": "ETWIN_NEON_TARGET=x86_64-unknown-linux-gnu yarn run crossbuild:_internal",
     "crossbuild:mac64": "ETWIN_NEON_TARGET=x86_64-apple-darwin yarn run crossbuild:_internal",
     "crossbuild:windows64": "ETWIN_NEON_TARGET=x86_64-pc-windows-msvc yarn run crossbuild:_internal",
-    "crossbuild:_internal": "cargo build --manifest-path ./native/Cargo.toml --lib --release --target ${ETWIN_NEON_TARGET}",
+    "crossbuild:_internal": "cd native && cross build --lib --release --target ${ETWIN_NEON_TARGET}",
     "prepack": "yarn run lib:build && yarn run bin:build && yarn run crossbuild:linux64 && yarn run crossbuild:windows64",
     "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha \"test/**/*.spec.js\"",
