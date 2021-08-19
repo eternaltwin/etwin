@@ -80,7 +80,7 @@ pub(crate) fn scrape_bank(doc: &Html) -> Result<BankScraping, ScraperError> {
     .map(|c| -> Result<DinoparcUserId, ScraperError> {
       // Unwrapping here is ok because we know that `CASH_FRAME_RE` has 1 capture group.
       let raw_cash_frame_arg = c.get(1).unwrap().as_str();
-      let cash_frame_options = parse_cash_frame_arg(&raw_cash_frame_arg);
+      let cash_frame_options = parse_cash_frame_arg(raw_cash_frame_arg);
       let cash_frame_options = match cash_frame_options {
         Ok(cfo) => cfo,
         Err(e) => {
@@ -169,7 +169,7 @@ fn scrape_sidebar(doc: ElementRef) -> Result<SelfScraping, ScraperError> {
     .get_one_text()
     .map_err(|_| ScraperError::NonUniqueUsernameText)?;
   let username =
-    DinoparcUsername::from_str(&username).map_err(|e| ScraperError::InvalidUsername(username.to_string(), e))?;
+    DinoparcUsername::from_str(username).map_err(|e| ScraperError::InvalidUsername(username.to_string(), e))?;
 
   Ok(SelfScraping { username })
 }
@@ -857,7 +857,7 @@ fn scrape_session_user(
     .get_one_text()
     .map_err(|_| ScraperError::NonUniqueUsernameText)?;
   let username =
-    DinoparcUsername::from_str(&username).map_err(|e| ScraperError::InvalidUsername(username.to_string(), e))?;
+    DinoparcUsername::from_str(username).map_err(|e| ScraperError::InvalidUsername(username.to_string(), e))?;
 
   let coins = {
     let coins = menu

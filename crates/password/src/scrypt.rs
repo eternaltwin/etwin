@@ -208,7 +208,7 @@ impl<R: CryptoRng + RngCore + Send + Sync> PasswordService for ScryptPasswordSer
     let hmachash = &hash[64..96];
     {
       let actual_checksum = &Sha256::digest(&hash[0..48])[0..16];
-      assert_ne!(actual_checksum.ct_eq(&checksum).unwrap_u8(), 0);
+      assert_ne!(actual_checksum.ct_eq(checksum).unwrap_u8(), 0);
     }
     let key = {
       let mut actual = [0; 64];
@@ -222,7 +222,7 @@ impl<R: CryptoRng + RngCore + Send + Sync> PasswordService for ScryptPasswordSer
       mac.finalize().into_bytes()
     };
     let actual_hmac: &[u8] = &actual_hmac;
-    actual_hmac.ct_eq(&hmachash).unwrap_u8() != 0
+    actual_hmac.ct_eq(hmachash).unwrap_u8() != 0
   }
 }
 

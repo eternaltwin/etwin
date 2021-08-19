@@ -144,7 +144,7 @@ async fn inner_test_empty<TyClock, TyHammerfestClient, TyHammerfestStore, TyHamm
       &AuthContext::Guest(GuestAuthContext {
         scope: AuthScope::Default,
       }),
-      &options,
+      options,
     )
     .await
     .unwrap();
@@ -173,7 +173,7 @@ async fn test_reference_types() {
         &AuthContext::Guest(GuestAuthContext {
           scope: AuthScope::Default,
         }),
-        &options
+        options
       )
       .await
       .unwrap(),

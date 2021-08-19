@@ -2,6 +2,7 @@
 use crate::pg_num::PgU8;
 use crate::user::{ShortUser, UserIdRef};
 use chrono::{DateTime, Utc};
+use enum_iterator::IntoEnumIterator;
 #[cfg(feature = "_serde")]
 use etwin_serde_tools::{serialize_instant, serialize_opt_instant, Deserialize, Serialize, Serializer};
 #[cfg(feature = "sqlx")]
@@ -13,6 +14,24 @@ use std::ops::Bound;
 use std::ops::{Range, RangeFrom};
 #[cfg(feature = "sqlx")]
 use thiserror::Error;
+
+declare_new_enum!(
+  #[derive(IntoEnumIterator)]
+  pub enum LocaleId {
+    #[str("de-DE")]
+    DeDe,
+    #[str("en-US")]
+    EnUs,
+    #[str("eo")]
+    Eo,
+    #[str("es-SP")]
+    EsSp,
+    #[str("fr-FR")]
+    FrFr,
+  }
+  pub type ParseError = LocaleIdParseError;
+  const SQL_NAME = "locale_id";
+);
 
 pub type Instant = DateTime<Utc>;
 

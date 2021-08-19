@@ -402,7 +402,7 @@ where
     key: &HammerfestSessionKey,
   ) -> Result<Option<HammerfestSession>> {
     let server = self.get_server(server_name)?.read().unwrap();
-    let session = match server.active_sessions.get(&key) {
+    let session = match server.active_sessions.get(key) {
       None => return Ok(None),
       Some(sess) => sess,
     };

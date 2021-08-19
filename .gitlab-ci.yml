@@ -8,7 +8,7 @@ lint:
   tags:
     - "linux"
   # demurgos/node:latest
-  image: "demurgos/node@sha256:e172659979fa07cc05f2c2f6c2074906b695f1e30097df7d02fcda82258a6b1b"
+  image: "demurgos/node@sha256:c0759427d784b68dcf7b217c3a43e9d5f77c6d362e3c87666b3a432481e23e4f"
   variables:
     CARGO_HOME: ".cargo"
     RUSTFLAGS: "-C target-feature=-crt-static"
@@ -93,7 +93,7 @@ test-rust:
   tags:
     - "linux"
   # demurgos/node:latest
-  image: "demurgos/node@sha256:e172659979fa07cc05f2c2f6c2074906b695f1e30097df7d02fcda82258a6b1b"
+  image: "demurgos/node@sha256:c0759427d784b68dcf7b217c3a43e9d5f77c6d362e3c87666b3a432481e23e4f"
   services:
     - "postgres:latest"
   variables:
@@ -168,7 +168,7 @@ test-node:
   tags:
     - "linux"
   # demurgos/node:latest
-  image: "demurgos/node@sha256:e172659979fa07cc05f2c2f6c2074906b695f1e30097df7d02fcda82258a6b1b"
+  image: "demurgos/node@sha256:c0759427d784b68dcf7b217c3a43e9d5f77c6d362e3c87666b3a432481e23e4f"
   services:
     - "postgres:latest"
   variables:
@@ -243,7 +243,7 @@ build:
   tags:
     - "linux"
   # demurgos/node:latest
-  image: "demurgos/node@sha256:e172659979fa07cc05f2c2f6c2074906b695f1e30097df7d02fcda82258a6b1b"
+  image: "demurgos/node@sha256:c0759427d784b68dcf7b217c3a43e9d5f77c6d362e3c87666b3a432481e23e4f"
   variables:
     CARGO_HOME: ".cargo"
     RUSTFLAGS: "-C target-feature=-crt-static"

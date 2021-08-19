@@ -206,7 +206,7 @@ impl<T: Eq> Temporal<T> {
   }
 
   pub fn current_value(&self) -> &T {
-    &self.current.value()
+    self.current.value()
   }
 
   pub fn map<B: Eq, F: FnMut(Snapshot<&T>) -> B>(&self, mut f: F) -> Temporal<B> {

@@ -54,7 +54,7 @@ fn find_config_file(dir: PathBuf) -> Result<(PathBuf, String), FindConfigFileErr
 }
 
 pub fn parse_config(_file: &Path, config_toml: &str) -> Result<Config, toml::de::Error> {
-  let raw: Config = toml::from_str(&config_toml)?;
+  let raw: Config = toml::from_str(config_toml)?;
   Ok(raw)
 }
 

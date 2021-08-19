@@ -54,11 +54,9 @@ pub fn hash(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         .try_into()
         .expect("AssertionError: Expected hash length < u32::MAX");
       let js_buffer = cx.buffer(buffer_len).expect("Failed to allocate");
-      TaskContext::borrow(&cx, &js_buffer, |js_buffer: Ref<BinaryData>| {
+      TaskContext::borrow(cx, &js_buffer, |js_buffer: Ref<BinaryData>| {
         let js_buffer = js_buffer.as_mut_slice::<u8>();
-        for (i, x) in bytes.into_iter().enumerate() {
-          js_buffer[i] = x;
-        }
+        js_buffer.copy_from_slice(bytes.as_slice());
       });
 
       Ok(js_buffer.upcast())

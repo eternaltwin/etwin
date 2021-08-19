@@ -1,0 +1,27 @@
+[package]
+name = "etwin_email_formatter"
+version = "0.8.1"
+authors = ["Charles Samborski <demurgos@demurgos.net>"]
+description = "Email formatter for Eternaltwin emails"
+documentation = "https://github.com/eternal-twin/etwin"
+homepage = "https://github.com/eternal-twin/etwin"
+repository = "https://github.com/eternal-twin/etwin"
+readme = "./README.md"
+keywords = ["etwin"]
+license = "AGPL-3.0-or-later"
+edition = "2018"
+
+[features]
+default = ["json", "html"]
+json = []
+html = []
+
+[dependencies]
+async-trait = "0.1.50"
+etwin_core = { version = "0.8.1", features = ["_serde"] }
+serde = { version = "1.0.126", features = ["derive"] }
+serde_json = "1.0.66"
+
+[dev-dependencies]
+test-generator = "0.3.0"
+tokio = { version = "1.10.0", features = ["macros", "rt"] }

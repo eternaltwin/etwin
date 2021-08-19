@@ -250,7 +250,7 @@ fn derive_machine_id(username: &DinoparcUsername) -> DinoparcMachineId {
     'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
   ];
 
-  let hash = Md5::digest(&username.as_str().as_bytes());
+  let hash = Md5::digest(username.as_str().as_bytes());
   let hash = hash.as_slice();
   let mut mid = String::with_capacity(DinoparcMachineId::LENGTH);
 
@@ -366,7 +366,7 @@ where
   ) -> Result<Option<DinoparcSession>, EtwinError> {
     let now = self.clock.now();
     let html = self
-      .get_html(DinoparcUrls::new(server).bank(), Some(&session_key))
+      .get_html(DinoparcUrls::new(server).bank(), Some(session_key))
       .await?;
     let user = scraper::scrape_bank(&html)?;
     Ok(Some(DinoparcSession {
@@ -500,7 +500,7 @@ async fn touch_ad_tracking(
   server: DinoparcServer,
   username: &DinoparcUsername,
 ) -> Result<(), ScraperError> {
-  let mid = derive_machine_id(&username);
+  let mid = derive_machine_id(username);
   let res = client
     .get(DinoparcUrls::new(server).ad_tracking(mid))
     .with_session(Some(session))

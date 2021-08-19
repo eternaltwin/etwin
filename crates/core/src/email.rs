@@ -1,7 +1,11 @@
+use crate::core::LocaleId;
 #[cfg(feature = "sqlx")]
 use crate::core::{Instant, Secret};
-#[cfg(feature = "sqlx")]
 use crate::types::EtwinError;
+use async_trait::async_trait;
+use auto_impl::auto_impl;
+#[cfg(feature = "_serde")]
+use etwin_serde_tools::{Deserialize, Serialize};
 #[cfg(feature = "sqlx")]
 use sqlx::{Postgres, Transaction};
 
@@ -10,6 +14,20 @@ declare_new_string! {
   pub type ParseError = EmailAddressParseError;
   const PATTERN = r"@";
   const SQL_NAME = "email_address";
+}
+
+declare_new_string! {
+  pub struct EmailBody(String);
+  pub type ParseError = EmailBodyParseError;
+  const PATTERN = r"^(?s:.){0,1000}";
+  const SQL_NAME = "email_body";
+}
+
+declare_new_string! {
+  pub struct EmailTitle(String);
+  pub type ParseError = EmailTitleParseError;
+  const PATTERN = r"^(?s:.){1,100}$";
+  const SQL_NAME = "email_title";
 }
 
 // TODO: Move this function to a crate with Postgres helpers
@@ -52,4 +70,29 @@ pub async fn touch_email_address(
   // Check for hash collision
   assert_eq!(&row.email, email);
   Ok(row.hash)
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct VerifyRegistrationEmail {
+  // TODO: Use `new_string` wrapper
+  pub token: String,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct EmailContent {
+  pub title: EmailTitle,
+  pub body_text: EmailBody,
+  pub body_html: Option<EmailBody>,
+}
+
+#[async_trait]
+#[auto_impl(&, Arc)]
+pub trait EmailFormatter: Send + Sync {
+  async fn verify_registration_email(
+    &self,
+    locale: LocaleId,
+    data: &VerifyRegistrationEmail,
+  ) -> Result<EmailContent, EtwinError>;
 }

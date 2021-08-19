@@ -432,7 +432,7 @@ impl SchemaResolver {
     // slightly change the request each time by adding whitespace.
     // <https://www.postgresql.org/message-id/17053-3ca3f501bbc212b4%40postgresql.org>
     let cache_buster_len = self.cache_buster_len.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
-    let cache_buster = std::iter::repeat(' ').take(cache_buster_len.into()).collect::<String>();
+    let cache_buster = " ".repeat(cache_buster_len.into());
     let create_type = format!(
       "CREATE DOMAIN schema_meta AS raw_schema_meta CHECK ((value).version IS NOT NULL AND (value).version >= 1){};",
       cache_buster
@@ -450,7 +450,7 @@ impl SchemaResolver {
     ];
 
     for query in std::array::IntoIter::new(queries) {
-      sqlx::query(&query).execute(&mut *tx).await?;
+      sqlx::query(query).execute(&mut *tx).await?;
     }
 
     Ok(())

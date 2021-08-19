@@ -1137,7 +1137,7 @@ where
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     if let Some(session_user) = response.session.as_ref() {
-      touch_hammerfest_session_user(&mut tx, now, &session_user).await?;
+      touch_hammerfest_session_user(&mut tx, now, session_user).await?;
     }
     let options = profile;
     touch_hammerfest_user(&mut tx, now, &options.user).await?;
@@ -1221,7 +1221,7 @@ where
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     if let Some(session_user) = response.session.as_ref() {
-      touch_hammerfest_session_user(&mut tx, now, &session_user).await?;
+      touch_hammerfest_session_user(&mut tx, now, session_user).await?;
     }
     let options = &response.page;
     touch_hammerfest_forum_theme(
@@ -1344,7 +1344,7 @@ where
     let mut tx = self.database.as_ref().begin().await?;
     let mut session_user_is_moderator = false;
     if let Some(session_user) = response.session.as_ref() {
-      touch_hammerfest_session_user(&mut tx, now, &session_user).await?;
+      touch_hammerfest_session_user(&mut tx, now, session_user).await?;
     }
     let options = &response.page;
     touch_hammerfest_forum_theme(

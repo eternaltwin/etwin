@@ -323,7 +323,7 @@ pub fn scrape_user_inventory(doc: &Html) -> Result<HammerfestInventoryResponse> 
 
       let item = parse_item_url(item_url)?;
       let qty = qty_elem.get_opt_text()?.unwrap_or("");
-      let qty = utils::parse_u32(qty.strip_prefix("x").unwrap_or(qty))?;
+      let qty = utils::parse_u32(qty.strip_prefix('x').unwrap_or(qty))?;
       Ok((item, qty))
     })
     .collect::<Result<HashMap<_, _>>>()?;

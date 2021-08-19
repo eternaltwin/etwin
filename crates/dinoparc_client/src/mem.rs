@@ -104,7 +104,7 @@ impl MemServer {
       let sessions_by_user_id = &self.sessions_by_user_id;
       let sessions = &mut self.sessions;
       if let Some(old_session_key) = sessions_by_user_id.get(&user.id) {
-        sessions.remove(&old_session_key);
+        sessions.remove(old_session_key);
       }
     }
 
