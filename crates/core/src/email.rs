@@ -96,3 +96,9 @@ pub trait EmailFormatter: Send + Sync {
     data: &VerifyRegistrationEmail,
   ) -> Result<EmailContent, EtwinError>;
 }
+
+#[async_trait]
+#[auto_impl(&, Arc)]
+pub trait Mailer: Send + Sync {
+  async fn send_email(&self, recipient: &EmailAddress, content: &EmailContent) -> Result<(), EtwinError>;
+}

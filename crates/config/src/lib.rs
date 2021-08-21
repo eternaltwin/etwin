@@ -9,6 +9,7 @@ use url::Url;
 pub struct Config {
   pub etwin: EtwinConfig,
   pub db: DbConfig,
+  pub mailer: Option<MailerConfig>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
@@ -26,6 +27,21 @@ pub struct DbConfig {
   pub admin_password: String,
   pub user: String,
   pub password: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
+pub struct MailerConfig {
+  pub host: String,
+  pub username: String,
+  pub password: String,
+  pub sender: String,
+  pub headers: Option<Vec<MailerHeader>>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
+pub struct MailerHeader {
+  pub name: String,
+  pub value: String,
 }
 
 #[derive(Debug)]
@@ -83,6 +99,7 @@ pub static DEFAULT: Lazy<Config> = Lazy::new(|| Config {
     user: "etwin.dev.admin".to_string(),
     password: "dev".to_string(),
   },
+  mailer: None,
 });
 
 #[cfg(test)]
