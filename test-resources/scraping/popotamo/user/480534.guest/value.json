@@ -1,0 +1,11 @@
+{
+  "session_user": null,
+  "profile": {
+    "user": {
+      "type": "PopotamoUser",
+      "server": "popotamo.com",
+      "id": "0",
+      "username": "todo"
+    }
+  }
+}

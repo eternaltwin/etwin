@@ -820,6 +820,35 @@ dependencies = [
 ]
 
 [[package]]
+name = "etwin_popotamo_client"
+version = "0.8.1"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "erased-serde",
+ "etwin_constants",
+ "etwin_core",
+ "etwin_log",
+ "etwin_scraper_tools",
+ "etwin_serde_tools",
+ "itertools",
+ "md-5",
+ "neon",
+ "once_cell",
+ "percent-encoding",
+ "rand 0.8.4",
+ "regex",
+ "reqwest",
+ "scraper",
+ "serde",
+ "serde_json",
+ "sha2",
+ "test-generator",
+ "thiserror",
+ "url",
+]
+
+[[package]]
 name = "etwin_populate"
 version = "0.8.1"
 dependencies = [

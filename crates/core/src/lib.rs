@@ -14,6 +14,7 @@ pub mod hammerfest;
 pub mod link;
 pub mod oauth;
 pub mod password;
+pub mod popotamo;
 pub mod temporal;
 pub mod token;
 pub mod twinoid;

@@ -1,0 +1,18 @@
+{
+  "session_user": {
+    "user": {
+      "type": "PopotamoUser",
+      "server": "popotamo.com",
+      "id": "592161",
+      "username": "demurgos"
+    }
+  },
+  "profile": {
+    "user": {
+      "type": "PopotamoUser",
+      "server": "popotamo.com",
+      "id": "0",
+      "username": "todo"
+    }
+  }
+}
