@@ -1,0 +1,10 @@
+{
+  "profile": {
+    "user": {
+      "type": "DinorpgUser",
+      "server": "www.dinorpg.com",
+      "id": "0",
+      "display_name": "todo"
+    }
+  }
+}

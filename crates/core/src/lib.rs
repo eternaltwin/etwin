@@ -9,6 +9,7 @@ pub mod auth;
 pub mod clock;
 pub mod core;
 pub mod dinoparc;
+pub mod dinorpg;
 pub mod email;
 pub mod hammerfest;
 pub mod link;
