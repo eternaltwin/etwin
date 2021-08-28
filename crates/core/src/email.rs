@@ -1,4 +1,4 @@
-use crate::core::LocaleId;
+use crate::core::{HtmlFragment, LocaleId};
 #[cfg(feature = "sqlx")]
 use crate::core::{Instant, Secret};
 use crate::types::EtwinError;
@@ -84,7 +84,7 @@ pub struct VerifyRegistrationEmail {
 pub struct EmailContent {
   pub title: EmailTitle,
   pub body_text: EmailBody,
-  pub body_html: Option<EmailBody>,
+  pub body_html: Option<HtmlFragment>,
 }
 
 #[async_trait]

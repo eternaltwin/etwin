@@ -5,7 +5,7 @@ use etwin_cli::cmd::dump;
 async fn main() {
   let args: dump::DumpArgs = dump::DumpArgs::parse();
 
-  let res = dump::dump(&args).await;
+  let res = dump::run(&args).await;
 
   match res {
     Err(e) => {

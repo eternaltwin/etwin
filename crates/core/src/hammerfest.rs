@@ -1,4 +1,4 @@
-use crate::core::Instant;
+use crate::core::{HtmlFragment, Instant};
 use crate::email::EmailAddress;
 use crate::link::VersionedEtwinLink;
 use crate::types::EtwinError;
@@ -609,7 +609,7 @@ pub struct HammerfestForumPost {
   pub id: Option<HammerfestForumPostId>,
   pub author: HammerfestForumPostAuthor,
   pub ctime: HammerfestDateTime,
-  pub content: String, // TODO: HtmlText?
+  pub content: HtmlFragment,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]

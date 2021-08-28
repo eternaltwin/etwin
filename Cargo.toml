@@ -26,5 +26,6 @@ etwin_serde_tools = { path = "./crates/serde_tools" }
 etwin_services = { path = "./crates/services" }
 etwin_squirrel = { path = "./crates/squirrel" }
 etwin_token_store = { path = "./crates/token_store" }
+etwin_twinoid_client = { path = "./crates/twinoid_client" }
 etwin_twinoid_store = { path = "./crates/twinoid_store" }
 etwin_user_store = { path = "./crates/user_store" }

@@ -1,4 +1,5 @@
 use crate::core::Instant;
+use crate::oauth::RfcOauthAccessTokenKey;
 use crate::types::EtwinError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
@@ -79,4 +80,96 @@ pub trait TwinoidStore: Send + Sync {
   async fn get_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ArchivedTwinoidUser>, EtwinError>;
 
   async fn touch_short_user(&self, options: &ShortTwinoidUser) -> Result<ArchivedTwinoidUser, EtwinError>;
+}
+
+// #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum TwinoidApiAuth {
+  Guest,
+  Token(RfcOauthAccessTokenKey),
+}
+
+pub mod api {
+  use crate::core::HtmlFragment;
+  use crate::twinoid::TwinoidUserDisplayName;
+  #[cfg(feature = "_serde")]
+  use etwin_serde_tools::Deserialize;
+  #[cfg(feature = "_serde")]
+  use serde::de::DeserializeOwned;
+
+  #[cfg(not(feature = "_serde"))]
+  pub trait UserLike {}
+
+  #[cfg(feature = "_serde")]
+  pub trait UserLike: DeserializeOwned {}
+
+  pub trait UserQuery: Send + Sync {
+    type Output: UserLike;
+    type Fields: AsRef<str>;
+    // https://twinoid.com/graph/user/38?fields=id,name,picture,title,like,contacts.fields(user.fields(name,contacts))
+    fn to_fields(&self) -> Self::Fields;
+  }
+
+  #[cfg_attr(feature = "_serde", derive(Deserialize))]
+  #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+  pub struct User<Name, Title> {
+    id: u32,
+    name: Name,
+    title: Title,
+  }
+
+  #[cfg(not(feature = "_serde"))]
+  impl<Name, Title> UserLike for User<Name, Title> {}
+
+  #[cfg(feature = "_serde")]
+  impl<Name: DeserializeOwned, Title: DeserializeOwned> UserLike for User<Name, Title> {}
+
+  #[derive(Debug)]
+  pub struct ConstUserQuery<const NAME: bool, const TITLE: bool>;
+
+  impl UserQuery for ConstUserQuery<false, false> {
+    type Output = User<(), ()>;
+    type Fields = &'static str;
+
+    fn to_fields(&self) -> Self::Fields {
+      "id"
+    }
+  }
+
+  impl UserQuery for ConstUserQuery<false, true> {
+    type Output = User<(), HtmlFragment>;
+    type Fields = &'static str;
+
+    fn to_fields(&self) -> Self::Fields {
+      "id,title"
+    }
+  }
+
+  impl UserQuery for ConstUserQuery<true, false> {
+    type Output = User<TwinoidUserDisplayName, ()>;
+    type Fields = &'static str;
+
+    fn to_fields(&self) -> Self::Fields {
+      "id,name"
+    }
+  }
+
+  impl UserQuery for ConstUserQuery<true, true> {
+    type Output = User<TwinoidUserDisplayName, HtmlFragment>;
+    type Fields = &'static str;
+
+    fn to_fields(&self) -> Self::Fields {
+      "id,name,title"
+    }
+  }
+}
+
+#[async_trait]
+#[auto_impl(&, Arc)]
+pub trait TwinoidClient: Send + Sync {
+  async fn get_me<Query: api::UserQuery>(
+    &self,
+    auth: TwinoidApiAuth,
+    query: &Query,
+  ) -> Result<Query::Output, EtwinError>;
 }

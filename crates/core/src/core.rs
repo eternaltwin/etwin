@@ -15,6 +15,8 @@ use std::ops::{Range, RangeFrom};
 #[cfg(feature = "sqlx")]
 use thiserror::Error;
 
+pub type HtmlFragment = String;
+
 declare_new_enum!(
   #[derive(IntoEnumIterator)]
   pub enum LocaleId {

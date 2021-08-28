@@ -580,6 +580,7 @@ dependencies = [
  "etwin_log",
  "etwin_rest",
  "etwin_services",
+ "etwin_twinoid_client",
  "etwin_user_store",
  "tokio",
  "warp",
@@ -982,6 +983,35 @@ dependencies = [
  "serial_test",
  "sqlx",
  "tokio",
+]
+
+[[package]]
+name = "etwin_twinoid_client"
+version = "0.8.1"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "erased-serde",
+ "etwin_constants",
+ "etwin_core",
+ "etwin_log",
+ "etwin_scraper_tools",
+ "etwin_serde_tools",
+ "itertools",
+ "md-5",
+ "neon",
+ "once_cell",
+ "percent-encoding",
+ "rand 0.8.4",
+ "regex",
+ "reqwest",
+ "scraper",
+ "serde",
+ "serde_json",
+ "sha2",
+ "test-generator",
+ "thiserror",
+ "url",
 ]
 
 [[package]]
@@ -1429,6 +1459,21 @@ dependencies = [
  "tower-service",
  "tracing",
  "want",
+]
+
+[[package]]
+name = "hyper-rustls"
+version = "0.22.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5f9f7a97316d44c0af9b0301e65010573a853a9fc97046d7331d7f6bc0fd5a64"
+dependencies = [
+ "futures-util",
+ "hyper",
+ "log",
+ "rustls",
+ "tokio",
+ "tokio-rustls",
+ "webpki",
 ]
 
 [[package]]
@@ -2369,6 +2414,7 @@ dependencies = [
  "http",
  "http-body",
  "hyper",
+ "hyper-rustls",
  "ipnet",
  "js-sys",
  "lazy_static",
@@ -2376,14 +2422,18 @@ dependencies = [
  "mime",
  "percent-encoding",
  "pin-project-lite",
+ "rustls",
  "serde",
+ "serde_json",
  "serde_urlencoded",
  "time 0.2.26",
  "tokio",
+ "tokio-rustls",
  "url",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "web-sys",
+ "webpki-roots",
  "winreg",
 ]
 

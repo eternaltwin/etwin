@@ -1,12 +1,12 @@
-use crate::dinoparc::DinoparcArgs;
 use crate::rest::RestArgs;
 use clap::Clap;
 use etwin_core::types::EtwinError;
 
 pub mod cmd {
+  pub mod dinoparc;
   pub mod dump;
+  pub mod twinoid;
 }
-pub mod dinoparc;
 pub mod rest;
 
 #[derive(Debug, Clap)]
@@ -20,15 +20,23 @@ pub struct CliArgs {
 pub enum CliCommand {
   /// Run the Dinoparc client demo
   #[clap(name = "dinoparc")]
-  Dinoparc(DinoparcArgs),
+  Dinoparc(cmd::dinoparc::DinoparcArgs),
+  /// Dump the DB state into a directory
+  #[clap(name = "dump")]
+  Dump(cmd::dump::DumpArgs),
   /// Start REST server
   #[clap(name = "rest")]
   Rest(RestArgs),
+  /// Run the Twinoid client demo
+  #[clap(name = "twinoid")]
+  Twinoid(cmd::twinoid::TwinoidArgs),
 }
 
 pub async fn run(args: &CliArgs) -> Result<(), EtwinError> {
   match &args.command {
-    CliCommand::Dinoparc(ref args) => crate::dinoparc::run(args).await,
+    CliCommand::Dinoparc(ref args) => cmd::dinoparc::run(args).await,
+    CliCommand::Dump(ref args) => cmd::dump::run(args).await,
     CliCommand::Rest(ref args) => crate::rest::run(args).await,
+    CliCommand::Twinoid(ref args) => cmd::twinoid::run(args).await,
   }
 }
