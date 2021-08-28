@@ -40,9 +40,6 @@
     },
     {
       "path": "../rest-server/src/lib"
-    },
-    {
-      "path": "../twinoid-client-http/src/lib"
     }
   ]
 }

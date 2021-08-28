@@ -1,4 +1,4 @@
-use crate::core::Instant;
+use crate::core::{HtmlFragment, Instant};
 use crate::oauth::RfcOauthAccessTokenKey;
 use crate::types::EtwinError;
 use async_trait::async_trait;
@@ -93,7 +93,7 @@ pub mod api {
   use crate::core::HtmlFragment;
   use crate::twinoid::TwinoidUserDisplayName;
   #[cfg(feature = "_serde")]
-  use etwin_serde_tools::Deserialize;
+  use etwin_serde_tools::{Deserialize, Serialize};
   #[cfg(feature = "_serde")]
   use serde::de::DeserializeOwned;
 
@@ -110,7 +110,7 @@ pub mod api {
     fn to_fields(&self) -> Self::Fields;
   }
 
-  #[cfg_attr(feature = "_serde", derive(Deserialize))]
+  #[cfg_attr(feature = "_serde", derive(Deserialize, Serialize))]
   #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
   pub struct User<Name, Title> {
     id: u32,
@@ -171,5 +171,12 @@ pub trait TwinoidClient: Send + Sync {
     &self,
     auth: TwinoidApiAuth,
     query: &Query,
-  ) -> Result<Query::Output, EtwinError>;
+  ) -> Result<Query::Output, EtwinError>
+  where
+    Self: Sized;
+
+  async fn get_me_short(
+    &self,
+    auth: TwinoidApiAuth,
+  ) -> Result<api::User<TwinoidUserDisplayName, HtmlFragment>, EtwinError>;
 }

@@ -36,6 +36,7 @@ import { ScryptPasswordService } from "@eternal-twin/native/lib/password";
 import { NativeDinoparcService } from "@eternal-twin/native/lib/services/dinoparc";
 import { NativeHammerfestService } from "@eternal-twin/native/lib/services/hammerfest";
 import { MemTokenStore, PgTokenStore } from "@eternal-twin/native/lib/token-store";
+import { HttpTwinoidClient } from "@eternal-twin/native/lib/twinoid-client";
 import { MemTwinoidStore, PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store";
 import { MemUserStore, NativeUserStore, PgUserStore } from "@eternal-twin/native/lib/user-store";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid";
@@ -45,7 +46,6 @@ import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
 import { DevApi } from "@eternal-twin/rest-server/lib/index";
-import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import urljoin from "url-join";
 
 export interface Api {
@@ -77,7 +77,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   const password = ScryptPasswordService.withOsRng();
   const dinoparcClient = new HttpDinoparcClient({clock});
   const hammerfestClient = new HttpHammerfestClient({clock});
-  const twinoidClient = new HttpTwinoidClientService();
+  const twinoidClient = new HttpTwinoidClient({clock});
   const forumConfig: ForumConfig = {
     postsPerPage: config.forum.postsPerPage,
     threadsPerPage: config.forum.threadsPerPage

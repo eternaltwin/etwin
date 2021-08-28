@@ -30,6 +30,7 @@ etwin_password = { version = "0.8.1", features = ["neon"] }
 etwin_rest = "0.8.1"
 etwin_services = { version = "0.8.1", features = ["neon"] }
 etwin_token_store = { version = "0.8.1", features = ["neon"] }
+etwin_twinoid_client = { version = "0.8.1", features = ["neon"] }
 etwin_twinoid_store = { version = "0.8.1", features = ["neon"] }
 etwin_user_store = { version = "0.8.1", features = ["neon"] }
 neon = { version = "0.8.3", default-features = false, features = ["event-queue-api", "napi-6"] }

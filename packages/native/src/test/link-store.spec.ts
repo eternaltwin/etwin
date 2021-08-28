@@ -20,10 +20,10 @@ import { InMemoryEmailService } from "@eternal-twin/email-in-memory";
 import { JsonEmailTemplateService } from "@eternal-twin/email-template-json";
 import { forceCreateLatest } from "@eternal-twin/etwin-pg";
 import { getLocalConfig } from "@eternal-twin/local-config";
+import { HttpTwinoidClient } from "@eternal-twin/native/lib/twinoid-client";
 import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
-import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import chai from "chai";
 
 import { VirtualClock } from "../lib/clock.js";
@@ -58,7 +58,7 @@ describe("NativeLinkStore", function () {
       const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
       const dinoparcClient = new MemDinoparcClient({clock});
       const hammerfestClient = new MemHammerfestClient({clock});
-      const twinoidClient = new HttpTwinoidClientService();
+      const twinoidClient = new HttpTwinoidClient({clock});
       const oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
       const oauthProvider = new DefaultOauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
       const auth = new InMemoryAuthService({dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});
@@ -110,7 +110,7 @@ describe("NativeLinkStore", function () {
         const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
         const dinoparcClient = new MemDinoparcClient({clock});
         const hammerfestClient = new MemHammerfestClient({clock});
-        const twinoidClient = new HttpTwinoidClientService();
+        const twinoidClient = new HttpTwinoidClient({clock});
         const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
         const oauthProvider = new DefaultOauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
         const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});

@@ -43,7 +43,6 @@
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/native": "workspace:*",
     "@eternal-twin/oauth-provider-in-memory": "workspace:*",
-    "@eternal-twin/twinoid-client-http": "workspace:*",
     "@types/chai": "^4.2.21",
     "@types/mocha": "^8.2.3",
     "@types/node": "^16.3.3",

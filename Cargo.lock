@@ -822,6 +822,7 @@ dependencies = [
  "etwin_rest",
  "etwin_services",
  "etwin_token_store",
+ "etwin_twinoid_client",
  "etwin_twinoid_store",
  "etwin_user_store",
  "neon",

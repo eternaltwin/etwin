@@ -13,6 +13,7 @@ mod rest;
 mod services;
 mod token_store;
 mod tokio_runtime;
+mod twinoid_client;
 mod twinoid_store;
 mod user_store;
 mod uuid;
@@ -41,6 +42,8 @@ fn export(mut cx: ModuleContext) -> NeonResult<()> {
   cx.export_value("services", services)?;
   let token_store = crate::token_store::create_namespace(cx)?;
   cx.export_value("tokenStore", token_store)?;
+  let twinoid_client = crate::twinoid_client::create_namespace(cx)?;
+  cx.export_value("twinoidClient", twinoid_client)?;
   let twinoid_store = crate::twinoid_store::create_namespace(cx)?;
   cx.export_value("twinoidStore", twinoid_store)?;
   let user_store = crate::user_store::create_namespace(cx)?;

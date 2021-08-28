@@ -30,9 +30,6 @@
     },
     {
       "path": "../../../oauth-provider-pg/src/lib"
-    },
-    {
-      "path": "../../../twinoid-client-http/src/lib"
     }
   ]
 }

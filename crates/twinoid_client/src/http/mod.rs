@@ -4,7 +4,8 @@ mod url;
 use crate::http::url::TwinoidUrls;
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
-use etwin_core::twinoid::api;
+use etwin_core::core::HtmlFragment;
+use etwin_core::twinoid::{api, TwinoidUserDisplayName};
 use etwin_core::twinoid::{TwinoidApiAuth, TwinoidClient};
 use etwin_core::types::EtwinError;
 use reqwest::Client;
@@ -67,6 +68,13 @@ where
         Err(body.as_ref().into())
       }
     }
+  }
+
+  async fn get_me_short(
+    &self,
+    auth: TwinoidApiAuth,
+  ) -> Result<api::User<TwinoidUserDisplayName, HtmlFragment>, EtwinError> {
+    self.get_me(auth, &api::ConstUserQuery::<true, true>).await
   }
 }
 

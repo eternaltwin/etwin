@@ -15,12 +15,12 @@ import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client"
 import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store";
 import { PgLinkStore } from "@eternal-twin/native/lib/link-store";
 import { ScryptPasswordService } from "@eternal-twin/native/lib/password";
+import { HttpTwinoidClient } from "@eternal-twin/native/lib/twinoid-client";
 import { PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store";
 import { PgUserStore } from "@eternal-twin/native/lib/user-store";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
-import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 
 import { PgForumService } from "../lib/index.js";
 
@@ -65,7 +65,7 @@ async function withPgForumService<R>(fn: (api: Api) => Promise<R>): Promise<R> {
     const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
     const dinoparcClient = new MemDinoparcClient({clock});
     const hammerfestClient = new MemHammerfestClient({clock});
-    const twinoidClient = new HttpTwinoidClientService();
+    const twinoidClient = new HttpTwinoidClient({clock});
     const oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
     const oauthProvider = new DefaultOauthProviderService({clock, oauthProviderStore, userStore, tokenSecret: secretKeyBytes, uuidGenerator});
     const auth = new PgAuthService({database, databaseSecret: secretKeyStr, dinoparcClient, dinoparcStore, email, emailTemplate, hammerfestStore, hammerfestClient, link, oauthProvider, password, userStore, tokenSecret: secretKeyBytes, twinoidStore, twinoidClient, uuidGenerator});

@@ -12,11 +12,11 @@ import { MemHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client"
 import { MemHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store";
 import { MemLinkStore } from "@eternal-twin/native/lib/link-store";
 import { ScryptPasswordService } from "@eternal-twin/native/lib/password";
+import { HttpTwinoidClient } from "@eternal-twin/native/lib/twinoid-client";
 import { MemTwinoidStore } from "@eternal-twin/native/lib/twinoid-store";
 import { MemUserStore } from "@eternal-twin/native/lib/user-store";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid";
 import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
-import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 
 import { InMemoryAuthService } from "../lib/index.js";
 
@@ -35,7 +35,7 @@ async function withInMemoryAuthService<R>(fn: (api: Api) => Promise<R>): Promise
   const twinoidStore = new MemTwinoidStore({clock});
   const dinoparcClient = new MemDinoparcClient({clock});
   const hammerfestClient = new MemHammerfestClient({clock});
-  const twinoidClient = new HttpTwinoidClientService();
+  const twinoidClient = new HttpTwinoidClient({clock});
   const userStore = new MemUserStore({clock, uuidGenerator});
   const linkStore = new MemLinkStore({clock});
   const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});

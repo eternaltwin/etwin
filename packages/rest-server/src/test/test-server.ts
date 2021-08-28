@@ -23,13 +23,13 @@ import { NativeRestRouter } from "@eternal-twin/native/lib/rest";
 import { NativeDinoparcService } from "@eternal-twin/native/lib/services/dinoparc";
 import { NativeHammerfestService } from "@eternal-twin/native/lib/services/hammerfest";
 import { PgTokenStore } from "@eternal-twin/native/lib/token-store";
+import { HttpTwinoidClient } from "@eternal-twin/native/lib/twinoid-client";
 import { PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store";
 import { PgUserStore } from "@eternal-twin/native/lib/user-store";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid";
 import { NativeClock } from "@eternal-twin/native/src/lib/clock";
 import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { Database, DbConfig, withPgPool } from "@eternal-twin/pg-db";
-import { HttpTwinoidClientService } from "@eternal-twin/twinoid-client-http";
 import http from "http";
 import Koa from "koa";
 
@@ -88,7 +88,7 @@ export async function withTestServer<R>(isDev: boolean, fn: (server: TestServer)
     const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase, uuidGenerator});
     const hammerfestClient = new MemHammerfestClient({clock});
     const hammerfestStore = await PgHammerfestStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
-    const twinoidClient = new HttpTwinoidClientService();
+    const twinoidClient = new HttpTwinoidClient({clock});
     const twinoidStore = new PgTwinoidStore({clock, database: nativeDatabase});
     const linkStore = new PgLinkStore({clock, database: nativeDatabase});
     const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});

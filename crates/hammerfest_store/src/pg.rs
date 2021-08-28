@@ -18,7 +18,6 @@ use etwin_core::types::EtwinError;
 use etwin_core::uuid::UuidGenerator;
 use etwin_populate::hammerfest::populate_hammerfest;
 use etwin_postgres_tools::upsert_archive_query;
-use serde::Deserialize;
 use sha3::{Digest, Sha3_256};
 use sqlx::postgres::PgQueryResult;
 use sqlx::types::Uuid;
@@ -26,7 +25,6 @@ use sqlx::{PgPool, Postgres, Transaction};
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::convert::TryInto;
 use std::error::Error;
-use std::fs;
 use std::num::NonZeroU16;
 
 pub struct PgHammerfestStore<TyClock, TyDatabase, TyUuidGenerator>
@@ -60,40 +58,6 @@ where
     let mut tx = database.as_ref().begin().await.map_err(box_sqlx_error)?;
     populate_hammerfest(&mut tx).await?;
     tx.commit().await.map_err(box_sqlx_error)?;
-    let hammerfest_archive = fs::read("../../hammerfest.json");
-    dbg!(hammerfest_archive.is_err());
-    if let Ok(hammerfest_archive) = hammerfest_archive {
-      let mut tx = database.as_ref().begin().await.map_err(box_sqlx_error)?;
-      #[derive(Deserialize)]
-      struct HfUser {
-        updated_at: Instant,
-        server: HammerfestServer,
-        id: u32,
-        username: HammerfestUsername,
-        // email: Option<EmailAddress>,
-        // best_score: u32,
-        // best_level: u8,
-        // game_completed: bool,
-        items: HashMap<HammerfestItemId, u32>,
-      }
-      let hammerfest_archive: Vec<HfUser> = serde_json::from_slice(&hammerfest_archive).unwrap();
-      dbg!(hammerfest_archive.len());
-      for u in hammerfest_archive.into_iter() {
-        let short = ShortHammerfestUser {
-          server: u.server,
-          id: u.id.to_string().as_str().parse().unwrap(),
-          username: u.username,
-        };
-        touch_hammerfest_user(&mut tx, u.updated_at, &short).await.unwrap();
-        let items = touch_hammerfest_item_counts(&mut tx, &u.items, uuid_generator.next())
-          .await
-          .unwrap();
-        touch_hammerfest_inventory(&mut tx, u.updated_at, short.as_ref(), items)
-          .await
-          .unwrap();
-      }
-      tx.commit().await.map_err(box_sqlx_error)?;
-    }
     Ok(Self {
       clock,
       database,
