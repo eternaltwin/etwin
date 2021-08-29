@@ -1,11 +1,21 @@
-use crate::user::ShortUser;
+use crate::core::{Instant, LocaleId};
+use crate::email::EmailAddress;
+use crate::oauth::{OauthClientId, OauthClientKey, ShortOauthClient};
+use crate::password::Password;
+use crate::types::EtwinError;
+use crate::user::{ShortUser, UserDisplayName, UserDisplayNameVersions, UserId, UserIdRef, Username};
+use async_trait::async_trait;
+use auto_impl::auto_impl;
 #[cfg(feature = "_serde")]
-use etwin_serde_tools::{Deserialize, Serialize};
+use etwin_serde_tools::{serialize_instant, Deserialize, Serialize};
+use std::str::FromStr;
+use uuid::Uuid;
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize), serde(untagged))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum AuthContext {
   Guest(GuestAuthContext),
+  OauthClient(OauthClientAuthContext),
   User(UserAuthContext),
 }
 
@@ -25,6 +35,20 @@ pub struct UserAuthContext {
   pub is_administrator: bool,
 }
 
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "OauthClient"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct OauthClientAuthContext {
+  pub scope: AuthScope,
+  pub client: ShortOauthClient,
+}
+
+declare_new_uuid! {
+  pub struct SessionId(Uuid);
+  pub type ParseError = SessionIdParseError;
+  const SQL_NAME = "session_id";
+}
+
 declare_new_enum!(
   pub enum AuthScope {
     #[str("Default")]
@@ -32,6 +56,155 @@ declare_new_enum!(
   }
   pub type ParseError = AuthScopeParseError;
 );
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct CreateValidatedEmailVerificationOptions {
+  pub user: UserIdRef,
+  pub email: EmailAddress,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
+  pub token_issued_at: Instant,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct CreateSessionOptions {
+  pub user: UserIdRef,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawSession {
+  pub id: SessionId,
+  pub user: UserIdRef,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
+  pub ctime: Instant,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
+  pub atime: Instant,
+}
+
+impl RawSession {
+  pub fn into_session(self, user_display_name: UserDisplayNameVersions) -> Session {
+    Session {
+      id: self.id,
+      user: ShortUser {
+        id: self.user.id,
+        display_name: user_display_name,
+      },
+      ctime: self.ctime,
+      atime: self.atime,
+    }
+  }
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Session {
+  pub id: SessionId,
+  pub user: ShortUser,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
+  pub ctime: Instant,
+  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
+  pub atime: Instant,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct UserAndSession {
+  pub user: ShortUser,
+  pub is_administrator: bool,
+  pub session: Session,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawUserCredentials {
+  pub login: String,
+  pub password: Password,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct UserCredentials {
+  pub login: UserLogin,
+  pub password: Password,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum UserLogin {
+  EmailAddress(EmailAddress),
+  Username(Username),
+}
+
+impl FromStr for UserLogin {
+  type Err = ();
+
+  fn from_str(input: &str) -> Result<Self, Self::Err> {
+    match EmailAddress::from_str(input) {
+      Ok(email) => Ok(Self::EmailAddress(email)),
+      Err(_) => match Username::from_str(input) {
+        Ok(username) => Ok(Self::Username(username)),
+        Err(_) => Err(()),
+      },
+    }
+  }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawCredentials {
+  pub login: String,
+  pub password: Password,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Credentials {
+  pub login: Login,
+  pub password: Password,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum Login {
+  EmailAddress(EmailAddress),
+  Username(Username),
+  UserId(UserId),
+  OauthClientId(OauthClientId),
+  OauthClientKey(OauthClientKey),
+  UntypedUuid(Uuid),
+}
+
+#[async_trait]
+#[auto_impl(&, Arc)]
+pub trait AuthStore: Send + Sync {
+  async fn create_validated_email_verification(
+    &self,
+    options: &CreateValidatedEmailVerificationOptions,
+  ) -> Result<(), EtwinError>;
+
+  async fn create_session(&self, options: &CreateSessionOptions) -> Result<RawSession, EtwinError>;
+
+  async fn get_and_touch_session(&self, session: SessionId) -> Result<Option<RawSession>, EtwinError>;
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RegisterOrLoginWithEmailOptions {
+  /// Email address for the new user (may be potentially invalid).
+  pub email: EmailAddress,
+  /// Preferred locale for the verification email.
+  pub locale: Option<LocaleId>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RegisterWithVerifiedEmailOptions {
+  pub email_token: String,
+  pub display_name: UserDisplayName,
+  pub password: Password,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RegisterWithUsernameOptions {
+  pub username: Username,
+  pub display_name: UserDisplayName,
+  pub password: Password,
+}
 
 #[cfg(test)]
 mod test {

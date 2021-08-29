@@ -15,6 +15,7 @@ use etwin_hammerfest_client::MemHammerfestClient;
 use etwin_hammerfest_store::{mem::MemHammerfestStore, pg::PgHammerfestStore};
 use etwin_link_store::{mem::MemLinkStore, pg::PgLinkStore};
 use etwin_user_store::{mem::MemUserStore, pg::PgUserStore};
+use serial_test::serial;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::PgPool;
 use std::marker::PhantomData;
@@ -118,6 +119,7 @@ where
 }
 
 #[tokio::test]
+#[serial]
 async fn test_empty() {
   inner_test_empty(make_test_api().await).await;
 }
@@ -153,6 +155,7 @@ async fn inner_test_empty<TyClock, TyHammerfestClient, TyHammerfestStore, TyHamm
 }
 
 #[tokio::test]
+#[serial]
 async fn test_reference_types() {
   let uuid = Uuid4Generator;
   let clock = VirtualClock::new(Utc.timestamp(1607531946, 0));

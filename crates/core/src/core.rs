@@ -260,6 +260,7 @@ pub struct RawUserDot {
   pub user: UserIdRef,
 }
 
+// TODO SecretString/SecretBytes
 #[derive(Clone)]
 pub struct Secret(String);
 

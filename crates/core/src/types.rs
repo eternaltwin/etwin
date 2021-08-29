@@ -34,6 +34,15 @@ macro_rules! declare_decimal_id {
         f(buf.format(self.0))
       }
 
+      /// Constructs a id with checks.
+      $struct_vis fn new(id: $struct_ty) -> ::std::result::Result<Self, $err_name> {
+        if $bounds.contains(&id) {
+          Ok(Self(id))
+        } else {
+          Err($err_name(()))
+        }
+      }
+
       /// Constructs a id without checking bounds
       ///
       /// # Safety
@@ -53,7 +62,7 @@ macro_rules! declare_decimal_id {
     impl ::std::str::FromStr for $struct_name {
       type Err = $err_name;
 
-      fn from_str(s: &str) ->  ::std::result::Result<Self, Self::Err> {
+      fn from_str(s: &str) -> ::std::result::Result<Self, Self::Err> {
         match s.parse::<$struct_ty>() {
           Ok(id) if $bounds.contains(&id) => Ok(Self(id)),
           _ => Err($err_name(()))

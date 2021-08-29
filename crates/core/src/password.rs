@@ -1,4 +1,5 @@
 use auto_impl::auto_impl;
+use etwin_serde_tools::Deserializer;
 #[cfg(feature = "_serde")]
 use etwin_serde_tools::{buffer_to_hex, hex_to_buffer, Deserialize, Serialize};
 #[cfg(feature = "sqlx")]
@@ -6,6 +7,27 @@ use sqlx::{database, postgres, Database, Postgres};
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Password(pub Vec<u8>);
+
+#[cfg(feature = "_serde")]
+impl Serialize for Password {
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+  where
+    S: serde::Serializer,
+  {
+    self.0.serialize(serializer)
+  }
+}
+
+#[cfg(feature = "_serde")]
+impl<'de> Deserialize<'de> for Password {
+  fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+  where
+    D: Deserializer<'de>,
+  {
+    let bytes = Vec::<u8>::deserialize(deserializer)?;
+    Ok(Password(bytes))
+  }
+}
 
 impl From<&[u8]> for Password {
   fn from(value: &[u8]) -> Self {

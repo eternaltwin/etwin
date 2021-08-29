@@ -6,6 +6,7 @@ members = [
 ]
 
 [patch.crates-io]
+etwin_auth_store = { path = "./crates/auth_store" }
 etwin_cli = { path = "./crates/cli" }
 etwin_config = { path = "./crates/config" }
 etwin_constants = { path = "./crates/constants" }
@@ -13,10 +14,13 @@ etwin_core = { path = "./crates/core" }
 etwin_db_schema = { path = "./crates/db_schema" }
 etwin_dinoparc_client = { path = "./crates/dinoparc_client" }
 etwin_dinoparc_store = { path = "./crates/dinoparc_store" }
+etwin_email_formatter = { path = "./crates/email_formatter" }
 etwin_hammerfest_client = { path = "./crates/hammerfest_client" }
 etwin_hammerfest_store = { path = "./crates/hammerfest_store" }
 etwin_link_store = { path = "./crates/link_store" }
 etwin_log = { path = "./crates/log" }
+etwin_mailer = { path = "./crates/mailer" }
+etwin_oauth_provider_store = { path = "./crates/oauth_provider_store" }
 etwin_password = { path = "./crates/password" }
 etwin_populate = { path = "./crates/populate" }
 etwin_postgres_tools = { path = "./crates/postgres_tools" }

@@ -1,10 +1,12 @@
 use crate::core::{HtmlFragment, Instant};
 use crate::oauth::RfcOauthAccessTokenKey;
+use crate::twinoid::api::{User, UserQuery};
 use crate::types::EtwinError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 #[cfg(feature = "_serde")]
 use etwin_serde_tools::{Deserialize, Serialize};
+use std::sync::Arc;
 
 declare_decimal_id! {
   pub struct TwinoidUserId(u32);
@@ -113,9 +115,9 @@ pub mod api {
   #[cfg_attr(feature = "_serde", derive(Deserialize, Serialize))]
   #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
   pub struct User<Name, Title> {
-    id: u32,
-    name: Name,
-    title: Title,
+    pub id: u32,
+    pub name: Name,
+    pub title: Title,
   }
 
   #[cfg(not(feature = "_serde"))]
@@ -165,7 +167,7 @@ pub mod api {
 }
 
 #[async_trait]
-#[auto_impl(&, Arc)]
+#[auto_impl(&)]
 pub trait TwinoidClient: Send + Sync {
   async fn get_me<Query: api::UserQuery>(
     &self,
@@ -179,4 +181,18 @@ pub trait TwinoidClient: Send + Sync {
     &self,
     auth: TwinoidApiAuth,
   ) -> Result<api::User<TwinoidUserDisplayName, HtmlFragment>, EtwinError>;
+}
+
+#[async_trait]
+impl<T: TwinoidClient + ?Sized> TwinoidClient for Arc<T> {
+  async fn get_me<Query: UserQuery>(&self, _auth: TwinoidApiAuth, _query: &Query) -> Result<Query::Output, EtwinError>
+  where
+    Self: Sized,
+  {
+    todo!()
+  }
+
+  async fn get_me_short(&self, auth: TwinoidApiAuth) -> Result<User<TwinoidUserDisplayName, HtmlFragment>, EtwinError> {
+    (**self).get_me_short(auth).await
+  }
 }

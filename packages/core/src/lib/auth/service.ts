@@ -335,7 +335,7 @@ export class DefaultAuthService implements AuthService {
         });
       } catch (e) {
         // Delete user because without a link it is impossible to authenticate as this user.
-        // If the exception comes from `hammerfestArchive.createOrUpdateUseRef`, the changes are fully reverted.
+        // If the exception comes from `dinoparcArchive.createOrUpdateUseRef`, the changes are fully reverted.
         // If the exception comes from `link.linkToHammerfest`, the archived user remains: it's OK (no link is created).
         // If `hardDeleteUserRw` fails, we are left with an orphan user: it should be collected but does not cause
         // any issues.
