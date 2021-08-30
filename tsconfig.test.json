@@ -13,12 +13,6 @@
       "path": "packages/announcement-pg/src/test"
     },
     {
-      "path": "packages/auth-in-memory/src/test"
-    },
-    {
-      "path": "packages/auth-pg/src/test"
-    },
-    {
       "path": "packages/core/src/test"
     },
     {
@@ -35,12 +29,6 @@
     },
     {
       "path": "packages/native/src/test"
-    },
-    {
-      "path": "packages/oauth-provider-in-memory/src/test"
-    },
-    {
-      "path": "packages/oauth-provider-pg/src/test"
     },
     {
       "path": "packages/rest-server/src/test"

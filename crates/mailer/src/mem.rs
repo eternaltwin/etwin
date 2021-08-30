@@ -58,6 +58,9 @@ impl Mailer for MemMailer {
   }
 }
 
+#[cfg(feature = "neon")]
+impl neon::prelude::Finalize for MemMailer {}
+
 #[cfg(test)]
 mod test {
   use crate::mem::MemMailer;

@@ -19,6 +19,7 @@ html = []
 [dependencies]
 async-trait = "0.1.50"
 etwin_core = { version = "0.8.1", features = ["_serde"] }
+neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
 serde = { version = "1.0.126", features = ["derive"] }
 serde_json = "1.0.66"
 

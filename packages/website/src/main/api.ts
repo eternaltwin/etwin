@@ -1,7 +1,5 @@
 import { MemAnnouncementService } from "@eternal-twin/announcement-mem";
 import { PgAnnouncementService } from "@eternal-twin/announcement-pg";
-import { InMemoryAuthService } from "@eternal-twin/auth-in-memory";
-import { PgAuthService } from "@eternal-twin/auth-pg";
 import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service";
 import { AuthService } from "@eternal-twin/core/lib/auth/service";
 import { ClockService } from "@eternal-twin/core/lib/clock/service";
@@ -12,37 +10,39 @@ import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client";
 import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store";
 import { DefaultLinkService, LinkService } from "@eternal-twin/core/lib/link/service";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
-import { DefaultOauthProviderService, OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service";
-import { OauthProviderStore } from "@eternal-twin/core/lib/oauth/provider-store";
 import { TokenService } from "@eternal-twin/core/lib/token/service";
 import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client";
 import { DefaultTwinoidService, TwinoidService } from "@eternal-twin/core/lib/twinoid/service";
-import { TwinoidStore } from "@eternal-twin/core/lib/twinoid/store";
 import { DefaultUserService, UserService } from "@eternal-twin/core/lib/user/service";
 import { UserStore } from "@eternal-twin/core/lib/user/store";
-import { ConsoleEmailService } from "@eternal-twin/email-console";
-import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { InMemoryForumService } from "@eternal-twin/forum-in-memory";
 import { PgForumService } from "@eternal-twin/forum-pg";
 import { ApiType, Config } from "@eternal-twin/local-config";
+import { MemAuthStore, NativeAuthStore, PgAuthStore } from "@eternal-twin/native/lib/auth-store";
 import { SystemClock } from "@eternal-twin/native/lib/clock";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database";
 import { HttpDinoparcClient } from "@eternal-twin/native/lib/dinoparc-client";
 import { MemDinoparcStore, NativeDinoparcStore, PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store";
+import { JsonEmailFormatter } from "@eternal-twin/native/lib/email-formatter";
 import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client";
 import { MemHammerfestStore, NativeHammerfestStore, PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store";
 import { MemLinkStore, NativeLinkStore, PgLinkStore } from "@eternal-twin/native/lib/link-store";
+import { MemMailer } from "@eternal-twin/native/lib/mailer";
+import {
+  MemOauthProviderStore,
+  NativeOauthProviderStore,
+  PgOauthProviderStore
+} from "@eternal-twin/native/lib/oauth-provider-store";
 import { ScryptPasswordService } from "@eternal-twin/native/lib/password";
+import { NativeAuthService } from "@eternal-twin/native/lib/services/auth";
 import { NativeDinoparcService } from "@eternal-twin/native/lib/services/dinoparc";
 import { NativeHammerfestService } from "@eternal-twin/native/lib/services/hammerfest";
 import { MemTokenStore, PgTokenStore } from "@eternal-twin/native/lib/token-store";
 import { HttpTwinoidClient } from "@eternal-twin/native/lib/twinoid-client";
-import { MemTwinoidStore, PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store";
+import { MemTwinoidStore, NativeTwinoidStore, PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store";
 import { MemUserStore, NativeUserStore, PgUserStore } from "@eternal-twin/native/lib/user-store";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid";
 import { HttpOauthClientService } from "@eternal-twin/oauth-client-http";
-import { InMemoryOauthProviderStore } from "@eternal-twin/oauth-provider-in-memory";
-import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
 import { DevApi } from "@eternal-twin/rest-server/lib/index";
@@ -60,7 +60,6 @@ export interface Api {
   hammerfestClient: HammerfestClient;
   koaAuth: KoaAuth;
   oauthClient: OauthClientService;
-  oauthProvider: OauthProviderService;
   userStore: UserStore;
   twinoidClient: TwinoidClient;
   twinoid: TwinoidService;
@@ -72,9 +71,9 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   const uuidGenerator = new Uuid4Generator();
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
-  const email = new ConsoleEmailService();
-  const emailTemplate = new EtwinEmailTemplateService(new Url(config.etwin.externalUri.toString()));
-  const password = ScryptPasswordService.withOsRng();
+  const mailer = await MemMailer.create();
+  const emailFormatter = await JsonEmailFormatter.create();
+  const passwordService = ScryptPasswordService.withOsRng();
   const dinoparcClient = new HttpDinoparcClient({clock});
   const hammerfestClient = new HttpHammerfestClient({clock});
   const twinoidClient = new HttpTwinoidClient({clock});
@@ -84,15 +83,14 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   };
 
   let announcement: AnnouncementService;
-  let auth: AuthService;
   let forum: ForumService;
   let dinoparcStore: NativeDinoparcStore;
   let hammerfestStore: NativeHammerfestStore;
   let linkStore: NativeLinkStore;
   let link: LinkService;
-  let oauthProviderStore: OauthProviderStore;
-  let oauthProvider: OauthProviderService;
-  let twinoidStore: TwinoidStore;
+  let oauthProviderStore: NativeOauthProviderStore;
+  let authStore: NativeAuthStore;
+  let twinoidStore: NativeTwinoidStore;
   let userStore: NativeUserStore;
   let token: TokenService;
 
@@ -105,30 +103,8 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     twinoidStore = new MemTwinoidStore({clock});
     linkStore = new MemLinkStore({clock});
     link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
-    oauthProviderStore = new InMemoryOauthProviderStore({clock, password, uuidGenerator});
-    oauthProvider = new DefaultOauthProviderService({
-      clock,
-      oauthProviderStore,
-      userStore,
-      tokenSecret: secretKeyBytes,
-      uuidGenerator
-    });
-    auth = new InMemoryAuthService({
-      dinoparcClient,
-      dinoparcStore,
-      email,
-      emailTemplate,
-      hammerfestStore,
-      hammerfestClient,
-      link,
-      oauthProvider,
-      password,
-      userStore,
-      tokenSecret: secretKeyBytes,
-      twinoidStore,
-      twinoidClient,
-      uuidGenerator
-    });
+    oauthProviderStore = await MemOauthProviderStore.create({clock, passwordService, uuidGenerator});
+    authStore = await MemAuthStore.create({clock, uuidGenerator});
     forum = new InMemoryForumService(uuidGenerator, userStore, forumConfig);
     token = new MemTokenStore({clock});
     announcement = new MemAnnouncementService({uuidGenerator, forum});
@@ -157,32 +133,9 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
     linkStore = new PgLinkStore({clock, database: nativeDatabase});
     link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
-    oauthProviderStore = new PgOauthProviderStore({database, databaseSecret: secretKeyStr, password, uuidGenerator});
-    oauthProvider = new DefaultOauthProviderService({
-      clock,
-      oauthProviderStore,
-      userStore,
-      tokenSecret: secretKeyBytes,
-      uuidGenerator
-    });
-    auth = new PgAuthService({
-      database,
-      databaseSecret: secretKeyStr,
-      dinoparcClient,
-      dinoparcStore,
-      email,
-      emailTemplate,
-      hammerfestStore,
-      hammerfestClient,
-      link,
-      oauthProvider,
-      password,
-      userStore,
-      tokenSecret: secretKeyBytes,
-      twinoidStore,
-      twinoidClient,
-      uuidGenerator
-    });
+    oauthProviderStore = await PgOauthProviderStore.create({clock, database: nativeDatabase, passwordService, uuidGenerator, secret: secretKeyStr});
+    authStore = await PgAuthStore.create({clock, database: nativeDatabase, uuidGenerator, secret: secretKeyStr});
+
     forum = new PgForumService(database, uuidGenerator, userStore, forumConfig);
     token = await PgTokenStore.create({clock, database: nativeDatabase, databaseSecret: secretKeyStr});
     announcement = new PgAnnouncementService({database, uuidGenerator, forum});
@@ -192,6 +145,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     };
   }
 
+  const auth = await NativeAuthService.create({authStore, clock, dinoparcClient, dinoparcStore, emailFormatter, hammerfestClient, hammerfestStore, linkStore, mailer, oauthProviderStore, passwordService, userStore, twinoidClient, twinoidStore, uuidGenerator, authSecret: secretKeyBytes});
   const dinoparc = await NativeDinoparcService.create({dinoparcStore, linkStore, userStore});
   const hammerfest = await NativeHammerfestService.create({hammerfestClient, hammerfestStore, linkStore, userStore});
   const twinoid = new DefaultTwinoidService({twinoidStore, link});
@@ -201,7 +155,7 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     hammerfestStore,
     hammerfestClient,
     link,
-    password,
+    passwordService,
     token,
     twinoidStore,
     twinoidClient,
@@ -220,9 +174,9 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
   });
 
   for (const [key, client] of config.clients) {
-    await oauthProvider.createOrUpdateSystemClient(
-      key,
+    await oauthProviderStore.upsertSystemClient(
       {
+        key: `${key}@clients`,
         displayName: client.displayName,
         appUri: $Url.clone(client.appUri),
         callbackUri: $Url.clone(client.callbackUri),
@@ -253,7 +207,6 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     hammerfestClient,
     koaAuth,
     oauthClient,
-    oauthProvider,
     userStore,
     twinoid,
     twinoidClient,

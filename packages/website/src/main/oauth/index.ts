@@ -1,31 +1,16 @@
 import { $AuthContext,AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { CreateAccessTokenOptions } from "@eternal-twin/core/lib/auth/create-access-token-options";
 import { GuestAuthContext } from "@eternal-twin/core/lib/auth/guest-auth-context";
 import { AuthService } from "@eternal-twin/core/lib/auth/service";
 import { UserAndSession } from "@eternal-twin/core/lib/auth/user-and-session";
 import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
-import { $Url, Url } from "@eternal-twin/core/lib/core/url";
 import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
 import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type";
 import { EtwinOauthStateAndAccessToken } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-and-access-token";
-import {
-  $EtwinOauthAccessTokenRequest,
-  EtwinOauthAccessTokenRequest
-} from "@eternal-twin/core/lib/oauth/etwin-oauth-access-token-request";
+import { GrantOauthAuthorizationOptions } from "@eternal-twin/core/lib/oauth/grant-oauth-authorization-options";
 import { $OauthAccessToken, OauthAccessToken } from "@eternal-twin/core/lib/oauth/oauth-access-token";
-import {
-  $OauthAuthorizationError,
-  OauthAuthorizationError,
-} from "@eternal-twin/core/lib/oauth/oauth-authorization-error";
-import {
-  $OauthAuthorizationRequest,
-  OauthAuthorizationRequest,
-} from "@eternal-twin/core/lib/oauth/oauth-authorization-request";
-import { OauthClient } from "@eternal-twin/core/lib/oauth/oauth-client";
-import { $OauthCode, OauthCode } from "@eternal-twin/core/lib/oauth/oauth-code";
-import { OauthResponseType } from "@eternal-twin/core/lib/oauth/oauth-response-type";
-import { OauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service";
 import { TwinoidClient } from "@eternal-twin/core/lib/twinoid/client";
 import { LinkToTwinoidMethod } from "@eternal-twin/core/lib/user/link-to-twinoid-method";
 import { UserService } from "@eternal-twin/core/lib/user/service";
@@ -34,17 +19,13 @@ import Router  from "@koa/router";
 import Koa, { ParameterizedContext } from "koa";
 import koaBodyParser from "koa-bodyparser";
 import koaCompose from "koa-compose";
-import { JSON_VALUE_READER } from "kryo-json/json-value-reader";
 import { JSON_VALUE_WRITER } from "kryo-json/json-value-writer";
-import { QS_VALUE_READER } from "kryo-qs/qs-value-reader";
-import { QS_VALUE_WRITER } from "kryo-qs/qs-value-writer";
 import querystring from "querystring";
 
 export interface Api {
   auth: AuthService;
   koaAuth: KoaAuth;
   oauthClient: OauthClientService;
-  oauthProvider: OauthProviderService;
   twinoidClient: TwinoidClient;
   user: UserService;
 }
@@ -60,87 +41,40 @@ export async function createOauthRouter(api: Api): Promise<Router> {
   router.get("/authorize", grantOauthAuthorization);
 
   async function grantOauthAuthorization(cx: ParameterizedContext): Promise<void> {
-    // We start by checking for early errors that may correspond to malicious queries.
-    // If the client id is missing, the client does not exist or there is a
-    // mismatch on the `redirect_uri`, then we consider we treat it as a
-    // malicious request and display the error on our own website (we do not
-    // redirect it to the client).
-
-    const clientId: string | undefined = Reflect.get(cx.request.query, "client_id");
-    if (typeof clientId !== "string") {
-      cx.response.status = 422;
-      cx.response.body = {error: "MissingClientId"};
-      return;
-    }
-    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
-    const client: OauthClient | null = await api.oauthProvider.getClientByIdOrKey(auth, clientId);
-    if (client === null) {
-      cx.response.status = 404;
-      cx.response.body = {error: "ClientNotFound"};
-      return;
-    }
-    const rawRedirectUri: string | undefined = Reflect.get(cx.request.query, "redirect_uri");
-    if (rawRedirectUri !== undefined) {
-      if (rawRedirectUri !== client.callbackUri.toString()) {
-        cx.response.status = 422;
-        cx.response.body = {error: "RedirectUriMismatch", actual: rawRedirectUri, registered: client.callbackUri};
-      }
-    }
-
-    // We now trust the query enough to report errors to the corresponding
-    // client. If an error occurs, we now redirect to the client.
-
-    let query: OauthAuthorizationRequest;
+    const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
+    const options: GrantOauthAuthorizationOptions = {
+      clientRef: Reflect.get(cx.request.query, "client_id"),
+      redirectUri: Reflect.get(cx.request.query, "redirect_uri"),
+      responseType: Reflect.get(cx.request.query, "response_type"),
+      scope: Reflect.get(cx.request.query, "scope"),
+      state: Reflect.get(cx.request.query, "state"),
+    };
     try {
-      query = $OauthAuthorizationRequest.read(QS_VALUE_READER, cx.request.query);
-    } catch (_err) {
-      const error: OauthAuthorizationError = OauthAuthorizationError.InvalidRequest;
-      const targetUri: Url = $Url.clone(client.callbackUri);
-      targetUri.searchParams.set("error", $OauthAuthorizationError.write(QS_VALUE_WRITER, error));
-      if (typeof cx.request.query.state === "string") {
-        targetUri.searchParams.set("state", cx.request.query.state);
-      }
-      cx.response.redirect(targetUri.toString());
-      return;
-    }
-    if (query.responseType !== OauthResponseType.Code) {
-      const error: OauthAuthorizationError = OauthAuthorizationError.UnsupportedResponseType;
-      const targetUri: Url = $Url.clone(client.callbackUri);
-      targetUri.searchParams.set("error", $OauthAuthorizationError.write(QS_VALUE_WRITER, error));
-      if (query.state !== undefined) {
-        targetUri.searchParams.set("state", query.state);
-      }
-      cx.response.redirect(targetUri.toString());
-      return;
-    }
-
-    try {
-      const code: OauthCode = await api.oauthProvider.createAuthorizationCode(auth, client.id, query.scope ?? null);
-      const targetUri: Url = $Url.clone(client.callbackUri);
-      targetUri.searchParams.set("code", $OauthCode.write(QS_VALUE_WRITER, code));
-      if (query.state !== undefined) {
-        targetUri.searchParams.set("state", query.state);
-      }
-      cx.response.redirect(targetUri.toString());
+      const grant = await api.auth.grantOauthAuthorization(acx, options);
+      cx.response.redirect(grant);
       return;
     } catch (err) {
-      if (err.message === "Unauthorized" && auth.type === AuthType.Guest) {
+      if ((err.toString()).includes("no authenticated user") && acx.type === AuthType.Guest) {
         cx.redirect(`/login?${querystring.stringify({next: cx.request.originalUrl})}`);
         return;
       }
+      console.error(err.toString());
       cx.response.status = 500;
       return;
     }
   }
 
-  router.post("/token", koaCompose([koaBodyParser(), getAccessToken]));
+  router.post("/token", koaCompose([koaBodyParser(), createAccessToken]));
 
-  async function getAccessToken(cx: ParameterizedContext): Promise<void> {
-    const auth: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
-    const req: EtwinOauthAccessTokenRequest = $EtwinOauthAccessTokenRequest.read(JSON_VALUE_READER, cx.request.body);
-    let accessToken: OauthAccessToken;
+  async function createAccessToken(cx: ParameterizedContext): Promise<void> {
+    const acx: AuthContext = await api.koaAuth.auth(cx as any as Koa.Context);
+    const options: CreateAccessTokenOptions = {
+      code: Reflect.get(cx.request.body as object, "code"),
+    };
     try {
-      accessToken = await api.oauthProvider.createAccessToken(auth, req);
+      const accessToken: OauthAccessToken = await api.auth.createAccessToken(acx, options);
+      cx.response.body = $OauthAccessToken.write(JSON_VALUE_WRITER, accessToken);
+      return;
     } catch (e) {
       if (e.name === "TokenExpiredError") {
         cx.response.status = 401;
@@ -150,7 +84,6 @@ export async function createOauthRouter(api: Api): Promise<Router> {
         throw e;
       }
     }
-    cx.response.body = $OauthAccessToken.write(JSON_VALUE_WRITER, accessToken);
   }
 
   router.get("/callback", onAuthorizationGrant);

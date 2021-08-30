@@ -17,6 +17,8 @@ chrono = "0.4.19"
 etwin_core = "0.8.1"
 neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
 serde = { version = "1.0.126", features = ["derive"] }
+thiserror = "1.0.29"
+url = {version ="2.2.2", features = ["serde"]}
 
 [dev-dependencies]
 etwin_auth_store = "0.8.1"

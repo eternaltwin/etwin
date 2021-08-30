@@ -2,7 +2,7 @@ import { CaseStyle } from "kryo";
 import { RecordIoType, RecordType } from "kryo/record";
 
 import { $Password, Password } from "../password/password.js";
-import { $RawLogin, RawLogin } from "./raw-login";
+import { $RawLogin, RawLogin } from "./raw-login.js";
 
 export interface Credentials {
   login: RawLogin;

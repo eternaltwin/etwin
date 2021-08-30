@@ -36,13 +36,9 @@
   },
   "devDependencies": {
     "@eternal-twin/announcement-test": "workspace:*",
-    "@eternal-twin/auth-in-memory": "workspace:*",
-    "@eternal-twin/email-in-memory": "workspace:*",
-    "@eternal-twin/email-template-json": "workspace:*",
     "@eternal-twin/forum-in-memory": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/native": "workspace:*",
-    "@eternal-twin/oauth-provider-in-memory": "workspace:*",
     "@types/chai": "^4.2.21",
     "@types/mocha": "^8.2.3",
     "@types/node": "^16.3.3",

@@ -19,13 +19,17 @@ neon-build = "0.8.3"
 
 [dependencies]
 chrono = "0.4.19"
+etwin_auth_store = { version = "0.8.1", features = ["neon"] }
 etwin_core = { version = "0.8.1", features = ["neon", "_serde"] }
 etwin_dinoparc_client = { version = "0.8.1", features = ["neon"] }
 etwin_dinoparc_store = { version = "0.8.1", features = ["neon"] }
+etwin_email_formatter = { version = "0.8.1", features = ["neon"] }
 etwin_hammerfest_client = { version = "0.8.1", features = ["neon"] }
 etwin_hammerfest_store = { version = "0.8.1", features = ["neon"] }
 etwin_link_store = { version = "0.8.1", features = ["neon"] }
 etwin_log = "0.8.1"
+etwin_mailer = { version = "0.8.1", features = ["neon"] }
+etwin_oauth_provider_store = { version = "0.8.1", features = ["neon"] }
 etwin_password = { version = "0.8.1", features = ["neon"] }
 etwin_rest = "0.8.1"
 etwin_services = { version = "0.8.1", features = ["neon"] }

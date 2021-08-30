@@ -11,12 +11,23 @@ use etwin_serde_tools::{serialize_instant, Deserialize, Serialize};
 use std::str::FromStr;
 use uuid::Uuid;
 
+// TODO: Deserialization is _very_ weak here and relies on the order of the fields...
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize), serde(untagged))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum AuthContext {
-  Guest(GuestAuthContext),
+  AccessToken(AccessTokenAuthContext),
   OauthClient(OauthClientAuthContext),
   User(UserAuthContext),
+  Guest(GuestAuthContext),
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "AccessToken"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct AccessTokenAuthContext {
+  pub scope: AuthScope,
+  pub client: ShortOauthClient,
+  pub user: ShortUser,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -47,6 +58,12 @@ declare_new_uuid! {
   pub struct SessionId(Uuid);
   pub type ParseError = SessionIdParseError;
   const SQL_NAME = "session_id";
+}
+
+declare_new_uuid! {
+  pub struct EtwinOauthAccessTokenKey(Uuid);
+  pub type ParseError = EtwinOauthAccessTokenKeyParseError;
+  const SQL_NAME = "etwin_oauth_access_token_key";
 }
 
 declare_new_enum!(
@@ -116,6 +133,7 @@ pub struct UserAndSession {
   pub session: Session,
 }
 
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RawUserCredentials {
   pub login: String,
@@ -148,6 +166,7 @@ impl FromStr for UserLogin {
   }
 }
 
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RawCredentials {
   pub login: String,
@@ -168,6 +187,40 @@ pub enum Login {
   OauthClientId(OauthClientId),
   OauthClientKey(OauthClientKey),
   UntypedUuid(Uuid),
+}
+
+impl FromStr for Login {
+  type Err = ();
+
+  fn from_str(input: &str) -> Result<Self, Self::Err> {
+    const USER_SUFFIX: &str = "@users";
+    const CLIENT_SUFFIX: &str = "@clients";
+    if let Some(input) = input.strip_suffix(USER_SUFFIX) {
+      if let Ok(id) = UserId::from_str(input) {
+        Ok(Login::UserId(id))
+      } else if let Ok(username) = Username::from_str(input) {
+        Ok(Login::Username(username))
+      } else {
+        Err(())
+      }
+    } else if let Some(bare_input) = input.strip_suffix(CLIENT_SUFFIX) {
+      if let Ok(client_key) = OauthClientKey::from_str(input) {
+        Ok(Login::OauthClientKey(client_key))
+      } else if let Ok(id) = OauthClientId::from_str(bare_input) {
+        Ok(Login::OauthClientId(id))
+      } else {
+        Err(())
+      }
+    } else if let Ok(email) = EmailAddress::from_str(input) {
+      Ok(Login::EmailAddress(email))
+    } else if let Ok(username) = Username::from_str(input) {
+      Ok(Login::Username(username))
+    } else if let Ok(uuid) = Uuid::from_str(input) {
+      Ok(Login::UntypedUuid(uuid))
+    } else {
+      Err(())
+    }
+  }
 }
 
 #[async_trait]
@@ -192,6 +245,27 @@ pub struct RegisterOrLoginWithEmailOptions {
   pub locale: Option<LocaleId>,
 }
 
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct GrantOauthAuthorizationOptions {
+  pub client_ref: Option<String>,
+  pub redirect_uri: Option<String>,
+  pub response_type: Option<String>,
+  pub scope: Option<String>,
+  pub state: Option<String>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct CreateAccessTokenOptions {
+  // pub client_ref: Option<String>,
+  // pub client_secret: Option<Password>,
+  // pub redirect_uri: Option<String>,
+  pub code: Option<String>,
+  // pub grant_type: Option<String>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RegisterWithVerifiedEmailOptions {
   pub email_token: String,
@@ -199,6 +273,7 @@ pub struct RegisterWithVerifiedEmailOptions {
   pub password: Password,
 }
 
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RegisterWithUsernameOptions {
   pub username: Username,

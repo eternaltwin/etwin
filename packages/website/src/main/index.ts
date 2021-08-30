@@ -1,6 +1,3 @@
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
-import { SystemAuthContext } from "@eternal-twin/core/lib/auth/system-auth-context";
 import { Url } from "@eternal-twin/core/lib/core/url";
 import { ApiType, Config, getLocalConfig } from "@eternal-twin/local-config";
 import * as marktwin from "@eternal-twin/marktwin";
@@ -27,11 +24,6 @@ const IS_PRODUCTION: boolean = process.env.NODE_ENV === "production";
 const APP_DIR: Url = furi.join(PROJECT_ROOT as any, "app");
 const BROWSER_APP_DIR: Url = furi.join(APP_DIR as any, "browser");
 
-const SYSTEM_AUTH: SystemAuthContext = {
-  type: AuthType.System,
-  scope: AuthScope.Default,
-};
-
 export { Api, withApi } from "./api.js";
 
 export async function main(api: Api): Promise<void> {
@@ -52,13 +44,9 @@ export async function main(api: Api): Promise<void> {
     console.log("(none)");
   } else {
     for (const [key, client] of config.clients) {
-      const c = await api.oauthProvider.getClientByIdOrKey(SYSTEM_AUTH, key);
-      if (c === null) {
-        throw new Error(`AssertionError: Failed to retrieve client for ${key}`);
-      }
       console.log(`${key} {`);
-      console.log(`  Id: ${c.id}`);
-      console.log(`  Key: ${c.key}`);
+      console.log("  Id: (temporarily unavailable)");
+      console.log(`  Key: ${key}@clients`);
       console.log(`  Display name: ${client.displayName}`);
       console.log(`  App URI: ${client.appUri}`);
       console.log(`  Callback URI: ${client.callbackUri}`);

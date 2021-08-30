@@ -751,6 +751,7 @@ version = "0.8.1"
 dependencies = [
  "async-trait",
  "etwin_core",
+ "neon",
  "serde",
  "serde_json",
  "test-generator",
@@ -829,6 +830,7 @@ dependencies = [
  "etwin_config",
  "etwin_core",
  "lettre",
+ "neon",
  "serde",
  "serde_json",
  "test-generator",
@@ -840,13 +842,17 @@ name = "etwin_native"
 version = "0.8.0"
 dependencies = [
  "chrono",
+ "etwin_auth_store",
  "etwin_core",
  "etwin_dinoparc_client",
  "etwin_dinoparc_store",
+ "etwin_email_formatter",
  "etwin_hammerfest_client",
  "etwin_hammerfest_store",
  "etwin_link_store",
  "etwin_log",
+ "etwin_mailer",
+ "etwin_oauth_provider_store",
  "etwin_password",
  "etwin_rest",
  "etwin_services",
@@ -1011,7 +1017,9 @@ dependencies = [
  "serde_json",
  "serial_test",
  "sqlx",
+ "thiserror",
  "tokio",
+ "url",
 ]
 
 [[package]]
@@ -3250,18 +3258,18 @@ checksum = "8eaa81235c7058867fa8c0e7314f33dcce9c215f535d1913822a2b3f5e289f3c"
 
 [[package]]
 name = "thiserror"
-version = "1.0.26"
+version = "1.0.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "93119e4feac1cbe6c798c34d3a53ea0026b0b1de6a120deef895137c0529bfe2"
+checksum = "602eca064b2d83369e2b2f34b09c70b605402801927c65c11071ac911d299b88"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.26"
+version = "1.0.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "060d69a0afe7796bf42e9e2ff91f5ee691fb15c53d38b4b62a9a53eb23164745"
+checksum = "bad553cc2c78e8de258400763a647e80e6d1b31ee237275d756f6836d204494c"
 dependencies = [
  "proc-macro2 1.0.27",
  "quote 1.0.9",

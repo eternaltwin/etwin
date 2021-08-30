@@ -2,7 +2,8 @@ use async_trait::async_trait;
 use etwin_core::email::{EmailAddress, EmailContent, Mailer};
 use etwin_core::types::EtwinError;
 use lettre::message::header;
-use lettre::message::header::{Header, HeaderName};
+use lettre::message::header::Header;
+pub use lettre::message::header::HeaderName;
 use lettre::message::{Mailbox, MultiPart};
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{AsyncSmtpTransport, AsyncTransport, Message, Tokio1Executor};
@@ -145,6 +146,9 @@ impl Mailer for SmtpMailer {
     Ok(())
   }
 }
+
+#[cfg(feature = "neon")]
+impl neon::prelude::Finalize for SmtpMailer {}
 
 #[cfg(test)]
 mod test {

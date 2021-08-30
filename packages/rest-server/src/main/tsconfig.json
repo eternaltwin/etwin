@@ -17,15 +17,6 @@
       "path": "../../../announcement-pg/src/lib"
     },
     {
-      "path": "../../../auth-pg/src/lib"
-    },
-    {
-      "path": "../../../email-console/src/lib"
-    },
-    {
-      "path": "../../../email-template-etwin/src/lib"
-    },
-    {
       "path": "../../../etwin-client-in-memory/src/lib"
     },
     {
@@ -36,9 +27,6 @@
     },
     {
       "path": "../../../native/src/lib"
-    },
-    {
-      "path": "../../../oauth-provider-pg/src/lib"
     },
     {
       "path": "../../../pg-db/src/lib"

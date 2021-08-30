@@ -4,6 +4,27 @@ use neon::prelude::*;
 use serde::Serialize;
 use std::future::Future;
 
+pub trait ModuleContextExt {
+  fn export_with<'a, V, F>(&mut self, name: &str, f: F) -> NeonResult<()>
+  where
+    Self: Context<'a>,
+    V: Value,
+    F: for<'r> FnOnce(&'r mut Self) -> JsResult<'a, V>;
+}
+
+impl ModuleContextExt for ModuleContext<'_> {
+  fn export_with<'a, V, F>(&mut self, name: &str, f: F) -> NeonResult<()>
+  where
+    Self: Context<'a>,
+    V: Value,
+    F: for<'r> FnOnce(&'r mut Self) -> JsResult<'a, V>,
+  {
+    let value = f(self)?;
+    self.export_value(name, value)?;
+    Ok(())
+  }
+}
+
 pub trait NeonNamespace {
   fn set_function<'a, C, V>(self, cx: &mut C, name: &str, f: fn(FunctionContext) -> JsResult<V>) -> NeonResult<()>
   where

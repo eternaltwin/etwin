@@ -1,24 +1,25 @@
 import { PgAnnouncementService } from "@eternal-twin/announcement-pg";
-import { PgAuthService } from "@eternal-twin/auth-pg";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
 import { HttpRouter } from "@eternal-twin/core/lib/http/index";
 import { DefaultLinkService } from "@eternal-twin/core/lib/link/service";
-import { DefaultOauthProviderService } from "@eternal-twin/core/lib/oauth/provider-service";
 import { DefaultTwinoidService } from "@eternal-twin/core/lib/twinoid/service";
 import { DefaultUserService } from "@eternal-twin/core/lib/user/service";
-import { ConsoleEmailService } from "@eternal-twin/email-console";
-import { EtwinEmailTemplateService } from "@eternal-twin/email-template-etwin";
 import { PgForumService } from "@eternal-twin/forum-pg";
 import { Config } from "@eternal-twin/local-config";
+import { PgAuthStore } from "@eternal-twin/native/lib/auth-store";
 import { SystemClock } from "@eternal-twin/native/lib/clock";
 import { Database as NativeDatabase } from "@eternal-twin/native/lib/database";
 import { HttpDinoparcClient } from "@eternal-twin/native/lib/dinoparc-client";
 import { PgDinoparcStore } from "@eternal-twin/native/lib/dinoparc-store";
+import { JsonEmailFormatter } from "@eternal-twin/native/lib/email-formatter";
 import { HttpHammerfestClient } from "@eternal-twin/native/lib/hammerfest-client";
 import { PgHammerfestStore } from "@eternal-twin/native/lib/hammerfest-store";
 import { PgLinkStore } from "@eternal-twin/native/lib/link-store";
+import { MemMailer } from "@eternal-twin/native/lib/mailer";
+import { PgOauthProviderStore } from "@eternal-twin/native/lib/oauth-provider-store";
 import { ScryptPasswordService } from "@eternal-twin/native/lib/password";
 import { NativeRestRouter } from "@eternal-twin/native/lib/rest";
+import { NativeAuthService } from "@eternal-twin/native/lib/services/auth";
 import { NativeDinoparcService } from "@eternal-twin/native/lib/services/dinoparc";
 import { NativeHammerfestService } from "@eternal-twin/native/lib/services/hammerfest";
 import { PgTokenStore } from "@eternal-twin/native/lib/token-store";
@@ -26,7 +27,6 @@ import { HttpTwinoidClient } from "@eternal-twin/native/lib/twinoid-client";
 import { PgTwinoidStore } from "@eternal-twin/native/lib/twinoid-store";
 import { PgUserStore } from "@eternal-twin/native/lib/user-store";
 import { Uuid4Generator } from "@eternal-twin/native/lib/uuid";
-import { PgOauthProviderStore } from "@eternal-twin/oauth-provider-pg";
 import { createPgPool, Database } from "@eternal-twin/pg-db";
 
 import { KoaAuth } from "../lib/helpers/koa-auth.js";
@@ -53,9 +53,9 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
   const database = new Database(pool);
   const secretKeyStr: string = config.etwin.secret;
   const secretKeyBytes: Uint8Array = Buffer.from(secretKeyStr);
-  const email = new ConsoleEmailService();
-  const emailTemplate = new EtwinEmailTemplateService(config.etwin.externalUri);
-  const password = ScryptPasswordService.withOsRng();
+  const mailer = await MemMailer.create();
+  const emailFormatter = await JsonEmailFormatter.create();
+  const passwordService = ScryptPasswordService.withOsRng();
   const userStore = new PgUserStore({clock, database: nativeDatabase, databaseSecret: secretKeyStr, uuidGenerator});
   const dinoparcClient = new HttpDinoparcClient({clock});
   const dinoparcStore = await PgDinoparcStore.create({clock, database: nativeDatabase, uuidGenerator});
@@ -65,37 +65,10 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
   const twinoidClient = new HttpTwinoidClient({clock});
   const linkStore = new PgLinkStore({clock, database: nativeDatabase});
   const link = new DefaultLinkService({dinoparcStore, hammerfestStore, linkStore, twinoidStore, userStore});
-  const oauthProviderStore = new PgOauthProviderStore({
-    database,
-    databaseSecret: secretKeyStr,
-    password,
-    uuidGenerator
-  });
-  const oauthProvider = new DefaultOauthProviderService({
-    clock,
-    oauthProviderStore,
-    userStore,
-    tokenSecret: secretKeyBytes,
-    uuidGenerator
-  });
-  const auth = new PgAuthService({
-    database,
-    databaseSecret: secretKeyStr,
-    dinoparcClient,
-    dinoparcStore,
-    email,
-    emailTemplate,
-    hammerfestStore,
-    hammerfestClient,
-    link,
-    oauthProvider,
-    password,
-    userStore,
-    tokenSecret: secretKeyBytes,
-    twinoidStore,
-    twinoidClient,
-    uuidGenerator
-  });
+  const oauthProviderStore = await PgOauthProviderStore.create({clock, database: nativeDatabase, passwordService, uuidGenerator, secret: secretKeyStr});
+  const authStore = await PgAuthStore.create({clock, database: nativeDatabase, uuidGenerator, secret: secretKeyStr});
+  const auth = await NativeAuthService.create({authStore, clock, dinoparcClient, dinoparcStore, emailFormatter, hammerfestClient, hammerfestStore, linkStore, mailer, oauthProviderStore, passwordService, userStore, twinoidClient, twinoidStore, uuidGenerator, authSecret: secretKeyBytes});
+
   const koaAuth = new KoaAuth(auth);
   const forumConfig: ForumConfig = {
     postsPerPage: config.forum.postsPerPage,
@@ -114,7 +87,7 @@ export async function createApi(config: Config): Promise<{ api: Api; teardown():
     hammerfestStore,
     hammerfestClient,
     link,
-    password,
+    passwordService,
     token,
     twinoidStore,
     twinoidClient,

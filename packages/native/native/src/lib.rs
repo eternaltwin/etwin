@@ -1,13 +1,17 @@
+use crate::neon_helpers::ModuleContextExt;
 use neon::prelude::*;
-
+mod auth_store;
 mod clock;
 mod database;
 mod dinoparc_client;
 mod dinoparc_store;
+mod email_formatter;
 mod hammerfest_client;
 mod hammerfest_store;
 mod link_store;
+mod mailer;
 mod neon_helpers;
+mod oauth_provider_store;
 mod password;
 mod rest;
 mod services;
@@ -20,36 +24,25 @@ mod uuid;
 
 fn export(mut cx: ModuleContext) -> NeonResult<()> {
   let cx = &mut cx;
-  let clock = crate::clock::create_namespace(cx)?;
-  cx.export_value("clock", clock)?;
-  let database = crate::database::create_namespace(cx)?;
-  cx.export_value("database", database)?;
-  let dinoparc_client = crate::dinoparc_client::create_namespace(cx)?;
-  cx.export_value("dinoparcClient", dinoparc_client)?;
-  let dinoparc_store = crate::dinoparc_store::create_namespace(cx)?;
-  cx.export_value("dinoparcStore", dinoparc_store)?;
-  let hammerfest_client = crate::hammerfest_client::create_namespace(cx)?;
-  cx.export_value("hammerfestClient", hammerfest_client)?;
-  let hammerfest_store = crate::hammerfest_store::create_namespace(cx)?;
-  cx.export_value("hammerfestStore", hammerfest_store)?;
-  let link_store = crate::link_store::create_namespace(cx)?;
-  cx.export_value("linkStore", link_store)?;
-  let password = crate::password::create_namespace(cx)?;
-  cx.export_value("password", password)?;
-  let rest = crate::rest::create_namespace(cx)?;
-  cx.export_value("rest", rest)?;
-  let services = crate::services::create_namespace(cx)?;
-  cx.export_value("services", services)?;
-  let token_store = crate::token_store::create_namespace(cx)?;
-  cx.export_value("tokenStore", token_store)?;
-  let twinoid_client = crate::twinoid_client::create_namespace(cx)?;
-  cx.export_value("twinoidClient", twinoid_client)?;
-  let twinoid_store = crate::twinoid_store::create_namespace(cx)?;
-  cx.export_value("twinoidStore", twinoid_store)?;
-  let user_store = crate::user_store::create_namespace(cx)?;
-  cx.export_value("userStore", user_store)?;
-  let uuid = crate::uuid::create_namespace(cx)?;
-  cx.export_value("uuid", uuid)?;
+  cx.export_with("authStore", crate::auth_store::create_namespace)?;
+  cx.export_with("clock", crate::clock::create_namespace)?;
+  cx.export_with("database", crate::database::create_namespace)?;
+  cx.export_with("dinoparcClient", crate::dinoparc_client::create_namespace)?;
+  cx.export_with("dinoparcStore", crate::dinoparc_store::create_namespace)?;
+  cx.export_with("emailFormatter", crate::email_formatter::create_namespace)?;
+  cx.export_with("hammerfestClient", crate::hammerfest_client::create_namespace)?;
+  cx.export_with("hammerfestStore", crate::hammerfest_store::create_namespace)?;
+  cx.export_with("linkStore", crate::link_store::create_namespace)?;
+  cx.export_with("mailer", crate::mailer::create_namespace)?;
+  cx.export_with("oauthProviderStore", crate::oauth_provider_store::create_namespace)?;
+  cx.export_with("password", crate::password::create_namespace)?;
+  cx.export_with("rest", crate::rest::create_namespace)?;
+  cx.export_with("services", crate::services::create_namespace)?;
+  cx.export_with("tokenStore", crate::token_store::create_namespace)?;
+  cx.export_with("twinoidClient", crate::twinoid_client::create_namespace)?;
+  cx.export_with("twinoidStore", crate::twinoid_store::create_namespace)?;
+  cx.export_with("userStore", crate::user_store::create_namespace)?;
+  cx.export_with("uuid", crate::uuid::create_namespace)?;
   Ok(())
 }
 

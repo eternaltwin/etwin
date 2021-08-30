@@ -1,3 +1,4 @@
+use crate::auth::EtwinOauthAccessTokenKey;
 use crate::core::Instant;
 use crate::password::{Password, PasswordHash};
 use crate::twinoid::TwinoidUserId;
@@ -7,6 +8,8 @@ use async_trait::async_trait;
 use auto_impl::auto_impl;
 #[cfg(feature = "_serde")]
 use etwin_serde_tools::{Deserialize, Serialize};
+use std::str::FromStr;
+use thiserror::Error;
 use url::Url;
 
 declare_new_uuid! {
@@ -36,6 +39,33 @@ declare_new_string! {
   const SQL_NAME = "rfc_oauth_refresh_token_key";
 }
 
+declare_new_enum!(
+  pub enum RfcOauthResponseType {
+    #[str("code")]
+    Code,
+    #[str("token")]
+    Token,
+  }
+  pub type ParseError = RfcOauthResponseTypeParseError;
+);
+
+declare_new_enum!(
+  pub enum RfcOauthGrantType {
+    #[str("authorization_code")]
+    AuthorizationCode,
+  }
+  pub type ParseError = RfcOauthGrantTypeParseError;
+);
+
+declare_new_enum!(
+  pub enum RfcOauthTokenType {
+    // TODO: Case-insensitive deserialization
+    #[str("Bearer")]
+    Bearer,
+  }
+  pub type ParseError = RfcOauthTokenTypeParseError;
+);
+
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TwinoidAccessToken {
@@ -63,7 +93,7 @@ pub struct TwinoidRefreshToken {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct StoredOauthAccessToken {
-  pub key: RfcOauthAccessTokenKey,
+  pub key: EtwinOauthAccessTokenKey,
   #[cfg_attr(feature = "_serde", serde(rename = "ctime"))]
   pub created_at: Instant,
   #[cfg_attr(feature = "_serde", serde(rename = "atime"))]
@@ -72,6 +102,16 @@ pub struct StoredOauthAccessToken {
   pub expires_at: Instant,
   pub user: UserIdRef,
   pub client: OauthClientIdRef,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct OauthAccessToken {
+  pub token_type: RfcOauthTokenType,
+  pub access_token: EtwinOauthAccessTokenKey,
+  pub expires_in: i64,
+  #[cfg_attr(feature = "_serde", serde(skip_serializing_if = "Option::is_none"))]
+  pub refresh_token: Option<RfcOauthRefreshTokenKey>,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -178,6 +218,64 @@ pub enum OauthClientRef {
   Key(OauthClientKeyRef),
 }
 
+impl FromStr for OauthClientRef {
+  type Err = ();
+
+  fn from_str(input: &str) -> Result<Self, Self::Err> {
+    if let Ok(client_key) = OauthClientKey::from_str(input) {
+      Ok(OauthClientRef::Key(client_key.into()))
+    } else if let Ok(id) = OauthClientId::from_str(input) {
+      Ok(OauthClientRef::Id(id.into()))
+    } else {
+      Err(())
+    }
+  }
+}
+
+declare_new_string! {
+  pub struct EtwinOauthScopesString(String);
+  pub type ParseError = EtwinOauthScopesStringParseError;
+  const PATTERN = r"^.{0,100}$";
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct EtwinOauthScopes {
+  pub base: bool,
+}
+
+impl EtwinOauthScopes {
+  pub fn strings(&self) -> Vec<String> {
+    if self.base {
+      vec!["base".to_string()]
+    } else {
+      Vec::new()
+    }
+  }
+}
+
+impl Default for EtwinOauthScopes {
+  fn default() -> Self {
+    Self { base: true }
+  }
+}
+
+impl FromStr for EtwinOauthScopes {
+  type Err = ();
+
+  fn from_str(input: &str) -> Result<Self, Self::Err> {
+    let scopes = input.split(' ').map(str::trim).filter(|s| !s.is_empty());
+    let parsed = EtwinOauthScopes::default();
+    for scope in scopes {
+      match scope {
+        "base" => debug_assert!(parsed.base),
+        _ => return Err(()), // Unknown scope
+      }
+    }
+    Ok(parsed)
+  }
+}
+
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GetOauthClientOptions {
@@ -194,7 +292,7 @@ pub struct VerifyClientSecretOptions {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CreateStoredAccessTokenOptions {
-  pub key: RfcOauthAccessTokenKey,
+  pub key: EtwinOauthAccessTokenKey,
   pub ctime: Instant,
   pub expiration_time: Instant,
   pub user: UserIdRef,
@@ -204,8 +302,16 @@ pub struct CreateStoredAccessTokenOptions {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct GetOauthAccessTokenOptions {
-  pub key: RfcOauthAccessTokenKey,
+  pub key: EtwinOauthAccessTokenKey,
   pub touch_accessed_at: bool,
+}
+
+#[derive(Error, Debug)]
+pub enum GetOauthClientError {
+  #[error("oauth client not found: {0:?}")]
+  NotFound(OauthClientRef),
+  #[error(transparent)]
+  Other(EtwinError),
 }
 
 #[async_trait]
@@ -213,7 +319,7 @@ pub struct GetOauthAccessTokenOptions {
 pub trait OauthProviderStore: Send + Sync {
   async fn upsert_system_client(&self, options: &UpsertSystemClientOptions) -> Result<SimpleOauthClient, EtwinError>;
 
-  async fn get_client(&self, options: &GetOauthClientOptions) -> Result<SimpleOauthClient, EtwinError>;
+  async fn get_client(&self, options: &GetOauthClientOptions) -> Result<SimpleOauthClient, GetOauthClientError>;
 
   async fn get_client_with_secret(
     &self,

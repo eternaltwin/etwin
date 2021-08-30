@@ -7,7 +7,7 @@ use etwin_core::hammerfest::{
 };
 use etwin_core::link::LinkStore;
 use etwin_core::user::{ShortUser, UserDisplayNameVersion, UserDisplayNameVersions, UserStore};
-use etwin_core::uuid::Uuid4Generator;
+use etwin_core::uuid::{Uuid4Generator, UuidGenerator};
 use etwin_db_schema::force_create_latest;
 use etwin_hammerfest_client::MemHammerfestClient;
 use etwin_hammerfest_store::pg::PgHammerfestStore;
@@ -150,6 +150,7 @@ async fn make_test_api(
     Arc::clone(&user_store),
     Arc::clone(&twinoid_client),
     Arc::clone(&twinoid_store),
+    Arc::clone(&uuid_generator) as Arc<dyn UuidGenerator>,
     auth_secret,
   ));
 

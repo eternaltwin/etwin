@@ -16,25 +16,13 @@
       "path": "../../tsconfig.deps.json"
     },
     {
-      "path": "../../../auth-pg/src/lib"
-    },
-    {
-      "path": "../../../email-console/src/lib"
-    },
-    {
       "path": "../../../etwin-client-in-memory/src/lib"
-    },
-    {
-      "path": "../../../email-template-etwin/src/lib"
     },
     {
       "path": "../../../oauth-client-http/src/lib"
     },
     {
       "path": "../../../local-config/src/lib"
-    },
-    {
-      "path": "../../../oauth-provider-pg/src/lib"
     },
     {
       "path": "../../../rest-server/src/lib"

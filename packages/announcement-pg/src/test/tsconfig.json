@@ -17,15 +17,6 @@
       "path": "../../../announcement-test/src/lib"
     },
     {
-      "path": "../../../auth-pg/src/lib"
-    },
-    {
-      "path": "../../../email-in-memory/src/lib"
-    },
-    {
-      "path": "../../../email-template-json/src/lib"
-    },
-    {
       "path": "../../../forum-pg/src/lib"
     },
     {
@@ -33,9 +24,6 @@
     },
     {
       "path": "../../../native/src/lib"
-    },
-    {
-      "path": "../../../oauth-provider-pg/src/lib"
     }
   ]
 }

@@ -1,10 +1,11 @@
 use async_trait::async_trait;
 use etwin_core::api::ApiRef;
+use etwin_core::auth::EtwinOauthAccessTokenKey;
 use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, Secret};
 use etwin_core::oauth::{
-  CreateStoredAccessTokenOptions, GetOauthAccessTokenOptions, GetOauthClientOptions, OauthClientDisplayName,
-  OauthClientId, OauthClientKey, OauthClientRef, OauthProviderStore, RfcOauthAccessTokenKey, SimpleOauthClient,
+  CreateStoredAccessTokenOptions, GetOauthAccessTokenOptions, GetOauthClientError, GetOauthClientOptions,
+  OauthClientDisplayName, OauthClientId, OauthClientKey, OauthClientRef, OauthProviderStore, SimpleOauthClient,
   SimpleOauthClientWithSecret, StoredOauthAccessToken, UpsertSystemClientOptions,
 };
 use etwin_core::password::{PasswordHash, PasswordService};
@@ -172,7 +173,7 @@ where
     }
   }
 
-  async fn get_client(&self, options: &GetOauthClientOptions) -> Result<SimpleOauthClient, EtwinError> {
+  async fn get_client(&self, options: &GetOauthClientOptions) -> Result<SimpleOauthClient, GetOauthClientError> {
     let mut ref_id: Option<OauthClientId> = None;
     let mut ref_key: Option<OauthClientKey> = None;
     match &options.r#ref {
@@ -191,7 +192,7 @@ where
       owner_id: Option<UserId>,
     }
 
-    let row = sqlx::query_as::<_, Row>(
+    let row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
       SELECT oauth_client_id, key, ctime, display_name, app_uri, callback_uri, owner_id
       FROM oauth_clients
@@ -201,20 +202,17 @@ where
     .bind(ref_id)
     .bind(ref_key)
     .fetch_optional(self.database.as_ref())
-    .await?;
+    .await
+    .map_err(|e| GetOauthClientError::Other(e.into()))?;
 
-    let row: Row = if let Some(r) = row {
-      r
-    } else {
-      return Err("NotFound".into());
-    };
+    let row: Row = row.ok_or_else(|| GetOauthClientError::NotFound(options.r#ref.clone()))?;
 
     Ok(SimpleOauthClient {
       id: row.oauth_client_id,
       key: row.key,
       display_name: row.display_name,
-      app_uri: Url::parse(row.app_uri.as_str())?,
-      callback_uri: Url::parse(row.callback_uri.as_str())?,
+      app_uri: Url::parse(row.app_uri.as_str()).map_err(|e| GetOauthClientError::Other(e.into()))?,
+      callback_uri: Url::parse(row.callback_uri.as_str()).map_err(|e| GetOauthClientError::Other(e.into()))?,
       owner: row.owner_id.map(UserIdRef::from),
     })
   }
@@ -278,7 +276,7 @@ where
   ) -> Result<StoredOauthAccessToken, EtwinError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
-      oauth_access_token_id: RfcOauthAccessTokenKey,
+      oauth_access_token_id: EtwinOauthAccessTokenKey,
       oauth_client_id: OauthClientId,
       user_id: UserId,
       ctime: Instant,
@@ -296,7 +294,7 @@ where
           RETURNING oauth_access_token_id, oauth_client_id, user_id, ctime, atime;
       ",
     )
-    .bind(options.key.as_str())
+    .bind(options.key.into_uuid())
     .bind(options.client.id)
     .bind(options.user.id)
     .bind(options.ctime)
@@ -316,7 +314,7 @@ where
   async fn get_access_token(&self, options: &GetOauthAccessTokenOptions) -> Result<StoredOauthAccessToken, EtwinError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
-      oauth_access_token_id: RfcOauthAccessTokenKey,
+      oauth_access_token_id: EtwinOauthAccessTokenKey,
       oauth_client_id: OauthClientId,
       user_id: UserId,
       ctime: Instant,
@@ -328,11 +326,11 @@ where
         r"
         UPDATE oauth_access_tokens
         SET atime = NOW()
-        WHERE oauth_access_token_id = $1::OAUTH_ACCESS_TOKEN_ID
+        WHERE oauth_access_token_id = $1::ETWIN_OAUTH_ACCESS_TOKEN_ID
         RETURNING oauth_access_token_id, oauth_client_id, user_id, ctime, atime;
       ",
       )
-      .bind(options.key.as_str())
+      .bind(options.key.into_uuid())
       .fetch_optional(self.database.as_ref())
       .await?
     } else {
@@ -343,7 +341,7 @@ where
         WHERE oauth_access_token_id = $1::OAUTH_ACCESS_TOKEN_ID;
        ",
       )
-      .bind(options.key.as_str())
+      .bind(options.key.into_uuid())
       .fetch_optional(self.database.as_ref())
       .await?
     };

@@ -1704,15 +1704,11 @@ __metadata:
   resolution: "@eternal-twin/announcement-mem@workspace:packages/announcement-mem"
   dependencies:
     "@eternal-twin/announcement-test": "workspace:*"
-    "@eternal-twin/auth-in-memory": "workspace:*"
     "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/forum-in-memory": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/oauth-provider-in-memory": "workspace:*"
     "@types/chai": ^4.2.21
     "@types/mocha": ^8.2.3
     "@types/node": ^16.3.3
@@ -1728,16 +1724,12 @@ __metadata:
   resolution: "@eternal-twin/announcement-pg@workspace:packages/announcement-pg"
   dependencies:
     "@eternal-twin/announcement-test": "workspace:*"
-    "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
     "@eternal-twin/forum-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@types/chai": ^4.2.21
     "@types/mocha": ^8.2.3
@@ -1760,75 +1752,6 @@ __metadata:
     chai: ^4.3.4
     eslint: ^7.31.0
     kryo: ^0.13.0
-    mocha: ^9.0.2
-    typescript: ^4.3.5
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/auth-in-memory@workspace:*, @eternal-twin/auth-in-memory@workspace:packages/auth-in-memory":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/auth-in-memory@workspace:packages/auth-in-memory"
-  dependencies:
-    "@eternal-twin/auth-test": "workspace:*"
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/email-template-json": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/oauth-provider-in-memory": "workspace:*"
-    "@types/chai": ^4.2.21
-    "@types/jsonwebtoken": ^8.5.4
-    "@types/mocha": ^8.2.3
-    "@types/node": ^16.3.3
-    chai: ^4.3.4
-    eslint: ^7.31.0
-    jsonwebtoken: ^8.5.1
-    kryo: ^0.13.0
-    kryo-json: ^0.13.0
-    mocha: ^9.0.2
-    typescript: ^4.3.5
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/auth-pg@workspace:*, @eternal-twin/auth-pg@workspace:packages/auth-pg":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/auth-pg@workspace:packages/auth-pg"
-  dependencies:
-    "@eternal-twin/auth-test": "workspace:*"
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/email-template-json": "workspace:*"
-    "@eternal-twin/etwin-pg": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/oauth-provider-pg": "workspace:*"
-    "@eternal-twin/pg-db": "workspace:*"
-    "@types/chai": ^4.2.21
-    "@types/jsonwebtoken": ^8.5.4
-    "@types/mocha": ^8.2.3
-    "@types/node": ^16.3.3
-    chai: ^4.3.4
-    eslint: ^7.31.0
-    jsonwebtoken: ^8.5.1
-    kryo: ^0.13.0
-    kryo-json: ^0.13.0
-    mocha: ^9.0.2
-    typescript: ^4.3.5
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/auth-test@workspace:*, @eternal-twin/auth-test@workspace:packages/auth-test":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/auth-test@workspace:packages/auth-test"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/native": "workspace:*"
-    "@types/chai": ^4.2.21
-    "@types/mocha": ^8.2.3
-    "@types/node": ^16.3.3
-    chai: ^4.3.4
-    eslint: ^7.31.0
     mocha: ^9.0.2
     typescript: ^4.3.5
   languageName: unknown
@@ -1869,66 +1792,6 @@ __metadata:
     kryo-testing: ^0.13.0
     mocha: ^9.0.2
     typescript: ^4.3.5
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/email-console@workspace:*, @eternal-twin/email-console@workspace:packages/email-console":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/email-console@workspace:packages/email-console"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@types/node": ^16.3.3
-    eslint: ^7.31.0
-    typescript: ^4.3.5
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/email-in-memory@workspace:*, @eternal-twin/email-in-memory@workspace:packages/email-in-memory":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/email-in-memory@workspace:packages/email-in-memory"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@types/chai": ^4.2.21
-    "@types/mocha": ^8.2.3
-    "@types/node": ^16.3.3
-    chai: ^4.3.4
-    eslint: ^7.31.0
-    mocha: ^9.0.2
-    typescript: ^4.3.5
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/email-template-etwin@workspace:*, @eternal-twin/email-template-etwin@workspace:packages/email-template-etwin":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/email-template-etwin@workspace:packages/email-template-etwin"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@types/chai": ^4.2.21
-    "@types/mocha": ^8.2.3
-    "@types/node": ^16.3.3
-    "@types/url-join": ^4.0.1
-    chai: ^4.3.4
-    eslint: ^7.31.0
-    mocha: ^9.0.2
-    typescript: ^4.3.5
-    url-join: ^4.0.1
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/email-template-json@workspace:*, @eternal-twin/email-template-json@workspace:packages/email-template-json":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/email-template-json@workspace:packages/email-template-json"
-  dependencies:
-    "@eternal-twin/core": "workspace:*"
-    "@types/chai": ^4.2.21
-    "@types/mocha": ^8.2.3
-    "@types/node": ^16.3.3
-    "@types/url-join": ^4.0.1
-    chai: ^4.3.4
-    eslint: ^7.31.0
-    mocha: ^9.0.2
-    typescript: ^4.3.5
-    url-join: ^4.0.1
   languageName: unknown
   linkType: soft
 
@@ -2007,15 +1870,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@eternal-twin/forum-in-memory@workspace:packages/forum-in-memory"
   dependencies:
-    "@eternal-twin/auth-in-memory": "workspace:*"
     "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/forum-test": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/oauth-provider-in-memory": "workspace:*"
     "@types/chai": ^4.2.21
     "@types/mocha": ^8.2.3
     "@types/node": ^16.3.3
@@ -2030,16 +1889,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@eternal-twin/forum-pg@workspace:packages/forum-pg"
   dependencies:
-    "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
     "@eternal-twin/forum-test": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@types/chai": ^4.2.21
     "@types/mocha": ^8.2.3
@@ -2115,15 +1970,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@eternal-twin/native@workspace:packages/native"
   dependencies:
-    "@eternal-twin/auth-in-memory": "workspace:*"
-    "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/oauth-provider-in-memory": "workspace:*"
-    "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@types/chai": ^4.2.21
     "@types/mocha": ^8.2.3
@@ -2164,72 +2013,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@eternal-twin/oauth-provider-in-memory@workspace:*, @eternal-twin/oauth-provider-in-memory@workspace:packages/oauth-provider-in-memory":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/oauth-provider-in-memory@workspace:packages/oauth-provider-in-memory"
-  dependencies:
-    "@eternal-twin/auth-pg": "workspace:*"
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/oauth-provider-test": "workspace:*"
-    "@types/chai": ^4.2.21
-    "@types/mocha": ^8.2.3
-    "@types/node": ^16.3.3
-    chai: ^4.3.4
-    eslint: ^7.31.0
-    jsonwebtoken: ^8.5.1
-    kryo: ^0.13.0
-    kryo-json: ^0.13.0
-    mocha: ^9.0.2
-    typescript: ^4.3.5
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/oauth-provider-pg@workspace:*, @eternal-twin/oauth-provider-pg@workspace:packages/oauth-provider-pg":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/oauth-provider-pg@workspace:packages/oauth-provider-pg"
-  dependencies:
-    "@eternal-twin/auth-pg": "workspace:*"
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/etwin-pg": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/oauth-provider-test": "workspace:*"
-    "@eternal-twin/pg-db": "workspace:*"
-    "@types/chai": ^4.2.21
-    "@types/mocha": ^8.2.3
-    "@types/node": ^16.3.3
-    chai: ^4.3.4
-    eslint: ^7.31.0
-    jsonwebtoken: ^8.5.1
-    kryo: ^0.13.0
-    kryo-json: ^0.13.0
-    mocha: ^9.0.2
-    typescript: ^4.3.5
-  languageName: unknown
-  linkType: soft
-
-"@eternal-twin/oauth-provider-test@workspace:*, @eternal-twin/oauth-provider-test@workspace:packages/oauth-provider-test":
-  version: 0.0.0-use.local
-  resolution: "@eternal-twin/oauth-provider-test@workspace:packages/oauth-provider-test"
-  dependencies:
-    "@eternal-twin/auth-pg": "workspace:*"
-    "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/local-config": "workspace:*"
-    "@types/chai": ^4.2.21
-    "@types/mocha": ^8.2.3
-    "@types/node": ^16.3.3
-    chai: ^4.3.4
-    eslint: ^7.31.0
-    jsonwebtoken: ^8.5.1
-    kryo: ^0.13.0
-    kryo-json: ^0.13.0
-    mocha: ^9.0.2
-    typescript: ^4.3.5
-  languageName: unknown
-  linkType: soft
-
 "@eternal-twin/pg-db@workspace:*, @eternal-twin/pg-db@workspace:packages/pg-db":
   version: 0.0.0-use.local
   resolution: "@eternal-twin/pg-db@workspace:packages/pg-db"
@@ -2251,18 +2034,12 @@ __metadata:
   resolution: "@eternal-twin/rest-server@workspace:packages/rest-server"
   dependencies:
     "@eternal-twin/announcement-pg": "workspace:*"
-    "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/email-console": "workspace:*"
-    "@eternal-twin/email-in-memory": "workspace:*"
-    "@eternal-twin/email-template-etwin": "workspace:*"
-    "@eternal-twin/email-template-json": "workspace:*"
     "@eternal-twin/etwin-client-in-memory": "workspace:*"
     "@eternal-twin/etwin-pg": "workspace:*"
     "@eternal-twin/forum-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/native": "workspace:*"
-    "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@koa/cors": ^3.1.0
     "@koa/router": ^10.0.0
@@ -2315,19 +2092,13 @@ __metadata:
     "@angular/router": ^12.1.2
     "@eternal-twin/announcement-mem": "workspace:*"
     "@eternal-twin/announcement-pg": "workspace:*"
-    "@eternal-twin/auth-in-memory": "workspace:*"
-    "@eternal-twin/auth-pg": "workspace:*"
     "@eternal-twin/core": "workspace:*"
-    "@eternal-twin/email-console": "workspace:*"
-    "@eternal-twin/email-template-etwin": "workspace:*"
     "@eternal-twin/forum-in-memory": "workspace:*"
     "@eternal-twin/forum-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
     "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/oauth-client-http": "workspace:*"
-    "@eternal-twin/oauth-provider-in-memory": "workspace:*"
-    "@eternal-twin/oauth-provider-pg": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@eternal-twin/rest-server": "workspace:*"
     "@koa/cors": ^3.1.0

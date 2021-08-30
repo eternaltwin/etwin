@@ -29,6 +29,9 @@ impl EmailFormatter for JsonEmailFormatter {
   }
 }
 
+#[cfg(feature = "neon")]
+impl neon::prelude::Finalize for JsonEmailFormatter {}
+
 #[cfg(test)]
 mod test {
   use crate::json::JsonEmailFormatter;

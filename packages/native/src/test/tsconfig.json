@@ -14,28 +14,10 @@
       "path": "../lib"
     },
     {
-      "path": "../../../auth-in-memory/src/lib"
-    },
-    {
-      "path": "../../../auth-pg/src/lib"
-    },
-    {
-      "path": "../../../email-in-memory/src/lib"
-    },
-    {
-      "path": "../../../email-template-json/src/lib"
-    },
-    {
       "path": "../../../etwin-pg/src/lib"
     },
     {
       "path": "../../../local-config/src/lib"
-    },
-    {
-      "path": "../../../oauth-provider-in-memory/src/lib"
-    },
-    {
-      "path": "../../../oauth-provider-pg/src/lib"
     },
     {
       "path": "../../../pg-db/src/lib"

@@ -42,6 +42,9 @@ impl EmailFormatter for HtmlEmailFormatter {
   }
 }
 
+#[cfg(feature = "neon")]
+impl neon::prelude::Finalize for HtmlEmailFormatter {}
+
 #[cfg(test)]
 mod test {
   use crate::html::HtmlEmailFormatter;

@@ -488,6 +488,10 @@ macro_rules! declare_new_uuid {
       $struct_vis const fn from_uuid(inner: ::uuid::Uuid) -> Self {
         Self(inner)
       }
+
+      $struct_vis const fn into_uuid(self) -> ::uuid::Uuid {
+        self.0
+      }
     }
 
     impl ::std::fmt::Display for $struct_name {

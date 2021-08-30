@@ -83,7 +83,7 @@ export interface DefaultUserServiceOptions {
   hammerfestClient: HammerfestClient;
   hammerfestStore: HammerfestStore;
   link: LinkService;
-  password: PasswordService;
+  passwordService: PasswordService;
   token: TokenService;
   twinoidClient: TwinoidClient;
   twinoidStore: TwinoidStore;
@@ -108,7 +108,7 @@ export class DefaultUserService implements UserService {
     this.#hammerfestClient = options.hammerfestClient;
     this.#hammerfestStore = options.hammerfestStore;
     this.#link = options.link;
-    this.#password = options.password;
+    this.#password = options.passwordService;
     this.#token = options.token;
     this.#twinoidClient = options.twinoidClient;
     this.#twinoidStore = options.twinoidStore;

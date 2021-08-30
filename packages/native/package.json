@@ -38,14 +38,8 @@
     "neon-cli": "^0.8.3"
   },
   "devDependencies": {
-    "@eternal-twin/auth-in-memory": "workspace:*",
-    "@eternal-twin/auth-pg": "workspace:*",
-    "@eternal-twin/email-in-memory": "workspace:*",
-    "@eternal-twin/email-template-json": "workspace:*",
     "@eternal-twin/etwin-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
-    "@eternal-twin/oauth-provider-in-memory": "workspace:*",
-    "@eternal-twin/oauth-provider-pg": "workspace:*",
     "@eternal-twin/pg-db": "workspace:*",
     "@types/chai": "^4.2.21",
     "@types/mocha": "^8.2.3",

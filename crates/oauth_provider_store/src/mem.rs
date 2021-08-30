@@ -1,9 +1,10 @@
 use async_trait::async_trait;
+use etwin_core::auth::EtwinOauthAccessTokenKey;
 use etwin_core::clock::Clock;
 use etwin_core::core::Instant;
 use etwin_core::oauth::{
-  CreateStoredAccessTokenOptions, GetOauthAccessTokenOptions, GetOauthClientOptions, OauthClientDisplayName,
-  OauthClientId, OauthClientKey, OauthClientRef, OauthProviderStore, RfcOauthAccessTokenKey, SimpleOauthClient,
+  CreateStoredAccessTokenOptions, GetOauthAccessTokenOptions, GetOauthClientError, GetOauthClientOptions,
+  OauthClientDisplayName, OauthClientId, OauthClientKey, OauthClientRef, OauthProviderStore, SimpleOauthClient,
   SimpleOauthClientWithSecret, StoredOauthAccessToken, UpsertSystemClientOptions,
 };
 use etwin_core::password::{PasswordHash, PasswordService};
@@ -17,7 +18,7 @@ use url::Url;
 struct StoreState {
   clients: HashMap<OauthClientId, StoreClient>,
   client_keys: HashMap<OauthClientKey, OauthClientId>,
-  access_tokens: HashMap<RfcOauthAccessTokenKey, StoredOauthAccessToken>,
+  access_tokens: HashMap<EtwinOauthAccessTokenKey, StoredOauthAccessToken>,
 }
 
 #[derive(Debug, Clone)]
@@ -104,16 +105,19 @@ impl StoreState {
     }
   }
 
-  pub(crate) fn get_client(&self, options: &GetOauthClientOptions) -> Result<SimpleOauthClient, EtwinError> {
+  pub(crate) fn get_client(&self, options: &GetOauthClientOptions) -> Result<SimpleOauthClient, GetOauthClientError> {
     let id = match &options.r#ref {
       OauthClientRef::Id(r) => r.id,
       OauthClientRef::Key(r) => self
         .client_keys
         .get(&r.key)
         .cloned()
-        .ok_or_else(|| EtwinError::from("NotFound"))?,
+        .ok_or_else(|| GetOauthClientError::NotFound(options.r#ref.clone()))?,
     };
-    let store_client = self.clients.get(&id).ok_or_else(|| EtwinError::from("NotFound"))?;
+    let store_client = self
+      .clients
+      .get(&id)
+      .ok_or_else(|| GetOauthClientError::NotFound(options.r#ref.clone()))?;
     Ok(SimpleOauthClient {
       id: store_client.id,
       key: store_client.key.clone(),
@@ -154,14 +158,14 @@ impl StoreState {
     options: &CreateStoredAccessTokenOptions,
   ) -> Result<StoredOauthAccessToken, EtwinError> {
     let token = StoredOauthAccessToken {
-      key: options.key.clone(),
+      key: options.key,
       created_at: now,
       accessed_at: now,
       expires_at: options.expiration_time,
       user: options.user,
       client: options.client,
     };
-    self.access_tokens.insert(token.key.clone(), token.clone());
+    self.access_tokens.insert(token.key, token.clone());
     Ok(token)
   }
 
@@ -221,7 +225,7 @@ where
     state.upsert_system_client(now, &self.password, &self.uuid_generator, options)
   }
 
-  async fn get_client(&self, options: &GetOauthClientOptions) -> Result<SimpleOauthClient, EtwinError> {
+  async fn get_client(&self, options: &GetOauthClientOptions) -> Result<SimpleOauthClient, GetOauthClientError> {
     let state = self.state.read().unwrap();
     state.get_client(options)
   }

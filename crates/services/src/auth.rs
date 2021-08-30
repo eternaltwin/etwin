@@ -1,8 +1,10 @@
-use chrono::{NaiveDateTime, Utc};
+use chrono::{Duration, NaiveDateTime, Utc};
 use etwin_core::auth::{
-  AuthContext, AuthScope, AuthStore, CreateSessionOptions, CreateValidatedEmailVerificationOptions, Credentials, Login,
-  OauthClientAuthContext, RawUserCredentials, RegisterOrLoginWithEmailOptions, RegisterWithUsernameOptions,
-  RegisterWithVerifiedEmailOptions, SessionId, UserAndSession, UserAuthContext, UserCredentials, UserLogin,
+  AccessTokenAuthContext, AuthContext, AuthScope, AuthStore, CreateAccessTokenOptions, CreateSessionOptions,
+  CreateValidatedEmailVerificationOptions, Credentials, EtwinOauthAccessTokenKey, GrantOauthAuthorizationOptions,
+  Login, OauthClientAuthContext, RawCredentials, RawUserCredentials, RegisterOrLoginWithEmailOptions,
+  RegisterWithUsernameOptions, RegisterWithVerifiedEmailOptions, SessionId, UserAndSession, UserAuthContext,
+  UserCredentials, UserLogin,
 };
 use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, LocaleId};
@@ -11,7 +13,9 @@ use etwin_core::email::{EmailAddress, EmailFormatter, Mailer, VerifyRegistration
 use etwin_core::hammerfest::{HammerfestClient, HammerfestCredentials, HammerfestStore, ShortHammerfestUser};
 use etwin_core::link::{GetLinkOptions, LinkStore, TouchLinkOptions};
 use etwin_core::oauth::{
-  GetOauthClientOptions, OauthClientId, OauthClientRef, OauthProviderStore, RfcOauthAccessTokenKey, SimpleOauthClient,
+  CreateStoredAccessTokenOptions, EtwinOauthScopes, GetOauthAccessTokenOptions, GetOauthClientError,
+  GetOauthClientOptions, OauthAccessToken, OauthClientId, OauthClientKey, OauthClientRef, OauthProviderStore,
+  RfcOauthAccessTokenKey, RfcOauthResponseType, RfcOauthTokenType, ShortOauthClient, SimpleOauthClient,
 };
 use etwin_core::password::{Password, PasswordService};
 use etwin_core::twinoid::{
@@ -22,18 +26,82 @@ use etwin_core::user::{
   CreateUserOptions, GetShortUserOptions, GetUserOptions, GetUserResult, SimpleUser, UserDisplayName, UserEmailRef,
   UserFields, UserId, UserIdRef, UserRef, UserStore, UserUsernameRef,
 };
+use etwin_core::uuid::UuidGenerator;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use std::sync::Arc;
+use thiserror::Error;
+use url::Url;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct EmailJwtClaims {
-  // Expiration time (Unix timestamp)
+  /// Expiration time (Unix timestamp)
   exp: i64,
-  // Issued at (Unix timestamp)
+  /// Issued at (Unix timestamp)
   iat: i64,
-  // Custom: Email address to validate
+  /// Custom: Email address to validate
   email: EmailAddress,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct OauthCodeJwtClaims {
+  /// The recipients that the JWT is intended for
+  aud: Vec<String>,
+  /// Expiration time (Unix timestamp)
+  exp: i64,
+  /// Issued at (Unix timestamp)
+  iat: i64,
+  /// Issuer
+  iss: String,
+  /// Subject
+  sub: UserId,
+  /// Custom: Authorization scopes
+  scopes: Vec<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct OauthCodeGrant {
+  /// TODO: Remove this field and generate it with a getter
+  redirect_uri: Url,
+  code: String,
+  state: Option<String>,
+  callback_uri: Url,
+}
+
+#[derive(Error, Debug)]
+pub enum GrantOauthAuthorizationError {
+  #[error("missing client_id parameter")]
+  MissingClientId,
+  #[error("invalid client_id parameter")]
+  InvalidClientId,
+  #[error("provided redirect_uri does not match registered callback_uri")]
+  RedirectUriMismatch,
+  #[error("oauth client not found: {0:?}")]
+  ClientNotFound(OauthClientRef),
+  #[error("no authenticated user")]
+  Unauthenticated,
+  #[error("missing response_type parameter")]
+  MissingResponseType,
+  #[error("invalid response_type parameter")]
+  InvalidResponseType,
+  #[error("not yet supported response type")]
+  UnsupportedResponseType,
+  #[error("invalid scope parameter")]
+  InvalidScope,
+  #[error(transparent)]
+  Other(EtwinError),
+}
+
+#[derive(Error, Debug)]
+pub enum CreateAccessTokenError {
+  #[error("missing code parameter")]
+  MissingCode,
+  #[error("no authenticated client")]
+  Unauthenticated,
+  #[error("code audience does not match authenticated client")]
+  WrongClient,
+  #[error(transparent)]
+  Other(EtwinError),
 }
 
 pub struct AuthService<
@@ -51,6 +119,7 @@ pub struct AuthService<
   TyTwinoidClient,
   TyTwinoidStore,
   TyUserStore,
+  TyUuidGenerator,
 > where
   TyAuthStore: AuthStore,
   TyClock: Clock,
@@ -66,6 +135,7 @@ pub struct AuthService<
   TyTwinoidClient: TwinoidClient,
   TyTwinoidStore: TwinoidStore,
   TyUserStore: UserStore,
+  TyUuidGenerator: UuidGenerator,
 {
   auth_store: TyAuthStore,
   clock: TyClock,
@@ -78,11 +148,15 @@ pub struct AuthService<
   mailer: TyMailer,
   oauth_provider_store: TyOauthProviderStore,
   password_service: TyPasswordService,
-  user_store: TyUserStore,
   twinoid_client: TyTwinoidClient,
   twinoid_store: TyTwinoidStore,
+  user_store: TyUserStore,
+  uuid_generator: TyUuidGenerator,
   jwt_secret_key: Vec<u8>,
   default_locale: LocaleId,
+  email_verification_validity: Duration,
+  authorization_code_validity: Duration,
+  access_token_validity: Duration,
 }
 
 pub type DynAuthService = AuthService<
@@ -100,6 +174,7 @@ pub type DynAuthService = AuthService<
   Arc<dyn TwinoidClient>,
   Arc<dyn TwinoidStore>,
   Arc<dyn UserStore>,
+  Arc<dyn UuidGenerator>,
 >;
 
 impl<
@@ -117,6 +192,7 @@ impl<
     TyTwinoidClient,
     TyTwinoidStore,
     TyUserStore,
+    TyUuidGenerator: UuidGenerator,
   >
   AuthService<
     TyAuthStore,
@@ -133,6 +209,7 @@ impl<
     TyTwinoidClient,
     TyTwinoidStore,
     TyUserStore,
+    TyUuidGenerator,
   >
 where
   TyAuthStore: AuthStore,
@@ -149,6 +226,7 @@ where
   TyTwinoidClient: TwinoidClient,
   TyTwinoidStore: TwinoidStore,
   TyUserStore: UserStore,
+  TyUuidGenerator: UuidGenerator,
 {
   #[allow(clippy::too_many_arguments)]
   pub fn new(
@@ -166,6 +244,7 @@ where
     user_store: TyUserStore,
     twinoid_client: TyTwinoidClient,
     twinoid_store: TyTwinoidStore,
+    uuid_generator: TyUuidGenerator,
     secret: Vec<u8>,
   ) -> Self {
     Self {
@@ -183,9 +262,170 @@ where
       twinoid_client,
       twinoid_store,
       user_store,
+      uuid_generator,
       jwt_secret_key: secret,
       default_locale: LocaleId::EnUs,
+      email_verification_validity: chrono::Duration::days(1),
+      authorization_code_validity: chrono::Duration::minutes(10),
+      // TODO: Make it expire!
+      access_token_validity: chrono::Duration::seconds(1_000_000_000),
     }
+  }
+
+  // TODO: Return enum codeGrant/tokenGrant
+  pub async fn grant_oauth_authorization(
+    &self,
+    acx: &AuthContext,
+    options: &GrantOauthAuthorizationOptions,
+  ) -> Result<OauthCodeGrant, GrantOauthAuthorizationError> {
+    // We start by checking for early errors that may correspond to malicious queries.
+    // If the client id is missing, the client does not exist or there is a
+    // mismatch on the `redirect_uri`, then we treat it as a
+    // malicious request and display the error on our own website (we do not
+    // redirect it to the client).
+    let client_ref = options
+      .client_ref
+      .as_ref()
+      .ok_or(GrantOauthAuthorizationError::MissingClientId)?;
+    let client_ref: OauthClientRef = client_ref
+      .parse()
+      .map_err(|()| GrantOauthAuthorizationError::InvalidClientId)?;
+    let client = self
+      .oauth_provider_store
+      .get_client(&GetOauthClientOptions { r#ref: client_ref })
+      .await
+      .map_err(|e| match e {
+        GetOauthClientError::NotFound(r) => GrantOauthAuthorizationError::ClientNotFound(r),
+        GetOauthClientError::Other(e) => GrantOauthAuthorizationError::Other(e),
+      })?;
+    if let Some(redirect_uri) = options.redirect_uri.as_ref() {
+      if redirect_uri.as_str() != client.callback_uri.as_str() {
+        return Err(GrantOauthAuthorizationError::RedirectUriMismatch);
+      }
+    }
+
+    // We now trust the query enough to report errors to the corresponding
+    // client. If an error occurs, we now redirect to the client.
+
+    let scope = options.scope.as_ref();
+
+    let response_type = options
+      .response_type
+      .as_ref()
+      .ok_or(GrantOauthAuthorizationError::MissingResponseType)?;
+    let response_type: RfcOauthResponseType = response_type
+      .parse()
+      .map_err(|_| GrantOauthAuthorizationError::InvalidResponseType)?;
+
+    match response_type {
+      RfcOauthResponseType::Token => Err(GrantOauthAuthorizationError::UnsupportedResponseType),
+      RfcOauthResponseType::Code => {
+        let scopes = match scope {
+          Some(scope) => EtwinOauthScopes::from_str(scope).map_err(|()| GrantOauthAuthorizationError::InvalidScope)?,
+          None => EtwinOauthScopes::default(),
+        };
+        let acx = match acx {
+          AuthContext::User(acx) => acx,
+          _ => return Err(GrantOauthAuthorizationError::Unauthenticated),
+        };
+        let code = self
+          .create_authorization_code(acx.user.id.into(), &client, &scopes)
+          .map_err(GrantOauthAuthorizationError::Other)?;
+        let redirect_uri = {
+          let mut redirect_uri = client.callback_uri.clone();
+          {
+            let mut query_pairs = redirect_uri.query_pairs_mut();
+            query_pairs.append_pair("code", code.as_str());
+            if let Some(state) = options.state.as_ref() {
+              query_pairs.append_pair("state", state.as_str());
+            }
+          }
+          redirect_uri
+        };
+        Ok(OauthCodeGrant {
+          redirect_uri,
+          code,
+          state: options.state.clone(),
+          callback_uri: client.callback_uri,
+        })
+      }
+    }
+  }
+
+  pub async fn create_access_token(
+    &self,
+    acx: &AuthContext,
+    options: &CreateAccessTokenOptions,
+  ) -> Result<OauthAccessToken, CreateAccessTokenError> {
+    let now = self.clock.now();
+    let code = options.code.as_ref().ok_or(CreateAccessTokenError::MissingCode)?;
+    let client = match acx {
+      AuthContext::OauthClient(ref acx) => &acx.client,
+      _ => return Err(CreateAccessTokenError::Unauthenticated),
+    };
+    let claims = self.read_code_token(code).map_err(CreateAccessTokenError::Other)?;
+    // TODO: Check if `redirect_uri` matches
+    let client_id_str = client.id.to_string();
+    if !claims.aud.iter().any(|aud| aud.as_str() == client_id_str.as_str()) {
+      return Err(CreateAccessTokenError::WrongClient);
+    }
+    // TODO: Use actually secure random (split into id + secret)
+    let key: EtwinOauthAccessTokenKey = self.uuid_generator.next().to_string().parse().unwrap();
+    let token = self
+      .oauth_provider_store
+      .create_access_token(&CreateStoredAccessTokenOptions {
+        key,
+        ctime: now,
+        expiration_time: now + self.access_token_validity,
+        user: claims.sub.into(),
+        client: client.id.into(),
+      })
+      .await
+      .map_err(CreateAccessTokenError::Other)?;
+    Ok(OauthAccessToken {
+      token_type: RfcOauthTokenType::Bearer,
+      access_token: token.key,
+      expires_in: self.access_token_validity.num_seconds(),
+      refresh_token: None,
+    })
+  }
+
+  pub async fn authenticate_access_token(&self, token: &EtwinOauthAccessTokenKey) -> Result<AuthContext, EtwinError> {
+    let token = self
+      .oauth_provider_store
+      .get_access_token(&GetOauthAccessTokenOptions {
+        key: *token,
+        touch_accessed_at: true,
+      })
+      .await?;
+
+    let client = self
+      .oauth_provider_store
+      .get_client(&GetOauthClientOptions {
+        r#ref: OauthClientRef::Id(token.client),
+      })
+      .await?;
+
+    let user = self
+      .user_store
+      .get_short_user(&GetShortUserOptions {
+        r#ref: UserRef::Id(token.user),
+        time: None,
+      })
+      .await?
+      .ok_or_else::<EtwinError, _>(|| "NotFound".into())?;
+
+    let client = ShortOauthClient {
+      id: client.id,
+      key: client.key,
+      display_name: client.display_name,
+    };
+
+    Ok(AuthContext::AccessToken(AccessTokenAuthContext {
+      scope: AuthScope::Default,
+      client,
+      user,
+    }))
   }
 
   pub async fn register_or_login_with_email(
@@ -580,6 +820,14 @@ where
     }))
   }
 
+  pub async fn raw_authenticate_credentials(&self, credentials: &RawCredentials) -> Result<AuthContext, EtwinError> {
+    let credentials = Credentials {
+      login: credentials.login.parse().map_err(|()| EtwinError::from("BadLogin"))?,
+      password: credentials.password.clone(),
+    };
+    self.authenticate_credentials(credentials).await
+  }
+
   pub async fn authenticate_credentials(&self, credentials: Credentials) -> Result<AuthContext, EtwinError> {
     fn from_user(user: SimpleUser) -> AuthContext {
       let is_administrator = user.is_administrator;
@@ -723,7 +971,7 @@ where
 
   fn create_email_verification_token(&self, email: &EmailAddress) -> Result<String, EtwinError> {
     let now = self.clock.now();
-    let expires_at = now + chrono::Duration::days(1);
+    let expires_at = now + self.email_verification_validity;
 
     let claims = EmailJwtClaims {
       exp: expires_at.timestamp(),
@@ -761,6 +1009,75 @@ where
 
     Ok(token.claims)
   }
+
+  /// Create an OAuth authorization code.
+  fn create_authorization_code(
+    &self,
+    user: UserIdRef,
+    client: &SimpleOauthClient,
+    scopes: &EtwinOauthScopes,
+  ) -> Result<String, EtwinError> {
+    // let mut missing_scopes: HashSet<String> = HashSet::new();
+    // let EtwinOauthScopes { base: base_scope } = scopes;
+    // TODO: Check for missing scopes and prompt user...
+    self.create_code_token(client.id, client.key.as_ref(), user.id, scopes)
+  }
+
+  fn create_code_token(
+    &self,
+    client_id: OauthClientId,
+    client_key: Option<&OauthClientKey>,
+    user_id: UserId,
+    scopes: &EtwinOauthScopes,
+  ) -> Result<String, EtwinError> {
+    let now = self.clock.now();
+    let expires_at = now + self.authorization_code_validity;
+
+    let mut aud: Vec<String> = Vec::with_capacity(2);
+    aud.push(client_id.to_string());
+    if let Some(client_key) = client_key {
+      aud.push(client_key.to_string());
+    }
+
+    let claims = OauthCodeJwtClaims {
+      aud,
+      exp: expires_at.timestamp(),
+      iat: now.timestamp(),
+      iss: "etwin".to_string(),
+      sub: user_id,
+      scopes: scopes.strings(),
+    };
+
+    let key = jsonwebtoken::EncodingKey::from_secret(self.jwt_secret_key.as_slice());
+
+    let token = jsonwebtoken::encode(
+      &jsonwebtoken::Header::new(jsonwebtoken::Algorithm::HS256),
+      &claims,
+      &key,
+    )?;
+    Ok(token)
+  }
+
+  fn read_code_token(&self, token: &str) -> Result<OauthCodeJwtClaims, EtwinError> {
+    let now = self.clock.now().timestamp();
+    let key = jsonwebtoken::DecodingKey::from_secret(self.jwt_secret_key.as_slice());
+    let validation = jsonwebtoken::Validation {
+      leeway: 0,
+      validate_exp: false,
+      validate_nbf: false,
+      aud: None,
+      iss: None,
+      sub: None,
+      algorithms: vec![jsonwebtoken::Algorithm::HS256],
+    };
+
+    let token = jsonwebtoken::decode::<OauthCodeJwtClaims>(token, &key, &validation)?;
+    if !(token.claims.iat <= now && now < token.claims.exp) {
+      return Err("TokenIsNotValidAtThisTime".into());
+    }
+
+    Ok(token.claims)
+  }
 }
 
 #[cfg(feature = "neon")]
@@ -779,6 +1096,7 @@ impl<
     TyTwinoidClient,
     TyTwinoidStore,
     TyUserStore,
+    TyUuidGenerator,
   > neon::prelude::Finalize
   for AuthService<
     TyAuthStore,
@@ -795,6 +1113,7 @@ impl<
     TyTwinoidClient,
     TyTwinoidStore,
     TyUserStore,
+    TyUuidGenerator,
   >
 where
   TyAuthStore: AuthStore,
@@ -811,6 +1130,7 @@ where
   TyTwinoidClient: TwinoidClient,
   TyTwinoidStore: TwinoidStore,
   TyUserStore: UserStore,
+  TyUuidGenerator: UuidGenerator,
 {
 }
 

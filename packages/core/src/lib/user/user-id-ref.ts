@@ -1,6 +1,8 @@
 import { CaseStyle } from "kryo";
 import { LiteralType } from "kryo/literal";
+import { $Null } from "kryo/null";
 import { RecordIoType, RecordType } from "kryo/record";
+import { TryUnionType } from "kryo/try-union";
 
 import { $ObjectType, ObjectType } from "../core/object-type.js";
 import { $UserId, UserId } from "./user-id.js";
@@ -20,3 +22,7 @@ export const $UserIdRef: RecordIoType<UserIdRef> = new RecordType<UserIdRef>({
   },
   changeCase: CaseStyle.SnakeCase,
 });
+
+export type NullableUserIdRef = null | UserIdRef;
+
+export const $NullableUserIdRef: TryUnionType<NullableUserIdRef> = new TryUnionType({variants: [$Null, $UserIdRef]});
