@@ -21,6 +21,67 @@ declare_decimal_id! {
   const SQL_NAME = "popotamo_user_id";
 }
 
+declare_decimal_id! {
+  pub struct PopotamoUserHandicap(u32);
+  pub type ParseError = PopotamoUserHandicapParseError;
+  const BOUNDS = 250..651;
+  const SQL_NAME = "popotamo_user_handicap";
+}
+declare_decimal_id! {
+  pub struct PopotamoGamePlayed(u32);
+  pub type ParseError = PopotamoGamePlayedParseError;
+  const BOUNDS = 0..1_000_000_000;
+  const SQL_NAME = "popotamo_game_played";
+}
+
+declare_decimal_id! {
+  pub struct PopotamoSubProfileId(u32);
+  pub type ParseError = PopotamoSubProfileIdParseError;
+  const BOUNDS = 0..1_000_000_000;
+  const SQL_NAME = "popotamo_user_sub_profile_id";
+}
+
+declare_decimal_id! {
+  pub struct PopotamoUserSkill(u32);
+  pub type ParseError = PopotamoUserSkillParseError;
+  const BOUNDS = 0..11;
+  const SQL_NAME = "popotamo_user_skill";
+}
+
+declare_decimal_id! {
+  pub struct PopotamoEfficiency(u32);
+  pub type ParseError = PopotamoEfficiencyParseError;
+  const BOUNDS = 0..1_000_000_000;
+  const SQL_NAME = "popotamo_user_efficiency";
+}
+
+declare_decimal_id! {
+  pub struct PopotamoUserRank(u32);
+  pub type ParseError = PopotamoUserRankParseError;
+  const BOUNDS = 0..500_000;
+  const SQL_NAME = "popotamo_user_rank";
+}
+
+declare_decimal_id! {
+  pub struct PopotamoScore(u32);
+  pub type ParseError = PopotamoScoreParseError;
+  const BOUNDS = 0..69_342;
+  const SQL_NAME = "popotamo_score";
+}
+
+declare_decimal_id! {
+  pub struct PopotamoUserLeaderboard(u32);
+  pub type ParseError = PopotamoUserLeaderboardParseError;
+  const BOUNDS = 1..5;
+  const SQL_NAME = "popotamo_user_leadearboard";
+}
+declare_decimal_id! {
+  pub struct PopotamoNbCupWon(u32);
+  pub type ParseError = PopotamoNbCupWonParseError;
+  const BOUNDS = 0..200; //There is one cup per mounth since March 2007, which leads to a number of 169 in September 2021
+  const SQL_NAME = "popotamo_nb_cups_won";
+}
+
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "_serde", serde(tag = "type", rename = "PopotamoUser"))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -32,9 +93,57 @@ pub struct PopotamoUserIdRef {
 declare_new_string! {
   pub struct PopotamoUsername(String);
   pub type ParseError = PopotamoUsernameParseError;
-  // TODO: Pattern
-  const PATTERN = r"^[0-9A-Za-z_-]{1,8}$";
+  const PATTERN = r"^[0-9A-Za-z_-]{1,12}$";
   const SQL_NAME = "popotamo_username";
+}
+
+declare_new_string! {
+  pub struct PopotamoUserItem(String);
+  pub type ParseError = PopotamoUserItemParseError;
+  const PATTERN = r"^[0-9A-Za-zéèê]{1,12}$";
+  const SQL_NAME = "popotamo_useritem";
+}
+
+declare_new_string! {
+  pub struct PopotamoUserUniqueReward(String);
+  pub type ParseError = PopotamoUserUniqueRewardParseError;
+  const PATTERN = r"^[0-9A-Za-zéèê]{1,20}$";
+  const SQL_NAME = "popotamo_user_unique_reward";
+}
+
+declare_new_string! {
+  pub struct PopotamoUserCity(String);
+  pub type ParseError = PopotamoUserCityParseError;
+  const PATTERN = r"^[0-9A-Za-zéèê\s]{1,30}$";
+  const SQL_NAME = "popotamo_user_city";
+}
+
+declare_new_string! {
+  pub struct PopotamoUserCreationDate(String);
+  pub type ParseError = PopotamoUserCreationDateParseError;
+  const PATTERN = r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$";
+  const SQL_NAME = "popotamo_user_creation_date";
+}
+
+declare_new_string! {
+  pub struct PopotamoUserBirthDate(String);
+  pub type ParseError = PopotamoUserBirthDateParseError;
+  const PATTERN = r"^\d{2}/\d{2}/\d{4}$";
+  const SQL_NAME = "popotamo_user_birth_date";
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum PopotamoUserSex {
+  Homme,
+  Femme,
+}
+
+declare_new_string! {
+  pub struct PopotamoUserCountry(String);
+  pub type ParseError = PopotamoUserCountryError;
+  const PATTERN = r"^[0-9A-Za-zéèê\s]{1,25}$";
+  const SQL_NAME = "popotamo_user_country";
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -76,12 +185,49 @@ impl ShortPopotamoUser {
   }
 }
 
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct PopotamoUserPersonalInfos {
+  pub sex: Option<PopotamoUserSex>,
+  pub birth_date: Option<PopotamoUserBirthDate>,
+  pub city: Option<PopotamoUserCity>,
+  pub country: Option<PopotamoUserCountry>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct PopotamoUserSkills {
+  pub speed: PopotamoUserSkill,
+  pub creativity: PopotamoUserSkill,
+  pub wisdom: PopotamoUserSkill,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct PopotamoUserEfficiency {
+  pub first_place: PopotamoEfficiency,
+  pub second_place: PopotamoEfficiency,
+  pub third_place: PopotamoEfficiency,
+  pub fourth_place: PopotamoEfficiency,
+  pub fifth_place: PopotamoEfficiency,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct PopotamoSubProfile {
+  pub id: PopotamoSubProfileId,
+  pub items: Vec<PopotamoUserItem>,
+  pub handicap: PopotamoUserHandicap,
+  pub game_played: PopotamoGamePlayed,
+  pub skills: PopotamoUserSkills,
+  pub efficiency: PopotamoUserEfficiency,
+}
+
 /// Data in the top right for logged-in users
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct PopotamoSessionUser {
   pub user: ShortPopotamoUser,
-  // pub rewards: ...,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -95,8 +241,15 @@ pub struct PopotamoProfileResponse {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct PopotamoProfile {
   pub user: ShortPopotamoUser,
-  // pub rewards: ...,
-  // pub items: ...,
+  pub creation_date: PopotamoUserCreationDate,
+  pub score: PopotamoScore,
+  pub rank: PopotamoUserRank,
+  pub ismoderator: bool,
+  pub nb_cups_won: PopotamoNbCupWon,
+  pub leaderboard: PopotamoUserLeaderboard,
+  pub unique_rewards: Vec<PopotamoUserUniqueReward>,
+  pub sub_profiles: Vec<PopotamoSubProfile>,
+  pub personal_infos: PopotamoUserPersonalInfos,
 }
 
 #[async_trait]

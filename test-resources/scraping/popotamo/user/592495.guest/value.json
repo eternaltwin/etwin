@@ -1,0 +1,47 @@
+{
+    "session_user": null,
+    "profile": {
+      "user": {
+        "type": "PopotamoUser",
+        "server": "popotamo.com",
+        "id": "592495",
+        "username": "EvianFr"
+      },
+      "creation_date": "2021-09-04 11:58:31",
+      "score": "0",
+      "rank": "483289",
+      "ismoderator": false,
+      "nb_cups_won": "0",
+      "leaderboard": "1",
+      "unique_rewards": [],
+      "sub_profiles": [
+        {
+          "id": "594702",
+          "items": [
+            "Poubelle"
+          ],
+          "handicap": "250",
+          "game_played": "0",
+          "skills": {
+            "speed": "0",
+            "creativity": "0",
+            "wisdom": "0"
+          },
+          "efficiency": {
+            "first_place": "0",
+            "second_place": "0",
+            "third_place": "0",
+            "fourth_place": "0",
+            "fifth_place": "0"
+          }
+        }
+      ],
+      "personal_infos": {
+        "sex": null,
+        "birth_date": null,
+        "city": null,
+        "country": null
+      }
+    }
+  }
+  

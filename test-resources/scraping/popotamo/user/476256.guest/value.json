@@ -1,0 +1,81 @@
+{
+    "session_user": null,
+    "profile": {
+      "user": {
+        "type": "PopotamoUser",
+        "server": "popotamo.com",
+        "id": "476256",
+        "username": "Kabokabo"
+      },
+      "creation_date": "2009-07-04 17:33:32",
+      "score": "0",
+      "rank": "872",
+      "ismoderator": false,
+      "nb_cups_won": "0",
+      "leaderboard": "4",
+      "unique_rewards": [],
+      "sub_profiles": [
+        {
+          "id": "555527",
+          "items": [
+            "Révolution",
+            "Joker",
+            "Consonne",
+            "Voyelle",
+            "Jumelles",
+            "Vol",
+            "Tornade",
+            "Boost",
+            "Recyclage",
+            "Poubelle"
+          ],
+          "handicap": "577",
+          "game_played": "2283",
+          "skills": {
+            "speed": "10",
+            "creativity": "6",
+            "wisdom": "10"
+          },
+          "efficiency": {
+            "first_place": "1081",
+            "second_place": "687",
+            "third_place": "341",
+            "fourth_place": "130",
+            "fifth_place": "44"
+          }
+        },
+        {
+          "id": "587985",
+          "items": [
+            "Révolution",
+            "Joker",
+            "Tornade",
+            "Boost",
+            "Recyclage",
+            "Poubelle"
+          ],
+          "handicap": "282",
+          "game_played": "43",
+          "skills": {
+            "speed": "0",
+            "creativity": "5",
+            "wisdom": "0"
+          },
+          "efficiency": {
+            "first_place": "24",
+            "second_place": "12",
+            "third_place": "5",
+            "fourth_place": "2",
+            "fifth_place": "0"
+          }
+        }
+      ],
+      "personal_infos": {
+        "sex": "Homme",
+        "birth_date": "01/01/1902",
+        "city": null,
+        "country": "France"
+      }
+    }
+  }
+  
