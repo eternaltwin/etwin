@@ -114,7 +114,7 @@ where
       id: session,
       user: row.user_id.into(),
       ctime: row.ctime,
-      atime: row.ctime,
+      atime: row.atime,
     }))
   }
 }
