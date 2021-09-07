@@ -2,7 +2,7 @@ use crate::auth::EtwinOauthAccessTokenKey;
 use crate::core::Instant;
 use crate::password::{Password, PasswordHash};
 use crate::twinoid::TwinoidUserId;
-use crate::types::EtwinError;
+use crate::types::AnyError;
 use crate::user::{ShortUser, UserIdRef};
 use async_trait::async_trait;
 use auto_impl::auto_impl;
@@ -311,25 +311,25 @@ pub enum GetOauthClientError {
   #[error("oauth client not found: {0:?}")]
   NotFound(OauthClientRef),
   #[error(transparent)]
-  Other(EtwinError),
+  Other(AnyError),
 }
 
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait OauthProviderStore: Send + Sync {
-  async fn upsert_system_client(&self, options: &UpsertSystemClientOptions) -> Result<SimpleOauthClient, EtwinError>;
+  async fn upsert_system_client(&self, options: &UpsertSystemClientOptions) -> Result<SimpleOauthClient, AnyError>;
 
   async fn get_client(&self, options: &GetOauthClientOptions) -> Result<SimpleOauthClient, GetOauthClientError>;
 
   async fn get_client_with_secret(
     &self,
     options: &GetOauthClientOptions,
-  ) -> Result<SimpleOauthClientWithSecret, EtwinError>;
+  ) -> Result<SimpleOauthClientWithSecret, AnyError>;
 
   async fn create_access_token(
     &self,
     options: &CreateStoredAccessTokenOptions,
-  ) -> Result<StoredOauthAccessToken, EtwinError>;
+  ) -> Result<StoredOauthAccessToken, AnyError>;
 
-  async fn get_access_token(&self, options: &GetOauthAccessTokenOptions) -> Result<StoredOauthAccessToken, EtwinError>;
+  async fn get_access_token(&self, options: &GetOauthAccessTokenOptions) -> Result<StoredOauthAccessToken, AnyError>;
 }

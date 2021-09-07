@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use etwin_core::core::LocaleId;
 use etwin_core::email::{EmailContent, EmailFormatter, VerifyRegistrationEmail};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use serde::{Deserialize, Serialize};
 
 pub struct JsonEmailFormatter;
@@ -18,7 +18,7 @@ impl EmailFormatter for JsonEmailFormatter {
     &self,
     locale: LocaleId,
     data: &VerifyRegistrationEmail,
-  ) -> Result<EmailContent, EtwinError> {
+  ) -> Result<EmailContent, AnyError> {
     let body = serde_json::to_string_pretty(&JsonBody { locale, data })?;
     let body = format!("{}\n", body);
     Ok(EmailContent {

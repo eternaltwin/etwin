@@ -7,7 +7,7 @@ use etwin_core::clock::Clock;
 use etwin_core::core::HtmlFragment;
 use etwin_core::twinoid::{api, TwinoidUserDisplayName};
 use etwin_core::twinoid::{TwinoidApiAuth, TwinoidClient};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use reqwest::Client;
 use std::time::Duration;
 
@@ -24,7 +24,7 @@ impl<TyClock> HttpTwinoidClient<TyClock>
 where
   TyClock: Clock,
 {
-  pub fn new(clock: TyClock) -> Result<Self, EtwinError> {
+  pub fn new(clock: TyClock) -> Result<Self, AnyError> {
     Ok(Self {
       client: Client::builder()
         .user_agent(USER_AGENT)
@@ -45,7 +45,7 @@ where
     &self,
     auth: TwinoidApiAuth,
     query: &Query,
-  ) -> Result<Query::Output, EtwinError> {
+  ) -> Result<Query::Output, AnyError> {
     let mut url = TwinoidUrls::new().me();
     {
       let mut qs = url.query_pairs_mut();
@@ -73,7 +73,7 @@ where
   async fn get_me_short(
     &self,
     auth: TwinoidApiAuth,
-  ) -> Result<api::User<TwinoidUserDisplayName, HtmlFragment>, EtwinError> {
+  ) -> Result<api::User<TwinoidUserDisplayName, HtmlFragment>, AnyError> {
     self.get_me(auth, &api::ConstUserQuery::<true, true>).await
   }
 }

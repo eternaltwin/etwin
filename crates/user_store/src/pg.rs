@@ -4,7 +4,7 @@ use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, Secret};
 use etwin_core::email::{touch_email_address, EmailAddress};
 use etwin_core::password::PasswordHash;
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, DeleteUserError, GetShortUserOptions, GetUserOptions, GetUserResult,
   ShortUser, ShortUserWithPassword, UpdateUserError, UpdateUserOptions, UserDisplayName, UserDisplayNameVersion,
@@ -49,7 +49,7 @@ where
   TyDatabase: ApiRef<PgPool>,
   TyUuidGenerator: UuidGenerator,
 {
-  async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, EtwinError> {
+  async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, AnyError> {
     let user_id = UserId::from_uuid(self.uuid_generator.next());
     let now = self.clock.now();
 
@@ -129,7 +129,7 @@ where
     Ok(user)
   }
 
-  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, EtwinError> {
+  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       user_id: UserId,
@@ -198,10 +198,7 @@ where
     Ok(Some(user))
   }
 
-  async fn get_user_with_password(
-    &self,
-    options: &GetUserOptions,
-  ) -> Result<Option<ShortUserWithPassword>, EtwinError> {
+  async fn get_user_with_password(&self, options: &GetUserOptions) -> Result<Option<ShortUserWithPassword>, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       user_id: UserId,
@@ -253,7 +250,7 @@ where
     Ok(Some(user))
   }
 
-  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, EtwinError> {
+  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       user_id: UserId,

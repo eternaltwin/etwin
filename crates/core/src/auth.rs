@@ -2,7 +2,7 @@ use crate::core::{Instant, LocaleId};
 use crate::email::EmailAddress;
 use crate::oauth::{OauthClientId, OauthClientKey, ShortOauthClient};
 use crate::password::Password;
-use crate::types::EtwinError;
+use crate::types::AnyError;
 use crate::user::{ShortUser, UserDisplayName, UserDisplayNameVersions, UserId, UserIdRef, Username};
 use async_trait::async_trait;
 use auto_impl::auto_impl;
@@ -229,11 +229,11 @@ pub trait AuthStore: Send + Sync {
   async fn create_validated_email_verification(
     &self,
     options: &CreateValidatedEmailVerificationOptions,
-  ) -> Result<(), EtwinError>;
+  ) -> Result<(), AnyError>;
 
-  async fn create_session(&self, options: &CreateSessionOptions) -> Result<RawSession, EtwinError>;
+  async fn create_session(&self, options: &CreateSessionOptions) -> Result<RawSession, AnyError>;
 
-  async fn get_and_touch_session(&self, session: SessionId) -> Result<Option<RawSession>, EtwinError>;
+  async fn get_and_touch_session(&self, session: SessionId) -> Result<Option<RawSession>, AnyError>;
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]

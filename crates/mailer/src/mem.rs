@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use etwin_core::email::{EmailAddress, EmailContent, Mailer};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use std::collections::HashMap;
 use std::sync::RwLock;
 
@@ -46,7 +46,7 @@ impl MemMailer {
 
 #[async_trait]
 impl Mailer for MemMailer {
-  async fn send_email(&self, recipient: &EmailAddress, content: &EmailContent) -> Result<(), EtwinError> {
+  async fn send_email(&self, recipient: &EmailAddress, content: &EmailContent) -> Result<(), AnyError> {
     let mut state = self.state.write().unwrap();
     match state.inboxes.get_mut(recipient) {
       None => Err("RecipientNotFound".into()),

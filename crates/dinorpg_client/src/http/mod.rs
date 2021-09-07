@@ -8,7 +8,7 @@ use ::scraper::Html;
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::dinorpg::{DinorpgClient, DinorpgProfileResponse, DinorpgUserIdRef};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use reqwest::Client;
 use std::time::Duration;
 
@@ -25,7 +25,7 @@ impl<TyClock> HttpDinorpgClient<TyClock>
 where
   TyClock: Clock,
 {
-  pub fn new(clock: TyClock) -> Result<Self, EtwinError> {
+  pub fn new(clock: TyClock) -> Result<Self, AnyError> {
     Ok(Self {
       client: Client::builder()
         .user_agent(USER_AGENT)
@@ -49,7 +49,7 @@ impl<TyClock> DinorpgClient for HttpDinorpgClient<TyClock>
 where
   TyClock: Clock,
 {
-  async fn get_profile(&self, user: DinorpgUserIdRef) -> Result<DinorpgProfileResponse, EtwinError> {
+  async fn get_profile(&self, user: DinorpgUserIdRef) -> Result<DinorpgProfileResponse, AnyError> {
     let html = self.get_html(DinorpgUrls::new(user.server).user(user.id)).await?;
     let response = scraper::scrape_profile(&html)?;
     // TODO: Assert username matches

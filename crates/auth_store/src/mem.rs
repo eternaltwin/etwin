@@ -4,7 +4,7 @@ use etwin_core::auth::{
 };
 use etwin_core::clock::Clock;
 use etwin_core::core::Instant;
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::uuid::UuidGenerator;
 use std::collections::HashMap;
 use std::sync::RwLock;
@@ -25,7 +25,7 @@ impl StoreState {
     now: Instant,
     uuid_generator: &impl UuidGenerator,
     options: &CreateSessionOptions,
-  ) -> Result<RawSession, EtwinError> {
+  ) -> Result<RawSession, AnyError> {
     let session_id = SessionId::from_uuid(uuid_generator.next());
     let session = RawSession {
       id: session_id,
@@ -41,7 +41,7 @@ impl StoreState {
     &mut self,
     now: Instant,
     session_id: SessionId,
-  ) -> Result<Option<RawSession>, EtwinError> {
+  ) -> Result<Option<RawSession>, AnyError> {
     let session = self.sessions.get_mut(&session_id);
     match session {
       None => Ok(None),
@@ -86,18 +86,18 @@ where
   async fn create_validated_email_verification(
     &self,
     _options: &CreateValidatedEmailVerificationOptions,
-  ) -> Result<(), EtwinError> {
+  ) -> Result<(), AnyError> {
     eprintln!("Warning: PgAuthStore#create_validated_email_verification is a no-op stub");
     Ok(())
   }
 
-  async fn create_session(&self, options: &CreateSessionOptions) -> Result<RawSession, EtwinError> {
+  async fn create_session(&self, options: &CreateSessionOptions) -> Result<RawSession, AnyError> {
     let now = self.clock.now();
     let mut state = self.state.write().unwrap();
     state.create_session(now, &self.uuid_generator, options)
   }
 
-  async fn get_and_touch_session(&self, session: SessionId) -> Result<Option<RawSession>, EtwinError> {
+  async fn get_and_touch_session(&self, session: SessionId) -> Result<Option<RawSession>, AnyError> {
     let now = self.clock.now();
     let mut state = self.state.write().unwrap();
     state.get_and_touch_session(now, session)

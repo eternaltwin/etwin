@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use etwin_core::core::LocaleId;
 use etwin_core::email::{EmailContent, EmailFormatter, VerifyRegistrationEmail};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 
 pub struct HtmlEmailFormatter;
 
@@ -11,7 +11,7 @@ impl EmailFormatter for HtmlEmailFormatter {
     &self,
     locale: LocaleId,
     data: &VerifyRegistrationEmail,
-  ) -> Result<EmailContent, EtwinError> {
+  ) -> Result<EmailContent, AnyError> {
     let registration_uri = format!(
       "https://eternal-twin.net/register/verified-email?token={}",
       data.token.as_str()

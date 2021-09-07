@@ -4,7 +4,7 @@ use etwin_core::clock::VirtualClock;
 use etwin_core::dinoparc::DinoparcStore;
 use etwin_core::hammerfest::{HammerfestClient, HammerfestStore};
 use etwin_core::link::LinkStore;
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::user::UserStore;
 use etwin_core::uuid::Uuid4Generator;
 use etwin_dinoparc_store::mem::MemDinoparcStore;
@@ -46,7 +46,7 @@ fn create_api() -> RouterApi {
   RouterApi { dinoparc, hammerfest }
 }
 
-pub async fn run(_args: &RestArgs) -> Result<(), EtwinError> {
+pub async fn run(_args: &RestArgs) -> Result<(), AnyError> {
   let api = create_api();
   let routes = create_rest_filter(api);
 

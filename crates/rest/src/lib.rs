@@ -4,7 +4,7 @@ use etwin_core::dinoparc::{
   GetDinoparcUserOptions,
 };
 use etwin_core::hammerfest::{GetHammerfestUserOptions, HammerfestServer, HammerfestUser, HammerfestUserId};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_services::dinoparc::DynDinoparcService;
 use etwin_services::hammerfest::DynHammerfestService;
 pub use serde::Serialize;
@@ -16,7 +16,7 @@ use warp::reply::{Json, WithStatus};
 use warp::{Filter, Rejection};
 
 #[derive(Debug)]
-struct ServerError(EtwinError);
+struct ServerError(AnyError);
 
 impl Reject for ServerError {}
 

@@ -1,6 +1,6 @@
 use clap::Clap;
 use etwin_config::Config;
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use std::env;
 use std::error::Error;
 use std::fs;
@@ -18,7 +18,7 @@ pub struct DumpArgs {
   dir: PathBuf,
 }
 
-pub async fn run(args: &DumpArgs) -> Result<(), EtwinError> {
+pub async fn run(args: &DumpArgs) -> Result<(), AnyError> {
   let pg_dump_exe = "pg_dump";
   let working_dir = env::current_dir()?;
   let out_dir = &args.dir;
@@ -27,7 +27,7 @@ pub async fn run(args: &DumpArgs) -> Result<(), EtwinError> {
   eprintln!("`pg_dump` executable: {}", pg_dump_exe);
   eprintln!("--");
   eprintln!("Checking output directory...");
-  let out_dir_state = check_out_dir(out_dir).map_err(|e| -> EtwinError { e.to_string().as_str().into() })?;
+  let out_dir_state = check_out_dir(out_dir).map_err(|e| -> AnyError { e.to_string().as_str().into() })?;
   eprintln!("State: {:?}", out_dir_state);
   match out_dir_state {
     OutDirState::NotADirectory => return Err("Output exists and is not a directory".into()),

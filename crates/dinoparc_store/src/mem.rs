@@ -10,7 +10,7 @@ use etwin_core::dinoparc::{
   DinoparcUsername, GetDinoparcDinozOptions, GetDinoparcUserOptions, ShortDinoparcDinozWithLevel, ShortDinoparcUser,
 };
 use etwin_core::temporal::{CheckedSnapshotLog, LatestTemporal, SnapshotLog};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use std::collections::HashMap;
 use std::sync::RwLock;
 
@@ -308,42 +308,42 @@ impl<TyClock> DinoparcStore for MemDinoparcStore<TyClock>
 where
   TyClock: Clock,
 {
-  async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, EtwinError> {
+  async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, AnyError> {
     let mut state = self.state.write().unwrap();
     let now = self.clock.now();
     let u = state.touch_user(now, short.clone());
     Ok((&*u).into())
   }
 
-  async fn touch_inventory(&self, response: &DinoparcInventoryResponse) -> Result<(), EtwinError> {
+  async fn touch_inventory(&self, response: &DinoparcInventoryResponse) -> Result<(), AnyError> {
     let mut state = self.state.write().unwrap();
     let now = self.clock.now();
     state.touch_inventory(now, response);
     Ok(())
   }
 
-  async fn touch_collection(&self, response: &DinoparcCollectionResponse) -> Result<(), EtwinError> {
+  async fn touch_collection(&self, response: &DinoparcCollectionResponse) -> Result<(), AnyError> {
     let mut state = self.state.write().unwrap();
     let now = self.clock.now();
     state.touch_collection(now, response);
     Ok(())
   }
 
-  async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), EtwinError> {
+  async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), AnyError> {
     let mut state = self.state.write().unwrap();
     let now = self.clock.now();
     state.touch_dinoz_profile(now, response);
     Ok(())
   }
 
-  async fn touch_exchange_with(&self, response: &DinoparcExchangeWithResponse) -> Result<(), EtwinError> {
+  async fn touch_exchange_with(&self, response: &DinoparcExchangeWithResponse) -> Result<(), AnyError> {
     let mut state = self.state.write().unwrap();
     let now = self.clock.now();
     state.touch_exchange_with(now, response);
     Ok(())
   }
 
-  async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError> {
+  async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, AnyError> {
     let state = self.state.read().unwrap();
     Ok(
       state
@@ -352,7 +352,7 @@ where
     )
   }
 
-  async fn get_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError> {
+  async fn get_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, AnyError> {
     let state = self.state.read().unwrap();
     Ok(state.get_user(&options.id.and_server(options.server)).map(|u| u.into()))
   }

@@ -1,7 +1,7 @@
 use crate::core::{HtmlFragment, LocaleId};
 #[cfg(feature = "sqlx")]
 use crate::core::{Instant, Secret};
-use crate::types::EtwinError;
+use crate::types::AnyError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 #[cfg(feature = "_serde")]
@@ -37,7 +37,7 @@ pub async fn touch_email_address(
   secret: &Secret,
   email: &EmailAddress,
   now: Instant,
-) -> Result<Vec<u8>, EtwinError> {
+) -> Result<Vec<u8>, AnyError> {
   #[derive(Debug, sqlx::FromRow)]
   struct Row {
     email: EmailAddress,
@@ -94,11 +94,11 @@ pub trait EmailFormatter: Send + Sync {
     &self,
     locale: LocaleId,
     data: &VerifyRegistrationEmail,
-  ) -> Result<EmailContent, EtwinError>;
+  ) -> Result<EmailContent, AnyError>;
 }
 
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait Mailer: Send + Sync {
-  async fn send_email(&self, recipient: &EmailAddress, content: &EmailContent) -> Result<(), EtwinError>;
+  async fn send_email(&self, recipient: &EmailAddress, content: &EmailContent) -> Result<(), AnyError>;
 }

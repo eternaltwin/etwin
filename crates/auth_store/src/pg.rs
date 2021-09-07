@@ -5,7 +5,7 @@ use etwin_core::auth::{
 };
 use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, Secret};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::user::UserId;
 use etwin_core::uuid::UuidGenerator;
 use sqlx::PgPool;
@@ -49,12 +49,12 @@ where
   async fn create_validated_email_verification(
     &self,
     _options: &CreateValidatedEmailVerificationOptions,
-  ) -> Result<(), EtwinError> {
+  ) -> Result<(), AnyError> {
     eprintln!("Warning: PgAuthStore#create_validated_email_verification is a no-op stub");
     Ok(())
   }
 
-  async fn create_session(&self, options: &CreateSessionOptions) -> Result<RawSession, EtwinError> {
+  async fn create_session(&self, options: &CreateSessionOptions) -> Result<RawSession, AnyError> {
     let session_id = SessionId::from_uuid(self.uuid_generator.next());
     let now = self.clock.now();
 
@@ -87,7 +87,7 @@ where
     })
   }
 
-  async fn get_and_touch_session(&self, session: SessionId) -> Result<Option<RawSession>, EtwinError> {
+  async fn get_and_touch_session(&self, session: SessionId) -> Result<Option<RawSession>, AnyError> {
     let now = self.clock.now();
 
     #[derive(Debug, sqlx::FromRow)]

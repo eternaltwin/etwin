@@ -14,7 +14,7 @@ use etwin_core::hammerfest::{
   ShortHammerfestUser, StoredHammerfestUser,
 };
 use etwin_core::pg_num::{PgU32, PgU8};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::uuid::UuidGenerator;
 use etwin_populate::hammerfest::populate_hammerfest;
 use etwin_postgres_tools::upsert_archive_query;
@@ -71,7 +71,7 @@ async fn touch_hammerfest_user(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   user: &ShortHammerfestUser,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(
     r"
       INSERT
@@ -100,7 +100,7 @@ async fn touch_hammerfest_forum_theme(
   title: &HammerfestForumThemeTitle,
   description: Option<&HammerfestForumThemeDescription>,
   is_public: bool,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(
     r"
       INSERT
@@ -132,7 +132,7 @@ async fn touch_hammerfest_forum_theme_count(
   now: Instant,
   theme: HammerfestForumThemeIdRef,
   page_count: NonZeroU16,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_theme_counts(
       time($1 period, retrieved_at),
@@ -166,7 +166,7 @@ async fn touch_hammerfest_forum_theme_page_count(
   theme: HammerfestForumThemeIdRef,
   page: ThemePage,
   thread_count: u8,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_theme_page_counts(
       time($1 period, retrieved_at),
@@ -198,7 +198,7 @@ async fn touch_hammerfest_forum_thread_page_count(
   thread: HammerfestForumThreadIdRef,
   page: NonZeroU16,
   post_count: u8,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_thread_page_counts(
       time($1 period, retrieved_at),
@@ -228,7 +228,7 @@ async fn touch_hammerfest_forum_theme_page_item(
   page: ThemePage,
   offset: u8,
   thread: HammerfestForumThreadIdRef,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   assert_eq!(thread.server, theme.server);
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_theme_threads(
@@ -260,7 +260,7 @@ async fn touch_hammerfest_forum_thread(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   thread: HammerfestForumThreadIdRef,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(
     r"
       INSERT
@@ -288,7 +288,7 @@ async fn touch_hammerfest_forum_thread_shared_meta(
   title: &HammerfestForumThreadTitle,
   is_closed: bool,
   page_count: NonZeroU16,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_thread_shared_meta(
       time($1 period, retrieved_at),
@@ -322,7 +322,7 @@ async fn touch_hammerfest_forum_thread_theme_meta(
   latest_post_at: Option<HammerfestDate>,
   author: HammerfestUserId,
   reply_count: u16,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   assert_eq!(is_sticky, latest_post_at.is_none());
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_thread_theme_meta(
@@ -358,7 +358,7 @@ async fn touch_hammerfest_forum_post(
   author: HammerfestUserId,
   posted_at: HammerfestDateTime,
   remote_html_body: &str,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_posts(
       time($1 period, retrieved_at),
@@ -391,7 +391,7 @@ async fn touch_hammerfest_forum_post_id(
   page: NonZeroU16,
   offset: u8,
   post_id: HammerfestForumPostId,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_post_ids(
       time($1 period, retrieved_at),
@@ -423,7 +423,7 @@ async fn touch_hammerfest_quest_statuses(
   tx: &mut Transaction<'_, Postgres>,
   quests: &HashMap<HammerfestQuestId, HammerfestQuestStatus>,
   new_id: Uuid,
-) -> Result<Uuid, EtwinError> {
+) -> Result<Uuid, AnyError> {
   let sorted: BTreeMap<HammerfestQuestId, HammerfestQuestStatus> = quests.iter().map(|(k, v)| (*k, *v)).collect();
   let hash = {
     let json = serde_json::to_string(&sorted).unwrap();
@@ -511,7 +511,7 @@ async fn touch_hammerfest_unlocked_items(
   tx: &mut Transaction<'_, Postgres>,
   items: &HashSet<HammerfestItemId>,
   new_id: Uuid,
-) -> Result<Uuid, EtwinError> {
+) -> Result<Uuid, AnyError> {
   let sorted: BTreeSet<HammerfestItemId> = items.iter().copied().collect();
   let hash = {
     let json = serde_json::to_string(&sorted).unwrap();
@@ -596,7 +596,7 @@ async fn touch_hammerfest_item_counts(
   tx: &mut Transaction<'_, Postgres>,
   items: &HashMap<HammerfestItemId, u32>,
   new_id: Uuid,
-) -> Result<Uuid, EtwinError> {
+) -> Result<Uuid, AnyError> {
   let sorted: BTreeMap<HammerfestItemId, u32> = items.iter().map(|(k, v)| (*k, *v)).collect();
   let hash = {
     let json = serde_json::to_string(&sorted).unwrap();
@@ -687,7 +687,7 @@ async fn touch_hammerfest_session_user(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   session_user: &HammerfestSessionUser,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   touch_hammerfest_user(tx, now, &session_user.user).await?;
   touch_hammerfest_tokens(tx, now, session_user.user.as_ref(), session_user.tokens).await?;
   Ok(())
@@ -703,7 +703,7 @@ async fn touch_hammerfest_profile(
   season_score: u32,
   quests: Uuid,
   unlocked_items: Uuid,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_profiles(
       time($1 period, retrieved_at),
@@ -734,7 +734,7 @@ async fn touch_hammerfest_email(
   now: Instant,
   user: HammerfestUserIdRef,
   email_hash: Option<Vec<u8>>,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_emails(
       time($1 period, retrieved_at),
@@ -766,7 +766,7 @@ async fn touch_hammerfest_achievements(
   user: HammerfestUserIdRef,
   has_carrot: bool,
   ladder_level: HammerfestLadderLevel,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_user_achievements(
       time($1 period, retrieved_at),
@@ -795,7 +795,7 @@ async fn touch_hammerfest_best_season_rank(
   now: Instant,
   user: HammerfestUserIdRef,
   season_rank: Option<u32>,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_best_season_ranks(
       time($1 period, retrieved_at),
@@ -823,7 +823,7 @@ async fn touch_hammerfest_forum_role(
   now: Instant,
   user: HammerfestUserIdRef,
   role: HammerfestForumRole,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_forum_roles(
       time($1 period, retrieved_at),
@@ -851,7 +851,7 @@ async fn touch_hammerfest_inventory(
   now: Instant,
   user: HammerfestUserIdRef,
   items: Uuid,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_inventories(
       time($1 period, retrieved_at),
@@ -879,7 +879,7 @@ async fn touch_hammerfest_shop(
   now: Instant,
   user: HammerfestUserIdRef,
   shop: &HammerfestShop,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_shops(
       time($1 period, retrieved_at),
@@ -909,7 +909,7 @@ async fn touch_hammerfest_tokens(
   now: Instant,
   user: HammerfestUserIdRef,
   tokens: u32,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_tokens(
       time($1 period, retrieved_at),
@@ -937,7 +937,7 @@ async fn touch_hammerfest_godchild_list(
   now: Instant,
   godfather: HammerfestUserIdRef,
   godchild_count: u32,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_godchild_lists(
       time($1 period, retrieved_at),
@@ -967,7 +967,7 @@ async fn touch_hammerfest_godchild(
   offset_in_list: u32,
   godchild: HammerfestUserIdRef,
   tokens: u32,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   assert_eq!(godchild.server, godfather.server);
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     hammerfest_godchildren(
@@ -1001,10 +1001,7 @@ where
   TyDatabase: ApiRef<PgPool>,
   TyUuidGenerator: UuidGenerator,
 {
-  async fn get_short_user(
-    &self,
-    options: &GetHammerfestUserOptions,
-  ) -> Result<Option<ShortHammerfestUser>, EtwinError> {
+  async fn get_short_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ShortHammerfestUser>, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       hammerfest_server: HammerfestServer,
@@ -1031,7 +1028,7 @@ where
     }))
   }
 
-  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<StoredHammerfestUser>, EtwinError> {
+  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<StoredHammerfestUser>, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       hammerfest_server: HammerfestServer,
@@ -1062,7 +1059,7 @@ where
     }))
   }
 
-  async fn touch_short_user(&self, user: &ShortHammerfestUser) -> Result<StoredHammerfestUser, EtwinError> {
+  async fn touch_short_user(&self, user: &ShortHammerfestUser) -> Result<StoredHammerfestUser, AnyError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     touch_hammerfest_user(&mut tx, now, user).await?;
@@ -1077,7 +1074,7 @@ where
     })
   }
 
-  async fn touch_shop(&self, response: &HammerfestShopResponse) -> Result<(), EtwinError> {
+  async fn touch_shop(&self, response: &HammerfestShopResponse) -> Result<(), AnyError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     touch_hammerfest_session_user(&mut tx, now, &response.session).await?;
@@ -1086,7 +1083,7 @@ where
     Ok(())
   }
 
-  async fn touch_profile(&self, response: &HammerfestProfileResponse) -> Result<(), EtwinError> {
+  async fn touch_profile(&self, response: &HammerfestProfileResponse) -> Result<(), AnyError> {
     let profile = if let Some(profile) = response.profile.as_ref() {
       profile
     } else {
@@ -1141,7 +1138,7 @@ where
     Ok(())
   }
 
-  async fn touch_inventory(&self, response: &HammerfestInventoryResponse) -> Result<(), EtwinError> {
+  async fn touch_inventory(&self, response: &HammerfestInventoryResponse) -> Result<(), AnyError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     touch_hammerfest_session_user(&mut tx, now, &response.session).await?;
@@ -1153,7 +1150,7 @@ where
     Ok(())
   }
 
-  async fn touch_godchildren(&self, response: &HammerfestGodchildrenResponse) -> Result<(), EtwinError> {
+  async fn touch_godchildren(&self, response: &HammerfestGodchildrenResponse) -> Result<(), AnyError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     touch_hammerfest_session_user(&mut tx, now, &response.session).await?;
@@ -1181,7 +1178,7 @@ where
     Ok(())
   }
 
-  async fn touch_theme_page(&self, response: &HammerfestForumThemePageResponse) -> Result<(), EtwinError> {
+  async fn touch_theme_page(&self, response: &HammerfestForumThemePageResponse) -> Result<(), AnyError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     if let Some(session_user) = response.session.as_ref() {
@@ -1303,7 +1300,7 @@ where
     Ok(())
   }
 
-  async fn touch_thread_page(&self, response: &HammerfestForumThreadPageResponse) -> Result<(), EtwinError> {
+  async fn touch_thread_page(&self, response: &HammerfestForumThreadPageResponse) -> Result<(), AnyError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     let mut session_user_is_moderator = false;

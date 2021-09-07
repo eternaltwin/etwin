@@ -15,7 +15,7 @@ use etwin_core::dinoparc::{
   DinoparcExchangeWithResponse, DinoparcInventoryResponse, DinoparcMachineId, DinoparcServer, DinoparcSession,
   DinoparcSessionKey, DinoparcSessionUser, DinoparcUserId, DinoparcUsername, GetExchangeWithError, ShortDinoparcUser,
 };
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_log::Logger;
 use etwin_serde_tools::{serialize_header_map, serialize_status_code, serialize_url};
 use md5::{Digest, Md5};
@@ -216,7 +216,7 @@ where
   TyClock: Clock,
   TyLogger: for<'r> Logger<HttpDinoparcClientEvent<'r, &'r [u8]>>,
 {
-  pub fn new(clock: TyClock, logger: TyLogger) -> Result<Self, EtwinError> {
+  pub fn new(clock: TyClock, logger: TyLogger) -> Result<Self, AnyError> {
     Ok(Self {
       client: Client::builder()
         .user_agent(USER_AGENT)
@@ -275,7 +275,7 @@ where
     }
   }
 
-  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, EtwinError> {
+  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, AnyError> {
     let logger = &self.logger;
     let mut event: CreateSessionEvent<&[u8]> = CreateSessionEvent::new(options.server, &options.username);
 
@@ -363,7 +363,7 @@ where
     &self,
     server: DinoparcServer,
     session_key: &DinoparcSessionKey,
-  ) -> Result<Option<DinoparcSession>, EtwinError> {
+  ) -> Result<Option<DinoparcSession>, AnyError> {
     let now = self.clock.now();
     let html = self
       .get_html(DinoparcUrls::new(server).bank(), Some(session_key))
@@ -381,11 +381,7 @@ where
     }))
   }
 
-  async fn get_dinoz(
-    &self,
-    session: &DinoparcSession,
-    id: DinoparcDinozId,
-  ) -> Result<DinoparcDinozResponse, EtwinError> {
+  async fn get_dinoz(&self, session: &DinoparcSession, id: DinoparcDinozId) -> Result<DinoparcDinozResponse, AnyError> {
     let html = self
       .get_html(DinoparcUrls::new(session.user.server).dinoz(id), Some(&session.key))
       .await?;
@@ -409,7 +405,7 @@ where
     &self,
     session: &DinoparcSession,
     other_user: DinoparcUserId,
-  ) -> Result<DinoparcExchangeWithResponse, EtwinError> {
+  ) -> Result<DinoparcExchangeWithResponse, AnyError> {
     if other_user == session.user.id {
       return Err(Box::new(GetExchangeWithError::SelfExchange));
     }
@@ -439,7 +435,7 @@ where
     })
   }
 
-  async fn get_inventory(&self, session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError> {
+  async fn get_inventory(&self, session: &DinoparcSession) -> Result<DinoparcInventoryResponse, AnyError> {
     let uri = DinoparcUrls::new(session.user.server).inventory();
 
     let mut builder = self.client.get(uri.clone());
@@ -473,7 +469,7 @@ where
     Ok(res)
   }
 
-  async fn get_collection(&self, session: &DinoparcSession) -> Result<DinoparcCollectionResponse, EtwinError> {
+  async fn get_collection(&self, session: &DinoparcSession) -> Result<DinoparcCollectionResponse, AnyError> {
     let html = self
       .get_html(DinoparcUrls::new(session.user.server).collection(), Some(&session.key))
       .await?;

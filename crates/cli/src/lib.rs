@@ -1,6 +1,6 @@
 use crate::rest::RestArgs;
 use clap::Clap;
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 
 pub mod cmd {
   pub mod dinoparc;
@@ -32,7 +32,7 @@ pub enum CliCommand {
   Twinoid(cmd::twinoid::TwinoidArgs),
 }
 
-pub async fn run(args: &CliArgs) -> Result<(), EtwinError> {
+pub async fn run(args: &CliArgs) -> Result<(), AnyError> {
   match &args.command {
     CliCommand::Dinoparc(ref args) => cmd::dinoparc::run(args).await,
     CliCommand::Dump(ref args) => cmd::dump::run(args).await,

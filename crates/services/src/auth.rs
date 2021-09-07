@@ -21,7 +21,7 @@ use etwin_core::password::{Password, PasswordService};
 use etwin_core::twinoid::{
   ShortTwinoidUser, TwinoidApiAuth, TwinoidClient, TwinoidStore, TwinoidUserId, TwinoidUserIdRef,
 };
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::user::{
   CreateUserOptions, GetShortUserOptions, GetUserOptions, GetUserResult, SimpleUser, UserDisplayName, UserEmailRef,
   UserFields, UserId, UserIdRef, UserRef, UserStore, UserUsernameRef,
@@ -89,7 +89,7 @@ pub enum GrantOauthAuthorizationError {
   #[error("invalid scope parameter")]
   InvalidScope,
   #[error(transparent)]
-  Other(EtwinError),
+  Other(AnyError),
 }
 
 #[derive(Error, Debug)]
@@ -101,7 +101,7 @@ pub enum CreateAccessTokenError {
   #[error("code audience does not match authenticated client")]
   WrongClient,
   #[error(transparent)]
-  Other(EtwinError),
+  Other(AnyError),
 }
 
 pub struct AuthService<
@@ -390,7 +390,7 @@ where
     })
   }
 
-  pub async fn authenticate_access_token(&self, token: &EtwinOauthAccessTokenKey) -> Result<AuthContext, EtwinError> {
+  pub async fn authenticate_access_token(&self, token: &EtwinOauthAccessTokenKey) -> Result<AuthContext, AnyError> {
     let token = self
       .oauth_provider_store
       .get_access_token(&GetOauthAccessTokenOptions {
@@ -413,7 +413,7 @@ where
         time: None,
       })
       .await?
-      .ok_or_else::<EtwinError, _>(|| "NotFound".into())?;
+      .ok_or_else::<AnyError, _>(|| "NotFound".into())?;
 
     let client = ShortOauthClient {
       id: client.id,
@@ -428,10 +428,7 @@ where
     }))
   }
 
-  pub async fn register_or_login_with_email(
-    &self,
-    options: &RegisterOrLoginWithEmailOptions,
-  ) -> Result<(), EtwinError> {
+  pub async fn register_or_login_with_email(&self, options: &RegisterOrLoginWithEmailOptions) -> Result<(), AnyError> {
     let token = self.create_email_verification_token(&options.email)?;
     let locale = options.locale.unwrap_or(self.default_locale);
     let email_content = self
@@ -445,7 +442,7 @@ where
   pub async fn register_with_verified_email(
     &self,
     options: &RegisterWithVerifiedEmailOptions,
-  ) -> Result<UserAndSession, EtwinError> {
+  ) -> Result<UserAndSession, AnyError> {
     let email_jwt = self.read_email_verification_token(options.email_token.as_str())?;
     let email = email_jwt.email;
 
@@ -499,7 +496,7 @@ where
   pub async fn register_with_username(
     &self,
     options: &RegisterWithUsernameOptions,
-  ) -> Result<UserAndSession, EtwinError> {
+  ) -> Result<UserAndSession, AnyError> {
     let old_user = self
       .user_store
       .get_short_user(&GetShortUserOptions {
@@ -540,18 +537,15 @@ where
     })
   }
 
-  pub async fn raw_login_with_credentials(
-    &self,
-    credentials: &RawUserCredentials,
-  ) -> Result<UserAndSession, EtwinError> {
+  pub async fn raw_login_with_credentials(&self, credentials: &RawUserCredentials) -> Result<UserAndSession, AnyError> {
     let credentials = UserCredentials {
-      login: credentials.login.parse().map_err(|()| EtwinError::from("BadLogin"))?,
+      login: credentials.login.parse().map_err(|()| AnyError::from("BadLogin"))?,
       password: credentials.password.clone(),
     };
     self.login_with_credentials(&credentials).await
   }
 
-  pub async fn login_with_credentials(&self, credentials: &UserCredentials) -> Result<UserAndSession, EtwinError> {
+  pub async fn login_with_credentials(&self, credentials: &UserCredentials) -> Result<UserAndSession, AnyError> {
     let user_ref = match credentials.login.clone() {
       UserLogin::EmailAddress(email) => UserRef::Email(UserEmailRef { email }),
       UserLogin::Username(username) => UserRef::Username(UserUsernameRef { username }),
@@ -578,7 +572,7 @@ where
   pub async fn register_or_login_with_dinoparc(
     &self,
     credentials: &DinoparcCredentials,
-  ) -> Result<UserAndSession, EtwinError> {
+  ) -> Result<UserAndSession, AnyError> {
     let dparc_session = self.dinoparc_client.create_session(credentials).await?;
     let link = self
       .link_store
@@ -646,7 +640,7 @@ where
   pub async fn register_or_login_with_hammerfest(
     &self,
     credentials: &HammerfestCredentials,
-  ) -> Result<UserAndSession, EtwinError> {
+  ) -> Result<UserAndSession, AnyError> {
     let hfest_session = self.hammerfest_client.create_session(credentials).await?;
     let link = self
       .link_store
@@ -714,7 +708,7 @@ where
   pub async fn register_or_login_with_twinoid_oauth(
     &self,
     token: &RfcOauthAccessTokenKey,
-  ) -> Result<UserAndSession, EtwinError> {
+  ) -> Result<UserAndSession, AnyError> {
     let tid_user = self
       .twinoid_client
       .get_me_short(TwinoidApiAuth::Token(token.clone()))
@@ -787,7 +781,7 @@ where
     })
   }
 
-  pub async fn authenticate_session(&self, session: SessionId) -> Result<Option<UserAndSession>, EtwinError> {
+  pub async fn authenticate_session(&self, session: SessionId) -> Result<Option<UserAndSession>, AnyError> {
     let session = self.auth_store.get_and_touch_session(session).await?;
     let session = match session {
       Some(s) => s,
@@ -820,15 +814,15 @@ where
     }))
   }
 
-  pub async fn raw_authenticate_credentials(&self, credentials: &RawCredentials) -> Result<AuthContext, EtwinError> {
+  pub async fn raw_authenticate_credentials(&self, credentials: &RawCredentials) -> Result<AuthContext, AnyError> {
     let credentials = Credentials {
-      login: credentials.login.parse().map_err(|()| EtwinError::from("BadLogin"))?,
+      login: credentials.login.parse().map_err(|()| AnyError::from("BadLogin"))?,
       password: credentials.password.clone(),
     };
     self.authenticate_credentials(credentials).await
   }
 
-  pub async fn authenticate_credentials(&self, credentials: Credentials) -> Result<AuthContext, EtwinError> {
+  pub async fn authenticate_credentials(&self, credentials: Credentials) -> Result<AuthContext, AnyError> {
     fn from_user(user: SimpleUser) -> AuthContext {
       let is_administrator = user.is_administrator;
       AuthContext::User(UserAuthContext {
@@ -899,7 +893,7 @@ where
     &self,
     user_ref: UserRef,
     password: Password,
-  ) -> Result<SimpleUser, EtwinError> {
+  ) -> Result<SimpleUser, AnyError> {
     let user_with_password = self
       .user_store
       .get_user_with_password(&GetUserOptions {
@@ -947,7 +941,7 @@ where
     &self,
     oauth_client_ref: OauthClientRef,
     secret: Password,
-  ) -> Result<SimpleOauthClient, EtwinError> {
+  ) -> Result<SimpleOauthClient, AnyError> {
     let client_with_secret = self
       .oauth_provider_store
       .get_client_with_secret(&GetOauthClientOptions {
@@ -969,7 +963,7 @@ where
     })
   }
 
-  fn create_email_verification_token(&self, email: &EmailAddress) -> Result<String, EtwinError> {
+  fn create_email_verification_token(&self, email: &EmailAddress) -> Result<String, AnyError> {
     let now = self.clock.now();
     let expires_at = now + self.email_verification_validity;
 
@@ -989,7 +983,7 @@ where
     Ok(token)
   }
 
-  fn read_email_verification_token(&self, token: &str) -> Result<EmailJwtClaims, EtwinError> {
+  fn read_email_verification_token(&self, token: &str) -> Result<EmailJwtClaims, AnyError> {
     let now = self.clock.now().timestamp();
     let key = jsonwebtoken::DecodingKey::from_secret(self.jwt_secret_key.as_slice());
     let validation = jsonwebtoken::Validation {
@@ -1016,7 +1010,7 @@ where
     user: UserIdRef,
     client: &SimpleOauthClient,
     scopes: &EtwinOauthScopes,
-  ) -> Result<String, EtwinError> {
+  ) -> Result<String, AnyError> {
     // let mut missing_scopes: HashSet<String> = HashSet::new();
     // let EtwinOauthScopes { base: base_scope } = scopes;
     // TODO: Check for missing scopes and prompt user...
@@ -1029,7 +1023,7 @@ where
     client_key: Option<&OauthClientKey>,
     user_id: UserId,
     scopes: &EtwinOauthScopes,
-  ) -> Result<String, EtwinError> {
+  ) -> Result<String, AnyError> {
     let now = self.clock.now();
     let expires_at = now + self.authorization_code_validity;
 
@@ -1058,7 +1052,7 @@ where
     Ok(token)
   }
 
-  fn read_code_token(&self, token: &str) -> Result<OauthCodeJwtClaims, EtwinError> {
+  fn read_code_token(&self, token: &str) -> Result<OauthCodeJwtClaims, AnyError> {
     let now = self.clock.now().timestamp();
     let key = jsonwebtoken::DecodingKey::from_secret(self.jwt_secret_key.as_slice());
     let validation = jsonwebtoken::Validation {

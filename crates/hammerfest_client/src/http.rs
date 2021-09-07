@@ -9,14 +9,14 @@ use self::url::HammerfestUrls;
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::hammerfest::*;
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use reqwest::{Client, StatusCode};
 use serde::Serialize;
 use std::num::NonZeroU16;
 use std::str::FromStr;
 use std::time::Duration;
 
-type Result<T> = std::result::Result<T, EtwinError>;
+type Result<T> = std::result::Result<T, AnyError>;
 
 const USER_AGENT: &str = "EtwinHammerfestScraper";
 const TIMEOUT: Duration = Duration::from_millis(5000);

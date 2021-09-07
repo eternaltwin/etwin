@@ -1,7 +1,7 @@
 use crate::core::{HtmlFragment, Instant};
 use crate::email::EmailAddress;
 use crate::link::VersionedEtwinLink;
-use crate::types::EtwinError;
+use crate::types::AnyError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
@@ -648,32 +648,31 @@ pub struct GetHammerfestUserOptions {
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait HammerfestClient: Send + Sync {
-  async fn create_session(&self, options: &HammerfestCredentials) -> Result<HammerfestSession, EtwinError>;
+  async fn create_session(&self, options: &HammerfestCredentials) -> Result<HammerfestSession, AnyError>;
 
   async fn test_session(
     &self,
     server: HammerfestServer,
     key: &HammerfestSessionKey,
-  ) -> Result<Option<HammerfestSession>, EtwinError>;
+  ) -> Result<Option<HammerfestSession>, AnyError>;
 
   async fn get_profile_by_id(
     &self,
     session: Option<&HammerfestSession>,
     options: &HammerfestGetProfileByIdOptions,
-  ) -> Result<HammerfestProfileResponse, EtwinError>;
+  ) -> Result<HammerfestProfileResponse, AnyError>;
 
-  async fn get_own_items(&self, session: &HammerfestSession) -> Result<HammerfestInventoryResponse, EtwinError>;
+  async fn get_own_items(&self, session: &HammerfestSession) -> Result<HammerfestInventoryResponse, AnyError>;
 
-  async fn get_own_godchildren(&self, session: &HammerfestSession)
-    -> Result<HammerfestGodchildrenResponse, EtwinError>;
+  async fn get_own_godchildren(&self, session: &HammerfestSession) -> Result<HammerfestGodchildrenResponse, AnyError>;
 
-  async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShopResponse, EtwinError>;
+  async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShopResponse, AnyError>;
 
   async fn get_forum_themes(
     &self,
     session: Option<&HammerfestSession>,
     server: HammerfestServer,
-  ) -> Result<HammerfestForumHomeResponse, EtwinError>;
+  ) -> Result<HammerfestForumHomeResponse, AnyError>;
 
   async fn get_forum_theme_page(
     &self,
@@ -681,7 +680,7 @@ pub trait HammerfestClient: Send + Sync {
     server: HammerfestServer,
     theme_id: HammerfestForumThemeId,
     page1: NonZeroU16,
-  ) -> Result<HammerfestForumThemePageResponse, EtwinError>;
+  ) -> Result<HammerfestForumThemePageResponse, AnyError>;
 
   async fn get_forum_thread_page(
     &self,
@@ -689,30 +688,29 @@ pub trait HammerfestClient: Send + Sync {
     server: HammerfestServer,
     thread_id: HammerfestForumThreadId,
     page1: NonZeroU16,
-  ) -> Result<HammerfestForumThreadPageResponse, EtwinError>;
+  ) -> Result<HammerfestForumThreadPageResponse, AnyError>;
 }
 
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait HammerfestStore: Send + Sync {
-  async fn get_short_user(&self, options: &GetHammerfestUserOptions)
-    -> Result<Option<ShortHammerfestUser>, EtwinError>;
+  async fn get_short_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ShortHammerfestUser>, AnyError>;
 
-  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<StoredHammerfestUser>, EtwinError>;
+  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<StoredHammerfestUser>, AnyError>;
 
-  async fn touch_short_user(&self, options: &ShortHammerfestUser) -> Result<StoredHammerfestUser, EtwinError>;
+  async fn touch_short_user(&self, options: &ShortHammerfestUser) -> Result<StoredHammerfestUser, AnyError>;
 
-  async fn touch_shop(&self, response: &HammerfestShopResponse) -> Result<(), EtwinError>;
+  async fn touch_shop(&self, response: &HammerfestShopResponse) -> Result<(), AnyError>;
 
-  async fn touch_profile(&self, response: &HammerfestProfileResponse) -> Result<(), EtwinError>;
+  async fn touch_profile(&self, response: &HammerfestProfileResponse) -> Result<(), AnyError>;
 
-  async fn touch_inventory(&self, response: &HammerfestInventoryResponse) -> Result<(), EtwinError>;
+  async fn touch_inventory(&self, response: &HammerfestInventoryResponse) -> Result<(), AnyError>;
 
-  async fn touch_godchildren(&self, response: &HammerfestGodchildrenResponse) -> Result<(), EtwinError>;
+  async fn touch_godchildren(&self, response: &HammerfestGodchildrenResponse) -> Result<(), AnyError>;
 
-  async fn touch_theme_page(&self, response: &HammerfestForumThemePageResponse) -> Result<(), EtwinError>;
+  async fn touch_theme_page(&self, response: &HammerfestForumThemePageResponse) -> Result<(), AnyError>;
 
-  async fn touch_thread_page(&self, response: &HammerfestForumThreadPageResponse) -> Result<(), EtwinError>;
+  async fn touch_thread_page(&self, response: &HammerfestForumThreadPageResponse) -> Result<(), AnyError>;
 }
 
 pub fn hammerfest_reply_count_to_page_count(reply_count: u16) -> NonZeroU16 {

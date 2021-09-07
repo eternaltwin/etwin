@@ -1,5 +1,5 @@
 use crate::twinoid::TwinoidUserDisplayName;
-use crate::types::EtwinError;
+use crate::types::AnyError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
@@ -69,5 +69,5 @@ pub struct DinorpgProfile {
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait DinorpgClient: Send + Sync {
-  async fn get_profile(&self, id: DinorpgUserIdRef) -> Result<DinorpgProfileResponse, EtwinError>;
+  async fn get_profile(&self, id: DinorpgUserIdRef) -> Result<DinorpgProfileResponse, AnyError>;
 }

@@ -5,7 +5,7 @@ use etwin_core::hammerfest::{
   HammerfestGodchildrenResponse, HammerfestInventoryResponse, HammerfestProfileResponse, HammerfestShopResponse,
   HammerfestStore, HammerfestUserId, ShortHammerfestUser, StoredHammerfestUser,
 };
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use std::collections::HashMap;
 use std::sync::RwLock;
 
@@ -49,20 +49,17 @@ impl<TyClock> HammerfestStore for MemHammerfestStore<TyClock>
 where
   TyClock: Clock,
 {
-  async fn get_short_user(
-    &self,
-    options: &GetHammerfestUserOptions,
-  ) -> Result<Option<ShortHammerfestUser>, EtwinError> {
+  async fn get_short_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<ShortHammerfestUser>, AnyError> {
     let state = self.state.read().unwrap();
     Ok(state.get_user(&options.id).cloned().map(From::from))
   }
 
-  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<StoredHammerfestUser>, EtwinError> {
+  async fn get_user(&self, options: &GetHammerfestUserOptions) -> Result<Option<StoredHammerfestUser>, AnyError> {
     let state = self.state.read().unwrap();
     Ok(state.get_user(&options.id).cloned())
   }
 
-  async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<StoredHammerfestUser, EtwinError> {
+  async fn touch_short_user(&self, short: &ShortHammerfestUser) -> Result<StoredHammerfestUser, AnyError> {
     let mut state = self.state.write().unwrap();
     let now = self.clock.now();
     let user = StoredHammerfestUser {
@@ -77,32 +74,32 @@ where
     Ok(user)
   }
 
-  async fn touch_shop(&self, _response: &HammerfestShopResponse) -> Result<(), EtwinError> {
+  async fn touch_shop(&self, _response: &HammerfestShopResponse) -> Result<(), AnyError> {
     eprintln!("Stub: Incomplete `MemHammerfestSore::touch_shop` implementation");
     Ok(())
   }
 
-  async fn touch_profile(&self, _response: &HammerfestProfileResponse) -> Result<(), EtwinError> {
+  async fn touch_profile(&self, _response: &HammerfestProfileResponse) -> Result<(), AnyError> {
     eprintln!("Stub: Incomplete `MemHammerfestSore::touch_profile` implementation");
     Ok(())
   }
 
-  async fn touch_inventory(&self, _respone: &HammerfestInventoryResponse) -> Result<(), EtwinError> {
+  async fn touch_inventory(&self, _respone: &HammerfestInventoryResponse) -> Result<(), AnyError> {
     eprintln!("Stub: Incomplete `MemHammerfestSore::touch_inventory` implementation");
     Ok(())
   }
 
-  async fn touch_godchildren(&self, _response: &HammerfestGodchildrenResponse) -> Result<(), EtwinError> {
+  async fn touch_godchildren(&self, _response: &HammerfestGodchildrenResponse) -> Result<(), AnyError> {
     eprintln!("Stub: Incomplete `MemHammerfestSore::touch_godchildren` implementation");
     Ok(())
   }
 
-  async fn touch_theme_page(&self, _response: &HammerfestForumThemePageResponse) -> Result<(), EtwinError> {
+  async fn touch_theme_page(&self, _response: &HammerfestForumThemePageResponse) -> Result<(), AnyError> {
     eprintln!("Stub: Incomplete `MemHammerfestSore::touch_theme_page` implementation");
     Ok(())
   }
 
-  async fn touch_thread_page(&self, _response: &HammerfestForumThreadPageResponse) -> Result<(), EtwinError> {
+  async fn touch_thread_page(&self, _response: &HammerfestForumThreadPageResponse) -> Result<(), AnyError> {
     eprintln!("Stub: Incomplete `MemHammerfestSore::touch_thread_page` implementation");
     Ok(())
   }

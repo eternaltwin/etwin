@@ -4,7 +4,7 @@ use etwin_core::core::Instant;
 use etwin_core::email::EmailAddress;
 use etwin_core::password::PasswordHash;
 use etwin_core::temporal::Temporal;
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, DeleteUserError, GetShortUserOptions, GetUserOptions, GetUserResult,
   ShortUser, ShortUserWithPassword, SimpleUser, UpdateUserError, UpdateUserOptions, UserDisplayName,
@@ -251,7 +251,7 @@ where
   TyClock: Clock,
   TyUuidGenerator: UuidGenerator,
 {
-  async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, EtwinError> {
+  async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, AnyError> {
     let user_id = UserId::from(self.uuid_generator.next());
     let time = self.clock.now();
     let mut state = self.state.write().unwrap();
@@ -260,7 +260,7 @@ where
     Ok(user)
   }
 
-  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, EtwinError> {
+  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, AnyError> {
     let state = &self.state.read().unwrap();
 
     let mem_user: Option<&MemUser> = state.get(&options.r#ref, options.time);
@@ -279,10 +279,7 @@ where
     }))
   }
 
-  async fn get_user_with_password(
-    &self,
-    options: &GetUserOptions,
-  ) -> Result<Option<ShortUserWithPassword>, EtwinError> {
+  async fn get_user_with_password(&self, options: &GetUserOptions) -> Result<Option<ShortUserWithPassword>, AnyError> {
     let state = &self.state.read().unwrap();
 
     let mem_user: Option<&MemUser> = state.get(&options.r#ref, options.time);
@@ -298,7 +295,7 @@ where
     }))
   }
 
-  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, EtwinError> {
+  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, AnyError> {
     let state = &self.state.read().unwrap();
     let mem_user: Option<&MemUser> = state.get(&options.r#ref, options.time);
     Ok(mem_user.map(|u| u.at(options.time)).map(ShortUser::from))

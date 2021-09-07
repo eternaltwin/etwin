@@ -2,7 +2,7 @@ use clap::Clap;
 use dialoguer::{theme::ColorfulTheme, Input, Password, Select};
 use etwin_core::clock::SystemClock;
 use etwin_core::dinoparc::{DinoparcClient, DinoparcCredentials, DinoparcPassword, DinoparcServer, DinoparcUsername};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_dinoparc_client::http::HttpDinoparcClient;
 use etwin_log::NoopLogger;
 use std::str::FromStr;
@@ -12,7 +12,7 @@ use std::time::Duration;
 #[derive(Debug, Clap)]
 pub struct DinoparcArgs {}
 
-pub async fn run(_args: &DinoparcArgs) -> Result<(), EtwinError> {
+pub async fn run(_args: &DinoparcArgs) -> Result<(), AnyError> {
   let servers = vec!["dinoparc.com", "en.dinoparc.com", "sp.dinoparc.com"];
   let server = Select::with_theme(&ColorfulTheme::default())
     .with_prompt("Dinoparc server?")

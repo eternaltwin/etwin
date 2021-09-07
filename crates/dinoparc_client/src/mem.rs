@@ -6,7 +6,7 @@ use etwin_core::dinoparc::{
   DinoparcExchangeWithResponse, DinoparcInventoryResponse, DinoparcPassword, DinoparcServer, DinoparcSession,
   DinoparcSessionKey, DinoparcUserId, DinoparcUsername, ShortDinoparcUser,
 };
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::str::FromStr;
@@ -167,7 +167,7 @@ where
     todo!()
   }
 
-  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, EtwinError> {
+  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, AnyError> {
     let mut state = self
       .state
       .write()
@@ -196,7 +196,7 @@ where
     &self,
     server: DinoparcServer,
     key: &DinoparcSessionKey,
-  ) -> Result<Option<DinoparcSession>, EtwinError> {
+  ) -> Result<Option<DinoparcSession>, AnyError> {
     let state = self
       .state
       .read()
@@ -227,7 +227,7 @@ where
     &self,
     _session: &DinoparcSession,
     _id: DinoparcDinozId,
-  ) -> Result<DinoparcDinozResponse, EtwinError> {
+  ) -> Result<DinoparcDinozResponse, AnyError> {
     todo!()
   }
 
@@ -235,15 +235,15 @@ where
     &self,
     _session: &DinoparcSession,
     _other_user: DinoparcUserId,
-  ) -> Result<DinoparcExchangeWithResponse, EtwinError> {
+  ) -> Result<DinoparcExchangeWithResponse, AnyError> {
     todo!()
   }
 
-  async fn get_inventory(&self, _session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError> {
+  async fn get_inventory(&self, _session: &DinoparcSession) -> Result<DinoparcInventoryResponse, AnyError> {
     todo!()
   }
 
-  async fn get_collection(&self, _session: &DinoparcSession) -> Result<DinoparcCollectionResponse, EtwinError> {
+  async fn get_collection(&self, _session: &DinoparcSession) -> Result<DinoparcCollectionResponse, AnyError> {
     todo!()
   }
 }

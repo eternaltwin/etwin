@@ -1,7 +1,7 @@
 use crate::core::{HtmlFragment, Instant};
 use crate::oauth::RfcOauthAccessTokenKey;
 use crate::twinoid::api::{User, UserQuery};
-use crate::types::EtwinError;
+use crate::types::AnyError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 #[cfg(feature = "_serde")]
@@ -77,11 +77,11 @@ pub struct GetTwinoidUserOptions {
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait TwinoidStore: Send + Sync {
-  async fn get_short_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ShortTwinoidUser>, EtwinError>;
+  async fn get_short_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ShortTwinoidUser>, AnyError>;
 
-  async fn get_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ArchivedTwinoidUser>, EtwinError>;
+  async fn get_user(&self, options: &GetTwinoidUserOptions) -> Result<Option<ArchivedTwinoidUser>, AnyError>;
 
-  async fn touch_short_user(&self, options: &ShortTwinoidUser) -> Result<ArchivedTwinoidUser, EtwinError>;
+  async fn touch_short_user(&self, options: &ShortTwinoidUser) -> Result<ArchivedTwinoidUser, AnyError>;
 }
 
 // #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -169,30 +169,26 @@ pub mod api {
 #[async_trait]
 #[auto_impl(&)]
 pub trait TwinoidClient: Send + Sync {
-  async fn get_me<Query: api::UserQuery>(
-    &self,
-    auth: TwinoidApiAuth,
-    query: &Query,
-  ) -> Result<Query::Output, EtwinError>
+  async fn get_me<Query: api::UserQuery>(&self, auth: TwinoidApiAuth, query: &Query) -> Result<Query::Output, AnyError>
   where
     Self: Sized;
 
   async fn get_me_short(
     &self,
     auth: TwinoidApiAuth,
-  ) -> Result<api::User<TwinoidUserDisplayName, HtmlFragment>, EtwinError>;
+  ) -> Result<api::User<TwinoidUserDisplayName, HtmlFragment>, AnyError>;
 }
 
 #[async_trait]
 impl<T: TwinoidClient + ?Sized> TwinoidClient for Arc<T> {
-  async fn get_me<Query: UserQuery>(&self, _auth: TwinoidApiAuth, _query: &Query) -> Result<Query::Output, EtwinError>
+  async fn get_me<Query: UserQuery>(&self, _auth: TwinoidApiAuth, _query: &Query) -> Result<Query::Output, AnyError>
   where
     Self: Sized,
   {
     todo!()
   }
 
-  async fn get_me_short(&self, auth: TwinoidApiAuth) -> Result<User<TwinoidUserDisplayName, HtmlFragment>, EtwinError> {
+  async fn get_me_short(&self, auth: TwinoidApiAuth) -> Result<User<TwinoidUserDisplayName, HtmlFragment>, AnyError> {
     (**self).get_me_short(auth).await
   }
 }

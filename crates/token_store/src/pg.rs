@@ -7,7 +7,7 @@ use etwin_core::hammerfest::{HammerfestServer, HammerfestSessionKey, HammerfestU
 use etwin_core::oauth::{RfcOauthAccessTokenKey, RfcOauthRefreshTokenKey, TwinoidAccessToken, TwinoidRefreshToken};
 use etwin_core::token::{TokenStore, TouchOauthTokenOptions, TwinoidOauth};
 use etwin_core::twinoid::TwinoidUserIdRef;
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_populate::dinoparc::populate_dinoparc;
 use etwin_populate::hammerfest::populate_hammerfest;
 use sqlx::PgPool;
@@ -55,7 +55,7 @@ where
   TyClock: Clock,
   TyDatabase: ApiRef<PgPool>,
 {
-  async fn touch_twinoid_oauth(&self, options: &TouchOauthTokenOptions) -> Result<(), EtwinError> {
+  async fn touch_twinoid_oauth(&self, options: &TouchOauthTokenOptions) -> Result<(), AnyError> {
     let mut tx = self.database.as_ref().begin().await?;
     let now = self.clock.now();
 
@@ -173,7 +173,7 @@ where
     Ok(())
   }
 
-  async fn revoke_twinoid_access_token(&self, access_token: &RfcOauthAccessTokenKey) -> Result<(), EtwinError> {
+  async fn revoke_twinoid_access_token(&self, access_token: &RfcOauthAccessTokenKey) -> Result<(), AnyError> {
     let now = self.clock.now();
     let res = sqlx::query(
       r"
@@ -198,7 +198,7 @@ where
     Ok(())
   }
 
-  async fn revoke_twinoid_refresh_token(&self, refresh_token: &RfcOauthRefreshTokenKey) -> Result<(), EtwinError> {
+  async fn revoke_twinoid_refresh_token(&self, refresh_token: &RfcOauthRefreshTokenKey) -> Result<(), AnyError> {
     let now = self.clock.now();
     let res = sqlx::query(
       r"
@@ -223,7 +223,7 @@ where
     Ok(())
   }
 
-  async fn get_twinoid_oauth(&self, options: TwinoidUserIdRef) -> Result<TwinoidOauth, EtwinError> {
+  async fn get_twinoid_oauth(&self, options: TwinoidUserIdRef) -> Result<TwinoidOauth, AnyError> {
     let mut tx = self.database.as_ref().begin().await?;
     let now = self.clock.now();
 
@@ -300,7 +300,7 @@ where
     &self,
     user: DinoparcUserIdRef,
     key: &DinoparcSessionKey,
-  ) -> Result<StoredDinoparcSession, EtwinError> {
+  ) -> Result<StoredDinoparcSession, AnyError> {
     let mut tx = self.database.as_ref().begin().await?;
     let now = self.clock.now();
 
@@ -374,7 +374,7 @@ where
     Ok(session)
   }
 
-  async fn revoke_dinoparc(&self, server: DinoparcServer, key: &DinoparcSessionKey) -> Result<(), EtwinError> {
+  async fn revoke_dinoparc(&self, server: DinoparcServer, key: &DinoparcSessionKey) -> Result<(), AnyError> {
     let now = self.clock.now();
     let res = sqlx::query(
       r"
@@ -399,7 +399,7 @@ where
     Ok(())
   }
 
-  async fn get_dinoparc(&self, user: DinoparcUserIdRef) -> Result<Option<StoredDinoparcSession>, EtwinError> {
+  async fn get_dinoparc(&self, user: DinoparcUserIdRef) -> Result<Option<StoredDinoparcSession>, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       dinoparc_session_key: DinoparcSessionKey,
@@ -434,7 +434,7 @@ where
     &self,
     user: HammerfestUserIdRef,
     key: &HammerfestSessionKey,
-  ) -> Result<StoredHammerfestSession, EtwinError> {
+  ) -> Result<StoredHammerfestSession, AnyError> {
     let mut tx = self.database.as_ref().begin().await?;
     let now = self.clock.now();
 
@@ -508,7 +508,7 @@ where
     Ok(session)
   }
 
-  async fn revoke_hammerfest(&self, server: HammerfestServer, key: &HammerfestSessionKey) -> Result<(), EtwinError> {
+  async fn revoke_hammerfest(&self, server: HammerfestServer, key: &HammerfestSessionKey) -> Result<(), AnyError> {
     let now = self.clock.now();
     let res = sqlx::query(
       r"
@@ -533,7 +533,7 @@ where
     Ok(())
   }
 
-  async fn get_hammerfest(&self, user: HammerfestUserIdRef) -> Result<Option<StoredHammerfestSession>, EtwinError> {
+  async fn get_hammerfest(&self, user: HammerfestUserIdRef) -> Result<Option<StoredHammerfestSession>, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       hammerfest_session_key: HammerfestSessionKey,

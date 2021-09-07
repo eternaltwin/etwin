@@ -1,7 +1,7 @@
 use crate::core::{Instant, IntPercentage};
 use crate::link::VersionedEtwinLink;
 use crate::temporal::LatestTemporal;
-use crate::types::EtwinError;
+use crate::types::AnyError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 use enum_iterator::IntoEnumIterator;
@@ -714,47 +714,43 @@ pub trait DinoparcClient: Send + Sync {
   /// full Dinoz list but the specific target does not matter.
   async fn get_preferred_exchange_with(&self, server: DinoparcServer) -> [DinoparcUserId; 2];
 
-  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, EtwinError>;
+  async fn create_session(&self, options: &DinoparcCredentials) -> Result<DinoparcSession, AnyError>;
 
   async fn test_session(
     &self,
     server: DinoparcServer,
     key: &DinoparcSessionKey,
-  ) -> Result<Option<DinoparcSession>, EtwinError>;
+  ) -> Result<Option<DinoparcSession>, AnyError>;
 
-  async fn get_dinoz(
-    &self,
-    session: &DinoparcSession,
-    id: DinoparcDinozId,
-  ) -> Result<DinoparcDinozResponse, EtwinError>;
+  async fn get_dinoz(&self, session: &DinoparcSession, id: DinoparcDinozId) -> Result<DinoparcDinozResponse, AnyError>;
 
   async fn get_exchange_with(
     &self,
     session: &DinoparcSession,
     recipient: DinoparcUserId,
-  ) -> Result<DinoparcExchangeWithResponse, EtwinError>;
+  ) -> Result<DinoparcExchangeWithResponse, AnyError>;
 
-  async fn get_inventory(&self, session: &DinoparcSession) -> Result<DinoparcInventoryResponse, EtwinError>;
+  async fn get_inventory(&self, session: &DinoparcSession) -> Result<DinoparcInventoryResponse, AnyError>;
 
-  async fn get_collection(&self, session: &DinoparcSession) -> Result<DinoparcCollectionResponse, EtwinError>;
+  async fn get_collection(&self, session: &DinoparcSession) -> Result<DinoparcCollectionResponse, AnyError>;
 }
 
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait DinoparcStore: Send + Sync {
-  async fn touch_short_user(&self, options: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, EtwinError>;
+  async fn touch_short_user(&self, options: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, AnyError>;
 
-  async fn touch_inventory(&self, response: &DinoparcInventoryResponse) -> Result<(), EtwinError>;
+  async fn touch_inventory(&self, response: &DinoparcInventoryResponse) -> Result<(), AnyError>;
 
-  async fn touch_collection(&self, response: &DinoparcCollectionResponse) -> Result<(), EtwinError>;
+  async fn touch_collection(&self, response: &DinoparcCollectionResponse) -> Result<(), AnyError>;
 
-  async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), EtwinError>;
+  async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), AnyError>;
 
-  async fn touch_exchange_with(&self, response: &DinoparcExchangeWithResponse) -> Result<(), EtwinError>;
+  async fn touch_exchange_with(&self, response: &DinoparcExchangeWithResponse) -> Result<(), AnyError>;
 
-  async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError>;
+  async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, AnyError>;
 
-  async fn get_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError>;
+  async fn get_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, AnyError>;
 }
 
 #[derive(Debug, Error)]

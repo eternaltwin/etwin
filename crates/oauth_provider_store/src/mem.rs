@@ -8,7 +8,7 @@ use etwin_core::oauth::{
   SimpleOauthClientWithSecret, StoredOauthAccessToken, UpsertSystemClientOptions,
 };
 use etwin_core::password::{PasswordHash, PasswordService};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::user::UserIdRef;
 use etwin_core::uuid::UuidGenerator;
 use std::collections::HashMap;
@@ -48,7 +48,7 @@ impl StoreState {
     password: &impl PasswordService,
     uuid_generator: &impl UuidGenerator,
     options: &UpsertSystemClientOptions,
-  ) -> Result<SimpleOauthClient, EtwinError> {
+  ) -> Result<SimpleOauthClient, AnyError> {
     let client_id = self.client_keys.get(&options.key);
     let client = match client_id {
       None => None,
@@ -131,16 +131,16 @@ impl StoreState {
   pub(crate) fn get_client_with_secret(
     &self,
     options: &GetOauthClientOptions,
-  ) -> Result<SimpleOauthClientWithSecret, EtwinError> {
+  ) -> Result<SimpleOauthClientWithSecret, AnyError> {
     let id = match &options.r#ref {
       OauthClientRef::Id(r) => r.id,
       OauthClientRef::Key(r) => self
         .client_keys
         .get(&r.key)
         .cloned()
-        .ok_or_else(|| EtwinError::from("NotFound"))?,
+        .ok_or_else(|| AnyError::from("NotFound"))?,
     };
-    let store_client = self.clients.get(&id).ok_or_else(|| EtwinError::from("NotFound"))?;
+    let store_client = self.clients.get(&id).ok_or_else(|| AnyError::from("NotFound"))?;
     Ok(SimpleOauthClientWithSecret {
       id: store_client.id,
       key: store_client.key.clone(),
@@ -156,7 +156,7 @@ impl StoreState {
     &mut self,
     now: Instant,
     options: &CreateStoredAccessTokenOptions,
-  ) -> Result<StoredOauthAccessToken, EtwinError> {
+  ) -> Result<StoredOauthAccessToken, AnyError> {
     let token = StoredOauthAccessToken {
       key: options.key,
       created_at: now,
@@ -173,9 +173,9 @@ impl StoreState {
     &mut self,
     now: Instant,
     options: &GetOauthAccessTokenOptions,
-  ) -> Result<StoredOauthAccessToken, EtwinError> {
+  ) -> Result<StoredOauthAccessToken, AnyError> {
     let token = self.access_tokens.get_mut(&options.key);
-    let token = token.ok_or_else(|| EtwinError::from("NotFound"))?;
+    let token = token.ok_or_else(|| AnyError::from("NotFound"))?;
     if options.touch_accessed_at {
       token.accessed_at = now;
     }
@@ -219,7 +219,7 @@ where
   TyPassword: PasswordService,
   TyUuidGenerator: UuidGenerator,
 {
-  async fn upsert_system_client(&self, options: &UpsertSystemClientOptions) -> Result<SimpleOauthClient, EtwinError> {
+  async fn upsert_system_client(&self, options: &UpsertSystemClientOptions) -> Result<SimpleOauthClient, AnyError> {
     let now = self.clock.now();
     let mut state = self.state.write().unwrap();
     state.upsert_system_client(now, &self.password, &self.uuid_generator, options)
@@ -233,7 +233,7 @@ where
   async fn get_client_with_secret(
     &self,
     options: &GetOauthClientOptions,
-  ) -> Result<SimpleOauthClientWithSecret, EtwinError> {
+  ) -> Result<SimpleOauthClientWithSecret, AnyError> {
     let state = self.state.read().unwrap();
     state.get_client_with_secret(options)
   }
@@ -241,13 +241,13 @@ where
   async fn create_access_token(
     &self,
     options: &CreateStoredAccessTokenOptions,
-  ) -> Result<StoredOauthAccessToken, EtwinError> {
+  ) -> Result<StoredOauthAccessToken, AnyError> {
     let now = self.clock.now();
     let mut state = self.state.write().unwrap();
     state.create_access_token(now, options)
   }
 
-  async fn get_access_token(&self, options: &GetOauthAccessTokenOptions) -> Result<StoredOauthAccessToken, EtwinError> {
+  async fn get_access_token(&self, options: &GetOauthAccessTokenOptions) -> Result<StoredOauthAccessToken, AnyError> {
     let now = self.clock.now();
     let mut state = self.state.write().unwrap();
     state.get_access_token(now, options)

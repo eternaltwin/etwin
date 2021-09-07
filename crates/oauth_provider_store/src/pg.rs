@@ -9,7 +9,7 @@ use etwin_core::oauth::{
   SimpleOauthClientWithSecret, StoredOauthAccessToken, UpsertSystemClientOptions,
 };
 use etwin_core::password::{PasswordHash, PasswordService};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::user::{UserId, UserIdRef};
 use etwin_core::uuid::UuidGenerator;
 use sqlx::PgPool;
@@ -63,7 +63,7 @@ where
   TyPassword: PasswordService,
   TyUuidGenerator: UuidGenerator,
 {
-  async fn upsert_system_client(&self, options: &UpsertSystemClientOptions) -> Result<SimpleOauthClient, EtwinError> {
+  async fn upsert_system_client(&self, options: &UpsertSystemClientOptions) -> Result<SimpleOauthClient, AnyError> {
     let now = self.clock.now();
 
     #[derive(Debug, sqlx::FromRow)]
@@ -220,7 +220,7 @@ where
   async fn get_client_with_secret(
     &self,
     options: &GetOauthClientOptions,
-  ) -> Result<SimpleOauthClientWithSecret, EtwinError> {
+  ) -> Result<SimpleOauthClientWithSecret, AnyError> {
     let mut ref_id: Option<OauthClientId> = None;
     let mut ref_key: Option<OauthClientKey> = None;
     match &options.r#ref {
@@ -273,7 +273,7 @@ where
   async fn create_access_token(
     &self,
     options: &CreateStoredAccessTokenOptions,
-  ) -> Result<StoredOauthAccessToken, EtwinError> {
+  ) -> Result<StoredOauthAccessToken, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       oauth_access_token_id: EtwinOauthAccessTokenKey,
@@ -311,7 +311,7 @@ where
     })
   }
 
-  async fn get_access_token(&self, options: &GetOauthAccessTokenOptions) -> Result<StoredOauthAccessToken, EtwinError> {
+  async fn get_access_token(&self, options: &GetOauthAccessTokenOptions) -> Result<StoredOauthAccessToken, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       oauth_access_token_id: EtwinOauthAccessTokenKey,

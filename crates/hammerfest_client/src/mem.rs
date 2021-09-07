@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::core::Instant;
 use etwin_core::hammerfest::*;
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use std::collections::hash_map::Entry;
 use std::collections::{HashMap, HashSet};
 use std::convert::TryInto;
@@ -11,7 +11,7 @@ use std::str::FromStr;
 use std::sync::RwLock;
 use thiserror::Error;
 
-type Result<T> = std::result::Result<T, EtwinError>;
+type Result<T> = std::result::Result<T, AnyError>;
 
 #[derive(Debug, Error)]
 pub enum Error {

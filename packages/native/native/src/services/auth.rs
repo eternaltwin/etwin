@@ -27,7 +27,7 @@ use etwin_core::link::LinkStore;
 use etwin_core::oauth::{OauthProviderStore, RfcOauthAccessTokenKey};
 use etwin_core::password::PasswordService;
 use etwin_core::twinoid::{TwinoidClient, TwinoidStore};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::user::UserStore;
 use etwin_core::uuid::UuidGenerator;
 use etwin_services::auth::{AuthService, DynAuthService};
@@ -165,7 +165,7 @@ pub fn grant_oauth_authorization(mut cx: FunctionContext) -> JsResult<JsUndefine
     inner
       .grant_oauth_authorization(&acx, &options)
       .await
-      .map_err(|x| Box::new(x) as EtwinError)
+      .map_err(|x| Box::new(x) as AnyError)
   };
   resolve_callback_serde(&mut cx, res, cb)
 }
@@ -184,7 +184,7 @@ pub fn create_access_token(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     inner
       .create_access_token(&acx, &options)
       .await
-      .map_err(|x| Box::new(x) as EtwinError)
+      .map_err(|x| Box::new(x) as AnyError)
   };
   resolve_callback_serde(&mut cx, res, cb)
 }

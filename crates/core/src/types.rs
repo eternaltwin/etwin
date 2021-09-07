@@ -1,4 +1,8 @@
-pub type EtwinError = Box<dyn ::std::error::Error + Send + Sync + 'static>;
+pub type AnyError = Box<dyn ::std::error::Error + Send + Sync + 'static>;
+
+pub fn to_any_error<E: ::std::error::Error + Send + Sync + 'static>(e: E) -> AnyError {
+  Box::new(e)
+}
 
 #[macro_export]
 macro_rules! declare_decimal_id {
@@ -491,6 +495,10 @@ macro_rules! declare_new_uuid {
 
       $struct_vis const fn into_uuid(self) -> ::uuid::Uuid {
         self.0
+      }
+
+      $struct_vis fn to_hex(&self) -> String {
+        self.0.to_simple().to_string()
       }
     }
 

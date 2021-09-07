@@ -1,5 +1,5 @@
 use crate::tokio_runtime::spawn_future;
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use neon::prelude::*;
 use serde::Serialize;
 use std::future::Future;
@@ -96,7 +96,7 @@ where
 #[allow(clippy::unnecessary_wraps)]
 pub(crate) fn resolve_callback_serde<'a, C: Context<'a>, T: Serialize>(
   cx: &mut C,
-  fut: impl Future<Output = Result<T, EtwinError>> + Send + 'static,
+  fut: impl Future<Output = Result<T, AnyError>> + Send + 'static,
   cb: Root<JsFunction>,
 ) -> JsResult<'a, JsUndefined> {
   let queue = cx.queue();
@@ -105,7 +105,7 @@ pub(crate) fn resolve_callback_serde<'a, C: Context<'a>, T: Serialize>(
     let res = match res {
       Ok(v) => match serde_json::to_string(&v) {
         Ok(v) => Ok(v),
-        Err(e) => Err(Box::new(e) as EtwinError),
+        Err(e) => Err(Box::new(e) as AnyError),
       },
       Err(e) => Err(e),
     };

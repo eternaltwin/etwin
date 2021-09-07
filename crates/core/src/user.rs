@@ -1,7 +1,7 @@
 use crate::core::{FinitePeriod, Instant};
 use crate::email::EmailAddress;
 use crate::password::PasswordHash;
-use crate::types::EtwinError;
+use crate::types::AnyError;
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 use chrono::Duration;
@@ -249,7 +249,7 @@ pub enum UpdateUserError {
   #[error("Failed to update user {:?}, password locked during {:?}, current time is {}", .0, .1, .2)]
   LockedPassword(UserIdRef, FinitePeriod, Instant),
   #[error(transparent)]
-  Other(EtwinError),
+  Other(AnyError),
 }
 
 impl PartialEq for UpdateUserError {
@@ -287,7 +287,7 @@ pub enum DeleteUserError {
   #[error("Failed to find user to delete for ref: {:?}", .0)]
   NotFound(UserIdRef),
   #[error(transparent)]
-  Other(EtwinError),
+  Other(AnyError),
 }
 
 impl PartialEq for DeleteUserError {
@@ -309,14 +309,13 @@ impl DeleteUserError {
 #[async_trait]
 #[auto_impl(&, Arc)]
 pub trait UserStore: Send + Sync {
-  async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, EtwinError>;
+  async fn create_user(&self, options: &CreateUserOptions) -> Result<CompleteSimpleUser, AnyError>;
 
-  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, EtwinError>;
+  async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, AnyError>;
 
-  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, EtwinError>;
+  async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, AnyError>;
 
-  async fn get_user_with_password(&self, options: &GetUserOptions)
-    -> Result<Option<ShortUserWithPassword>, EtwinError>;
+  async fn get_user_with_password(&self, options: &GetUserOptions) -> Result<Option<ShortUserWithPassword>, AnyError>;
 
   async fn update_user(&self, options: &UpdateUserOptions) -> Result<CompleteSimpleUser, UpdateUserError>;
 

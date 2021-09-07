@@ -9,7 +9,7 @@ use etwin_core::link::{
   TouchLinkError, TouchLinkOptions, VersionedRawLink, VersionedRawLinks,
 };
 use etwin_core::twinoid::{TwinoidUserId, TwinoidUserIdRef};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::user::{UserId, UserIdRef};
 use sqlx::PgPool;
 
@@ -342,7 +342,7 @@ where
   async fn get_link_from_dinoparc(
     &self,
     options: &GetLinkOptions<DinoparcUserIdRef>,
-  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, EtwinError> {
+  ) -> Result<VersionedRawLink<DinoparcUserIdRef>, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       linked_at: Instant,
@@ -390,7 +390,7 @@ where
   async fn get_link_from_hammerfest(
     &self,
     options: &GetLinkOptions<HammerfestUserIdRef>,
-  ) -> Result<VersionedRawLink<HammerfestUserIdRef>, EtwinError> {
+  ) -> Result<VersionedRawLink<HammerfestUserIdRef>, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       linked_at: Instant,
@@ -438,7 +438,7 @@ where
   async fn get_link_from_twinoid(
     &self,
     options: &GetLinkOptions<TwinoidUserIdRef>,
-  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, EtwinError> {
+  ) -> Result<VersionedRawLink<TwinoidUserIdRef>, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
       linked_at: Instant,
@@ -480,7 +480,7 @@ where
     }
   }
 
-  async fn get_links_from_etwin(&self, options: &GetLinksFromEtwinOptions) -> Result<VersionedRawLinks, EtwinError> {
+  async fn get_links_from_etwin(&self, options: &GetLinksFromEtwinOptions) -> Result<VersionedRawLinks, AnyError> {
     let mut links = VersionedRawLinks::default();
 
     {

@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use etwin_core::email::{EmailAddress, EmailContent, Mailer};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use lettre::message::header;
 use lettre::message::header::Header;
 pub use lettre::message::header::HeaderName;
@@ -114,7 +114,7 @@ impl SmtpMailer {
 
 #[async_trait]
 impl Mailer for SmtpMailer {
-  async fn send_email(&self, recipient: &EmailAddress, content: &EmailContent) -> Result<(), EtwinError> {
+  async fn send_email(&self, recipient: &EmailAddress, content: &EmailContent) -> Result<(), AnyError> {
     let mut email = Message::builder()
       .from(self.sender.clone())
       .reply_to(self.sender.clone())

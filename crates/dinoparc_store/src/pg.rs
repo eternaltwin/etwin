@@ -13,7 +13,7 @@ use etwin_core::dinoparc::{
 };
 use etwin_core::pg_num::{PgU16, PgU32};
 use etwin_core::temporal::{ForeignRetrieved, ForeignSnapshot, LatestTemporal};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use etwin_core::uuid::UuidGenerator;
 use etwin_populate::dinoparc::populate_dinoparc;
 use etwin_postgres_tools::upsert_archive_query;
@@ -69,7 +69,7 @@ where
   TyDatabase: ApiRef<PgPool>,
   TyUuidGenerator: UuidGenerator,
 {
-  async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, EtwinError> {
+  async fn touch_short_user(&self, short: &ShortDinoparcUser) -> Result<ArchivedDinoparcUser, AnyError> {
     let now = self.clock.now();
     sqlx::query(
       r"
@@ -97,7 +97,7 @@ where
     })
   }
 
-  async fn touch_inventory(&self, response: &DinoparcInventoryResponse) -> Result<(), EtwinError> {
+  async fn touch_inventory(&self, response: &DinoparcInventoryResponse) -> Result<(), AnyError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     touch_dinoparc_session_user(&mut tx, now, &response.session_user).await?;
@@ -109,7 +109,7 @@ where
     Ok(())
   }
 
-  async fn touch_collection(&self, response: &DinoparcCollectionResponse) -> Result<(), EtwinError> {
+  async fn touch_collection(&self, response: &DinoparcCollectionResponse) -> Result<(), AnyError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     touch_dinoparc_session_user(&mut tx, now, &response.session_user).await?;
@@ -130,7 +130,7 @@ where
     Ok(())
   }
 
-  async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), EtwinError> {
+  async fn touch_dinoz(&self, response: &DinoparcDinozResponse) -> Result<(), AnyError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     touch_dinoparc_session_user(&mut tx, now, &response.session_user).await?;
@@ -160,7 +160,7 @@ where
     Ok(())
   }
 
-  async fn touch_exchange_with(&self, response: &DinoparcExchangeWithResponse) -> Result<(), EtwinError> {
+  async fn touch_exchange_with(&self, response: &DinoparcExchangeWithResponse) -> Result<(), AnyError> {
     let now = self.clock.now();
     let mut tx = self.database.as_ref().begin().await?;
     touch_dinoparc_session_user(&mut tx, now, &response.session_user).await?;
@@ -172,7 +172,7 @@ where
     Ok(())
   }
 
-  async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, EtwinError> {
+  async fn get_dinoz(&self, options: &GetDinoparcDinozOptions) -> Result<Option<ArchivedDinoparcDinoz>, AnyError> {
     let time = options.time.unwrap_or_else(|| self.clock.now());
     let mut tx = self.database.as_ref().begin().await?;
 
@@ -371,7 +371,7 @@ where
     }))
   }
 
-  async fn get_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, EtwinError> {
+  async fn get_user(&self, options: &GetDinoparcUserOptions) -> Result<Option<ArchivedDinoparcUser>, AnyError> {
     let time = options.time.unwrap_or_else(|| self.clock.now());
     let mut tx = self.database.as_ref().begin().await?;
 
@@ -629,7 +629,7 @@ async fn touch_dinoparc_session_user(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   session_user: &DinoparcSessionUser,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   touch_dinoparc_user(tx, now, &session_user.user).await?;
   let user = session_user.user.as_ref();
   touch_dinoparc_coins(tx, now, user, session_user.coins).await?;
@@ -661,7 +661,7 @@ async fn touch_dinoparc_exchange_dinoz(
   now: Instant,
   owner: DinoparcUserIdRef,
   list: &[ShortDinoparcDinozWithLevel],
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   for dinoz in list.iter() {
     touch_dinoparc_dinoz(tx, now, dinoz.as_ref()).await?;
   }
@@ -684,7 +684,7 @@ async fn touch_dinoparc_user(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   user: &ShortDinoparcUser,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(
     r"
       INSERT
@@ -709,7 +709,7 @@ async fn touch_dinoparc_dinoz(
   tx: &mut Transaction<'_, Postgres>,
   now: Instant,
   dinoz: DinoparcDinozIdRef,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(
     r"
       INSERT
@@ -735,7 +735,7 @@ async fn touch_dinoparc_coins(
   now: Instant,
   user: DinoparcUserIdRef,
   coins: u32,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_coins(
       time($1 period, retrieved_at),
@@ -763,7 +763,7 @@ async fn touch_dinoparc_bills(
   now: Instant,
   user: DinoparcUserIdRef,
   bills: u32,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_bills(
       time($1 period, retrieved_at),
@@ -791,7 +791,7 @@ async fn touch_dinoparc_inventory(
   now: Instant,
   user: DinoparcUserIdRef,
   items: Uuid,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_inventories(
       time($1 period, retrieved_at),
@@ -820,7 +820,7 @@ async fn touch_dinoparc_collection(
   user: DinoparcUserIdRef,
   regular_rewards: Uuid,
   epic_rewards: Uuid,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_collections(
       time($1 period, retrieved_at),
@@ -849,7 +849,7 @@ async fn touch_dinoparc_dinoz_name(
   now: Instant,
   dinoz: DinoparcDinozIdRef,
   name: Option<&DinoparcDinozName>,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_dinoz_names(
       time($1 period, retrieved_at),
@@ -877,7 +877,7 @@ async fn touch_dinoparc_dinoz_owner(
   now: Instant,
   dinoz: DinoparcDinozIdRef,
   owner: DinoparcUserIdRef,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_dinoz_owners(
       time($1 period, retrieved_at),
@@ -905,7 +905,7 @@ async fn touch_dinoparc_dinoz_location(
   now: Instant,
   dinoz: DinoparcDinozIdRef,
   location: DinoparcLocationId,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_dinoz_locations(
       time($1 period, retrieved_at),
@@ -932,7 +932,7 @@ async fn touch_dinoparc_dinoz_level(
   now: Instant,
   dinoz: DinoparcDinozIdRef,
   level: u16,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_dinoz_levels(
       time($1 period, retrieved_at),
@@ -961,7 +961,7 @@ async fn touch_dinoparc_dinoz_skin(
   dinoz: DinoparcDinozIdRef,
   race: DinoparcDinozRace,
   skin: &DinoparcDinozSkin,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_dinoz_skins(
       time($1 period, retrieved_at),
@@ -997,7 +997,7 @@ async fn touch_dinoparc_dinoz_profile(
   in_tournament: bool,
   elements: DinoparcDinozElements,
   skills: Uuid,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_dinoz_profiles(
       time($1 period, retrieved_at),
@@ -1033,7 +1033,7 @@ async fn touch_dinoparc_user_dinoz_count(
   now: Instant,
   user: DinoparcUserIdRef,
   dinoz_count: u32,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_user_dinoz_counts(
       time($1 period, retrieved_at),
@@ -1062,7 +1062,7 @@ async fn touch_dinoparc_user_dinoz_item(
   user: DinoparcUserIdRef,
   offset: u32,
   dinoz: DinoparcDinozIdRef,
-) -> Result<(), EtwinError> {
+) -> Result<(), AnyError> {
   let res: PgQueryResult = sqlx::query(upsert_archive_query!(
     dinoparc_user_dinoz(
       time($1 period, retrieved_at),
@@ -1090,7 +1090,7 @@ async fn touch_dinoparc_item_counts(
   tx: &mut Transaction<'_, Postgres>,
   items: &HashMap<DinoparcItemId, u32>,
   new_id: Uuid,
-) -> Result<Uuid, EtwinError> {
+) -> Result<Uuid, AnyError> {
   let sorted: BTreeMap<DinoparcItemId, u32> = items.iter().map(|(k, v)| (*k, *v)).collect();
   let hash = {
     let json = serde_json::to_string(&sorted).unwrap();
@@ -1177,7 +1177,7 @@ async fn touch_dinoparc_reward_set(
   tx: &mut Transaction<'_, Postgres>,
   items: &HashSet<DinoparcRewardId>,
   new_id: Uuid,
-) -> Result<Uuid, EtwinError> {
+) -> Result<Uuid, AnyError> {
   let sorted: BTreeSet<DinoparcRewardId> = items.iter().cloned().collect();
   let hash = {
     let json = serde_json::to_string(&sorted).unwrap();
@@ -1262,7 +1262,7 @@ async fn touch_dinoparc_epic_reward_set(
   tx: &mut Transaction<'_, Postgres>,
   items: &HashSet<DinoparcEpicRewardKey>,
   new_id: Uuid,
-) -> Result<Uuid, EtwinError> {
+) -> Result<Uuid, AnyError> {
   let sorted: BTreeSet<DinoparcEpicRewardKey> = items.iter().cloned().collect();
   let hash = {
     let json = serde_json::to_string(&sorted).unwrap();
@@ -1347,7 +1347,7 @@ async fn touch_dinoparc_skill_levels(
   tx: &mut Transaction<'_, Postgres>,
   skills: &HashMap<DinoparcSkill, DinoparcSkillLevel>,
   new_id: Uuid,
-) -> Result<Uuid, EtwinError> {
+) -> Result<Uuid, AnyError> {
   let sorted: BTreeMap<DinoparcSkill, DinoparcSkillLevel> = skills.iter().map(|(k, v)| (*k, *v)).collect();
   let hash = {
     let json = serde_json::to_string(&sorted).unwrap();

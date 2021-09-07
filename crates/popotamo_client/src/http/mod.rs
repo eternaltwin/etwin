@@ -8,7 +8,7 @@ use ::scraper::Html;
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
 use etwin_core::popotamo::{PopotamoClient, PopotamoProfileResponse, PopotamoUserIdRef};
-use etwin_core::types::EtwinError;
+use etwin_core::types::AnyError;
 use reqwest::Client;
 use std::time::Duration;
 
@@ -25,7 +25,7 @@ impl<TyClock> HttpPopotamoClient<TyClock>
 where
   TyClock: Clock,
 {
-  pub fn new(clock: TyClock) -> Result<Self, EtwinError> {
+  pub fn new(clock: TyClock) -> Result<Self, AnyError> {
     Ok(Self {
       client: Client::builder()
         .user_agent(USER_AGENT)
@@ -49,7 +49,7 @@ impl<TyClock> PopotamoClient for HttpPopotamoClient<TyClock>
 where
   TyClock: Clock,
 {
-  async fn get_profile(&self, user: PopotamoUserIdRef) -> Result<PopotamoProfileResponse, EtwinError> {
+  async fn get_profile(&self, user: PopotamoUserIdRef) -> Result<PopotamoProfileResponse, AnyError> {
     let html = self.get_html(PopotamoUrls::new(user.server).user(user.id)).await?;
     let response = scraper::scrape_profile(&html)?;
     // TODO: Assert username matches
