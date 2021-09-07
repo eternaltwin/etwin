@@ -28,7 +28,7 @@ url = "^2.2.2"
 uuid = { version = "0.8.2", default-features = false, features = ["serde", "v4"] }
 
 [features]
-_serde = ["etwin_serde_tools", "serde", "chrono/serde"]
+_serde = ["etwin_serde_tools", "serde", "chrono/serde", "url/serde"]
 
 [dev-dependencies]
 hex = "0.4.3"
