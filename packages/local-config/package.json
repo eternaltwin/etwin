@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/local-config",
-  "version": "0.8.4",
+  "version": "0.9.1",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Local configuration resolution for Eternal-Twin packages",
   "repository": {
@@ -30,17 +30,17 @@
     "node": ">=14.13.1"
   },
   "dependencies": {
-    "find-up": "^5.0.0",
+    "find-up": "^6.0.0",
     "toml": "^3.0.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.21",
-    "@types/mocha": "^8.2.3",
-    "@types/node": "^16.3.3",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.9.1",
     "chai": "^4.3.4",
-    "eslint": "^7.31.0",
-    "mocha": "^9.0.2",
-    "typescript": "^4.3.5"
+    "eslint": "^7.32.0",
+    "mocha": "^9.1.1",
+    "typescript": "^4.4.2"
   },
   "type": "module",
   "exports": {

@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/native",
-  "version": "0.8.4",
+  "version": "0.9.1",
   "description": "Native module for Eternal-Twin",
   "author": "Charles Samborski <demurgos@demurgos.net>",
   "licenses": [
@@ -35,20 +35,20 @@
     "foreground-child": "^2.0.0",
     "kryo": "^0.13.0",
     "kryo-json": "^0.13.0",
-    "neon-cli": "^0.8.3"
+    "neon-cli": "^0.9.1"
   },
   "devDependencies": {
     "@eternal-twin/etwin-pg": "workspace:*",
     "@eternal-twin/local-config": "workspace:*",
     "@eternal-twin/pg-db": "workspace:*",
     "@types/chai": "^4.2.21",
-    "@types/mocha": "^8.2.3",
-    "@types/node": "^16.3.3",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.9.1",
     "chai": "^4.3.4",
-    "eslint": "^7.31.0",
-    "mocha": "^9.0.2",
+    "eslint": "^7.32.0",
+    "mocha": "^9.1.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.3.5"
+    "typescript": "^4.4.2"
   },
   "type": "module",
   "main": "./native/index.js",

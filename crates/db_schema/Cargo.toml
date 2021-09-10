@@ -1,6 +1,6 @@
 [package]
 name = "etwin_db_schema"
-version = "0.8.1"
+version = "0.9.1"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Manager for Eternal-Twin SQL schemas"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -12,9 +12,9 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-etwin_config = "0.8.1"
-etwin_squirrel = "0.8.1"
-include_dir = "0.6.1"
+etwin_config = "0.9.1"
+etwin_squirrel = "0.9.1"
+include_dir = "0.6.2"
 lazy_static = "1.4.0"
-sqlx = { version = "0.5.5", default-features = false, features = ["offline", "postgres", "runtime-tokio-rustls"] }
-tokio = { version = "1.8.1", features = ["macros"] }
+sqlx = { version = "0.5.7", default-features = false, features = ["offline", "postgres", "runtime-tokio-rustls"] }
+tokio = { version = "1.11.0", features = ["macros"] }

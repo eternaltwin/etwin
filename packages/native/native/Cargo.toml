@@ -15,33 +15,33 @@ crate-type = ["cdylib"]
 test = false
 
 [build-dependencies]
-neon-build = "0.8.3"
+neon-build = "0.9.1"
 
 [dependencies]
 chrono = "0.4.19"
-etwin_auth_store = { version = "0.8.1", features = ["neon"] }
-etwin_core = { version = "0.8.1", features = ["neon", "_serde"] }
-etwin_dinoparc_client = { version = "0.8.1", features = ["neon"] }
-etwin_dinoparc_store = { version = "0.8.1", features = ["neon"] }
-etwin_email_formatter = { version = "0.8.1", features = ["neon"] }
-etwin_hammerfest_client = { version = "0.8.1", features = ["neon"] }
-etwin_hammerfest_store = { version = "0.8.1", features = ["neon"] }
-etwin_link_store = { version = "0.8.1", features = ["neon"] }
-etwin_log = "0.8.1"
-etwin_mailer = { version = "0.8.1", features = ["neon"] }
-etwin_oauth_provider_store = { version = "0.8.1", features = ["neon"] }
-etwin_password = { version = "0.8.1", features = ["neon"] }
-etwin_rest = "0.8.1"
-etwin_services = { version = "0.8.1", features = ["neon"] }
-etwin_token_store = { version = "0.8.1", features = ["neon"] }
-etwin_twinoid_client = { version = "0.8.1", features = ["neon"] }
-etwin_twinoid_store = { version = "0.8.1", features = ["neon"] }
-etwin_user_store = { version = "0.8.1", features = ["neon"] }
-neon = { version = "0.8.3", default-features = false, features = ["event-queue-api", "napi-6"] }
-sqlx = { version = "0.5.5", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
-serde = { version = "1.0.126", features = ["derive"] }
-serde_json = "1.0.64"
-tokio = { version = "1.8.1", features = ["full"] }
+etwin_auth_store = { version = "0.9.1", features = ["neon"] }
+etwin_core = { version = "0.9.1", features = ["neon", "_serde"] }
+etwin_dinoparc_client = { version = "0.9.1", features = ["neon"] }
+etwin_dinoparc_store = { version = "0.9.1", features = ["neon"] }
+etwin_email_formatter = { version = "0.9.1", features = ["neon"] }
+etwin_hammerfest_client = { version = "0.9.1", features = ["neon"] }
+etwin_hammerfest_store = { version = "0.9.1", features = ["neon"] }
+etwin_link_store = { version = "0.9.1", features = ["neon"] }
+etwin_log = "0.9.1"
+etwin_mailer = { version = "0.9.1", features = ["neon"] }
+etwin_oauth_provider_store = { version = "0.9.1", features = ["neon"] }
+etwin_password = { version = "0.9.1", features = ["neon"] }
+etwin_rest = "0.9.1"
+etwin_services = { version = "0.9.1", features = ["neon"] }
+etwin_token_store = { version = "0.9.1", features = ["neon"] }
+etwin_twinoid_client = { version = "0.9.1", features = ["neon"] }
+etwin_twinoid_store = { version = "0.9.1", features = ["neon"] }
+etwin_user_store = { version = "0.9.1", features = ["neon"] }
+neon = { version = "0.9.1", default-features = false, features = ["event-queue-api", "napi-6"] }
+sqlx = { version = "0.5.7", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
+serde = { version = "1.0.130", features = ["derive"] }
+serde_json = "1.0.67"
+tokio = { version = "1.11.0", features = ["full"] }
 once_cell = "1.8.0"
 warp = "0.3.1"
 

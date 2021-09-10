@@ -1,6 +1,6 @@
 [package]
 name = "etwin_dinoparc_store"
-version = "0.8.1"
+version = "0.9.1"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Dinoparc store implementation"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -12,20 +12,20 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-async-trait = "0.1.50"
-etwin_constants = "0.8.1"
-etwin_core = { version = "0.8.1", features = ["_serde", "sqlx"] }
-etwin_db_schema = "0.8.1"
-etwin_populate = "0.8.1"
-etwin_postgres_tools = "0.8.1"
-neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
+async-trait = "0.1.51"
+etwin_constants = "0.9.1"
+etwin_core = { version = "0.9.1", features = ["_serde", "sqlx"] }
+etwin_db_schema = "0.9.1"
+etwin_populate = "0.9.1"
+etwin_postgres_tools = "0.9.1"
+neon = { version = "0.9.1", optional = true, default-features = false, features = ["napi-6"] }
 regex = "1.5.4"
-serde_json = "1.0.64"
+serde_json = "1.0.67"
 sha3 = "0.9.1"
-sqlx = { version = "0.5.5", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
+sqlx = { version = "0.5.7", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 
 [dev-dependencies]
 chrono = "0.4.19"
-etwin_config = "0.8.1"
+etwin_config = "0.9.1"
 serial_test = "0.5.1"
-tokio = { version = "1.8.1", features = ["macros", "rt"] }
+tokio = { version = "1.11.0", features = ["macros", "rt"] }

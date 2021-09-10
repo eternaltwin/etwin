@@ -48,9 +48,10 @@ async function usePrebuiltModule(target: string) {
   try {
     await fs.unlink(dest);
   } catch (e) {
-    if (e.code !== "ENOENT") {
+    const isEnoent = typeof e === "object" && e !== null && Reflect.get(e, "code") === "ENOENT";
+    if (!isEnoent) {
       throw e;
-    }
+    } // else ignore
   }
   await fs.copyFile(src, dest);
 }

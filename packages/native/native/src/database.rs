@@ -54,7 +54,7 @@ pub fn new(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
   let options: NewOptions = serde_json::from_str(&options_json.value(&mut cx)).unwrap();
 
-  let queue = cx.queue();
+  let queue = cx.channel();
   spawn_future(Box::pin(async move {
     let connect_options = PgConnectOptions::new()
       .host(&options.host)

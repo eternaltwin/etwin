@@ -1,6 +1,6 @@
 [package]
 name = "etwin_user_store"
-version = "0.8.1"
+version = "0.9.1"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Simple user service for Postgres (Rust)"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -12,17 +12,17 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-async-trait = "0.1.50"
+async-trait = "0.1.51"
 chrono = "0.4.19"
-etwin_core = { version = "0.8.1", features = ["sqlx"] }
-etwin_db_schema = "0.8.1"
-neon = { version = "0.8.3", optional = true, default-features = false, features = ["napi-6"] }
+etwin_core = { version = "0.9.1", features = ["sqlx"] }
+etwin_db_schema = "0.9.1"
+neon = { version = "0.9.1", optional = true, default-features = false, features = ["napi-6"] }
 regex = "1.5.4"
-sqlx = { version = "0.5.5", default-features = false, features = ["macros", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
-thiserror = "1.0.26"
+sqlx = { version = "0.5.7", default-features = false, features = ["macros", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
+thiserror = "1.0.29"
 uuid = { version = "0.8.2", default-features = false, features = ["serde", "v4"] }
 
 [dev-dependencies]
-etwin_config = "0.8.1"
+etwin_config = "0.9.1"
 serial_test = "0.5.1"
-tokio = { version = "1.8.1", features = ["macros", "rt"] }
+tokio = { version = "1.11.0", features = ["macros", "rt"] }

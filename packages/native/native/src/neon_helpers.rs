@@ -73,7 +73,7 @@ pub(crate) fn resolve_callback_with<'a, C: Context<'a>, T: 'static + Send, ToJs>
 where
   ToJs: 'static + Send + for<'r> FnOnce(&mut TaskContext<'r>, T) -> Result<Handle<'r, JsValue>, Handle<'r, JsValue>>,
 {
-  let queue = cx.queue();
+  let queue = cx.channel();
   spawn_future(Box::pin(async move {
     let res = fut.await;
     queue.send(move |mut cx| {
@@ -99,7 +99,7 @@ pub(crate) fn resolve_callback_serde<'a, C: Context<'a>, T: Serialize>(
   fut: impl Future<Output = Result<T, AnyError>> + Send + 'static,
   cb: Root<JsFunction>,
 ) -> JsResult<'a, JsUndefined> {
-  let queue = cx.queue();
+  let queue = cx.channel();
   spawn_future(Box::pin(async move {
     let res = fut.await;
     let res = match res {

@@ -6,7 +6,7 @@ use std::process::Command;
 use std::thread::sleep;
 use std::time::Duration;
 
-const CRATES: [&str; 22] = [
+const CRATES: [&str; 29] = [
   "postgres_tools",
   "serde_tools",
   "scraper_tools",
@@ -17,13 +17,20 @@ const CRATES: [&str; 22] = [
   "constants",
   "db_schema",
   "populate",
+  "email_formatter",
+  "mailer",
   "password",
   "dinoparc_client",
   "dinoparc_store",
+  "dinorpg_client",
   "hammerfest_client",
   "hammerfest_store",
+  "popotamo_client",
+  "twinoid_client",
   "twinoid_store",
   "user_store",
+  "oauth_provider_store",
+  "auth_store",
   "token_store",
   "link_store",
   "services",
@@ -31,16 +38,10 @@ const CRATES: [&str; 22] = [
   "cli",
 ];
 
-const NPM_PACKAGES: [&str; 24] = [
+const NPM_PACKAGES: [&str; 15] = [
   "core",
   "announcement-mem",
   "announcement-pg",
-  "auth-in-memory",
-  "auth-pg",
-  "email-console",
-  "email-in-memory",
-  "email-template-etwin",
-  "email-template-json",
   "etwin-client-http",
   "etwin-client-in-memory",
   "etwin-pg",
@@ -49,11 +50,8 @@ const NPM_PACKAGES: [&str; 24] = [
   "local-config",
   "native",
   "oauth-client-http",
-  "oauth-provider-in-memory",
-  "oauth-provider-pg",
   "pg-db",
   "rest-server",
-  "twinoid-client-http",
   "website",
   "cli",
 ];

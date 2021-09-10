@@ -1,6 +1,6 @@
 [package]
 name = "etwin_config"
-version = "0.8.1"
+version = "0.9.1"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Config crate for Eternal-Twin"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -13,6 +13,6 @@ edition = "2018"
 
 [dependencies]
 once_cell = "1.8.0"
-serde = { version = "1.0.126", features = ["derive"] }
+serde = { version = "1.0.130", features = ["derive"] }
 toml = "0.5.8"
 url = { version = "2.2.2", features = ["serde"] }

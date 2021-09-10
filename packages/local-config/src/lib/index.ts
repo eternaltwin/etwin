@@ -1,4 +1,4 @@
-import findUp from "find-up";
+import { findUp } from "find-up";
 import fs from "fs";
 import toml from "toml";
 import url from "url";
