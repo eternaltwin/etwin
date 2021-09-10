@@ -170,7 +170,7 @@ async function loadAppRouter(serverMain: Url, serverAppConfig: ServerAppConfig):
   try {
     appRouter = await appRouterFn(serverAppConfig);
   } catch (err) {
-    throw new Error(`App router creation failed: ${serverMain}\nCaused by: ${err.stack}`);
+    throw new Error(`App router creation failed: ${serverMain}\nCaused by: ${(err as any).stack}`);
   }
   return appRouter;
 

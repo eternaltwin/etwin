@@ -1,5 +1,22 @@
 <h1>{{user.username}}</h1>
 
+<div *ngIf="canArchive$ | async">
+  <form
+    method="POST"
+    enctype="application/x-www-form-urlencoded"
+    action="/actions/archive/dinoparc"
+  >
+    <input type="hidden" name="dinoparc_server" [value]="user.server"/>
+    <input type="hidden" name="dinoparc_username" [value]="user.username"/>
+    <label>
+      <span i18n="Dinoparc password (archive Dinoparc)@@archive.dinoparc.password">Dinoparc password</span>
+      <input type="password" name="dinoparc_password" class="field" required="required"/>
+    </label>
+    <input type="submit" name="archive_dinoparc" class="btn primary" i18n-value="Request an archive for Dinoparc user@@archive.dinoparc.submit"
+           value="Request archive" />
+  </form>
+</div>
+
 <div class="linked-user">
   <a>
     <span><img src="/assets/login-methods/dinoparc.png"/></span>

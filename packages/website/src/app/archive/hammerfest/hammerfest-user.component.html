@@ -1,5 +1,22 @@
 <h1>{{user.username}}</h1>
 
+<div *ngIf="canArchive$ | async">
+  <form
+    method="POST"
+    enctype="application/x-www-form-urlencoded"
+    action="/actions/archive/hammerfest"
+  >
+    <input type="hidden" name="hammerfest_server" [value]="user.server"/>
+    <input type="hidden" name="hammerfest_username" [value]="user.username"/>
+    <label>
+      <span i18n="Hammerfest password (archive Hammerfest)@@archive.hammerfest.password">Hammerfest password</span>
+      <input type="password" name="hammerfest_password" class="field" required="required"/>
+    </label>
+    <input type="submit" name="archive_hammerfest" class="btn primary" i18n-value="Request an archive for Hammerfest user@@archive.hammerfest.submit"
+           value="Request archive" />
+  </form>
+</div>
+
 <div class="linked-user" [ngSwitch]="user.server">
   <ng-container *ngSwitchCase="'hfest.net'">
     <a href="http://www.hfest.net/user.html/{{user.id}}">

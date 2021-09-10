@@ -54,11 +54,11 @@ export async function createOauthRouter(api: Api): Promise<Router> {
       cx.response.redirect(grant);
       return;
     } catch (err) {
-      if ((err.toString()).includes("no authenticated user") && acx.type === AuthType.Guest) {
+      if (((err as any).toString()).includes("no authenticated user") && acx.type === AuthType.Guest) {
         cx.redirect(`/login?${querystring.stringify({next: cx.request.originalUrl})}`);
         return;
       }
-      console.error(err.toString());
+      console.error((err as any).toString());
       cx.response.status = 500;
       return;
     }
@@ -76,7 +76,7 @@ export async function createOauthRouter(api: Api): Promise<Router> {
       cx.response.body = $OauthAccessToken.write(JSON_VALUE_WRITER, accessToken);
       return;
     } catch (e) {
-      if (e.name === "TokenExpiredError") {
+      if ((e as any).name === "TokenExpiredError") {
         cx.response.status = 401;
         cx.response.body = {error: "Unauthorized", cause: "CodeExpiredError"};
         return;
@@ -103,10 +103,10 @@ export async function createOauthRouter(api: Api): Promise<Router> {
     try {
       stateAndAccessToken = await api.oauthClient.getAccessToken(rawState, code);
     } catch (e) {
-      if (e.status === 401 && e.response.body && e.response.body && e.response.body.error === "Unauthorized") {
+      if ((e as any).status === 401 && (e as any).response.body && (e as any).response.body && (e as any).response.body.error === "Unauthorized") {
         cx.response.body = {
           error: "Unauthorized",
-          cause: e.response.body.cause === "CodeExpiredError" ? "CodeExpiredError" : "AuthorizationServerError",
+          cause: (e as any).response.body.cause === "CodeExpiredError" ? "CodeExpiredError" : "AuthorizationServerError",
         };
         cx.response.status = 401;
       } else {

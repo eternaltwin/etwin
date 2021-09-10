@@ -67,7 +67,7 @@ describe("/hammerfest", () => {
           await guestAgent.get("/archive/hammerfest/hammerfest.fr/users/9999999", $HammerfestUser);
         } catch (e) {
           chai.assert.instanceOf(e, Error);
-          chai.assert.strictEqual(e.message, "HammerfestUserNotFound");
+          chai.assert.strictEqual((e as any).message, "HammerfestUserNotFound");
           return;
         }
         chai.assert.fail("Expected request to fail");

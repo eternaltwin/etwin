@@ -24,7 +24,7 @@
     "native:build": "cd ../native && yarn run native:build",
     "website:build": "cd ../website && yarn run build",
     "build": "yarn run script:build && yarn run native:build && yarn run website:build",
-    "start": "yarn run main:build && node --experimental-wasm-modules main/main.js",
+    "start": "yarn run build && node --experimental-wasm-modules main/main.js",
     "dirty-start": "yarn run script:build && node --experimental-wasm-modules main/main.js"
   },
   "publishConfig": {

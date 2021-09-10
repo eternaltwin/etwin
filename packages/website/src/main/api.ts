@@ -4,6 +4,8 @@ import { AnnouncementService } from "@eternal-twin/core/lib/announcement/service
 import { AuthService } from "@eternal-twin/core/lib/auth/service";
 import { ClockService } from "@eternal-twin/core/lib/clock/service";
 import { $Url, Url } from "@eternal-twin/core/lib/core/url";
+import { DinoparcClient } from "@eternal-twin/core/lib/dinoparc/client";
+import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store";
 import { ForumConfig } from "@eternal-twin/core/lib/forum/forum-config";
 import { ForumService } from "@eternal-twin/core/lib/forum/service";
 import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client";
@@ -52,6 +54,8 @@ export interface Api {
   announcement: AnnouncementService;
   auth: AuthService;
   dinoparc: NativeDinoparcService;
+  dinoparcClient: DinoparcClient;
+  dinoparcStore: DinoparcStore;
   clock: ClockService;
   dev: DevApi | null;
   forum: ForumService;
@@ -199,6 +203,8 @@ async function createApi(config: Config): Promise<{ api: Api; teardown(): Promis
     announcement,
     auth,
     dinoparc,
+    dinoparcClient,
+    dinoparcStore,
     clock,
     dev: null,
     forum,

@@ -60,7 +60,7 @@ export class RfcOauthClient {
         .type("application/x-www-form-urlencoded")
         .send(rawReq);
     } catch (err) {
-      switch (err.status) {
+      switch ((err as any).status) {
         case 404:
           throw new Error(`UnreachableGrantUri: Resource not found: ${this.#tokenEndpoint}`);
         case 500:

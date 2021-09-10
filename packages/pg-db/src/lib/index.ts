@@ -92,7 +92,7 @@ async function checkedQuery(simple: SimpleQueryable, query: string, values: read
   try {
     return await simple.query(query, values);
   } catch (e) {
-    Error.captureStackTrace(e);
+    Error.captureStackTrace(e as any);
     throw e;
   }
 }
@@ -217,7 +217,7 @@ export class Database implements Queryable {
       result = await fn(client);
       client.release();
     } catch (err) {
-      client.release(err);
+      client.release(err as any);
       throw err;
     }
     return result;
@@ -284,7 +284,7 @@ export class TransactionTask<T> {
         try {
           await rollback(client);
         } catch (rollbackError) {
-          throw new Error(`RollbackFailure: ${util.inspect({rollbackReason: err})}\nCaused by: ${rollbackError.stack}`);
+          throw new Error(`RollbackFailure: ${util.inspect({rollbackReason: err})}\nCaused by: ${(rollbackError as any).stack}`);
         }
         throw err;
       }
@@ -308,7 +308,7 @@ async function begin(client: pg.ClientBase, transactionMode: TransactionMode): P
   try {
     await client.query(query);
   } catch (err) {
-    throw new Error(`BeginTransaction: Unable to begin transaction: ${util.inspect({transactionMode})}\nCaused by: ${err.stack}`);
+    throw new Error(`BeginTransaction: Unable to begin transaction: ${util.inspect({transactionMode})}\nCaused by: ${(err as any).stack}`);
   }
 }
 
@@ -316,7 +316,7 @@ async function commit(client: pg.ClientBase): Promise<void> {
   try {
     await client.query("COMMIT;");
   } catch (err) {
-    throw new Error(`CommitTransaction: Unable to commit transaction\nCaused by: ${err.stack}`);
+    throw new Error(`CommitTransaction: Unable to commit transaction\nCaused by: ${(err as any).stack}`);
   }
 }
 
@@ -324,7 +324,7 @@ async function rollback(client: pg.ClientBase): Promise<void> {
   try {
     await client.query("ROLLBACK;");
   } catch (err) {
-    throw new Error(`RollbackTransaction: Unable to rollback transaction\nCaused by: ${err.stack}`);
+    throw new Error(`RollbackTransaction: Unable to rollback transaction\nCaused by: ${(err as any).stack}`);
   }
 }
 

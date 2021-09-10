@@ -34,7 +34,7 @@ export class HttpEtwinClient implements EtwinClientService {
     try {
       rawRes = await this.setAuth(superagent.get(uri.toString()), accessToken).send();
     } catch (err) {
-      switch (err.status) {
+      switch ((err as any).status) {
         case 404:
           throw new Error(`NotFound: GET ${uri}`);
         case 500:

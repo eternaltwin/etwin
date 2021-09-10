@@ -332,7 +332,7 @@ export class Squirrel {
       await tx.query("RELEASE SAVEPOINT try_get_meta;", []);
       return {version: row.version};
     } catch (e) {
-      if (e.code === "42883") {
+      if ((e as any).code === "42883") {
         await tx.query("ROLLBACK TO SAVEPOINT try_get_meta;", []);
         return null;
       } else {
@@ -361,7 +361,7 @@ async function tryReadDir(dir: URL): Promise<fs.Dirent[] | null> {
   try {
     return await fs.promises.readdir(dir, {withFileTypes: true});
   } catch (e) {
-    if (e.code === "ENOENT") {
+    if ((e as any).code === "ENOENT") {
       return null;
     }
     throw e;
@@ -376,7 +376,7 @@ async function tryReadText(file: URL): Promise<string | null> {
   try {
     return await readText(file);
   } catch (e) {
-    if (e.code === "ENOENT") {
+    if ((e as any).code === "ENOENT") {
       return null;
     }
     throw e;
