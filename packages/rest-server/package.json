@@ -70,7 +70,7 @@
     "eslint": "^7.32.0",
     "koa-logger": "^3.2.1",
     "mocha": "^9.1.1",
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.3"
   },
   "type": "module",
   "exports": {

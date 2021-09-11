@@ -133,7 +133,7 @@
 
           <input type="submit" class="btn primary" name="update_password" [disabled]="passwordForm.invalid || passwordSubscription !== null" i18n-value="@@settings.password.submit" value="Update my password"/>
           <div *ngIf="passwordServerError" class="error" i18n="@@settings.password.unknownError">
-            Update error: the display name is invalid or was changed too recently.
+            Update error: the password is invalid or was changed too recently (10 minutes).
           </div>
         </form>
         <hr/>
