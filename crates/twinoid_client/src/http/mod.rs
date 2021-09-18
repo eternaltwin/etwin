@@ -73,7 +73,7 @@ where
   async fn get_me_short(
     &self,
     auth: TwinoidApiAuth,
-  ) -> Result<api::User<TwinoidUserDisplayName, HtmlFragment>, AnyError> {
+  ) -> Result<api::User<TwinoidUserDisplayName, Option<HtmlFragment>>, AnyError> {
     self.get_me(auth, &api::ConstUserQuery::<true, true>).await
   }
 }

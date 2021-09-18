@@ -139,7 +139,7 @@ pub mod api {
   }
 
   impl UserQuery for ConstUserQuery<false, true> {
-    type Output = User<(), HtmlFragment>;
+    type Output = User<(), Option<HtmlFragment>>;
     type Fields = &'static str;
 
     fn to_fields(&self) -> Self::Fields {
@@ -157,7 +157,7 @@ pub mod api {
   }
 
   impl UserQuery for ConstUserQuery<true, true> {
-    type Output = User<TwinoidUserDisplayName, HtmlFragment>;
+    type Output = User<TwinoidUserDisplayName, Option<HtmlFragment>>;
     type Fields = &'static str;
 
     fn to_fields(&self) -> Self::Fields {
@@ -176,7 +176,7 @@ pub trait TwinoidClient: Send + Sync {
   async fn get_me_short(
     &self,
     auth: TwinoidApiAuth,
-  ) -> Result<api::User<TwinoidUserDisplayName, HtmlFragment>, AnyError>;
+  ) -> Result<api::User<TwinoidUserDisplayName, Option<HtmlFragment>>, AnyError>;
 }
 
 #[async_trait]
@@ -188,7 +188,10 @@ impl<T: TwinoidClient + ?Sized> TwinoidClient for Arc<T> {
     todo!()
   }
 
-  async fn get_me_short(&self, auth: TwinoidApiAuth) -> Result<User<TwinoidUserDisplayName, HtmlFragment>, AnyError> {
+  async fn get_me_short(
+    &self,
+    auth: TwinoidApiAuth,
+  ) -> Result<User<TwinoidUserDisplayName, Option<HtmlFragment>>, AnyError> {
     (**self).get_me_short(auth).await
   }
 }

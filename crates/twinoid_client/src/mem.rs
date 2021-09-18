@@ -15,7 +15,10 @@ impl TwinoidClient for MemTwinoidClient {
     todo!()
   }
 
-  async fn get_me_short(&self, _auth: TwinoidApiAuth) -> Result<User<TwinoidUserDisplayName, HtmlFragment>, AnyError> {
+  async fn get_me_short(
+    &self,
+    _auth: TwinoidApiAuth,
+  ) -> Result<User<TwinoidUserDisplayName, Option<HtmlFragment>>, AnyError> {
     todo!()
   }
 }
