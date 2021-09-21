@@ -13,7 +13,7 @@ Latest version: 0.5.3 (2021-06-29)
 - [Linux - Pacman package](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.pacman?job=release)
 - [Linux - Debian package](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.deb?job=release)
 - [Linux - Archive](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.tar.gz?job=release)
-- [Mac installer](https://eternal-twin.net/assets/app/v0.5.3/etwin.dmg)
+- [Mac installer](https://eternal-twin.net/assets/app/v0.5.3/etwin.dmg) - [How to open the app.](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac)
 
 ## Contribute
 

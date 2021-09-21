@@ -517,6 +517,21 @@ to <code>{{ "{" }}15, 25, 30}</code>.</p><p>It is shorter, but we lose the infor
 minute 20.</p><p>It is currently still debated if a sampling window should be applied and how to
 determine its size.</p>
 </ng-container>
+<ng-container *ngSwitchCase="&quot;contributing/archive&quot;">
+<p><a routerLink="/docs/">Home</a> | <a routerLink="/docs/contributing">Contributing</a></p><h1>Archive</h1><p>This document gives a high-level description of how Eternaltwin archives data
+from the MT website.</p><p>For each website we archive, there is a client and a store.</p><p>The role of the client is to handle the communication with the website: convert
+queries to HTTP requests, send them, and process the response. Most MT websites
+only return the response as an HTTP page (no API), the client has a component
+converting the HTML response to a more suitable format: the scraper.</p><p>The store saves the server responses and persists them in a database. It stores
+all the responses (so it creates a history of changes). The store is
+responsible for building the latest known state of a known state so it
+can be exported, ready to be consumed by any other website (usually one of
+our game websites).</p><p><img src="https://i.imgur.com/ocbphRB.png">Archive schema</p>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;contributing&quot;">
+<p><a routerLink="/docs/">Home</a></p><h1>Contributing</h1><p>If you want to help us improve Eternaltwin, this document will help you find your way.</p><p>This section focuses on the <code>etwin</code> repository which covers the main Eternaltwin server
+and code to link other projects to it:</p><ul><li>User accounts</li><li>Archives for the official websites</li><li>Forums (or "fora")</li></ul><p>If you wish to help with a specific game, you should contact the dedicated group on Discord.</p><h2>Requirements</h2><ul><li><a routerLink="/docs/tools/rust">Rust stable</a></li><li><a routerLink="/docs/tools/node">Node</a> 14.13.1</li><li><a routerLink="/docs/tools/yarn">Yarn</a> 1.22</li></ul>
+</ng-container>
 <ng-container *ngSwitchCase="&quot;db&quot;">
 <p><a routerLink="/docs/">Home</a></p><h1>Database</h1><p>Eternaltwin uses Postgres as its main database.</p><h2>Initialize the Postgres cluster</h2><pre># Run as the Postgres user
 initdb --locale "en_US.UTF-8" --encoding="UTF8" --pgdata="/var/lib/postgres/data/"
@@ -567,7 +582,7 @@ etwin.dev=# ALTER SCHEMA public OWNER TO "etwin.dev.admin";
 </pre>
 </ng-container>
 <ng-container *ngSwitchCase="&quot;desktop&quot;">
-<p><a routerLink="/docs/">Home</a></p><h1>Desktop Application</h1><p>Eternaltwin provides a desktop application. It allows you to play Motion Twin's Flash games.</p><h2>Download</h2><p>Latest version: 0.5.3 (2021-06-29)</p><ul><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin-64bit.exe?job=release">Windows 64-bit installer</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin-32bit.exe?job=release">Windows 32-bit installer</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.pacman?job=release">Linux - Pacman package</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.deb?job=release">Linux - Debian package</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.tar.gz?job=release">Linux - Archive</a></li><li><a href="https://eternal-twin.net/assets/app/v0.5.3/etwin.dmg">Mac installer</a></li></ul><h2>Contribute</h2><p><a href="https://gitlab.com/eternal-twin/etwin-app">Repository</a></p><p>The application is still in a beta state: please help us to improve it.</p><p>In particular, we need to ensure the app only tries to open trusted websites
+<p><a routerLink="/docs/">Home</a></p><h1>Desktop Application</h1><p>Eternaltwin provides a desktop application. It allows you to play Motion Twin's Flash games.</p><h2>Download</h2><p>Latest version: 0.5.3 (2021-06-29)</p><ul><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin-64bit.exe?job=release">Windows 64-bit installer</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin-32bit.exe?job=release">Windows 32-bit installer</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.pacman?job=release">Linux - Pacman package</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.deb?job=release">Linux - Debian package</a></li><li><a href="https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.tar.gz?job=release">Linux - Archive</a></li><li><a href="https://eternal-twin.net/assets/app/v0.5.3/etwin.dmg">Mac installer</a> - <a href="https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac">How to open the app.</a></li></ul><h2>Contribute</h2><p><a href="https://gitlab.com/eternal-twin/etwin-app">Repository</a></p><p>The application is still in a beta state: please help us to improve it.</p><p>In particular, we need to ensure the app only tries to open trusted websites
 (from Eternaltwin or Motion-Twin).</p><h2>Issues</h2><p>Report issues <a href="https://gitlab.com/eternal-twin/etwin-app/-/issues">on Gitlab</a>.</p>
 </ng-container>
 <ng-container *ngSwitchCase="&quot;&quot;">
@@ -609,6 +624,19 @@ some projects.</p><h3>Windows</h3><p><a href="https://nodejs.org/en/download/">D
 </ng-container>
 <ng-container *ngSwitchCase="&quot;tools/package-json&quot;">
 <p>https://yarnpkg.com/configuration/manifest</p><p>TODO</p>
+</ng-container>
+<ng-container *ngSwitchCase="&quot;tools/rust&quot;">
+<p><a routerLink="/docs/">Home</a> | <a routerLink="/docs/tools">Tools</a></p><h1>Rust</h1><p><a href="https://www.rust-lang.org/">Official website</a> | <a href="https://github.com/rust-lang/rust">GitHub</a></p><blockquote><p>A language empowering everyone to build reliable and efficient software.</p></blockquote><p>Rust is the main language used by Eternaltwin. We use it for everything except
+the frontend (which is in TypeScript): clients to official server, database
+management, backend services, REST server, even project management.</p><h2>Intallation</h2><p><strong>⚠</strong> Etermaltwin relies on the <strong>latest stable</strong> Rust version.</p><p>It is recommended to follow <a href="https://www.rust-lang.org/tools/install">the official installation guidelines</a>
+and use the <code>rustup</code> tool to install Rust (even if your system provides it in
+its package manager).</p><ol><li><strong>Windows-only prerequisite</strong>: If you use Windows, first make sure you have the
+<a href="https://visualstudio.microsoft.com/visual-cpp-build-tools/">Visual Studio Build Tools</a>.
+Only the two following components are required:<ul><li>MSVC v142 - VS 2019 C++ x64/x86 build tools</li><li>Windows 10 SDK (1.0.18362.0)</li></ul></li><li>Follow the instructions on <a href="https://rustup.rs/">rustup.rs</a>.</li></ol><h2>Check your installation</h2><pre>$ rustup --version
+rustup 1.24.3 (2021-06-08)
+info: This is the version for the rustup toolchain manager, not the rustc compiler.
+info: The currently active `rustc` version is `rustc 1.54.0 (a178d0322 2021-07-26)`
+</pre>
 </ng-container>
 <ng-container *ngSwitchCase="&quot;tools/yarn&quot;">
 <p><a routerLink="/docs/">Home</a> | <a routerLink="/docs/tools">Tools</a></p><h1>Yarn</h1><p><a href="https://yarnpkg.com/">Official website</a> | <a href="https://github.com/yarnpkg/berry">GitHub</a></p><p><strong>Yarn</strong> is a modern package manager for <strong><a routerLink="/docs/tools/node">Node.js</a></strong> and the web.

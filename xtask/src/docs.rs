@@ -309,6 +309,7 @@ fn md_to_dom(md: &str) -> HtmlDocument {
           md::Tag::Heading(5) => "h5",
           md::Tag::Heading(6) => "h6",
           md::Tag::Item => "li",
+          md::Tag::Image(..) => "img",
           md::Tag::Link(..) => "a",
           md::Tag::List(None) => "ul",
           md::Tag::List(Some(_)) => "ol",
@@ -327,6 +328,7 @@ fn md_to_dom(md: &str) -> HtmlDocument {
           t => panic!("Unexpected tag: {:?}", t),
         };
         let attrs = match start {
+          md::Tag::Image(_link, src, _alt) => vec![("src", src.into_string())],
           md::Tag::Link(_ty, dest, _title) => vec![("href", dest.into_string())],
           _ => Vec::new(),
         };
