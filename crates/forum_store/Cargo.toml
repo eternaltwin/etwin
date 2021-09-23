@@ -1,0 +1,30 @@
+[package]
+name = "etwin_forum_store"
+version = "0.9.1"
+authors = ["Eternaltwin <contact@eternal-twin.net>"]
+description = "Forum Store implementation"
+documentation = "https://github.com/eternal-twin/etwin"
+homepage = "https://github.com/eternal-twin/etwin"
+repository = "https://github.com/eternal-twin/etwin"
+readme = "./README.md"
+keywords = ["etwin"]
+license = "AGPL-3.0-or-later"
+edition = "2018"
+
+[features]
+
+[dependencies]
+async-trait = "0.1.51"
+chrono = "0.4.19"
+etwin_constants = "0.9.1"
+etwin_core = "0.9.1"
+neon = { version = "0.9.1", optional = true, default-features = false, features = ["napi-6"] }
+once_cell = "1.8.0"
+scraper = { version = "0.12.0", optional = true }
+serde = { version = "1.0.130", optional = true, features = ["derive"] }
+sqlx = { version = "0.5.7", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
+thiserror = "1.0.29"
+
+[dev-dependencies]
+etwin_core = { version = "0.9.1", features = ["_serde"] }
+serde_json = "1.0.67"

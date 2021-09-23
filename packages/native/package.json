@@ -34,8 +34,7 @@
     "@eternal-twin/core": "workspace:*",
     "foreground-child": "^2.0.0",
     "kryo": "^0.13.0",
-    "kryo-json": "^0.13.0",
-    "neon-cli": "^0.9.1"
+    "kryo-json": "^0.13.0"
   },
   "devDependencies": {
     "@eternal-twin/etwin-pg": "workspace:*",
@@ -47,6 +46,7 @@
     "chai": "^4.3.4",
     "eslint": "^7.32.0",
     "mocha": "^9.1.1",
+    "neon-cli": "^0.9.1",
     "rimraf": "^3.0.2",
     "typescript": "^4.4.3"
   },

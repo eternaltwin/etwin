@@ -2052,7 +2052,6 @@ __metadata:
     foreground-child: ^2.0.0
     kryo: ^0.13.0
     kryo-json: ^0.13.0
-    neon-cli: ^0.9.1
   languageName: node
   linkType: soft
 

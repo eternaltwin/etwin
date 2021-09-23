@@ -288,6 +288,13 @@ impl SchemaResolver {
     self.inner_create_migration(start, end, dir)
   }
 
+  pub async fn apply_migration(&self, db: &PgPool, migration: &'_ SchemaMigration<'_>) -> Result<(), Box<dyn Error>> {
+    let mut tx = db.begin().await?;
+    self.tx_apply_migration(&mut tx, migration).await?;
+    tx.commit().await?;
+    Ok(())
+  }
+
   fn inner_create_migration(
     &self,
     start: SchemaState,

@@ -1128,11 +1128,11 @@ where
 {
 }
 
-trait DeriverUserDisplayName {
+trait DeriveUserDisplayName {
   fn derive_user_display_name(&self) -> UserDisplayName;
 }
 
-impl DeriverUserDisplayName for ShortDinoparcUser {
+impl DeriveUserDisplayName for ShortDinoparcUser {
   fn derive_user_display_name(&self) -> UserDisplayName {
     if let Ok(name) = UserDisplayName::from_str(self.username.as_str()) {
       return name;
@@ -1147,7 +1147,7 @@ impl DeriverUserDisplayName for ShortDinoparcUser {
   }
 }
 
-impl DeriverUserDisplayName for ShortHammerfestUser {
+impl DeriveUserDisplayName for ShortHammerfestUser {
   fn derive_user_display_name(&self) -> UserDisplayName {
     if let Ok(name) = UserDisplayName::from_str(self.username.as_str()) {
       return name;
@@ -1162,7 +1162,7 @@ impl DeriverUserDisplayName for ShortHammerfestUser {
   }
 }
 
-impl DeriverUserDisplayName for ShortTwinoidUser {
+impl DeriveUserDisplayName for ShortTwinoidUser {
   fn derive_user_display_name(&self) -> UserDisplayName {
     if let Ok(name) = UserDisplayName::from_str(self.display_name.as_str()) {
       return name;

@@ -1,6 +1,6 @@
 [package]
 name = "etwin_native"
-version = "0.8.0"
+version = "0.9.1"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Native node bindings for Eternal-Twin"
 license = "AGPL-3.0-or-later"

@@ -751,6 +751,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "etwin_forum_store"
+version = "0.9.1"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "etwin_constants",
+ "etwin_core",
+ "neon",
+ "once_cell",
+ "scraper",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "thiserror",
+]
+
+[[package]]
 name = "etwin_hammerfest_client"
 version = "0.9.1"
 dependencies = [
@@ -831,7 +848,7 @@ dependencies = [
 
 [[package]]
 name = "etwin_native"
-version = "0.8.0"
+version = "0.9.1"
 dependencies = [
  "chrono",
  "etwin_auth_store",
@@ -994,6 +1011,7 @@ dependencies = [
  "etwin_dinoparc_client",
  "etwin_dinoparc_store",
  "etwin_email_formatter",
+ "etwin_forum_store",
  "etwin_hammerfest_client",
  "etwin_hammerfest_store",
  "etwin_link_store",

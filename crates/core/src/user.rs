@@ -87,6 +87,12 @@ pub struct GetShortUserOptions {
   pub time: Option<Instant>,
 }
 
+impl From<UserRef> for GetShortUserOptions {
+  fn from(r#ref: UserRef) -> Self {
+    Self { r#ref, time: None }
+  }
+}
+
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize), serde(untagged))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum GetUserResult {
@@ -101,6 +107,12 @@ pub enum GetUserResult {
 pub struct ShortUser {
   pub id: UserId,
   pub display_name: UserDisplayNameVersions,
+}
+
+impl ShortUser {
+  pub const fn as_ref(&self) -> UserIdRef {
+    UserIdRef { id: self.id }
+  }
 }
 
 impl From<SimpleUser> for ShortUser {

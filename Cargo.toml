@@ -15,6 +15,7 @@ etwin_db_schema = { path = "./crates/db_schema" }
 etwin_dinoparc_client = { path = "./crates/dinoparc_client" }
 etwin_dinoparc_store = { path = "./crates/dinoparc_store" }
 etwin_email_formatter = { path = "./crates/email_formatter" }
+etwin_forum_store = { path = "./crates/forum_store" }
 etwin_hammerfest_client = { path = "./crates/hammerfest_client" }
 etwin_hammerfest_store = { path = "./crates/hammerfest_store" }
 etwin_link_store = { path = "./crates/link_store" }

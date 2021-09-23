@@ -284,6 +284,21 @@ declare_new_int! {
   const SQL_NAME = "int_percentage";
 }
 
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Listing<T> {
+  pub offset: u32,
+  pub limit: u32,
+  pub count: u32,
+  pub items: Vec<T>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct ListingCount {
+  pub count: u32,
+}
+
 #[cfg(test)]
 mod test {
   use crate::core::{FinitePeriod, PeriodFrom, PeriodLower};
