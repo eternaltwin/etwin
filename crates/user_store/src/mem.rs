@@ -154,7 +154,8 @@ impl StoreState {
     };
     if options.patch.display_name.is_some() {
       let lock_period = user.display_name.time()..(user.display_name.time() + *USER_DISPLAY_NAME_LOCK_DURATION);
-      if lock_period.contains(&now) {
+      // Do not lock on creation
+      if lock_period.start != user.created_at && lock_period.contains(&now) {
         return Err(UpdateUserError::LockedDisplayName(
           options.r#ref,
           lock_period.into(),

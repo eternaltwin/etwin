@@ -1,6 +1,6 @@
 use chrono::{Duration, TimeZone, Utc};
 use etwin_core::api::ApiRef;
-use etwin_core::clock::VirtualClock;
+use etwin_core::clock::{Clock, VirtualClock};
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, GetUserOptions, GetUserResult, ShortUser, SimpleUser, UpdateUserError,
   UpdateUserOptions, UpdateUserPatch, UserDisplayNameVersion, UserDisplayNameVersions, UserFields, UserIdRef, UserRef,
@@ -14,10 +14,11 @@ macro_rules! test_user_store {
     register_test!($(#[$meta])*, $api, test_register_the_admin_and_retrieve_short);
     register_test!($(#[$meta])*, $api, test_register_the_admin_and_retrieve_default);
     register_test!($(#[$meta])*, $api, test_register_the_admin_and_retrieve_complete);
-    register_test!($(#[$meta])*, $api, test_update_display_name_once);
+    register_test!($(#[$meta])*, $api, test_update_display_name_after_creation);
     register_test!($(#[$meta])*, $api, test_update_locked_display_name);
-    register_test!($(#[$meta])*, $api, test_update_display_name_twice);
+    register_test!($(#[$meta])*, $api, test_update_display_after_unlock);
     register_test!($(#[$meta])*, $api, test_update_locked_display_name_after_update);
+    register_test!($(#[$meta])*, $api, test_update_display_name_afte_multiple_unlocks);
     register_test!($(#[$meta])*, $api, test_hard_delete_user);
   };
 }
@@ -188,7 +189,7 @@ pub(crate) async fn test_register_the_admin_and_retrieve_complete<TyClock, TyUse
   assert_eq!(actual, expected);
 }
 
-pub(crate) async fn test_update_display_name_once<TyClock, TyUserStore>(api: TestApi<TyClock, TyUserStore>)
+pub(crate) async fn test_update_display_name_after_creation<TyClock, TyUserStore>(api: TestApi<TyClock, TyUserStore>)
 where
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
@@ -201,6 +202,130 @@ where
       username: Some("alice".parse().unwrap()),
       email: None,
       password: None,
+    })
+    .await
+    .unwrap();
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+
+  let actual = api
+    .user_store
+    .update_user(&UpdateUserOptions {
+      r#ref: alice.id.into(),
+      actor: alice.id.into(),
+      patch: UpdateUserPatch {
+        display_name: Some("Alicia".parse().unwrap()),
+        username: None,
+        password: None,
+      },
+    })
+    .await
+    .unwrap();
+
+  let expected = CompleteSimpleUser {
+    id: alice.id,
+    display_name: UserDisplayNameVersions {
+      current: UserDisplayNameVersion {
+        value: "Alicia".parse().unwrap(),
+      },
+    },
+    is_administrator: true,
+    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    username: Some("alice".parse().unwrap()),
+    email_address: None,
+  };
+  assert_eq!(actual, expected);
+}
+
+pub(crate) async fn test_update_locked_display_name<TyClock, TyUserStore>(api: TestApi<TyClock, TyUserStore>)
+where
+  TyClock: ApiRef<VirtualClock>,
+  TyUserStore: UserStore,
+{
+  let start = Utc.ymd(2021, 1, 1).and_hms(0, 0, 0);
+  api.clock.as_ref().advance_to(start);
+  let alice = api
+    .user_store
+    .create_user(&CreateUserOptions {
+      display_name: "Alice".parse().unwrap(),
+      username: Some("alice".parse().unwrap()),
+      email: None,
+      password: None,
+    })
+    .await
+    .unwrap();
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+
+  api
+    .user_store
+    .update_user(&UpdateUserOptions {
+      r#ref: alice.id.into(),
+      actor: alice.id.into(),
+      patch: UpdateUserPatch {
+        display_name: Some("Alicia".parse().unwrap()),
+        username: None,
+        password: None,
+      },
+    })
+    .await
+    .unwrap();
+
+  let lock_start = api.clock.as_ref().now();
+
+  api.clock.as_ref().advance_by(*USER_DISPLAY_NAME_LOCK_DURATION / 2);
+
+  let actual = api
+    .user_store
+    .update_user(&UpdateUserOptions {
+      r#ref: alice.id.into(),
+      actor: alice.id.into(),
+      patch: UpdateUserPatch {
+        display_name: Some("Allison".parse().unwrap()),
+        username: None,
+        password: None,
+      },
+    })
+    .await;
+
+  let expected = Err(UpdateUserError::LockedDisplayName(
+    alice.id.into(),
+    (lock_start..(lock_start + *USER_DISPLAY_NAME_LOCK_DURATION)).into(),
+    lock_start + *USER_DISPLAY_NAME_LOCK_DURATION / 2,
+  ));
+
+  assert_eq!(actual, expected)
+}
+
+pub(crate) async fn test_update_display_after_unlock<TyClock, TyUserStore>(api: TestApi<TyClock, TyUserStore>)
+where
+  TyClock: ApiRef<VirtualClock>,
+  TyUserStore: UserStore,
+{
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  let alice = api
+    .user_store
+    .create_user(&CreateUserOptions {
+      display_name: "Alice".parse().unwrap(),
+      username: Some("alice".parse().unwrap()),
+      email: None,
+      password: None,
+    })
+    .await
+    .unwrap();
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+
+  api
+    .user_store
+    .update_user(&UpdateUserOptions {
+      r#ref: alice.id.into(),
+      actor: alice.id.into(),
+      patch: UpdateUserPatch {
+        display_name: Some("Alicia".parse().unwrap()),
+        username: None,
+        password: None,
+      },
     })
     .await
     .unwrap();
@@ -236,112 +361,6 @@ where
   assert_eq!(actual, expected);
 }
 
-pub(crate) async fn test_update_locked_display_name<TyClock, TyUserStore>(api: TestApi<TyClock, TyUserStore>)
-where
-  TyClock: ApiRef<VirtualClock>,
-  TyUserStore: UserStore,
-{
-  let start = Utc.ymd(2021, 1, 1).and_hms(0, 0, 0);
-  api.clock.as_ref().advance_to(start);
-  let alice = api
-    .user_store
-    .create_user(&CreateUserOptions {
-      display_name: "Alice".parse().unwrap(),
-      username: Some("alice".parse().unwrap()),
-      email: None,
-      password: None,
-    })
-    .await
-    .unwrap();
-
-  api.clock.as_ref().advance_by(*USER_DISPLAY_NAME_LOCK_DURATION / 2);
-
-  let actual = api
-    .user_store
-    .update_user(&UpdateUserOptions {
-      r#ref: alice.id.into(),
-      actor: alice.id.into(),
-      patch: UpdateUserPatch {
-        display_name: Some("Allison".parse().unwrap()),
-        username: None,
-        password: None,
-      },
-    })
-    .await;
-
-  let expected = Err(UpdateUserError::LockedDisplayName(
-    alice.id.into(),
-    (start..(start + *USER_DISPLAY_NAME_LOCK_DURATION)).into(),
-    start + *USER_DISPLAY_NAME_LOCK_DURATION / 2,
-  ));
-
-  assert_eq!(actual, expected)
-}
-
-pub(crate) async fn test_update_display_name_twice<TyClock, TyUserStore>(api: TestApi<TyClock, TyUserStore>)
-where
-  TyClock: ApiRef<VirtualClock>,
-  TyUserStore: UserStore,
-{
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
-  let alice = api
-    .user_store
-    .create_user(&CreateUserOptions {
-      display_name: "Alice".parse().unwrap(),
-      username: Some("alice".parse().unwrap()),
-      email: None,
-      password: None,
-    })
-    .await
-    .unwrap();
-
-  api.clock.as_ref().advance_by(*USER_DISPLAY_NAME_LOCK_DURATION);
-
-  api
-    .user_store
-    .update_user(&UpdateUserOptions {
-      r#ref: alice.id.into(),
-      actor: alice.id.into(),
-      patch: UpdateUserPatch {
-        display_name: Some("Allison".parse().unwrap()),
-        username: None,
-        password: None,
-      },
-    })
-    .await
-    .unwrap();
-
-  api.clock.as_ref().advance_by(*USER_DISPLAY_NAME_LOCK_DURATION);
-
-  let actual = api
-    .user_store
-    .update_user(&UpdateUserOptions {
-      r#ref: alice.id.into(),
-      actor: alice.id.into(),
-      patch: UpdateUserPatch {
-        display_name: Some("Alicia".parse().unwrap()),
-        username: None,
-        password: None,
-      },
-    })
-    .await
-    .unwrap();
-
-  let expected = CompleteSimpleUser {
-    id: alice.id,
-    display_name: UserDisplayNameVersions {
-      current: UserDisplayNameVersion {
-        value: "Alicia".parse().unwrap(),
-      },
-    },
-    is_administrator: true,
-    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
-    username: Some("alice".parse().unwrap()),
-    email_address: None,
-  };
-  assert_eq!(actual, expected);
-}
-
 pub(crate) async fn test_update_locked_display_name_after_update<TyClock, TyUserStore>(
   api: TestApi<TyClock, TyUserStore>,
 ) where
@@ -361,6 +380,22 @@ pub(crate) async fn test_update_locked_display_name_after_update<TyClock, TyUser
     .await
     .unwrap();
 
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+
+  api
+    .user_store
+    .update_user(&UpdateUserOptions {
+      r#ref: alice.id.into(),
+      actor: alice.id.into(),
+      patch: UpdateUserPatch {
+        display_name: Some("Alicia".parse().unwrap()),
+        username: None,
+        password: None,
+      },
+    })
+    .await
+    .unwrap();
+
   api.clock.as_ref().advance_by(*USER_DISPLAY_NAME_LOCK_DURATION);
 
   api
@@ -377,9 +412,53 @@ pub(crate) async fn test_update_locked_display_name_after_update<TyClock, TyUser
     .await
     .unwrap();
 
+  let lock_start = api.clock.as_ref().now();
+
   api.clock.as_ref().advance_by(*USER_DISPLAY_NAME_LOCK_DURATION / 2);
 
   let actual = api
+    .user_store
+    .update_user(&UpdateUserOptions {
+      r#ref: alice.id.into(),
+      actor: alice.id.into(),
+      patch: UpdateUserPatch {
+        display_name: Some("Alexandra".parse().unwrap()),
+        username: None,
+        password: None,
+      },
+    })
+    .await;
+
+  let expected = Err(UpdateUserError::LockedDisplayName(
+    alice.id.into(),
+    ((lock_start)..(lock_start + *USER_DISPLAY_NAME_LOCK_DURATION)).into(),
+    lock_start + *USER_DISPLAY_NAME_LOCK_DURATION / 2,
+  ));
+
+  assert_eq!(actual, expected)
+}
+
+pub(crate) async fn test_update_display_name_afte_multiple_unlocks<TyClock, TyUserStore>(
+  api: TestApi<TyClock, TyUserStore>,
+) where
+  TyClock: ApiRef<VirtualClock>,
+  TyUserStore: UserStore,
+{
+  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  let alice = api
+    .user_store
+    .create_user(&CreateUserOptions {
+      display_name: "Alice".parse().unwrap(),
+      username: Some("alice".parse().unwrap()),
+      email: None,
+      password: None,
+    })
+    .await
+    .unwrap();
+
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+
+  api
     .user_store
     .update_user(&UpdateUserOptions {
       r#ref: alice.id.into(),
@@ -390,15 +469,54 @@ pub(crate) async fn test_update_locked_display_name_after_update<TyClock, TyUser
         password: None,
       },
     })
-    .await;
+    .await
+    .unwrap();
 
-  let expected = Err(UpdateUserError::LockedDisplayName(
-    alice.id.into(),
-    ((start + *USER_DISPLAY_NAME_LOCK_DURATION)..(start + *USER_DISPLAY_NAME_LOCK_DURATION * 2)).into(),
-    start + *USER_DISPLAY_NAME_LOCK_DURATION * 3 / 2,
-  ));
+  api.clock.as_ref().advance_by(*USER_DISPLAY_NAME_LOCK_DURATION);
 
-  assert_eq!(actual, expected)
+  api
+    .user_store
+    .update_user(&UpdateUserOptions {
+      r#ref: alice.id.into(),
+      actor: alice.id.into(),
+      patch: UpdateUserPatch {
+        display_name: Some("Allison".parse().unwrap()),
+        username: None,
+        password: None,
+      },
+    })
+    .await
+    .unwrap();
+
+  api.clock.as_ref().advance_by(*USER_DISPLAY_NAME_LOCK_DURATION);
+
+  let actual = api
+    .user_store
+    .update_user(&UpdateUserOptions {
+      r#ref: alice.id.into(),
+      actor: alice.id.into(),
+      patch: UpdateUserPatch {
+        display_name: Some("Alexandra".parse().unwrap()),
+        username: None,
+        password: None,
+      },
+    })
+    .await
+    .unwrap();
+
+  let expected = CompleteSimpleUser {
+    id: alice.id,
+    display_name: UserDisplayNameVersions {
+      current: UserDisplayNameVersion {
+        value: "Alexandra".parse().unwrap(),
+      },
+    },
+    is_administrator: true,
+    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    username: Some("alice".parse().unwrap()),
+    email_address: None,
+  };
+  assert_eq!(actual, expected);
 }
 
 pub(crate) async fn test_hard_delete_user<TyClock, TyUserStore>(api: TestApi<TyClock, TyUserStore>)

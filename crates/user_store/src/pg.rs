@@ -309,11 +309,18 @@ where
       struct Row {
         start_time: Instant,
         value: UserDisplayName,
+        created_at: Instant,
       }
 
       let row = sqlx::query_as::<_, Row>(
         r"
-        SELECT lower(period) AS start_time, display_name AS value FROM users_history AS cur
+        SELECT
+          lower(period) AS start_time,
+          display_name AS value,
+          users.created_at
+        FROM
+          users_history AS cur
+          INNER JOIN users USING (user_id)
         WHERE
           user_id = $1::USER_ID
           AND NOT EXISTS(
@@ -334,7 +341,8 @@ where
       .map_err(UpdateUserError::other)?;
 
       let lock_period = row.start_time..(row.start_time + *USER_DISPLAY_NAME_LOCK_DURATION);
-      if lock_period.contains(&now) {
+      // Do not lock the display name on creation
+      if lock_period.start != row.created_at && lock_period.contains(&now) {
         return Err(UpdateUserError::LockedDisplayName(
           options.r#ref,
           lock_period.into(),
