@@ -58,6 +58,8 @@
   "types": "./lib/index.d.ts",
   "files": [
     "./lib/",
-    "./scripts/**/*"
+    "./scripts/create/**/*",
+    "./scripts/upgrade/**/*",
+    "./scripts/drop.sql"
   ]
 }
