@@ -1,16 +1,19 @@
 use async_trait::async_trait;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
-use etwin_core::core::{Instant, Listing, LocaleId};
+use etwin_core::core::{Instant, Listing, ListingCount, LocaleId};
 use etwin_core::forum::{
-  ForumRoleGrant, ForumSection, ForumSectionDisplayName, ForumSectionId, ForumSectionKey, ForumSectionMeta,
-  ForumSectionRef, ForumSectionSelf, ForumStore, ForumThreadListing, GetForumSectionOptions, RawAddModeratorOptions,
-  RawGetRoleGrantsOptions, RawGetThreadsOptions, UpsertSystemSectionError, UpsertSystemSectionOptions,
+  ForumRole, ForumRoleGrant, ForumSection, ForumSectionDisplayName, ForumSectionId, ForumSectionKey, ForumSectionRef,
+  ForumSectionSelf, ForumStore, ForumThreadListing, GetForumSectionOptions, GetSectionMetaError,
+  RawAddModeratorOptions, RawForumRoleGrant, RawForumSectionMeta, RawGetRoleGrantsOptions, RawGetSectionsOptions,
+  RawGetThreadsOptions, UpsertSystemSectionError, UpsertSystemSectionOptions,
 };
 use etwin_core::pg_num::PgU32;
 use etwin_core::types::AnyError;
+use etwin_core::user::UserId;
 use etwin_core::uuid::UuidGenerator;
 use sqlx::PgPool;
+use std::convert::TryInto;
 
 pub struct PgForumStore<TyClock, TyDatabase, TyUuidGenerator>
 where
@@ -85,12 +88,161 @@ where
     Ok(())
   }
 
-  async fn get_section_meta(&self, _options: &GetForumSectionOptions) -> Result<ForumSectionMeta, AnyError> {
-    todo!()
+  async fn get_sections(&self, options: &RawGetSectionsOptions) -> Result<Listing<RawForumSectionMeta>, AnyError> {
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      forum_section_id: ForumSectionId,
+      key: Option<ForumSectionKey>,
+      ctime: Instant,
+      display_name: ForumSectionDisplayName,
+      locale: Option<LocaleId>,
+      thread_count: PgU32,
+      role_grants: Vec<(UserId, Instant, UserId)>,
+    }
+    let rows: Vec<Row> = sqlx::query_as::<_, Row>(
+      r"
+        WITH thread_count AS (
+          SELECT
+            forum_section_id,
+            COUNT(*)::U32 AS thread_count
+          FROM forum_threads
+          GROUP BY forum_section_id
+        ),
+        role_grants AS (
+          SELECT
+            forum_section_id,
+            array_agg(ROW(user_id, start_time, granted_by)) AS role_grants
+          FROM forum_role_grants
+          GROUP BY forum_section_id
+        )
+        SELECT
+          forum_section_id, key, ctime, display_name, locale,
+          COALESCE(thread_count, 0) AS thread_count,
+          COALESCE(role_grants, '{}') AS role_grants
+        FROM forum_sections
+          LEFT OUTER JOIN thread_count USING (forum_section_id)
+          LEFT OUTER JOIN role_grants USING (forum_section_id)
+        LIMIT $1::U32 OFFSET $2::U32
+        ;
+    ",
+    )
+    .bind(PgU32::from(options.limit))
+    .bind(PgU32::from(options.offset))
+    .fetch_all(self.database.as_ref())
+    .await?;
+    let items: Vec<_> = rows
+      .into_iter()
+      .map(|row| RawForumSectionMeta {
+        id: row.forum_section_id,
+        key: row.key,
+        display_name: row.display_name,
+        ctime: row.ctime,
+        locale: row.locale,
+        threads: ListingCount {
+          count: row.thread_count.into(),
+        },
+        role_grants: row
+          .role_grants
+          .into_iter()
+          .map(|(grantee, start_time, granter)| RawForumRoleGrant {
+            role: ForumRole::Moderator,
+            user: grantee.into(),
+            start_time,
+            granted_by: granter.into(),
+          })
+          .collect(),
+      })
+      .collect();
+    Ok(Listing {
+      offset: options.offset,
+      limit: options.limit,
+      count: items.len().try_into().unwrap(), // TODO: Get count from the DB
+      items,
+    })
+  }
+
+  async fn get_section_meta(
+    &self,
+    options: &GetForumSectionOptions,
+  ) -> Result<RawForumSectionMeta, GetSectionMetaError> {
+    let mut section_id: Option<ForumSectionId> = None;
+    let mut section_key: Option<&ForumSectionKey> = None;
+    match &options.section {
+      ForumSectionRef::Id(r) => section_id = Some(r.id),
+      ForumSectionRef::Key(r) => section_key = Some(&r.key),
+    };
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      forum_section_id: ForumSectionId,
+      key: Option<ForumSectionKey>,
+      ctime: Instant,
+      display_name: ForumSectionDisplayName,
+      locale: Option<LocaleId>,
+      thread_count: PgU32,
+      role_grants: Vec<(UserId, Instant, UserId)>,
+    }
+    let row: Option<Row> = sqlx::query_as::<_, Row>(
+      r"
+        WITH thread_count AS (
+          SELECT
+            forum_section_id,
+            COUNT(*)::U32 AS thread_count
+          FROM forum_threads
+          GROUP BY forum_section_id
+        ),
+        role_grants AS (
+          SELECT
+            forum_section_id,
+            array_agg(ROW(user_id, start_time, granted_by)) AS role_grants
+          FROM forum_role_grants
+          GROUP BY forum_section_id
+        )
+        SELECT
+          forum_section_id, key, ctime, display_name, locale,
+          COALESCE(thread_count, 0) AS thread_count,
+          COALESCE(role_grants, '{}') AS role_grants
+        FROM forum_sections
+          LEFT OUTER JOIN thread_count USING (forum_section_id)
+          LEFT OUTER JOIN role_grants USING (forum_section_id)
+        WHERE forum_section_id = $1::FORUM_SECTION_ID OR key = $2::FORUM_SECTION_KEY
+        ;
+    ",
+    )
+    .bind(section_id)
+    .bind(section_key)
+    .fetch_optional(self.database.as_ref())
+    .await
+    .map_err(|e| GetSectionMetaError::Other(Box::new(e)))?;
+    let row = row.ok_or(GetSectionMetaError::NotFound)?;
+    Ok(RawForumSectionMeta {
+      id: row.forum_section_id,
+      key: row.key,
+      display_name: row.display_name,
+      ctime: row.ctime,
+      locale: row.locale,
+      threads: ListingCount {
+        count: row.thread_count.into(),
+      },
+      role_grants: row
+        .role_grants
+        .into_iter()
+        .map(|(grantee, start_time, granter)| RawForumRoleGrant {
+          role: ForumRole::Moderator,
+          user: grantee.into(),
+          start_time,
+          granted_by: granter.into(),
+        })
+        .collect(),
+    })
   }
 
   async fn get_threads(&self, _options: &RawGetThreadsOptions) -> Result<ForumThreadListing, AnyError> {
-    todo!()
+    Ok(Listing {
+      offset: 0,
+      limit: 0,
+      count: 0,
+      items: vec![],
+    })
   }
 
   async fn get_role_grants(&self, _options: &RawGetRoleGrantsOptions) -> Result<Vec<ForumRoleGrant>, AnyError> {

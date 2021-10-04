@@ -56,6 +56,24 @@ pub enum ForumSectionRef {
   Key(ForumSectionKeyRef),
 }
 
+impl From<&'_ ForumSection> for ForumSectionRef {
+  fn from(section: &ForumSection) -> Self {
+    Self::Id(section.as_ref())
+  }
+}
+
+impl From<ForumSectionIdRef> for ForumSectionRef {
+  fn from(r: ForumSectionIdRef) -> Self {
+    Self::Id(r)
+  }
+}
+
+impl From<ForumSectionKeyRef> for ForumSectionRef {
+  fn from(r: ForumSectionKeyRef) -> Self {
+    Self::Key(r)
+  }
+}
+
 declare_new_uuid! {
   pub struct ForumThreadId(Uuid);
   pub type ParseError = ForumThreadIdParseError;
@@ -154,6 +172,12 @@ pub struct ForumSection {
   pub this: ForumSectionSelf,
 }
 
+impl ForumSection {
+  pub fn as_ref(&self) -> ForumSectionIdRef {
+    ForumSectionIdRef { id: self.id }
+  }
+}
+
 pub type ForumSectionListing = Listing<ForumSectionMeta>;
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -177,6 +201,25 @@ impl ForumSectionMeta {
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "ForumSection"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawForumSectionMeta {
+  pub id: ForumSectionId,
+  pub key: Option<ForumSectionKey>,
+  pub display_name: ForumSectionDisplayName,
+  pub ctime: Instant,
+  pub locale: Option<LocaleId>,
+  pub threads: ListingCount,
+  pub role_grants: Vec<RawForumRoleGrant>,
+}
+
+impl RawForumSectionMeta {
+  pub const fn as_ref(&self) -> ForumSectionIdRef {
+    ForumSectionIdRef::new(self.id)
+  }
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ForumSectionSelf {
   pub roles: Vec<ForumRole>,
@@ -191,6 +234,15 @@ pub struct ForumRoleGrant {
   pub user: ShortUser,
   pub start_time: Instant,
   pub granted_by: ShortUser,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawForumRoleGrant {
+  pub role: ForumRole,
+  pub user: UserIdRef,
+  pub start_time: Instant,
+  pub granted_by: UserIdRef,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -370,10 +422,25 @@ pub struct GetForumSectionOptions {
   pub thread_limit: u32,
 }
 
+#[derive(Error, Debug)]
+pub enum GetSectionMetaError {
+  #[error("section not found")]
+  NotFound,
+  #[error(transparent)]
+  Other(AnyError),
+}
+
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RawGetThreadsOptions {
   pub section: ForumSectionIdRef,
+  pub offset: u32,
+  pub limit: u32,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawGetSectionsOptions {
   pub offset: u32,
   pub limit: u32,
 }
@@ -419,7 +486,12 @@ pub enum GetThreadError {
 pub trait ForumStore: Send + Sync {
   async fn add_moderator(&self, options: &RawAddModeratorOptions) -> Result<(), AnyError>;
 
-  async fn get_section_meta(&self, options: &GetForumSectionOptions) -> Result<ForumSectionMeta, AnyError>;
+  async fn get_sections(&self, options: &RawGetSectionsOptions) -> Result<Listing<RawForumSectionMeta>, AnyError>;
+
+  async fn get_section_meta(
+    &self,
+    options: &GetForumSectionOptions,
+  ) -> Result<RawForumSectionMeta, GetSectionMetaError>;
 
   async fn get_threads(&self, options: &RawGetThreadsOptions) -> Result<ForumThreadListing, AnyError>;
 

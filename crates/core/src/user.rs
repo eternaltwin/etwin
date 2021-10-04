@@ -93,6 +93,20 @@ impl From<UserRef> for GetShortUserOptions {
   }
 }
 
+impl From<UserIdRef> for GetShortUserOptions {
+  fn from(r: UserIdRef) -> Self {
+    let r: UserRef = r.into();
+    r.into()
+  }
+}
+
+impl From<UserId> for GetShortUserOptions {
+  fn from(id: UserId) -> Self {
+    let r: UserRef = id.into();
+    r.into()
+  }
+}
+
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize), serde(untagged))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum GetUserResult {
@@ -237,6 +251,30 @@ pub enum UserRef {
   Id(UserIdRef),
   Username(UserUsernameRef),
   Email(UserEmailRef),
+}
+
+impl From<UserId> for UserRef {
+  fn from(id: UserId) -> Self {
+    Self::Id(id.into())
+  }
+}
+
+impl From<UserIdRef> for UserRef {
+  fn from(r: UserIdRef) -> Self {
+    Self::Id(r)
+  }
+}
+
+impl From<UserUsernameRef> for UserRef {
+  fn from(r: UserUsernameRef) -> Self {
+    Self::Username(r)
+  }
+}
+
+impl From<UserEmailRef> for UserRef {
+  fn from(r: UserEmailRef) -> Self {
+    Self::Email(r)
+  }
 }
 
 declare_new_string! {

@@ -1,10 +1,12 @@
 use etwin_core::auth::AuthContext;
 use etwin_core::clock::Clock;
+use etwin_core::core::Listing;
 use etwin_core::forum::{
   AddModeratorOptions, CreatePostError, CreatePostOptions, CreateThreadOptions, DeleteModeratorOptions,
-  DeletePostError, DeletePostOptions, ForumPost, ForumRole, ForumSection, ForumSectionListing, ForumSectionMeta,
-  ForumSectionSelf, ForumStore, ForumThread, GetForumSectionOptions, GetThreadOptions, RawAddModeratorOptions,
-  RawGetRoleGrantsOptions, RawGetThreadsOptions, UpsertSystemSectionError, UpsertSystemSectionOptions,
+  DeletePostError, DeletePostOptions, ForumPost, ForumRole, ForumRoleGrant, ForumSection, ForumSectionListing,
+  ForumSectionMeta, ForumSectionSelf, ForumStore, ForumThread, GetForumSectionOptions, GetThreadOptions,
+  RawAddModeratorOptions, RawForumSectionMeta, RawGetSectionsOptions, RawGetThreadsOptions, UpsertSystemSectionError,
+  UpsertSystemSectionOptions,
 };
 use etwin_core::types::AnyError;
 use etwin_core::user::{ShortUser, UserStore};
@@ -159,8 +161,48 @@ where
     todo!()
   }
 
-  pub async fn get_sections(&self, _acx: &AuthContext) -> Result<ForumSectionListing, GetSectionsError> {
-    todo!()
+  pub async fn get_sections(&self, acx: &AuthContext) -> Result<ForumSectionListing, GetSectionsError> {
+    let sections: Listing<RawForumSectionMeta> = self
+      .forum_store
+      .get_sections(&RawGetSectionsOptions { offset: 0, limit: 20 })
+      .await
+      .map_err(GetSectionsError::Other)?;
+    let mut items: Vec<ForumSectionMeta> = Vec::new();
+    for section in sections.items.into_iter() {
+      let forum_self = match acx {
+        AuthContext::User(acx) => {
+          let mut roles = Vec::new();
+          if acx.is_administrator {
+            roles.push(ForumRole::Administrator);
+          }
+          if section
+            .role_grants
+            .iter()
+            .any(|grant| grant.role == ForumRole::Moderator && grant.user.id == acx.user.id)
+          {
+            roles.push(ForumRole::Moderator);
+          }
+          ForumSectionSelf { roles }
+        }
+        _ => ForumSectionSelf { roles: vec![] },
+      };
+      let section = ForumSectionMeta {
+        id: section.id,
+        key: section.key,
+        display_name: section.display_name,
+        ctime: section.ctime,
+        locale: section.locale,
+        threads: section.threads,
+        this: forum_self,
+      };
+      items.push(section);
+    }
+    Ok(Listing {
+      offset: sections.offset,
+      limit: sections.limit,
+      count: sections.count,
+      items,
+    })
   }
 
   pub async fn upsert_system_section(
@@ -175,24 +217,17 @@ where
     acx: &AuthContext,
     options: &GetForumSectionOptions,
   ) -> Result<ForumSection, GetSectionError> {
-    let section_meta: ForumSectionMeta = self
+    let section_meta: RawForumSectionMeta = self
       .forum_store
       .get_section_meta(options)
       .await
-      .map_err(GetSectionError::Other)?;
+      .map_err(|e| GetSectionError::Other(Box::new(e)))?;
     let threads = self
       .forum_store
       .get_threads(&RawGetThreadsOptions {
         section: section_meta.as_ref(),
         offset: options.thread_offset,
         limit: options.thread_limit,
-      })
-      .await
-      .map_err(GetSectionError::Other)?;
-    let role_grants = self
-      .forum_store
-      .get_role_grants(&RawGetRoleGrantsOptions {
-        section: section_meta.as_ref(),
       })
       .await
       .map_err(GetSectionError::Other)?;
@@ -203,7 +238,8 @@ where
         if acx.is_administrator {
           roles.push(ForumRole::Administrator);
         }
-        if role_grants
+        if section_meta
+          .role_grants
           .iter()
           .any(|grant| grant.role == ForumRole::Moderator && grant.user.id == acx.user.id)
         {
@@ -213,6 +249,28 @@ where
       }
       _ => ForumSectionSelf { roles: vec![] },
     };
+
+    let mut role_grants: Vec<ForumRoleGrant> = Vec::new();
+    for grant in section_meta.role_grants.into_iter() {
+      let grantee = self
+        .user_store
+        .get_short_user(&grant.user.into())
+        .await
+        .map_err(GetSectionError::Other)?
+        .expect("failed to resolve grantee");
+      let granter = self
+        .user_store
+        .get_short_user(&grant.granted_by.into())
+        .await
+        .map_err(GetSectionError::Other)?
+        .expect("failed to resolve grantee");
+      role_grants.push(ForumRoleGrant {
+        role: grant.role,
+        user: grantee,
+        start_time: grant.start_time,
+        granted_by: granter,
+      });
+    }
 
     Ok(ForumSection {
       id: section_meta.id,
