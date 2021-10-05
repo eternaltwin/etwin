@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/forum-in-memory",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Eternal-Twin `ForumService` in-memory implementation",
   "repository": {

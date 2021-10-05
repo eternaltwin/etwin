@@ -104,7 +104,7 @@ The resulting `package.json` should be similar to:
   },
   "dependencies": {},
   "devDependencies": {
-    "@eternal-twin/cli": "^0.8.3"
+    "@eternal-twin/cli": "^0.9.2"
   }
 }
 ```

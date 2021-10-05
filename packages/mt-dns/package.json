@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/mt-dns",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "Custom DNS resolver for Motion-Twin's websites",
   "repository": {

@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/cli",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "homepage": "https://gitlab.com/eternal-twin/etwin",
   "description": "Eternaltwin Command Line Interface (CLI)",
   "repository": {

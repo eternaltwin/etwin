@@ -1,6 +1,6 @@
 [package]
 name = "etwin_email_formatter"
-version = "0.9.1"
+version = "0.9.2"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Email formatter for Eternaltwin emails"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -18,7 +18,7 @@ html = []
 
 [dependencies]
 async-trait = "0.1.51"
-etwin_core = { version = "0.9.1", features = ["_serde"] }
+etwin_core = { version = "0.9.2", features = ["_serde"] }
 neon = { version = "0.9.1", optional = true, default-features = false, features = ["napi-6"] }
 serde = { version = "1.0.130", features = ["derive"] }
 serde_json = "1.0.67"

@@ -1,6 +1,6 @@
 [package]
 name = "etwin_populate"
-version = "0.9.1"
+version = "0.9.2"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Hammerfest store implementation"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -12,6 +12,6 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-etwin_constants = "0.9.1"
-etwin_core = { version = "0.9.1", features = ["sqlx"] }
+etwin_constants = "0.9.2"
+etwin_core = { version = "0.9.2", features = ["sqlx"] }
 sqlx = { version = "0.5.7", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }

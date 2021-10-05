@@ -6,7 +6,7 @@ use std::process::Command;
 use std::thread::sleep;
 use std::time::Duration;
 
-const CRATES: [&str; 29] = [
+const CRATES: [&str; 31] = [
   "postgres_tools",
   "serde_tools",
   "scraper_tools",
@@ -15,6 +15,7 @@ const CRATES: [&str; 29] = [
   "core",
   "config",
   "constants",
+  "mt_dns",
   "db_schema",
   "populate",
   "email_formatter",
@@ -33,12 +34,13 @@ const CRATES: [&str; 29] = [
   "auth_store",
   "token_store",
   "link_store",
+  "forum_store",
   "services",
   "rest",
   "cli",
 ];
 
-const NPM_PACKAGES: [&str; 15] = [
+const NPM_PACKAGES: [&str; 16] = [
   "core",
   "announcement-mem",
   "announcement-pg",
@@ -48,6 +50,7 @@ const NPM_PACKAGES: [&str; 15] = [
   "forum-in-memory",
   "forum-pg",
   "local-config",
+  "mt-dns",
   "native",
   "oauth-client-http",
   "pg-db",

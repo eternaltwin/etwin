@@ -1,6 +1,6 @@
 [package]
 name = "etwin_native"
-version = "0.9.1"
+version = "0.9.2"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Native node bindings for Eternal-Twin"
 license = "AGPL-3.0-or-later"
@@ -19,25 +19,25 @@ neon-build = "0.9.1"
 
 [dependencies]
 chrono = "0.4.19"
-etwin_auth_store = { version = "0.9.1", features = ["neon"] }
-etwin_core = { version = "0.9.1", features = ["neon", "_serde"] }
-etwin_dinoparc_client = { version = "0.9.1", features = ["neon"] }
-etwin_dinoparc_store = { version = "0.9.1", features = ["neon"] }
-etwin_email_formatter = { version = "0.9.1", features = ["neon"] }
-etwin_hammerfest_client = { version = "0.9.1", features = ["feat-neon"] }
-etwin_hammerfest_store = { version = "0.9.1", features = ["neon"] }
-etwin_link_store = { version = "0.9.1", features = ["neon"] }
-etwin_log = "0.9.1"
-etwin_mailer = { version = "0.9.1", features = ["neon"] }
-etwin_mt_dns = { version = "0.9.1", features = ["neon"] }
-etwin_oauth_provider_store = { version = "0.9.1", features = ["neon"] }
-etwin_password = { version = "0.9.1", features = ["neon"] }
-etwin_rest = "0.9.1"
-etwin_services = { version = "0.9.1", features = ["neon"] }
-etwin_token_store = { version = "0.9.1", features = ["neon"] }
-etwin_twinoid_client = { version = "0.9.1", features = ["neon"] }
-etwin_twinoid_store = { version = "0.9.1", features = ["neon"] }
-etwin_user_store = { version = "0.9.1", features = ["neon"] }
+etwin_auth_store = { version = "0.9.2", features = ["neon"] }
+etwin_core = { version = "0.9.2", features = ["neon", "_serde"] }
+etwin_dinoparc_client = { version = "0.9.2", features = ["neon"] }
+etwin_dinoparc_store = { version = "0.9.2", features = ["neon"] }
+etwin_email_formatter = { version = "0.9.2", features = ["neon"] }
+etwin_hammerfest_client = { version = "0.9.2", features = ["feat-neon"] }
+etwin_hammerfest_store = { version = "0.9.2", features = ["neon"] }
+etwin_link_store = { version = "0.9.2", features = ["neon"] }
+etwin_log = "0.9.2"
+etwin_mailer = { version = "0.9.2", features = ["neon"] }
+etwin_mt_dns = { version = "0.9.2", features = ["neon"] }
+etwin_oauth_provider_store = { version = "0.9.2", features = ["neon"] }
+etwin_password = { version = "0.9.2", features = ["neon"] }
+etwin_rest = "0.9.2"
+etwin_services = { version = "0.9.2", features = ["neon"] }
+etwin_token_store = { version = "0.9.2", features = ["neon"] }
+etwin_twinoid_client = { version = "0.9.2", features = ["neon"] }
+etwin_twinoid_store = { version = "0.9.2", features = ["neon"] }
+etwin_user_store = { version = "0.9.2", features = ["neon"] }
 neon = { version = "0.9.1", default-features = false, features = ["event-queue-api", "napi-6"] }
 sqlx = { version = "0.5.7", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 serde = { version = "1.0.130", features = ["derive"] }

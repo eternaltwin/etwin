@@ -1,6 +1,6 @@
 {
   "name": "@eternal-twin/core",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "homepage": "https://gitlab.com/eternal-twin/etwin-api",
   "description": "TypeScript types and interfaces for Eternal-Twin",
   "repository": {

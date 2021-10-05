@@ -1,6 +1,6 @@
 [package]
 name = "etwin_config"
-version = "0.9.1"
+version = "0.9.2"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Config crate for Eternal-Twin"
 documentation = "https://github.com/eternal-twin/etwin"

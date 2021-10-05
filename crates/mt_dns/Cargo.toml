@@ -1,6 +1,6 @@
 [package]
 name = "etwin_mt_dns"
-version = "0.9.1"
+version = "0.9.2"
 authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "DNS client for Motion-Twin's websites"
 documentation = "https://github.com/eternal-twin/etwin"
@@ -12,5 +12,5 @@ license = "AGPL-3.0-or-later"
 edition = "2018"
 
 [dependencies]
-etwin_core = { version = "0.9.1", features = ["_serde"] }
+etwin_core = { version = "0.9.2", features = ["_serde"] }
 neon = { version = "0.9.1", optional = true, default-features = false, features = ["napi-6"] }
