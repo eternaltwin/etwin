@@ -10,6 +10,7 @@ pub mod clock;
 pub mod core;
 pub mod dinoparc;
 pub mod dinorpg;
+pub mod dns;
 pub mod email;
 pub mod forum;
 pub mod hammerfest;

@@ -1,6 +1,6 @@
 use clap::Clap;
 use std::error::Error;
-use xtask::PublishArgs;
+use xtask::{DnsArgs, PublishArgs};
 
 #[derive(Debug, Clap)]
 #[clap(author = "Charles \"Demurgos\" Samborski")]
@@ -11,6 +11,9 @@ struct CliArgs {
 
 #[derive(Debug, Clap)]
 enum Task {
+  /// Refresh generated DNS files
+  #[clap(name = "dns")]
+  Dns(DnsArgs),
   /// Compile documentation into Angular
   #[clap(name = "docs")]
   Docs(DocsArgs),
@@ -34,6 +37,7 @@ fn main() {
   let args: CliArgs = CliArgs::parse();
 
   let res = match &args.task {
+    Task::Dns(ref args) => dns(args),
     Task::Docs(ref args) => docs(args),
     Task::Kotlin(ref args) => kotlin(args),
     Task::Publish(ref args) => publish(args),
@@ -43,6 +47,10 @@ fn main() {
     Ok(_) => std::process::exit(0),
     Err(_) => res.unwrap(),
   }
+}
+
+fn dns(args: &DnsArgs) -> Result<(), Box<dyn Error>> {
+  xtask::dns(args)
 }
 
 fn docs(_args: &DocsArgs) -> Result<(), Box<dyn Error>> {

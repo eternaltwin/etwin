@@ -24,11 +24,12 @@ etwin_core = { version = "0.9.1", features = ["neon", "_serde"] }
 etwin_dinoparc_client = { version = "0.9.1", features = ["neon"] }
 etwin_dinoparc_store = { version = "0.9.1", features = ["neon"] }
 etwin_email_formatter = { version = "0.9.1", features = ["neon"] }
-etwin_hammerfest_client = { version = "0.9.1", features = ["neon"] }
+etwin_hammerfest_client = { version = "0.9.1", features = ["feat-neon"] }
 etwin_hammerfest_store = { version = "0.9.1", features = ["neon"] }
 etwin_link_store = { version = "0.9.1", features = ["neon"] }
 etwin_log = "0.9.1"
 etwin_mailer = { version = "0.9.1", features = ["neon"] }
+etwin_mt_dns = { version = "0.9.1", features = ["neon"] }
 etwin_oauth_provider_store = { version = "0.9.1", features = ["neon"] }
 etwin_password = { version = "0.9.1", features = ["neon"] }
 etwin_rest = "0.9.1"

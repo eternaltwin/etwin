@@ -1,0 +1,1306 @@
+
+; <<>> DiG 9.16.21 <<>> alphabounce.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 47722
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb8dab51fc615c736fcea4a6a7a46ea2dc (good)
+;; QUESTION SECTION:
+;alphabounce.com.		IN	A
+
+;; ANSWER SECTION:
+alphabounce.com.	300	IN	A	178.32.123.64
+
+;; Query time: 60 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:56 CEST 2021
+;; MSG SIZE  rcvd: 88
+
+; <<>> DiG 9.16.21 <<>> www.alphabounce.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 23421
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb188305e9615c736f5d2a7b7a702fe923 (good)
+;; QUESTION SECTION:
+;www.alphabounce.com.		IN	A
+
+;; ANSWER SECTION:
+www.alphabounce.com.	300	IN	CNAME	alphabounce.com.
+alphabounce.com.	300	IN	A	178.32.123.64
+
+;; Query time: 293 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:56 CEST 2021
+;; MSG SIZE  rcvd: 106
+
+; <<>> DiG 9.16.21 <<>> arkadeo.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 39835
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb815945fb615c7370c2479304183dd1eb (good)
+;; QUESTION SECTION:
+;arkadeo.com.			IN	A
+
+;; ANSWER SECTION:
+arkadeo.com.		300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:56 CEST 2021
+;; MSG SIZE  rcvd: 84
+
+; <<>> DiG 9.16.21 <<>> www.arkadeo.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 45901
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb9356622d615c737043e194ff3f851aaf (good)
+;; QUESTION SECTION:
+;www.arkadeo.com.		IN	A
+
+;; ANSWER SECTION:
+www.arkadeo.com.	300	IN	CNAME	arkadeo.com.
+arkadeo.com.		300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:56 CEST 2021
+;; MSG SIZE  rcvd: 102
+
+; <<>> DiG 9.16.21 <<>> carapass.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 44768
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb355ea3a2615c73707c8d4ff5936568ac (good)
+;; QUESTION SECTION:
+;carapass.com.			IN	A
+
+;; ANSWER SECTION:
+carapass.com.		300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:56 CEST 2021
+;; MSG SIZE  rcvd: 85
+
+; <<>> DiG 9.16.21 <<>> www.carapass.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 25919
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbcfffb2c4615c73707b9ae23254cfe610 (good)
+;; QUESTION SECTION:
+;www.carapass.com.		IN	A
+
+;; ANSWER SECTION:
+www.carapass.com.	300	IN	CNAME	carapass.com.
+carapass.com.		300	IN	A	178.32.123.64
+
+;; Query time: 50 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 103
+
+; <<>> DiG 9.16.21 <<>> croquemonster.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 62132
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb26ab4848615c73700800d4b8c70b9f87 (good)
+;; QUESTION SECTION:
+;croquemonster.com.		IN	A
+
+;; ANSWER SECTION:
+croquemonster.com.	300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 90
+
+; <<>> DiG 9.16.21 <<>> www.croquemonster.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 22040
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb31cd9ada615c7370e341ed7f0d9d96dd (good)
+;; QUESTION SECTION:
+;www.croquemonster.com.		IN	A
+
+;; ANSWER SECTION:
+www.croquemonster.com.	300	IN	CNAME	croquemonster.com.
+croquemonster.com.	300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 108
+
+; <<>> DiG 9.16.21 <<>> die2nite.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 41918
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb1329be24615c7370ffe5a46fa1d58fd2 (good)
+;; QUESTION SECTION:
+;die2nite.com.			IN	A
+
+;; ANSWER SECTION:
+die2nite.com.		300	IN	A	178.32.123.64
+
+;; Query time: 40 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 85
+
+; <<>> DiG 9.16.21 <<>> www.die2nite.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 19781
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbe870b9ad615c7370a61a0057d0bafe6b (good)
+;; QUESTION SECTION:
+;www.die2nite.com.		IN	A
+
+;; ANSWER SECTION:
+www.die2nite.com.	300	IN	CNAME	die2nite.com.
+die2nite.com.		300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 103
+
+; <<>> DiG 9.16.21 <<>> dieverdammten.de
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 60764
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb649e575e615c737022d05922b333be23 (good)
+;; QUESTION SECTION:
+;dieverdammten.de.		IN	A
+
+;; ANSWER SECTION:
+dieverdammten.de.	300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 89
+
+; <<>> DiG 9.16.21 <<>> www.dieverdammten.de
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 23752
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb67cc5cd5615c7370d48f311ed9dadcdf (good)
+;; QUESTION SECTION:
+;www.dieverdammten.de.		IN	A
+
+;; ANSWER SECTION:
+www.dieverdammten.de.	300	IN	CNAME	dieverdammten.de.
+dieverdammten.de.	300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 107
+
+; <<>> DiG 9.16.21 <<>> dinocard.net
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 778
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbba2494f5615c7370e85f996da901f95d (good)
+;; QUESTION SECTION:
+;dinocard.net.			IN	A
+
+;; ANSWER SECTION:
+dinocard.net.		300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 85
+
+; <<>> DiG 9.16.21 <<>> www.dinocard.net
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 6955
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbdb501289615c7370d1c72d617bc3b0f0 (good)
+;; QUESTION SECTION:
+;www.dinocard.net.		IN	A
+
+;; ANSWER SECTION:
+www.dinocard.net.	300	IN	CNAME	dinocard.net.
+dinocard.net.		300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 103
+
+; <<>> DiG 9.16.21 <<>> dinoparc.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 7249
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbffe4347c615c737084250e460d616c2a (good)
+;; QUESTION SECTION:
+;dinoparc.com.			IN	A
+
+;; ANSWER SECTION:
+dinoparc.com.		300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 85
+
+; <<>> DiG 9.16.21 <<>> www.dinoparc.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 47893
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb23cb3d66615c7370df4a59a3b9a14d4b (good)
+;; QUESTION SECTION:
+;www.dinoparc.com.		IN	A
+
+;; ANSWER SECTION:
+www.dinoparc.com.	300	IN	CNAME	dinoparc.com.
+dinoparc.com.		300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 103
+
+; <<>> DiG 9.16.21 <<>> en.dinoparc.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 9443
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb92e10e66615c737090b6f90e86f0436b (good)
+;; QUESTION SECTION:
+;en.dinoparc.com.		IN	A
+
+;; ANSWER SECTION:
+en.dinoparc.com.	300	IN	A	178.32.123.64
+
+;; Query time: 40 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 88
+
+; <<>> DiG 9.16.21 <<>> es.dinoparc.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 45191
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbbbd60b14615c73704b739499c50c15b1 (good)
+;; QUESTION SECTION:
+;es.dinoparc.com.		IN	A
+
+;; ANSWER SECTION:
+es.dinoparc.com.	300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 88
+
+; <<>> DiG 9.16.21 <<>> dinorpg.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 37268
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbf10e5735615c73704f6b1975cdf0f469 (good)
+;; QUESTION SECTION:
+;dinorpg.com.			IN	A
+
+;; ANSWER SECTION:
+dinorpg.com.		300	IN	A	178.32.123.64
+
+;; Query time: 56 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 84
+
+; <<>> DiG 9.16.21 <<>> www.dinorpg.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 21531
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbb92e8e83615c737049298d9dd78873e9 (good)
+;; QUESTION SECTION:
+;www.dinorpg.com.		IN	A
+
+;; ANSWER SECTION:
+www.dinorpg.com.	300	IN	CNAME	dinorpg.com.
+dinorpg.com.		300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 102
+
+; <<>> DiG 9.16.21 <<>> fevermap.org
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 24011
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb5d9db076615c7370d6f95605d8b16236 (good)
+;; QUESTION SECTION:
+;fevermap.org.			IN	A
+
+;; ANSWER SECTION:
+fevermap.org.		86400	IN	A	213.186.33.4
+
+;; Query time: 56 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 85
+
+; <<>> DiG 9.16.21 <<>> hammerfest.fr
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 55073
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbd9824aa2615c7370c9e2ce193b1bf8e0 (good)
+;; QUESTION SECTION:
+;hammerfest.fr.			IN	A
+
+;; ANSWER SECTION:
+hammerfest.fr.		300	IN	A	149.202.174.50
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 86
+
+; <<>> DiG 9.16.21 <<>> data.hammerfest.fr
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 49291
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbca30465b615c7370f02aced74f90441b (good)
+;; QUESTION SECTION:
+;data.hammerfest.fr.		IN	A
+
+;; ANSWER SECTION:
+data.hammerfest.fr.	300	IN	A	149.202.174.50
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 91
+
+; <<>> DiG 9.16.21 <<>> www.hammerfest.fr
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 62605
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb47efceee615c7370b2ada36d16144608 (good)
+;; QUESTION SECTION:
+;www.hammerfest.fr.		IN	A
+
+;; ANSWER SECTION:
+www.hammerfest.fr.	300	IN	CNAME	hammerfest.fr.
+hammerfest.fr.		300	IN	A	149.202.174.50
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 104
+
+; <<>> DiG 9.16.21 <<>> hfest.net
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 13659
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb77d9830a615c73710f5a2291901963ed (good)
+;; QUESTION SECTION:
+;hfest.net.			IN	A
+
+;; ANSWER SECTION:
+hfest.net.		300	IN	A	149.202.174.50
+
+;; Query time: 56 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 82
+
+; <<>> DiG 9.16.21 <<>> data.hfest.net
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 49489
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbd4ee1f19615c737120d73972e039812b (good)
+;; QUESTION SECTION:
+;data.hfest.net.			IN	A
+
+;; ANSWER SECTION:
+data.hfest.net.		300	IN	A	149.202.174.50
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 87
+
+; <<>> DiG 9.16.21 <<>> www.hfest.net
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 61001
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb33007035615c73717259d5b713085d28 (good)
+;; QUESTION SECTION:
+;www.hfest.net.			IN	A
+
+;; ANSWER SECTION:
+www.hfest.net.		300	IN	CNAME	hfest.net.
+hfest.net.		300	IN	A	149.202.174.50
+
+;; Query time: 40 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 100
+
+; <<>> DiG 9.16.21 <<>> hordes.fr
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 47255
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbed4242ce615c7371bbfc81f82f21c5b2 (good)
+;; QUESTION SECTION:
+;hordes.fr.			IN	A
+
+;; ANSWER SECTION:
+hordes.fr.		300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 82
+
+; <<>> DiG 9.16.21 <<>> www.hordes.fr
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 8836
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbec1d4c7f615c7371f643f0461a9b6279 (good)
+;; QUESTION SECTION:
+;www.hordes.fr.			IN	A
+
+;; ANSWER SECTION:
+www.hordes.fr.		300	IN	CNAME	hordes.fr.
+hordes.fr.		300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:57 CEST 2021
+;; MSG SIZE  rcvd: 100
+
+; <<>> DiG 9.16.21 <<>> hyperliner.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 33897
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbf44f121f615c73719929c9fe83f9d426 (good)
+;; QUESTION SECTION:
+;hyperliner.com.			IN	A
+
+;; ANSWER SECTION:
+hyperliner.com.		300	IN	A	178.32.123.64
+
+;; Query time: 46 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 87
+
+; <<>> DiG 9.16.21 <<>> www.hyperliner.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 8576
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb9b7e8c00615c7371efc9a910fe1aca80 (good)
+;; QUESTION SECTION:
+;www.hyperliner.com.		IN	A
+
+;; ANSWER SECTION:
+www.hyperliner.com.	300	IN	CNAME	hyperliner.com.
+hyperliner.com.		300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 105
+
+; <<>> DiG 9.16.21 <<>> kadokado.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 65373
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbbc07b901615c7371f2b8c261116c787f (good)
+;; QUESTION SECTION:
+;kadokado.com.			IN	A
+
+;; ANSWER SECTION:
+kadokado.com.		300	IN	A	178.32.123.64
+
+;; Query time: 40 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 85
+
+; <<>> DiG 9.16.21 <<>> www.kadokado.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 3626
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb8e781911615c7371814b174f46a1b8ab (good)
+;; QUESTION SECTION:
+;www.kadokado.com.		IN	A
+
+;; ANSWER SECTION:
+www.kadokado.com.	300	IN	CNAME	kadokado.com.
+kadokado.com.		300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 103
+
+; <<>> DiG 9.16.21 <<>> minitroopers.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 36861
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbd9472101615c737198dcd2ca4ec1f9b0 (good)
+;; QUESTION SECTION:
+;minitroopers.com.		IN	A
+
+;; ANSWER SECTION:
+minitroopers.com.	300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 89
+
+; <<>> DiG 9.16.21 <<>> www.minitroopers.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 18185
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb9f1960c5615c7371cf502a9f757e8eb2 (good)
+;; QUESTION SECTION:
+;www.minitroopers.com.		IN	A
+
+;; ANSWER SECTION:
+www.minitroopers.com.	300	IN	CNAME	minitroopers.com.
+minitroopers.com.	300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 107
+
+; <<>> DiG 9.16.21 <<>> minitroopers.es
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 57255
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbfdf27677615c73710bb56cb179aa2312 (good)
+;; QUESTION SECTION:
+;minitroopers.es.		IN	A
+
+;; ANSWER SECTION:
+minitroopers.es.	300	IN	A	178.32.123.64
+
+;; Query time: 53 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 88
+
+; <<>> DiG 9.16.21 <<>> www.minitroopers.es
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 1363
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbc971b345615c7371408c37a47c7c60a5 (good)
+;; QUESTION SECTION:
+;www.minitroopers.es.		IN	A
+
+;; ANSWER SECTION:
+www.minitroopers.es.	300	IN	CNAME	minitroopers.es.
+minitroopers.es.	300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 106
+
+; <<>> DiG 9.16.21 <<>> minitroopers.fr
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 57803
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb2ba7ebb2615c7371d6d288ec6cf28f32 (good)
+;; QUESTION SECTION:
+;minitroopers.fr.		IN	A
+
+;; ANSWER SECTION:
+minitroopers.fr.	300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 88
+
+; <<>> DiG 9.16.21 <<>> www.minitroopers.fr
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 31378
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb669a6f4a615c73713b6c1ed4e803f61f (good)
+;; QUESTION SECTION:
+;www.minitroopers.fr.		IN	A
+
+;; ANSWER SECTION:
+www.minitroopers.fr.	300	IN	CNAME	minitroopers.fr.
+minitroopers.fr.	300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 106
+
+; <<>> DiG 9.16.21 <<>> miniville.fr
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 8307
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb65e51d6b615c7371394c2abe90fce24c (good)
+;; QUESTION SECTION:
+;miniville.fr.			IN	A
+
+;; ANSWER SECTION:
+miniville.fr.		300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 85
+
+; <<>> DiG 9.16.21 <<>> www.miniville.fr
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 39695
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbbeed3393615c7371960f74854b86e1d3 (good)
+;; QUESTION SECTION:
+;www.miniville.fr.		IN	A
+
+;; ANSWER SECTION:
+www.miniville.fr.	300	IN	CNAME	miniville.fr.
+miniville.fr.		300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 103
+
+; <<>> DiG 9.16.21 <<>> monster-hotel.net
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 2976
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb28dbbe7e615c73718ec529dcadfeec9b (good)
+;; QUESTION SECTION:
+;monster-hotel.net.		IN	A
+
+;; ANSWER SECTION:
+monster-hotel.net.	300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 90
+
+; <<>> DiG 9.16.21 <<>> www.monster-hotel.net
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 33784
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb2be28802615c73715c1cc16dfb2ac749 (good)
+;; QUESTION SECTION:
+;www.monster-hotel.net.		IN	A
+
+;; ANSWER SECTION:
+www.monster-hotel.net.	300	IN	CNAME	monster-hotel.net.
+monster-hotel.net.	300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 108
+
+; <<>> DiG 9.16.21 <<>> mush.vg
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 33913
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb98db715d615c7371dedc3702950f0839 (good)
+;; QUESTION SECTION:
+;mush.vg.			IN	A
+
+;; ANSWER SECTION:
+mush.vg.		300	IN	A	178.32.123.64
+
+;; Query time: 93 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 80
+
+; <<>> DiG 9.16.21 <<>> www.mush.vg
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 13666
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb91154868615c73714465b0c5ea3e97f2 (good)
+;; QUESTION SECTION:
+;www.mush.vg.			IN	A
+
+;; ANSWER SECTION:
+www.mush.vg.		300	IN	CNAME	mush.vg.
+mush.vg.		300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 98
+
+; <<>> DiG 9.16.21 <<>> muxxu.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 64672
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbed5295dc615c73710b6daea5e746b660 (good)
+;; QUESTION SECTION:
+;muxxu.com.			IN	A
+
+;; ANSWER SECTION:
+muxxu.com.		300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 82
+
+; <<>> DiG 9.16.21 <<>> www.muxxu.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 41832
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbc3ceacfd615c7371cf641184a614f788 (good)
+;; QUESTION SECTION:
+;www.muxxu.com.			IN	A
+
+;; ANSWER SECTION:
+www.muxxu.com.		300	IN	CNAME	muxxu.com.
+muxxu.com.		300	IN	A	178.32.123.64
+
+;; Query time: 40 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 100
+
+; <<>> DiG 9.16.21 <<>> myminicity.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 13448
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbaa3ac262615c73713ab11967724ce894 (good)
+;; QUESTION SECTION:
+;myminicity.com.			IN	A
+
+;; ANSWER SECTION:
+myminicity.com.		300	IN	A	178.32.123.64
+
+;; Query time: 40 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 87
+
+; <<>> DiG 9.16.21 <<>> www.myminicity.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 51788
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbc0ade5b9615c7371fc31c900cc544ff4 (good)
+;; QUESTION SECTION:
+;www.myminicity.com.		IN	A
+
+;; ANSWER SECTION:
+www.myminicity.com.	300	IN	CNAME	myminicity.com.
+myminicity.com.		300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 105
+
+; <<>> DiG 9.16.21 <<>> myminicity.es
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 38436
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb39803296615c7372189697bcba952675 (good)
+;; QUESTION SECTION:
+;myminicity.es.			IN	A
+
+;; ANSWER SECTION:
+myminicity.es.		300	IN	A	178.32.123.64
+
+;; Query time: 50 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 86
+
+; <<>> DiG 9.16.21 <<>> www.myminicity.es
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 41624
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb8811f744615c7372ad63ecd75186e8a4 (good)
+;; QUESTION SECTION:
+;www.myminicity.es.		IN	A
+
+;; ANSWER SECTION:
+www.myminicity.es.	300	IN	CNAME	myminicity.es.
+myminicity.es.		300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 104
+
+; <<>> DiG 9.16.21 <<>> naturalchimie.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 1727
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb1a8b68c9615c73727c93b5855c72a8c8 (good)
+;; QUESTION SECTION:
+;naturalchimie.com.		IN	A
+
+;; ANSWER SECTION:
+naturalchimie.com.	300	IN	A	178.32.123.64
+
+;; Query time: 46 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 90
+
+; <<>> DiG 9.16.21 <<>> www.naturalchimie.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 24419
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb9ecb45a1615c73720ae1ff68c3148508 (good)
+;; QUESTION SECTION:
+;www.naturalchimie.com.		IN	A
+
+;; ANSWER SECTION:
+www.naturalchimie.com.	300	IN	CNAME	naturalchimie.com.
+naturalchimie.com.	300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:58 CEST 2021
+;; MSG SIZE  rcvd: 108
+
+; <<>> DiG 9.16.21 <<>> popotamo.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 15625
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbcd3d5464615c7372f48d1e6f5af2ee3b (good)
+;; QUESTION SECTION:
+;popotamo.com.			IN	A
+
+;; ANSWER SECTION:
+popotamo.com.		300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 85
+
+; <<>> DiG 9.16.21 <<>> www.popotamo.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 35365
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb94435579615c737260ab2cc56a2b1c25 (good)
+;; QUESTION SECTION:
+;www.popotamo.com.		IN	A
+
+;; ANSWER SECTION:
+www.popotamo.com.	300	IN	CNAME	popotamo.com.
+popotamo.com.		300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 103
+
+; <<>> DiG 9.16.21 <<>> rockfaller.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 43017
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcba149bd18615c7372a40d4f0ce163744d (good)
+;; QUESTION SECTION:
+;rockfaller.com.			IN	A
+
+;; ANSWER SECTION:
+rockfaller.com.		300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 87
+
+; <<>> DiG 9.16.21 <<>> www.rockfaller.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 56176
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbb71828ea615c7372ab9d3c372b444fc1 (good)
+;; QUESTION SECTION:
+;www.rockfaller.com.		IN	A
+
+;; ANSWER SECTION:
+www.rockfaller.com.	300	IN	CNAME	rockfaller.com.
+rockfaller.com.		300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 105
+
+; <<>> DiG 9.16.21 <<>> skywar.net
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 54582
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb36f92946615c737270a8d6f77706f24f (good)
+;; QUESTION SECTION:
+;skywar.net.			IN	A
+
+;; ANSWER SECTION:
+skywar.net.		300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 83
+
+; <<>> DiG 9.16.21 <<>> www.skywar.net
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 30206
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb3d552d9d615c7372d5094e1f7098b57c (good)
+;; QUESTION SECTION:
+;www.skywar.net.			IN	A
+
+;; ANSWER SECTION:
+www.skywar.net.		300	IN	CNAME	skywar.net.
+skywar.net.		300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 101
+
+; <<>> DiG 9.16.21 <<>> teacher-story.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 7534
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb955dfb2d615c7372bb23bb14cb0c2ce5 (good)
+;; QUESTION SECTION:
+;teacher-story.com.		IN	A
+
+;; ANSWER SECTION:
+teacher-story.com.	300	IN	A	178.32.123.64
+
+;; Query time: 43 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 90
+
+; <<>> DiG 9.16.21 <<>> www.teacher-story.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 19086
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb3b417b58615c7372045e74e456a4febb (good)
+;; QUESTION SECTION:
+;www.teacher-story.com.		IN	A
+
+;; ANSWER SECTION:
+www.teacher-story.com.	300	IN	CNAME	teacher-story.com.
+teacher-story.com.	300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 108
+
+; <<>> DiG 9.16.21 <<>> street-writer.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 46173
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbf75bbcf1615c737231b2cbffb6109f33 (good)
+;; QUESTION SECTION:
+;street-writer.com.		IN	A
+
+;; ANSWER SECTION:
+street-writer.com.	300	IN	A	178.32.123.64
+
+;; Query time: 46 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 90
+
+; <<>> DiG 9.16.21 <<>> www.street-writer.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 57697
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb77055f79615c73727f9519985a79cac9 (good)
+;; QUESTION SECTION:
+;www.street-writer.com.		IN	A
+
+;; ANSWER SECTION:
+www.street-writer.com.	300	IN	CNAME	street-writer.com.
+street-writer.com.	300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 108
+
+; <<>> DiG 9.16.21 <<>> twinoid.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 56108
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbad1765d8615c7372e56598846cd3fd3a (good)
+;; QUESTION SECTION:
+;twinoid.com.			IN	A
+
+;; ANSWER SECTION:
+twinoid.com.		300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 84
+
+; <<>> DiG 9.16.21 <<>> www.twinoid.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 44245
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcbac187a9e615c73723b6f05556ea25a6b (good)
+;; QUESTION SECTION:
+;www.twinoid.com.		IN	A
+
+;; ANSWER SECTION:
+www.twinoid.com.	300	IN	CNAME	twinoid.com.
+twinoid.com.		300	IN	A	178.32.123.64
+
+;; Query time: 36 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 102
+
+; <<>> DiG 9.16.21 <<>> zombinoia.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 56952
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb229f8fdb615c73723173dde2b64f7203 (good)
+;; QUESTION SECTION:
+;zombinoia.com.			IN	A
+
+;; ANSWER SECTION:
+zombinoia.com.		300	IN	A	178.32.123.64
+
+;; Query time: 50 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 86
+
+; <<>> DiG 9.16.21 <<>> www.zombinoia.com
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 44997
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 3c5083f33820ffcb5e5f3f7a615c73727b2392599f714860 (good)
+;; QUESTION SECTION:
+;www.zombinoia.com.		IN	A
+
+;; ANSWER SECTION:
+www.zombinoia.com.	300	IN	CNAME	zombinoia.com.
+zombinoia.com.		300	IN	A	178.32.123.64
+
+;; Query time: 33 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Tue Oct 05 17:46:59 CEST 2021
+;; MSG SIZE  rcvd: 104
+

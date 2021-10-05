@@ -1,26 +1,39 @@
+use etwin_core::dns::DnsResolver;
 use etwin_core::hammerfest::{HammerfestForumThemeId, HammerfestForumThreadId, HammerfestServer, HammerfestUserId};
 use reqwest::Url;
 use std::num::NonZeroU16;
 
 pub struct HammerfestUrls {
-  root: &'static str,
+  root: String,
+  host: &'static str,
 }
 
 impl HammerfestUrls {
-  pub fn new(server: HammerfestServer) -> Self {
-    Self {
-      root: match server {
-        HammerfestServer::HammerfestFr => "http://www.hammerfest.fr",
-        HammerfestServer::HammerfestEs => "http://www.hammerfest.es",
-        HammerfestServer::HfestNet => "http://www.hfest.net",
-      },
-    }
+  pub fn new<TyDnsResolver>(dns_resolver: &TyDnsResolver, server: HammerfestServer) -> Self
+  where
+    TyDnsResolver: DnsResolver<HammerfestServer>,
+  {
+    let host = match server {
+      HammerfestServer::HammerfestFr => "www.hammerfest.fr",
+      HammerfestServer::HammerfestEs => "www.hammerfest.es",
+      HammerfestServer::HfestNet => "www.hfest.net",
+    };
+    let root = if let Some(addr) = dns_resolver.resolve4(&server) {
+      format!("http://{}", addr)
+    } else {
+      format!("http://{}", host)
+    };
+    Self { root, host }
   }
 
   fn make_url(&self, segments: &[&str]) -> Url {
-    let mut url = Url::parse(self.root).expect("invalid root url");
+    let mut url = Url::parse(self.root.as_str()).expect("invalid root url");
     url.path_segments_mut().expect("invalid root url").extend(segments);
     url
+  }
+
+  pub fn host(&self) -> &'static str {
+    self.host
   }
 
   pub fn root(&self) -> Url {

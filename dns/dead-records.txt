@@ -1,0 +1,1 @@
+hammerfest.es.	0	IN	A	149.202.174.50

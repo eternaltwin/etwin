@@ -15,12 +15,14 @@ edition = "2018"
 default = ["http", "mem"]
 http = ["etwin_scraper_tools", "reqwest", "scraper", "serde"]
 mem = []
+feat-neon = ["neon", "etwin_mt_dns/neon"]
 
 [dependencies]
 async-trait = "0.1.51"
 chrono = "0.4.19"
 etwin_constants = "0.9.1"
 etwin_core = "0.9.1"
+etwin_mt_dns = "0.9.1"
 etwin_scraper_tools = { version = "0.9.1", optional = true }
 neon = { version = "0.9.1", optional = true, default-features = false, features = ["napi-6"] }
 itertools = "0.10.1"

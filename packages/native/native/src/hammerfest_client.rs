@@ -184,6 +184,7 @@ pub mod http {
   use crate::neon_helpers::NeonNamespace;
   use etwin_core::clock::Clock;
   use etwin_hammerfest_client::HttpHammerfestClient;
+  use etwin_mt_dns::MtDnsResolver;
   use neon::prelude::*;
   use std::sync::Arc;
 
@@ -193,12 +194,13 @@ pub mod http {
     Ok(ns)
   }
 
-  pub type JsHttpHammerfestClient = JsBox<Arc<HttpHammerfestClient<Arc<dyn Clock>>>>;
+  pub type JsHttpHammerfestClient = JsBox<Arc<HttpHammerfestClient<Arc<dyn Clock>, MtDnsResolver>>>;
 
   pub fn new(mut cx: FunctionContext) -> JsResult<JsHttpHammerfestClient> {
     let clock = cx.argument::<JsValue>(0)?;
     let clock: Arc<dyn Clock> = get_native_clock(&mut cx, clock)?;
-    let inner: Arc<HttpHammerfestClient<Arc<dyn Clock>>> = Arc::new(HttpHammerfestClient::new(clock).unwrap());
+    let inner: Arc<HttpHammerfestClient<Arc<dyn Clock>, MtDnsResolver>> =
+      Arc::new(HttpHammerfestClient::new(clock).unwrap());
     Ok(cx.boxed(inner))
   }
 }

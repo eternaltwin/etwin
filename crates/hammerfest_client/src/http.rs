@@ -8,8 +8,10 @@ use self::errors::ScraperError;
 use self::url::HammerfestUrls;
 use async_trait::async_trait;
 use etwin_core::clock::Clock;
+use etwin_core::dns::DnsResolver;
 use etwin_core::hammerfest::*;
 use etwin_core::types::AnyError;
+pub use etwin_mt_dns::MtDnsResolver;
 use reqwest::{Client, StatusCode};
 use serde::Serialize;
 use std::num::NonZeroU16;
@@ -21,12 +23,13 @@ type Result<T> = std::result::Result<T, AnyError>;
 const USER_AGENT: &str = "EtwinHammerfestScraper";
 const TIMEOUT: Duration = Duration::from_millis(5000);
 
-pub struct HttpHammerfestClient<TyClock> {
+pub struct HttpHammerfestClient<TyClock, TyDnsResolver> {
   client: Client,
   clock: TyClock,
+  dns_resolver: TyDnsResolver,
 }
 
-impl<TyClock> HttpHammerfestClient<TyClock>
+impl<TyClock> HttpHammerfestClient<TyClock, MtDnsResolver>
 where
   TyClock: Clock,
 {
@@ -38,11 +41,31 @@ where
         .redirect(reqwest::redirect::Policy::none())
         .build()?,
       clock,
+      dns_resolver: MtDnsResolver,
+    })
+  }
+}
+
+impl<TyClock, TyDnsResolver> HttpHammerfestClient<TyClock, TyDnsResolver>
+where
+  TyClock: Clock,
+  TyDnsResolver: DnsResolver<HammerfestServer>,
+{
+  pub fn new_with_resolver(clock: TyClock, dns_resolver: TyDnsResolver) -> Result<Self> {
+    Ok(Self {
+      client: Client::builder()
+        .user_agent(USER_AGENT)
+        .timeout(TIMEOUT)
+        .redirect(reqwest::redirect::Policy::none())
+        .build()?,
+      clock,
+      dns_resolver,
     })
   }
 
   async fn get_html(
     &self,
+    host: &str,
     url: reqwest::Url,
     session: Option<&HammerfestSessionKey>,
   ) -> reqwest::Result<scraper::Html> {
@@ -54,16 +77,17 @@ where
       builder = builder.header(reqwest::header::COOKIE, session_cookie);
     }
 
-    let resp = builder.send().await?;
+    let resp = builder.header(reqwest::header::HOST, host).send().await?;
     let text = resp.error_for_status()?.text().await?;
     Ok(scraper::Html::parse_document(&text))
   }
 }
 
 #[async_trait]
-impl<TyClock> HammerfestClient for HttpHammerfestClient<TyClock>
+impl<TyClock, TyDnsResolver> HammerfestClient for HttpHammerfestClient<TyClock, TyDnsResolver>
 where
   TyClock: Clock,
+  TyDnsResolver: DnsResolver<HammerfestServer>,
 {
   async fn create_session(&self, options: &HammerfestCredentials) -> Result<HammerfestSession> {
     #[derive(Serialize)]
@@ -72,7 +96,7 @@ where
       pass: &'a str,
     }
 
-    let urls = HammerfestUrls::new(options.server);
+    let urls = HammerfestUrls::new(&self.dns_resolver, options.server);
 
     let now = self.clock.now();
     let resp = self
@@ -82,6 +106,7 @@ where
         login: options.username.as_str(),
         pass: options.password.as_str(),
       })
+      .header(reqwest::header::HOST, urls.host())
       .send()
       .await?;
 
@@ -105,7 +130,7 @@ where
       .ok_or(ScraperError::MissingSessionCookie)?;
     let session_key = HammerfestSessionKey::from_str(&session_key).map_err(|_| ScraperError::InvalidSessionCookie)?;
 
-    let html = self.get_html(urls.root(), Some(&session_key)).await?;
+    let html = self.get_html(urls.host(), urls.root(), Some(&session_key)).await?;
     let session =
       scraper::scrape_session(html.root_element(), options.server)?.ok_or(ScraperError::LoginSessionRevoked)?;
     Ok(HammerfestSession {
@@ -121,9 +146,9 @@ where
     server: HammerfestServer,
     key: &HammerfestSessionKey,
   ) -> Result<Option<HammerfestSession>> {
-    let urls = HammerfestUrls::new(server);
+    let urls = HammerfestUrls::new(&self.dns_resolver, server);
     let now = self.clock.now();
-    let html = self.get_html(urls.root(), Some(key)).await?;
+    let html = self.get_html(urls.host(), urls.root(), Some(key)).await?;
     let session = scraper::scrape_session(html.root_element(), server)?;
     Ok(session.map(|s| HammerfestSession {
       ctime: now,
@@ -138,29 +163,31 @@ where
     session: Option<&HammerfestSession>,
     options: &HammerfestGetProfileByIdOptions,
   ) -> Result<HammerfestProfileResponse> {
-    let urls = HammerfestUrls::new(options.server);
+    let urls = HammerfestUrls::new(&self.dns_resolver, options.server);
     let html = self
-      .get_html(urls.user(&options.user_id), session.map(|sess| &sess.key))
+      .get_html(urls.host(), urls.user(&options.user_id), session.map(|sess| &sess.key))
       .await?;
     Ok(scraper::scrape_user_profile(options.server, options.user_id, &html)?)
   }
 
   async fn get_own_items(&self, session: &HammerfestSession) -> Result<HammerfestInventoryResponse> {
-    let urls = HammerfestUrls::new(session.user.server);
-    let html = self.get_html(urls.inventory(), Some(&session.key)).await?;
+    let urls = HammerfestUrls::new(&self.dns_resolver, session.user.server);
+    let html = self.get_html(urls.host(), urls.inventory(), Some(&session.key)).await?;
     Ok(scraper::scrape_user_inventory(&html)?)
   }
 
   async fn get_own_godchildren(&self, session: &HammerfestSession) -> Result<HammerfestGodchildrenResponse> {
     let server = session.user.server;
-    let urls = HammerfestUrls::new(server);
-    let html = self.get_html(urls.god_children(), Some(&session.key)).await?;
+    let urls = HammerfestUrls::new(&self.dns_resolver, server);
+    let html = self
+      .get_html(urls.host(), urls.god_children(), Some(&session.key))
+      .await?;
     Ok(scraper::scrape_user_god_children(server, &html)?)
   }
 
   async fn get_own_shop(&self, session: &HammerfestSession) -> Result<HammerfestShopResponse> {
-    let urls = HammerfestUrls::new(session.user.server);
-    let html = self.get_html(urls.shop(), Some(&session.key)).await?;
+    let urls = HammerfestUrls::new(&self.dns_resolver, session.user.server);
+    let html = self.get_html(urls.host(), urls.shop(), Some(&session.key)).await?;
     Ok(scraper::scrape_user_shop(&html)?)
   }
 
@@ -169,8 +196,10 @@ where
     session: Option<&HammerfestSession>,
     server: HammerfestServer,
   ) -> Result<HammerfestForumHomeResponse> {
-    let urls = HammerfestUrls::new(server);
-    let html = self.get_html(urls.forum_home(), session.map(|sess| &sess.key)).await?;
+    let urls = HammerfestUrls::new(&self.dns_resolver, server);
+    let html = self
+      .get_html(urls.host(), urls.forum_home(), session.map(|sess| &sess.key))
+      .await?;
     Ok(scraper::scrape_forum_home(server, &html)?)
   }
 
@@ -181,9 +210,13 @@ where
     theme_id: HammerfestForumThemeId,
     page1: NonZeroU16,
   ) -> Result<HammerfestForumThemePageResponse> {
-    let urls = HammerfestUrls::new(server);
+    let urls = HammerfestUrls::new(&self.dns_resolver, server);
     let html = self
-      .get_html(urls.forum_theme(theme_id, page1), session.map(|sess| &sess.key))
+      .get_html(
+        urls.host(),
+        urls.forum_theme(theme_id, page1),
+        session.map(|sess| &sess.key),
+      )
       .await?;
     Ok(scraper::scrape_forum_theme(server, &html)?)
   }
@@ -195,13 +228,22 @@ where
     thread_id: HammerfestForumThreadId,
     page1: NonZeroU16,
   ) -> Result<HammerfestForumThreadPageResponse> {
-    let urls = HammerfestUrls::new(server);
+    let urls = HammerfestUrls::new(&self.dns_resolver, server);
     let html = self
-      .get_html(urls.forum_thread(thread_id, page1), session.map(|sess| &sess.key))
+      .get_html(
+        urls.host(),
+        urls.forum_thread(thread_id, page1),
+        session.map(|sess| &sess.key),
+      )
       .await?;
     Ok(scraper::scrape_forum_thread(server, thread_id, &html)?)
   }
 }
 
 #[cfg(feature = "neon")]
-impl<TyClock> neon::prelude::Finalize for HttpHammerfestClient<TyClock> where TyClock: Clock {}
+impl<TyClock, TyDnsResolver> neon::prelude::Finalize for HttpHammerfestClient<TyClock, TyDnsResolver>
+where
+  TyClock: Clock,
+  TyDnsResolver: DnsResolver<HammerfestServer>,
+{
+}

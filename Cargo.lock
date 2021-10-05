@@ -775,6 +775,7 @@ dependencies = [
  "chrono",
  "etwin_constants",
  "etwin_core",
+ "etwin_mt_dns",
  "etwin_scraper_tools",
  "itertools",
  "neon",
@@ -847,6 +848,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "etwin_mt_dns"
+version = "0.9.1"
+dependencies = [
+ "etwin_core",
+ "neon",
+]
+
+[[package]]
 name = "etwin_native"
 version = "0.9.1"
 dependencies = [
@@ -861,6 +870,7 @@ dependencies = [
  "etwin_link_store",
  "etwin_log",
  "etwin_mailer",
+ "etwin_mt_dns",
  "etwin_oauth_provider_store",
  "etwin_password",
  "etwin_rest",
