@@ -14,8 +14,8 @@ export function createAppRouter(_api: Api): Router<KoaState> {
   async function getReleases(cx: ParameterizedContext<KoaState>): Promise<void> {
     cx.response.body = {
       latest: {
-        version: "0.5.3",
-        time: new Date("2021-06-29T12:12:04.341Z"),
+        version: "0.5.4",
+        time: new Date("2021-10-06T11:09:00.000Z"),
       },
     };
   }

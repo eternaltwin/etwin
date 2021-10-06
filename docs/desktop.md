@@ -6,14 +6,14 @@ Eternaltwin provides a desktop application. It allows you to play Motion Twin's 
 
 ## Download
 
-Latest version: 0.5.3 (2021-06-29)
+Latest version: 0.5.4 (2021-10-06)
 
-- [Windows 64-bit installer](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin-64bit.exe?job=release)
-- [Windows 32-bit installer](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin-32bit.exe?job=release)
-- [Linux - Pacman package](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.pacman?job=release)
-- [Linux - Debian package](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.deb?job=release)
-- [Linux - Archive](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.3/raw/etwin.tar.gz?job=release)
-- [Mac installer](https://eternal-twin.net/assets/app/v0.5.3/etwin.dmg) - [How to open the app.](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac)
+- [Windows 64-bit installer](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.4/raw/etwin-64bit.exe?job=release)
+- [Windows 32-bit installer](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.4/raw/etwin-32bit.exe?job=release)
+- [Linux - Pacman package](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.4/raw/etwin.pacman?job=release)
+- [Linux - Debian package](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.4/raw/etwin.deb?job=release)
+- [Linux - Archive](https://gitlab.com/eternal-twin/etwin-app/-/jobs/artifacts/v0.5.4/raw/etwin.tar.gz?job=release)
+- [Mac installer](https://eternal-twin.net/assets/app/v0.5.4/etwin.dmg) - [How to open the app.](https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac)
 
 ## Contribute
 
