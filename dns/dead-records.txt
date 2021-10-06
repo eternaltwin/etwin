@@ -1,1 +1,3 @@
+dinorpg.de.		300	IN	A	178.32.123.64
 hammerfest.es.	0	IN	A	149.202.174.50
+mush.twinoid.es.		300	IN	A	178.32.123.64

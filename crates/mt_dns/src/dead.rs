@@ -4,8 +4,12 @@ pub(crate) struct DnsClient;
 impl crate::DnsResolver<str> for DnsClient {
   fn resolve4(&self, domain: &str) -> Option<std::net::Ipv4Addr> {
     match domain {
+      "dinorpg.de." => Some(std::net::Ipv4Addr::new(178, 32, 123, 64)),
+      "dinorpg.de" => Some(std::net::Ipv4Addr::new(178, 32, 123, 64)),
       "hammerfest.es." => Some(std::net::Ipv4Addr::new(149, 202, 174, 50)),
       "hammerfest.es" => Some(std::net::Ipv4Addr::new(149, 202, 174, 50)),
+      "mush.twinoid.es." => Some(std::net::Ipv4Addr::new(178, 32, 123, 64)),
+      "mush.twinoid.es" => Some(std::net::Ipv4Addr::new(178, 32, 123, 64)),
       _ => None,
     }
   }
