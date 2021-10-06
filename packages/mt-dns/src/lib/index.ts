@@ -1,25 +1,25 @@
 import dead from "./dead.js";
 import live from "./live.js";
 
-interface DnsRecordA {
+export interface DnsRecordA {
   domain: string,
   type: "A",
   target: string,
 }
 
-interface DnsRecordAAAA {
+export interface DnsRecordAAAA {
   domain: string,
   type: "AAAA",
   target: string,
 }
 
-interface DnsRecordCNAME {
+export interface DnsRecordCNAME {
   domain: string,
   type: "CNAME",
   target: string,
 }
 
-type DnsRecord = DnsRecordA | DnsRecordAAAA | DnsRecordCNAME;
+export type DnsRecord = DnsRecordA | DnsRecordAAAA | DnsRecordCNAME;
 
 export const DEAD: readonly Readonly<DnsRecord>[] = dead;
 export const LIVE: readonly Readonly<DnsRecord>[]  = live;
