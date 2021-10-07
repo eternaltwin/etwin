@@ -16,8 +16,8 @@ describe("/app", () => {
         const actual: unknown = await guestAgent.get("/app/releases", $Any);
         const expected = {
           latest: {
-            version: "0.5.4",
-            time: "2021-10-06T11:09:00.000Z",
+            version: "0.5.5",
+            time: "2021-10-07T09:53:00.000Z",
           },
         };
         chai.assert.deepEqual(actual, expected);
