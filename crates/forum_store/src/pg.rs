@@ -13,7 +13,6 @@ use etwin_core::types::AnyError;
 use etwin_core::uuid::UuidGenerator;
 use etwin_db_schema::schema::ForumRoleGrantBySectionArray;
 use sqlx::PgPool;
-use std::convert::TryInto;
 
 pub struct PgForumStore<TyClock, TyDatabase, TyUuidGenerator>
 where
@@ -92,58 +91,75 @@ where
   async fn get_sections(&self, options: &RawGetSectionsOptions) -> Result<Listing<RawForumSectionMeta>, AnyError> {
     #[derive(Debug, sqlx::FromRow)]
     struct Row {
-      forum_section_id: ForumSectionId,
-      key: Option<ForumSectionKey>,
-      ctime: Instant,
-      display_name: ForumSectionDisplayName,
-      locale: Option<LocaleId>,
-      thread_count: PgU32,
-      role_grants: ForumRoleGrantBySectionArray,
+      count: PgU32,
+      items: Vec<(
+        ForumSectionId,
+        Option<ForumSectionKey>,
+        Instant,
+        ForumSectionDisplayName,
+        Option<LocaleId>,
+        PgU32,
+        ForumRoleGrantBySectionArray,
+      )>,
     }
     // language=PostgreSQL
-    let rows: Vec<Row> = sqlx::query_as::<_, Row>(
+    let row: Row = sqlx::query_as::<_, Row>(
       r"
-        SELECT
-          forum_section_id, key, ctime, display_name, locale,
-          thread_count,
-          role_grants
-        FROM forum_section_meta
-        LIMIT $1::U32 OFFSET $2::U32
+        WITH
+          sections AS (
+            SELECT forum_section_id, key, ctime, display_name, locale, thread_count, role_grants
+            FROM forum_section_meta
+            LIMIT $1::U32 OFFSET $2::U32
+          ),
+          section_array AS (
+            SELECT COALESCE(ARRAY_AGG(sections.*), '{}') AS items
+            FROM sections
+          ),
+          section_count AS (
+            SELECT COUNT(*) AS count
+            FROM forum_section_meta
+          )
+        SELECT count, items
+        FROM section_count, section_array
         ;
     ",
     )
     .bind(PgU32::from(options.limit))
     .bind(PgU32::from(options.offset))
-    .fetch_all(self.database.as_ref())
+    .fetch_one(self.database.as_ref())
     .await?;
-    let items: Vec<_> = rows
+
+    let items: Vec<_> = row
+      .items
       .into_iter()
-      .map(|row| RawForumSectionMeta {
-        id: row.forum_section_id,
-        key: row.key,
-        display_name: row.display_name,
-        ctime: row.ctime,
-        locale: row.locale,
-        threads: ListingCount {
-          count: row.thread_count.into(),
+      .map(
+        |(id, key, ctime, display_name, locale, thread_count, role_grants)| RawForumSectionMeta {
+          id,
+          key,
+          display_name,
+          ctime,
+          locale,
+          threads: ListingCount {
+            count: thread_count.into(),
+          },
+          role_grants: role_grants
+            .into_inner()
+            .into_iter()
+            .map(|grant| RawForumRoleGrant {
+              role: ForumRole::Moderator,
+              user: grant.user_id.into(),
+              start_time: grant.start_time,
+              granted_by: grant.granted_by.into(),
+            })
+            .collect(),
         },
-        role_grants: row
-          .role_grants
-          .into_inner()
-          .into_iter()
-          .map(|grant| RawForumRoleGrant {
-            role: ForumRole::Moderator,
-            user: grant.user_id.into(),
-            start_time: grant.start_time,
-            granted_by: grant.granted_by.into(),
-          })
-          .collect(),
-      })
+      )
       .collect();
+
     Ok(Listing {
       offset: options.offset,
       limit: options.limit,
-      count: items.len().try_into().unwrap(), // TODO: Get count from the DB
+      count: row.count.into(),
       items,
     })
   }
