@@ -1,4 +1,4 @@
-use chrono::{Duration, NaiveDateTime, Utc};
+use chrono::Duration;
 use etwin_core::auth::{
   AccessTokenAuthContext, AuthContext, AuthScope, AuthStore, CreateAccessTokenOptions, CreateSessionOptions,
   CreateValidatedEmailVerificationOptions, Credentials, EtwinOauthAccessTokenKey, GrantOauthAuthorizationOptions,
@@ -474,7 +474,7 @@ where
       .create_validated_email_verification(&CreateValidatedEmailVerificationOptions {
         user: user.id.into(),
         email,
-        token_issued_at: Instant::from_utc(NaiveDateTime::from_timestamp(email_jwt.iat, 0), Utc),
+        token_issued_at: Instant::from_posix_timestamp(email_jwt.iat),
       })
       .await?;
 
@@ -968,8 +968,8 @@ where
     let expires_at = now + self.email_verification_validity;
 
     let claims = EmailJwtClaims {
-      exp: expires_at.timestamp(),
-      iat: now.timestamp(),
+      exp: expires_at.into_posix_timestamp(),
+      iat: now.into_posix_timestamp(),
       email: email.clone(),
     };
 
@@ -984,7 +984,7 @@ where
   }
 
   fn read_email_verification_token(&self, token: &str) -> Result<EmailJwtClaims, AnyError> {
-    let now = self.clock.now().timestamp();
+    let now = self.clock.now().into_posix_timestamp();
     let key = jsonwebtoken::DecodingKey::from_secret(self.jwt_secret_key.as_slice());
     let validation = jsonwebtoken::Validation {
       leeway: 0,
@@ -1035,8 +1035,8 @@ where
 
     let claims = OauthCodeJwtClaims {
       aud,
-      exp: expires_at.timestamp(),
-      iat: now.timestamp(),
+      exp: expires_at.into_posix_timestamp(),
+      iat: now.into_posix_timestamp(),
       iss: "etwin".to_string(),
       sub: user_id,
       scopes: scopes.strings(),
@@ -1053,7 +1053,7 @@ where
   }
 
   fn read_code_token(&self, token: &str) -> Result<OauthCodeJwtClaims, AnyError> {
-    let now = self.clock.now().timestamp();
+    let now = self.clock.now().into_posix_timestamp();
     let key = jsonwebtoken::DecodingKey::from_secret(self.jwt_secret_key.as_slice());
     let validation = jsonwebtoken::Validation {
       leeway: 0,

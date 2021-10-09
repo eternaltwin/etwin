@@ -1,7 +1,8 @@
-use chrono::{Duration, TimeZone, Utc};
+use chrono::Duration;
 use etwin_core::api::ApiRef;
 use etwin_core::auth::{AuthStore, CreateSessionOptions, RawSession};
 use etwin_core::clock::VirtualClock;
+use etwin_core::core::Instant;
 use etwin_core::user::{CreateUserOptions, UserStore};
 
 #[macro_export]
@@ -39,7 +40,7 @@ pub(crate) async fn test_create_session<TyAuthStore, TyClock, TyUserStore>(
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let user = api
     .user_store
     .create_user(&CreateUserOptions {
@@ -61,8 +62,8 @@ pub(crate) async fn test_create_session<TyAuthStore, TyClock, TyUserStore>(
   let expected = RawSession {
     id: actual.id,
     user: user.id.into(),
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-    atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+    atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
   };
   assert_eq!(actual, expected);
 }

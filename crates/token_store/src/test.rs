@@ -1,6 +1,7 @@
-use chrono::{Duration, TimeZone, Utc};
+use chrono::Duration;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
+use etwin_core::core::Instant;
 use etwin_core::dinoparc::{
   DinoparcServer, DinoparcStore, DinoparcUserIdRef, ShortDinoparcUser, StoredDinoparcSession,
 };
@@ -84,7 +85,7 @@ pub(crate) async fn test_touch_twinoid_oauth<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   api
     .twinoid_store
     .touch_short_user(&ShortTwinoidUser {
@@ -99,7 +100,7 @@ pub(crate) async fn test_touch_twinoid_oauth<
     .touch_twinoid_oauth(&TouchOauthTokenOptions {
       access_token: "X6nhMR2zwwfLNOR6EoQ9cM03BI3i66Q6".parse().unwrap(),
       refresh_token: "HfznfQUg1C2p87ESIp6WRq945ppG6swD".parse().unwrap(),
-      expiration_time: Utc.ymd(2021, 1, 1).and_hms(1, 0, 0),
+      expiration_time: Instant::ymd_hms(2021, 1, 1, 1, 0, 0),
       twinoid_user_id: "1".parse().unwrap(),
     })
     .await
@@ -113,15 +114,15 @@ pub(crate) async fn test_touch_twinoid_oauth<
   let expected = TwinoidOauth {
     access_token: Some(TwinoidAccessToken {
       key: "X6nhMR2zwwfLNOR6EoQ9cM03BI3i66Q6".parse().unwrap(),
-      created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-      accessed_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-      expires_at: Utc.ymd(2021, 1, 1).and_hms(1, 0, 0),
+      created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+      accessed_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+      expires_at: Instant::ymd_hms(2021, 1, 1, 1, 0, 0),
       twinoid_user_id: "1".parse().unwrap(),
     }),
     refresh_token: Some(TwinoidRefreshToken {
       key: "HfznfQUg1C2p87ESIp6WRq945ppG6swD".parse().unwrap(),
-      created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-      accessed_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+      created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+      accessed_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
       twinoid_user_id: "1".parse().unwrap(),
     }),
   };
@@ -143,7 +144,7 @@ pub(crate) async fn test_touch_twinoid_oauth_twice<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   api
     .twinoid_store
     .touch_short_user(&ShortTwinoidUser {
@@ -158,7 +159,7 @@ pub(crate) async fn test_touch_twinoid_oauth_twice<
     .touch_twinoid_oauth(&TouchOauthTokenOptions {
       access_token: "X6nhMR2zwwfLNOR6EoQ9cM03BI3i66Q6".parse().unwrap(),
       refresh_token: "HfznfQUg1C2p87ESIp6WRq945ppG6swD".parse().unwrap(),
-      expiration_time: Utc.ymd(2021, 1, 1).and_hms(1, 0, 0),
+      expiration_time: Instant::ymd_hms(2021, 1, 1, 1, 0, 0),
       twinoid_user_id: "1".parse().unwrap(),
     })
     .await
@@ -169,7 +170,7 @@ pub(crate) async fn test_touch_twinoid_oauth_twice<
     .touch_twinoid_oauth(&TouchOauthTokenOptions {
       access_token: "BD8AdH420AukbvExGxL5KcJNrdRMK80s".parse().unwrap(),
       refresh_token: "HfznfQUg1C2p87ESIp6WRq945ppG6swD".parse().unwrap(),
-      expiration_time: Utc.ymd(2021, 1, 1).and_hms(2, 0, 0),
+      expiration_time: Instant::ymd_hms(2021, 1, 1, 2, 0, 0),
       twinoid_user_id: "1".parse().unwrap(),
     })
     .await
@@ -183,15 +184,15 @@ pub(crate) async fn test_touch_twinoid_oauth_twice<
   let expected = TwinoidOauth {
     access_token: Some(TwinoidAccessToken {
       key: "BD8AdH420AukbvExGxL5KcJNrdRMK80s".parse().unwrap(),
-      created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
-      accessed_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
-      expires_at: Utc.ymd(2021, 1, 1).and_hms(2, 0, 0),
+      created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
+      accessed_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
+      expires_at: Instant::ymd_hms(2021, 1, 1, 2, 0, 0),
       twinoid_user_id: "1".parse().unwrap(),
     }),
     refresh_token: Some(TwinoidRefreshToken {
       key: "HfznfQUg1C2p87ESIp6WRq945ppG6swD".parse().unwrap(),
-      created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-      accessed_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+      created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+      accessed_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
       twinoid_user_id: "1".parse().unwrap(),
     }),
   };
@@ -213,7 +214,7 @@ pub(crate) async fn test_revoke_twinoid_access_token<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   api
     .twinoid_store
     .touch_short_user(&ShortTwinoidUser {
@@ -228,7 +229,7 @@ pub(crate) async fn test_revoke_twinoid_access_token<
     .touch_twinoid_oauth(&TouchOauthTokenOptions {
       access_token: "X6nhMR2zwwfLNOR6EoQ9cM03BI3i66Q6".parse().unwrap(),
       refresh_token: "HfznfQUg1C2p87ESIp6WRq945ppG6swD".parse().unwrap(),
-      expiration_time: Utc.ymd(2021, 1, 1).and_hms(1, 0, 0),
+      expiration_time: Instant::ymd_hms(2021, 1, 1, 1, 0, 0),
       twinoid_user_id: "1".parse().unwrap(),
     })
     .await
@@ -249,8 +250,8 @@ pub(crate) async fn test_revoke_twinoid_access_token<
     access_token: None,
     refresh_token: Some(TwinoidRefreshToken {
       key: "HfznfQUg1C2p87ESIp6WRq945ppG6swD".parse().unwrap(),
-      created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-      accessed_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+      created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+      accessed_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
       twinoid_user_id: "1".parse().unwrap(),
     }),
   };
@@ -272,7 +273,7 @@ pub(crate) async fn test_revoke_twinoid_refresh_token<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   api
     .twinoid_store
     .touch_short_user(&ShortTwinoidUser {
@@ -287,7 +288,7 @@ pub(crate) async fn test_revoke_twinoid_refresh_token<
     .touch_twinoid_oauth(&TouchOauthTokenOptions {
       access_token: "X6nhMR2zwwfLNOR6EoQ9cM03BI3i66Q6".parse().unwrap(),
       refresh_token: "HfznfQUg1C2p87ESIp6WRq945ppG6swD".parse().unwrap(),
-      expiration_time: Utc.ymd(2021, 1, 1).and_hms(1, 0, 0),
+      expiration_time: Instant::ymd_hms(2021, 1, 1, 1, 0, 0),
       twinoid_user_id: "1".parse().unwrap(),
     })
     .await
@@ -307,9 +308,9 @@ pub(crate) async fn test_revoke_twinoid_refresh_token<
   let expected = TwinoidOauth {
     access_token: Some(TwinoidAccessToken {
       key: "X6nhMR2zwwfLNOR6EoQ9cM03BI3i66Q6".parse().unwrap(),
-      created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-      accessed_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-      expires_at: Utc.ymd(2021, 1, 1).and_hms(1, 0, 0),
+      created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+      accessed_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+      expires_at: Instant::ymd_hms(2021, 1, 1, 1, 0, 0),
       twinoid_user_id: "1".parse().unwrap(),
     }),
     refresh_token: None,
@@ -332,7 +333,7 @@ pub(crate) async fn test_touch_hammerfest_session<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortHammerfestUser {
     server: HammerfestServer::HammerfestFr,
     id: "1".parse().unwrap(),
@@ -354,8 +355,8 @@ pub(crate) async fn test_touch_hammerfest_session<
   let expected = StoredHammerfestSession {
     key: "aaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
     user: alice.as_ref(),
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-    atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+    atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
   };
   assert_eq!(actual, expected);
 }
@@ -375,7 +376,7 @@ pub(crate) async fn test_touch_hammerfest_session_to_update_atime_but_not_ctime<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortHammerfestUser {
     server: HammerfestServer::HammerfestFr,
     id: "1".parse().unwrap(),
@@ -409,8 +410,8 @@ pub(crate) async fn test_touch_hammerfest_session_to_update_atime_but_not_ctime<
   let expected = StoredHammerfestSession {
     key: "aaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
     user: alice.as_ref(),
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-    atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+    atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
   };
   assert_eq!(actual, expected);
 }
@@ -430,7 +431,7 @@ pub(crate) async fn test_touch_hammerfest_session_and_retrieve_it_without_atime_
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortHammerfestUser {
     server: HammerfestServer::HammerfestFr,
     id: "1".parse().unwrap(),
@@ -454,8 +455,8 @@ pub(crate) async fn test_touch_hammerfest_session_and_retrieve_it_without_atime_
   let expected = Some(StoredHammerfestSession {
     key: "aaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
     user: alice.as_ref(),
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-    atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+    atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
   });
   assert_eq!(actual, expected);
 }
@@ -475,7 +476,7 @@ pub(crate) async fn test_returns_none_for_session_with_an_unknown_hammerfest_use
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let actual = api
     .token_store
     .get_hammerfest(HammerfestUserIdRef {
@@ -503,7 +504,7 @@ pub(crate) async fn test_returns_none_for_session_with_a_known_unauthenticated_h
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortHammerfestUser {
     server: HammerfestServer::HammerfestFr,
     id: "1".parse().unwrap(),
@@ -531,7 +532,7 @@ pub(crate) async fn test_returns_none_for_a_revoked_hammerfest_session<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortHammerfestUser {
     server: HammerfestServer::HammerfestFr,
     id: "1".parse().unwrap(),
@@ -571,7 +572,7 @@ pub(crate) async fn test_touch_revoke_touch_hammerfest_session_same_user<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortHammerfestUser {
     server: HammerfestServer::HammerfestFr,
     id: "1".parse().unwrap(),
@@ -600,8 +601,8 @@ pub(crate) async fn test_touch_revoke_touch_hammerfest_session_same_user<
     let expected = StoredHammerfestSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
     };
     assert_eq!(actual, expected);
   }
@@ -611,8 +612,8 @@ pub(crate) async fn test_touch_revoke_touch_hammerfest_session_same_user<
     let expected = Some(StoredHammerfestSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
     });
     assert_eq!(actual, expected);
   }
@@ -633,7 +634,7 @@ pub(crate) async fn test_touch_revoke_touch_hammerfest_session_different_user<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortHammerfestUser {
     server: HammerfestServer::HammerfestFr,
     id: "1".parse().unwrap(),
@@ -669,8 +670,8 @@ pub(crate) async fn test_touch_revoke_touch_hammerfest_session_different_user<
     let expected = StoredHammerfestSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: bob.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
     };
     assert_eq!(actual, expected);
   }
@@ -686,8 +687,8 @@ pub(crate) async fn test_touch_revoke_touch_hammerfest_session_different_user<
     let expected = Some(StoredHammerfestSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: bob.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
     });
     assert_eq!(actual, expected);
   }
@@ -708,7 +709,7 @@ pub(crate) async fn test_touch_hammerfest_session_again_with_different_user_with
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortHammerfestUser {
     server: HammerfestServer::HammerfestFr,
     id: "1".parse().unwrap(),
@@ -738,8 +739,8 @@ pub(crate) async fn test_touch_hammerfest_session_again_with_different_user_with
     let expected = StoredHammerfestSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: bob.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
     };
     assert_eq!(actual, expected);
   }
@@ -755,8 +756,8 @@ pub(crate) async fn test_touch_hammerfest_session_again_with_different_user_with
     let expected = Some(StoredHammerfestSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: bob.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
     });
     assert_eq!(actual, expected);
   }
@@ -777,7 +778,7 @@ pub(crate) async fn test_touch_multiple_hammerfest_sessions_with_same_user<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortHammerfestUser {
     server: HammerfestServer::HammerfestFr,
     id: "1".parse().unwrap(),
@@ -800,8 +801,8 @@ pub(crate) async fn test_touch_multiple_hammerfest_sessions_with_same_user<
     let expected = StoredHammerfestSession {
       key: "bbbbbbbbbbbbbbbbbbbbbbbbbb".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
     };
     assert_eq!(actual, expected);
   }
@@ -811,8 +812,8 @@ pub(crate) async fn test_touch_multiple_hammerfest_sessions_with_same_user<
     let expected = Some(StoredHammerfestSession {
       key: "bbbbbbbbbbbbbbbbbbbbbbbbbb".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
     });
     assert_eq!(actual, expected);
   }
@@ -833,7 +834,7 @@ pub(crate) async fn test_touch_hammerfest_session_causing_auto_revocation_of_bot
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortHammerfestUser {
     server: HammerfestServer::HammerfestFr,
     id: "1".parse().unwrap(),
@@ -869,8 +870,8 @@ pub(crate) async fn test_touch_hammerfest_session_causing_auto_revocation_of_bot
     let expected = StoredHammerfestSession {
       key: "bbbbbbbbbbbbbbbbbbbbbbbbbb".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
     };
     assert_eq!(actual, expected);
   }
@@ -880,8 +881,8 @@ pub(crate) async fn test_touch_hammerfest_session_causing_auto_revocation_of_bot
     let expected = Some(StoredHammerfestSession {
       key: "bbbbbbbbbbbbbbbbbbbbbbbbbb".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
     });
     assert_eq!(actual, expected);
   }
@@ -908,7 +909,7 @@ pub(crate) async fn test_touch_dinoparc_session<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortDinoparcUser {
     server: DinoparcServer::DinoparcCom,
     id: "1".parse().unwrap(),
@@ -930,8 +931,8 @@ pub(crate) async fn test_touch_dinoparc_session<
   let expected = StoredDinoparcSession {
     key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
     user: alice.as_ref(),
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-    atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+    atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
   };
   assert_eq!(actual, expected);
 }
@@ -951,7 +952,7 @@ pub(crate) async fn test_touch_dinoparc_session_to_update_atime_but_not_ctime<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortDinoparcUser {
     server: DinoparcServer::DinoparcCom,
     id: "1".parse().unwrap(),
@@ -985,8 +986,8 @@ pub(crate) async fn test_touch_dinoparc_session_to_update_atime_but_not_ctime<
   let expected = StoredDinoparcSession {
     key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
     user: alice.as_ref(),
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-    atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+    atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
   };
   assert_eq!(actual, expected);
 }
@@ -1006,7 +1007,7 @@ pub(crate) async fn test_touch_dinoparc_session_and_retrieve_it_without_atime_ch
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortDinoparcUser {
     server: DinoparcServer::DinoparcCom,
     id: "1".parse().unwrap(),
@@ -1030,8 +1031,8 @@ pub(crate) async fn test_touch_dinoparc_session_and_retrieve_it_without_atime_ch
   let expected = Some(StoredDinoparcSession {
     key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
     user: alice.as_ref(),
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-    atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+    atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
   });
   assert_eq!(actual, expected);
 }
@@ -1051,7 +1052,7 @@ pub(crate) async fn test_returns_none_for_session_with_an_unknown_dinoparc_user<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let actual = api
     .token_store
     .get_dinoparc(DinoparcUserIdRef {
@@ -1079,7 +1080,7 @@ pub(crate) async fn test_returns_none_for_session_with_a_known_unauthenticated_d
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortDinoparcUser {
     server: DinoparcServer::DinoparcCom,
     id: "1".parse().unwrap(),
@@ -1107,7 +1108,7 @@ pub(crate) async fn test_returns_none_for_a_revoked_dinoparc_session<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortDinoparcUser {
     server: DinoparcServer::DinoparcCom,
     id: "1".parse().unwrap(),
@@ -1147,7 +1148,7 @@ pub(crate) async fn test_touch_revoke_touch_dinoparc_session_same_user<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortDinoparcUser {
     server: DinoparcServer::DinoparcCom,
     id: "1".parse().unwrap(),
@@ -1176,8 +1177,8 @@ pub(crate) async fn test_touch_revoke_touch_dinoparc_session_same_user<
     let expected = StoredDinoparcSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
     };
     assert_eq!(actual, expected);
   }
@@ -1187,8 +1188,8 @@ pub(crate) async fn test_touch_revoke_touch_dinoparc_session_same_user<
     let expected = Some(StoredDinoparcSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
     });
     assert_eq!(actual, expected);
   }
@@ -1209,7 +1210,7 @@ pub(crate) async fn test_touch_revoke_touch_dinoparc_session_different_user<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortDinoparcUser {
     server: DinoparcServer::DinoparcCom,
     id: "1".parse().unwrap(),
@@ -1245,8 +1246,8 @@ pub(crate) async fn test_touch_revoke_touch_dinoparc_session_different_user<
     let expected = StoredDinoparcSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: bob.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
     };
     assert_eq!(actual, expected);
   }
@@ -1262,8 +1263,8 @@ pub(crate) async fn test_touch_revoke_touch_dinoparc_session_different_user<
     let expected = Some(StoredDinoparcSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: bob.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
     });
     assert_eq!(actual, expected);
   }
@@ -1284,7 +1285,7 @@ pub(crate) async fn test_touch_dinoparc_session_again_with_different_user_withou
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortDinoparcUser {
     server: DinoparcServer::DinoparcCom,
     id: "1".parse().unwrap(),
@@ -1314,8 +1315,8 @@ pub(crate) async fn test_touch_dinoparc_session_again_with_different_user_withou
     let expected = StoredDinoparcSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: bob.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
     };
     assert_eq!(actual, expected);
   }
@@ -1331,8 +1332,8 @@ pub(crate) async fn test_touch_dinoparc_session_again_with_different_user_withou
     let expected = Some(StoredDinoparcSession {
       key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa".parse().unwrap(),
       user: bob.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
     });
     assert_eq!(actual, expected);
   }
@@ -1353,7 +1354,7 @@ pub(crate) async fn test_touch_multiple_dinoparc_sessions_with_same_user<
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortDinoparcUser {
     server: DinoparcServer::DinoparcCom,
     id: "1".parse().unwrap(),
@@ -1376,8 +1377,8 @@ pub(crate) async fn test_touch_multiple_dinoparc_sessions_with_same_user<
     let expected = StoredDinoparcSession {
       key: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
     };
     assert_eq!(actual, expected);
   }
@@ -1387,8 +1388,8 @@ pub(crate) async fn test_touch_multiple_dinoparc_sessions_with_same_user<
     let expected = Some(StoredDinoparcSession {
       key: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
     });
     assert_eq!(actual, expected);
   }
@@ -1409,7 +1410,7 @@ pub(crate) async fn test_touch_dinoparc_session_causing_auto_revocation_of_both_
   TyTokenStore: TokenStore,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = ShortDinoparcUser {
     server: DinoparcServer::DinoparcCom,
     id: "1".parse().unwrap(),
@@ -1445,8 +1446,8 @@ pub(crate) async fn test_touch_dinoparc_session_causing_auto_revocation_of_both_
     let expected = StoredDinoparcSession {
       key: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
     };
     assert_eq!(actual, expected);
   }
@@ -1456,8 +1457,8 @@ pub(crate) async fn test_touch_dinoparc_session_causing_auto_revocation_of_both_
     let expected = Some(StoredDinoparcSession {
       key: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb".parse().unwrap(),
       user: alice.as_ref(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 4),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 4),
     });
     assert_eq!(actual, expected);
   }

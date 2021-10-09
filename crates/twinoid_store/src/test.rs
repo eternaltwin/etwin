@@ -1,6 +1,7 @@
-use chrono::{Duration, TimeZone, Utc};
+use chrono::Duration;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
+use etwin_core::core::Instant;
 use etwin_core::twinoid::{ArchivedTwinoidUser, GetTwinoidUserOptions, ShortTwinoidUser, TwinoidStore};
 
 pub(crate) struct TestApi<TyClock, TyTwinoidStore>
@@ -31,7 +32,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .twinoid_store
@@ -44,7 +45,7 @@ where
     let expected = ArchivedTwinoidUser {
       id: "123".parse().unwrap(),
       display_name: "alice".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     };
     assert_eq!(actual, expected);
   }
@@ -76,7 +77,7 @@ where
     let expected = Some(ArchivedTwinoidUser {
       id: "123".parse().unwrap(),
       display_name: "alice".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     });
     assert_eq!(actual, expected);
   }
@@ -87,7 +88,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyTwinoidStore: TwinoidStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .twinoid_store

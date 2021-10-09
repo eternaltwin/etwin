@@ -14,4 +14,4 @@ edition = "2018"
 [dependencies]
 etwin_constants = "0.9.2"
 etwin_core = { version = "0.9.2", features = ["sqlx"] }
-sqlx = { version = "0.5.7", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
+sqlx = { version = "0.5.9", default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }

@@ -1,6 +1,7 @@
-use chrono::{Duration, TimeZone, Utc};
+use chrono::Duration;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::{Clock, VirtualClock};
+use etwin_core::core::Instant;
 use etwin_core::user::{
   CompleteSimpleUser, CreateUserOptions, GetUserOptions, GetUserResult, ShortUser, SimpleUser, UpdateUserError,
   UpdateUserOptions, UpdateUserPatch, UserDisplayNameVersion, UserDisplayNameVersions, UserFields, UserIdRef, UserRef,
@@ -47,7 +48,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let actual = api
     .user_store
     .create_user(&CreateUserOptions {
@@ -66,7 +67,7 @@ where
       },
     },
     is_administrator: true,
-    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     username: Some("alice".parse().unwrap()),
     email_address: None,
   };
@@ -78,7 +79,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = api
     .user_store
     .create_user(&CreateUserOptions {
@@ -115,7 +116,7 @@ pub(crate) async fn test_register_the_admin_and_retrieve_default<TyClock, TyUser
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = api
     .user_store
     .create_user(&CreateUserOptions {
@@ -137,7 +138,7 @@ pub(crate) async fn test_register_the_admin_and_retrieve_default<TyClock, TyUser
     .unwrap();
   let expected = Some(GetUserResult::Default(SimpleUser {
     id: alice.id,
-    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     display_name: UserDisplayNameVersions {
       current: UserDisplayNameVersion {
         value: "Alice".parse().unwrap(),
@@ -154,7 +155,7 @@ pub(crate) async fn test_register_the_admin_and_retrieve_complete<TyClock, TyUse
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = api
     .user_store
     .create_user(&CreateUserOptions {
@@ -182,7 +183,7 @@ pub(crate) async fn test_register_the_admin_and_retrieve_complete<TyClock, TyUse
       },
     },
     is_administrator: true,
-    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     username: Some("alice".parse().unwrap()),
     email_address: None,
   }));
@@ -194,7 +195,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = api
     .user_store
     .create_user(&CreateUserOptions {
@@ -230,7 +231,7 @@ where
       },
     },
     is_administrator: true,
-    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     username: Some("alice".parse().unwrap()),
     email_address: None,
   };
@@ -242,7 +243,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
 {
-  let start = Utc.ymd(2021, 1, 1).and_hms(0, 0, 0);
+  let start = Instant::ymd_hms(2021, 1, 1, 0, 0, 0);
   api.clock.as_ref().advance_to(start);
   let alice = api
     .user_store
@@ -302,7 +303,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = api
     .user_store
     .create_user(&CreateUserOptions {
@@ -354,7 +355,7 @@ where
       },
     },
     is_administrator: true,
-    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     username: Some("alice".parse().unwrap()),
     email_address: None,
   };
@@ -367,7 +368,7 @@ pub(crate) async fn test_update_locked_display_name_after_update<TyClock, TyUser
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
 {
-  let start = Utc.ymd(2021, 1, 1).and_hms(0, 0, 0);
+  let start = Instant::ymd_hms(2021, 1, 1, 0, 0, 0);
   api.clock.as_ref().advance_to(start);
   let alice = api
     .user_store
@@ -444,7 +445,7 @@ pub(crate) async fn test_update_display_name_afte_multiple_unlocks<TyClock, TyUs
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = api
     .user_store
     .create_user(&CreateUserOptions {
@@ -512,7 +513,7 @@ pub(crate) async fn test_update_display_name_afte_multiple_unlocks<TyClock, TyUs
       },
     },
     is_administrator: true,
-    created_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    created_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     username: Some("alice".parse().unwrap()),
     email_address: None,
   };
@@ -524,7 +525,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice = api
     .user_store
     .create_user(&CreateUserOptions {

@@ -1,5 +1,3 @@
-#[cfg(feature = "chrono")]
-use chrono::{DateTime, Utc};
 use hex::FromHex;
 pub use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
@@ -113,21 +111,6 @@ pub fn serialize_ordered_set<T: Ord + Serialize, S: Serializer>(
 ) -> Result<S::Ok, S::Error> {
   let ordered: BTreeSet<_> = value.iter().collect();
   ordered.serialize(serializer)
-}
-
-#[cfg(feature = "chrono")]
-const INSTANT_FORMAT: &str = "%FT%T%.3fZ";
-
-#[cfg(feature = "chrono")]
-pub fn serialize_instant<S: Serializer>(value: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Error> {
-  value.format(INSTANT_FORMAT).to_string().serialize(serializer)
-}
-
-#[cfg(feature = "chrono")]
-pub fn serialize_opt_instant<S: Serializer>(value: &Option<DateTime<Utc>>, serializer: S) -> Result<S::Ok, S::Error> {
-  value
-    .map(|v| v.format(INSTANT_FORMAT).to_string())
-    .serialize(serializer)
 }
 
 #[cfg(feature = "serde-http")]

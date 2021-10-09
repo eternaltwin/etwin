@@ -7,7 +7,7 @@ use crate::user::{ShortUser, UserDisplayName, UserDisplayNameVersions, UserId, U
 use async_trait::async_trait;
 use auto_impl::auto_impl;
 #[cfg(feature = "_serde")]
-use etwin_serde_tools::{serialize_instant, Deserialize, Serialize};
+use etwin_serde_tools::{Deserialize, Serialize};
 use std::str::FromStr;
 use uuid::Uuid;
 
@@ -79,7 +79,6 @@ declare_new_enum!(
 pub struct CreateValidatedEmailVerificationOptions {
   pub user: UserIdRef,
   pub email: EmailAddress,
-  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub token_issued_at: Instant,
 }
 
@@ -94,9 +93,7 @@ pub struct CreateSessionOptions {
 pub struct RawSession {
   pub id: SessionId,
   pub user: UserIdRef,
-  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub ctime: Instant,
-  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub atime: Instant,
 }
 
@@ -119,9 +116,7 @@ impl RawSession {
 pub struct Session {
   pub id: SessionId,
   pub user: ShortUser,
-  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub ctime: Instant,
-  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub atime: Instant,
 }
 

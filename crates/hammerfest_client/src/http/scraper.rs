@@ -4,6 +4,7 @@ use self::texts::ScraperTexts;
 use self::utils::Selectors;
 use super::errors::ScraperError;
 use crate::http::scraper::utils::parse_u32;
+use chrono::Datelike;
 use etwin_core::core::Instant;
 use etwin_core::email::EmailAddress;
 use etwin_core::hammerfest::*;
@@ -252,7 +253,7 @@ pub fn scrape_user_profile(
         .last()
         .unwrap_or("");
       let date = match chrono::NaiveDate::parse_from_str(raw_date, "%Y-%m-%d") {
-        Ok(date) => Ok(Instant::from_utc(date.and_hms(0, 0, 0), chrono::Utc)),
+        Ok(date) => Ok(Instant::ymd_hms(date.year(), date.month(), date.day(), 0, 0, 0)),
         Err(err) => Err(ScraperError::InvalidDate(raw_date.to_owned(), Some(err))),
       }?;
       let message = words_fame_msg_elem.get_opt_text()?.unwrap_or("").trim().to_owned();

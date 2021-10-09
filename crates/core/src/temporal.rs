@@ -1,6 +1,6 @@
 use crate::core::{FinitePeriod, Instant, PeriodFrom, PeriodLower};
 #[cfg(feature = "_serde")]
-use etwin_serde_tools::{serialize_instant, Deserialize, Serialize};
+use etwin_serde_tools::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::iter::FromIterator;
 
@@ -102,7 +102,6 @@ impl<T: Clone> ForeignSnapshot<&T> {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct ForeignRetrieved {
-  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub latest: Instant,
 }
 

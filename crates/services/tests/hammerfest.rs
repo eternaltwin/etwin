@@ -1,4 +1,3 @@
-use chrono::{TimeZone, Utc};
 use etwin_core::api::ApiRef;
 use etwin_core::core::Secret;
 use etwin_core::hammerfest::{HammerfestClient, HammerfestStore, HammerfestUser};
@@ -22,6 +21,7 @@ use std::marker::PhantomData;
 use std::sync::Arc;
 
 use etwin_core::auth::{AuthScope, GuestAuthContext};
+use etwin_core::core::Instant;
 use etwin_services::hammerfest::HammerfestService;
 
 async fn make_test_api() -> TestApi<
@@ -63,7 +63,7 @@ async fn make_test_api() -> TestApi<
   let database = Arc::new(database);
 
   let uuid = Arc::new(Uuid4Generator);
-  let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+  let clock = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
   let hammerfest_client: Arc<dyn HammerfestClient> = Arc::new(MemHammerfestClient::new(Arc::clone(&clock)));
   let uuid_generator = Arc::new(Uuid4Generator);
   let database_secret = Secret::new("dev_secret".to_string());
@@ -158,7 +158,7 @@ async fn inner_test_empty<TyClock, TyHammerfestClient, TyHammerfestStore, TyHamm
 #[serial]
 async fn test_reference_types() {
   let uuid = Uuid4Generator;
-  let clock = VirtualClock::new(Utc.timestamp(1607531946, 0));
+  let clock = VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0));
   let hammerfest_client = MemHammerfestClient::new(&clock);
   let hammerfest_store = MemHammerfestStore::new(&clock);
   let link_store = MemLinkStore::new(&clock);

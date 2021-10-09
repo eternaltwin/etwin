@@ -116,16 +116,16 @@ where
 mod test {
   use crate::mem::MemAuthStore;
   use crate::test::TestApi;
-  use chrono::{TimeZone, Utc};
   use etwin_core::auth::AuthStore;
   use etwin_core::clock::VirtualClock;
+  use etwin_core::core::Instant;
   use etwin_core::user::UserStore;
   use etwin_core::uuid::Uuid4Generator;
   use etwin_user_store::mem::MemUserStore;
   use std::sync::Arc;
 
   fn make_test_api() -> TestApi<Arc<dyn AuthStore>, Arc<VirtualClock>, Arc<dyn UserStore>> {
-    let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+    let clock = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
     let uuid_generator = Arc::new(Uuid4Generator);
     let auth_store: Arc<dyn AuthStore> = Arc::new(MemAuthStore::new(Arc::clone(&clock), uuid_generator));
     let user_store: Arc<dyn UserStore> = Arc::new(MemUserStore::new(Arc::clone(&clock), Uuid4Generator));

@@ -3,6 +3,7 @@ use include_dir::{include_dir, Dir};
 use lazy_static::lazy_static;
 use sqlx::PgPool;
 use std::error::Error;
+pub mod schema;
 
 const DB_SCRIPTS: Dir = include_dir!("./scripts");
 

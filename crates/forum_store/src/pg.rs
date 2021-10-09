@@ -10,8 +10,8 @@ use etwin_core::forum::{
 };
 use etwin_core::pg_num::PgU32;
 use etwin_core::types::AnyError;
-use etwin_core::user::UserId;
 use etwin_core::uuid::UuidGenerator;
+use etwin_db_schema::schema::ForumRoleGrantBySectionArray;
 use sqlx::PgPool;
 use std::convert::TryInto;
 
@@ -59,6 +59,7 @@ where
       ForumSectionRef::Key(r) => section_key = Some(&r.key),
     };
 
+    // language=PostgreSQL
     let res = sqlx::query(
       r"
       WITH section AS (
@@ -97,31 +98,16 @@ where
       display_name: ForumSectionDisplayName,
       locale: Option<LocaleId>,
       thread_count: PgU32,
-      role_grants: Vec<(UserId, Instant, UserId)>,
+      role_grants: ForumRoleGrantBySectionArray,
     }
+    // language=PostgreSQL
     let rows: Vec<Row> = sqlx::query_as::<_, Row>(
       r"
-        WITH thread_count AS (
-          SELECT
-            forum_section_id,
-            COUNT(*)::U32 AS thread_count
-          FROM forum_threads
-          GROUP BY forum_section_id
-        ),
-        role_grants AS (
-          SELECT
-            forum_section_id,
-            array_agg(ROW(user_id, start_time, granted_by)) AS role_grants
-          FROM forum_role_grants
-          GROUP BY forum_section_id
-        )
         SELECT
           forum_section_id, key, ctime, display_name, locale,
-          COALESCE(thread_count, 0) AS thread_count,
-          COALESCE(role_grants, '{}') AS role_grants
-        FROM forum_sections
-          LEFT OUTER JOIN thread_count USING (forum_section_id)
-          LEFT OUTER JOIN role_grants USING (forum_section_id)
+          thread_count,
+          role_grants
+        FROM forum_section_meta
         LIMIT $1::U32 OFFSET $2::U32
         ;
     ",
@@ -143,12 +129,13 @@ where
         },
         role_grants: row
           .role_grants
+          .into_inner()
           .into_iter()
-          .map(|(grantee, start_time, granter)| RawForumRoleGrant {
+          .map(|grant| RawForumRoleGrant {
             role: ForumRole::Moderator,
-            user: grantee.into(),
-            start_time,
-            granted_by: granter.into(),
+            user: grant.user_id.into(),
+            start_time: grant.start_time,
+            granted_by: grant.granted_by.into(),
           })
           .collect(),
       })
@@ -179,31 +166,16 @@ where
       display_name: ForumSectionDisplayName,
       locale: Option<LocaleId>,
       thread_count: PgU32,
-      role_grants: Vec<(UserId, Instant, UserId)>,
+      role_grants: ForumRoleGrantBySectionArray,
     }
+    // language=PostgreSQL
     let row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
-        WITH thread_count AS (
-          SELECT
-            forum_section_id,
-            COUNT(*)::U32 AS thread_count
-          FROM forum_threads
-          GROUP BY forum_section_id
-        ),
-        role_grants AS (
-          SELECT
-            forum_section_id,
-            array_agg(ROW(user_id, start_time, granted_by)) AS role_grants
-          FROM forum_role_grants
-          GROUP BY forum_section_id
-        )
         SELECT
           forum_section_id, key, ctime, display_name, locale,
-          COALESCE(thread_count, 0) AS thread_count,
-          COALESCE(role_grants, '{}') AS role_grants
-        FROM forum_sections
-          LEFT OUTER JOIN thread_count USING (forum_section_id)
-          LEFT OUTER JOIN role_grants USING (forum_section_id)
+          thread_count,
+          role_grants
+        FROM forum_section_meta
         WHERE forum_section_id = $1::FORUM_SECTION_ID OR key = $2::FORUM_SECTION_KEY
         ;
     ",
@@ -225,12 +197,13 @@ where
       },
       role_grants: row
         .role_grants
+        .into_inner()
         .into_iter()
-        .map(|(grantee, start_time, granter)| RawForumRoleGrant {
+        .map(|rg| RawForumRoleGrant {
           role: ForumRole::Moderator,
-          user: grantee.into(),
-          start_time,
-          granted_by: granter.into(),
+          user: rg.user_id.into(),
+          start_time: rg.start_time,
+          granted_by: rg.granted_by.into(),
         })
         .collect(),
     })

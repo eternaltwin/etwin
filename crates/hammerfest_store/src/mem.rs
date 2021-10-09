@@ -112,13 +112,13 @@ impl<TyClock> neon::prelude::Finalize for MemHammerfestStore<TyClock> where TyCl
 mod test {
   use crate::mem::MemHammerfestStore;
   use crate::test::TestApi;
-  use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
+  use etwin_core::core::Instant;
   use etwin_core::hammerfest::HammerfestStore;
   use std::sync::Arc;
 
   fn make_test_api() -> TestApi<Arc<VirtualClock>, Arc<dyn HammerfestStore>> {
-    let clock = Arc::new(VirtualClock::new(Utc.ymd(2020, 1, 1).and_hms(0, 0, 0)));
+    let clock = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
     let hammerfest_store: Arc<dyn HammerfestStore> = Arc::new(MemHammerfestStore::new(Arc::clone(&clock)));
 
     TestApi {

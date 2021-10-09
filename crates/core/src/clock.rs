@@ -29,7 +29,7 @@ impl VirtualClock {
 
   pub fn advance_to(&self, t: Instant) {
     assert!(t >= self.start);
-    let new_duration = t - self.start;
+    let new_duration = t.into_chrono() - self.start.into_chrono();
     let new_offset = new_duration.num_milliseconds();
     let old_offset = self.offset.fetch_max(new_offset, Ordering::SeqCst);
     assert!(new_offset >= old_offset);
@@ -39,7 +39,7 @@ impl VirtualClock {
 impl Clock for VirtualClock {
   fn now(&self) -> Instant {
     let offset = self.offset.load(Ordering::SeqCst);
-    self.start + Duration::milliseconds(offset)
+    Instant::new_round_down(self.start.into_chrono() + Duration::milliseconds(offset))
   }
 }
 
@@ -50,7 +50,7 @@ pub struct SystemClock;
 
 impl Clock for SystemClock {
   fn now(&self) -> Instant {
-    Utc::now()
+    Instant::new_round_down(Utc::now())
   }
 }
 

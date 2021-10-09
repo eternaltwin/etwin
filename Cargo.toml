@@ -35,3 +35,5 @@ etwin_token_store = { path = "./crates/token_store" }
 etwin_twinoid_client = { path = "./crates/twinoid_client" }
 etwin_twinoid_store = { path = "./crates/twinoid_store" }
 etwin_user_store = { path = "./crates/user_store" }
+# Use custom array fix from <https://github.com/launchbadge/sqlx/pull/1483>
+sqlx = { git = "https://github.com/demurgos/sqlx", rev = "ddd2b5675d131f25ae3312bca269736ad5082437" }

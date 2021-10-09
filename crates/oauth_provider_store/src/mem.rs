@@ -268,15 +268,15 @@ where
 mod test {
   use crate::mem::MemOauthProviderStore;
   use crate::test::TestApi;
-  use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
+  use etwin_core::core::Instant;
   use etwin_core::oauth::OauthProviderStore;
   use etwin_core::uuid::Uuid4Generator;
   use etwin_password::scrypt::ScryptPasswordService;
   use std::sync::Arc;
 
   fn make_test_api() -> TestApi<Arc<VirtualClock>, Arc<dyn OauthProviderStore>> {
-    let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+    let clock = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
     let password = Arc::new(ScryptPasswordService::recommended_for_tests());
     let uuid_generator = Arc::new(Uuid4Generator);
     let oauth_provider_store: Arc<dyn OauthProviderStore> =

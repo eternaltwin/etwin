@@ -118,8 +118,8 @@ where
 mod test {
   use super::PgTwinoidStore;
   use crate::test::TestApi;
-  use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
+  use etwin_core::core::Instant;
   use etwin_core::twinoid::TwinoidStore;
   use etwin_db_schema::force_create_latest;
   use serial_test::serial;
@@ -158,7 +158,7 @@ mod test {
       .unwrap();
     let database = Arc::new(database);
 
-    let clock = Arc::new(VirtualClock::new(Utc.ymd(2020, 1, 1).and_hms(0, 0, 0)));
+    let clock = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
     let twinoid_store: Arc<dyn TwinoidStore> = Arc::new(PgTwinoidStore::new(Arc::clone(&clock), Arc::clone(&database)));
 
     TestApi { clock, twinoid_store }

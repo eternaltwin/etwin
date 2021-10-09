@@ -1,7 +1,7 @@
-use chrono::{Duration, TimeZone, Utc};
+use chrono::Duration;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
-use etwin_core::core::RawUserDot;
+use etwin_core::core::{Instant, RawUserDot};
 use etwin_core::dinoparc::{DinoparcServer, DinoparcStore, DinoparcUserIdRef, ShortDinoparcUser};
 use etwin_core::hammerfest::{HammerfestServer, HammerfestStore, HammerfestUserIdRef, ShortHammerfestUser};
 use etwin_core::link::{
@@ -131,7 +131,7 @@ pub(crate) async fn test_etwin_linked_to_dinoparc_com<
   TyLinkStore: LinkStore,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
 
   let user = api
     .user_store
@@ -184,7 +184,7 @@ pub(crate) async fn test_etwin_linked_to_dinoparc_com<
     links.dinoparc_com.current = Some(RawLink {
       link: RawUserDot {
         user: UserIdRef { id: user.id },
-        time: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+        time: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
       },
       unlink: (),
       etwin: UserIdRef { id: user.id },
@@ -213,7 +213,7 @@ pub(crate) async fn test_etwin_linked_to_hammerfest_fr<
   TyLinkStore: LinkStore,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
 
   let user = api
     .user_store
@@ -266,7 +266,7 @@ pub(crate) async fn test_etwin_linked_to_hammerfest_fr<
     links.hammerfest_fr.current = Some(RawLink {
       link: RawUserDot {
         user: UserIdRef { id: user.id },
-        time: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+        time: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
       },
       unlink: (),
       etwin: UserIdRef { id: user.id },
@@ -289,7 +289,7 @@ pub(crate) async fn test_unlink_hammerfest<TyClock, TyDinoparcStore, TyHammerfes
   TyLinkStore: LinkStore,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
 
   let user = api
     .user_store
@@ -370,7 +370,7 @@ pub(crate) async fn test_swap_hammerfest<TyClock, TyDinoparcStore, TyHammerfestS
   TyLinkStore: LinkStore,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
 
   let alice = api
     .user_store
@@ -524,7 +524,7 @@ pub(crate) async fn test_swap_hammerfest<TyClock, TyDinoparcStore, TyHammerfestS
     links.hammerfest_fr.current = Some(RawLink {
       link: RawUserDot {
         user: alice.id.into(),
-        time: Utc.ymd(2021, 1, 1).and_hms(0, 0, 8),
+        time: Instant::ymd_hms(2021, 1, 1, 0, 0, 8),
       },
       unlink: (),
       etwin: alice.id.into(),

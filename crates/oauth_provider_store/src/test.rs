@@ -1,6 +1,7 @@
-use chrono::{Duration, TimeZone, Utc};
+use chrono::Duration;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
+use etwin_core::core::Instant;
 use etwin_core::oauth::{
   GetOauthClientOptions, OauthClientKeyRef, OauthClientRef, OauthProviderStore, SimpleOauthClient,
   UpsertSystemClientOptions,
@@ -52,7 +53,7 @@ pub(crate) async fn test_create_eternalfest_app<TyClock, TyOauthProviderStore>(
   TyClock: ApiRef<VirtualClock>,
   TyOauthProviderStore: OauthProviderStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let options = UpsertSystemClientOptions {
     key: "eternalfest@clients".parse().unwrap(),
     display_name: "Eternalfest".parse().unwrap(),
@@ -78,7 +79,7 @@ pub(crate) async fn test_get_eternalfest_app_by_key<TyClock, TyOauthProviderStor
   TyClock: ApiRef<VirtualClock>,
   TyOauthProviderStore: OauthProviderStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let options = UpsertSystemClientOptions {
       key: "eternalfest@clients".parse().unwrap(),
@@ -115,7 +116,7 @@ pub(crate) async fn test_create_eternalfest_app_idempotence<TyClock, TyOauthProv
   TyClock: ApiRef<VirtualClock>,
   TyOauthProviderStore: OauthProviderStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let options = UpsertSystemClientOptions {
     key: "eternalfest@clients".parse().unwrap(),
     display_name: "Eternalfest".parse().unwrap(),

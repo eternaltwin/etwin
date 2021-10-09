@@ -406,8 +406,8 @@ fn delete_link<FK: Eq + core::hash::Hash, TK: Eq + core::hash::Hash, R: RemoteUs
 mod test {
   use crate::mem::MemLinkStore;
   use crate::test::TestApi;
-  use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
+  use etwin_core::core::Instant;
   use etwin_core::dinoparc::DinoparcStore;
   use etwin_core::hammerfest::HammerfestStore;
   use etwin_core::link::LinkStore;
@@ -426,7 +426,7 @@ mod test {
     Arc<dyn LinkStore>,
     Arc<dyn UserStore>,
   > {
-    let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+    let clock = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
     let dinoparc_store: Arc<dyn DinoparcStore> = Arc::new(MemDinoparcStore::new(Arc::clone(&clock)));
     let hammerfest_store: Arc<dyn HammerfestStore> = Arc::new(MemHammerfestStore::new(Arc::clone(&clock)));
     let link_store: Arc<dyn LinkStore> = Arc::new(MemLinkStore::new(Arc::clone(&clock)));

@@ -1,7 +1,7 @@
-use chrono::{Duration, TimeZone, Utc};
+use chrono::Duration;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::{Clock, VirtualClock};
-use etwin_core::core::{LocaleId, Secret};
+use etwin_core::core::{Instant, LocaleId, Secret};
 use etwin_core::hammerfest::{
   HammerfestClient, HammerfestCredentials, HammerfestPassword, HammerfestServer, HammerfestStore,
 };
@@ -84,7 +84,7 @@ async fn make_test_api(
   let auth_secret: Vec<u8> = "dev_secret".as_bytes().to_vec();
 
   let uuid_generator = Arc::new(Uuid4Generator);
-  let clock: Arc<VirtualClock> = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+  let clock: Arc<VirtualClock> = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
 
   let hammerfest_client: Arc<MemHammerfestClient<Arc<VirtualClock>>> =
     Arc::new(MemHammerfestClient::new(Arc::clone(&clock)));
@@ -204,7 +204,7 @@ async fn register_user_through_mail<TyClock>(
 ) where
   TyClock: ApiRef<VirtualClock>,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let alice_email: EmailAddress = "alice@example.com".parse().unwrap();
   api.mailer.as_ref().create_inbox(alice_email.clone());
   api
@@ -258,8 +258,8 @@ async fn register_user_through_mail<TyClock>(
           },
         },
       },
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
     },
   };
   assert_eq!(actual, expected);
@@ -270,7 +270,7 @@ async fn register_user_with_username<TyClock>(
 ) where
   TyClock: ApiRef<VirtualClock>,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let actual = api
     .auth
     .as_ref()
@@ -301,8 +301,8 @@ async fn register_user_with_username<TyClock>(
           },
         },
       },
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     },
   };
   assert_eq!(actual, expected);
@@ -313,7 +313,7 @@ async fn register_user_with_username_and_sign_in<TyClock>(
 ) where
   TyClock: ApiRef<VirtualClock>,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   assert_ok!(api
     .auth
     .as_ref()
@@ -354,8 +354,8 @@ async fn register_user_with_username_and_sign_in<TyClock>(
           },
         },
       },
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
     },
   };
   assert_eq!(actual, expected);
@@ -366,7 +366,7 @@ async fn register_user_with_hammerfest<TyClock>(
 ) where
   TyClock: ApiRef<VirtualClock>,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   api.hammerfest_client.as_ref().create_user(
     HammerfestServer::HammerfestFr,
     "123".parse().unwrap(),
@@ -404,8 +404,8 @@ async fn register_user_with_hammerfest<TyClock>(
           },
         },
       },
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
-      atime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+      atime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
     },
   };
   assert_eq!(actual, expected);

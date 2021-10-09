@@ -319,6 +319,7 @@ impl<TyClock> MemHammerfestClient<TyClock> {
 
 fn make_forum_date(date: Instant) -> HammerfestDateTime {
   use chrono::{Datelike, Timelike};
+  let date = date.into_chrono();
   HammerfestDateTime {
     date: HammerfestDate {
       month: date.month() as u8,

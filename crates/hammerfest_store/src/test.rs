@@ -1,6 +1,7 @@
-use chrono::{Duration, TimeZone, Utc};
+use chrono::Duration;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
+use etwin_core::core::Instant;
 use etwin_core::hammerfest::{
   GetHammerfestUserOptions, HammerfestDate, HammerfestDateTime, HammerfestForumPost, HammerfestForumPostAuthor,
   HammerfestForumPostListing, HammerfestForumRole, HammerfestForumThemePage, HammerfestForumThemePageResponse,
@@ -95,7 +96,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -110,7 +111,7 @@ where
       server: HammerfestServer::HammerfestFr,
       id: "123".parse().unwrap(),
       username: "alice".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       profile: None,
       items: None,
     };
@@ -148,7 +149,7 @@ where
       server: HammerfestServer::HammerfestFr,
       id: "123".parse().unwrap(),
       username: "alice".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       profile: None,
       items: None,
     });
@@ -161,7 +162,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -195,7 +196,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -228,7 +229,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -254,7 +255,7 @@ where
       .await;
     assert_ok!(actual);
   }
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 1));
   {
     let actual = api
       .hammerfest_store
@@ -286,7 +287,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -312,7 +313,7 @@ where
       .await;
     assert_ok!(actual);
   }
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 1));
   {
     let actual = api
       .hammerfest_store
@@ -344,7 +345,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -370,7 +371,7 @@ where
       .await;
     assert_ok!(actual);
   }
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 1));
   {
     let actual = api
       .hammerfest_store
@@ -396,7 +397,7 @@ where
       .await;
     assert_ok!(actual);
   }
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 2));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 2));
   {
     let actual = api
       .hammerfest_store
@@ -437,7 +438,7 @@ where
     },
     tokens: 50,
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -478,7 +479,7 @@ where
     },
     tokens: 50,
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -504,7 +505,7 @@ where
       .await;
     assert_ok!(actual);
   }
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 1));
   {
     let actual = api
       .hammerfest_store
@@ -545,7 +546,7 @@ where
     },
     tokens: 50,
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -571,7 +572,7 @@ where
       .await;
     assert_ok!(actual);
   }
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 1));
   {
     let actual = api
       .hammerfest_store
@@ -597,7 +598,7 @@ where
       .await;
     assert_ok!(actual);
   }
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 2));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 2));
   {
     let actual = api
       .hammerfest_store
@@ -638,7 +639,7 @@ where
     },
     tokens: 50,
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -664,7 +665,7 @@ where
       .await;
     assert_ok!(actual);
   }
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 1));
   {
     let actual = api
       .hammerfest_store
@@ -690,7 +691,7 @@ where
       .await;
     assert_ok!(actual);
   }
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 2));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 2));
   {
     let actual = api
       .hammerfest_store
@@ -731,7 +732,7 @@ where
     },
     tokens: 50,
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let mut threads: Vec<HammerfestForumThread> = Vec::with_capacity(15);
     for i in 0..15 {
@@ -803,7 +804,7 @@ where
   TyClock: ApiRef<VirtualClock>,
   TyHammerfestStore: HammerfestStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -891,7 +892,7 @@ pub(crate) async fn test_touch_forum_thread_page_as_moderator<TyClock, TyHammerf
     },
     tokens: 50,
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -978,7 +979,7 @@ where
     },
     tokens: 50,
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -1129,7 +1130,7 @@ where
     },
     tokens: 50,
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -1208,7 +1209,7 @@ pub(crate) async fn test_touch_hammerfest_inventory<TyClock, TyHammerfestStore>(
     },
     tokens: 50,
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store
@@ -1239,7 +1240,7 @@ pub(crate) async fn test_touch_hammerfest_inventory_twice<TyClock, TyHammerfestS
     },
     tokens: 50,
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .hammerfest_store

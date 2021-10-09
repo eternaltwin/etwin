@@ -1,14 +1,15 @@
 #[cfg(feature = "sqlx")]
 use crate::pg_num::PgU8;
 use crate::user::{ShortUser, UserIdRef};
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Duration, NaiveDateTime, TimeZone, Timelike, Utc};
 use enum_iterator::IntoEnumIterator;
 #[cfg(feature = "_serde")]
-use etwin_serde_tools::{serialize_instant, serialize_opt_instant, Deserialize, Serialize, Serializer};
+use etwin_serde_tools::{Deserialize, Deserializer, Serialize, Serializer};
 #[cfg(feature = "sqlx")]
 use sqlx::postgres::types::PgRange;
 #[cfg(feature = "sqlx")]
 use sqlx::{postgres, Postgres};
+use std::fmt;
 #[cfg(feature = "sqlx")]
 use std::ops::Bound;
 use std::ops::{Range, RangeFrom};
@@ -35,15 +36,116 @@ declare_new_enum!(
   const SQL_NAME = "locale_id";
 );
 
-pub type Instant = DateTime<Utc>;
+/// A point in time, with a millisecond precision.
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub struct Instant(DateTime<Utc>);
+
+const NANOSECOND_PER_MILLISECOND: u32 = 1_000_000;
+
+impl Instant {
+  /// Round down nanosecond precision Chrono DateTime to to millisecond precision Instant.
+  pub fn new_round_down(inner: DateTime<Utc>) -> Self {
+    let nanos = inner.nanosecond();
+    Self(
+      inner
+        .with_nanosecond(nanos - (nanos % NANOSECOND_PER_MILLISECOND))
+        .expect("invalid time"),
+    )
+  }
+
+  pub fn ymd_hms(year: i32, month: u32, day: u32, hour: u32, min: u32, sec: u32) -> Self {
+    Self(Utc.ymd(year, month, day).and_hms(hour, min, sec))
+  }
+
+  pub fn ymd_hms_milli(year: i32, month: u32, day: u32, hour: u32, min: u32, sec: u32, milli: u32) -> Self {
+    Self(Utc.ymd(year, month, day).and_hms_milli(hour, min, sec, milli))
+  }
+
+  /// Create an Instant from the number of POSIX seconds since 1970-01-01T00:00:00Z.
+  ///
+  /// Note: POSIX seconds are defined as 1/86400 of a day (they ignore leap seconds).
+  pub fn from_posix_timestamp(secs: i64) -> Self {
+    Self(DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(secs, 0), Utc))
+  }
+
+  pub fn into_chrono(self) -> DateTime<Utc> {
+    self.0
+  }
+
+  pub fn into_posix_timestamp(self) -> i64 {
+    self.0.timestamp()
+  }
+}
+
+impl fmt::Display for Instant {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    fmt::Display::fmt(&self.0, f)
+  }
+}
+
+const INSTANT_FORMAT: &str = "%FT%T%.3fZ";
+
+#[cfg(feature = "_serde")]
+impl Serialize for Instant {
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+  where
+    S: Serializer,
+  {
+    self.0.format(INSTANT_FORMAT).to_string().serialize(serializer)
+  }
+}
+
+#[cfg(feature = "_serde")]
+impl<'de> Deserialize<'de> for Instant {
+  fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+  where
+    D: Deserializer<'de>,
+  {
+    let inner = DateTime::<Utc>::deserialize(deserializer)?;
+    Ok(Self::new_round_down(inner))
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl sqlx::Type<Postgres> for Instant {
+  fn type_info() -> postgres::PgTypeInfo {
+    postgres::PgTypeInfo::with_name("instant")
+  }
+
+  fn compatible(ty: &postgres::PgTypeInfo) -> bool {
+    *ty == Self::type_info() || *ty == DateTime::<Utc>::type_info()
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'r> sqlx::Decode<'r, Postgres> for Instant {
+  fn decode(value: postgres::PgValueRef<'r>) -> Result<Self, sqlx::error::BoxDynError> {
+    let v: DateTime<Utc> = <DateTime<Utc> as sqlx::Decode<Postgres>>::decode(value)?;
+    Ok(Self::new_round_down(v))
+  }
+}
+
+#[cfg(feature = "sqlx")]
+impl<'q> sqlx::Encode<'q, Postgres> for Instant {
+  fn encode_by_ref(&self, buf: &mut postgres::PgArgumentBuffer) -> sqlx::encode::IsNull {
+    let v: DateTime<Utc> = self.into_chrono();
+    v.encode(buf)
+  }
+}
+
+impl std::ops::Add<chrono::Duration> for Instant {
+  type Output = Instant;
+
+  fn add(self, rhs: Duration) -> Self::Output {
+    Self::new_round_down(self.into_chrono() + rhs)
+  }
+}
 
 /// Private type used to serialize PeriodLower and its variants.
 #[cfg(feature = "_serde")]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Serialize, Deserialize)]
 struct SerializablePeriodLower {
-  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_instant"))]
   pub start: Instant,
-  #[cfg_attr(feature = "_serde", serde(serialize_with = "serialize_opt_instant"))]
   pub end: Option<Instant>,
 }
 
@@ -214,7 +316,7 @@ impl sqlx::Type<Postgres> for PeriodLower {
   }
 
   fn compatible(ty: &postgres::PgTypeInfo) -> bool {
-    *ty == Self::type_info() || *ty == PgPeriod::type_info() || *ty == (PgRange::<Instant>::type_info())
+    *ty == Self::type_info() || *ty == PgPeriod::type_info() || *ty == (PgRange::<DateTime<Utc>>::type_info())
   }
 }
 
@@ -301,16 +403,15 @@ pub struct ListingCount {
 
 #[cfg(test)]
 mod test {
-  use crate::core::{FinitePeriod, PeriodFrom, PeriodLower};
-  use chrono::{TimeZone, Utc};
+  use crate::core::{FinitePeriod, Instant, PeriodFrom, PeriodLower};
   #[cfg(feature = "_serde")]
   use std::fs;
 
   #[allow(clippy::unnecessary_wraps)]
   fn get_finite_period_one_millisecond() -> FinitePeriod {
     FinitePeriod {
-      start: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
-      end: Utc.ymd(2021, 1, 1).and_hms_milli(0, 0, 0, 1),
+      start: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
+      end: Instant::ymd_hms_milli(2021, 1, 1, 0, 0, 0, 1),
     }
   }
 
@@ -336,8 +437,8 @@ mod test {
   #[allow(clippy::unnecessary_wraps)]
   fn get_finite_period_one_second() -> FinitePeriod {
     FinitePeriod {
-      start: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
-      end: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+      start: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
+      end: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
     }
   }
 
@@ -362,7 +463,7 @@ mod test {
   #[allow(clippy::unnecessary_wraps)]
   fn get_period_from_unbounded() -> PeriodFrom {
     PeriodFrom {
-      start: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      start: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     }
   }
 
@@ -387,8 +488,8 @@ mod test {
   #[allow(clippy::unnecessary_wraps)]
   fn get_period_lower_one_millisecond() -> PeriodLower {
     PeriodLower::Finite(FinitePeriod {
-      start: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
-      end: Utc.ymd(2021, 1, 1).and_hms_milli(0, 0, 0, 1),
+      start: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
+      end: Instant::ymd_hms_milli(2021, 1, 1, 0, 0, 0, 1),
     })
   }
 
@@ -414,8 +515,8 @@ mod test {
   #[allow(clippy::unnecessary_wraps)]
   fn get_period_lower_one_second() -> PeriodLower {
     PeriodLower::Finite(FinitePeriod {
-      start: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
-      end: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+      start: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
+      end: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
     })
   }
 
@@ -439,7 +540,7 @@ mod test {
 
   #[allow(clippy::unnecessary_wraps)]
   fn get_period_lower_unbounded() -> PeriodLower {
-    PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0))
+    PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0))
   }
 
   #[cfg(feature = "_serde")]

@@ -1,7 +1,7 @@
-use chrono::{Duration, TimeZone, Utc};
+use chrono::Duration;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::VirtualClock;
-use etwin_core::core::{IntPercentage, PeriodLower};
+use etwin_core::core::{Instant, IntPercentage, PeriodLower};
 use etwin_core::dinoparc::{
   ArchivedDinoparcDinoz, ArchivedDinoparcUser, DinoparcCollection, DinoparcCollectionResponse, DinoparcDinoz,
   DinoparcDinozElements, DinoparcDinozIdRef, DinoparcDinozRace, DinoparcDinozResponse, DinoparcExchangeWithResponse,
@@ -107,7 +107,7 @@ where
     coins: 10000,
     dinoz: Vec::new(),
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .dinoparc_store
@@ -154,22 +154,22 @@ where
     let expected = Some(ArchivedDinoparcUser {
       server: DinoparcServer::DinoparcCom,
       id: "1".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       username: "alice_fr".parse().unwrap(),
       coins: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: 10000,
         },
       }),
       inventory: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: HashMap::new(),
         },
@@ -177,9 +177,9 @@ where
       collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: Vec::new(),
         },
@@ -200,22 +200,22 @@ where
     let expected = Some(ArchivedDinoparcUser {
       server: DinoparcServer::EnDinoparcCom,
       id: "1".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
       username: "alice_en".parse().unwrap(),
       coins: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 1)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
           },
           value: 10000,
         },
       }),
       inventory: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 1)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
           },
           value: HashMap::new(),
         },
@@ -223,9 +223,9 @@ where
       collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 1)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
           },
           value: Vec::new(),
         },
@@ -246,22 +246,22 @@ where
     let expected = Some(ArchivedDinoparcUser {
       server: DinoparcServer::SpDinoparcCom,
       id: "1".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
       username: "alice_es".parse().unwrap(),
       coins: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 2)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 2)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
           },
           value: 10000,
         },
       }),
       inventory: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 2)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 2)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
           },
           value: HashMap::new(),
         },
@@ -269,9 +269,9 @@ where
       collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 2)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 2)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 2),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
           },
           value: Vec::new(),
         },
@@ -295,7 +295,7 @@ where
     coins: 10000,
     dinoz: Vec::new(),
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .dinoparc_store
@@ -331,7 +331,7 @@ where
       location: Some("3".parse().unwrap()),
     }],
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .dinoparc_store
@@ -360,22 +360,22 @@ where
     let expected = Some(ArchivedDinoparcUser {
       server: DinoparcServer::DinoparcCom,
       id: "1".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       username: "alice".parse().unwrap(),
       coins: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: 10000,
         },
       }),
       inventory: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: {
             let mut inventory = HashMap::new();
@@ -387,9 +387,9 @@ where
       collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: vec![DinoparcDinozIdRef {
             server: DinoparcServer::DinoparcCom,
@@ -435,7 +435,7 @@ where
       },
     ],
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .dinoparc_store
@@ -464,22 +464,22 @@ where
     let expected = Some(ArchivedDinoparcUser {
       server: DinoparcServer::DinoparcCom,
       id: "1".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       username: "alice".parse().unwrap(),
       coins: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: 10000,
         },
       }),
       inventory: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: {
             let mut inventory = HashMap::new();
@@ -491,9 +491,9 @@ where
       collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: vec![
             DinoparcDinozIdRef {
@@ -535,7 +535,7 @@ where
       location: Some("3".parse().unwrap()),
     }],
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .dinoparc_store
@@ -571,13 +571,13 @@ where
     let expected = Some(ArchivedDinoparcUser {
       server: DinoparcServer::DinoparcCom,
       id: "1".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       username: "alice".parse().unwrap(),
       coins: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: 10000,
         },
@@ -585,9 +585,9 @@ where
       inventory: None,
       collection: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: DinoparcCollection {
             rewards: {
@@ -605,9 +605,9 @@ where
       }),
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: vec![DinoparcDinozIdRef {
             server: DinoparcServer::DinoparcCom,
@@ -639,7 +639,7 @@ where
       location: Some("3".parse().unwrap()),
     }],
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .dinoparc_store
@@ -729,13 +729,13 @@ where
     let expected = Some(ArchivedDinoparcUser {
       server: DinoparcServer::DinoparcCom,
       id: "1".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       username: "alice".parse().unwrap(),
       coins: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: 10000,
         },
@@ -743,9 +743,9 @@ where
       inventory: None,
       collection: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: DinoparcCollection {
             rewards: {
@@ -817,9 +817,9 @@ where
       }),
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: vec![DinoparcDinozIdRef {
             server: DinoparcServer::DinoparcCom,
@@ -859,7 +859,7 @@ where
       },
     ],
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .dinoparc_store
@@ -913,21 +913,21 @@ where
     let expected = Some(ArchivedDinoparcDinoz {
       server: DinoparcServer::EnDinoparcCom,
       id: "765483".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       name: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: Some("Yasumi".parse().unwrap()),
         },
       }),
       owner: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: ShortDinoparcUser {
             server: DinoparcServer::EnDinoparcCom,
@@ -938,81 +938,81 @@ where
       }),
       location: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: "0".parse().unwrap(),
         },
       }),
       race: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: DinoparcDinozRace::Wanwan,
         },
       }),
       skin: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: "Ac9OrgxOWu1pd7Fp".parse().unwrap(),
         },
       }),
       life: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: IntPercentage::new(30).unwrap(),
         },
       }),
       level: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: 12,
         },
       }),
       experience: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: IntPercentage::new(13).unwrap(),
         },
       }),
       danger: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: 116,
         },
       }),
       in_tournament: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: false,
         },
       }),
       elements: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: DinoparcDinozElements {
             fire: 10,
@@ -1025,9 +1025,9 @@ where
       }),
       skills: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: {
             let mut skills = HashMap::new();
@@ -1063,7 +1063,7 @@ where
       location: Some("20".parse().unwrap()),
     }],
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .dinoparc_store
@@ -1122,21 +1122,21 @@ where
     let expected = Some(ArchivedDinoparcDinoz {
       server: DinoparcServer::EnDinoparcCom,
       id: "299930".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       name: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: Some("King-Kong".parse().unwrap()),
         },
       }),
       owner: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: ShortDinoparcUser {
             server: DinoparcServer::EnDinoparcCom,
@@ -1147,81 +1147,81 @@ where
       }),
       location: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: "20".parse().unwrap(),
         },
       }),
       race: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: DinoparcDinozRace::Gorilloz,
         },
       }),
       skin: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: "5I3Qvg92CQLxvGE4".parse().unwrap(),
         },
       }),
       life: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: IntPercentage::new(18).unwrap(),
         },
       }),
       level: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: 25,
         },
       }),
       experience: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: IntPercentage::new(27).unwrap(),
         },
       }),
       danger: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: -65,
         },
       }),
       in_tournament: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: false,
         },
       }),
       elements: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: DinoparcDinozElements {
             fire: 2,
@@ -1234,9 +1234,9 @@ where
       }),
       skills: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: {
             let mut skills = HashMap::new();
@@ -1273,7 +1273,7 @@ pub(crate) async fn test_touch_exchange_with_none_admin<TyClock, TyDinoparcStore
     coins: 10000,
     dinoz: Vec::new(),
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .dinoparc_store
@@ -1310,13 +1310,13 @@ pub(crate) async fn test_touch_exchange_with_none_admin<TyClock, TyDinoparcStore
     let expected = Some(ArchivedDinoparcUser {
       server: DinoparcServer::DinoparcCom,
       id: "1".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       username: "alice".parse().unwrap(),
       coins: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: 10000,
         },
@@ -1325,9 +1325,9 @@ pub(crate) async fn test_touch_exchange_with_none_admin<TyClock, TyDinoparcStore
       collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: Vec::new(),
         },
@@ -1362,7 +1362,7 @@ where
       list
     },
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .dinoparc_store
@@ -1405,13 +1405,13 @@ where
     let expected = Some(ArchivedDinoparcUser {
       server: DinoparcServer::DinoparcCom,
       id: "1".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       username: "alice".parse().unwrap(),
       coins: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: 10000,
         },
@@ -1420,9 +1420,9 @@ where
       collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: {
             let mut list = Vec::new();
@@ -1467,7 +1467,7 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
       list
     },
   };
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   {
     let actual = api
       .dinoparc_store
@@ -1535,22 +1535,22 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
     let expected = Some(ArchivedDinoparcUser {
       server: DinoparcServer::DinoparcCom,
       id: "1".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       username: "alice".parse().unwrap(),
       coins: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
           },
           value: 10000,
         },
       }),
       inventory: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 1)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
           },
           value: HashMap::new(),
         },
@@ -1558,9 +1558,9 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
       collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
           },
           value: {
             let mut list = Vec::new();
@@ -1616,22 +1616,22 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
     let expected = Some(ArchivedDinoparcUser {
       server: DinoparcServer::DinoparcCom,
       id: "1".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      archived_at: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       username: "alice".parse().unwrap(),
       coins: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 0)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
           },
           value: 10000,
         },
       }),
       inventory: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 1)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 1)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
           },
           value: HashMap::new(),
         },
@@ -1639,9 +1639,9 @@ pub(crate) async fn test_touch_exchange_with_extra_then_drop_some<TyClock, TyDin
       collection: None,
       dinoz: Some(LatestTemporal {
         latest: ForeignSnapshot {
-          period: PeriodLower::unbounded(Utc.ymd(2021, 1, 1).and_hms(0, 0, 3)),
+          period: PeriodLower::unbounded(Instant::ymd_hms(2021, 1, 1, 0, 0, 3)),
           retrieved: ForeignRetrieved {
-            latest: Utc.ymd(2021, 1, 1).and_hms(0, 0, 3),
+            latest: Instant::ymd_hms(2021, 1, 1, 0, 0, 3),
           },
           value: {
             let mut list = Vec::new();

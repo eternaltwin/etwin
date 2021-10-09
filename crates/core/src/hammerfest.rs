@@ -723,9 +723,9 @@ pub fn hammerfest_reply_count_to_page_count(reply_count: u16) -> NonZeroU16 {
 
 #[cfg(test)]
 mod test {
+  use crate::core::Instant;
   use crate::hammerfest::{HammerfestServer, HammerfestUser, ShortHammerfestUser};
   use crate::link::VersionedEtwinLink;
-  use chrono::{TimeZone, Utc};
   #[cfg(feature = "_serde")]
   use std::fs;
 
@@ -845,7 +845,7 @@ mod test {
       server: HammerfestServer::HammerfestFr,
       id: "123".parse().unwrap(),
       username: "alice".parse().unwrap(),
-      archived_at: Utc.ymd(2021, 1, 1).and_hms_milli(0, 0, 0, 1),
+      archived_at: Instant::ymd_hms_milli(2021, 1, 1, 0, 0, 0, 1),
       profile: None,
       items: None,
       etwin: VersionedEtwinLink::default(),

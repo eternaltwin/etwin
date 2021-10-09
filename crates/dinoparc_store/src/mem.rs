@@ -365,13 +365,13 @@ impl<TyClock> neon::prelude::Finalize for MemDinoparcStore<TyClock> where TyCloc
 mod test {
   use crate::mem::MemDinoparcStore;
   use crate::test::TestApi;
-  use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
+  use etwin_core::core::Instant;
   use etwin_core::dinoparc::DinoparcStore;
   use std::sync::Arc;
 
   fn make_test_api() -> TestApi<Arc<VirtualClock>, Arc<dyn DinoparcStore>> {
-    let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+    let clock = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
     let dinoparc_store: Arc<dyn DinoparcStore> = Arc::new(MemDinoparcStore::new(Arc::clone(&clock)));
 
     TestApi { clock, dinoparc_store }

@@ -132,10 +132,9 @@ where
 mod test {
   use super::PgAuthStore;
   use crate::test::TestApi;
-  use chrono::{TimeZone, Utc};
   use etwin_core::auth::AuthStore;
   use etwin_core::clock::VirtualClock;
-  use etwin_core::core::Secret;
+  use etwin_core::core::{Instant, Secret};
   use etwin_core::user::UserStore;
   use etwin_core::uuid::Uuid4Generator;
   use etwin_db_schema::force_create_latest;
@@ -176,7 +175,7 @@ mod test {
       .unwrap();
     let database = Arc::new(database);
 
-    let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+    let clock = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
     let database_secret = Secret::new("dev_secret".to_string());
     let uuid_generator = Arc::new(Uuid4Generator);
     let auth_store: Arc<dyn AuthStore> = Arc::new(PgAuthStore::new(

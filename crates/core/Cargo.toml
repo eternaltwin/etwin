@@ -23,7 +23,7 @@ neon = { version = "0.9.1", optional = true, default-features = false, features 
 once_cell = "1.8.0"
 regex = "1.5.4"
 serde = { version = "1.0.130", optional = true, features = ["derive"] }
-sqlx = { version = "0.5.7", optional = true, default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
+sqlx = { version = "0.5.9", optional = true, default-features = false, features = ["macros", "chrono", "offline", "postgres", "runtime-tokio-rustls", "uuid"] }
 url = "2.2.2"
 uuid = { version = "0.8.2", default-features = false, features = ["serde", "v4"] }
 
@@ -32,4 +32,4 @@ _serde = ["etwin_serde_tools", "serde", "chrono/serde", "url/serde"]
 
 [dev-dependencies]
 hex = "0.4.3"
-serde_json = "1.0.67"
+serde_json = "1.0.68"

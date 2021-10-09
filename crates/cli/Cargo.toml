@@ -28,5 +28,5 @@ etwin_user_store = "0.9.2"
 etwin_rest = "0.9.2"
 etwin_services = "0.9.2"
 etwin_twinoid_client = "0.9.2"
-tokio = { version = "1.11.0", features = ["full"] }
+tokio = { version = "1.12.0", features = ["full"] }
 warp = "0.3.1"

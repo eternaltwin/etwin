@@ -75,13 +75,13 @@ impl<TyClock> neon::prelude::Finalize for MemTwinoidStore<TyClock> where TyClock
 mod test {
   use crate::mem::MemTwinoidStore;
   use crate::test::TestApi;
-  use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
+  use etwin_core::core::Instant;
   use etwin_core::twinoid::TwinoidStore;
   use std::sync::Arc;
 
   fn make_test_api() -> TestApi<Arc<VirtualClock>, Arc<dyn TwinoidStore>> {
-    let clock = Arc::new(VirtualClock::new(Utc.ymd(2020, 1, 1).and_hms(0, 0, 0)));
+    let clock = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
     let twinoid_store: Arc<dyn TwinoidStore> = Arc::new(MemTwinoidStore::new(Arc::clone(&clock)));
 
     TestApi { clock, twinoid_store }

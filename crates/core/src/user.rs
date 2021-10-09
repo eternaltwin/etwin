@@ -374,12 +374,12 @@ pub trait UserStore: Send + Sync {
 
 #[cfg(test)]
 mod test {
+  use crate::core::Instant;
   use crate::password::PasswordHash;
   use crate::user::{
     CompleteSimpleUser, GetUserResult, ShortUser, SimpleUser, UpdateUserPatch, UserDisplayNameVersion,
     UserDisplayNameVersions,
   };
-  use chrono::{TimeZone, Utc};
   use std::fs;
 
   fn get_short_user_demurgos() -> ShortUser {
@@ -448,7 +448,7 @@ mod test {
           value: "Alice".parse().unwrap(),
         },
       },
-      created_at: Utc.ymd(2021, 1, 15).and_hms_milli(14, 17, 14, 15),
+      created_at: Instant::ymd_hms_milli(2021, 1, 15, 14, 17, 14, 15),
       is_administrator: true,
     })
   }
@@ -479,7 +479,7 @@ mod test {
           value: "Alice".parse().unwrap(),
         },
       },
-      created_at: Utc.ymd(2021, 1, 15).and_hms_milli(14, 17, 14, 15),
+      created_at: Instant::ymd_hms_milli(2021, 1, 15, 14, 17, 14, 15),
       is_administrator: true,
       username: Some("alice".parse().unwrap()),
       email_address: None,

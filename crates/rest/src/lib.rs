@@ -202,8 +202,8 @@ pub fn create_archive_hammerfest_filter(api: RouterApi) -> RestFilter {
 #[cfg(test)]
 mod test {
   use crate::{create_archive_dinoparc_filter, create_rest_filter, RouterApi};
-  use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
+  use etwin_core::core::Instant;
   use etwin_core::dinoparc::DinoparcStore;
   use etwin_core::hammerfest::{HammerfestClient, HammerfestStore};
   use etwin_core::link::LinkStore;
@@ -219,7 +219,7 @@ mod test {
   use std::sync::Arc;
 
   fn create_api() -> RouterApi {
-    let clock = Arc::new(VirtualClock::new(Utc.ymd(2020, 1, 1).and_hms(0, 0, 0)));
+    let clock = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
     let hammerfest_client: Arc<dyn HammerfestClient> = Arc::new(MemHammerfestClient::new(Arc::clone(&clock)));
     let hammerfest_store: Arc<dyn HammerfestStore> = Arc::new(MemHammerfestStore::new(Arc::clone(&clock)));
     let dinoparc_store: Arc<dyn DinoparcStore> = Arc::new(MemDinoparcStore::new(Arc::clone(&clock)));

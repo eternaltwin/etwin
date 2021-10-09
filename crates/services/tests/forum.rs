@@ -1,8 +1,8 @@
-use chrono::{Duration, TimeZone, Utc};
+use chrono::Duration;
 use etwin_core::api::ApiRef;
 use etwin_core::auth::{AuthContext, AuthScope, GuestAuthContext, UserAuthContext};
 use etwin_core::clock::VirtualClock;
-use etwin_core::core::{Listing, ListingCount, LocaleId, Secret};
+use etwin_core::core::{Instant, Listing, ListingCount, LocaleId, Secret};
 use etwin_core::user::{CreateUserOptions, ShortUser, UserStore};
 use etwin_core::uuid::Uuid4Generator;
 use etwin_db_schema::force_create_latest;
@@ -55,7 +55,7 @@ async fn make_test_api() -> TestApi<
   let database = Arc::new(database);
 
   let uuid = Arc::new(Uuid4Generator);
-  let clock = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+  let clock = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
   let uuid_generator = Arc::new(Uuid4Generator);
   let forum_store: Arc<dyn ForumStore> = Arc::new(PgForumStore::new(
     Arc::clone(&clock),
@@ -107,7 +107,7 @@ async fn inner_test_create_main_forum_section<TyForum, TyForumStore, TyUserStore
   TyForumStore: ForumStore,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let actual = api
     .forum
     .as_ref()
@@ -122,7 +122,7 @@ async fn inner_test_create_main_forum_section<TyForum, TyForumStore, TyUserStore
     id: actual.id,
     key: Some("fr_main".parse().unwrap()),
     display_name: "Forum Général".parse().unwrap(),
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     locale: Some(LocaleId::FrFr),
     threads: Listing {
       offset: 0,
@@ -149,7 +149,7 @@ async fn inner_test_upsert_forum_section_idempotent<TyForum, TyForumStore, TyUse
   TyForumStore: ForumStore,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   api
     .forum
     .as_ref()
@@ -175,7 +175,7 @@ async fn inner_test_upsert_forum_section_idempotent<TyForum, TyForumStore, TyUse
     id: actual.id,
     key: Some("fr_main".parse().unwrap()),
     display_name: "Forum Général".parse().unwrap(),
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     locale: Some(LocaleId::FrFr),
     threads: Listing {
       offset: 0,
@@ -202,7 +202,7 @@ async fn inner_test_upsert_section_then_get_all_sections_as_guest<TyForum, TyFor
   TyForumStore: ForumStore,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let section = api
     .forum
     .as_ref()
@@ -230,7 +230,7 @@ async fn inner_test_upsert_section_then_get_all_sections_as_guest<TyForum, TyFor
       id: section.id,
       key: Some("fr_main".parse().unwrap()),
       display_name: "Forum Général".parse().unwrap(),
-      ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
       locale: Some(LocaleId::FrFr),
       threads: ListingCount { count: 0 },
       this: ForumSectionSelf { roles: vec![] },
@@ -252,7 +252,7 @@ async fn inner_administrators_can_add_moderators<TyForum, TyForumStore, TyUserSt
   TyForumStore: ForumStore,
   TyUserStore: UserStore,
 {
-  api.clock.as_ref().advance_to(Utc.ymd(2021, 1, 1).and_hms(0, 0, 0));
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
   let section = api
     .forum
     .as_ref()
@@ -305,7 +305,7 @@ async fn inner_administrators_can_add_moderators<TyForum, TyForumStore, TyUserSt
     id: section.id,
     key: Some("fr_main".parse().unwrap()),
     display_name: "Forum Général".parse().unwrap(),
-    ctime: Utc.ymd(2021, 1, 1).and_hms(0, 0, 0),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
     locale: Some(LocaleId::FrFr),
     threads: Listing {
       offset: 0,
@@ -319,7 +319,7 @@ async fn inner_administrators_can_add_moderators<TyForum, TyForumStore, TyUserSt
         id: bob.id,
         display_name: bob.display_name.clone(),
       },
-      start_time: Utc.ymd(2021, 1, 1).and_hms(0, 0, 1),
+      start_time: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
       granted_by: ShortUser {
         id: alice.id,
         display_name: alice.display_name.clone(),

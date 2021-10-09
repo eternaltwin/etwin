@@ -35,7 +35,7 @@ pub fn now(mut cx: FunctionContext) -> JsResult<JsObject> {
   let inner = cx.argument::<JsValue>(0)?;
   let inner: Arc<dyn Clock> = get_native_clock(&mut cx, inner)?;
   let res = inner.now();
-  let res: i64 = res.timestamp_millis();
+  let res: i64 = res.into_chrono().timestamp_millis();
   let res: f64 = res as f64;
   let res = {
     let global = cx.global();
@@ -50,14 +50,14 @@ pub fn now_unix_s(mut cx: FunctionContext) -> JsResult<JsNumber> {
   let inner = cx.argument::<JsValue>(0)?;
   let inner: Arc<dyn Clock> = get_native_clock(&mut cx, inner)?;
   let res = inner.now();
-  Ok(cx.number((res.timestamp_millis() as f64) / 1000f64))
+  Ok(cx.number(res.into_posix_timestamp() as f64))
 }
 
 pub fn now_unix_ms(mut cx: FunctionContext) -> JsResult<JsNumber> {
   let inner = cx.argument::<JsValue>(0)?;
   let inner: Arc<dyn Clock> = get_native_clock(&mut cx, inner)?;
   let res = inner.now();
-  Ok(cx.number(res.timestamp_millis() as f64))
+  Ok(cx.number(res.into_chrono().timestamp_millis() as f64))
 }
 
 pub mod system_clock {
@@ -82,7 +82,6 @@ pub mod system_clock {
 
 pub mod virtual_clock {
   use crate::neon_helpers::NeonNamespace;
-  use chrono::{TimeZone, Utc};
   use etwin_core::clock::VirtualClock;
   use etwin_core::core::Instant;
   use neon::prelude::*;
@@ -98,7 +97,7 @@ pub mod virtual_clock {
   pub type JsVirtualClock = JsBox<Arc<VirtualClock>>;
 
   pub fn new(mut cx: FunctionContext) -> JsResult<JsVirtualClock> {
-    let inner: Arc<VirtualClock> = Arc::new(VirtualClock::new(Utc.timestamp(1607531946, 0)));
+    let inner: Arc<VirtualClock> = Arc::new(VirtualClock::new(Instant::ymd_hms(2020, 1, 1, 0, 0, 0)));
     Ok(cx.boxed(inner))
   }
 
