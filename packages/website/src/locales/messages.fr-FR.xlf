@@ -553,7 +553,7 @@
       Face à ce constat, quelques joueurs ont décidé de lancer un projet pour sauver ces jeux : le projet Eternal-Twin.
       Leur but est de garder vivantes les communautés de ces jeux et éviter la disparition de cet héritage vidéoludique commun.
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
-          Ce projet et mené par Demurgos et TheMoa59, pour la partie technique et organisationnelle. Nous souhaitons
+          Ce projet est mené par Demurgos et TheMoa59, pour la partie technique et organisationnelle. Nous souhaitons
           également remercier MrPapy pour avoir aidé à lancer le projet. Chacun peut nous rejoindre et aider.
           <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       Liens utiles :
@@ -1248,7 +1248,7 @@
       </trans-unit>
       <trans-unit id="games.myhordesButton" datatype="html">
         <source>Test the alpha !</source>
-        <target state="translated">Testez l'alpha !</target>
+        <target state="translated">Testez la beta !</target>
         <note priority="1" from="description">Button to access the MyHordes game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
