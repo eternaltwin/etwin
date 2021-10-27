@@ -1,5 +1,5 @@
-use crate::core::{Instant, Listing, ListingCount, LocaleId};
-use crate::oauth::ShortOauthClient;
+use crate::core::{HtmlFragment, Instant, Listing, ListingCount, LocaleId};
+use crate::oauth::{OauthClientIdRef, ShortOauthClient};
 use crate::types::AnyError;
 use crate::user::{ShortUser, UserIdRef, UserRef};
 use async_trait::async_trait;
@@ -54,6 +54,28 @@ pub struct ForumSectionKeyRef {
 pub enum ForumSectionRef {
   Id(ForumSectionIdRef),
   Key(ForumSectionKeyRef),
+}
+
+impl ForumSectionRef {
+  pub const fn split(&self) -> (Option<ForumSectionIdRef>, Option<&ForumSectionKeyRef>) {
+    let mut id: Option<ForumSectionIdRef> = None;
+    let mut key: Option<&ForumSectionKeyRef> = None;
+    match self {
+      Self::Id(r) => id = Some(*r),
+      Self::Key(r) => key = Some(r),
+    };
+    (id, key)
+  }
+
+  pub const fn split_deref(&self) -> (Option<ForumSectionId>, Option<&ForumSectionKey>) {
+    let mut id: Option<ForumSectionId> = None;
+    let mut key: Option<&ForumSectionKey> = None;
+    match self {
+      Self::Id(r) => id = Some(r.id),
+      Self::Key(r) => key = Some(&r.key),
+    };
+    (id, key)
+  }
 }
 
 impl From<&'_ ForumSection> for ForumSectionRef {
@@ -273,6 +295,21 @@ pub struct ForumThreadMeta {
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "ForumSection"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawCreateForumThreadResult {
+  pub id: ForumThreadId,
+  pub key: Option<ForumThreadKey>,
+  pub title: ForumThreadTitle,
+  pub section: ForumSectionIdRef,
+  pub ctime: Instant,
+  pub is_pinned: bool,
+  pub is_locked: bool,
+  pub post_id: ForumPostId,
+  pub post_revision: RawForumPostRevision,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "_serde", serde(tag = "type", rename = "ForumThread"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ForumThreadMetaWithSection {
@@ -329,10 +366,22 @@ pub struct ForumPostRevision {
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "ForumPostRevision"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawForumPostRevision {
+  pub id: ForumPostRevisionId,
+  pub time: Instant,
+  pub author: RawForumActor,
+  pub content: Option<ForumPostRevisionContent>,
+  pub moderation: Option<ForumPostRevisionContent>,
+  pub comment: Option<ForumPostRevisionComment>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ForumPostRevisionContent {
-  pub marktwin: String,
-  pub html: String,
+  pub marktwin: MarktwinText,
+  pub html: HtmlFragment,
 }
 
 declare_new_string! {
@@ -372,6 +421,34 @@ pub struct UserForumActor {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum RawForumActor {
+  ClientForumActor(RawClientForumActor),
+  RoleForumActor(RawRoleForumActor),
+  UserForumActor(RawUserForumActor),
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawClientForumActor {
+  pub client: OauthClientIdRef,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawRoleForumActor {
+  pub role: ForumRole,
+  pub user: Option<UserIdRef>,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawUserForumActor {
+  pub role: Option<ForumRole>,
+  pub user: UserIdRef,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct AddModeratorOptions {
   pub section: ForumSectionRef,
   pub user: UserRef,
@@ -398,6 +475,16 @@ pub struct CreateThreadOptions {
   pub section: ForumSectionRef,
   pub title: ForumThreadTitle,
   pub body: MarktwinText,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawCreateThreadsOptions {
+  pub actor: ForumActor,
+  pub section: ForumSectionRef,
+  pub title: ForumThreadTitle,
+  pub body_mkt: MarktwinText,
+  pub body_html: HtmlFragment,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -433,7 +520,7 @@ pub enum GetSectionMetaError {
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RawGetThreadsOptions {
-  pub section: ForumSectionIdRef,
+  pub section: ForumSectionRef,
   pub offset: u32,
   pub limit: u32,
 }
@@ -494,6 +581,8 @@ pub trait ForumStore: Send + Sync {
   ) -> Result<RawForumSectionMeta, GetSectionMetaError>;
 
   async fn get_threads(&self, options: &RawGetThreadsOptions) -> Result<ForumThreadListing, AnyError>;
+
+  async fn create_thread(&self, options: &RawCreateThreadsOptions) -> Result<RawCreateForumThreadResult, AnyError>;
 
   async fn get_role_grants(&self, options: &RawGetRoleGrantsOptions) -> Result<Vec<ForumRoleGrant>, AnyError>;
 

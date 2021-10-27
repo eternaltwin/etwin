@@ -3,10 +3,12 @@ use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
 use etwin_core::core::{Instant, Listing, ListingCount, LocaleId};
 use etwin_core::forum::{
-  ForumRole, ForumRoleGrant, ForumSection, ForumSectionDisplayName, ForumSectionId, ForumSectionKey, ForumSectionRef,
-  ForumSectionSelf, ForumStore, ForumThreadListing, GetForumSectionOptions, GetSectionMetaError,
-  RawAddModeratorOptions, RawForumRoleGrant, RawForumSectionMeta, RawGetRoleGrantsOptions, RawGetSectionsOptions,
-  RawGetThreadsOptions, UpsertSystemSectionError, UpsertSystemSectionOptions,
+  ForumActor, ForumPostId, ForumPostRevisionContent, ForumPostRevisionId, ForumRole, ForumRoleGrant, ForumSection,
+  ForumSectionDisplayName, ForumSectionId, ForumSectionKey, ForumSectionRef, ForumSectionSelf, ForumStore,
+  ForumThreadId, ForumThreadKey, ForumThreadListing, ForumThreadMeta, ForumThreadTitle, GetForumSectionOptions,
+  GetSectionMetaError, RawAddModeratorOptions, RawCreateForumThreadResult, RawCreateThreadsOptions, RawForumActor,
+  RawForumPostRevision, RawForumRoleGrant, RawForumSectionMeta, RawGetRoleGrantsOptions, RawGetSectionsOptions,
+  RawGetThreadsOptions, RawUserForumActor, UpsertSystemSectionError, UpsertSystemSectionOptions,
 };
 use etwin_core::pg_num::PgU32;
 use etwin_core::types::AnyError;
@@ -51,12 +53,7 @@ where
 {
   async fn add_moderator(&self, options: &RawAddModeratorOptions) -> Result<(), AnyError> {
     let now = self.clock.now();
-    let mut section_id: Option<ForumSectionId> = None;
-    let mut section_key: Option<&ForumSectionKey> = None;
-    match &options.section {
-      ForumSectionRef::Id(r) => section_id = Some(r.id),
-      ForumSectionRef::Key(r) => section_key = Some(&r.key),
-    };
+    let (section_id, section_key) = options.section.split_deref();
 
     // language=PostgreSQL
     let res = sqlx::query(
@@ -225,12 +222,213 @@ where
     })
   }
 
-  async fn get_threads(&self, _options: &RawGetThreadsOptions) -> Result<ForumThreadListing, AnyError> {
+  async fn get_threads(&self, options: &RawGetThreadsOptions) -> Result<ForumThreadListing, AnyError> {
+    let (section_id, section_key) = options.section.split_deref();
+
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      count: PgU32,
+      forum_thread_id: ForumThreadId,
+      key: Option<ForumThreadKey>,
+      ctime: Instant,
+      title: ForumThreadTitle,
+      is_pinned: bool,
+      is_locked: bool,
+      post_count: PgU32,
+      forum_section_id: ForumSectionId,
+    }
+    // TODO: Differentiate `SectionNotFound` from "empty section"?
+    // language=PostgreSQL
+    let rows: Vec<Row> = sqlx::query_as::<_, Row>(
+      r"
+        WITH
+          section AS (
+            SELECT forum_section_id
+            FROM forum_sections
+            WHERE
+              forum_section_id = $1::FORUM_SECTION_ID OR key = $2::FORUM_SECTION_KEY
+          ),
+          items AS (
+            SELECT forum_thread_id, key, ctime, title, is_pinned, is_locked, post_count
+            FROM forum_thread_meta
+            WHERE forum_section_id = (SELECT forum_section_id FROM section)
+          ),
+          item_count AS (
+            SELECT COUNT(*) AS count
+            FROM items
+          )
+        SELECT count, items.*
+        FROM item_count, items
+        LIMIT $3::U32 OFFSET $4::U32
+        ;
+    ",
+    )
+    .bind(section_id)
+    .bind(section_key)
+    .bind(PgU32::from(options.limit))
+    .bind(PgU32::from(options.offset))
+    .fetch_all(self.database.as_ref())
+    .await?;
+
+    let mut count: u32 = 0;
+
+    let items: Vec<_> = rows
+      .into_iter()
+      .map(|row| {
+        count = row.count.into();
+        ForumThreadMeta {
+          id: row.forum_thread_id,
+          key: row.key,
+          title: row.title,
+          ctime: row.ctime,
+          is_locked: row.is_locked,
+          is_pinned: row.is_pinned,
+          posts: ListingCount {
+            count: row.post_count.into(),
+          },
+        }
+      })
+      .collect();
+
     Ok(Listing {
-      offset: 0,
-      limit: 0,
-      count: 0,
-      items: vec![],
+      offset: options.offset,
+      limit: options.limit,
+      count,
+      items,
+    })
+  }
+
+  async fn create_thread(&self, options: &RawCreateThreadsOptions) -> Result<RawCreateForumThreadResult, AnyError> {
+    let now = self.clock.now();
+    let mut tx = self.database.as_ref().begin().await?;
+    let forum_thread_id = ForumThreadId::from_uuid(self.uuid_generator.next());
+    let (section_id, section_key) = options.section.split_deref();
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      ctime: Instant,
+      forum_section_id: ForumSectionId,
+    }
+    // language=PostgreSQL
+    let row: Row = sqlx::query_as::<_, Row>(
+      r"
+      WITH section AS (
+        SELECT forum_section_id
+        FROM forum_sections
+        WHERE
+        forum_section_id = $4::FORUM_SECTION_ID OR key = $5::FORUM_SECTION_KEY
+      )
+      INSERT INTO forum_threads(
+        forum_thread_id, key, ctime,
+        title, title_mtime,
+        forum_section_id,
+        is_pinned, is_pinned_mtime,
+        is_locked, is_locked_mtime
+      )
+        (
+          SELECT
+            $2::FORUM_THREAD_ID AS forum_thread_id, NULL as key, $1::INSTANT AS ctime,
+            $3::FORUM_THREAD_TITLE AS title, $1::INSTANT AS title_mtime,
+            forum_section_id,
+            FALSE AS is_pinned, $1::INSTANT AS is_pinned_mtime,
+            FALSE AS is_locked, $1::INSTANT AS is_locked_mtime
+          FROM section
+        )
+      RETURNING ctime, forum_section_id;
+      ",
+    )
+    .bind(now)
+    .bind(forum_thread_id)
+    .bind(&options.title)
+    .bind(section_id)
+    .bind(&section_key)
+    .fetch_one(&mut tx)
+    .await?;
+    let forum_section_id = row.forum_section_id;
+
+    let forum_post_id = ForumPostId::from_uuid(self.uuid_generator.next());
+    #[derive(Debug, sqlx::FromRow)]
+    struct PostRow {
+      ctime: Instant,
+    }
+    // language=PostgreSQL
+    let _row: PostRow = sqlx::query_as::<_, PostRow>(
+      r"
+      INSERT INTO forum_posts(
+        forum_post_id, ctime, forum_thread_id
+      )
+      VALUES (
+        $2::FORUM_POST_ID, $1::INSTANT, $3::FORUM_THREAD_ID
+      )
+      RETURNING ctime;
+      ",
+    )
+    .bind(now)
+    .bind(forum_post_id)
+    .bind(forum_thread_id)
+    .fetch_one(&mut tx)
+    .await?;
+
+    let revision_id = ForumPostRevisionId::from_uuid(self.uuid_generator.next());
+    let (raw_actor, user_actor_id) = match &options.actor {
+      ForumActor::ClientForumActor(_) => todo!(),
+      ForumActor::RoleForumActor(_) => todo!(),
+      ForumActor::UserForumActor(a) => (
+        RawForumActor::UserForumActor(RawUserForumActor {
+          role: None,
+          user: a.user.as_ref(),
+        }),
+        a.user.id,
+      ),
+    };
+    let revision = RawForumPostRevision {
+      id: revision_id,
+      time: now,
+      author: raw_actor,
+      content: Some(ForumPostRevisionContent {
+        marktwin: options.body_mkt.clone(),
+        html: options.body_html.clone(),
+      }),
+      moderation: None,
+      comment: None,
+    };
+
+    #[derive(Debug, sqlx::FromRow)]
+    struct RevisionRow {
+      time: Instant,
+    }
+    // language=PostgreSQL
+    let row: RevisionRow = sqlx::query_as::<_, RevisionRow>(
+      r"
+      INSERT INTO forum_post_revisions(
+        forum_post_revision_id, time, body, _html_body, mod_body, _html_mod_body, forum_post_id, author_id, comment
+      )
+      VALUES (
+        $2::FORUM_POST_REVISION_ID, $1::INSTANT, $3::TEXT, $4::TEXT, NULL, NULL, $5::FORUM_POST_ID, $6::USER_ID, NULL
+      )
+      RETURNING time;
+      ",
+    )
+    .bind(revision.time)
+    .bind(revision.id)
+    .bind(options.body_mkt.as_str())
+    .bind(options.body_html.as_str())
+    .bind(forum_post_id)
+    .bind(user_actor_id)
+    .fetch_one(&mut tx)
+    .await?;
+
+    tx.commit().await?;
+
+    Ok(RawCreateForumThreadResult {
+      id: forum_thread_id,
+      key: None,
+      title: options.title.clone(),
+      section: forum_section_id.into(),
+      ctime: row.time,
+      is_pinned: false,
+      is_locked: false,
+      post_id: forum_post_id,
+      post_revision: revision,
     })
   }
 
@@ -258,6 +456,7 @@ where
       locale: Option<LocaleId>,
       thread_count: PgU32,
     }
+    // language=PostgreSQL
     let old_row: Option<Row> = sqlx::query_as::<_, Row>(
       r"
         WITH section AS (

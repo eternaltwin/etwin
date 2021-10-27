@@ -1797,7 +1797,6 @@ __metadata:
     "@eternal-twin/core": "workspace:*"
     "@eternal-twin/forum-in-memory": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
     "@types/chai": ^4.2.21
     "@types/mocha": ^9.0.0
@@ -1818,7 +1817,6 @@ __metadata:
     "@eternal-twin/etwin-pg": "workspace:*"
     "@eternal-twin/forum-pg": "workspace:*"
     "@eternal-twin/local-config": "workspace:*"
-    "@eternal-twin/marktwin": ^0.2.0
     "@eternal-twin/native": "workspace:*"
     "@eternal-twin/pg-db": "workspace:*"
     "@types/chai": ^4.2.21

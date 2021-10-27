@@ -33,7 +33,6 @@
   "dependencies": {
     "@eternal-twin/core": "workspace:*",
     "@eternal-twin/etwin-pg": "workspace:*",
-    "@eternal-twin/marktwin": "^0.2.0",
     "@eternal-twin/pg-db": "workspace:*"
   },
   "devDependencies": {

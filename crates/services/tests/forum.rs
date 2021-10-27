@@ -3,21 +3,21 @@ use etwin_core::api::ApiRef;
 use etwin_core::auth::{AuthContext, AuthScope, GuestAuthContext, UserAuthContext};
 use etwin_core::clock::VirtualClock;
 use etwin_core::core::{Instant, Listing, ListingCount, LocaleId, Secret};
+use etwin_core::forum::{
+  AddModeratorOptions, CreateThreadOptions, ForumActor, ForumPostRevision, ForumPostRevisionContent, ForumRole,
+  ForumRoleGrant, ForumSection, ForumSectionListing, ForumSectionMeta, ForumSectionSelf, ForumStore, ForumThread,
+  GetForumSectionOptions, LatestForumPostRevisionListing, ShortForumPost, UpsertSystemSectionOptions, UserForumActor,
+};
 use etwin_core::user::{CreateUserOptions, ShortUser, UserStore};
 use etwin_core::uuid::Uuid4Generator;
 use etwin_db_schema::force_create_latest;
+use etwin_forum_store::pg::PgForumStore;
+use etwin_services::forum::ForumService;
 use etwin_user_store::pg::PgUserStore;
 use serial_test::serial;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::PgPool;
 use std::sync::Arc;
-
-use etwin_core::forum::{
-  AddModeratorOptions, ForumRole, ForumRoleGrant, ForumSection, ForumSectionListing, ForumSectionMeta,
-  ForumSectionSelf, ForumStore, UpsertSystemSectionOptions,
-};
-use etwin_forum_store::pg::PgForumStore;
-use etwin_services::forum::ForumService;
 
 async fn make_test_api() -> TestApi<
   Arc<ForumService<Arc<VirtualClock>, Arc<dyn ForumStore>, Arc<dyn UserStore>>>,
@@ -78,7 +78,7 @@ async fn make_test_api() -> TestApi<
     clock,
     forum,
     _forum_store: Arc::clone(&forum_store),
-    _user_store: Arc::clone(&user_store),
+    user_store: Arc::clone(&user_store),
   }
 }
 
@@ -91,7 +91,7 @@ where
   pub(crate) clock: Arc<VirtualClock>,
   pub(crate) forum: TyForum,
   pub(crate) _forum_store: TyForumStore,
-  pub(crate) _user_store: TyUserStore,
+  pub(crate) user_store: TyUserStore,
 }
 
 #[tokio::test]
@@ -191,6 +191,37 @@ async fn inner_test_upsert_forum_section_idempotent<TyForum, TyForumStore, TyUse
 
 #[tokio::test]
 #[serial]
+async fn test_empty_get_all_sections_as_guest() {
+  inner_test_empty_get_all_sections_as_guest(make_test_api().await).await;
+}
+
+async fn inner_test_empty_get_all_sections_as_guest<TyForum, TyForumStore, TyUserStore>(
+  api: TestApi<TyForum, TyForumStore, TyUserStore>,
+) where
+  TyForum: ApiRef<ForumService<Arc<VirtualClock>, TyForumStore, TyUserStore>>,
+  TyForumStore: ForumStore,
+  TyUserStore: UserStore,
+{
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
+  let actual = api
+    .forum
+    .as_ref()
+    .get_sections(&AuthContext::Guest(GuestAuthContext {
+      scope: AuthScope::Default,
+    }))
+    .await
+    .unwrap();
+  let expected = ForumSectionListing {
+    offset: 0,
+    limit: 20,
+    count: 0,
+    items: Vec::new(),
+  };
+  assert_eq!(actual, expected);
+}
+
+#[tokio::test]
+#[serial]
 async fn test_upsert_section_then_get_all_sections_as_guest() {
   inner_test_upsert_section_then_get_all_sections_as_guest(make_test_api().await).await;
 }
@@ -241,6 +272,170 @@ async fn inner_test_upsert_section_then_get_all_sections_as_guest<TyForum, TyFor
 
 #[tokio::test]
 #[serial]
+async fn test_upsert_section_then_get_it_as_guest() {
+  inner_test_upsert_section_then_get_it_as_guest(make_test_api().await).await;
+}
+
+async fn inner_test_upsert_section_then_get_it_as_guest<TyForum, TyForumStore, TyUserStore>(
+  api: TestApi<TyForum, TyForumStore, TyUserStore>,
+) where
+  TyForum: ApiRef<ForumService<Arc<VirtualClock>, TyForumStore, TyUserStore>>,
+  TyForumStore: ForumStore,
+  TyUserStore: UserStore,
+{
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
+  let section = api
+    .forum
+    .as_ref()
+    .upsert_system_section(&UpsertSystemSectionOptions {
+      key: "fr_main".parse().unwrap(),
+      display_name: "Forum Général".parse().unwrap(),
+      locale: Some(LocaleId::FrFr),
+    })
+    .await
+    .unwrap();
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  let actual = api
+    .forum
+    .as_ref()
+    .get_section(
+      &AuthContext::Guest(GuestAuthContext {
+        scope: AuthScope::Default,
+      }),
+      &GetForumSectionOptions {
+        section: section.as_ref().into(),
+        thread_offset: 0,
+        thread_limit: 10,
+      },
+    )
+    .await
+    .unwrap();
+  let expected = ForumSection {
+    id: section.id,
+    key: Some("fr_main".parse().unwrap()),
+    display_name: "Forum Général".parse().unwrap(),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
+    locale: Some(LocaleId::FrFr),
+    threads: Listing {
+      offset: 0,
+      limit: 10,
+      count: 0,
+      items: Vec::new(),
+    },
+    role_grants: vec![],
+    this: ForumSectionSelf { roles: vec![] },
+  };
+  assert_eq!(actual, expected);
+}
+
+#[tokio::test]
+#[serial]
+async fn test_create_thread_in_the_main_section() {
+  inner_test_create_thread_in_the_main_section(make_test_api().await).await;
+}
+
+async fn inner_test_create_thread_in_the_main_section<TyForum, TyForumStore, TyUserStore>(
+  api: TestApi<TyForum, TyForumStore, TyUserStore>,
+) where
+  TyForum: ApiRef<ForumService<Arc<VirtualClock>, TyForumStore, TyUserStore>>,
+  TyForumStore: ForumStore,
+  TyUserStore: UserStore,
+{
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
+  let section = api
+    .forum
+    .as_ref()
+    .upsert_system_section(&UpsertSystemSectionOptions {
+      key: "fr_main".parse().unwrap(),
+      display_name: "Forum Général".parse().unwrap(),
+      locale: Some(LocaleId::FrFr),
+    })
+    .await
+    .unwrap();
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  let alice = api
+    .user_store
+    .create_user(&CreateUserOptions {
+      display_name: "Alice".parse().unwrap(),
+      email: None,
+      username: None,
+      password: None,
+    })
+    .await
+    .unwrap();
+  let alice_acx = AuthContext::User(UserAuthContext {
+    scope: AuthScope::Default,
+    user: alice.clone().into(),
+    is_administrator: true,
+  });
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  let actual = api
+    .forum
+    .as_ref()
+    .create_thread(
+      &alice_acx,
+      &CreateThreadOptions {
+        section: section.as_ref().into(),
+        title: "Hello".parse().unwrap(),
+        body: "**First** discussion thread".to_string(),
+      },
+    )
+    .await
+    .unwrap();
+  let expected = ForumThread {
+    id: actual.id,
+    key: None,
+    title: "Hello".parse().unwrap(),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
+    is_locked: false,
+    is_pinned: false,
+    section: ForumSectionMeta {
+      id: section.id,
+      key: Some("fr_main".parse().unwrap()),
+      display_name: "Forum Général".parse().unwrap(),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
+      locale: Some(LocaleId::FrFr),
+      threads: ListingCount { count: 1 },
+      this: ForumSectionSelf {
+        roles: vec![ForumRole::Administrator],
+      },
+    },
+    posts: Listing {
+      offset: 0,
+      limit: 10,
+      count: 1,
+      items: vec![ShortForumPost {
+        id: actual.posts.items[0].id,
+        ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
+        author: ForumActor::UserForumActor(UserForumActor {
+          role: None,
+          user: alice.clone().into(),
+        }),
+        revisions: LatestForumPostRevisionListing {
+          count: 1,
+          last: ForumPostRevision {
+            id: actual.posts.items[0].revisions.last.id,
+            time: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
+            author: ForumActor::UserForumActor(UserForumActor {
+              role: None,
+              user: alice.clone().into(),
+            }),
+            content: Some(ForumPostRevisionContent {
+              marktwin: "**First** discussion thread".to_string(),
+              html: "<strong>First</strong> discussion thread".to_string(),
+            }),
+            moderation: None,
+            comment: None,
+          },
+        },
+      }],
+    },
+  };
+  assert_eq!(actual, expected);
+}
+
+#[tokio::test]
+#[serial]
 async fn administrators_can_add_moderators() {
   inner_administrators_can_add_moderators(make_test_api().await).await;
 }
@@ -266,7 +461,7 @@ async fn inner_administrators_can_add_moderators<TyForum, TyForumStore, TyUserSt
   let section = &section;
   api.clock.as_ref().advance_by(Duration::seconds(1));
   let alice = api
-    ._user_store
+    .user_store
     .create_user(&CreateUserOptions {
       display_name: "Alice".parse().unwrap(),
       email: None,
@@ -276,7 +471,7 @@ async fn inner_administrators_can_add_moderators<TyForum, TyForumStore, TyUserSt
     .await
     .unwrap();
   let bob = api
-    ._user_store
+    .user_store
     .create_user(&CreateUserOptions {
       display_name: "Bob".parse().unwrap(),
       email: None,
@@ -309,7 +504,7 @@ async fn inner_administrators_can_add_moderators<TyForum, TyForumStore, TyUserSt
     locale: Some(LocaleId::FrFr),
     threads: Listing {
       offset: 0,
-      limit: 0,
+      limit: 10,
       count: 0,
       items: vec![],
     },
