@@ -1,11 +1,11 @@
-import { AuthService } from "@eternal-twin/core/lib/auth/service";
-import { DinoparcClient } from "@eternal-twin/core/lib/dinoparc/client";
-import { DinoparcStore } from "@eternal-twin/core/lib/dinoparc/store";
-import { HammerfestClient } from "@eternal-twin/core/lib/hammerfest/client";
-import { HammerfestStore } from "@eternal-twin/core/lib/hammerfest/store";
-import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
-import { UserService } from "@eternal-twin/core/lib/user/service";
-import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
+import { AuthService } from "@eternal-twin/core/auth/service";
+import { DinoparcClient } from "@eternal-twin/core/dinoparc/client";
+import { DinoparcStore } from "@eternal-twin/core/dinoparc/store";
+import { HammerfestClient } from "@eternal-twin/core/hammerfest/client";
+import { HammerfestStore } from "@eternal-twin/core/hammerfest/store";
+import { OauthClientService } from "@eternal-twin/core/oauth/client-service";
+import { UserService } from "@eternal-twin/core/user/service";
+import { KoaAuth } from "@eternal-twin/rest-server/helpers/koa-auth";
 import Router from "@koa/router";
 import { ParameterizedContext } from "koa";
 

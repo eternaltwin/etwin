@@ -1,23 +1,23 @@
 import { Injectable } from "@angular/core";
 import { TransferState } from "@angular/platform-browser";
-import { $AuthContext, AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
-import { AuthMethod } from "@eternal-twin/core/lib/auth/auth-method";
-import { AuthScope } from "@eternal-twin/core/lib/auth/auth-scope";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
-import { $CreateSessionQuery } from "@eternal-twin/core/lib/auth/create-session-query";
-import { $RawUserCredentials, RawUserCredentials } from "@eternal-twin/core/lib/auth/raw-user-credentials";
+import { $AuthContext, AuthContext } from "@eternal-twin/core/auth/auth-context";
+import { AuthMethod } from "@eternal-twin/core/auth/auth-method";
+import { AuthScope } from "@eternal-twin/core/auth/auth-scope";
+import { AuthType } from "@eternal-twin/core/auth/auth-type";
+import { $CreateSessionQuery } from "@eternal-twin/core/auth/create-session-query";
+import { $RawUserCredentials, RawUserCredentials } from "@eternal-twin/core/auth/raw-user-credentials";
 import {
   $RegisterWithUsernameOptions,
   RegisterWithUsernameOptions,
-} from "@eternal-twin/core/lib/auth/register-with-username-options";
-import { UserAuthContext } from "@eternal-twin/core/lib/auth/user-auth-context";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
-import { $DinoparcCredentials, DinoparcCredentials } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials";
+} from "@eternal-twin/core/auth/register-with-username-options";
+import { UserAuthContext } from "@eternal-twin/core/auth/user-auth-context";
+import { ObjectType } from "@eternal-twin/core/core/object-type";
+import { $DinoparcCredentials, DinoparcCredentials } from "@eternal-twin/core/dinoparc/dinoparc-credentials";
 import {
   $HammerfestCredentials,
   HammerfestCredentials,
-} from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
-import { $User, User } from "@eternal-twin/core/lib/user/user";
+} from "@eternal-twin/core/hammerfest/hammerfest-credentials";
+import { $User, User } from "@eternal-twin/core/user/user";
 import { JsonValueReader } from "kryo-json/json-value-reader";
 import { concat as rxConcat, NEVER as RX_NEVER, Observable, of as rxOf, ReplaySubject } from "rxjs";
 import { map as rxMap, tap as rxTap } from "rxjs/operators";

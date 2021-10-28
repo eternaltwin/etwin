@@ -1,7 +1,7 @@
-import { NgModuleFactory, StaticProvider, Type } from "@angular/core";
-import { Url } from "@eternal-twin/core/lib/core/url";
+import { StaticProvider, Type } from "@angular/core";
+import { Url } from "@eternal-twin/core/core/url";
 import { CommonEngine } from "@nguniversal/common/engine";
-import fs from "fs";
+import * as fs from "fs";
 import { fileURLToPath } from "url";
 
 export interface EngineOptions {
@@ -10,7 +10,7 @@ export interface EngineOptions {
    */
   staticFuri: Url;
   indexFuri: Url;
-  bootstrap: Type<{}> | NgModuleFactory<{}>;
+  bootstrap: Type<{}>;
   providers: StaticProvider[];
 }
 
@@ -23,7 +23,7 @@ export class NgKoaEngine {
   private readonly document: string;
   private readonly publicPath: string;
   private readonly commonEngine: CommonEngine;
-  private readonly bootstrap: Type<{}> | NgModuleFactory<{}>;
+  private readonly bootstrap: Type<{}>;
 
   public static async create(options: EngineOptions): Promise<NgKoaEngine> {
     const indexHtml = await readTextAsync(options.indexFuri as fs.PathLike);

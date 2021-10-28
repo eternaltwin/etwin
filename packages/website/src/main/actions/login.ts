@@ -1,10 +1,10 @@
-import { AuthService } from "@eternal-twin/core/lib/auth/service";
-import { Url } from "@eternal-twin/core/lib/core/url";
-import { OauthClientService } from "@eternal-twin/core/lib/oauth/client-service";
-import { EtwinOauthActionType } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-action-type";
-import { EtwinOauthStateInput } from "@eternal-twin/core/lib/oauth/etwin/etwin-oauth-state-input";
-import { RfcOauthScope } from "@eternal-twin/core/lib/oauth/rfc-oauth-scope";
-import { KoaAuth } from "@eternal-twin/rest-server/lib/helpers/koa-auth";
+import { AuthService } from "@eternal-twin/core/auth/service";
+import { Url } from "@eternal-twin/core/core/url";
+import { OauthClientService } from "@eternal-twin/core/oauth/client-service";
+import { EtwinOauthActionType } from "@eternal-twin/core/oauth/etwin/etwin-oauth-action-type";
+import { EtwinOauthStateInput } from "@eternal-twin/core/oauth/etwin/etwin-oauth-state-input";
+import { RfcOauthScope } from "@eternal-twin/core/oauth/rfc-oauth-scope";
+import { KoaAuth } from "@eternal-twin/rest-server/helpers/koa-auth";
 import Router from "@koa/router";
 import { ParameterizedContext } from "koa";
 import koaBodyParser from "koa-bodyparser";

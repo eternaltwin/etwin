@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { Event, Router, UrlTree } from "@angular/router";
-import { LocaleId } from "@eternal-twin/core/lib/core/locale-id";
+import { LocaleId } from "@eternal-twin/core/core/locale-id";
 import { Observable } from "rxjs";
 import { distinctUntilChanged as rxDistinctUntilChanged, map as rxMap, startWith as rxStartWith } from "rxjs/operators";
 

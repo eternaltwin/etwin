@@ -1,10 +1,10 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from "@angular/router";
-import { $DinoparcDinozId } from "@eternal-twin/core/lib/dinoparc/dinoparc-dinoz-id";
-import { $DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server";
-import { $DinoparcUserId } from "@eternal-twin/core/lib/dinoparc/dinoparc-user-id";
-import { NullableEtwinDinoparcDinoz } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-dinoz";
-import { NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user";
+import { $DinoparcDinozId } from "@eternal-twin/core/dinoparc/dinoparc-dinoz-id";
+import { $DinoparcServer } from "@eternal-twin/core/dinoparc/dinoparc-server";
+import { $DinoparcUserId } from "@eternal-twin/core/dinoparc/dinoparc-user-id";
+import { NullableEtwinDinoparcDinoz } from "@eternal-twin/core/dinoparc/etwin-dinoparc-dinoz";
+import { NullableEtwinDinoparcUser } from "@eternal-twin/core/dinoparc/etwin-dinoparc-user";
 import { $Date } from "kryo/date";
 import { QS_VALUE_READER } from "kryo-qs/qs-value-reader";
 import { Observable, of as rxOf } from "rxjs";

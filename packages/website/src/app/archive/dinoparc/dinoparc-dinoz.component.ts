@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { EtwinDinoparcDinoz } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-dinoz";
+import { EtwinDinoparcDinoz } from "@eternal-twin/core/dinoparc/etwin-dinoparc-dinoz";
 
 @Component({
   selector: "etwin-dinoparc-dinoz",

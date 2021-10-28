@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@angular/core";
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
-import { GetHammerfestUserOptions } from "@eternal-twin/core/lib/hammerfest/get-hammerfest-user-options";
-import { HammerfestUser } from "@eternal-twin/core/lib/hammerfest/hammerfest-user";
-import { HammerfestService as CoreHammerfestService } from "@eternal-twin/core/lib/hammerfest/service";
+import { AuthContext } from "@eternal-twin/core/auth/auth-context";
+import { GetHammerfestUserOptions } from "@eternal-twin/core/hammerfest/get-hammerfest-user-options";
+import { HammerfestUser } from "@eternal-twin/core/hammerfest/hammerfest-user";
+import { HammerfestService as CoreHammerfestService } from "@eternal-twin/core/hammerfest/service";
 import { from as rxFrom, Observable } from "rxjs";
 
 import { AUTH_CONTEXT, HAMMERFEST } from "../../server/tokens";

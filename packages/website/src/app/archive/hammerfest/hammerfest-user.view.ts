@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Data as AnyRouteData } from "@angular/router";
-import { HammerfestUser } from "@eternal-twin/core/lib/hammerfest/hammerfest-user";
+import { HammerfestUser } from "@eternal-twin/core/hammerfest/hammerfest-user";
 import { NEVER as RX_NEVER, Observable } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 

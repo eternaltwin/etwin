@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Data as AnyRouteData } from "@angular/router";
-import { TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user";
+import { TwinoidUser } from "@eternal-twin/core/twinoid/twinoid-user";
 import { NEVER as RX_NEVER, Observable } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 

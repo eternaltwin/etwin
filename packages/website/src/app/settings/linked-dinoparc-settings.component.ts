@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
-import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server";
-import { VersionedDinoparcLink } from "@eternal-twin/core/lib/link/versioned-dinoparc-link";
-import { UserId } from "@eternal-twin/core/lib/user/user-id";
+import { DinoparcServer } from "@eternal-twin/core/dinoparc/dinoparc-server";
+import { VersionedDinoparcLink } from "@eternal-twin/core/link/versioned-dinoparc-link";
+import { UserId } from "@eternal-twin/core/user/user-id";
 
 @Component({
   selector: "etwin-linked-dinoparc-settings",

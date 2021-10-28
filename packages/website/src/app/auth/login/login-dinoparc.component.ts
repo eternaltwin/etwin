@@ -2,9 +2,9 @@ import { DOCUMENT } from "@angular/common";
 import { Component, Inject, OnDestroy } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { DinoparcPassword } from "@eternal-twin/core/lib/dinoparc/dinoparc-password";
-import { DinoparcServer } from "@eternal-twin/core/lib/dinoparc/dinoparc-server";
-import { DinoparcUsername } from "@eternal-twin/core/lib/dinoparc/dinoparc-username";
+import { DinoparcPassword } from "@eternal-twin/core/dinoparc/dinoparc-password";
+import { DinoparcServer } from "@eternal-twin/core/dinoparc/dinoparc-server";
+import { DinoparcUsername } from "@eternal-twin/core/dinoparc/dinoparc-username";
 import { firstValueFrom, Subscription } from "rxjs";
 import { first as rxFirst } from "rxjs/operators";
 

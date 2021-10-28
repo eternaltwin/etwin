@@ -1,9 +1,9 @@
 import { Injectable, NgModule } from "@angular/core";
 import { Resolve, Router, RouterModule, Routes } from "@angular/router";
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
-import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
-import { MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user";
+import { AuthContext } from "@eternal-twin/core/auth/auth-context";
+import { AuthType } from "@eternal-twin/core/auth/auth-type";
+import { $CompleteUser, CompleteUser } from "@eternal-twin/core/user/complete-user";
+import { MaybeCompleteUser } from "@eternal-twin/core/user/maybe-complete-user";
 import { firstValueFrom, Observable, of as rxOf, throwError as rxThrowError } from "rxjs";
 import { catchError as rxCatchError, first as rxFirst, map as rxMap, switchMap as rxSwitchMap } from "rxjs/operators";
 

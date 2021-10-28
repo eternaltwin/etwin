@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user";
+import { TwinoidUser } from "@eternal-twin/core/twinoid/twinoid-user";
 
 @Component({
   selector: "etwin-twinoid-user",

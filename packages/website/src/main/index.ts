@@ -1,8 +1,8 @@
-import { Url } from "@eternal-twin/core/lib/core/url";
+import { Url } from "@eternal-twin/core/core/url";
 import { ApiType, Config, getLocalConfig } from "@eternal-twin/local-config";
 import * as marktwin from "@eternal-twin/marktwin";
-import { NativeRestRouter } from "@eternal-twin/native/lib/rest";
-import { createApiRouter } from "@eternal-twin/rest-server/lib/index";
+import { NativeRestRouter } from "@eternal-twin/native/rest";
+import { createApiRouter } from "@eternal-twin/rest-server/index";
 import koaCors from "@koa/cors";
 import Router  from "@koa/router";
 import fs from "fs";

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Data as AnyRouteData } from "@angular/router";
-import { EtwinDinoparcDinoz, NullableEtwinDinoparcDinoz } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-dinoz";
+import { EtwinDinoparcDinoz, NullableEtwinDinoparcDinoz } from "@eternal-twin/core/dinoparc/etwin-dinoparc-dinoz";
 import { NEVER as RX_NEVER, Observable } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 

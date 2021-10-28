@@ -1,24 +1,25 @@
 {
   "env": {
-    "es6": true
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended"
-  ],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 2018,
-    "sourceType": "module"
+    "es2021": true
   },
   "plugins": [
     "@typescript-eslint",
     "simple-import-sort"
   ],
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended"
+  ],
+  "globals": {
+    "console": "readonly",
+    "describe": "readonly",
+    "it": "readonly",
+    "ChaiHttp": "readonly",
+    "Mocha": "readonly",
+    "NodeJS": "readonly",
+    "setTimeout": "readonly"
+  },
   "ignorePatterns": [
     "node_modules"
   ],
@@ -44,9 +45,11 @@
       "error",
       "unix"
     ],
+    "no-dupe-class-members": "off",
     "no-duplicate-imports": "error",
     "no-eval": "error",
     "no-label-var": "error",
+    "no-redeclare": "off",
     "no-tabs": "error",
     "no-trailing-spaces": "error",
     "no-unused-vars": "off",

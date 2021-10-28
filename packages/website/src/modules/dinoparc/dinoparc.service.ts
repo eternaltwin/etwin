@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { NullableEtwinDinoparcDinoz } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-dinoz";
-import { NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user";
-import { GetDinoparcDinozOptions } from "@eternal-twin/core/lib/dinoparc/get-dinoparc-dinoz-options";
-import { GetDinoparcUserOptions } from "@eternal-twin/core/lib/dinoparc/get-dinoparc-user-options";
+import { NullableEtwinDinoparcDinoz } from "@eternal-twin/core/dinoparc/etwin-dinoparc-dinoz";
+import { NullableEtwinDinoparcUser } from "@eternal-twin/core/dinoparc/etwin-dinoparc-user";
+import { GetDinoparcDinozOptions } from "@eternal-twin/core/dinoparc/get-dinoparc-dinoz-options";
+import { GetDinoparcUserOptions } from "@eternal-twin/core/dinoparc/get-dinoparc-user-options";
 import { Observable } from "rxjs";
 
 @Injectable()

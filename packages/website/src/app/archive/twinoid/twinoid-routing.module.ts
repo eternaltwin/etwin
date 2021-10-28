@@ -1,7 +1,7 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from "@angular/router";
-import { TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user";
-import { $TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id";
+import { TwinoidUser } from "@eternal-twin/core/twinoid/twinoid-user";
+import { $TwinoidUserId } from "@eternal-twin/core/twinoid/twinoid-user-id";
 import { $Date } from "kryo/date";
 import { QS_VALUE_READER } from "kryo-qs/qs-value-reader";
 import { Observable, of as rxOf } from "rxjs";

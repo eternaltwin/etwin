@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { $MarktwinText, MarktwinText } from "@eternal-twin/core/lib/core/marktwin-text";
-import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
-import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id";
-import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
-import { $ForumThreadTitle, ForumThreadTitle } from "@eternal-twin/core/lib/forum/forum-thread-title";
+import { $MarktwinText, MarktwinText } from "@eternal-twin/core/core/marktwin-text";
+import { ForumPost } from "@eternal-twin/core/forum/forum-post";
+import { ForumSectionId } from "@eternal-twin/core/forum/forum-section-id";
+import { ForumThread } from "@eternal-twin/core/forum/forum-thread";
+import { $ForumThreadTitle, ForumThreadTitle } from "@eternal-twin/core/forum/forum-thread-title";
 import { NEVER as RX_NEVER, Observable, Subscription } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 

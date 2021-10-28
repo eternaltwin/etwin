@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
-import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
+import { AuthType } from "@eternal-twin/core/auth/auth-type";
+import { ForumSection } from "@eternal-twin/core/forum/forum-section";
 import { NEVER as RX_NEVER, Observable, of as rxOf } from "rxjs";
 import { catchError as rxCatchError, map as rxMap, startWith as rxStartWith } from "rxjs/operators";
 

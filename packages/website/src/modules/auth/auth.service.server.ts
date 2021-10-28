@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@angular/core";
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
-import { RegisterWithUsernameOptions } from "@eternal-twin/core/lib/auth/register-with-username-options";
-import { UserCredentials } from "@eternal-twin/core/lib/auth/user-credentials";
-import { DinoparcCredentials } from "@eternal-twin/core/lib/dinoparc/dinoparc-credentials";
-import { HammerfestCredentials } from "@eternal-twin/core/lib/hammerfest/hammerfest-credentials";
-import { User } from "@eternal-twin/core/lib/user/user";
+import { AuthContext } from "@eternal-twin/core/auth/auth-context";
+import { RegisterWithUsernameOptions } from "@eternal-twin/core/auth/register-with-username-options";
+import { UserCredentials } from "@eternal-twin/core/auth/user-credentials";
+import { DinoparcCredentials } from "@eternal-twin/core/dinoparc/dinoparc-credentials";
+import { HammerfestCredentials } from "@eternal-twin/core/hammerfest/hammerfest-credentials";
+import { User } from "@eternal-twin/core/user/user";
 import { Observable, of as rxOf } from "rxjs";
 
 import { AUTH_CONTEXT } from "../../server/tokens";

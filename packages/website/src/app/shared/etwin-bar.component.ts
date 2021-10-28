@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
+import { AuthContext } from "@eternal-twin/core/auth/auth-context";
+import { AuthType } from "@eternal-twin/core/auth/auth-type";
 import { Observable, Subscription } from "rxjs";
 
 import { AuthService } from "../../modules/auth/auth.service";

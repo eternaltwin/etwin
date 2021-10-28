@@ -14,20 +14,20 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "lint": "eslint \"./src/**/*.ts\"",
-    "format": "eslint --fix \"./src/**/*.ts\"",
+    "lint": "eslint \"./src/**/*.mts\"",
+    "format": "eslint --fix \"./src/**/*.mts\"",
     "clean": "rimraf \"./@(bin|lib|test)\" \"native/@(artifacts.json|Cargo.lock|build|index.node|target)\"",
     "native:build": "cd native && cargo build ${CARGO_FLAGS:-\"--lib\"}",
     "lib:build": "tsc --build src/lib/tsconfig.json",
     "build": "yarn run native:build && yarn run lib:build",
-    "//install": "node bin/install.js",
+    "//install": "node bin/install.mjs",
     "crossbuild:linux64": "ETWIN_NEON_TARGET=x86_64-unknown-linux-gnu yarn run crossbuild:_internal",
     "crossbuild:mac64": "ETWIN_NEON_TARGET=x86_64-apple-darwin yarn run crossbuild:_internal",
     "crossbuild:windows64": "ETWIN_NEON_TARGET=x86_64-pc-windows-msvc yarn run crossbuild:_internal",
     "crossbuild:_internal": "cd native && cross build --lib --release --target ${ETWIN_NEON_TARGET}",
     "prepack": "yarn run lib:build && yarn run bin:build && yarn run crossbuild:linux64 && yarn run crossbuild:windows64",
     "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
-    "test": "yarn run test:build && mocha \"test/**/*.spec.js\"",
+    "test": "yarn run test:build && mocha \"test/**/*.spec.mjs\"",
     "bin:build": "tsc --build src/bin/tsconfig.json"
   },
   "dependencies": {
@@ -48,23 +48,29 @@
     "mocha": "^9.1.3",
     "neon-cli": "^0.9.1",
     "rimraf": "^3.0.2",
-    "typescript": "4.5.0-beta"
+    "typescript": "^4.5.0-beta"
   },
   "type": "module",
-  "main": "./native/index.js",
+  "imports": {
+    "#native": {
+      "types": "./native/index.d.ts",
+      "default": "./native/index.cjs"
+    }
+  },
   "exports": {
-    "./lib/*": "./lib/*.js"
+    ".": "./lib/index.mjs",
+    "./*": "./lib/*.mjs"
   },
   "files": [
     "./bin/",
-    "./lib/",
+    "./lib/**/*.(mjs|map|mts)",
     "./native/src/**/*",
     "./native/build.rs",
     "./native/build/**/*.node",
     "./native/Cargo.lock",
     "./native/Cargo.toml",
-    "./native/index.d.ts",
-    "./native/index.js",
+    "./native/index.d.cts",
+    "./native/index.cjs",
     "./native/package.json"
   ]
 }

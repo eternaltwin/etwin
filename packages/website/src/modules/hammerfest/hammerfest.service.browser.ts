@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { $TimeQuery } from "@eternal-twin/core/lib/core/time-query";
-import { GetHammerfestUserOptions } from "@eternal-twin/core/lib/hammerfest/get-hammerfest-user-options";
-import { $HammerfestUser, HammerfestUser } from "@eternal-twin/core/lib/hammerfest/hammerfest-user";
+import { $TimeQuery } from "@eternal-twin/core/core/time-query";
+import { GetHammerfestUserOptions } from "@eternal-twin/core/hammerfest/get-hammerfest-user-options";
+import { $HammerfestUser, HammerfestUser } from "@eternal-twin/core/hammerfest/hammerfest-user";
 import { Observable, of as rxOf } from "rxjs";
 import { catchError as rxCatchError } from "rxjs/operators";
 

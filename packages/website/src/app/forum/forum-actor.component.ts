@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
-import { ForumActor } from "@eternal-twin/core/lib/forum/forum-actor";
-import { UserForumActor } from "@eternal-twin/core/lib/forum/user-forum-actor";
+import { ObjectType } from "@eternal-twin/core/core/object-type";
+import { ForumActor } from "@eternal-twin/core/forum/forum-actor";
+import { UserForumActor } from "@eternal-twin/core/forum/user-forum-actor";
 
 @Component({
   selector: "etwin-forum-actor",

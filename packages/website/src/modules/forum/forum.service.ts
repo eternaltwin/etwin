@@ -1,17 +1,17 @@
 import { Injectable } from "@angular/core";
-import { CreatePostOptions } from "@eternal-twin/core/lib/forum/create-post-options";
-import { CreateThreadOptions } from "@eternal-twin/core/lib/forum/create-thread-options";
-import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
-import { ForumPostId } from "@eternal-twin/core/lib/forum/forum-post-id";
-import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
-import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id";
-import { ForumSectionKey } from "@eternal-twin/core/lib/forum/forum-section-key";
-import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing";
-import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
-import { ForumThreadId } from "@eternal-twin/core/lib/forum/forum-thread-id";
-import { ForumThreadKey } from "@eternal-twin/core/lib/forum/forum-thread-key";
-import { UpdatePostOptions } from "@eternal-twin/core/lib/forum/update-post-options";
-import { UserId } from "@eternal-twin/core/lib/user/user-id";
+import { CreatePostOptions } from "@eternal-twin/core/forum/create-post-options";
+import { CreateThreadOptions } from "@eternal-twin/core/forum/create-thread-options";
+import { ForumPost } from "@eternal-twin/core/forum/forum-post";
+import { ForumPostId } from "@eternal-twin/core/forum/forum-post-id";
+import { ForumSection } from "@eternal-twin/core/forum/forum-section";
+import { ForumSectionId } from "@eternal-twin/core/forum/forum-section-id";
+import { ForumSectionKey } from "@eternal-twin/core/forum/forum-section-key";
+import { ForumSectionListing } from "@eternal-twin/core/forum/forum-section-listing";
+import { ForumThread } from "@eternal-twin/core/forum/forum-thread";
+import { ForumThreadId } from "@eternal-twin/core/forum/forum-thread-id";
+import { ForumThreadKey } from "@eternal-twin/core/forum/forum-thread-key";
+import { UpdatePostOptions } from "@eternal-twin/core/forum/update-post-options";
+import { UserId } from "@eternal-twin/core/user/user-id";
 import { Observable } from "rxjs";
 
 @Injectable()

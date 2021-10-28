@@ -1,13 +1,12 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { HtmlText } from "@eternal-twin/core/lib/core/html-text";
-import { $MarktwinText, MarktwinText } from "@eternal-twin/core/lib/core/marktwin-text";
-import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
-import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id";
-import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
-import { $ForumThreadTitle, ForumThreadTitle } from "@eternal-twin/core/lib/forum/forum-thread-title";
-import { Grammar } from "@eternal-twin/marktwin/lib/grammar";
+import { $MarktwinText, MarktwinText } from "@eternal-twin/core/core/marktwin-text";
+import { ForumSection } from "@eternal-twin/core/forum/forum-section";
+import { ForumSectionId } from "@eternal-twin/core/forum/forum-section-id";
+import { ForumThread } from "@eternal-twin/core/forum/forum-thread";
+import { $ForumThreadTitle, ForumThreadTitle } from "@eternal-twin/core/forum/forum-thread-title";
+import { Grammar } from "@eternal-twin/marktwin/grammar";
 import { NEVER as RX_NEVER, Observable, Subscription } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 

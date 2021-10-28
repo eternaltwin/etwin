@@ -2,7 +2,7 @@ import { DOCUMENT } from "@angular/common";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { RawUserLogin } from "@eternal-twin/core/lib/auth/raw-user-login";
+import { RawUserLogin } from "@eternal-twin/core/auth/raw-user-login";
 import { firstValueFrom, Subscription } from "rxjs";
 import { first as rxFirst } from "rxjs/operators";
 

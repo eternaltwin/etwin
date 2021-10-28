@@ -7,8 +7,8 @@
     "url": "git://gitlab.com:eternal-twin/etwin.git"
   },
   "scripts": {
-    "lint": "eslint \"packages/*/src/**/*.ts\"",
-    "format": "eslint --fix \"packages/*/src/**/*.ts\"",
+    "lint": "eslint \"packages/*/src/**/*.mts\"",
+    "format": "eslint --fix \"packages/*/src/**/*.mts\"",
     "start": "cd packages/website && yarn run start",
     "clean": "rimraf \"packages/*/@(bin|lib|main|test)\" \"packages/website/app/@(browser|server)\" \"packages/native/native/@(artifacts.json|build|index.node)\" \"target\" \"./*.profraw\"",
     "build:production": "CARGO_FLAGS=\"--release\" && cd packages/website && yarn run build",
@@ -17,7 +17,7 @@
     "native:build": "cd packages/native && yarn run native:build",
     "db:upgrade": "cd packages/etwin-pg && yarn run start upgrade",
     "test:build": "yarn run native:build && tsc --build ./tsconfig.test.json",
-    "test": "yarn run test:build && mocha --experimental-wasm-modules \"packages/*/test/**/*.spec.js\"",
+    "test": "yarn run test:build && mocha --experimental-wasm-modules \"packages/*/test/**/*.spec.mjs\"",
     "doctor": "yarn dlx @yarnpkg/doctor@2.1.2"
   },
   "licenses": [
@@ -36,7 +36,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "mocha": "^9.1.3",
     "rimraf": "^3.0.2",
-    "typescript": "4.5.0-beta"
+    "typescript": "^4.5.0-beta"
   },
   "workspaces": {
     "packages": [

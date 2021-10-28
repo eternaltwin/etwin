@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { ShortUser } from "@eternal-twin/core/lib/user/short-user";
+import { ShortUser } from "@eternal-twin/core/user/short-user";
 
 @Component({
   selector: "etwin-user-link",

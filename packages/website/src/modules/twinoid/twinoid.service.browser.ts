@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { $TimeQuery } from "@eternal-twin/core/lib/core/time-query";
-import { GetTwinoidUserOptions } from "@eternal-twin/core/lib/twinoid/get-twinoid-user-options";
-import { $TwinoidUser, TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user";
+import { $TimeQuery } from "@eternal-twin/core/core/time-query";
+import { GetTwinoidUserOptions } from "@eternal-twin/core/twinoid/get-twinoid-user-options";
+import { $TwinoidUser, TwinoidUser } from "@eternal-twin/core/twinoid/twinoid-user";
 import { Observable, of as rxOf } from "rxjs";
 import { catchError as rxCatchError } from "rxjs/operators";
 

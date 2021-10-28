@@ -1,4 +1,4 @@
-import { Grammar } from "@eternal-twin/marktwin/lib/grammar";
+import { Grammar } from "@eternal-twin/marktwin/grammar";
 
 export interface Range {
   start: number;

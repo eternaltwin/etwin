@@ -1,10 +1,10 @@
 import { InjectionToken } from "@angular/core";
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
-import { Config } from "@eternal-twin/core/lib/config/config";
-import { DinoparcService } from "@eternal-twin/core/lib/dinoparc/service";
-import { ForumService } from "@eternal-twin/core/lib/forum/service";
-import { HammerfestService } from "@eternal-twin/core/lib/hammerfest/service";
-import { UserService } from "@eternal-twin/core/lib/user/service";
+import { AuthContext } from "@eternal-twin/core/auth/auth-context";
+import { Config } from "@eternal-twin/core/config/config";
+import { DinoparcService } from "@eternal-twin/core/dinoparc/service";
+import { ForumService } from "@eternal-twin/core/forum/service";
+import { HammerfestService } from "@eternal-twin/core/hammerfest/service";
+import { UserService } from "@eternal-twin/core/user/service";
 
 export const AUTH_CONTEXT: InjectionToken<AuthContext> = new InjectionToken("AuthContext");
 

@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@angular/core";
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
-import { NullableEtwinDinoparcDinoz } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-dinoz";
-import { NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user";
-import { GetDinoparcDinozOptions } from "@eternal-twin/core/lib/dinoparc/get-dinoparc-dinoz-options";
-import { GetDinoparcUserOptions } from "@eternal-twin/core/lib/dinoparc/get-dinoparc-user-options";
-import { DinoparcService as CoreDinoparcService } from "@eternal-twin/core/lib/dinoparc/service";
+import { AuthContext } from "@eternal-twin/core/auth/auth-context";
+import { NullableEtwinDinoparcDinoz } from "@eternal-twin/core/dinoparc/etwin-dinoparc-dinoz";
+import { NullableEtwinDinoparcUser } from "@eternal-twin/core/dinoparc/etwin-dinoparc-user";
+import { GetDinoparcDinozOptions } from "@eternal-twin/core/dinoparc/get-dinoparc-dinoz-options";
+import { GetDinoparcUserOptions } from "@eternal-twin/core/dinoparc/get-dinoparc-user-options";
+import { DinoparcService as CoreDinoparcService } from "@eternal-twin/core/dinoparc/service";
 import { from as rxFrom, Observable } from "rxjs";
 
 import { AUTH_CONTEXT, DINOPARC } from "../../server/tokens";

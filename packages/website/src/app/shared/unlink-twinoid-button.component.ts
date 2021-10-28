@@ -2,8 +2,8 @@ import { DOCUMENT } from "@angular/common";
 import { Component, Inject, Input } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { TwinoidUserId } from "@eternal-twin/core/lib/twinoid/twinoid-user-id";
-import { UserId } from "@eternal-twin/core/lib/user/user-id";
+import { TwinoidUserId } from "@eternal-twin/core/twinoid/twinoid-user-id";
+import { UserId } from "@eternal-twin/core/user/user-id";
 import { Subscription } from "rxjs";
 
 import { UserService } from "../../modules/user/user.service";

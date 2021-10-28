@@ -175,7 +175,7 @@ pub fn dns(_args: &DnsArgs) -> Result<(), Box<dyn Error>> {
     .create(true)
     .truncate(true)
     .write(true)
-    .open(working_dir.join("packages/mt-dns/src/lib/live.ts"))
+    .open(working_dir.join("packages/mt-dns/src/lib/live.mts"))
     .expect("failed to open ts output");
 
   write_ts(&live_records, &mut ts_out)?;
@@ -197,7 +197,7 @@ pub fn dns(_args: &DnsArgs) -> Result<(), Box<dyn Error>> {
     .create(true)
     .truncate(true)
     .write(true)
-    .open(working_dir.join("packages/mt-dns/src/lib/dead.ts"))
+    .open(working_dir.join("packages/mt-dns/src/lib/dead.mts"))
     .expect("failed to open ts output");
 
   write_ts(&dead_records, &mut ts_out)?;

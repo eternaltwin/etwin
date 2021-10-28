@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index 4ebeb010aeafffdccff890c0b9c16311c8e3131b..c7935474d15dbde8c687685dbf67dd17a9b7a99f 100644
+--- a/package.json
++++ b/package.json
+@@ -32,6 +32,7 @@
+   "engines": {
+     "node": ">= 0.8"
+   },
++  "types": "index.d.ts",
+   "files": [
+     "HISTORY.md",
+     "LICENSE",

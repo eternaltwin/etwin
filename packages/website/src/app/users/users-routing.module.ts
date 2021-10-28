@@ -1,6 +1,6 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from "@angular/router";
-import { MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user";
+import { MaybeCompleteUser } from "@eternal-twin/core/user/maybe-complete-user";
 import { firstValueFrom } from "rxjs";
 
 import { UserService } from "../../modules/user/user.service";

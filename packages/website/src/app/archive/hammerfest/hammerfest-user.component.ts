@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
-import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
-import { HammerfestUser } from "@eternal-twin/core/lib/hammerfest/hammerfest-user";
+import { AuthType } from "@eternal-twin/core/auth/auth-type";
+import { HammerfestUser } from "@eternal-twin/core/hammerfest/hammerfest-user";
 import { BehaviorSubject, combineLatest, Observable, of as rxOf } from "rxjs";
 import { catchError as rxCatchError } from "rxjs/internal/operators/catchError";
 import { map as rxMap } from "rxjs/internal/operators/map";

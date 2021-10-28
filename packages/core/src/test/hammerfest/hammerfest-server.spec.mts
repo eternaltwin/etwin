@@ -1,0 +1,26 @@
+import { JSON_READER } from "kryo-json/json-reader";
+import { registerErrMochaTests } from "kryo-testing";
+
+import { $HammerfestServer, HammerfestServer } from "../../lib/hammerfest/hammerfest-server.mjs";
+import { registerJsonIoTests } from "../helpers.mjs";
+
+describe("HammerfestServer", function () {
+  registerJsonIoTests<HammerfestServer>(
+    $HammerfestServer,
+    "core/hammerfest/hammerfest-server",
+    new Map([
+      ["es", "hammerfest.es"],
+      ["fr", "hammerfest.fr"],
+      ["net", "hfest.net"],
+    ])
+  );
+
+  describe("Reader", function () {
+    const invalids: string[] = [
+      "",
+      "www.hammerfest.fr",
+      "HAMMERFEST.FR",
+    ];
+    registerErrMochaTests(JSON_READER, $HammerfestServer, invalids);
+  });
+});

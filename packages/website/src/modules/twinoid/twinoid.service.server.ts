@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@angular/core";
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
-import { GetTwinoidUserOptions } from "@eternal-twin/core/lib/twinoid/get-twinoid-user-options";
-import { TwinoidService as CoreTwinoidService } from "@eternal-twin/core/lib/twinoid/service";
-import { TwinoidUser } from "@eternal-twin/core/lib/twinoid/twinoid-user";
+import { AuthContext } from "@eternal-twin/core/auth/auth-context";
+import { GetTwinoidUserOptions } from "@eternal-twin/core/twinoid/get-twinoid-user-options";
+import { TwinoidService as CoreTwinoidService } from "@eternal-twin/core/twinoid/service";
+import { TwinoidUser } from "@eternal-twin/core/twinoid/twinoid-user";
 import { from as rxFrom, Observable } from "rxjs";
 
 import { AUTH_CONTEXT, TWINOID } from "../../server/tokens";

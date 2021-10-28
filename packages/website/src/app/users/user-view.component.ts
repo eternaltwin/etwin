@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ObjectType } from "@eternal-twin/core/lib/core/object-type";
-import { MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user";
+import { ObjectType } from "@eternal-twin/core/core/object-type";
+import { MaybeCompleteUser } from "@eternal-twin/core/user/maybe-complete-user";
 import { NEVER as RX_NEVER, Observable } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 

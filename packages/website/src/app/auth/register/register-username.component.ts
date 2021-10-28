@@ -1,9 +1,9 @@
 import { Component, OnDestroy } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { $RawUsername, RawUsername } from "@eternal-twin/core/lib/user/raw-username";
-import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name";
-import { Username } from "@eternal-twin/core/lib/user/username";
+import { $RawUsername, RawUsername } from "@eternal-twin/core/user/raw-username";
+import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/user/user-display-name";
+import { Username } from "@eternal-twin/core/user/username";
 import { Subscription } from "rxjs";
 
 import { AuthService } from "../../../modules/auth/auth.service";

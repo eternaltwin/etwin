@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
-import { ForumSectionId } from "@eternal-twin/core/lib/forum/forum-section-id";
-import { UserId } from "@eternal-twin/core/lib/user/user-id";
+import { ForumSection } from "@eternal-twin/core/forum/forum-section";
+import { ForumSectionId } from "@eternal-twin/core/forum/forum-section-id";
+import { UserId } from "@eternal-twin/core/user/user-id";
 import { Subscription } from "rxjs";
 
 import { ForumService } from "../../modules/forum/forum.service";

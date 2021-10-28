@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { $TimeQuery } from "@eternal-twin/core/lib/core/time-query";
-import { $EtwinDinoparcDinoz, NullableEtwinDinoparcDinoz } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-dinoz";
-import { $EtwinDinoparcUser, NullableEtwinDinoparcUser } from "@eternal-twin/core/lib/dinoparc/etwin-dinoparc-user";
-import { GetDinoparcDinozOptions } from "@eternal-twin/core/lib/dinoparc/get-dinoparc-dinoz-options";
-import { GetDinoparcUserOptions } from "@eternal-twin/core/lib/dinoparc/get-dinoparc-user-options";
+import { $TimeQuery } from "@eternal-twin/core/core/time-query";
+import { $EtwinDinoparcDinoz, NullableEtwinDinoparcDinoz } from "@eternal-twin/core/dinoparc/etwin-dinoparc-dinoz";
+import { $EtwinDinoparcUser, NullableEtwinDinoparcUser } from "@eternal-twin/core/dinoparc/etwin-dinoparc-user";
+import { GetDinoparcDinozOptions } from "@eternal-twin/core/dinoparc/get-dinoparc-dinoz-options";
+import { GetDinoparcUserOptions } from "@eternal-twin/core/dinoparc/get-dinoparc-user-options";
 import { Observable, of as rxOf } from "rxjs";
 import { catchError as rxCatchError } from "rxjs/operators";
 

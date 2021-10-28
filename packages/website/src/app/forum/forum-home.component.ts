@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing";
+import { ForumSectionListing } from "@eternal-twin/core/forum/forum-section-listing";
 import { NEVER as RX_NEVER, Observable } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 

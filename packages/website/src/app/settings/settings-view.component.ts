@@ -2,11 +2,11 @@ import { DOCUMENT } from "@angular/common";
 import { Component, Inject, OnInit } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
-import { $RawUsername, RawUsername } from "@eternal-twin/core/lib/user/raw-username";
-import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/lib/user/user-display-name";
-import { UserId } from "@eternal-twin/core/lib/user/user-id";
-import { $Username, Username } from "@eternal-twin/core/lib/user/username";
+import { CompleteUser } from "@eternal-twin/core/user/complete-user";
+import { $RawUsername, RawUsername } from "@eternal-twin/core/user/raw-username";
+import { $UserDisplayName, UserDisplayName } from "@eternal-twin/core/user/user-display-name";
+import { UserId } from "@eternal-twin/core/user/user-id";
+import { $Username, Username } from "@eternal-twin/core/user/username";
 import { NEVER as RX_NEVER, Observable, Subscription } from "rxjs";
 import { map as rxMap } from "rxjs/operators";
 

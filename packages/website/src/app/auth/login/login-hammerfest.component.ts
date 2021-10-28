@@ -2,9 +2,9 @@ import { DOCUMENT } from "@angular/common";
 import { Component, Inject, OnDestroy } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { HammerfestPassword } from "@eternal-twin/core/lib/hammerfest/hammerfest-password";
-import { HammerfestServer } from "@eternal-twin/core/lib/hammerfest/hammerfest-server";
-import { HammerfestUsername } from "@eternal-twin/core/lib/hammerfest/hammerfest-username";
+import { HammerfestPassword } from "@eternal-twin/core/hammerfest/hammerfest-password";
+import { HammerfestServer } from "@eternal-twin/core/hammerfest/hammerfest-server";
+import { HammerfestUsername } from "@eternal-twin/core/hammerfest/hammerfest-username";
 import { firstValueFrom, Subscription } from "rxjs";
 import { first as rxFirst } from "rxjs/operators";
 

@@ -1,13 +1,13 @@
 import { Inject, Injectable } from "@angular/core";
-import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
-import { MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user";
-import { UserService as CoreUserService } from "@eternal-twin/core/lib/user/service";
-import { UnlinkFromDinoparcOptions } from "@eternal-twin/core/lib/user/unlink-from-dinoparc-options";
-import { UnlinkFromHammerfestOptions } from "@eternal-twin/core/lib/user/unlink-from-hammerfest-options";
-import { UnlinkFromTwinoidOptions } from "@eternal-twin/core/lib/user/unlink-from-twinoid-options";
-import { UpdateUserPatch } from "@eternal-twin/core/lib/user/update-user-patch";
-import { User } from "@eternal-twin/core/lib/user/user";
-import { UserId } from "@eternal-twin/core/lib/user/user-id";
+import { AuthContext } from "@eternal-twin/core/auth/auth-context";
+import { MaybeCompleteUser } from "@eternal-twin/core/user/maybe-complete-user";
+import { UserService as CoreUserService } from "@eternal-twin/core/user/service";
+import { UnlinkFromDinoparcOptions } from "@eternal-twin/core/user/unlink-from-dinoparc-options";
+import { UnlinkFromHammerfestOptions } from "@eternal-twin/core/user/unlink-from-hammerfest-options";
+import { UnlinkFromTwinoidOptions } from "@eternal-twin/core/user/unlink-from-twinoid-options";
+import { UpdateUserPatch } from "@eternal-twin/core/user/update-user-patch";
+import { User } from "@eternal-twin/core/user/user";
+import { UserId } from "@eternal-twin/core/user/user-id";
 import { from as rxFrom, Observable } from "rxjs";
 
 import { AUTH_CONTEXT, USER } from "../../server/tokens";

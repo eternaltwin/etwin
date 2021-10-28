@@ -1,9 +1,9 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from "@angular/router";
-import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
-import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
-import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing";
-import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
+import { ForumPost } from "@eternal-twin/core/forum/forum-post";
+import { ForumSection } from "@eternal-twin/core/forum/forum-section";
+import { ForumSectionListing } from "@eternal-twin/core/forum/forum-section-listing";
+import { ForumThread } from "@eternal-twin/core/forum/forum-thread";
 import { firstValueFrom } from "rxjs";
 
 import { ForumService } from "../../modules/forum/forum.service";
