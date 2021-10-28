@@ -1,6 +1,5 @@
 stages:
   - "check"
-  - "release"
 
 lint:
   stage: "check"
@@ -28,13 +27,23 @@ lint:
       && yarn run lint
   after_script: []
   cache:
-    paths:
-      - ".cache/sccache/"
-      - ".cargo/bin/"
-      - ".cargo/registry/cache/"
-      - ".cargo/registry/index/"
-      - ".cargo/git/db/"
-      - ".yarn/cache"
+    - key:
+        prefix: "$CI_JOB_NAME"
+        files:
+          - "Cargo.lock"
+      paths:
+        - ".cache/sccache/"
+        - ".cargo/bin/"
+        - ".cargo/registry/cache/"
+        - ".cargo/registry/index/"
+        - ".cargo/git/db/"
+        - "target/"
+    - key:
+        prefix: "$CI_JOB_NAME"
+        files:
+          - "yarn.lock"
+      paths:
+        - ".yarn/cache/"
 
 test-ruby2:
   stage: "check"
@@ -152,13 +161,23 @@ test-rust:
       && sccache --stop-server
   after_script: []
   cache:
-    paths:
-      - ".cache/sccache/"
-      - ".cargo/bin/"
-      - ".cargo/registry/cache/"
-      - ".cargo/registry/index/"
-      - ".cargo/git/db/"
-      - ".yarn/cache"
+    - key:
+        prefix: "$CI_JOB_NAME"
+        files:
+          - "Cargo.lock"
+      paths:
+        - ".cache/sccache/"
+        - ".cargo/bin/"
+        - ".cargo/registry/cache/"
+        - ".cargo/registry/index/"
+        - ".cargo/git/db/"
+        - "target/"
+    - key:
+        prefix: "$CI_JOB_NAME"
+        files:
+          - "yarn.lock"
+      paths:
+        - ".yarn/cache/"
 
 test-node:
   stage: "check"
@@ -226,13 +245,23 @@ test-node:
       && sccache --stop-server
   after_script: []
   cache:
-    paths:
-      - ".cache/sccache/"
-      - ".cargo/bin/"
-      - ".cargo/registry/cache/"
-      - ".cargo/registry/index/"
-      - ".cargo/git/db/"
-      - ".yarn/cache"
+    - key:
+        prefix: "$CI_JOB_NAME"
+        files:
+          - "Cargo.lock"
+      paths:
+        - ".cache/sccache/"
+        - ".cargo/bin/"
+        - ".cargo/registry/cache/"
+        - ".cargo/registry/index/"
+        - ".cargo/git/db/"
+        - "target/"
+    - key:
+        prefix: "$CI_JOB_NAME"
+        files:
+          - "yarn.lock"
+      paths:
+        - ".yarn/cache/"
 
 build:
   stage: "check"
@@ -262,10 +291,20 @@ build:
       && sccache --stop-server
   after_script: []
   cache:
-    paths:
-      - ".cache/sccache/"
-      - ".cargo/bin/"
-      - ".cargo/registry/cache/"
-      - ".cargo/registry/index/"
-      - ".cargo/git/db/"
-      - ".yarn/cache"
+    - key:
+        prefix: "$CI_JOB_NAME"
+        files:
+          - "Cargo.lock"
+      paths:
+        - ".cache/sccache/"
+        - ".cargo/bin/"
+        - ".cargo/registry/cache/"
+        - ".cargo/registry/index/"
+        - ".cargo/git/db/"
+        - "target/"
+    - key:
+        prefix: "$CI_JOB_NAME"
+        files:
+          - "yarn.lock"
+      paths:
+        - ".yarn/cache/"
