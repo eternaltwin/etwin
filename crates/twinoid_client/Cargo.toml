@@ -9,7 +9,7 @@ repository = "https://github.com/eternal-twin/etwin"
 readme = "./README.md"
 keywords = ["etwin"]
 license = "AGPL-3.0-or-later"
-edition = "2018"
+edition = "2021"
 
 [features]
 default = ["http", "mem"]

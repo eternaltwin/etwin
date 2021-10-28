@@ -4,7 +4,7 @@ import { AuthContext } from "@eternal-twin/core/lib/auth/auth-context";
 import { AuthType } from "@eternal-twin/core/lib/auth/auth-type";
 import { $CompleteUser, CompleteUser } from "@eternal-twin/core/lib/user/complete-user";
 import { MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user";
-import { Observable, of as rxOf, throwError as rxThrowError } from "rxjs";
+import { firstValueFrom, Observable, of as rxOf, throwError as rxThrowError } from "rxjs";
 import { catchError as rxCatchError, first as rxFirst, map as rxMap, switchMap as rxSwitchMap } from "rxjs/operators";
 
 import { AuthService } from "../../modules/auth/auth.service";
@@ -40,7 +40,7 @@ export class UserResolverService implements Resolve<CompleteUser | null> {
         return rxOf(null);
       }),
     );
-    return completeCurrentUser$.toPromise();
+    return firstValueFrom(completeCurrentUser$);
   }
 }
 

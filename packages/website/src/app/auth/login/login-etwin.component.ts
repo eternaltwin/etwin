@@ -3,7 +3,7 @@ import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { RawUserLogin } from "@eternal-twin/core/lib/auth/raw-user-login";
-import { Subscription } from "rxjs";
+import { firstValueFrom, Subscription } from "rxjs";
 import { first as rxFirst } from "rxjs/operators";
 
 import { AuthService } from "../../../modules/auth/auth.service";
@@ -22,7 +22,7 @@ export class LoginEtwinComponent implements OnDestroy, OnInit {
 
   private readonly auth: AuthService;
   private readonly router: Router;
-  private readonly route: ActivatedRoute
+  private readonly route: ActivatedRoute;
   private readonly document: Document;
 
   private nextUri: string | undefined;
@@ -99,7 +99,7 @@ export class LoginEtwinComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.pipe(rxFirst()).toPromise().then((value: Params) => {
+    firstValueFrom(this.route.queryParams).then((value: Params) => {
       if (typeof value.next === "string" && value.next.startsWith("/")) {
         this.nextUri = value.next;
       }

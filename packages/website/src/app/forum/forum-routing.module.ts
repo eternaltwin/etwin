@@ -4,6 +4,7 @@ import { ForumPost } from "@eternal-twin/core/lib/forum/forum-post";
 import { ForumSection } from "@eternal-twin/core/lib/forum/forum-section";
 import { ForumSectionListing } from "@eternal-twin/core/lib/forum/forum-section-listing";
 import { ForumThread } from "@eternal-twin/core/lib/forum/forum-thread";
+import { firstValueFrom } from "rxjs";
 
 import { ForumService } from "../../modules/forum/forum.service";
 import { ForumHomeComponent } from "./forum-home.component";
@@ -24,7 +25,7 @@ export class ForumSectionsResolverService implements Resolve<ForumSectionListing
   }
 
   async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<ForumSectionListing> {
-    return this.forum.getForumSections().toPromise();
+    return firstValueFrom(this.forum.getForumSections());
   }
 }
 
@@ -47,7 +48,7 @@ export class ForumSectionResolverService implements Resolve<ForumSection | null>
     const pageStr = route.queryParamMap.get("tp");
     const page: number = pageStr !== null ? parseInt(pageStr, 10) : 1;
     if (page > 0) {
-      return this.forum.getForumSection(sectionIdOrKey, page - 1).toPromise();
+      return firstValueFrom(this.forum.getForumSection(sectionIdOrKey, page - 1));
     } else {
       return null;
     }
@@ -72,7 +73,7 @@ export class ForumThreadResolverService implements Resolve<ForumThread | null> {
     const pageStr = route.queryParamMap.get("p");
     const page: number = pageStr !== null ? parseInt(pageStr, 10) : 1;
     if (page > 0) {
-      return this.forum.getForumThread(threadIdOrKey, page - 1).toPromise();
+      return firstValueFrom(this.forum.getForumThread(threadIdOrKey, page - 1));
     } else {
       return null;
     }
@@ -96,7 +97,7 @@ export class ForumPostResolverService implements Resolve<ForumPost | null> {
     }
     // const pageStr = route.queryParamMap.get("p");
     // const page: number = pageStr !== null ? parseInt(pageStr, 10) : 1;
-    return this.forum.getForumPost(postId, 0).toPromise();
+    return firstValueFrom(this.forum.getForumPost(postId, 0));
   }
 }
 

@@ -1,6 +1,7 @@
 import { Injectable, NgModule } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterModule, RouterStateSnapshot, Routes } from "@angular/router";
 import { MaybeCompleteUser } from "@eternal-twin/core/lib/user/maybe-complete-user";
+import { firstValueFrom } from "rxjs";
 
 import { UserService } from "../../modules/user/user.service";
 import { UserViewComponent } from "./user-view.component";
@@ -20,7 +21,7 @@ export class UserResolverService implements Resolve<MaybeCompleteUser | null> {
     if (userId === null) {
       return null;
     }
-    return this.user.getUserById(userId).toPromise();
+    return firstValueFrom(this.user.getUserById(userId));
   }
 }
 

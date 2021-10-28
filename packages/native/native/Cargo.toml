@@ -5,7 +5,7 @@ authors = ["Charles Samborski <demurgos@demurgos.net>"]
 description = "Native node bindings for Eternal-Twin"
 license = "AGPL-3.0-or-later"
 build = "build.rs"
-edition = "2018"
+edition = "2021"
 exclude = ["artifacts.json", "index.node"]
 publish = false
 
