@@ -2,8 +2,8 @@
 
 ## Requirements
 
-- Node 14.13.1
-- Rust stable
+- Node 14.13.1 or later
+- Rust 1.56 or later
 - Yarn 1.22
 
 ## Getting started
