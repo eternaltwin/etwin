@@ -9,6 +9,7 @@ members = [
 [patch.crates-io]
 etwin_auth_store = { path = "./crates/auth_store" }
 etwin_cli = { path = "./crates/cli" }
+etwin_client = { path = "./crates/client" }
 etwin_config = { path = "./crates/config" }
 etwin_constants = { path = "./crates/constants" }
 etwin_core = { path = "./crates/core" }
