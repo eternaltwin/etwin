@@ -24,8 +24,9 @@
     "crossbuild:linux64": "ETWIN_NEON_TARGET=x86_64-unknown-linux-gnu yarn run crossbuild:_internal",
     "crossbuild:mac64": "ETWIN_NEON_TARGET=x86_64-apple-darwin yarn run crossbuild:_internal",
     "crossbuild:windows64": "ETWIN_NEON_TARGET=x86_64-pc-windows-msvc yarn run crossbuild:_internal",
+    "crossbuild:linux-arm7": "ETWIN_NEON_TARGET=armv7-unknown-linux-gnueabihf yarn run crossbuild:_internal",
     "crossbuild:_internal": "cd native && cross build --lib --release --target ${ETWIN_NEON_TARGET}",
-    "prepack": "yarn run lib:build && yarn run bin:build && yarn run crossbuild:linux64 && yarn run crossbuild:windows64",
+    "prepack": "yarn run lib:build && yarn run bin:build && yarn run crossbuild:linux64 && yarn run crossbuild:windows64 && yarn run crossbuild:linux-arm7",
     "test:build": "yarn run native:build && tsc --build src/test/tsconfig.json",
     "test": "yarn run test:build && mocha \"test/**/*.spec.mjs\"",
     "bin:build": "tsc --build src/bin/tsconfig.json"

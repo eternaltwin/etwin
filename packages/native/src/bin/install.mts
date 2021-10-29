@@ -23,6 +23,8 @@ function main() {
 
 function getRustTarget(): string | null {
   switch (`${arch}.${platform}`) {
+    case "arm.linux":
+      return "armv7-unknown-linux-gnueabihf";
     case "x64.linux":
       return "x86_64-unknown-linux-gnu";
     case "x64.win32":
