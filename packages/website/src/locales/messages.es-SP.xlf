@@ -58,7 +58,7 @@
       </trans-unit>
       <trans-unit id="app.menu.docs" datatype="html">
         <source>Docs</source>
-        <target state="new">Docs</target>
+        <target state="translated">Docs</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">18</context>
@@ -67,7 +67,7 @@
       </trans-unit>
       <trans-unit id="app.menu.archive" datatype="html">
         <source>Archive</source>
-        <target state="new">Archive</target>
+        <target state="translated">Archivo</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">19</context>
@@ -76,7 +76,7 @@
       </trans-unit>
       <trans-unit id="app.npc.dinorpg" datatype="html">
         <source>Mandragore, a hero and adventurer who has travelled the length and breadth of all DinoRPG lands !</source>
-        <target state="translated">Mandrágora, héroe y aventurero que recorre los vastos territorios de DinoRPG.</target>
+        <target state="translated">¡Mandrágora, héroe y aventurero que recorre los vastos territorios de DinoRPG!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">27</context>
@@ -94,7 +94,7 @@
       </trans-unit>
       <trans-unit id="app.npc.hordes" datatype="html">
         <source>A zombie, much like ones that haunt the glacial nights of MyHordes...</source>
-        <target state="translated">Un zombie, de aquellos que habitan las noches espeluznantes de Zombinoia...</target>
+        <target state="translated">Un zombie, de aquellos que habitan las noches espeluznantes de MyHordes...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">41</context>
@@ -112,7 +112,7 @@
       </trans-unit>
       <trans-unit id="app.npc.fever" datatype="html">
         <source>Pousty, the last hero battling infamous Bakelites to save his world !</source>
-        <target state="translated">Pousty, el héroe de Fever.</target>
+        <target state="translated">¡Pousty, el héroe de Fever!</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">55</context>
@@ -157,7 +157,7 @@
       </trans-unit>
       <trans-unit id="app.npc.quiz" datatype="html">
         <source>"My name is Norray. James Norray".</source>
-        <target state="translated">«Mi nombre es Norray. James Norray.»</target>
+        <target state="translated">«Mi nombre es Norray. James Norray».</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/main-layout.component.html</context>
           <context context-type="linenumber">90</context>
@@ -260,7 +260,7 @@
       </trans-unit>
       <trans-unit id="register.username.heading" datatype="html">
         <source> Eternal-Twin registration </source>
-        <target state="new"> Eternal-Twin registration </target>
+        <target state="translated"> Registrarse en Eternal-Twin </target>
         <note priority="1" from="description">Registration page heading (with a username)</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/register/register-username.component.html</context>
@@ -291,9 +291,7 @@
       </trans-unit>
       <trans-unit id="register.heading" datatype="html">
         <source> Eternal-Twin registration </source>
-        <target state="translated">
-      Registrarse con Eternal-Twin
-    </target>
+        <target state="translated">Registrarse en Eternal-Twin</target>
         <note priority="1" from="description">Registration page heading</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/register/register.component.html</context>
@@ -570,7 +568,7 @@
       </trans-unit>
       <trans-unit id="register.email.heading" datatype="html">
         <source> Eternal-Twin registration </source>
-        <target state="new"> Eternal-Twin registration </target>
+        <target state="translated"> Registrarse en Eternal-Twin </target>
         <note priority="1" from="description">Registration page heading (with an email)</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/register/register-email.component.html</context>
@@ -587,9 +585,9 @@
       Ante esta situación, algunos jugadores han decidido lanzar un proyecto para salvar estos juegos: el proyecto Eternal-Twin.
       Su objetivo es mantener vivas las comunidades de estos juegos y evitar la desaparición de esta herencia común de los videojuegos.
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
-          This project is lead by Demurgos and TheMoa59, for the technical and organizational side respectively. We also
-          want to thank MrPapy for helping to start the project.
-          Anyone is free to join and help.
+          Este proyecto está liderado por Demurgos y TheMoa59, en las partes técnicas y organizacional respectivamente. También
+          queremos agradecer a MrPapy por ayudarnos a iniciar el proyecto.
+          Cualquiera es libre de unirse y ayudar.
           <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>
       Enlaces útiles :
     <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;ul>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a>"/>Servidor Discord Eternal-Twin<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Principal canal de comunicación<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_2" ctype="x-a" equiv-text="&lt;a>"/>Eternal Twinpedia<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Wiki para los juegos de Motion-Twin<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="START_LIST_ITEM" ctype="x-li" equiv-text="&lt;li>"/><x id="START_LINK_3" ctype="x-a" equiv-text="&lt;a>"/>Organización Eternal-Twin en Gitlab<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/>: Todo nuestro código fuente<x id="CLOSE_LIST_ITEM" ctype="x-li" equiv-text="&lt;/li>"/><x id="CLOSE_UNORDERED_LIST" ctype="x-ul" equiv-text="&lt;/ul>"/></target>
@@ -705,8 +703,7 @@
       </trans-unit>
       <trans-unit id="donate.dev.content" datatype="html">
         <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>As Eternal-Twin is an ambitious project, all help for developing is welcome.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>If you are interested in browser games and have web develpment skills, feel free to contact our devs and read the documentation !<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></source>
-        <target state="translated">
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Al ser un proyecto ambicioso, Eternal-Twin agradece cada ayuda que pueda ser dada, por pequeña que sea.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+        <target state="translated">        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Al ser un proyecto ambicioso, Eternal-Twin agradece cada ayuda que pueda ser dada, por pequeña que sea.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Por esto mismo, si estás interesado en los juegos de navegador y quieres mejorar tus capacidades de desarrollo web ¡No dudes en contactar a nuestros Desarrolladores y leer la documentación!<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
       </target>
         <note priority="1" from="description">Content of the Help development item</note>
@@ -735,8 +732,7 @@
       </trans-unit>
       <trans-unit id="donate.cheer.content" datatype="html">
         <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Small actions are sometimes the best ! The community is the core element of Eternal-Twin, which is why your feedback, your opinions and your encouragements are so important to us.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Create an account and take part to the forum's activity !<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></source>
-        <target state="translated">
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>¡Las pequeñas acciones son a veces las mejores! La Comunidad es el eje de Eternal-Twin, por esto mismo tus ánimos, ayuda y feedback son tremendamente importantes para nosotros.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+        <target state="translated">        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>¡Las pequeñas acciones son a veces las mejores! La Comunidad es el eje de Eternal-Twin, por esto mismo tus ánimos, ayuda y retroalimentación son tremendamente importantes para nosotros.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>¡Así que no esperes, hazte una cuenta y participa en el foro!<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
       </target>
         <note priority="1" from="description">Content of the Encourage item</note>
@@ -765,9 +761,8 @@
       </trans-unit>
       <trans-unit id="donate.donate.content" datatype="html">
         <source><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>All Eternal-Twin games are entirely free, we depend entirely on your donations for our financial sustainability. We do not seek profit, so the money donated to the project will be used to maintain the required servers and services. Please note that donations are voluntary and do not bring any in-game benefits.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>For the sake of transparency, we have opted to use <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://opencollective.com/eternal-twin&quot;>"/>OpenCollective<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> for donations and expenses management. OpenCollective is a reliable platform that lets you know exactly where your money is going.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/><x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Our current objective is 50 € per month. This amount will be split as follows : 20 € for servers, 15 € for email service, 10 € for backups, 5 to 10 € for domain names. The extra funds will be used to either provide better servers or saved for future expenses.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/></source>
-        <target state="translated">
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Ya que todos los juegos de Eternal-Twin son completamente gratuitos, nuestra supervivencia depende de las donaciones de la comunidad. Nuestra meta no es ganar dinero, así que todas las contribuciones serán utilizadas para mantener los sevidores y demás servicios necesarios. Aclarar que las donaciones son voluntarias, y no conllevan ningún beneficio en nuestros juegos.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
-        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>La transparencia también es importante para nosotros, así que elegimos <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>OpenCollective<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> para la administración de las donaciones y gastos. OpenCollective es una plataforma confiable que les permite saber a todos en qué se está gastando el dinero recolectado.
+        <target state="translated">        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Ya que todos los juegos de Eternal-Twin son completamente gratuitos, nuestra supervivencia depende de las donaciones de la comunidad. Nuestra meta no es ganar dinero, así que todas las contribuciones serán utilizadas para mantener los sevidores y demás servicios necesarios. Aclaramos que las donaciones son voluntarias, y no conllevan ningún beneficio en nuestros juegos.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
+        <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>La transparencia también es importante para nosotros, así que elegimos <x id="START_LINK" ctype="x-a" equiv-text="&lt;a>"/>OpenCollective<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a>"/> para la administración de las donaciones y gastos. OpenCollective es una plataforma confiable que le permite saber a todos en qué se está gastando el dinero recolectado.
 <x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
         <x id="START_PARAGRAPH" ctype="x-p" equiv-text="&lt;p>"/>Nuestro objetivo actual son 50 € (~60 USD) por mes. Esta cantidad se distribuirá de la siguiente manera: 20 € para los servidores, 15 € para el servicio e-mail, 10 € para los back-ups y entre 5 € y 10 € para el pago de dominios. El excedente se utilizará para mejorar la calidad de los servidores, o en su defecto serán almacenados para gastos en el futuro.<x id="CLOSE_PARAGRAPH" ctype="x-p" equiv-text="&lt;/p>"/>
       </target>
@@ -788,7 +783,7 @@
       </trans-unit>
       <trans-unit id="archive.home.dinoparcLink" datatype="html">
         <source>Dinoparc</source>
-        <target state="new">Dinoparc</target>
+        <target state="translated">Dinoparc</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/archive/archive-home.view.html</context>
           <context context-type="linenumber">4</context>
@@ -797,7 +792,7 @@
       </trans-unit>
       <trans-unit id="archive.home.hammerfestLink" datatype="html">
         <source>Hammmerfest</source>
-        <target state="new">Hammmerfest</target>
+        <target state="translated">Hammmerfest</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/archive/archive-home.view.html</context>
           <context context-type="linenumber">5</context>
@@ -806,7 +801,7 @@
       </trans-unit>
       <trans-unit id="archive.home.twinoidLink" datatype="html">
         <source>Twinoid</source>
-        <target state="new">Twinoid</target>
+        <target state="translated">Twinoid</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/archive/archive-home.view.html</context>
           <context context-type="linenumber">6</context>
@@ -842,7 +837,7 @@
       </trans-unit>
       <trans-unit id="archive.dinoparc.error.userNotFound" datatype="html">
         <source>Dinoparc user not found</source>
-        <target state="new">Dinoparc user not found</target>
+        <target state="translated">Usuario de Dinoparc no encontrado</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/archive/dinoparc/dinoparc-user.view.html</context>
           <context context-type="linenumber">8</context>
@@ -869,7 +864,7 @@
       </trans-unit>
       <trans-unit id="archive.hammerfest.error.userNotFound" datatype="html">
         <source>Hammerfest user not found</source>
-        <target state="new">Hammerfest user not found</target>
+        <target state="translated">Usuario de Hammerfest no encontrado</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/archive/hammerfest/hammerfest-user.view.html</context>
           <context context-type="linenumber">8</context>
@@ -878,7 +873,7 @@
       </trans-unit>
       <trans-unit id="archive.twinoid.error.userNotFound" datatype="html">
         <source>Twinoid user not found</source>
-        <target state="new">Twinoid user not found</target>
+        <target state="translated">Usuario de Twinoid no encontrado</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/archive/twinoid/twinoid-user.view.html</context>
           <context context-type="linenumber">8</context>
@@ -953,7 +948,7 @@
       </trans-unit>
       <trans-unit id="login.method.dinoparc" datatype="html">
         <source>Sign in with Dinoparc</source>
-        <target state="new">Sign in with Dinoparc</target>
+        <target state="translated">Iniciar sesión con Dinoparc</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
           <context context-type="linenumber">10</context>
@@ -965,7 +960,7 @@
       </trans-unit>
       <trans-unit id="login.dinoparcServer" datatype="html">
         <source>Server</source>
-        <target state="new">Server</target>
+        <target state="translated">Servidor</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
           <context context-type="linenumber">13</context>
@@ -974,7 +969,7 @@
       </trans-unit>
       <trans-unit id="login.dinoparcUsername" datatype="html">
         <source>Dinoparc username</source>
-        <target state="new">Dinoparc username</target>
+        <target state="translated">Nombre de usuario de Dinoparc</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
           <context context-type="linenumber">21</context>
@@ -983,7 +978,7 @@
       </trans-unit>
       <trans-unit id="login.dinoparc.password" datatype="html">
         <source>Dinoparc password</source>
-        <target state="new">Dinoparc password</target>
+        <target state="translated">Contraseña de Dinoparc</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
           <context context-type="linenumber">30</context>
@@ -992,7 +987,7 @@
       </trans-unit>
       <trans-unit id="login.dinoparc.submit" datatype="html">
         <source>Sign in</source>
-        <target state="new">Sign in</target>
+        <target state="translated">iniciar sesión</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
           <context context-type="linenumber">39</context>
@@ -1001,7 +996,7 @@
       </trans-unit>
       <trans-unit id="login.dinoparcUsernameRequired" datatype="html">
         <source> The Dinoparc username is required. </source>
-        <target state="new"> The Dinoparc username is required. </target>
+        <target state="translated"> Se requiere el nombre de usuario de Dinoparc. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
           <context context-type="linenumber">24</context>
@@ -1009,7 +1004,7 @@
       </trans-unit>
       <trans-unit id="login.dinoparc.unknownError" datatype="html">
         <source> Failed to authenticate: please check your credentials. </source>
-        <target state="new"> Failed to authenticate: please check your credentials. </target>
+        <target state="translated"> Eror de autenticación: Por favor revisa tus credenciales. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login-dinoparc.component.html</context>
           <context context-type="linenumber">40</context>
@@ -1026,7 +1021,7 @@
       </trans-unit>
       <trans-unit id="login.hammerfestUsername" datatype="html">
         <source>Hammerfest username</source>
-        <target state="new">Hammerfest username</target>
+        <target state="translated">Nombre de usuario de Hammerfest</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login-hammerfest.component.html</context>
           <context context-type="linenumber">21</context>
@@ -1035,7 +1030,7 @@
       </trans-unit>
       <trans-unit id="login.hammerfest.password" datatype="html">
         <source>Hammerfest password</source>
-        <target state="new">Hammerfest password</target>
+        <target state="translated">Contraseña de Hammerfest</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login-hammerfest.component.html</context>
           <context context-type="linenumber">30</context>
@@ -1142,7 +1137,7 @@
       </trans-unit>
       <trans-unit id="login.etwin.password" datatype="html">
         <source>Password</source>
-        <target state="new">Password</target>
+        <target state="translated">Contraseña</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/auth/login/login-etwin.component.html</context>
           <context context-type="linenumber">22</context>
@@ -1312,7 +1307,7 @@
       </trans-unit>
       <trans-unit id="games.myhordesButton" datatype="html">
         <source>Test the alpha !</source>
-        <target state="translated">¡Testea la Alpha!</target>
+        <target state="translated">¡Testea la Beta!</target>
         <note priority="1" from="description">Button to access the MyHordes game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
@@ -1402,7 +1397,7 @@
       </trans-unit>
       <trans-unit id="games.dinorpgDescription" datatype="html">
         <source>Train your dinoz and set off on an extraordinary adventure...</source>
-        <target state="translated">Un juego de rol lleno de aventuras, personajes y batallas épicas</target>
+        <target state="translated">Un juego de rol lleno de aventuras, personajes y batallas épicas.</target>
         <note priority="1" from="description">Description of the DinoRPG game</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/games/games.component.html</context>
@@ -1601,8 +1596,7 @@
       <trans-unit id="forum.addModerator.unknownError" datatype="html">
         <source>Moderator addition failure: unknown server error.</source>
         <target state="translated">
-    Fallo de adición de moderador: error desconocido del servidor
-  </target>
+    Fallo de adición de moderador: error desconocido del servidor.</target>
         <note priority="1" from="description">Error message displayed when the server rejects the moderator addition</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/forum/add-moderator.component.html</context>
@@ -1897,7 +1891,7 @@
       </trans-unit>
       <trans-unit id="forum.updatePost.unknownError" datatype="html">
         <source> Post update failure: unknown server error. </source>
-        <target state="new"> Post update failure: unknown server error. </target>
+        <target state="translated"> Error de actualización de mensaje: Error desconocido del servidor. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/forum/update-forum-post.component.html</context>
           <context context-type="linenumber">33,34</context>
@@ -1906,7 +1900,7 @@
       </trans-unit>
       <trans-unit id="settings.link.hammerfest.username" datatype="html">
         <source>Hammerfest username</source>
-        <target state="new">Hammerfest username</target>
+        <target state="translated">Nombre de usuario de Hammerfest</target>
         <note priority="1" from="description">Hammerfest username (link Hammerfest)</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/settings/linked-hammerfest-settings.component.html</context>
@@ -1915,7 +1909,7 @@
       </trans-unit>
       <trans-unit id="settings.link.hammerfest.password" datatype="html">
         <source>Hammerfest password</source>
-        <target state="new">Hammerfest password</target>
+        <target state="translated">Contraseña de Hammerfest</target>
         <note priority="1" from="description">Hammerfest password (link Hammerfest)</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/settings/linked-hammerfest-settings.component.html</context>
@@ -1924,7 +1918,7 @@
       </trans-unit>
       <trans-unit id="settings.link.hammerfest.submit" datatype="html">
         <source>Link with <x id="INTERPOLATION" equiv-text="{{server}}"/></source>
-        <target state="new">Link with <x id="INTERPOLATION" equiv-text="{{server}}"/></target>
+        <target state="translated">Vincular con <x id="INTERPOLATION" equiv-text="{{server}}"/></target>
         <note priority="1" from="description">Submit the form to link a Hammerfest user</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/settings/linked-hammerfest-settings.component.html</context>
@@ -1933,7 +1927,7 @@
       </trans-unit>
       <trans-unit id="settings.link.dinoparc.username" datatype="html">
         <source>Dinoparc username</source>
-        <target state="new">Dinoparc username</target>
+        <target state="translated">Nombre de usuario de Dinoparc</target>
         <note priority="1" from="description">Dinoparc username (link Dinoparc)</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/settings/linked-dinoparc-settings.component.html</context>
@@ -1942,7 +1936,7 @@
       </trans-unit>
       <trans-unit id="settings.link.dinoparc.password" datatype="html">
         <source>Dinoparc password</source>
-        <target state="new">Dinoparc password</target>
+        <target state="translated">Contraseña de Dinoparc</target>
         <note priority="1" from="description">Dinoparc password (link Dinoparc)</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/settings/linked-dinoparc-settings.component.html</context>
@@ -1951,7 +1945,7 @@
       </trans-unit>
       <trans-unit id="settings.link.dinoparc.submit" datatype="html">
         <source>Link with <x id="INTERPOLATION" equiv-text="{{server}}"/></source>
-        <target state="new">Link with <x id="INTERPOLATION" equiv-text="{{server}}"/></target>
+        <target state="translated">Vincular con <x id="INTERPOLATION" equiv-text="{{server}}"/></target>
         <note priority="1" from="description">Submit the form to link a Dinoparc user</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/settings/linked-dinoparc-settings.component.html</context>
@@ -1960,7 +1954,7 @@
       </trans-unit>
       <trans-unit id="settings.link.twinoid.submit" datatype="html">
         <source>Link with Twinoid</source>
-        <target state="new">Link with Twinoid</target>
+        <target state="translated">Vincular con Twinoid</target>
         <note priority="1" from="description">Submit the form to link a Twinoid user</note>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/settings/linked-twinoid-settings.component.html</context>
