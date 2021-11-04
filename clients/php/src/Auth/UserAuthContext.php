@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Auth;
+namespace Eternaltwin\Auth;
 
-use Etwin\User\ShortUser;
+use Eternaltwin\User\ShortUser;
 
 final class UserAuthContext implements \JsonSerializable {
   private AuthScope $scope;

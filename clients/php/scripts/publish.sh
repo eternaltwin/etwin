@@ -4,7 +4,7 @@ var PROJECT_ROOT = "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd $PROJECT_ROOT {
   var TEMP_DIR = "$(mktemp -d)"
   var NEW_VERSION = "$(jq --raw-output ".version" composer.json)"
-  git clone git@gitlab.com:eternal-twin/etwin-php.git "${TEMP_DIR}"
+  git clone git@gitlab.com:eternaltwin/etwin-php.git "${TEMP_DIR}"
   find "${TEMP_DIR}" -mindepth 1 -not -path "${TEMP_DIR}/.git" -not -path "${TEMP_DIR}/.git/*" -delete
   cp -R composer.json "${TEMP_DIR}/composer.json"
   cp -R "src/" "${TEMP_DIR}/src/"

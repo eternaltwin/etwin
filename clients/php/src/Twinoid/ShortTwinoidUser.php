@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Twinoid;
+namespace Eternaltwin\Twinoid;
 
-use Etwin\Core\ObjectType;
+use Eternaltwin\Core\ObjectType;
 
 final class ShortTwinoidUser implements \JsonSerializable {
   private TwinoidUserId $id;

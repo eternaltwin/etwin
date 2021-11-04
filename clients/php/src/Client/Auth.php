@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Client;
+namespace Eternaltwin\Client;
 
 final class Auth {
   private static ?self $_Guest;

@@ -3,6 +3,7 @@ use crate::metagen::core::{MgGroupName, MgType, TypeRegistryBuilder};
 pub fn register_etwin(builder: &mut TypeRegistryBuilder) -> Result<(), anyhow::Error> {
   register_dinoparc(builder)?;
   register_hammerfest(builder)?;
+  register_user(builder)?;
   Ok(())
 }
 
@@ -33,5 +34,12 @@ pub fn register_hammerfest(builder: &mut TypeRegistryBuilder) -> Result<(), anyh
   let group = MgGroupName::from_parts("hammerfest")?;
   builder.add_unique(group.with_type("hammerfest_user_id")?, MgType::String)?;
   builder.add_unique(group.with_type("hammerfest_username")?, MgType::String)?;
+  Ok(())
+}
+
+pub fn register_user(builder: &mut TypeRegistryBuilder) -> Result<(), anyhow::Error> {
+  let group = MgGroupName::from_parts("user")?;
+  builder.add_unique(group.with_type("user_display_name")?, MgType::String)?;
+  builder.add_unique(group.with_type("user_id")?, MgType::Uuid)?;
   Ok(())
 }

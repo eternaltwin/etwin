@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Link;
+namespace Eternaltwin\Link;
 
-use Etwin\Hammerfest\ShortHammerfestUser;
+use Eternaltwin\Hammerfest\ShortHammerfestUser;
 
 final class HammerfestLink implements \JsonSerializable {
   private LinkAction $link;

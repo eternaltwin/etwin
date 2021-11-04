@@ -16,6 +16,7 @@ data class DinoparcDinozDanger(
   val inner: Short,
 ) {
   constructor(value: Byte): this(value.toShort())
+
   fun toByte(): Byte = this.inner.toByte()
   fun toShort(): Short = this.inner
   fun toInt(): Int = this.inner.toInt()

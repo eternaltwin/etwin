@@ -179,6 +179,23 @@ test-rust:
       paths:
         - ".yarn/cache/"
 
+test-php:
+  stage: "check"
+  needs: []
+  tags:
+    - "linux"
+  # php:8.0.12-cli-alpine3.13
+  image: "php@sha256:2f6f432099d60a17b5f9ca0546b7909a36a16bf51e00c12f36e20c35d07d906f"
+  before_script:
+    - "apk add --no-cache composer"
+    - "php --version"
+    - "composer --version"
+    - "cd clients/php"
+    - "composer install"
+  script:
+    - "composer test"
+  after_script: []
+
 test-node:
   stage: "check"
   needs: []

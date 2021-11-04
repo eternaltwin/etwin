@@ -1,11 +1,11 @@
-# PHP client for the Eternal-Twin API
+# PHP client for the Eternaltwin API
 
-[![packagist](https://img.shields.io/packagist/v/eternal-twin/etwin)][packagist]
+[![packagist](https://img.shields.io/packagist/v/eternaltwin/etwin)][packagist]
 
 ## Usage
 
 ```
-composer require eternal-twin/etwin
+composer require eternaltwin/etwin
 ```
 
 ```php
@@ -13,11 +13,11 @@ composer require eternal-twin/etwin
 
 require_once "./vendor/autoload.php";
 
-use \Etwin\Client\Auth;
-use \Etwin\Client\HttpEtwinClient;
-use \Etwin\User\UserId;
+use \Eternaltwin\Client\Auth;
+use \Eternaltwin\Client\HttpEtwinClient;
+use \Eternaltwin\User\UserId;
 
-$client = new HttpEtwinClient("https://eternal-twin.net");
+$client = new HttpEtwinClient("https://eternaltwin.org");
 $user = $client->getUser(Auth::Guest(), UserId::fromString("9f310484-963b-446b-af69-797feec6813f"));
 var_dump($user);
 ```
@@ -35,4 +35,4 @@ composer test
 composer run-script publish
 ```
 
-[packagist]: https://packagist.org/packages/eternal-twin/etwin
+[packagist]: https://packagist.org/packages/eternaltwin/etwin

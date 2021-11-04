@@ -37,7 +37,7 @@ class HttpEtwinClient(etwinUri: URI) : EtwinClient {
   override fun getUser(auth: Auth, userId: UserId): MaybeCompleteUser {
     val request = auth.apply(
       Request.Builder()
-        .url(this.resolve(listOf("users", userId.toUuidString())))
+        .url(this.resolve(listOf("users", userId.toString())))
         .get()
     )
       .build()

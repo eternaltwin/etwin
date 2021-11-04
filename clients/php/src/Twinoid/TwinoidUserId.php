@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Twinoid;
+namespace Eternaltwin\Twinoid;
 
 final class TwinoidUserId implements \JsonSerializable {
   private string $inner;

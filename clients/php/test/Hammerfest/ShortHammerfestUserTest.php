@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Test\Hammerfest;
+namespace Eternaltwin\Test\Hammerfest;
 
-use Etwin\Hammerfest\HammerfestServer;
-use Etwin\Hammerfest\HammerfestUserId;
-use Etwin\Hammerfest\HammerfestUsername;
-use Etwin\Hammerfest\ShortHammerfestUser;
-use Etwin\Test\SerializationTestItem;
+use Eternaltwin\Hammerfest\HammerfestServer;
+use Eternaltwin\Hammerfest\HammerfestUserId;
+use Eternaltwin\Hammerfest\HammerfestUsername;
+use Eternaltwin\Hammerfest\ShortHammerfestUser;
+use Eternaltwin\Test\SerializationTestItem;
 use PHPUnit\Framework\TestCase;
 
 final class ShortHammerfestUserTest extends TestCase {
@@ -21,7 +21,7 @@ final class ShortHammerfestUserTest extends TestCase {
 
   public function provideFromJson(): array {
     return SerializationTestItem::fromTestDir(
-      "hammerfest/short-hammerfest-user",
+      "core/hammerfest/short-hammerfest-user",
       [
         "demurgos" => new ShortHammerfestUser(
           HammerfestServer::HfestNet(),

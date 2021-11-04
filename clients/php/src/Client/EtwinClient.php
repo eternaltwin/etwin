@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Client;
+namespace Eternaltwin\Client;
 
-use Etwin\Auth\AccessTokenAuthContext;
-use Etwin\Auth\GuestAuthContext;
-use Etwin\Auth\UserAuthContext;
-use Etwin\User\User;
-use Etwin\User\UserId;
+use Eternaltwin\Auth\AccessTokenAuthContext;
+use Eternaltwin\Auth\GuestAuthContext;
+use Eternaltwin\Auth\UserAuthContext;
+use Eternaltwin\User\User;
+use Eternaltwin\User\UserId;
 
 interface EtwinClient {
   /**

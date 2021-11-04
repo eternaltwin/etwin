@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Link;
+namespace Eternaltwin\Link;
 
 final class VersionedHammerfestLink implements \JsonSerializable {
   private ?HammerfestLink $current;

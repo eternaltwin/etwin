@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Test\User;
+namespace Eternaltwin\Test\User;
 
-use Etwin\Test\SerializationTestItem;
-use Etwin\User\ShortUser;
-use Etwin\User\UserDisplayName;
-use Etwin\User\UserDisplayNameVersion;
-use Etwin\User\UserDisplayNameVersions;
-use Etwin\User\UserId;
+use Eternaltwin\Test\SerializationTestItem;
+use Eternaltwin\User\ShortUser;
+use Eternaltwin\User\UserDisplayName;
+use Eternaltwin\User\UserDisplayNameVersion;
+use Eternaltwin\User\UserDisplayNameVersions;
+use Eternaltwin\User\UserId;
 use PHPUnit\Framework\TestCase;
 
 final class ShortUserTest extends TestCase {
@@ -22,7 +22,7 @@ final class ShortUserTest extends TestCase {
 
   public function provideFromJson(): array {
     return SerializationTestItem::fromTestDir(
-      "user/short-user",
+      "core/user/short-user",
       [
         "demurgos" => new ShortUser(
           UserId::fromString("9f310484-963b-446b-af69-797feec6813f"),

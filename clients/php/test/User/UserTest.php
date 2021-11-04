@@ -1,29 +1,29 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Test\User;
+namespace Eternaltwin\Test\User;
 
 use \DateTimeImmutable;
-use Etwin\Core\Instant;
-use Etwin\Hammerfest\HammerfestServer;
-use Etwin\Hammerfest\HammerfestUserId;
-use Etwin\Hammerfest\HammerfestUsername;
-use Etwin\Hammerfest\ShortHammerfestUser;
-use Etwin\Link\HammerfestLink;
-use Etwin\Link\LinkAction;
-use Etwin\Link\TwinoidLink;
-use Etwin\Link\VersionedHammerfestLink;
-use Etwin\Link\VersionedLinks;
-use Etwin\Link\VersionedTwinoidLink;
-use Etwin\Test\SerializationTestItem;
-use Etwin\Twinoid\ShortTwinoidUser;
-use Etwin\Twinoid\TwinoidUserDisplayName;
-use Etwin\Twinoid\TwinoidUserId;
-use Etwin\User\ShortUser;
-use Etwin\User\User;
-use Etwin\User\UserDisplayName;
-use Etwin\User\UserDisplayNameVersion;
-use Etwin\User\UserDisplayNameVersions;
-use Etwin\User\UserId;
+use Eternaltwin\Core\Instant;
+use Eternaltwin\Hammerfest\HammerfestServer;
+use Eternaltwin\Hammerfest\HammerfestUserId;
+use Eternaltwin\Hammerfest\HammerfestUsername;
+use Eternaltwin\Hammerfest\ShortHammerfestUser;
+use Eternaltwin\Link\HammerfestLink;
+use Eternaltwin\Link\LinkAction;
+use Eternaltwin\Link\TwinoidLink;
+use Eternaltwin\Link\VersionedHammerfestLink;
+use Eternaltwin\Link\VersionedLinks;
+use Eternaltwin\Link\VersionedTwinoidLink;
+use Eternaltwin\Test\SerializationTestItem;
+use Eternaltwin\Twinoid\ShortTwinoidUser;
+use Eternaltwin\Twinoid\TwinoidUserDisplayName;
+use Eternaltwin\Twinoid\TwinoidUserId;
+use Eternaltwin\User\ShortUser;
+use Eternaltwin\User\User;
+use Eternaltwin\User\UserDisplayName;
+use Eternaltwin\User\UserDisplayNameVersion;
+use Eternaltwin\User\UserDisplayNameVersions;
+use Eternaltwin\User\UserId;
 use PHPUnit\Framework\TestCase;
 
 final class UserTest extends TestCase {
@@ -38,7 +38,7 @@ final class UserTest extends TestCase {
 
   public function provideFromJson(): array {
     return SerializationTestItem::fromTestDir(
-      "user/user",
+      "core/user/user",
       [
         "demurgos" => new User(
           UserId::fromString("9f310484-963b-446b-af69-797feec6813f"),

@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Test\Auth;
+namespace Eternaltwin\Test\Auth;
 
-use Etwin\Auth\AuthScope;
-use Etwin\Auth\UserAuthContext;
-use Etwin\Test\SerializationTestItem;
-use Etwin\User\ShortUser;
-use Etwin\User\UserDisplayName;
-use Etwin\User\UserDisplayNameVersion;
-use Etwin\User\UserDisplayNameVersions;
-use Etwin\User\UserId;
+use Eternaltwin\Auth\AuthScope;
+use Eternaltwin\Auth\UserAuthContext;
+use Eternaltwin\Test\SerializationTestItem;
+use Eternaltwin\User\ShortUser;
+use Eternaltwin\User\UserDisplayName;
+use Eternaltwin\User\UserDisplayNameVersion;
+use Eternaltwin\User\UserDisplayNameVersions;
+use Eternaltwin\User\UserId;
 use PHPUnit\Framework\TestCase;
 
 final class UserAuthContextTest extends TestCase {
@@ -24,7 +24,7 @@ final class UserAuthContextTest extends TestCase {
 
   public function provideFromJson(): array {
     return SerializationTestItem::fromTestDir(
-      "auth/user-auth-context",
+      "core/auth/user-auth-context",
       [
         "demurgos" => new UserAuthContext(
           AuthScope::Default(),

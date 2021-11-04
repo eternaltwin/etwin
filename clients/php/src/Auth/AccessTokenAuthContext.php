@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Auth;
+namespace Eternaltwin\Auth;
 
-use Etwin\Oauth\ShortOauthClient;
-use Etwin\User\ShortUser;
+use Eternaltwin\Oauth\ShortOauthClient;
+use Eternaltwin\User\ShortUser;
 
 final class AccessTokenAuthContext implements \JsonSerializable {
   private AuthScope $scope;

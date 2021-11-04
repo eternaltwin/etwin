@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Oauth;
+namespace Eternaltwin\Oauth;
 
-use Etwin\Core\ObjectType;
+use Eternaltwin\Core\ObjectType;
 
 final class ShortOauthClient implements \JsonSerializable {
   private OauthClientId $id;

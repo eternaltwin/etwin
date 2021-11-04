@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Link;
+namespace Eternaltwin\Link;
 
 use \DateTimeImmutable;
-use Etwin\Core\Instant;
-use Etwin\User\ShortUser;
+use Eternaltwin\Core\Instant;
+use Eternaltwin\User\ShortUser;
 
 final class LinkAction implements \JsonSerializable {
   private DateTimeImmutable $time;

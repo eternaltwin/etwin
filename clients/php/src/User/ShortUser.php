@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\User;
+namespace Eternaltwin\User;
 
-use Etwin\Core\ObjectType;
+use Eternaltwin\Core\ObjectType;
 
 final class ShortUser implements \JsonSerializable, ShortUserLike {
   private UserId $id;

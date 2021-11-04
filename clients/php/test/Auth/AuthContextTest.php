@@ -1,22 +1,22 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Test\Auth;
+namespace Eternaltwin\Test\Auth;
 
-use Etwin\Auth\AccessTokenAuthContext;
-use Etwin\Auth\AuthScope;
-use Etwin\Auth\AuthContext;
-use Etwin\Auth\GuestAuthContext;
-use Etwin\Auth\UserAuthContext;
-use Etwin\Oauth\OauthClientDisplayName;
-use Etwin\Oauth\OauthClientId;
-use Etwin\Oauth\OauthClientKey;
-use Etwin\Oauth\ShortOauthClient;
-use Etwin\Test\SerializationTestItem;
-use Etwin\User\ShortUser;
-use Etwin\User\UserDisplayName;
-use Etwin\User\UserDisplayNameVersion;
-use Etwin\User\UserDisplayNameVersions;
-use Etwin\User\UserId;
+use Eternaltwin\Auth\AccessTokenAuthContext;
+use Eternaltwin\Auth\AuthScope;
+use Eternaltwin\Auth\AuthContext;
+use Eternaltwin\Auth\GuestAuthContext;
+use Eternaltwin\Auth\UserAuthContext;
+use Eternaltwin\Oauth\OauthClientDisplayName;
+use Eternaltwin\Oauth\OauthClientId;
+use Eternaltwin\Oauth\OauthClientKey;
+use Eternaltwin\Oauth\ShortOauthClient;
+use Eternaltwin\Test\SerializationTestItem;
+use Eternaltwin\User\ShortUser;
+use Eternaltwin\User\UserDisplayName;
+use Eternaltwin\User\UserDisplayNameVersion;
+use Eternaltwin\User\UserDisplayNameVersions;
+use Eternaltwin\User\UserId;
 use PHPUnit\Framework\TestCase;
 
 final class AuthContextTest extends TestCase {
@@ -31,7 +31,7 @@ final class AuthContextTest extends TestCase {
 
   public function provideFromJson(): array {
     return SerializationTestItem::fromTestDir(
-      "auth/auth-context",
+      "core/auth/auth-context",
       [
         "demurgos" => new UserAuthContext(
           AuthScope::Default(),

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Hammerfest;
+namespace Eternaltwin\Hammerfest;
 
-use Etwin\Core\ObjectType;
+use Eternaltwin\Core\ObjectType;
 
 final class ShortHammerfestUser implements \JsonSerializable {
   private HammerfestServer $server;

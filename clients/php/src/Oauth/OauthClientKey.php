@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Oauth;
+namespace Eternaltwin\Oauth;
 
 final class OauthClientKey implements \JsonSerializable {
   private string $inner;

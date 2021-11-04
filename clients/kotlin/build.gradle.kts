@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  kotlin("jvm") version "1.5.10"
-  kotlin("plugin.serialization") version "1.5.10"
-  id("org.jetbrains.dokka") version "1.4.30"
+  kotlin("jvm") version "1.5.31"
+  kotlin("plugin.serialization") version "1.5.31"
+  id("org.jetbrains.dokka") version "1.5.30"
   id("maven-publish")
 }
 
@@ -57,7 +57,7 @@ publishing {
         artifactId = "etwin"
         name.set("Etwin")
         description.set("Official Eternaltwin client for the JVM")
-        url.set("https://gitlab.com/eternal-twin/etwin")
+        url.set("https://gitlab.com/eternaltwin/etwin")
         licenses {
           license {
             name.set("AGPL-V3")

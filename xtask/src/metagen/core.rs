@@ -224,6 +224,7 @@ impl MgTypePath {
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum MgType {
   String,
+  Uuid,
   Uint(MgUintType),
   Sint(MgSintType),
   Unique(MgTypeId, Box<MgType>),

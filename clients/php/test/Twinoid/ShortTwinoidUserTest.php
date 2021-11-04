@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Test\Twinoid;
+namespace Eternaltwin\Test\Twinoid;
 
-use Etwin\Test\SerializationTestItem;
-use Etwin\Twinoid\ShortTwinoidUser;
-use Etwin\Twinoid\TwinoidUserDisplayName;
-use Etwin\Twinoid\TwinoidUserId;
+use Eternaltwin\Test\SerializationTestItem;
+use Eternaltwin\Twinoid\ShortTwinoidUser;
+use Eternaltwin\Twinoid\TwinoidUserDisplayName;
+use Eternaltwin\Twinoid\TwinoidUserId;
 use PHPUnit\Framework\TestCase;
 
 final class ShortTwinoidUserTest extends TestCase {

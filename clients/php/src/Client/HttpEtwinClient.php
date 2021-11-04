@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Client;
+namespace Eternaltwin\Client;
 
-use Etwin\Auth\AccessTokenAuthContext;
-use Etwin\Auth\AuthContext;
-use Etwin\Auth\GuestAuthContext;
-use Etwin\Auth\UserAuthContext;
-use Etwin\User\User;
-use Etwin\User\UserId;
+use Eternaltwin\Auth\AccessTokenAuthContext;
+use Eternaltwin\Auth\AuthContext;
+use Eternaltwin\Auth\GuestAuthContext;
+use Eternaltwin\Auth\UserAuthContext;
+use Eternaltwin\User\User;
+use Eternaltwin\User\UserId;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\UriResolver;

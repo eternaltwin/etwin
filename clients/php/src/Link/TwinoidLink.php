@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Link;
+namespace Eternaltwin\Link;
 
-use Etwin\Twinoid\ShortTwinoidUser;
+use Eternaltwin\Twinoid\ShortTwinoidUser;
 
 final class TwinoidLink implements \JsonSerializable {
   private LinkAction $link;

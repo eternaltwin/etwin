@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Core;
+namespace Eternaltwin\Core;
 
 final class Instant {
   const FORMAT = "Y-m-d\TH:i:s\.v\Z";
@@ -14,7 +14,7 @@ final class Instant {
    */
   final public static function jsonDeserialize($raw): \DateTimeImmutable {
     if (!is_string($raw)) {
-      throw new \TypeError("Expected `\Etwin\Core\Instant::jsonDeserialize` input to be a `string`");
+      throw new \TypeError("Expected `\Eternaltwin\Core\Instant::jsonDeserialize` input to be a `string`");
     }
     $maybeDate = \DateTimeImmutable::createFromFormat(self::FORMAT, $raw);
     if ($maybeDate == false) {

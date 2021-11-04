@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Test\Auth;
+namespace Eternaltwin\Test\Auth;
 
-use Etwin\Auth\AuthScope;
-use Etwin\Auth\GuestAuthContext;
-use Etwin\Test\SerializationTestItem;
+use Eternaltwin\Auth\AuthScope;
+use Eternaltwin\Auth\GuestAuthContext;
+use Eternaltwin\Test\SerializationTestItem;
 use PHPUnit\Framework\TestCase;
 
 final class GuestAuthContextTest extends TestCase {
@@ -19,7 +19,7 @@ final class GuestAuthContextTest extends TestCase {
 
   public function provideFromJson(): array {
     return SerializationTestItem::fromTestDir(
-      "auth/guest-auth-context",
+      "core/auth/guest-auth-context",
       [
         "guest" => new GuestAuthContext(
           AuthScope::Default(),

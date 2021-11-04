@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\User;
+namespace Eternaltwin\User;
 
 final class UserDisplayNameVersion implements \JsonSerializable {
   private UserDisplayName $value;

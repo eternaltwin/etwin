@@ -1,16 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Test\Link;
+namespace Eternaltwin\Test\Link;
 
 use \DateTimeImmutable;
-use Etwin\Core\Instant;
-use Etwin\Link\LinkAction;
-use Etwin\Test\SerializationTestItem;
-use Etwin\User\ShortUser;
-use Etwin\User\UserDisplayName;
-use Etwin\User\UserDisplayNameVersion;
-use Etwin\User\UserDisplayNameVersions;
-use Etwin\User\UserId;
+use Eternaltwin\Core\Instant;
+use Eternaltwin\Link\LinkAction;
+use Eternaltwin\Test\SerializationTestItem;
+use Eternaltwin\User\ShortUser;
+use Eternaltwin\User\UserDisplayName;
+use Eternaltwin\User\UserDisplayNameVersion;
+use Eternaltwin\User\UserDisplayNameVersions;
+use Eternaltwin\User\UserId;
 use PHPUnit\Framework\TestCase;
 
 final class LinkActionTest extends TestCase {

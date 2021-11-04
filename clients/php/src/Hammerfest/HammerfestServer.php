@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Hammerfest;
+namespace Eternaltwin\Hammerfest;
 
 final class HammerfestServer implements \JsonSerializable {
   private static ?self $_HammerfestEs;

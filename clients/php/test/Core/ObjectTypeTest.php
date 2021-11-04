@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Test\Core;
+namespace Eternaltwin\Test\Core;
 
-use Etwin\Core\ObjectType;
+use Eternaltwin\Core\ObjectType;
 use PHPUnit\Framework\TestCase;
 
 final class ObjectTypeTest extends TestCase {

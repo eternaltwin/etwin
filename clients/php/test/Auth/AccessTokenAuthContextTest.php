@@ -1,19 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Test\Auth;
+namespace Eternaltwin\Test\Auth;
 
-use Etwin\Auth\AccessTokenAuthContext;
-use Etwin\Auth\AuthScope;
-use Etwin\Oauth\OauthClientDisplayName;
-use Etwin\Oauth\OauthClientId;
-use Etwin\Oauth\OauthClientKey;
-use Etwin\Oauth\ShortOauthClient;
-use Etwin\Test\SerializationTestItem;
-use Etwin\User\ShortUser;
-use Etwin\User\UserDisplayName;
-use Etwin\User\UserDisplayNameVersion;
-use Etwin\User\UserDisplayNameVersions;
-use Etwin\User\UserId;
+use Eternaltwin\Auth\AccessTokenAuthContext;
+use Eternaltwin\Auth\AuthScope;
+use Eternaltwin\Oauth\OauthClientDisplayName;
+use Eternaltwin\Oauth\OauthClientId;
+use Eternaltwin\Oauth\OauthClientKey;
+use Eternaltwin\Oauth\ShortOauthClient;
+use Eternaltwin\Test\SerializationTestItem;
+use Eternaltwin\User\ShortUser;
+use Eternaltwin\User\UserDisplayName;
+use Eternaltwin\User\UserDisplayNameVersion;
+use Eternaltwin\User\UserDisplayNameVersions;
+use Eternaltwin\User\UserId;
 use PHPUnit\Framework\TestCase;
 
 final class AccessTokenAuthContextTest extends TestCase {
@@ -28,7 +28,7 @@ final class AccessTokenAuthContextTest extends TestCase {
 
   public function provideFromJson(): array {
     return SerializationTestItem::fromTestDir(
-      "auth/access-token-auth-context",
+      "core/auth/access-token-auth-context",
       [
         "eternalfest-demurgos" => new AccessTokenAuthContext(
           AuthScope::Default(),

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Test;
+namespace Eternaltwin\Test;
 
 final class SerializationTestItem {
   private string $json;

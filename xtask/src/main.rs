@@ -3,7 +3,7 @@ use std::error::Error;
 use xtask::{DnsArgs, PublishArgs};
 
 #[derive(Debug, Clap)]
-#[clap(author = "Charles \"Demurgos\" Samborski")]
+#[clap(author = "Eternaltwin")]
 struct CliArgs {
   #[clap(subcommand)]
   task: Task,
@@ -20,6 +20,9 @@ enum Task {
   /// Generate Kotlin definitions
   #[clap(name = "kotlin")]
   Kotlin(KotlinArgs),
+  /// Generate PHP definitions
+  #[clap(name = "php")]
+  Php(PhpArgs),
   /// Publish the CLI and all its dependencies
   #[clap(name = "publish")]
   Publish(PublishArgs),
@@ -33,6 +36,10 @@ struct DocsArgs {}
 #[derive(Debug, Clap)]
 struct KotlinArgs {}
 
+/// Arguments to the `php` task.
+#[derive(Debug, Clap)]
+struct PhpArgs {}
+
 fn main() {
   let args: CliArgs = CliArgs::parse();
 
@@ -40,6 +47,7 @@ fn main() {
     Task::Dns(ref args) => dns(args),
     Task::Docs(ref args) => docs(args),
     Task::Kotlin(ref args) => kotlin(args),
+    Task::Php(ref args) => php(args),
     Task::Publish(ref args) => publish(args),
   };
 
@@ -59,6 +67,10 @@ fn docs(_args: &DocsArgs) -> Result<(), Box<dyn Error>> {
 
 fn kotlin(_args: &KotlinArgs) -> Result<(), Box<dyn Error>> {
   xtask::kotlin()
+}
+
+fn php(_args: &PhpArgs) -> Result<(), Box<dyn Error>> {
+  xtask::php()
 }
 
 fn publish(args: &PublishArgs) -> Result<(), Box<dyn Error>> {

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Etwin\Auth;
+namespace Eternaltwin\Auth;
 
 final class GuestAuthContext implements \JsonSerializable {
   private AuthScope $scope;
