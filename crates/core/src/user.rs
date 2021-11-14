@@ -363,6 +363,7 @@ pub trait UserStore: Send + Sync {
 
   async fn get_user(&self, options: &GetUserOptions) -> Result<Option<GetUserResult>, AnyError>;
 
+  /// TODO: Return `Result<ShortUser, GetShortUserError>` where `NotFound` is one of the error variants
   async fn get_short_user(&self, options: &GetShortUserOptions) -> Result<Option<ShortUser>, AnyError>;
 
   async fn get_user_with_password(&self, options: &GetUserOptions) -> Result<Option<ShortUserWithPassword>, AnyError>;

@@ -4,9 +4,10 @@ use etwin_core::auth::{AuthContext, AuthScope, GuestAuthContext, UserAuthContext
 use etwin_core::clock::VirtualClock;
 use etwin_core::core::{Instant, Listing, ListingCount, LocaleId, Secret};
 use etwin_core::forum::{
-  AddModeratorOptions, CreateThreadOptions, ForumActor, ForumPostRevision, ForumPostRevisionContent, ForumRole,
-  ForumRoleGrant, ForumSection, ForumSectionListing, ForumSectionMeta, ForumSectionSelf, ForumStore, ForumThread,
-  GetForumSectionOptions, LatestForumPostRevisionListing, ShortForumPost, UpsertSystemSectionOptions, UserForumActor,
+  AddModeratorOptions, CreatePostOptions, CreateThreadOptions, ForumActor, ForumPost, ForumPostListing,
+  ForumPostRevision, ForumPostRevisionContent, ForumRole, ForumRoleGrant, ForumSection, ForumSectionListing,
+  ForumSectionMeta, ForumSectionSelf, ForumStore, ForumThread, GetForumSectionOptions, GetThreadOptions,
+  LatestForumPostRevisionListing, ShortForumPost, UpsertSystemSectionOptions, UserForumActor,
 };
 use etwin_core::user::{CreateUserOptions, ShortUser, UserStore};
 use etwin_core::uuid::Uuid4Generator;
@@ -429,6 +430,342 @@ async fn inner_test_create_thread_in_the_main_section<TyForum, TyForumStore, TyU
           },
         },
       }],
+    },
+  };
+  assert_eq!(actual, expected);
+}
+
+#[tokio::test]
+#[serial]
+async fn test_create_two_sections_but_create_a_thread_in_only_one_of_them() {
+  inner_test_create_two_sections_but_create_a_thread_in_only_one_of_them(make_test_api().await).await;
+}
+
+async fn inner_test_create_two_sections_but_create_a_thread_in_only_one_of_them<TyForum, TyForumStore, TyUserStore>(
+  api: TestApi<TyForum, TyForumStore, TyUserStore>,
+) where
+  TyForum: ApiRef<ForumService<Arc<VirtualClock>, TyForumStore, TyUserStore>>,
+  TyForumStore: ForumStore,
+  TyUserStore: UserStore,
+{
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
+  let section = api
+    .forum
+    .as_ref()
+    .upsert_system_section(&UpsertSystemSectionOptions {
+      key: "fr_main".parse().unwrap(),
+      display_name: "Forum Général".parse().unwrap(),
+      locale: Some(LocaleId::FrFr),
+    })
+    .await
+    .unwrap();
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  let en_section = api
+    .forum
+    .as_ref()
+    .upsert_system_section(&UpsertSystemSectionOptions {
+      key: "en_main".parse().unwrap(),
+      display_name: "Main Forum".parse().unwrap(),
+      locale: Some(LocaleId::EnUs),
+    })
+    .await
+    .unwrap();
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  let alice = api
+    .user_store
+    .create_user(&CreateUserOptions {
+      display_name: "Alice".parse().unwrap(),
+      email: None,
+      username: None,
+      password: None,
+    })
+    .await
+    .unwrap();
+  let alice_acx = AuthContext::User(UserAuthContext {
+    scope: AuthScope::Default,
+    user: alice.clone().into(),
+    is_administrator: true,
+  });
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  api
+    .forum
+    .as_ref()
+    .create_thread(
+      &alice_acx,
+      &CreateThreadOptions {
+        section: section.as_ref().into(),
+        title: "Hello".parse().unwrap(),
+        body: "**First** discussion thread".to_string(),
+      },
+    )
+    .await
+    .unwrap();
+  let actual = api.forum.as_ref().get_sections(&alice_acx).await.unwrap();
+  let expected = ForumSectionListing {
+    count: 2,
+    offset: 0,
+    limit: 20,
+    items: vec![
+      ForumSectionMeta {
+        id: section.id,
+        key: Some("fr_main".parse().unwrap()),
+        display_name: "Forum Général".parse().unwrap(),
+        ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
+        locale: Some(LocaleId::FrFr),
+        threads: ListingCount { count: 1 },
+        this: ForumSectionSelf {
+          roles: vec![ForumRole::Administrator],
+        },
+      },
+      ForumSectionMeta {
+        id: en_section.id,
+        key: Some("en_main".parse().unwrap()),
+        display_name: "Main Forum".parse().unwrap(),
+        ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 1),
+        locale: Some(LocaleId::EnUs),
+        threads: ListingCount { count: 0 },
+        this: ForumSectionSelf {
+          roles: vec![ForumRole::Administrator],
+        },
+      },
+    ],
+  };
+  assert_eq!(actual, expected);
+}
+
+#[tokio::test]
+#[serial]
+async fn test_create_thread_in_the_main_section_and_post_10_messages() {
+  inner_test_create_thread_in_the_main_section_and_post_10_messages(make_test_api().await).await;
+}
+
+async fn inner_test_create_thread_in_the_main_section_and_post_10_messages<TyForum, TyForumStore, TyUserStore>(
+  api: TestApi<TyForum, TyForumStore, TyUserStore>,
+) where
+  TyForum: ApiRef<ForumService<Arc<VirtualClock>, TyForumStore, TyUserStore>>,
+  TyForumStore: ForumStore,
+  TyUserStore: UserStore,
+{
+  api.clock.as_ref().advance_to(Instant::ymd_hms(2021, 1, 1, 0, 0, 0));
+  let section = api
+    .forum
+    .as_ref()
+    .upsert_system_section(&UpsertSystemSectionOptions {
+      key: "fr_main".parse().unwrap(),
+      display_name: "Forum Général".parse().unwrap(),
+      locale: Some(LocaleId::FrFr),
+    })
+    .await
+    .unwrap();
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  let alice = api
+    .user_store
+    .create_user(&CreateUserOptions {
+      display_name: "Alice".parse().unwrap(),
+      email: None,
+      username: None,
+      password: None,
+    })
+    .await
+    .unwrap();
+  let alice_acx = AuthContext::User(UserAuthContext {
+    scope: AuthScope::Default,
+    user: alice.clone().into(),
+    is_administrator: true,
+  });
+  api.clock.as_ref().advance_by(Duration::seconds(1));
+  let thread: ForumThread = api
+    .forum
+    .as_ref()
+    .create_thread(
+      &alice_acx,
+      &CreateThreadOptions {
+        section: section.as_ref().into(),
+        title: "Hello".parse().unwrap(),
+        body: "Original post".to_string(),
+      },
+    )
+    .await
+    .unwrap();
+  let mut posts: Vec<ForumPost> = Vec::new();
+  for post_idx in 0..10 {
+    api.clock.as_ref().advance_by(Duration::seconds(1));
+    let post = api
+      .forum
+      .as_ref()
+      .create_post(
+        &alice_acx,
+        &CreatePostOptions {
+          thread: thread.as_ref().into(),
+          body: format!("Reply {}", post_idx).parse().unwrap(),
+        },
+      )
+      .await
+      .unwrap();
+    posts.push(post);
+  }
+  assert_eq!(posts.len(), 10);
+  let actual = api
+    .forum
+    .as_ref()
+    .get_thread(
+      &alice_acx,
+      &GetThreadOptions {
+        thread: thread.id.into(),
+        post_offset: 7,
+        post_limit: 5,
+      },
+    )
+    .await
+    .unwrap();
+  let expected = ForumThread {
+    id: thread.id,
+    key: None,
+    title: "Hello".parse().unwrap(),
+    ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 2),
+    is_locked: false,
+    is_pinned: false,
+    section: ForumSectionMeta {
+      id: section.id,
+      key: Some("fr_main".parse().unwrap()),
+      display_name: "Forum Général".parse().unwrap(),
+      locale: Some(LocaleId::FrFr),
+      ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 0),
+      threads: ListingCount { count: 1 },
+      this: ForumSectionSelf {
+        roles: vec![ForumRole::Administrator],
+      },
+    },
+    posts: ForumPostListing {
+      count: 11,
+      offset: 7,
+      limit: 5,
+      items: vec![
+        ShortForumPost {
+          id: posts[6].id,
+          ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 9),
+          author: ForumActor::UserForumActor(UserForumActor {
+            role: None,
+            user: ShortUser {
+              id: alice.id,
+              display_name: alice.display_name.clone(),
+            },
+          }),
+          revisions: LatestForumPostRevisionListing {
+            count: 1,
+            last: ForumPostRevision {
+              id: posts[6].revisions.last.id,
+              time: Instant::ymd_hms(2021, 1, 1, 0, 0, 9),
+              author: ForumActor::UserForumActor(UserForumActor {
+                role: None,
+                user: ShortUser {
+                  id: alice.id,
+                  display_name: alice.display_name.clone(),
+                },
+              }),
+              content: Some(ForumPostRevisionContent {
+                marktwin: "Reply 6".parse().unwrap(),
+                html: "Reply 6".parse().unwrap(),
+              }),
+              moderation: None,
+              comment: None,
+            },
+          },
+        },
+        ShortForumPost {
+          id: posts[7].id,
+          ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 10),
+          author: ForumActor::UserForumActor(UserForumActor {
+            role: None,
+            user: ShortUser {
+              id: alice.id,
+              display_name: alice.display_name.clone(),
+            },
+          }),
+          revisions: LatestForumPostRevisionListing {
+            count: 1,
+            last: ForumPostRevision {
+              id: posts[7].revisions.last.id,
+              time: Instant::ymd_hms(2021, 1, 1, 0, 0, 10),
+              author: ForumActor::UserForumActor(UserForumActor {
+                role: None,
+                user: ShortUser {
+                  id: alice.id,
+                  display_name: alice.display_name.clone(),
+                },
+              }),
+              content: Some(ForumPostRevisionContent {
+                marktwin: "Reply 7".parse().unwrap(),
+                html: "Reply 7".parse().unwrap(),
+              }),
+              moderation: None,
+              comment: None,
+            },
+          },
+        },
+        ShortForumPost {
+          id: posts[8].id,
+          ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 11),
+          author: ForumActor::UserForumActor(UserForumActor {
+            role: None,
+            user: ShortUser {
+              id: alice.id,
+              display_name: alice.display_name.clone(),
+            },
+          }),
+          revisions: LatestForumPostRevisionListing {
+            count: 1,
+            last: ForumPostRevision {
+              id: posts[8].revisions.last.id,
+              time: Instant::ymd_hms(2021, 1, 1, 0, 0, 11),
+              author: ForumActor::UserForumActor(UserForumActor {
+                role: None,
+                user: ShortUser {
+                  id: alice.id,
+                  display_name: alice.display_name.clone(),
+                },
+              }),
+              content: Some(ForumPostRevisionContent {
+                marktwin: "Reply 8".parse().unwrap(),
+                html: "Reply 8".parse().unwrap(),
+              }),
+              moderation: None,
+              comment: None,
+            },
+          },
+        },
+        ShortForumPost {
+          id: posts[9].id,
+          ctime: Instant::ymd_hms(2021, 1, 1, 0, 0, 12),
+          author: ForumActor::UserForumActor(UserForumActor {
+            role: None,
+            user: ShortUser {
+              id: alice.id,
+              display_name: alice.display_name.clone(),
+            },
+          }),
+          revisions: LatestForumPostRevisionListing {
+            count: 1,
+            last: ForumPostRevision {
+              id: posts[9].revisions.last.id,
+              time: Instant::ymd_hms(2021, 1, 1, 0, 0, 12),
+              author: ForumActor::UserForumActor(UserForumActor {
+                role: None,
+                user: ShortUser {
+                  id: alice.id,
+                  display_name: alice.display_name.clone(),
+                },
+              }),
+              content: Some(ForumPostRevisionContent {
+                marktwin: "Reply 9".parse().unwrap(),
+                html: "Reply 9".parse().unwrap(),
+              }),
+              moderation: None,
+              comment: None,
+            },
+          },
+        },
+      ],
     },
   };
   assert_eq!(actual, expected);

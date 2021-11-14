@@ -1,17 +1,21 @@
 use async_trait::async_trait;
 use etwin_core::api::ApiRef;
 use etwin_core::clock::Clock;
-use etwin_core::core::{Instant, Listing, ListingCount, LocaleId};
+use etwin_core::core::{HtmlFragment, Instant, Listing, ListingCount, LocaleId};
 use etwin_core::forum::{
-  ForumActor, ForumPostId, ForumPostRevisionContent, ForumPostRevisionId, ForumRole, ForumRoleGrant, ForumSection,
-  ForumSectionDisplayName, ForumSectionId, ForumSectionKey, ForumSectionRef, ForumSectionSelf, ForumStore,
-  ForumThreadId, ForumThreadKey, ForumThreadListing, ForumThreadMeta, ForumThreadTitle, GetForumSectionOptions,
-  GetSectionMetaError, RawAddModeratorOptions, RawCreateForumThreadResult, RawCreateThreadsOptions, RawForumActor,
-  RawForumPostRevision, RawForumRoleGrant, RawForumSectionMeta, RawGetRoleGrantsOptions, RawGetSectionsOptions,
-  RawGetThreadsOptions, RawUserForumActor, UpsertSystemSectionError, UpsertSystemSectionOptions,
+  ForumActor, ForumPostId, ForumPostRevisionComment, ForumPostRevisionContent, ForumPostRevisionId, ForumRole,
+  ForumRoleGrant, ForumSection, ForumSectionDisplayName, ForumSectionId, ForumSectionKey, ForumSectionRef,
+  ForumSectionSelf, ForumStore, ForumThreadId, ForumThreadKey, ForumThreadListing, ForumThreadMeta, ForumThreadRef,
+  ForumThreadTitle, GetForumSectionMetaOptions, GetSectionMetaError, GetThreadMetaError, MarktwinText,
+  RawAddModeratorOptions, RawCreateForumPostResult, RawCreateForumThreadResult, RawCreatePostOptions,
+  RawCreateThreadsOptions, RawForumActor, RawForumPostRevision, RawForumRoleGrant, RawForumSectionMeta,
+  RawForumThreadMeta, RawGetForumThreadMetaOptions, RawGetPostsOptions, RawGetRoleGrantsOptions, RawGetSectionsOptions,
+  RawGetThreadsOptions, RawLatestForumPostRevisionListing, RawShortForumPost, RawUserForumActor,
+  UpsertSystemSectionError, UpsertSystemSectionOptions,
 };
 use etwin_core::pg_num::PgU32;
 use etwin_core::types::AnyError;
+use etwin_core::user::UserId;
 use etwin_core::uuid::UuidGenerator;
 use etwin_db_schema::schema::ForumRoleGrantBySectionArray;
 use sqlx::PgPool;
@@ -106,6 +110,7 @@ where
           sections AS (
             SELECT forum_section_id, key, ctime, display_name, locale, thread_count, role_grants
             FROM forum_section_meta
+            ORDER BY ctime, key, forum_section_id
             LIMIT $1::U32 OFFSET $2::U32
           ),
           section_array AS (
@@ -163,7 +168,7 @@ where
 
   async fn get_section_meta(
     &self,
-    options: &GetForumSectionOptions,
+    options: &GetForumSectionMetaOptions,
   ) -> Result<RawForumSectionMeta, GetSectionMetaError> {
     let mut section_id: Option<ForumSectionId> = None;
     let mut section_key: Option<&ForumSectionKey> = None;
@@ -237,7 +242,7 @@ where
       post_count: PgU32,
       forum_section_id: ForumSectionId,
     }
-    // TODO: Differentiate `SectionNotFound` from "empty section"?
+    // TODO: Differentiate `notFound` from "empty"?
     // language=PostgreSQL
     let rows: Vec<Row> = sqlx::query_as::<_, Row>(
       r"
@@ -290,11 +295,63 @@ where
       })
       .collect();
 
-    Ok(Listing {
+    Ok(ForumThreadListing {
       offset: options.offset,
       limit: options.limit,
       count,
       items,
+    })
+  }
+
+  async fn get_thread_meta(
+    &self,
+    options: &RawGetForumThreadMetaOptions,
+  ) -> Result<RawForumThreadMeta, GetThreadMetaError> {
+    let mut thread_id: Option<ForumThreadId> = None;
+    let mut thread_key: Option<&ForumThreadKey> = None;
+    match &options.thread {
+      ForumThreadRef::Id(r) => thread_id = Some(r.id),
+      ForumThreadRef::Key(r) => thread_key = Some(&r.key),
+    };
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      forum_thread_id: ForumThreadId,
+      key: Option<ForumThreadKey>,
+      ctime: Instant,
+      title: ForumThreadTitle,
+      is_locked: bool,
+      is_pinned: bool,
+      forum_section_id: ForumSectionId,
+      post_count: PgU32,
+    }
+    // language=PostgreSQL
+    let row: Option<Row> = sqlx::query_as::<_, Row>(
+      r"
+        SELECT
+          forum_thread_id, key, ctime, title, is_locked, is_pinned, forum_section_id,
+          post_count
+        FROM forum_thread_meta
+        WHERE forum_thread_id = $1::FORUM_THREAD_ID OR key = $2::FORUM_THREAD_KEY
+        ;
+    ",
+    )
+    .bind(thread_id)
+    .bind(thread_key)
+    .fetch_optional(self.database.as_ref())
+    .await
+    .map_err(|e| GetThreadMetaError::Other(Box::new(e)))?;
+    let row = row.ok_or(GetThreadMetaError::NotFound)?;
+    Ok(RawForumThreadMeta {
+      id: row.forum_thread_id,
+      key: row.key,
+      title: row.title,
+      section: row.forum_section_id.into(),
+      ctime: row.ctime,
+      is_pinned: row.is_pinned,
+      is_locked: row.is_locked,
+      posts: ListingCount {
+        count: row.post_count.into(),
+      },
     })
   }
 
@@ -429,6 +486,222 @@ where
       is_locked: false,
       post_id: forum_post_id,
       post_revision: revision,
+    })
+  }
+
+  async fn get_posts(&self, options: &RawGetPostsOptions) -> Result<Listing<RawShortForumPost>, AnyError> {
+    let (thread_id, thread_key) = options.thread.split_deref();
+    #[derive(Debug, sqlx::FromRow)]
+    struct Row {
+      count: PgU32,
+      forum_post_id: ForumPostId,
+      ctime: Instant,
+      revision_count: PgU32,
+      latest_revision_id: ForumPostRevisionId,
+      latest_revision_time: Instant,
+      latest_revision_body: Option<MarktwinText>,
+      latest_revision_html_body: Option<HtmlFragment>,
+      latest_revision_mod_body: Option<MarktwinText>,
+      latest_revision_html_mod_body: Option<HtmlFragment>,
+      latest_revision_comment: Option<ForumPostRevisionComment>,
+      latest_revision_author_id: UserId,
+      first_revision_author_id: UserId,
+    }
+    // TODO: Differentiate `notFound` from "empty"?
+    // language=PostgreSQL
+    let rows: Vec<Row> = sqlx::query_as::<_, Row>(
+      r"
+        WITH
+          thread AS (
+            SELECT forum_thread_id
+            FROM forum_threads
+            WHERE
+              forum_thread_id = $1::FORUM_THREAD_ID OR key = $2::FORUM_THREAD_KEY
+          ),
+          items AS (
+                    SELECT forum_post_id, ctime,
+          LAST_VALUE(forum_post_revision_id) OVER w AS latest_revision_id,
+          LAST_VALUE(time) OVER w AS latest_revision_time,
+          LAST_VALUE(body) OVER w AS latest_revision_body,
+          LAST_VALUE(_html_body) OVER w AS latest_revision_html_body,
+          LAST_VALUE(mod_body) OVER w AS latest_revision_mod_body,
+          LAST_VALUE(_html_mod_body) OVER w AS latest_revision_html_mod_body,
+          LAST_VALUE(comment) OVER w AS latest_revision_comment,
+          LAST_VALUE(author_id) OVER w AS latest_revision_author_id,
+          FIRST_VALUE(author_id) OVER w AS first_revision_author_id,
+                           COUNT(forum_post_revision_id) OVER w as revision_count,
+          ROW_NUMBER() OVER w AS rn
+        FROM forum_post_revisions
+               INNER JOIN forum_posts USING (forum_post_id)
+            WHERE forum_thread_id = (SELECT forum_thread_id FROM thread)
+          WINDOW w AS (PARTITION BY forum_post_id ORDER BY time ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+          ),
+          item_count AS (
+            SELECT COUNT(*) AS count
+            FROM items
+          )
+        SELECT count, items.*
+        FROM item_count, items
+        WHERE items.rn = 1
+        ORDER BY ctime
+        LIMIT $3::U32 OFFSET $4::U32
+        ;
+    ",
+    )
+      .bind(thread_id)
+      .bind(thread_key)
+      .bind(PgU32::from(options.limit))
+      .bind(PgU32::from(options.offset))
+      .fetch_all(self.database.as_ref())
+      .await?;
+
+    let mut count: u32 = 0;
+
+    let items: Vec<_> = rows
+      .into_iter()
+      .map(|row| {
+        count = row.count.into();
+        RawShortForumPost {
+          id: row.forum_post_id,
+          ctime: row.ctime,
+          author: RawForumActor::UserForumActor(RawUserForumActor {
+            role: None,
+            user: row.first_revision_author_id.into(),
+          }),
+          revisions: RawLatestForumPostRevisionListing {
+            count: row.revision_count.into(),
+            last: RawForumPostRevision {
+              id: row.latest_revision_id,
+              time: row.latest_revision_time,
+              author: RawForumActor::UserForumActor(RawUserForumActor {
+                role: None,
+                user: row.latest_revision_author_id.into(),
+              }),
+              content: match (row.latest_revision_body, row.latest_revision_html_body) {
+                (Some(marktwin), Some(html)) => Some(ForumPostRevisionContent { marktwin, html }),
+                (None, None) => None,
+                _ => todo!(),
+              },
+              moderation: match (row.latest_revision_mod_body, row.latest_revision_html_mod_body) {
+                (Some(marktwin), Some(html)) => Some(ForumPostRevisionContent { marktwin, html }),
+                (None, None) => None,
+                _ => todo!(),
+              },
+              comment: row.latest_revision_comment,
+            },
+          },
+        }
+      })
+      .collect();
+
+    Ok(Listing {
+      offset: options.offset,
+      limit: options.limit,
+      count,
+      items,
+    })
+  }
+
+  async fn create_post(&self, options: &RawCreatePostOptions) -> Result<RawCreateForumPostResult, AnyError> {
+    let now = self.clock.now();
+    let mut tx = self.database.as_ref().begin().await?;
+    let (thread_id, thread_key) = options.thread.split_deref();
+
+    let forum_post_id = ForumPostId::from_uuid(self.uuid_generator.next());
+    #[derive(Debug, sqlx::FromRow)]
+    struct PostRow {
+      ctime: Instant,
+      forum_thread_id: ForumThreadId,
+      forum_section_id: ForumSectionId,
+    }
+    // language=PostgreSQL
+    let row: PostRow = sqlx::query_as::<_, PostRow>(
+      r"
+      WITH thread AS (
+        SELECT forum_thread_id
+        FROM forum_threads
+        WHERE
+        forum_thread_id = $3::FORUM_THREAD_ID OR key = $4::FORUM_THREAD_KEY
+      )
+      INSERT INTO forum_posts(
+        forum_post_id, ctime, forum_thread_id
+      )
+        (
+          SELECT
+            $2::FORUM_POST_ID AS forum_post_id,
+            $1::INSTANT AS ctime,
+            forum_thread_id
+          FROM thread
+        )
+      RETURNING ctime, forum_thread_id, (SELECT forum_section_id FROM forum_threads WHERE forum_threads.forum_thread_id = forum_thread_id) AS forum_section_id;
+      ",
+    )
+    .bind(now)
+    .bind(forum_post_id)
+    .bind(thread_id)
+    .bind(&thread_key)
+    .fetch_one(&mut tx)
+    .await?;
+
+    let forum_thread_id = row.forum_thread_id;
+    let forum_section_id = row.forum_section_id;
+
+    let revision_id = ForumPostRevisionId::from_uuid(self.uuid_generator.next());
+    let (raw_actor, user_actor_id) = match &options.actor {
+      ForumActor::ClientForumActor(_) => todo!(),
+      ForumActor::RoleForumActor(_) => todo!(),
+      ForumActor::UserForumActor(a) => (
+        RawForumActor::UserForumActor(RawUserForumActor {
+          role: None,
+          user: a.user.as_ref(),
+        }),
+        a.user.id,
+      ),
+    };
+    let revision = RawForumPostRevision {
+      id: revision_id,
+      time: now,
+      author: raw_actor,
+      content: Some(ForumPostRevisionContent {
+        marktwin: options.body_mkt.clone(),
+        html: options.body_html.clone(),
+      }),
+      moderation: None,
+      comment: None,
+    };
+
+    #[derive(Debug, sqlx::FromRow)]
+    struct RevisionRow {
+      time: Instant,
+    }
+    // language=PostgreSQL
+    let _row: RevisionRow = sqlx::query_as::<_, RevisionRow>(
+      r"
+      INSERT INTO forum_post_revisions(
+        forum_post_revision_id, time, body, _html_body, mod_body, _html_mod_body, forum_post_id, author_id, comment
+      )
+      VALUES (
+        $2::FORUM_POST_REVISION_ID, $1::INSTANT, $3::TEXT, $4::TEXT, NULL, NULL, $5::FORUM_POST_ID, $6::USER_ID, NULL
+      )
+      RETURNING time;
+      ",
+    )
+    .bind(revision.time)
+    .bind(revision.id)
+    .bind(options.body_mkt.as_str())
+    .bind(options.body_html.as_str())
+    .bind(forum_post_id)
+    .bind(user_actor_id)
+    .fetch_one(&mut tx)
+    .await?;
+
+    tx.commit().await?;
+
+    Ok(RawCreateForumPostResult {
+      id: forum_post_id,
+      thread: forum_thread_id.into(),
+      section: forum_section_id.into(),
+      revision,
     })
   }
 

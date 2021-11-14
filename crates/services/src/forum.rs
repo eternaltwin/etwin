@@ -3,14 +3,15 @@ use etwin_core::clock::Clock;
 use etwin_core::core::Listing;
 use etwin_core::forum::{
   AddModeratorOptions, CreatePostError, CreatePostOptions, CreateThreadOptions, DeleteModeratorOptions,
-  DeletePostError, DeletePostOptions, ForumActor, ForumPost, ForumPostRevision, ForumRole, ForumRoleGrant,
-  ForumSection, ForumSectionListing, ForumSectionMeta, ForumSectionSelf, ForumStore, ForumThread,
-  GetForumSectionOptions, GetThreadOptions, LatestForumPostRevisionListing, RawAddModeratorOptions,
-  RawCreateThreadsOptions, RawForumSectionMeta, RawGetSectionsOptions, RawGetThreadsOptions, ShortForumPost,
-  UpsertSystemSectionError, UpsertSystemSectionOptions, UserForumActor,
+  DeletePostError, DeletePostOptions, ForumActor, ForumPost, ForumPostListing, ForumPostRevision, ForumRole,
+  ForumRoleGrant, ForumSection, ForumSectionListing, ForumSectionMeta, ForumSectionSelf, ForumStore, ForumThread,
+  ForumThreadMetaWithSection, GetForumSectionMetaOptions, GetForumSectionOptions, GetThreadOptions,
+  LatestForumPostRevisionListing, RawAddModeratorOptions, RawCreatePostOptions, RawCreateThreadsOptions, RawForumActor,
+  RawForumSectionMeta, RawForumThreadMeta, RawGetForumThreadMetaOptions, RawGetPostsOptions, RawGetSectionsOptions,
+  RawGetThreadsOptions, ShortForumPost, UpsertSystemSectionError, UpsertSystemSectionOptions, UserForumActor,
 };
 use etwin_core::types::AnyError;
-use etwin_core::user::{ShortUser, UserStore};
+use etwin_core::user::{GetShortUserOptions, ShortUser, UserStore};
 use marktwin::emitter::emit_html;
 use marktwin::grammar::Grammar;
 use std::collections::HashSet;
@@ -67,8 +68,8 @@ pub enum GetSectionsError {
 
 #[derive(Error, Debug)]
 pub enum GetThreadError {
-  #[error("section not found")]
-  SectionNotFound,
+  #[error("thread not found")]
+  ThreadNotFound,
   #[error(transparent)]
   Other(AnyError),
 }
@@ -200,10 +201,8 @@ where
 
     let section = self
       .forum_store
-      .get_section_meta(&GetForumSectionOptions {
+      .get_section_meta(&GetForumSectionMetaOptions {
         section: thread.section.into(),
-        thread_offset: 0,
-        thread_limit: 10,
       })
       .await
       .map_err(|e| CreateThreadError::Other(Box::new(e)))?;
@@ -271,10 +270,126 @@ where
 
   pub async fn create_post(
     &self,
-    _acx: &AuthContext,
-    _options: &CreatePostOptions,
+    acx: &AuthContext,
+    options: &CreatePostOptions,
   ) -> Result<ForumPost, CreatePostError> {
-    todo!()
+    let actor: ForumActor = match acx {
+      AuthContext::User(user) => ForumActor::UserForumActor(UserForumActor {
+        role: None,
+        user: user.user.clone(),
+      }),
+      AuthContext::Guest(_) => return Err(CreatePostError::Forbidden),
+      _ => todo!(),
+    };
+    let grammar = Grammar {
+      admin: false,
+      depth: Some(4),
+      emphasis: true,
+      icons: HashSet::new(),
+      links: {
+        let mut links = HashSet::new();
+        links.insert(String::from("http"));
+        links.insert(String::from("https"));
+        links
+      },
+      r#mod: false,
+      quote: false,
+      spoiler: false,
+      strong: true,
+      strikethrough: true,
+    };
+    let body = marktwin::parser::parse(&grammar, options.body.as_str());
+    let body =
+      marktwin::ast::concrete::Root::try_from(body.syntax()).map_err(|()| CreatePostError::FailedToParseBody)?;
+    let body = {
+      let mut bytes: Vec<u8> = Vec::new();
+      emit_html(&mut bytes, &body).map_err(|_| CreatePostError::FailedToRenderBody)?;
+      String::from_utf8(bytes).map_err(|_| CreatePostError::FailedToRenderBody)?
+    };
+    let post = self
+      .forum_store
+      .create_post(&RawCreatePostOptions {
+        actor: actor.clone(),
+        thread: options.thread.clone(),
+        body_mkt: options.body.clone(),
+        body_html: body,
+      })
+      .await
+      .map_err(CreatePostError::Other)?;
+
+    let thread: RawForumThreadMeta = self
+      .forum_store
+      .get_thread_meta(&RawGetForumThreadMetaOptions {
+        thread: post.thread.into(),
+      })
+      .await
+      .map_err(|e| CreatePostError::Other(Box::new(e)))?;
+
+    let section: RawForumSectionMeta = self
+      .forum_store
+      .get_section_meta(&GetForumSectionMetaOptions {
+        section: post.section.into(),
+      })
+      .await
+      .map_err(|e| CreatePostError::Other(Box::new(e)))?;
+
+    let section = ForumSectionMeta {
+      id: section.id,
+      key: section.key,
+      display_name: section.display_name,
+      ctime: section.ctime,
+      locale: section.locale,
+      threads: section.threads,
+      this: match acx {
+        AuthContext::User(acx) => {
+          let mut roles = Vec::new();
+          if acx.is_administrator {
+            roles.push(ForumRole::Administrator);
+          }
+          if section
+            .role_grants
+            .iter()
+            .any(|grant| grant.role == ForumRole::Moderator && grant.user.id == acx.user.id)
+          {
+            roles.push(ForumRole::Moderator);
+          }
+          ForumSectionSelf { roles }
+        }
+        _ => ForumSectionSelf { roles: vec![] },
+      },
+    };
+
+    // TODO: Assert the author matches the expected actor
+    let post_revision = ForumPostRevision {
+      id: post.revision.id,
+      time: post.revision.time,
+      // TODO: Assert the author matches `post.revision.author`
+      author: actor.clone(),
+      content: post.revision.content,
+      moderation: post.revision.moderation,
+      comment: post.revision.comment,
+    };
+
+    Ok(ForumPost {
+      id: post.id,
+      ctime: post.revision.time,
+      // TODO: Assert the author matches `post.revision.author`
+      author: actor.clone(),
+      revisions: LatestForumPostRevisionListing {
+        count: 1,
+        last: post_revision,
+      },
+      thread: ForumThreadMetaWithSection {
+        id: thread.id,
+        key: thread.key,
+        title: thread.title,
+        ctime: thread.ctime,
+        is_pinned: thread.is_pinned,
+        is_locked: thread.is_locked,
+        posts: thread.posts,
+        section,
+      },
+    })
   }
 
   pub async fn delete_post(
@@ -343,7 +458,9 @@ where
   ) -> Result<ForumSection, GetSectionError> {
     let section_meta: RawForumSectionMeta = self
       .forum_store
-      .get_section_meta(options)
+      .get_section_meta(&GetForumSectionMetaOptions {
+        section: options.section.clone(),
+      })
       .await
       .map_err(|e| GetSectionError::Other(Box::new(e)))?;
     let threads = self
@@ -408,12 +525,154 @@ where
     })
   }
 
-  pub async fn get_thread(
-    &self,
-    _acx: &AuthContext,
-    _options: &GetThreadOptions,
-  ) -> Result<ForumSection, GetThreadError> {
-    todo!()
+  pub async fn get_thread(&self, acx: &AuthContext, options: &GetThreadOptions) -> Result<ForumThread, GetThreadError> {
+    let time = self.clock.now();
+
+    let thread_meta: RawForumThreadMeta = self
+      .forum_store
+      .get_thread_meta(&RawGetForumThreadMetaOptions {
+        thread: options.thread.clone(),
+      })
+      .await
+      .map_err(|e| GetThreadError::Other(Box::new(e)))?;
+    let posts = self
+      .forum_store
+      .get_posts(&RawGetPostsOptions {
+        thread: thread_meta.as_ref().into(),
+        offset: options.post_offset,
+        limit: options.post_limit,
+      })
+      .await
+      .map_err(GetThreadError::Other)?;
+    let section_meta: RawForumSectionMeta = self
+      .forum_store
+      .get_section_meta(&GetForumSectionMetaOptions {
+        section: thread_meta.section.into(),
+      })
+      .await
+      .map_err(|e| GetThreadError::Other(Box::new(e)))?;
+
+    let forum_self = match acx {
+      AuthContext::User(acx) => {
+        let mut roles = Vec::new();
+        if acx.is_administrator {
+          roles.push(ForumRole::Administrator);
+        }
+        if section_meta
+          .role_grants
+          .iter()
+          .any(|grant| grant.role == ForumRole::Moderator && grant.user.id == acx.user.id)
+        {
+          roles.push(ForumRole::Moderator);
+        }
+        ForumSectionSelf { roles }
+      }
+      _ => ForumSectionSelf { roles: vec![] },
+    };
+
+    let mut role_grants: Vec<ForumRoleGrant> = Vec::new();
+    for grant in section_meta.role_grants.into_iter() {
+      let grantee = self
+        .user_store
+        .get_short_user(&grant.user.into())
+        .await
+        .map_err(GetThreadError::Other)?
+        .expect("failed to resolve grantee");
+      let granter = self
+        .user_store
+        .get_short_user(&grant.granted_by.into())
+        .await
+        .map_err(GetThreadError::Other)?
+        .expect("failed to resolve grantee");
+      role_grants.push(ForumRoleGrant {
+        role: grant.role,
+        user: grantee,
+        start_time: grant.start_time,
+        granted_by: granter,
+      });
+    }
+
+    let posts = ForumPostListing {
+      offset: posts.offset,
+      limit: posts.limit,
+      count: posts.count,
+      items: {
+        let mut items: Vec<ShortForumPost> = Vec::new();
+        for item in posts.items {
+          let last_revision = item.revisions.last;
+          let first_author = self
+            .user_store
+            .get_short_user(
+              &(match item.author {
+                RawForumActor::UserForumActor(a) => GetShortUserOptions {
+                  r#ref: a.user.id.into(),
+                  time: Some(time),
+                },
+                _ => todo!(),
+              }),
+            )
+            .await
+            .map_err(GetThreadError::Other)?
+            .unwrap();
+          let last_author = self
+            .user_store
+            .get_short_user(
+              &(match last_revision.author {
+                RawForumActor::UserForumActor(a) => GetShortUserOptions {
+                  r#ref: a.user.id.into(),
+                  time: Some(time),
+                },
+                _ => todo!(),
+              }),
+            )
+            .await
+            .map_err(GetThreadError::Other)?
+            .unwrap();
+          items.push(ShortForumPost {
+            id: item.id,
+            ctime: item.ctime,
+            author: ForumActor::UserForumActor(UserForumActor {
+              role: None,
+              user: first_author,
+            }),
+            revisions: LatestForumPostRevisionListing {
+              count: item.revisions.count,
+              last: ForumPostRevision {
+                id: last_revision.id,
+                time: last_revision.time,
+                author: ForumActor::UserForumActor(UserForumActor {
+                  role: None,
+                  user: last_author,
+                }),
+                content: last_revision.content,
+                moderation: last_revision.moderation,
+                comment: last_revision.comment,
+              },
+            },
+          });
+        }
+        items
+      },
+    };
+
+    Ok(ForumThread {
+      id: thread_meta.id,
+      key: thread_meta.key,
+      title: thread_meta.title,
+      ctime: thread_meta.ctime,
+      posts,
+      is_pinned: thread_meta.is_pinned,
+      is_locked: thread_meta.is_locked,
+      section: ForumSectionMeta {
+        id: section_meta.id,
+        key: section_meta.key,
+        display_name: section_meta.display_name,
+        ctime: section_meta.ctime,
+        locale: section_meta.locale,
+        threads: section_meta.threads,
+        this: forum_self,
+      },
+    })
   }
 }
 

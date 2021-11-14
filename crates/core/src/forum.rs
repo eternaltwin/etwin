@@ -135,11 +135,63 @@ pub struct ForumThreadKeyRef {
   pub key: ForumThreadKey,
 }
 
+impl From<ForumThreadKey> for ForumThreadKeyRef {
+  fn from(key: ForumThreadKey) -> Self {
+    Self { key }
+  }
+}
+
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize), serde(untagged))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum ForumThreadRef {
   Id(ForumThreadIdRef),
   Key(ForumThreadKeyRef),
+}
+
+impl ForumThreadRef {
+  pub const fn split(&self) -> (Option<ForumThreadIdRef>, Option<&ForumThreadKeyRef>) {
+    let mut id: Option<ForumThreadIdRef> = None;
+    let mut key: Option<&ForumThreadKeyRef> = None;
+    match self {
+      Self::Id(r) => id = Some(*r),
+      Self::Key(r) => key = Some(r),
+    };
+    (id, key)
+  }
+
+  pub const fn split_deref(&self) -> (Option<ForumThreadId>, Option<&ForumThreadKey>) {
+    let mut id: Option<ForumThreadId> = None;
+    let mut key: Option<&ForumThreadKey> = None;
+    match self {
+      Self::Id(r) => id = Some(r.id),
+      Self::Key(r) => key = Some(&r.key),
+    };
+    (id, key)
+  }
+}
+
+impl From<ForumThreadIdRef> for ForumThreadRef {
+  fn from(id: ForumThreadIdRef) -> Self {
+    Self::Id(id)
+  }
+}
+
+impl From<ForumThreadId> for ForumThreadRef {
+  fn from(id: ForumThreadId) -> Self {
+    Self::Id(id.into())
+  }
+}
+
+impl From<ForumThreadKeyRef> for ForumThreadRef {
+  fn from(key: ForumThreadKeyRef) -> Self {
+    Self::Key(key)
+  }
+}
+
+impl From<ForumThreadKey> for ForumThreadRef {
+  fn from(key: ForumThreadKey) -> Self {
+    Self::Key(key.into())
+  }
 }
 
 declare_new_enum!(
@@ -281,6 +333,12 @@ pub struct ForumThread {
   pub is_locked: bool,
 }
 
+impl ForumThread {
+  pub fn as_ref(&self) -> ForumThreadIdRef {
+    self.id.into()
+  }
+}
+
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "_serde", serde(tag = "type", rename = "ForumThread"))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -292,6 +350,26 @@ pub struct ForumThreadMeta {
   pub is_pinned: bool,
   pub is_locked: bool,
   pub posts: ListingCount,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "ForumThread"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawForumThreadMeta {
+  pub id: ForumThreadId,
+  pub key: Option<ForumThreadKey>,
+  pub title: ForumThreadTitle,
+  pub section: ForumSectionIdRef,
+  pub ctime: Instant,
+  pub is_pinned: bool,
+  pub is_locked: bool,
+  pub posts: ListingCount,
+}
+
+impl RawForumThreadMeta {
+  pub fn as_ref(&self) -> ForumThreadIdRef {
+    self.id.into()
+  }
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -347,10 +425,27 @@ pub struct ShortForumPost {
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "ForumPost"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawShortForumPost {
+  pub id: ForumPostId,
+  pub ctime: Instant,
+  pub author: RawForumActor,
+  pub revisions: RawLatestForumPostRevisionListing,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct LatestForumPostRevisionListing {
   pub count: u32,
   pub last: ForumPostRevision,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawLatestForumPostRevisionListing {
+  pub count: u32,
+  pub last: RawForumPostRevision,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -509,6 +604,12 @@ pub struct GetForumSectionOptions {
   pub thread_limit: u32,
 }
 
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct GetForumSectionMetaOptions {
+  pub section: ForumSectionRef,
+}
+
 #[derive(Error, Debug)]
 pub enum GetSectionMetaError {
   #[error("section not found")]
@@ -521,8 +622,26 @@ pub enum GetSectionMetaError {
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RawGetThreadsOptions {
   pub section: ForumSectionRef,
+  /// Thread offset
   pub offset: u32,
+  /// Thread limit
   pub limit: u32,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawGetForumThreadOptions {
+  pub thread: ForumThreadRef,
+  /// Post offset
+  pub offset: u32,
+  /// Post limit
+  pub limit: u32,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawGetForumThreadMetaOptions {
+  pub thread: ForumThreadRef,
 }
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
@@ -540,10 +659,50 @@ pub struct RawGetRoleGrantsOptions {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct CreatePostOptions {}
+pub struct CreatePostOptions {
+  pub thread: ForumThreadRef,
+  pub body: MarktwinText,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawGetPostsOptions {
+  pub thread: ForumThreadRef,
+  /// Post offset
+  pub offset: u32,
+  /// Post limit
+  pub limit: u32,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawCreatePostOptions {
+  pub actor: ForumActor,
+  pub thread: ForumThreadRef,
+  pub body_mkt: MarktwinText,
+  pub body_html: HtmlFragment,
+}
+
+#[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "_serde", serde(tag = "type", rename = "ForumSection"))]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RawCreateForumPostResult {
+  pub id: ForumPostId,
+  pub thread: ForumThreadIdRef,
+  pub section: ForumSectionIdRef,
+  pub revision: RawForumPostRevision,
+}
 
 #[derive(Error, Debug)]
 pub enum CreatePostError {
+  #[error("thread not found")]
+  ThreadNotFound,
+  #[error("current actor does not have the permission to create a post in this thread")]
+  Forbidden,
+  #[error("failed to parse provided body")]
+  FailedToParseBody,
+  #[error("failed to render provided body")]
+  FailedToRenderBody,
   #[error(transparent)]
   Other(AnyError),
 }
@@ -560,10 +719,22 @@ pub enum DeletePostError {
 
 #[cfg_attr(feature = "_serde", derive(Serialize, Deserialize))]
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct GetThreadOptions {}
+pub struct GetThreadOptions {
+  pub thread: ForumThreadRef,
+  pub post_offset: u32,
+  pub post_limit: u32,
+}
 
 #[derive(Error, Debug)]
 pub enum GetThreadError {
+  #[error(transparent)]
+  Other(AnyError),
+}
+
+#[derive(Error, Debug)]
+pub enum GetThreadMetaError {
+  #[error("thread not found")]
+  NotFound,
   #[error(transparent)]
   Other(AnyError),
 }
@@ -577,12 +748,21 @@ pub trait ForumStore: Send + Sync {
 
   async fn get_section_meta(
     &self,
-    options: &GetForumSectionOptions,
+    options: &GetForumSectionMetaOptions,
   ) -> Result<RawForumSectionMeta, GetSectionMetaError>;
 
   async fn get_threads(&self, options: &RawGetThreadsOptions) -> Result<ForumThreadListing, AnyError>;
 
+  async fn get_thread_meta(
+    &self,
+    options: &RawGetForumThreadMetaOptions,
+  ) -> Result<RawForumThreadMeta, GetThreadMetaError>;
+
   async fn create_thread(&self, options: &RawCreateThreadsOptions) -> Result<RawCreateForumThreadResult, AnyError>;
+
+  async fn get_posts(&self, options: &RawGetPostsOptions) -> Result<Listing<RawShortForumPost>, AnyError>;
+
+  async fn create_post(&self, options: &RawCreatePostOptions) -> Result<RawCreateForumPostResult, AnyError>;
 
   async fn get_role_grants(&self, options: &RawGetRoleGrantsOptions) -> Result<Vec<ForumRoleGrant>, AnyError>;
 
